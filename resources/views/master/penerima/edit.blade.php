@@ -1,0 +1,509 @@
+@extends('template.app')
+@section('title', 'Ubah Penerima | SIMAKDA')
+@section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('penerima.update', $data_penerima->id) }}" method="post">
+                        @method('PUT')
+                        @csrf
+                        <!-- Bank -->
+                        <div class="mb-3 row">
+                            <label for="bank" class="col-md-2 col-form-label">Bank</label>
+                            <div class="col-md-4">
+                                <select class="form-control select2-multiple @error('bank') is-invalid @enderror"
+                                    style="width: 100%;" id="bank" name="bank" data-placeholder="Silahkan Pilih">
+                                    <optgroup label="Daftar Bank">
+                                        <option value="" disabled selected>Silahkan Pilih Bank</option>
+                                        @foreach ($daftar_bank as $bank)
+                                            <option value="{{ $bank->kd_bank }}" data-bic="{{ $bank->bic }}"
+                                                data-nama="{{ $bank->nama_bank }}"
+                                                {{ $bank->kd_bank == $data_penerima->kd_bank ? 'selected' : '' }}>
+                                                {{ $bank->kd_bank }} | {{ $bank->nama_bank }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                                @error('bank')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control @error('nama_bank') is-invalid @enderror" type="text"
+                                    id="nama_bank" value="{{ $nama_bank->nama_bank }}" name="nama_bank" readonly>
+                                @error('nama_bank')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- BIC -->
+                        <div class="mb-3 row">
+                            <label for="bic" class="col-md-2 col-form-label">BIC</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('bic') is-invalid @enderror"
+                                    value="{{ $data_penerima->bic }}" type="text" id="bic" name="bic"
+                                    readonly>
+                                @error('bic')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- Cabang Pusat -->
+                        <div class="mb-3 row">
+                            <label for="cabang" class="col-md-2 col-form-label">Cabang Pusat</label>
+                            <div class="col-md-4">
+                                <select class="form-control select2-multiple @error('cabang') is-invalid @enderror"
+                                    style="width: 100%;" id="cabang" name="cabang" data-placeholder="Silahkan Pilih">
+                                </select>
+                                @error('cabang')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <input type="hidden" id="cabang_sementara" value="{{ $data_penerima->bank }}">
+                                <input class="form-control @error('nama_cabang') is-invalid @enderror" type="text"
+                                    value="{{ $data_penerima->nm_bank }}" id="nama_cabang" name="nama_cabang" readonly>
+                                @error('nama_cabang')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- Jenis Rekening -->
+                        <div class="mb-3 row">
+                            <label for="jenis" class="col-md-2 col-form-label">Jenis Rekening</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
+                                    style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
+                                    <optgroup label="Daftar Jenis Rekening">
+                                        <option value="" disabled selected>Silahkan Pilih Jenis Rekening</option>
+                                        <option value="1" {{ $data_penerima->jenis == '1' ? 'selected' : '' }}>
+                                            Rekening
+                                            Pegawai</option>
+                                        <option value="2" {{ $data_penerima->jenis == '2' ? 'selected' : '' }}>
+                                            Rekening
+                                            Rekenan Pihak Ketiga</option>
+                                        <option value="3" {{ $data_penerima->jenis == '3' ? 'selected' : '' }}>
+                                            Rekening
+                                            Penampung Pajak</option>
+                                    </optgroup>
+                                </select>
+                                @error('jenis')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- No Rekening Bank -->
+                        <div class="mb-3 row">
+                            <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>
+                            <div class="col-md-10">
+                                <input class="form-control" value="{{ $data_penerima->rekening }}" type="text"
+                                    placeholder="Silahkan isi dengan nomor rekening" id="rekening" name="rekening">
+                            </div>
+                        </div>
+                        <!-- Nama Pemilik/Penerima -->
+                        <div class="mb-3 row">
+                            <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik/Penerima</label>
+                            <div class="col-md-10">
+                                <input class="form-control" type="text" value="{{ $data_penerima->nm_rekening }}"
+                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening">
+                            </div>
+                        </div>
+                        <!-- Cek Rekening -->
+                        <div class="mb-3 row">
+                            <label for="cek_rekening" class="col-md-2 col-form-label"></label>
+                            <div class="col-md-10">
+                                <button type="button" id="cek_rekening" class="btn btn-primary btn-sm">Cek
+                                    Rekening</button>
+                            </div>
+                        </div>
+                        <!-- Kode Akun -->
+                        <div class="mb-3 row">
+                            <label for="kode_akun" class="col-md-2 col-form-label">Kode Akun</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2-multiple @error('kode_akun') is-invalid @enderror"
+                                    style="width: 100%;" id="kode_akun" name="kode_akun"
+                                    data-placeholder="Silahkan Pilih">
+                                    <optgroup label="Daftar Kode Akun">
+                                        <option value="" disabled selected>Silahkan Pilih Kode Akun</option>
+                                        @foreach ($daftar_kode_akun as $kode_akun)
+                                            <option value="{{ $kode_akun->kd_map }}"
+                                                {{ $kode_akun->kd_map == $data_penerima->kd_map ? 'selected' : '' }}>
+                                                {{ $kode_akun->nm_map }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                                @error('kode_akun')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <input type="hidden" name="kode_akun_sementara" value="{{ $data_penerima->kd_map }}"
+                                    id="kode_akun_sementara">
+                            </div>
+                        </div>
+                        <!-- Kode Setor -->
+                        <div class="mb-3 row">
+                            <label for="kode_setor" class="col-md-2 col-form-label">Kode Setor</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2-multiple @error('kode_setor') is-invalid @enderror"
+                                    style="width: 100%;" id="kode_setor" name="kode_setor"
+                                    data-placeholder="Silahkan Pilih">
+                                    <optgroup label="Daftar Kode Setor">
+                                        <option value="" disabled selected>Silahkan Pilih Kode Setor</option>
+                                    </optgroup>
+                                </select>
+                                @error('kode_setor')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <input type="hidden" name="kode_setor_sementara" value="{{ $data_penerima->kd_setor }}"
+                                    id="kode_setor_sementara">
+                            </div>
+                        </div>
+                        <!-- NPWP -->
+                        <div class="mb-3 row">
+                            <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                            <div class="col-md-10">
+                                <input class="form-control" value="{{ $data_penerima->npwp }}" type="text"
+                                    placeholder="Silahkan isi dengan npwp" id="npwp" name="npwp">
+                            </div>
+                        </div>
+                        <!-- Cek NPWP -->
+                        <div class="mb-3 row">
+                            <label for="cek_npwp" class="col-md-2 col-form-label"></label>
+                            <div class="col-md-10">
+                                <button type="button" id="cek_npwp" class="btn btn-primary btn-sm">Cek NPWP</button>
+                            </div>
+                        </div>
+                        <!-- Keterangan Tambahan -->
+                        <div class="mb-3 row">
+                            <label for="keterangan" class="col-md-2 col-form-label">Keterangan Tambahan</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('keterangan') is-invalid @enderror" type="text"
+                                    value="{{ $data_penerima->keterangan }}"
+                                    placeholder="Silahkan isi dengan nama penerima" id="keterangan" name="keterangan">
+                                @error('keterangan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- Hasil Validasi Bank -->
+                        <div class="mb-3 row">
+                            <label for="hasil_validasi" class="col-md-12 col-form-label"
+                                style="text-align: center;">Hasil Validasi Bank</label>
+                            <div class="col-md-10">
+                            </div>
+                        </div>
+                        <!-- No Rekening Bank -->
+                        <div class="mb-3 row">
+                            <label for="no_rekening_validasi" class="col-md-2 col-form-label">No Rekening Bank</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('no_rekening_validasi') is-invalid @enderror"
+                                    value="{{ $data_penerima->rekening }}" readonly type="text"
+                                    id="no_rekening_validasi" name="no_rekening_validasi">
+                                @error('no_rekening_validasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- Nama Pemilik/Penerima -->
+                        <div class="mb-3 row">
+                            <label for="nm_rekening_validasi" class="col-md-2 col-form-label">Nama
+                                Pemilik/Penerima</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('nm_rekening_validasi') is-invalid @enderror"
+                                    value="{{ $data_penerima->nm_rekening }}" readonly type="text"
+                                    id="nm_rekening_validasi" name="nm_rekening_validasi">
+                                @error('nm_rekening_validasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- NPWP -->
+                        <div class="mb-3 row">
+                            <label for="npwp_validasi" class="col-md-2 col-form-label">NPWP</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('npwp_validasi') is-invalid @enderror"
+                                    value="{{ $data_penerima->npwp }}" type="text" id="npwp_validasi"
+                                    name="npwp_validasi">
+                                @error('npwp_validasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- NM WP -->
+                        <div class="mb-3 row">
+                            <label for="nm_npwp_validasi" class="col-md-2 col-form-label">Nama WP</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror"
+                                    value="{{ $data_penerima->nm_wp }}" type="text" id="nm_npwp_validasi"
+                                    name="nm_npwp_validasi">
+                                @error('nm_npwp_validasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- SIMPAN -->
+                        <div style="float: right;">
+                            <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
+                            <a href="{{ route('penerima.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+@endsection
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('.select2-multiple').select2({
+                theme: 'bootstrap-5',
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            let bank = document.getElementById('cabang_sementara').value;
+            let bic = document.getElementById('bic').value;
+            $.ajax({
+                url: "{{ route('penerima.cabang') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    bic: bic
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#cabang').empty();
+                    $('#cabang').append(`<option value="0">Pilih Cabang Pusat</option>`);
+                    $.each(data, function(index, data) {
+                        if (data.kode == bank) {
+                            $('#cabang').append(
+                                `<option value="${data.kode}" data-nama="${data.nama}" selected>${data.kode} | ${data.nama}</option>`
+                            );
+                        } else {
+                            $('#cabang').append(
+                                `<option value="${data.kode}" data-nama="${data.nama}">${data.kode} | ${data.nama}</option>`
+                            );
+                        }
+                    })
+                }
+            })
+            let kode_setor_sementara = document.getElementById('kode_setor_sementara').value;
+            let kode_akun = document.getElementById('kode_akun_sementara').value;
+            $.ajax({
+                url: "{{ route('penerima.kodeSetor') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_map: kode_akun
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#kode_setor').empty();
+                    $('#kode_setor').append(`<option value="0">Pilih Kode Setor</option>`);
+                    $.each(data, function(index, data) {
+                        if (data.kd_setor == kode_setor_sementara) {
+                            $('#kode_setor').append(
+                                `<option value="${data.kd_setor}" selected>${data.nm_setor}</option>`
+                            );
+                        } else {
+                            $('#kode_setor').append(
+                                `<option value="${data.kd_setor}">${data.nm_setor}</option>`
+                            );
+                        }
+                    })
+                }
+            })
+            $('#bank').on("change", function() {
+                $("#nama_cabang").val("");
+                let bic = $(this).find(':selected').data('bic');
+                let nm_bank = $(this).find(':selected').data('nama');
+                $("#nama_bank").val(nm_bank);
+                $("#bic").val(bic);
+                $.ajax({
+                    url: "{{ route('penerima.cabang') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        bic: bic
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#cabang').empty();
+                        $('#cabang').append(`<option value="0">Pilih Cabang Pusat</option>`);
+                        $.each(data, function(index, data) {
+
+                            $('#cabang').append(
+                                `<option value="${data.kode}" data-nama="${data.nama}">${data.kode} | ${data.nama}</option>`
+                            );
+                        })
+                    }
+                })
+            });
+            $('#cabang').on('change', function() {
+                let selected = $(this).find('option:selected');
+                let nama_cabang = selected.data('nama');
+                $("#nama_cabang").val(nama_cabang);
+            });
+            $('#kode_akun').on("change", function() {
+                let kd_map = this.value;
+                $.ajax({
+                    url: "{{ route('penerima.kodeSetor') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        kd_map: kd_map
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#kode_setor').empty();
+                        $('#kode_setor').append(`<option value="0">Pilih Kode Setor</option>`);
+                        $.each(data, function(index, data) {
+                            $('#kode_setor').append(
+                                `<option value="${data.kd_setor}">${data.nm_setor}</option>`
+                            );
+                        })
+                    }
+                })
+            });
+            $('#cek_rekening').on("click", function() {
+                let kode_bank = document.getElementById('bank').value;
+
+                let no_rek = document.getElementById('rekening').value;
+                let nm_rek = document.getElementById('nm_rekening').value;
+                if (!kode_bank) {
+                    alert('Bank harus dipilih!');
+                }
+                if (!no_rek) {
+                    alert('No rekening harus diisi!');
+                }
+                if (!nm_rek) {
+                    alert('Nama rekening harus diisi!');
+                }
+                if (kode_bank && no_rek && nm_rek) {
+                    Swal.fire({
+                        title: 'Sabar Ya!',
+                        html: 'Cek rekening dalam <strong></strong> detik.',
+                        timer: 3000,
+                        willOpen: function() {
+                            Swal.showLoading()
+                            timerInterval = setInterval(function() {
+                                Swal.getContent().querySelector('strong')
+                                    .textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: function() {
+                            clearInterval(timerInterval)
+                        }
+                    }).then(function(result) {
+                        if (
+                            // Read more about handling dismissals
+                            result.dismiss === Swal.DismissReason.timer
+                        ) {
+                            console.log('Loading');
+                        }
+                    })
+                    $.ajax({
+                        url: "{{ route('penerima.cekRekening') }}",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            kode_bank: kode_bank,
+                            no_rek: no_rek,
+                            nm_rek: nm_rek,
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            if (data.status) {
+                                $("#no_rekening_validasi").val(data.data[0].data.nomorRekening);
+                                $("#nm_rekening_validasi").val(data.data[0].data
+                                    .namaPemilikRekening);
+                                document.getElementById("save").disabled = false;
+                                $("#loading").hide();
+                            } else {
+                                alert(data.message);
+                                document.getElementById("save").disabled = true;
+                                $("#no_rekening_validasi").attr("value", '');
+                                $("#nm_rekening_validasi").attr("value", '');
+                                $("#loading").hide();
+                            }
+                        }
+                    })
+                }
+
+            });
+            $('#cek_npwp').on("click", function() {
+                let npwp = document.getElementById('npwp').value;
+                let kode_akun = document.getElementById('kode_akun').value;
+                let kode_setor = document.getElementById('kode_setor').value;
+                if (!npwp) {
+                    alert('Bank harus dipilih!');
+                    exit;
+                }
+                if (!kode_akun) {
+                    alert('No rekening harus diisi!');
+                    exit;
+                }
+                if (!kode_setor) {
+                    alert('Nama rekening harus diisi!');
+                    exit;
+                }
+                if (npwp && kode_akun && kode_setor) {
+                    Swal.fire({
+                        title: 'Sabar Ya!',
+                        html: 'Cek NPWP dalam <strong></strong> detik.',
+                        timer: 5000,
+                        willOpen: function() {
+                            Swal.showLoading()
+                            timerInterval = setInterval(function() {
+                                Swal.getContent().querySelector('strong')
+                                    .textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: function() {
+                            clearInterval(timerInterval)
+                        }
+                    }).then(function(result) {
+                        if (
+                            // Read more about handling dismissals
+                            result.dismiss === Swal.DismissReason.timer
+                        ) {
+                            console.log('Loading');
+                        }
+                    })
+                    $.ajax({
+                        url: "{{ route('penerima.cekNpwp') }}",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            npwp: npwp,
+                            kode_akun: kode_akun,
+                            kode_setor: kode_setor,
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.status) {
+                                $("#npwp_validasi").val(data.data[0].data.nomorPokokWajibPajak);
+                                $("#nm_npwp_validasi").val(data.data[0].data.namaWajibPajak);
+                                document.getElementById("save").disabled = false;
+                                // $("#loading").hide();
+                            } else {
+                                alert(data.message);
+                                document.getElementById("save").disabled = true;
+                                $("#npwp_validasi").attr("value", '');
+                                $("#nm_npwp_validasi").attr("value", '');
+                                // $("#loading").hide();
+                            }
+                        }
+                    })
+                }
+
+            });
+        });
+    </script>
+@endsection
