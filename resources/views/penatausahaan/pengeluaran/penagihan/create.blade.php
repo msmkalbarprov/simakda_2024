@@ -540,9 +540,9 @@
                 let lalu = selected.data('lalu');
                 let sisa = (anggaran - lalu);
                 $("#nm_rekening").val(nm_rekening);
-                $("#total_pagu").val(number_format(anggaran, 2, '.', ','));
-                $("#realisasi_pagu").val(number_format(lalu, 2, '.', ','));
-                $("#sisa_pagu").val(number_format(sisa, 2, '.', ','));
+                $("#total_pagu").val(anggaran.toLocaleString('id-ID'));
+                $("#realisasi_pagu").val(lalu.toLocaleString('id-ID'));
+                $("#sisa_pagu").val(sisa.toLocaleString('id-ID'));
             });
         });
     </script>
