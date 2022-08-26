@@ -4,194 +4,203 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                <div class="card-header">
+                    Data Penagihan
+                </div>
                 <div class="card-body">
-                    <form action="{{ route('penagihan.store') }}" method="post">
-                        @csrf
-                        <!-- No Tersimpan -->
-                        <div class="mb-3 row">
-                            <label for="no_tersimpan" class="col-md-2 col-form-label">No Tersimpan</label>
-                            <div class="col-md-10">
-                                <input type="text" readonly
-                                    class="form-control @error('no_tersimpan') is-invalid @enderror" name="no_tersimpan"
-                                    id="no_tersimpan">
-                                @error('no_tersimpan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    @csrf
+                    <!-- No Tersimpan -->
+                    <div class="mb-3 row">
+                        <label for="no_tersimpan" class="col-md-2 col-form-label">No Tersimpan</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly class="form-control @error('no_tersimpan') is-invalid @enderror"
+                                name="no_tersimpan" id="no_tersimpan">
+                            @error('no_tersimpan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- No. Bast / Penagihan Tanggal Penagihan -->
-                        <div class="mb-3 row">
-                            <label for="no_bukti" class="col-md-2 col-form-label">No.BAST / Penagihan</label>
-                            <div class="col-md-4">
-                                <input class="form-control @error('no_bukti') is-invalid @enderror" type="text"
-                                    id="no_bukti" name="no_bukti" required>
-                                @error('no_bukti')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Penagihan</label>
-                            <div class="col-md-4">
-                                <input type="date" class="form-control @error('tgl_bukti') is-invalid @enderror"
-                                    value="{{ old('tgl_bukti') }}" id="tgl_bukti" name="tgl_bukti">
-                                @error('tgl_bukti')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- No. Bast / Penagihan Tanggal Penagihan -->
+                    <div class="mb-3 row">
+                        <label for="no_bukti" class="col-md-2 col-form-label">No.BAST / Penagihan</label>
+                        <div class="col-md-4">
+                            <input class="form-control @error('no_bukti') is-invalid @enderror" type="text"
+                                id="no_bukti" name="no_bukti" required>
+                            @error('no_bukti')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Kode SKPD Nama SKPD -->
-                        <div class="mb-3 row">
-                            <label for="kd_skpd" class="col-md-2 col-form-label">Kode OPD / Unit</label>
-                            <div class="col-md-4">
-                                <input type="text" readonly name="kd_skpd" id="kd_skpd" value="{{ $kd_skpd }}"
-                                    class="form-control @error('kd_skpd') is-invalid @enderror">
-                                @error('kd_skpd')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <label for="nm_skpd" class="col-md-2 col-form-label">Nama OPD / Unit</label>
-                            <div class="col-md-4">
-                                <input class="form-control @error('nm_skpd') is-invalid @enderror"
-                                    value="{{ $skpd->nm_skpd }}" readonly type="text"
-                                    placeholder="Silahkan isi dengan nama pelaksana pekerjaan" id="nm_skpd"
-                                    name="nm_skpd">
-                                @error('nm_skpd')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Penagihan</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control @error('tgl_bukti') is-invalid @enderror"
+                                value="{{ old('tgl_bukti') }}" id="tgl_bukti" name="tgl_bukti">
+                            @error('tgl_bukti')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Keterangan Keterangan BAST -->
-                        <div class="mb-3 row">
-                            <label for="ket" class="col-md-2 col-form-label">Keterangan</label>
-                            <div class="col-md-4">
-                                <textarea class="form-control @error('ket') is-invalid @enderror" type="text"
-                                    placeholder="Silahkan isi dengan keterangan" value="{{ old('ket') }}" id="ket" name="ket"></textarea>
-                                @error('ket')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <label for="ket_bast" class="col-md-2 col-form-label">Keterangan (BA)</label>
-                            <div class="col-md-4">
-                                <textarea type="text" name="ket_bast" placeholder="Silahkan isi dengan keterangan (BA)"
-                                    value="{{ old('ket_bast') }}" id="ket_bast" class="form-control @error('ket_bast') is-invalid @enderror"></textarea>
-                                @error('ket_bast')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Kode SKPD Nama SKPD -->
+                    <div class="mb-3 row">
+                        <label for="kd_skpd" class="col-md-2 col-form-label">Kode OPD / Unit</label>
+                        <div class="col-md-4">
+                            <input type="text" readonly name="kd_skpd" id="kd_skpd" value="{{ $kd_skpd }}"
+                                class="form-control @error('kd_skpd') is-invalid @enderror">
+                            @error('kd_skpd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Status Jenis -->
-                        <div class="mb-3 row">
-                            <label for="status_bayar" class="col-md-2 col-form-label">Status</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('status_bayar') is-invalid @enderror"
-                                    style="width: 100%;" id="status_bayar" name="status_bayar"
-                                    data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Status">
-                                        <option value="" disabled selected>Silahkan Pilih Status</option>
-                                        <option value="1" {{ old('status_bayar') == '1' ? 'selected' : '' }}>Selesai
+                        <label for="nm_skpd" class="col-md-2 col-form-label">Nama OPD / Unit</label>
+                        <div class="col-md-4">
+                            <input class="form-control @error('nm_skpd') is-invalid @enderror" value="{{ $skpd->nm_skpd }}"
+                                readonly type="text" placeholder="Silahkan isi dengan nama pelaksana pekerjaan"
+                                id="nm_skpd" name="nm_skpd">
+                            @error('nm_skpd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Keterangan Keterangan BAST -->
+                    <div class="mb-3 row">
+                        <label for="ket" class="col-md-2 col-form-label">Keterangan</label>
+                        <div class="col-md-4">
+                            <textarea class="form-control @error('ket') is-invalid @enderror" type="text"
+                                placeholder="Silahkan isi dengan keterangan" value="{{ old('ket') }}" id="ket" name="ket"></textarea>
+                            @error('ket')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="ket_bast" class="col-md-2 col-form-label">Keterangan (BA)</label>
+                        <div class="col-md-4">
+                            <textarea type="text" name="ket_bast" placeholder="Silahkan isi dengan keterangan (BA)"
+                                value="{{ old('ket_bast') }}" id="ket_bast" class="form-control @error('ket_bast') is-invalid @enderror"></textarea>
+                            @error('ket_bast')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Status Jenis -->
+                    <div class="mb-3 row">
+                        <label for="status_bayar" class="col-md-2 col-form-label">Status</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('status_bayar') is-invalid @enderror"
+                                style="width: 100%;" id="status_bayar" name="status_bayar"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Status">
+                                    <option value="" disabled selected>Silahkan Pilih Status</option>
+                                    <option value="1" {{ old('status_bayar') == '1' ? 'selected' : '' }}>Selesai
+                                    </option>
+                                    <option value="2" {{ old('status_bayar') == '2' ? 'selected' : '' }}>Belum
+                                        Selesai</option>
+                                </optgroup>
+                            </select>
+                            @error('status_bayar')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
+                                style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Jenis">
+                                    <option value="" disabled selected>Silahkan Pilih Jenis</option>
+                                    <option value="" {{ old('jenis') == '' ? 'selected' : '' }}>Tanpa Termin /
+                                        Sekali Pembayaran</option>
+                                    <option value="1" {{ old('jenis') == '1' ? 'selected' : '' }}>Konstruksi
+                                        Dalam
+                                        Pengerjaan</option>
+                                    <option value="2" {{ old('jenis') == '2' ? 'selected' : '' }}>Uang Muka
+                                    </option>
+                                    <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Hutang Tahun
+                                        Lalu</option>
+                                    <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Perbulan
+                                    </option>
+                                    <option value="5" {{ old('jenis') == '5' ? 'selected' : '' }}>Bertahap
+                                    </option>
+                                    <option value="6" {{ old('jenis') == '6' ? 'selected' : '' }}>Berdasarkan
+                                        Progres / Pengajuan Pekerjaan</option>
+                                </optgroup>
+                            </select>
+                            @error('jenis')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- No Kontrak Rekanan -->
+                    <div class="mb-3 row">
+                        <label for="no_kontrak" class="col-md-2 col-form-label">Nomor Kontrak</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('no_kontrak') is-invalid @enderror"
+                                style=" width: 100%;" id="no_kontrak" name="no_kontrak"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Kontrak">
+                                    <option value="" disabled selected>Kontrak | Nilai Kontrak | Lalu</option>
+                                    @foreach ($daftar_kontrak as $kontrak)
+                                        <option value="{{ $kontrak->no_kontrak }}" data-nilai="{{ $kontrak->nilai }}"
+                                            data-lalu="{{ $kontrak->lalu }}"
+                                            {{ old('no_kontrak') == $kontrak->no_kontrak ? 'selected' : '' }}>
+                                            {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
                                         </option>
-                                        <option value="2" {{ old('status_bayar') == '2' ? 'selected' : '' }}>Belum
-                                            Selesai</option>
-                                    </optgroup>
-                                </select>
-                                @error('status_bayar')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
-                                    style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Jenis">
-                                        <option value="" disabled selected>Silahkan Pilih Jenis</option>
-                                        <option value="" {{ old('jenis') == '' ? 'selected' : '' }}>Tanpa Termin /
-                                            Sekali Pembayaran</option>
-                                        <option value="1" {{ old('jenis') == '1' ? 'selected' : '' }}>Konstruksi Dalam
-                                            Pengerjaan</option>
-                                        <option value="2" {{ old('jenis') == '2' ? 'selected' : '' }}>Uang Muka
-                                        </option>
-                                        <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Hutang Tahun
-                                            Lalu</option>
-                                        <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Perbulan
-                                        </option>
-                                        <option value="5" {{ old('jenis') == '5' ? 'selected' : '' }}>Bertahap
-                                        </option>
-                                        <option value="6" {{ old('jenis') == '6' ? 'selected' : '' }}>Berdasarkan
-                                            Progres / Pengajuan Pekerjaan</option>
-                                    </optgroup>
-                                </select>
-                                @error('jenis')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            @error('no_kontrak')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- No Kontrak Rekanan -->
-                        <div class="mb-3 row">
-                            <label for="no_kontrak" class="col-md-2 col-form-label">Nomor Kontrak</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('no_kontrak') is-invalid @enderror"
-                                    style=" width: 100%;" id="no_kontrak" name="no_kontrak"
-                                    data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Kontrak">
-                                        <option value="" disabled selected>Kontrak | Nilai Kontrak | Lalu</option>
-                                        @foreach ($daftar_kontrak as $kontrak)
-                                            <option value="{{ $kontrak->no_kontrak }}"
-                                                {{ old('no_kontrak') == $kontrak->no_kontrak ? 'selected' : '' }}>
-                                                {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                                @error('no_kontrak')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('rekanan') is-invalid @enderror"
-                                    style=" width: 100%;" id="rekanan" name="rekanan"
-                                    data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Rekanan">
-                                        <option value="" disabled selected>Nama Rekanan | Rekening | NPWP</option>
-                                        @foreach ($daftar_rekanan as $rekanan)
-                                            <option value="{{ $rekanan->nm_rekening }}"
-                                                {{ old('rekanan') == $rekanan->nm_rekening ? 'selected' : '' }}>
-                                                {{ $rekanan->nm_rekening }} | {{ $rekanan->rekening }} |
-                                                {{ $rekanan->npwp }}
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                                @error('rekanan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('rekanan') is-invalid @enderror"
+                                style=" width: 100%;" id="rekanan" name="rekanan" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Rekanan">
+                                    <option value="" disabled selected>Nama Rekanan | Rekening | NPWP</option>
+                                    @foreach ($daftar_rekanan as $rekanan)
+                                        <option value="{{ $rekanan->nm_rekening }}"
+                                            {{ old('rekanan') == $rekanan->nm_rekening ? 'selected' : '' }}>
+                                            {{ $rekanan->nm_rekening }} | {{ $rekanan->rekening }} |
+                                            {{ $rekanan->npwp }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            @error('rekanan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- SIMPAN -->
-                        <div style="float: right;">
-                            <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('penagihan.index') }}" class="btn btn-warning btn-md">Kembali</a>
-                        </div>
-                    </form>
+                    </div>
+                    <!-- SIMPAN -->
+                    <div style="float: right;">
+                        <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
+                        <a href="{{ route('penagihan.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                    </div>
                 </div>
             </div>
-        </div> <!-- end col -->
+        </div>
+
+        {{-- Rincian Penagihan --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
+                    Rincian Penagihan
                     <button type="button" style="float: right;margin-left:3px" id="hapus_rincian"
                         class="btn btn-danger btn-sm">Hapus Rincian</button>
                     <button type="button" style="float: right" id="tambah_rincian"
                         class="btn btn-primary btn-sm">Tambah Rincian</button>
                 </div>
                 <div class="card-body">
-                    <table id="tech-companies-1" class="table">
+                    <table id="rincian_penagihan" class="table">
                         <thead>
                             <tr>
-                                <th>No.</th>
+                                <th>No Bukti</th> {{-- hidden --}}
+                                <th>No SP2D</th> {{-- hidden --}}
                                 <th>Kode Sub Kegiatan</th>
+                                <th>Nama Sub Kegiatan</th> {{-- hidden --}}
                                 <th>Kode Rekening</th>
+                                <th>REK 13</th>
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
+                                <th>Lalu</th> {{-- hidden --}}
+                                <th>SP2D</th> {{-- hidden --}}
+                                <th>Anggaran</th>
                                 <th>Sumber</th>
                             </tr>
                         </thead>
@@ -201,9 +210,48 @@
                 </div>
             </div>
         </div>
+
+        {{-- Totalan --}}
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="total_nilai" class="col-md-4 col-form-label">Total</label>
+                        <div class="col-md-8">
+                            <input type="text" readonly style="text-align: right" class="form-control"
+                                name="total_nilai" id="total_nilai">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="nilai_lalu" class="col-md-4 col-form-label">Nilai
+                            Lalu</label>
+                        <div class="col-md-8">
+                            <input type="text" readonly style="text-align: right" class="form-control"
+                                name="nilai_lalu" id="nilai_lalu">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="nilai_kontrak" class="col-md-4 col-form-label">Nilai
+                            Kontrak</label>
+                        <div class="col-md-8">
+                            <input type="text" readonly style="text-align: right" class="form-control"
+                                name="nilai_kontrak" id="nilai_kontrak">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="sisa_kontrak" class="col-md-4 col-form-label">Sisa
+                            Kontrak</label>
+                        <div class="col-md-8">
+                            <input type="text" readonly style="text-align: right" class="form-control"
+                                name="sisa_kontrak" id="sisa_kontrak">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="tambah-penagihan" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+    <div id="tambah-penagihan" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -385,21 +433,21 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <label for="realisasi_sumber" class="col-md-1 col-form-label">Realisasi</label>
+                        <label for="realisasi_sumber_dana" class="col-md-1 col-form-label">Realisasi</label>
                         <div class="col-md-3">
                             <input type="text" readonly
-                                class="form-control @error('realisasi_sumber') is-invalid @enderror"
-                                name="realisasi_sumber" id="realisasi_sumber">
-                            @error('realisasi_sumber')
+                                class="form-control @error('realisasi_sumber_dana') is-invalid @enderror"
+                                name="realisasi_sumber_dana" id="realisasi_sumber_dana">
+                            @error('realisasi_sumber_dana')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <label for="sisa_sumber" class="col-md-1 col-form-label">Sisa</label>
+                        <label for="sisa_sumber_dana" class="col-md-1 col-form-label">Sisa</label>
                         <div class="col-md-3">
                             <input type="text" readonly
-                                class="form-control @error('sisa_sumber') is-invalid @enderror" name="sisa_sumber"
-                                id="sisa_sumber">
-                            @error('sisa_sumber')
+                                class="form-control @error('sisa_sumber_dana') is-invalid @enderror"
+                                name="sisa_sumber_dana" id="sisa_sumber_dana">
+                            @error('sisa_sumber_dana')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -432,119 +480,56 @@
                     <div class="mb-3 row">
                         <label for="nilai_penagihan" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
-                            <input type="text" readonly
-                                class="form-control @error('nilai_penagihan') is-invalid @enderror"
-                                name="nilai_penagihan" id="nilai_penagihan">
+                            <input type="text" class="form-control @error('nilai_penagihan') is-invalid @enderror"
+                                name="nilai_penagihan" id="nilai_penagihan" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+                                data-type="currency">
                             @error('nilai_penagihan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button id="simpan-btn" class="btn btn-md btn-primary">Simpan</button>
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="simpan-btn" class="btn btn-sm btn-primary">Simpan</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <div class="mb-3 row">
+                    <label for="total_input_penagihan" style="text-align: right"
+                        class="col-md-9 col-form-label">Total</label>
+                    <div class="col-md-3" style="padding-right: 30px">
+                        <input type="text" width="100%" class="form-control" readonly name="total_input_penagihan"
+                            id="total_input_penagihan">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" style="width: 100%" id="input_penagihan">
+                        <thead>
+                            <tr>
+                                <th>No Bukti</th> {{-- hidden --}}
+                                <th>No SP2D</th> {{-- hidden --}}
+                                <th>Kode Sub Kegiatan</th>
+                                <th>Nama Sub Kegiatan</th> {{-- hidden --}}
+                                <th>REK LO</th>
+                                <th>REK 13</th>
+                                <th>Nama Rekening</th>
+                                <th>Rupiah</th>
+                                <th>Lalu</th> {{-- hidden --}}
+                                <th>SP2D</th> {{-- hidden --}}
+                                <th>Anggaran</th>
+                                <th>Sumber</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $('.select2-multiple').select2();
-            $('#kd_sub_kegiatan').select2({
-                dropdownParent: $('#tambah-penagihan')
-            });
-            $('#kode_rekening').select2({
-                dropdownParent: $('#tambah-penagihan')
-            });
-            $('#sumber_dana').select2({
-                dropdownParent: $('#tambah-penagihan')
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $('#tambah_rincian').on("click", function() {
-                let no_bukti = document.getElementById('no_bukti').value;
-                let tgl_bukti = document.getElementById('tgl_bukti').value;
-                let skpd = document.getElementById('kd_skpd').value;
-                let kontrak = document.getElementById('no_kontrak').value;
-                if (no_bukti != '' && tgl_bukti != '' && skpd != '' && kontrak != '') {
-                    $('#tambah-penagihan').modal('show')
-                } else {
-                    Swal.fire({
-                        title: 'Harap isi kode, tanggal, nomor penagihan dan nomor kontrak',
-                        confirmButtonColor: '#5b73e8',
-                    })
-                }
-            });
-            $('#tgl_bukti').on("change", function() {
-                let tgl_bukti = this.value;
-                $.ajax({
-                    url: "{{ route('penagihan.cek_status_ang_new') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        tgl_bukti: tgl_bukti,
-                    },
-                    success: function(data) {
-                        $('#status_anggaran').val(data.nama);
-                    }
-                })
-            });
-            $('#kd_sub_kegiatan').on("change", function() {
-                let nm_sub_kegiatan = $(this).find(':selected').data('nama');
-                let kd_sub_kegiatan = this.value;
-                $("#nm_sub_kegiatan").val(nm_sub_kegiatan);
-                let tgl_bukti = document.getElementById('tgl_bukti').value;
-                $.ajax({
-                    url: "{{ route('penagihan.cek_status_ang') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        tgl_bukti: tgl_bukti,
-                    },
-                    success: function(data) {
-                        $('#status_angkas').val(data.status);
-                    }
-                })
-                $.ajax({
-                    url: "{{ route('penagihan.cari_rekening') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        kd_sub_kegiatan: kd_sub_kegiatan,
-                    },
-                    success: function(data) {
-                        $('#kode_rekening').empty();
-                        $('#kode_rekening').append(`<option value="0">Pilih Rekening</option>`);
-                        $.each(data, function(index, data) {
-                            $('#kode_rekening').append(
-                                `<option value="${data.kd_rek6}" data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.kd_rek6} | ${data.nm_rek6} | ${data.lalu} | ${data.sp2d} | ${data.anggaran}</option>`
-                            );
-                        })
-                    }
-                })
-            });
-            $('#kode_rekening').on('change', function() {
-                let selected = $(this).find('option:selected');
-                let nm_rekening = selected.data('nama');
-                let anggaran = selected.data('anggaran');
-                let lalu = selected.data('lalu');
-                let sisa = (anggaran - lalu);
-                $("#nm_rekening").val(nm_rekening);
-                $("#total_pagu").val(anggaran.toLocaleString('id-ID'));
-                $("#realisasi_pagu").val(lalu.toLocaleString('id-ID'));
-                $("#sisa_pagu").val(sisa.toLocaleString('id-ID'));
-                // coba
-            });
-        });
-    </script>
+    @include('penatausahaan.pengeluaran.penagihan.js.main')
 @endsection

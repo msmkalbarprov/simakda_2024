@@ -31,9 +31,10 @@
                                             <td>
                                                 <a href="{{ route('penagihan.show', $data->no_bukti) }}"
                                                     class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a>
-                                                <a href="{{ route('penagihan.edit', $data->no_bukti) }}"
-                                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                                <a href="javascript:void(0);" onclick="deleteData({{ $data->no_bukti }});"
+                                                {{-- <a href="{{ route('penagihan.edit', $data->no_bukti) }}"
+                                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> --}}
+                                                <a href="javascript:void(0);"
+                                                    onclick="deleteData('{{ $data->no_bukti }}', '{{ $data->status }}');"
                                                     class="btn btn-danger btn-sm" id="delete"><i
                                                         class="fas fa-trash-alt"></i></a>
                                             </td>
@@ -51,7 +52,40 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $('#penagihan').DataTable();
         });
+
+        function deleteData(no_bukti, status) {
+            if (status != '1') {
+                alert('Status Bayar Belum Selesai');
+                exit();
+            }
+            let r = confirm('Yakin Ingin Menghapus Data, Nomor Penagihan : ' + no_bukti);
+            if (r == true) {
+                $.ajax({
+                    url: "{{ route('penagihan.hapus_penagihan') }}",
+                    type: "DELETE",
+                    dataType: 'json',
+                    data: {
+                        no_bukti: no_bukti,
+                    },
+                    success: function(data) {
+                        if (data.message == '1') {
+                            alert('Data Berhasil Terhapus');
+                            location.reload();
+                        } else {
+                            alert('Gagal Hapus');
+                        }
+                    }
+                })
+            } else {
+                return false;
+            }
+        }
     </script>
 @endsection

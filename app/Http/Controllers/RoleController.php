@@ -96,7 +96,12 @@ class RoleController extends Controller
         if ($delete) {
             if (isset($input_akses)) {
                 DB::table('permission_role')->insert(array_map(function ($value) use ($id) {
-                    return ['id_permission' => $value, 'id_role' => $id, "username_created" => Auth::user()->nama, "created_at" => date('Y-m-d H:i:s')];
+                    return [
+                        'id_permission' => $value,
+                        'id_role' => $id,
+                        "username_created" => Auth::user()->nama,
+                        "created_at" => date('Y-m-d H:i:s')
+                    ];
                 }, $input_akses));
             }
         }
