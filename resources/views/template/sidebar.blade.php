@@ -43,6 +43,7 @@
                         <a href="javascript: void(0);" class="has-arrow">Pengeluaran</a>
                         <ul class="sub-menu" aria-expanded="true">
                             <li><a href="{{ route('penagihan.index') }}">Penagihan</a></li>
+                            <li><a href="{{ route('sppls.index') }}">SPP LS</a></li>
                         </ul>
                     </li>
                 </ul>

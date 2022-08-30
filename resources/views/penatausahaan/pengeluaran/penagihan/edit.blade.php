@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Tambah Penagihan | SIMAKDA')
+@section('title', 'Edit Penagihan | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -14,7 +14,7 @@
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No Tersimpan</label>
                         <div class="col-md-10">
                             <input type="text" readonly class="form-control @error('no_tersimpan') is-invalid @enderror"
-                                name="no_tersimpan" id="no_tersimpan">
+                                name="no_tersimpan" id="no_tersimpan" value="{{ $data_tagih->no_bukti }}">
                             @error('no_tersimpan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -25,7 +25,7 @@
                         <label for="no_bukti" class="col-md-2 col-form-label">No.BAST / Penagihan</label>
                         <div class="col-md-4">
                             <input class="form-control @error('no_bukti') is-invalid @enderror" type="text"
-                                id="no_bukti" name="no_bukti" required>
+                                id="no_bukti" name="no_bukti" required value="{{ $data_tagih->no_bukti }}">
                             @error('no_bukti')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -33,7 +33,7 @@
                         <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Penagihan</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control @error('tgl_bukti') is-invalid @enderror"
-                                value="{{ old('tgl_bukti') }}" id="tgl_bukti" name="tgl_bukti">
+                                value="{{ $data_tagih->tgl_bukti }}" id="tgl_bukti" name="tgl_bukti">
                             @error('tgl_bukti')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -43,7 +43,7 @@
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">Kode OPD / Unit</label>
                         <div class="col-md-4">
-                            <input type="text" readonly name="kd_skpd" id="kd_skpd" value="{{ $kd_skpd }}"
+                            <input type="text" readonly name="kd_skpd" id="kd_skpd" value="{{ $data_tagih->kd_skpd }}"
                                 class="form-control @error('kd_skpd') is-invalid @enderror">
                             @error('kd_skpd')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -51,9 +51,9 @@
                         </div>
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama OPD / Unit</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('nm_skpd') is-invalid @enderror" value="{{ $skpd->nm_skpd }}"
-                                readonly type="text" placeholder="Silahkan isi dengan nama pelaksana pekerjaan"
-                                id="nm_skpd" name="nm_skpd">
+                            <input class="form-control @error('nm_skpd') is-invalid @enderror"
+                                value="{{ $data_tagih->nm_skpd }}" readonly type="text"
+                                placeholder="Silahkan isi dengan nama pelaksana pekerjaan" id="nm_skpd" name="nm_skpd">
                             @error('nm_skpd')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -64,15 +64,15 @@
                         <label for="ket" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-4">
                             <textarea class="form-control @error('ket') is-invalid @enderror" type="text"
-                                placeholder="Silahkan isi dengan keterangan" value="{{ old('ket') }}" id="ket" name="ket"></textarea>
+                                placeholder="Silahkan isi dengan keterangan" id="ket" name="ket">{{ $data_tagih->ket }}</textarea>
                             @error('ket')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <label for="ket_bast" class="col-md-2 col-form-label">Keterangan (BA)</label>
                         <div class="col-md-4">
-                            <textarea type="text" name="ket_bast" placeholder="Silahkan isi dengan keterangan (BA)"
-                                value="{{ old('ket_bast') }}" id="ket_bast" class="form-control @error('ket_bast') is-invalid @enderror"></textarea>
+                            <textarea type="text" name="ket_bast" placeholder="Silahkan isi dengan keterangan (BA)" id="ket_bast"
+                                class="form-control @error('ket_bast') is-invalid @enderror">{{ $data_tagih->ket_bast }}</textarea>
                             @error('ket_bast')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -87,9 +87,9 @@
                                 data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Status">
                                     <option value="" disabled selected>Silahkan Pilih Status</option>
-                                    <option value="1" {{ old('status_bayar') == '1' ? 'selected' : '' }}>Selesai
+                                    <option value="1" {{ $data_tagih->status == '1' ? 'selected' : '' }}>Selesai
                                     </option>
-                                    <option value="2" {{ old('status_bayar') == '2' ? 'selected' : '' }}>Belum
+                                    <option value="2" {{ $data_tagih->status == '2' ? 'selected' : '' }}>Belum
                                         Selesai</option>
                                 </optgroup>
                             </select>
@@ -103,20 +103,20 @@
                                 style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Jenis">
                                     <option value="" disabled selected>Silahkan Pilih Jenis</option>
-                                    <option value="" {{ old('jenis') == '' ? 'selected' : '' }}>Tanpa Termin /
+                                    <option value="" {{ $data_tagih->jenis == '' ? 'selected' : '' }}>Tanpa Termin /
                                         Sekali Pembayaran</option>
-                                    <option value="1" {{ old('jenis') == '1' ? 'selected' : '' }}>Konstruksi
+                                    <option value="1" {{ $data_tagih->jenis == '1' ? 'selected' : '' }}>Konstruksi
                                         Dalam
                                         Pengerjaan</option>
-                                    <option value="2" {{ old('jenis') == '2' ? 'selected' : '' }}>Uang Muka
+                                    <option value="2" {{ $data_tagih->jenis == '2' ? 'selected' : '' }}>Uang Muka
                                     </option>
-                                    <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Hutang Tahun
+                                    <option value="3" {{ $data_tagih->jenis == '3' ? 'selected' : '' }}>Hutang Tahun
                                         Lalu</option>
-                                    <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Perbulan
+                                    <option value="4" {{ $data_tagih->jenis == '4' ? 'selected' : '' }}>Perbulan
                                     </option>
-                                    <option value="5" {{ old('jenis') == '5' ? 'selected' : '' }}>Bertahap
+                                    <option value="5" {{ $data_tagih->jenis == '5' ? 'selected' : '' }}>Bertahap
                                     </option>
-                                    <option value="6" {{ old('jenis') == '6' ? 'selected' : '' }}>Berdasarkan
+                                    <option value="6" {{ $data_tagih->jenis == '6' ? 'selected' : '' }}>Berdasarkan
                                         Progres / Pengajuan Pekerjaan</option>
                                 </optgroup>
                             </select>
@@ -137,7 +137,7 @@
                                     @foreach ($daftar_kontrak as $kontrak)
                                         <option value="{{ $kontrak->no_kontrak }}" data-nilai="{{ $kontrak->nilai }}"
                                             data-lalu="{{ $kontrak->lalu }}"
-                                            {{ old('no_kontrak') == $kontrak->no_kontrak ? 'selected' : '' }}>
+                                            {{ $data_tagih->kontrak == $kontrak->no_kontrak ? 'selected' : '' }}>
                                             {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
                                         </option>
                                     @endforeach
@@ -155,7 +155,7 @@
                                     <option value="" disabled selected>Nama Rekanan | Rekening | NPWP</option>
                                     @foreach ($daftar_rekanan as $rekanan)
                                         <option value="{{ $rekanan->nm_rekening }}"
-                                            {{ old('rekanan') == $rekanan->nm_rekening ? 'selected' : '' }}>
+                                            {{ $data_tagih->nm_rekanan == $rekanan->nm_rekening ? 'selected' : '' }}>
                                             {{ $rekanan->nm_rekening }} | {{ $rekanan->rekening }} |
                                             {{ $rekanan->npwp }}
                                         </option>
@@ -204,6 +204,25 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($detail_tagih as $data)
+                                <tr>
+                                    <td>{{ $data->no_bukti }}</td>
+                                    <td>{{ $data->no_sp2d }}</td>
+                                    <td>{{ $data->kd_sub_kegiatan }}</td>
+                                    <td>{{ $data->nm_sub_kegiatan }}</td>
+                                    <td>{{ $data->kd_rek6 }}</td>
+                                    <td>{{ $data->kd_rek }}</td>
+                                    <td>{{ $data->nm_rek6 }}</td>
+                                    <td>{{ $data->nilai }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ $data->sumber }}</td>
+                                    <td><a href="javascript:void(0);"
+                                            onclick="deleteData('{{ $data->no_bukti }}','{{ $data->kd_sub_kegiatan }}','{{ $data->kd_rek }}','{{ $data->sumber }}','{{ $data->nilai }}')"
+                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a></td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -218,7 +237,7 @@
                         <label for="total_nilai" class="col-md-4 col-form-label">Total</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="total_nilai" id="total_nilai">
+                                name="total_nilai" id="total_nilai" value="{{ $data_tagih->total }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -226,7 +245,7 @@
                             Lalu</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_lalu" id="nilai_lalu">
+                                name="nilai_lalu" id="nilai_lalu" value="{{ $data_tagih->total }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -234,7 +253,7 @@
                             Kontrak</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_kontrak" id="nilai_kontrak">
+                                name="nilai_kontrak" id="nilai_kontrak" value="{{ $kontrak->nilai }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -242,7 +261,8 @@
                             Kontrak</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="sisa_kontrak" id="sisa_kontrak">
+                                name="sisa_kontrak" id="sisa_kontrak"
+                                value="{{ $kontrak->nilai - $data_tagih->total }}">
                         </div>
                     </div>
                 </div>
@@ -499,8 +519,8 @@
                     <label for="total_input_penagihan" style="text-align: right"
                         class="col-md-9 col-form-label">Total</label>
                     <div class="col-md-3" style="padding-right: 30px">
-                        <input type="text" width="100%" class="form-control" readonly name="total_input_penagihan"
-                            id="total_input_penagihan">
+                        <input type="text" width="100%" class="form-control" value="{{ $data_tagih->total }}"
+                            readonly name="total_input_penagihan" id="total_input_penagihan">
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -523,6 +543,26 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($detail_tagih as $data)
+                                <tr>
+                                    <td>{{ $data->no_bukti }}</td>
+                                    <td>{{ $data->no_sp2d }}</td>
+                                    <td>{{ $data->kd_sub_kegiatan }}</td>
+                                    <td>{{ $data->nm_sub_kegiatan }}</td>
+                                    <td>{{ $data->kd_rek6 }}</td>
+                                    <td>{{ $data->kd_rek }}</td>
+                                    <td>{{ $data->nm_rek6 }}</td>
+                                    <td>{{ $data->nilai }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ $data->sumber }}</td>
+                                    <td><a href="javascript:void(0);"
+                                            onclick="deleteData('{{ $data->no_bukti }}', '{{ $data->kd_sub_kegiatan }}', '{{ $data->kd_rek }}','{{ $data->sumber }}','{{ $data->nilai }}');"
+                                            class="btn btn-danger btn-sm" id="delete"><i
+                                                class="fas fa-trash-alt"></i></a></td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -531,5 +571,5 @@
     </div>
 @endsection
 @section('js')
-    @include('penatausahaan.pengeluaran.penagihan.js.create')
+    @include('penatausahaan.pengeluaran.penagihan.js.edit')
 @endsection

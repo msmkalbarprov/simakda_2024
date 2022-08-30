@@ -10,6 +10,7 @@ use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\PenagihanController;
 use App\Http\Controllers\BankKalbarController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SppLsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -47,13 +48,12 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('cek-penerima', [PenerimaController::class, 'cekPenerima'])->name('penerima.cekPenerima');
     });
     Route::group(['prefix' => 'penatausahaan/pengeluaran'], function () {
-        // Route::resource('penagihan', PenagihanController::class);
+        // Penagihan
         Route::get('penagihan', [PenagihanController::class, 'index'])->name('penagihan.index');
         Route::get('penagihan/create', [PenagihanController::class, 'create'])->name('penagihan.create');
         Route::get('penagihan/show/{no_bukti?}', [PenagihanController::class, 'show'])->where('no_bukti', '(.*)')->name('penagihan.show');
-        // Route::get('penagihan/show/{no_bukti?}', function (Request $request, $no_bukti) {
-        //     return $no_bukti;
-        // })->where('no_bukti', '(.*)')->name('penagihan.show');
+        Route::get('penagihan/edit/{no_bukti?}', [PenagihanController::class, 'edit'])->where('no_bukti', '(.*)')->name('penagihan.edit');
+        Route::delete('hapus_penagihan', [PenagihanController::class, 'hapusPenagihan'])->name('penagihan.hapus_penagihan');
         Route::post('cek_status_ang_new', [PenagihanController::class, 'cekStatusAngNew'])->name('penagihan.cek_status_ang_new');
         Route::post('cek_status_ang', [PenagihanController::class, 'cekStatusAng'])->name('penagihan.cek_status_ang');
         Route::post('cari_rekening', [PenagihanController::class, 'cariRekening'])->name('penagihan.cari_rekening');
@@ -66,7 +66,21 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('cek_simpan_penagihan', [PenagihanController::class, 'cekSimpanPenagihan'])->name('penagihan.cek_simpan_penagihan');
         Route::post('simpan_penagihan', [PenagihanController::class, 'simpanPenagihan'])->name('penagihan.simpan_penagihan');
         Route::post('simpan_detail_penagihan', [PenagihanController::class, 'simpanDetailPenagihan'])->name('penagihan.simpan_detail_penagihan');
-        Route::delete('hapus_penagihan', [PenagihanController::class, 'hapusPenagihan'])->name('penagihan.hapus_penagihan');
+        Route::post('hapus_detail_tampungan_penagihan', [PenagihanController::class, 'hapusTampunganPenagihan'])->name('penagihan.hapus_detail_tampungan_penagihan');
+        Route::post('hapus_semua_tampungan', [PenagihanController::class, 'hapusSemuaTampungan'])->name('penagihan.hapus_semua_tampungan');
+        Route::post('hapus_detail_edit_penagihan', [PenagihanController::class, 'hapusDetailEditPenagihan'])->name(
+            'penagihan.hapus_detail_edit_penagihan'
+        );
+        Route::post('update_penagihan', [PenagihanController::class, 'updatePenagihan'])->name('penagihan.update_penagihan');
+        Route::post('update_detail_penagihan', [PenagihanController::class, 'updateDetailPenagihan'])->name('penagihan.update_detail_penagihan');
+        Route::post('simpan_edit_tampungan', [PenagihanController::class, 'simpanEditTampungan'])->name('penagihan.simpan_edit_tampungan');
+
+        // SPP LS
+        Route::get('spp_ls', [SppLsController::class, 'index'])->name('sppls.index');
+        Route::get('spp_ls/create', [SppLsController::class, 'create'])->name('sppls.create');
+        Route::post('spp_ls/cari_jenis', [SppLsController::class, 'cariJenis'])->name('sppls.cari_jenis');
+        Route::post('spp_ls/cari_nomor_spd', [SppLsController::class, 'cariNomorSpd'])->name('sppls.cari_nomor_spd');
+        Route::post('spp_ls/cari_sub_kegiatan', [SppLsController::class, 'cariSubKegiatan'])->name('sppls.cari_sub_kegiatan');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

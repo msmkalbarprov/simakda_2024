@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -546,24 +547,26 @@ class PenagihanController extends Controller
         $skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
         $tanggal_ubah = date('Y-m-d H:i:s');
-
-        $data = DB::table('tb_transaksi')->insert(
-            [
-                'kd_skpd' => $skpd,
-                'no_transaksi' => $nomor,
-                'kd_sub_kegiatan' => $kdgiat,
-                'kd_rek6' => $kdrek,
-                'sumber' => $sumber,
-                'nilai' => $nilai_tagih,
-                'username' => $nama,
-                'last_update' => $tanggal_ubah,
-            ]
-        );
-        if ($data) {
+        DB::beginTransaction();
+        try {
+            DB::table('tb_transaksi')->insert(
+                [
+                    'kd_skpd' => $skpd,
+                    'no_transaksi' => $nomor,
+                    'kd_sub_kegiatan' => $kdgiat,
+                    'kd_rek6' => $kdrek,
+                    'sumber' => $sumber,
+                    'nilai' => $nilai_tagih,
+                    'username' => $nama,
+                    'last_update' => $tanggal_ubah,
+                ]
+            );
+            DB::commit();
             return response()->json([
                 'message' => '1'
             ]);
-        } else {
+        } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => '0'
             ]);
@@ -587,6 +590,7 @@ class PenagihanController extends Controller
         return response()->json($data);
     }
 
+    // Cek simpan Input
     public function cekSimpanPenagihan(Request $request)
     {
         $no_bukti = $request->no_bukti;
@@ -599,13 +603,15 @@ class PenagihanController extends Controller
     {
         $no_bukti = $request->no_bukti;
         $kd_skpd = Auth::user()->kd_skpd;
-        $cek_simpan = DB::table('trhtagih')->select('no_bukti')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->count();
-        if ($cek_simpan > 0) {
-            return response()->json([
-                'message' => '1'
-            ]);
-        } else {
-            $data = DB::table('trhtagih')->insert([
+        DB::beginTransaction();
+        try {
+            $cek_simpan = DB::table('trhtagih')->select('no_bukti')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_simpan > 0) {
+                return response()->json([
+                    'message' => '1'
+                ]);
+            }
+            DB::table('trhtagih')->insert([
                 'no_bukti' => $request->no_bukti,
                 'tgl_bukti' => $request->tgl_bukti,
                 'ket' => $request->ket,
@@ -625,15 +631,15 @@ class PenagihanController extends Controller
                 'ket_bast' => $request->ket_bast,
                 'nm_rekanan' => $request->rekanan,
             ]);
-            if ($data) {
-                return response()->json([
-                    'message' => '2'
-                ]);
-            } else {
-                return response()->json([
-                    'message' => '0'
-                ]);
-            }
+            DB::commit();
+            return response()->json([
+                'message' => '2'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
         }
     }
 
@@ -642,59 +648,289 @@ class PenagihanController extends Controller
         $no_bukti = $request->no_bukti;
         $status_bayar = $request->status_bayar;
         $rincian_penagihan = $request->rincian_penagihan;
-        $kd_skpd = $request->kd_skpd;
+        $kd_skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
-        if (isset($rincian_penagihan)) {
-            $data = DB::table('trdtagih')->insert(array_map(function ($value) {
-                return [
-                    'no_bukti' => $value['no_bukti'],
-                    'no_sp2d' => $value['no_sp2d'],
-                    'kd_subkegiatan' => $value['kd_sub_kegiatan'],
-                    'nm_subkegiatan' => $value['nm_sub_kegiatan'],
-                    'kd_rek6' => $value['kd_rek6'],
-                    'kd_rek' => $value['kd_rek'],
-                    'nm_rek6' => $value['nm_rek6'],
-                    'nilai' => $value['nilai'],
-                    'kd_skpd' => $value['kd_skpd'],
-                    'sumber' => $value['sumber'],
-                ];
-            }, $rincian_penagihan));
-            if ($data) {
-                $hapus_tampungan = DB::table('tb_transaksi')->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $no_bukti, 'username' => $nama])->delete();
-                if ($hapus_tampungan) {
-                    return response()->json([
-                        'message' => '4'
-                    ]);
-                } else {
-                    return response()->json([
-                        'message' => '5'
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'message' => '5'
-                ]);
+        DB::beginTransaction();
+        try {
+            if (isset($rincian_penagihan)) {
+                DB::table('trdtagih')->insert(array_map(function ($value) {
+                    return [
+                        'no_bukti' => $value['no_bukti'],
+                        'no_sp2d' => $value['no_sp2d'],
+                        'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'kd_rek' => $value['kd_rek'],
+                        'nm_rek6' => $value['nm_rek6'],
+                        'nilai' => $value['nilai'],
+                        'kd_skpd' => $value['kd_skpd'],
+                        'sumber' => $value['sumber'],
+                    ];
+                }, $rincian_penagihan));
+                DB::table('tb_transaksi')->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $no_bukti, 'username' => $nama])->delete();
             }
+            DB::commit();
+            return response()->json([
+                'message' => '4'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '5'
+            ]);
         }
+    }
+
+    public function edit($no_bukti)
+    {
+        $data_tagih = DB::table('trhtagih')->where('no_bukti', $no_bukti)->first();
+        $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $data_tagih->kd_skpd, 'status' => 1])->orderBy('tgl_dpa', 'DESC')->first();
+        $data = [
+            'data_tagih' => DB::table('trhtagih as a')->join('trdtagih as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->where('a.no_bukti', $no_bukti)->first(),
+            'detail_tagih' => DB::table('trdtagih as a')->select('a.*')->join('trhtagih as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->where('a.no_bukti', $no_bukti)->get(),
+            'daftar_kontrak' => DB::table('ms_kontrak as z')->where('z.kd_skpd', $data_tagih->kd_skpd)
+                ->select('z.no_kontrak', 'z.nilai', DB::raw("(SELECT SUM(nilai) FROM trhtagih a INNER JOIN trdtagih b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE kontrak=z.no_kontrak) as lalu"))->orderBy('z.no_kontrak', 'ASC')->get(),
+            'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
+            'daftar_rekanan' => DB::table('ms_rekening_bank_online')->where('kd_skpd', $data_tagih->kd_skpd)->orderBy('rekening', 'ASC')->get(),
+            'daftar_sub_kegiatan' => DB::table('trskpd as a')
+                ->select('a.total', 'a.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=a.kd_program) as nm_program"))
+                ->join('ms_sub_kegiatan AS b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
+                ->where(['a.kd_skpd' => $data_tagih->kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get(),
+            'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
+        ];
+        // return $data['detail_tagih'];
+        return view('penatausahaan.pengeluaran.penagihan.edit')->with($data);
     }
 
     public function hapusPenagihan(Request $request)
     {
         $no_bukti = $request->no_bukti;
         $kd_skpd = Auth::user()->kd_skpd;
-        $hapus_detail_penagihan = DB::table('trdtagih')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
-        if ($hapus_detail_penagihan) {
-            $hapus_penagihan = DB::table('trhtagih')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
-            if ($hapus_penagihan) {
-                return response()->json([
-                    'message' => '1'
-                ]);
-            } else {
-                return response()->json([
-                    'message' => '0'
+        DB::beginTransaction();
+        try {
+            DB::table('trdtagih')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trhtagih')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusTampunganPenagihan(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_rek = $request->kd_rek;
+        $sumber = $request->sumber;
+        $nama = Auth::user()->nama;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $nilai = $request->nilai;
+        DB::beginTransaction();
+        try {
+            DB::table('tb_transaksi')->where(['no_transaksi' => $no_bukti, 'username' => $nama, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek, 'sumber' => $sumber])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusSemuaTampungan()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $nama = Auth::user()->nama;
+        DB::beginTransaction();
+        try {
+            DB::table('tb_transaksi')->where(['kd_skpd' => $kd_skpd, 'username' => $nama])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusDetailEditPenagihan(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $no_bukti = $request->no_bukti;
+            $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+            $kd_rek = $request->kd_rek;
+            $sumber = $request->sumber;
+            $nilai = $request->nilai;
+            $kd_skpd = Auth::user()->kd_skpd;
+
+            DB::table('trdtagih')->where(['no_bukti' => $no_bukti, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek' => $kd_rek, 'sumber' => $sumber])->delete();
+            $cari_total = DB::table('trhtagih')->select('total')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->first();
+            if ($cari_total) {
+                $total = $cari_total->total;
+                DB::table('trhtagih')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->update([
+                    'total' => $total - $nilai,
                 ]);
             }
-        } else {
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function updatePenagihan(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $kd_skpd1 = $request->kd_skpd;
+        $no_tersimpan = $request->no_tersimpan;
+        DB::beginTransaction();
+        try {
+            if ($no_bukti != $no_tersimpan) {
+                $cek_simpan = DB::table('trhtagih')->select('no_bukti')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->count();
+                if ($cek_simpan > 0) {
+                    return response()->json([
+                        'message' => '1'
+                    ]);
+                }
+            }
+            $cek_spp = DB::table('trhspp')->select('no_tagih')->where('no_tagih', $no_bukti)->where('sp2d_batal', '0')->where('sp2d_batal', null)->count();
+            if ($cek_spp == '0') {
+                DB::table('trhtagih')->where(['no_bukti' => $no_tersimpan, 'kd_skpd' => $kd_skpd1])->update([
+                    'no_bukti' => $request->no_bukti,
+                    'tgl_bukti' => $request->tgl_bukti,
+                    'ket' => $request->ket,
+                    'username' => '',
+                    'tgl_update' => '',
+                    'nm_skpd' => $request->nm_skpd,
+                    'total' => $request->total_nilai,
+                    'no_tagih' => $request->ctagih,
+                    'sts_tagih' => $request->cstatus,
+                    'status' => $request->status_bayar,
+                    'tgl_tagih' => $request->ctgltagih,
+                    'jns_spp' => $request->cjenis,
+                    'jenis' => $request->jenis,
+                    'kontrak' => $request->no_kontrak,
+                    'ket_bast' => $request->ket_bast,
+                    'nm_rekanan' => $request->rekanan,
+                ]);
+                DB::commit();
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function updateDetailPenagihan(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $no_tersimpan = $request->no_tersimpan;
+        $status_bayar = $request->status_bayar;
+        $rincian_penagihan = $request->rincian_penagihan;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $nama = Auth::user()->nama;
+        DB::beginTransaction();
+        try {
+            $cek_spp = DB::table('trhspp')->select('no_tagih')->where('no_tagih', $no_bukti)->where('sp2d_batal', '0')->where('sp2d_batal', null)->count();
+            if ($cek_spp == '0') {
+                DB::table('trdtagih')->where(['no_bukti' => $no_tersimpan, 'kd_skpd' => $kd_skpd])->delete();
+                if (isset($rincian_penagihan)) {
+                    DB::table('trdtagih')->insert(array_map(function ($value) use ($no_bukti) {
+                        return [
+                            'no_bukti' => $no_bukti,
+                            'no_sp2d' => $value['no_sp2d'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                            'kd_rek6' => $value['kd_rek6'],
+                            'kd_rek' => $value['kd_rek'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_skpd' => $value['kd_skpd'],
+                            'sumber' => $value['sumber'],
+                        ];
+                    }, $rincian_penagihan));
+                    DB::commit();
+                    return response()->json([
+                        'message' => '1'
+                    ]);
+                }
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function simpanEditTampungan(Request $request)
+    {
+        $nomor = $request->nomor;
+        $no_simpan = $request->no_simpan;
+        $kdgiat = $request->kdgiat;
+        $nmgiat = $request->nmgiat;
+        $kdrek6 = $request->kdrek6;
+        $kdrek = $request->kdrek;
+        $nmrek = $request->nmrek;
+        $nilai_tagih = $request->nilai_tagih;
+        $sumber = $request->sumber;
+        $kd_skpd = Auth::user()->kd_skpd;
+        DB::beginTransaction();
+        try {
+            DB::table('trdtagih')->insert([
+                'no_bukti' => $no_simpan,
+                'kd_sub_kegiatan' => $kdgiat,
+                'nm_sub_kegiatan' => $nmgiat,
+                'kd_rek6' => $kdrek6,
+                'kd_rek' => $kdrek,
+                'nm_rek6' => $nmrek,
+                'nilai' => $nilai_tagih,
+                'kd_skpd' => $kd_skpd,
+                'sumber' => $sumber
+            ]);
+            $cari_total = DB::table('trhtagih')->select('total')->where(['no_bukti' => $nomor, 'kd_skpd' => $kd_skpd])->first();
+            if ($cari_total) {
+                $total = $cari_total->total;
+                DB::table('trhtagih')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $no_simpan])->update([
+                    'total' => $total + $nilai_tagih,
+                ]);
+            }
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => '0'
             ]);

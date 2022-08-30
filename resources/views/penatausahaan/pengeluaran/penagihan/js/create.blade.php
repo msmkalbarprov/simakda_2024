@@ -63,6 +63,9 @@
                 },
                 {
                     data: 'sumber'
+                },
+                {
+                    data: 'hapus'
                 }
             ]
         });
@@ -111,6 +114,9 @@
                 },
                 {
                     data: 'sumber'
+                },
+                {
+                    data: 'hapus'
                 }
             ]
         });
@@ -119,17 +125,6 @@
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let skpd = document.getElementById('kd_skpd').value;
             let kontrak = document.getElementById('no_kontrak').value;
-            if (no_bukti != '' && tgl_bukti != '' && skpd != '' && kontrak != '') {
-                $('#tambah-penagihan').modal('show');
-            } else {
-                Swal.fire({
-                    title: 'Harap isi kode, tanggal, nomor penagihan dan nomor kontrak',
-                    confirmButtonColor: '#5b73e8',
-                })
-            }
-        });
-        $('#tgl_bukti').on("change", function() {
-            let tgl_bukti = this.value;
             $.ajax({
                 url: "{{ route('penagihan.cek_status_ang_new') }}",
                 type: "POST",
@@ -141,6 +136,25 @@
                     $('#status_anggaran').val(data.nama);
                 }
             })
+            $.ajax({
+                url: "{{ route('penagihan.cek_status_ang') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    tgl_bukti: tgl_bukti,
+                },
+                success: function(data) {
+                    $('#status_angkas').val(data.status);
+                }
+            })
+            if (no_bukti != '' && tgl_bukti != '' && skpd != '' && kontrak != '') {
+                $('#tambah-penagihan').modal('show');
+            } else {
+                Swal.fire({
+                    title: 'Harap isi kode, tanggal, nomor penagihan dan nomor kontrak',
+                    confirmButtonColor: '#5b73e8',
+                })
+            }
         });
         $('#kd_sub_kegiatan').on("change", function() {
             let nm_sub_kegiatan = $(this).find(':selected').data('nama');
@@ -161,18 +175,6 @@
             $("#nilai_sumber_dana").val("");
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
-            let tgl_bukti = document.getElementById('tgl_bukti').value;
-            $.ajax({
-                url: "{{ route('penagihan.cek_status_ang') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    tgl_bukti: tgl_bukti,
-                },
-                success: function(data) {
-                    $('#status_angkas').val(data.status);
-                }
-            })
             $.ajax({
                 url: "{{ route('penagihan.cari_rekening') }}",
                 type: "POST",
@@ -359,11 +361,11 @@
                 alert('Silahkan pilih sub kegiatan');
                 return;
             };
-            if (!kdrek) {
+            if (!kdrek || kdrek == '0') {
                 alert('Silahkan pilih rekening');
                 return;
             };
-            if (!sumber) {
+            if (!kdrek || kdrek == '0') {
                 alert('Silahkan pilih sumber');
                 return;
             };
@@ -417,23 +419,32 @@
                 return;
             }
             // kondisi ketika kode sub kegiatan dan rekening tidak sama dengan tampungan
-            let tampungan_penagihan = tabel.rows().data().toArray();
-            tampungan_penagihan.map(function(data) {
-                if (data.kd_sub_kegiatan == kdgiat && data.kd_rek == kdrek) {
-                    if (data.kd_sub_kegiatan == kdgiat && data.kd_rek == kdrek && data.sumber ==
-                        sumber) {
-                        alert(
-                            'Sumber tidak boleh sama dengan rincian penagihan!'
-                        );
-                        exit();
-                    }
+            let tampungan = tabel.rows().data().toArray().map((value) => {
+                let result = {
+                    kd_sub_kegiatan: value.kd_sub_kegiatan,
+                    kd_rek: value.kd_rek,
+                    sumber: value.sumber,
+                };
+                return result;
+            });
+            let kondisi = tampungan.map(function(data) {
+                if (data.kd_sub_kegiatan == kdgiat && data.kd_rek == kdrek && data.sumber ==
+                    sumber) {
+                    return '2';
+                } else if (data.kd_sub_kegiatan != kdgiat || data.kd_rek != kdrek) {
+                    return '3';
                 } else {
-                    alert(
-                        'Kode sub kegiatan dan rekening tidak boleh beda dengan rincian penagihan!'
-                    );
-                    exit();
+                    return '1';
                 }
-            })
+            });
+            if (kondisi.includes("2")) {
+                alert('Sumber tidak boleh sama dengan rincian penagihan!');
+                return;
+            }
+            if (kondisi.includes("3")) {
+                alert('Sub kegiatan dan rekening tidak boleh beda dengan rincian penagihan!');
+                return;
+            }
             // tampungan
             $.ajax({
                 url: "{{ route('penagihan.simpan_tampungan') }}",
@@ -465,6 +476,7 @@
                             'sp2d': csp2d,
                             'anggaran': nilai_sumber,
                             'sumber': sumber,
+                            'hapus': `<a href="javascript:void(0);" onclick="deleteData('${nomor}','${kdgiat}','${kdrek}','${sumber}','${nilai_tagih}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
                         }).draw();
                         tabel1.row.add({
                             'no_bukti': nomor,
@@ -479,6 +491,7 @@
                             'sp2d': csp2d,
                             'anggaran': nilai_sumber,
                             'sumber': sumber,
+                            'hapus': `<a href="javascript:void(0);" onclick="deleteData('${nomor}','${kdgiat}','${kdrek}','${sumber}','${nilai_tagih}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
                         }).draw();
                         nilai_total_penagihan += parseFloat(nilai_tagih);
                         $('#total_input_penagihan').val(nilai_total_penagihan);
@@ -543,6 +556,11 @@
             let ctagih = '';
             let ctgltagih = '2016-12-1';
             let jns_trs = '1';
+            let rincian_penagihan1 = tabel1.rows().data().toArray();
+            if (rincian_penagihan.length == 0) {
+                alert('Rincian Penagihan tidak boleh kosong!');
+                exit();
+            }
             if (!no_bukti) {
                 alert('No. BAST/Penagihan harus diisi!');
                 return;
@@ -646,7 +664,7 @@
                                 no_bukti: no_bukti,
                             },
                             success: function(data) {
-                                if (data.jumlah == 1) {
+                                if (data.jumlah == '1') {
                                     alert("Nomor Telah Dipakai!");
                                     document.getElementById("no_bukti").focus();
                                     exit();
@@ -728,7 +746,7 @@
                         alert('Data Detail Gagal Tersimpan');
                     } else {
                         alert('Data Tersimpan..!!');
-                        location.reload();
+                        window.location.href = "{{ route('penagihan.index') }}";
                     }
                 }
             })
@@ -808,4 +826,42 @@
             input[0].setSelectionRange(caret_pos, caret_pos);
         }
     });
+
+    function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
+        let tabel = $('#input_penagihan').DataTable();
+        let tabel1 = $('#rincian_penagihan').DataTable();
+        let nilai_penagihan = parseFloat(nilai);
+        let nilai_sementara_penagihan = parseFloat(document.getElementById('total_input_penagihan').value);
+        let nilai_rincian_penagihan = parseFloat(document.getElementById('total_nilai').value);
+        $.ajax({
+            url: "{{ route('penagihan.hapus_detail_tampungan_penagihan') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                no_bukti: no_bukti,
+                kd_sub_kegiatan: kd_sub_kegiatan,
+                kd_rek: kd_rek,
+                sumber: sumber,
+                nilai: nilai,
+            },
+            success: function(data) {
+                if (data.message == '1') {
+                    tabel.rows(function(idx, data, node) {
+                        return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+                            data.kd_rek == kd_rek
+                    }).remove().draw();
+                    tabel1.rows(function(idx, data, node) {
+                        return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+                            data.kd_rek == kd_rek
+                    }).remove().draw();
+                    $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
+                    $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
+                    alert('Data berhasil dihapus!');
+                } else {
+                    alert('Data gagal dihapus!');
+                    exit();
+                }
+            }
+        })
+    }
 </script>

@@ -5,7 +5,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('penagihan.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('penagihan.create') }}" id="tambah_penagihan" class="btn btn-primary"
+                        style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -31,8 +32,8 @@
                                             <td>
                                                 <a href="{{ route('penagihan.show', $data->no_bukti) }}"
                                                     class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a>
-                                                {{-- <a href="{{ route('penagihan.edit', $data->no_bukti) }}"
-                                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> --}}
+                                                <a href="{{ route('penagihan.edit', $data->no_bukti) }}"
+                                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                                 <a href="javascript:void(0);"
                                                     onclick="deleteData('{{ $data->no_bukti }}', '{{ $data->status }}');"
                                                     class="btn btn-danger btn-sm" id="delete"><i
@@ -58,6 +59,16 @@
                 }
             });
             $('#penagihan').DataTable();
+
+            $('#tambah_penagihan').on('click', function() {
+                $.ajax({
+                    url: "{{ route('penagihan.hapus_semua_tampungan') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {},
+                    success: function(data) {}
+                })
+            })
         });
 
         function deleteData(no_bukti, status) {
