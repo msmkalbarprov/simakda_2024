@@ -110,7 +110,8 @@ class PenagihanController extends Controller
     {
         if ($request->ajax()) {
             $skpd       = Auth::user()->kd_skpd;
-            $data = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->select('nama', 'jns_ang')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->orderBy('tgl_dpa', 'DESC')->first();
+            $tgl_bukti = $request->tgl_bukti;
+            $data = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->select('nama', 'jns_ang')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->where('tgl_dpa', '<', $tgl_bukti)->orderBy('tgl_dpa', 'DESC')->first();
             return response()->json($data);
         }
     }
@@ -174,14 +175,10 @@ class PenagihanController extends Controller
             $urut52 = DB::table('status_angkas')->select(DB::raw("'52' AS urut"), DB::raw("'ubah33' AS status"), 'ubah33 as nilai')->where(['kd_skpd' => $skpd, 'ubah33' => '1'])->unionAll($urut51);
             $urut53 = DB::table('status_angkas')->select(DB::raw("'53' AS urut"), DB::raw("'ubah34' AS status"), 'ubah34 as nilai')->where(['kd_skpd' => $skpd, 'ubah34' => '1'])->unionAll($urut52);
             $urut54 = DB::table('status_angkas')->select(DB::raw("'54' AS urut"), DB::raw("'ubah35' AS status"), 'ubah35 as nilai')->where(['kd_skpd' => $skpd, 'ubah35' => '1'])->unionAll($urut53);
-            // ->groupBy('urut')->having('nilai', '=', '1')->first();
             $result = DB::table(DB::raw("({$urut54->toSql()}) AS sub"))
                 ->select("urut", "status", "nilai")
                 ->mergeBindings($urut54)
                 // ->where('nilai', '=', 1)
-                // ->where('nilai', '1')
-                // ->groupBy('urut', 'status', 'nilai')
-                // ->orderBy('urut', 'DESC')
                 ->orderByRaw("CAST(urut AS INT) DESC")
                 ->first();
             return response()->json($result);

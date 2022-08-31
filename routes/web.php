@@ -81,6 +81,9 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('spp_ls/cari_jenis', [SppLsController::class, 'cariJenis'])->name('sppls.cari_jenis');
         Route::post('spp_ls/cari_nomor_spd', [SppLsController::class, 'cariNomorSpd'])->name('sppls.cari_nomor_spd');
         Route::post('spp_ls/cari_sub_kegiatan', [SppLsController::class, 'cariSubKegiatan'])->name('sppls.cari_sub_kegiatan');
+        Route::post('spp_ls/cari_rekening', [SppLsController::class, 'cariRekening'])->name('sppls.cari_rekening');
+        Route::post('spp_ls/jumlah_anggaran_penyusunan', [SppLsController::class, 'jumlahAnggaranPenyusunan'])->name('sppls.jumlah_anggaran_penyusunan');
+        Route::post('spp_ls/total_spd', [SppLsController::class, 'totalSpd'])->name('sppls.total_spd');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

@@ -26,6 +26,8 @@
                             @error('tgl_spp')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <input type="date" class="form-control @error('tgl_spp_lalu') is-invalid @enderror"
+                                id="tgl_spp_lalu" name="tgl_spp_lalu" hidden value="{{ $data_tgl->tgl_spp }}">
                         </div>
                     </div>
                     {{-- No SPP dan Bulan --}}
@@ -114,9 +116,9 @@
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple @error('beban') is-invalid @enderror"
-                                style="width: 100%" id="beban" name="beban" data-placeholder="Silahkan Pilih">
+                                style="width: 100%" id="beban" name="beban">
                                 <optgroup label="Daftar Beban">
-                                    <option value="" disabled selected>...Pilih Beban... </option>
+                                    <option value="0" disabled selected>...Pilih Beban... </option>
                                     <option value="4">LS GAJI</option>
                                     <option value="6">LS Barang Jasa</option>
                                     <option value="5">LS Piihak Ketiga Lainnya</option>
@@ -307,9 +309,380 @@
                         </div>
                     </div>
                     <!-- SIMPAN -->
+                    <div class="form-check form-switch form-switch-lg">
+                        <input type="checkbox" class="form-check-input" id="dengan_penagihan">
+                        <label class="form-check-label" for="dengan_penagihan">Dengan Penagihan</label>
+                    </div>
                     <div style="float: right;">
                         <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
                         <a href="{{ route('sppls.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card" id="card_penagihan">
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <table id="rincian_penagihan" class="table" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>No Penagihan</th>
+                                    <th>Tanggal Penagihan</th>
+                                    <th>Nilai</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select
+                                            class="form-control select2-multiple @error('no_penagihan') is-invalid @enderror"
+                                            style="width: 100%" id="no_penagihan" name="no_penagihan"
+                                            data-placeholder="Silahkan Pilih">
+                                            <optgroup label="Daftar Pilihan">
+                                                <option value="" disabled selected>...Pilih... </option>
+                                                @foreach ($daftar_penagihan as $penagihan)
+                                                    <option value="{{ $penagihan->no_bukti }}"
+                                                        data-tgl="{{ $penagihan->tgl_bukti }}"
+                                                        data-total="{{ $penagihan->total }}">
+                                                        {{ $penagihan->no_bukti }} | {{ $penagihan->tgl_bukti }} |
+                                                        {{ $penagihan->kd_skpd }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="date"
+                                            class="form-control @error('tgl_penagihan') is-invalid @enderror"
+                                            id="tgl_penagihan" readonly name="tgl_penagihan">
+                                    </td>
+                                    <td>
+                                        <input type="text"
+                                            class="form-control @error('nilai_penagihan') is-invalid @enderror"
+                                            id="nilai_penagihan" readonly name="nilai_penagihan">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Input Detail SPP
+                    <button type="button" style="float: right" id="tambah_rincian"
+                        class="btn btn-primary btn-sm">Tambah Rekening</button>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="rincian_sppls" class="table" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>No Bukti</th> {{-- hidden --}}
+                                <th>Sub Kegiatan</th>
+                                <th>Rekening</th>
+                                <th>Nama Rekening</th>
+                                <th>Nilai</th>
+                                <th>Kode Sumber</th> {{-- hidden --}}
+                                <th>Sumber</th> {{-- hidden --}}
+                                <th>Volume</th>
+                                <th>Satuan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tambah_rincianspp" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Input Rincian Penagihan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- OPD/UNIT -->
+                    <div class="mb-3 row">
+                        <label for="opd_unit" class="col-md-2 col-form-label">OPD/Unit</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control @error('opd_unit') is-invalid @enderror"
+                                id="opd_unit" readonly name="opd_unit" value="{{ $data_opd->kd_skpd }}">
+                            @error('opd_unit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('nm_opd_unit') is-invalid @enderror"
+                                id="nm_opd_unit" readonly name="nm_opd_unit" value="{{ $data_opd->nm_skpd }}">
+                            @error('nm_opd_unit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- SUB KEGIATAN -->
+                    <div class="mb-3 row">
+                        <label for="sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control @error('sub_kegiatan') is-invalid @enderror"
+                                id="sub_kegiatan" readonly name="nm_sub_kegiatan">
+                            @error('sub_kegiatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('nmsub_kegiatan') is-invalid @enderror"
+                                value="{{ old('nmsub_kegiatan') }}" id="nmsub_kegiatan" readonly name="nmsub_kegiatan">
+                            @error('nmsub_kegiatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- REKENING -->
+                    <div class="mb-3 row">
+                        <label for="kode_rekening" class="col-md-2 col-form-label">Rekening</label>
+                        <div class="col-md-6">
+                            <select class="form-control select2-multiple @error('kode_rekening') is-invalid @enderror"
+                                style=" width: 100%;" id="kode_rekening" name="kode_rekening"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Rekening">
+                                </optgroup>
+                            </select>
+                            @error('kode_rekening')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('nm_rekening') is-invalid @enderror"
+                                value="{{ old('nm_rekening') }}" id="nm_rekening" readonly name="nm_rekening">
+                            @error('nm_rekening')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- SUMBER DANA -->
+                    <div class="mb-3 row">
+                        <label for="sumber_dana" class="col-md-2 col-form-label">Sumber</label>
+                        <div class="col-md-6">
+                            <select class="form-control select2-multiple @error('sumber_dana') is-invalid @enderror"
+                                style=" width: 100%;" id="sumber_dana" name="sumber_dana"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Sumber Dana">
+                                </optgroup>
+                            </select>
+                            @error('sumber_dana')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('nm_sumber') is-invalid @enderror"
+                                value="{{ old('nm_sumber') }}" id="nm_sumber" readonly name="nm_sumber">
+                            @error('nm_sumber')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- TOTAL SPD -->
+                    <div class="mb-3 row">
+                        <label for="total_spd" class="col-md-2 col-form-label">Total SPD</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly class="form-control @error('total_spd') is-invalid @enderror"
+                                name="total_spd" id="total_spd">
+                            @error('total_spd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="realisasi_spd" class="col-md-1 col-form-label">Realisasi</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('realisasi_spd') is-invalid @enderror" name="realisasi_spd"
+                                id="realisasi_spd">
+                            @error('realisasi_spd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="sisa_spd" class="col-md-1 col-form-label">Sisa</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly class="form-control @error('sisa_spd') is-invalid @enderror"
+                                name="sisa_spd" id="sisa_spd">
+                            @error('sisa_spd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- ANGGARAN KAS -->
+                    <div class="mb-3 row">
+                        <label for="total_angkas" class="col-md-2 col-form-label">Total Anggaran Kas</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly
+                                class="form-control @error('total_angkas') is-invalid @enderror" name="total_angkas"
+                                id="total_angkas">
+                            @error('total_angkas')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="realisasi_angkas" class="col-md-1 col-form-label">Realisasi</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('realisasi_angkas') is-invalid @enderror"
+                                name="realisasi_angkas" id="realisasi_angkas">
+                            @error('realisasi_angkas')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="sisa_angkas" class="col-md-1 col-form-label">Sisa</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('sisa_angkas') is-invalid @enderror" name="sisa_angkas"
+                                id="sisa_angkas">
+                            @error('sisa_angkas')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- ANGGARAN PENYUSUNAN -->
+                    <div class="mb-3 row">
+                        <label for="total_penyusunan" class="col-md-2 col-form-label">Anggaran Penyusunan</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly
+                                class="form-control @error('total_penyusunan') is-invalid @enderror"
+                                name="total_penyusunan" id="total_penyusunan">
+                            @error('total_penyusunan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="realisasi_penyusunan" class="col-md-1 col-form-label">Realisasi</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('realisasi_penyusunan') is-invalid @enderror"
+                                name="realisasi_penyusunan" id="realisasi_penyusunan">
+                            @error('realisasi_penyusunan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="sisa_penyusunan" class="col-md-1 col-form-label">Sisa</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('sisa_penyusunan') is-invalid @enderror"
+                                name="sisa_penyusunan" id="sisa_penyusunan">
+                            @error('sisa_penyusunan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- NILAI SUMBER DANA -->
+                    <div class="mb-3 row">
+                        <label for="total_sumber" class="col-md-2 col-form-label">Sumber Dana Penyusunan</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly
+                                class="form-control @error('total_sumber') is-invalid @enderror" name="total_sumber"
+                                id="total_sumber">
+                            @error('total_sumber')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="realisasi_sumber" class="col-md-1 col-form-label">Realisasi</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('realisasi_sumber') is-invalid @enderror"
+                                name="realisasi_sumber" id="realisasi_sumber">
+                            @error('realisasi_sumber')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="sisa_sumber" class="col-md-1 col-form-label">Sisa</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly
+                                class="form-control @error('sisa_sumber') is-invalid @enderror" name="sisa_sumber"
+                                id="sisa_sumber">
+                            @error('sisa_sumber')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Status Anggaran -->
+                    <div class="mb-3 row">
+                        <label for="status_anggaran" class="col-md-2 col-form-label">Status Anggaran</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly
+                                class="form-control @error('status_anggaran') is-invalid @enderror"
+                                name="status_anggaran" id="status_anggaran">
+                            @error('status_anggaran')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Status Angkas -->
+                    <div class="mb-3 row">
+                        <label for="status_angkas" class="col-md-2 col-form-label">Status Anggaran Kas</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly
+                                class="form-control @error('status_angkas') is-invalid @enderror" name="status_angkas"
+                                id="status_angkas">
+                            @error('status_angkas')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Volume Output --}}
+                    <div class="mb-3 row">
+                        <label for="volume_output" class="col-md-2 col-form-label">Volume Output</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly
+                                class="form-control @error('volume_output') is-invalid @enderror" name="volume_output"
+                                id="volume_output">
+                            @error('volume_output')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Satuan Output --}}
+                    <div class="mb-3 row">
+                        <label for="satuan_output" class="col-md-2 col-form-label">Satuan Output</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly
+                                class="form-control @error('satuan_output') is-invalid @enderror" name="satuan_output"
+                                id="satuan_output">
+                            @error('satuan_output')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Nilai -->
+                    <div class="mb-3 row">
+                        <label for="nilai_rincian" class="col-md-2 col-form-label">Nilai</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control @error('nilai_rincian') is-invalid @enderror"
+                                name="nilai_rincian" id="nilai_rincian" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+                                data-type="currency">
+                            @error('nilai_rincian')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="minus">
+                                <label class="form-check-label" for="minus">
+                                    Minus
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button id="simpan-btn" class="btn btn-md btn-primary">Simpan</button>
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,108 +690,5 @@
     </div>
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('.select2-multiple').select2({
-                theme: 'bootstrap-5'
-            });
-
-            $('#rekanan').on('change', function() {
-                let pimpinan = $(this).find(':selected').data('pimpinan');
-                let alamat = $(this).find(':selected').data('alamat');
-                $("#pimpinan").val(pimpinan);
-                $("#alamat").val(alamat);
-            });
-
-            $('#nm_penerima').on('change', function() {
-                let rekening = $(this).find(':selected').data('rekening');
-                let npwp = $(this).find(':selected').data('npwp');
-                $("#rekening").val(rekening);
-                $("#npwp").val(npwp);
-            });
-
-            $('#beban').on('change', function() {
-                let beban = this.value;
-                let tgl_spp = document.getElementById('tgl_spp').value;
-                if (!tgl_spp) {
-                    alert('Pilih tanggal SPD terlebih dahulu!');
-                    return;
-                }
-                // cari jenis
-                $.ajax({
-                    url: "{{ route('sppls.cari_jenis') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        beban: beban,
-                    },
-                    success: function(data) {
-                        $('#jenis').empty();
-                        $('#jenis').append(`<option value="0">Silahkan Pilih</option>`);
-                        $.each(data, function(index, data) {
-                            $('#jenis').append(
-                                `<option value="${data.id}" data-nama="${data.text}">${data.text}</option>`
-                            );
-                        })
-                    }
-                })
-                // cari nomor spd
-                $.ajax({
-                    url: "{{ route('sppls.cari_nomor_spd') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        beban: beban,
-                        tgl_spp: tgl_spp,
-                    },
-                    success: function(data) {
-                        $('#nomor_spd').empty();
-                        $('#nomor_spd').append(`<option value="0">Silahkan Pilih</option>`);
-                        $.each(data, function(index, data) {
-                            $('#nomor_spd').append(
-                                `<option value="${data.no_spd}" data-tgl="${data.tgl_spd}" data-total="${data.total}">${data.no_spd} | ${data.tgl_spd} | ${data.total}</option>`
-                            );
-                        })
-                    }
-                })
-            });
-
-            $('#nomor_spd').on('change', function() {
-                let spd = this.value;
-                let tgl = $(this).find(':selected').data('tgl');
-                let total = $(this).find(':selected').data('total');
-                $("#tgl_spd").val(tgl);
-                // cari kode sub kegiatan
-                $.ajax({
-                    url: "{{ route('sppls.cari_sub_kegiatan') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        spd: spd,
-                    },
-                    success: function(data) {
-                        $('#kd_sub_kegiatan').empty();
-                        $('#kd_sub_kegiatan').append(
-                            `<option value="0">Silahkan Pilih</option>`);
-                        $.each(data, function(index, data) {
-                            $('#kd_sub_kegiatan').append(
-                                `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
-                            );
-                        })
-                    }
-                })
-            });
-
-            $('#kd_sub_kegiatan').on('change', function() {
-                let nama = $(this).find(':selected').data('nama');
-                $("#nm_sub_kegiatan").val(nama);
-            });
-        });
-    </script>
+    @include('penatausahaan.pengeluaran.spp_ls.js.create');
 @endsection
