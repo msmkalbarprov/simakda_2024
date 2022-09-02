@@ -15,6 +15,8 @@
                         <div class="col-md-4">
                             <input class="form-control @error('no_tersimpan') is-invalid @enderror" type="text"
                                 id="no_tersimpan" name="no_tersimpan" required readonly>
+                            <input class="form-control @error('no_urut') is-invalid @enderror" type="text" id="no_urut"
+                                name="no_urut" required readonly hidden>
                             @error('no_tersimpan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -35,7 +37,7 @@
                         <label for="no_spp" class="col-md-2 col-form-label">No. SPP</label>
                         <div class="col-md-4">
                             <input class="form-control @error('no_spp') is-invalid @enderror" type="text" id="no_spp"
-                                name="no_spp" required>
+                                name="no_spp" required readonly>
                             @error('no_spp')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -115,10 +117,10 @@
                     <div class="mb-3 row">
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('beban') is-invalid @enderror"
-                                style="width: 100%" id="beban" name="beban">
+                            <select class="form-control @error('beban') is-invalid @enderror" style="width: 100%"
+                                id="beban" name="beban">
                                 <optgroup label="Daftar Beban">
-                                    <option value="0" disabled selected>...Pilih Beban... </option>
+                                    <option value="" disabled selected>...Pilih Beban... </option>
                                     <option value="4">LS GAJI</option>
                                     <option value="6">LS Barang Jasa</option>
                                     <option value="5">LS Piihak Ketiga Lainnya</option>
@@ -232,6 +234,9 @@
                                 <optgroup label="Daftar Sub Kegiatan">
                                 </optgroup>
                             </select>
+                            <input type="hidden" name="kd_program" id="kd_program">
+                            <input type="hidden" name="nm_program" id="nm_program">
+                            <input type="hidden" name="bidang" id="bidang">
                             @error('kd_sub_kegiatan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -301,7 +306,7 @@
                         </div>
                         <label for="no_kontrak" class="col-md-2 col-form-label">Nomor Kontrak</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('no_kontrak') is-invalid @enderror"
+                            <input type="text" readonly class="form-control @error('no_kontrak') is-invalid @enderror"
                                 value="{{ old('no_kontrak') }}" id="no_kontrak" name="no_kontrak">
                             @error('no_kontrak')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -314,6 +319,7 @@
                         <label class="form-check-label" for="dengan_penagihan">Dengan Penagihan</label>
                     </div>
                     <div style="float: right;">
+                        <button id="cari_nospp" class="btn btn-dark btn-md uil-refresh"></button>
                         <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
                         <a href="{{ route('sppls.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
@@ -322,6 +328,7 @@
             </div>
         </div>
 
+        {{-- Dengan Penagihan --}}
         <div class="col-12">
             <div class="card" id="card_penagihan">
                 <div class="card-body">
@@ -372,6 +379,7 @@
             </div>
         </div>
 
+        {{-- Detail SPP --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -383,7 +391,6 @@
                     <table id="rincian_sppls" class="table" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>No Bukti</th> {{-- hidden --}}
                                 <th>Sub Kegiatan</th>
                                 <th>Rekening</th>
                                 <th>Nama Rekening</th>
@@ -398,6 +405,13 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="mb-2 mt-2 row">
+                        <label for="total" class="col-md-8 col-form-label" style="text-align: right">Total</label>
+                        <div class="col-md-4">
+                            <input type="text" style="text-align: right" readonly
+                                class="form-control @error('total') is-invalid @enderror" id="total" name="total">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -637,7 +651,7 @@
                     <div class="mb-3 row">
                         <label for="volume_output" class="col-md-2 col-form-label">Volume Output</label>
                         <div class="col-md-10">
-                            <input type="text" readonly
+                            <input type="text" disabled
                                 class="form-control @error('volume_output') is-invalid @enderror" name="volume_output"
                                 id="volume_output">
                             @error('volume_output')
@@ -649,7 +663,7 @@
                     <div class="mb-3 row">
                         <label for="satuan_output" class="col-md-2 col-form-label">Satuan Output</label>
                         <div class="col-md-10">
-                            <input type="text" readonly
+                            <input type="text" disabled
                                 class="form-control @error('satuan_output') is-invalid @enderror" name="satuan_output"
                                 id="satuan_output">
                             @error('satuan_output')
@@ -679,7 +693,7 @@
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">
-                            <button id="simpan-btn" class="btn btn-md btn-primary">Simpan</button>
+                            <button id="simpan_detail_spp" class="btn btn-md btn-primary">Simpan</button>
                             <button type="button" class="btn btn-md btn-secondary"
                                 data-bs-dismiss="modal">Tutup</button>
                         </div>

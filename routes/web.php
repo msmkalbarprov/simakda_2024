@@ -84,6 +84,13 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('spp_ls/cari_rekening', [SppLsController::class, 'cariRekening'])->name('sppls.cari_rekening');
         Route::post('spp_ls/jumlah_anggaran_penyusunan', [SppLsController::class, 'jumlahAnggaranPenyusunan'])->name('sppls.jumlah_anggaran_penyusunan');
         Route::post('spp_ls/total_spd', [SppLsController::class, 'totalSpd'])->name('sppls.total_spd');
+        Route::post('spp_ls/total_angkas', [SppLsController::class, 'totalAngkas'])->name('sppls.total_angkas');
+        Route::post('spp_ls/realisasi_spd', [SppLsController::class, 'realisasiSpd'])->name('sppls.realisasi_spd');
+        Route::post('spp_ls/sumber_dana', [SppLsController::class, 'sumberDana'])->name('sppls.sumber_dana');
+        Route::post('spp_ls/cari_nospp', [SppLsController::class, 'cariNoSpp'])->name('sppls.cari_nospp');
+        Route::post('spp_ls/cek_simpan', [SppLsController::class, 'cekSimpan'])->name('sppls.cek_simpan');
+        Route::post('spp_ls/simpan_sppls', [SppLsController::class, 'simpanSppLs'])->name('sppls.simpan_sppls');
+        Route::post('spp_ls/simpan_detail_sppls', [SppLsController::class, 'simpanDetailSppLs'])->name('sppls.simpan_detail_sppls');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');
