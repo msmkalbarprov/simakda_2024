@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Tambah SPP LS | SIMAKDA')
+@section('title', 'Ubah SPP LS | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Dengan Penagihan --}}
@@ -22,32 +22,21 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <select
-                                            class="form-control select2-multiple @error('no_penagihan') is-invalid @enderror"
-                                            style="width: 100%" id="no_penagihan" name="no_penagihan"
-                                            data-placeholder="Silahkan Pilih">
-                                            <optgroup label="Daftar Pilihan">
-                                                <option value="" disabled selected>...Pilih... </option>
-                                                @foreach ($daftar_penagihan as $penagihan)
-                                                    <option value="{{ $penagihan->no_bukti }}"
-                                                        data-tgl="{{ $penagihan->tgl_bukti }}"
-                                                        data-total="{{ $penagihan->total }}">
-                                                        {{ $penagihan->no_bukti }} | {{ $penagihan->tgl_bukti }} |
-                                                        {{ $penagihan->kd_skpd }}
-                                                    </option>
-                                                @endforeach
-                                            </optgroup>
-                                        </select>
+                                        <input type="text"
+                                            class="form-control @error('no_penagihan') is-invalid @enderror"
+                                            id="no_penagihan" readonly name="no_penagihan" value="{{ $sppls->no_tagih }}">
                                     </td>
                                     <td>
                                         <input type="date"
                                             class="form-control @error('tgl_penagihan') is-invalid @enderror"
-                                            id="tgl_penagihan" readonly name="tgl_penagihan">
+                                            id="tgl_penagihan" readonly name="tgl_penagihan"
+                                            value="{{ $sppls->tgl_tagih }}">
                                     </td>
                                     <td>
                                         <input type="text"
                                             class="form-control @error('nilai_penagihan') is-invalid @enderror"
-                                            id="nilai_penagihan" readonly name="nilai_penagihan">
+                                            id="nilai_penagihan" readonly name="nilai_penagihan"
+                                            value="{{ $sppls->nilai }}">
                                     </td>
                                 </tr>
                             </thead>
@@ -72,9 +61,9 @@
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No. Tersimpan</label>
                         <div class="col-md-4">
                             <input class="form-control @error('no_tersimpan') is-invalid @enderror" type="text"
-                                id="no_tersimpan" name="no_tersimpan" required readonly>
+                                id="no_tersimpan" name="no_tersimpan" required readonly value="{{ $sppls->no_spp }}">
                             <input class="form-control @error('no_urut') is-invalid @enderror" type="text" id="no_urut"
-                                name="no_urut" required readonly hidden>
+                                name="no_urut" required readonly hidden value="{{ $sppls->urut }}">
                             @error('no_tersimpan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -82,7 +71,7 @@
                         <label for="tgl_spp" class="col-md-2 col-form-label">Tanggal SPP</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control @error('tgl_spp') is-invalid @enderror"
-                                value="{{ old('tgl_spp') }}" id="tgl_spp" name="tgl_spp">
+                                value="{{ $sppls->tgl_spp }}" id="tgl_spp" name="tgl_spp">
                             @error('tgl_spp')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -95,9 +84,10 @@
                         <label for="no_spp" class="col-md-2 col-form-label">No. SPP</label>
                         <div class="col-md-4">
                             <div class="md-form input-group mt-md-0 mb-0">
-                                <input type="text" class="form-control" id="no_spp" name="no_spp" readonly>
+                                <input type="text" class="form-control" id="no_spp" name="no_spp" readonly
+                                    value="{{ $sppls->no_spp }}">
                                 <span class="input-group-btn">
-                                    <button type="button" id="cari_nospp" class="btn btn-primary"><i
+                                    <button type="button" id="cari_nospp" disabled class="btn btn-primary"><i
                                             class="uil-refresh"></i></button>
                                 </span>
                                 @error('no_spp')
@@ -111,18 +101,18 @@
                                 style="width: 100%" id="bulan" name="bulan" data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Bulan">
                                     <option value="" disabled selected>...Pilih Kebutuhan Bulan... </option>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
+                                    <option value="1" {{ $sppls->bulan == '1' ? 'selected' : '' }}>Januari</option>
+                                    <option value="2" {{ $sppls->bulan == '2' ? 'selected' : '' }}>Februari</option>
+                                    <option value="3" {{ $sppls->bulan == '3' ? 'selected' : '' }}>Maret</option>
+                                    <option value="4" {{ $sppls->bulan == '4' ? 'selected' : '' }}>April</option>
+                                    <option value="5" {{ $sppls->bulan == '5' ? 'selected' : '' }}>Mei</option>
+                                    <option value="6" {{ $sppls->bulan == '6' ? 'selected' : '' }}>Juni</option>
+                                    <option value="7" {{ $sppls->bulan == '7' ? 'selected' : '' }}>Juli</option>
+                                    <option value="8" {{ $sppls->bulan == '8' ? 'selected' : '' }}>Agustus</option>
+                                    <option value="9" {{ $sppls->bulan == '9' ? 'selected' : '' }}>September</option>
+                                    <option value="10" {{ $sppls->bulan == '10' ? 'selected' : '' }}>Oktober</option>
+                                    <option value="11" {{ $sppls->bulan == '11' ? 'selected' : '' }}>November</option>
+                                    <option value="12" {{ $sppls->bulan == '12' ? 'selected' : '' }}>Desember</option>
                                 </optgroup>
                             </select>
                             @error('bulan')
@@ -135,7 +125,7 @@
                         <label for="kd_skpd" class="col-md-2 col-form-label">Kode SKPD/Unit</label>
                         <div class="col-md-4">
                             <input class="form-control @error('kd_skpd') is-invalid @enderror" type="text"
-                                id="kd_skpd" name="kd_skpd" required readonly value="{{ $data_skpd->kd_skpd }}">
+                                id="kd_skpd" name="kd_skpd" required readonly value="{{ $sppls->kd_skpd }}">
                             @error('kd_skpd')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -143,7 +133,7 @@
                         <label for="keperluan" class="col-md-2 col-form-label">Keperluan</label>
                         <div class="col-md-4">
                             <textarea type="text" class="form-control @error('keperluan') is-invalid @enderror" id="keperluan"
-                                name="keperluan"></textarea>
+                                name="keperluan">{{ $sppls->keperluan }}</textarea>
                             @error('keperluan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -154,7 +144,7 @@
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD/Unit</label>
                         <div class="col-md-4">
                             <input class="form-control @error('nm_skpd') is-invalid @enderror" type="text"
-                                id="nm_skpd" name="nm_skpd" required readonly value="{{ $data_skpd->nm_skpd }}">
+                                id="nm_skpd" name="nm_skpd" required readonly value="{{ $sppls->nm_skpd }}">
                             @error('nm_skpd')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -167,7 +157,7 @@
                                     <option value="" disabled selected>Silahkan Pilih Bank</option>
                                     @foreach ($daftar_bank as $bank)
                                         <option value="{{ $bank->kode }}" data-nama="{{ $bank->nama }}"
-                                            {{ old('bank') == $bank->kode ? 'selected' : '' }}>
+                                            {{ $sppls->bank == $bank->kode ? 'selected' : '' }}>
                                             {{ $bank->kode }} | {{ $bank->nama }}</option>
                                     @endforeach
                                 </optgroup>
@@ -185,9 +175,11 @@
                                 id="beban" name="beban">
                                 <optgroup label="Daftar Beban">
                                     <option value="" disabled selected>...Pilih Beban... </option>
-                                    <option value="4">LS GAJI</option>
-                                    <option value="6">LS Barang Jasa</option>
-                                    <option value="5">LS Piihak Ketiga Lainnya</option>
+                                    <option value="4" {{ $sppls->jns_spp == '4' ? 'selected' : '' }}>LS GAJI</option>
+                                    <option value="6" {{ $sppls->jns_spp == '6' ? 'selected' : '' }}>LS Barang Jasa
+                                    </option>
+                                    <option value="5" {{ $sppls->jns_spp == '5' ? 'selected' : '' }}>LS Piihak Ketiga
+                                        Lainnya</option>
                                 </optgroup>
                             </select>
                             @error('beban')
@@ -203,7 +195,7 @@
                                     @foreach ($daftar_rekanan as $rekanan)
                                         <option value="{{ $rekanan->nmrekan }}" data-pimpinan="{{ $rekanan->pimpinan }}"
                                             data-alamat="{{ $rekanan->alamat }}"
-                                            {{ old('rekanan') == $rekanan->nmrekan ? 'selected' : '' }}>
+                                            {{ $sppls->nmrekan == $rekanan->nmrekan ? 'selected' : '' }}>
                                             {{ $rekanan->nmrekan }}</option>
                                     @endforeach
                                 </optgroup>
@@ -229,7 +221,7 @@
                         <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('pimpinan') is-invalid @enderror"
-                                value="{{ old('pimpinan') }}" id="pimpinan" name="pimpinan" readonly>
+                                value="{{ $sppls->pimpinan }}" id="pimpinan" name="pimpinan" readonly>
                             @error('pimpinan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -251,7 +243,7 @@
                         <label for="alamat" class="col-md-2 col-form-label">Alamat Perusahaan</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('alamat') is-invalid @enderror"
-                                value="{{ old('alamat') }}" id="alamat" name="alamat" readonly>
+                                value="{{ $sppls->alamat }}" id="alamat" name="alamat" readonly>
                             @error('alamat')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -277,7 +269,7 @@
                                     @foreach ($daftar_penerima as $penerima)
                                         <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
                                             data-rekening="{{ $penerima->rekening }}"
-                                            {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
+                                            {{ $sppls->penerima == $penerima->nm_rekening ? 'selected' : '' }}>
                                             {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
                                             {{ $penerima->npwp }}</option>
                                     @endforeach
@@ -308,7 +300,7 @@
                         <label for="rekening" class="col-md-2 col-form-label">Rekening</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('rekening') is-invalid @enderror"
-                                value="{{ old('rekening') }}" id="rekening" name="rekening" readonly>
+                                value="{{ $sppls->no_rek }}" id="rekening" name="rekening" readonly>
                             @error('rekening')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -319,7 +311,8 @@
                         <label for="nm_sub_kegiatan" class="col-md-2 col-form-label">Nama Sub Kegiatan</label>
                         <div class="col-md-4">
                             <input class="form-control @error('nm_sub_kegiatan') is-invalid @enderror" type="text"
-                                id="nm_sub_kegiatan" name="nm_sub_kegiatan" required readonly>
+                                id="nm_sub_kegiatan" name="nm_sub_kegiatan" required readonly
+                                value="{{ $sppls->nm_sub_kegiatan }}">
                             @error('nm_sub_kegiatan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -327,7 +320,7 @@
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('npwp') is-invalid @enderror"
-                                value="{{ old('npwp') }}" id="npwp" name="npwp" readonly>
+                                value="{{ $sppls->npwp }}" id="npwp" name="npwp" readonly>
                             @error('npwp')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -338,7 +331,7 @@
                         <label for="tgl_awal" class="col-md-2 col-form-label">Tanggal Mulai</label>
                         <div class="col-md-4">
                             <input class="form-control @error('tgl_awal') is-invalid @enderror" type="date"
-                                id="tgl_awal" name="tgl_awal" required>
+                                id="tgl_awal" name="tgl_awal" required value="{{ $sppls->tgl_mulai }}">
                             @error('tgl_awal')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -346,7 +339,8 @@
                         <label for="tgl_akhir" class="col-md-2 col-form-label">Tanggal Akhir</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control @error('tgl_akhir') is-invalid @enderror"
-                                value="{{ old('tgl_akhir') }}" id="tgl_akhir" name="tgl_akhir">
+                                value="{{ old('tgl_akhir') }}" id="tgl_akhir" name="tgl_akhir"
+                                value="{{ $sppls->tgl_akhir }}">
                             @error('tgl_akhir')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -360,8 +354,8 @@
                                 style="width: 100%" id="lanjut" name="lanjut" data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Pilihan">
                                     <option value="" disabled selected>...Pilih... </option>
-                                    <option value="1">YA</option>
-                                    <option value="2">TIDAK</option>
+                                    <option value="1" {{ $sppls->lanjut == '1' ? 'selected' : '' }}>YA</option>
+                                    <option value="2" {{ $sppls->lanjut == '2' ? 'selected' : '' }}>TIDAK</option>
                                 </optgroup>
                             </select>
                             @error('lanjut')
@@ -371,7 +365,7 @@
                         <label for="no_kontrak" class="col-md-2 col-form-label">Nomor Kontrak</label>
                         <div class="col-md-4">
                             <input type="text" readonly class="form-control @error('no_kontrak') is-invalid @enderror"
-                                value="{{ old('no_kontrak') }}" id="no_kontrak" name="no_kontrak">
+                                value="{{ $sppls->kontrak }}" id="no_kontrak" name="no_kontrak">
                             @error('no_kontrak')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -411,13 +405,31 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($detail_spp as $data)
+                                <tr>
+                                    <td>{{ $data->kd_sub_kegiatan }}</td>
+                                    <td>{{ $data->kd_rek6 }}</td>
+                                    <td>{{ $data->nm_rek6 }}</td>
+                                    <td>{{ nilai($data->nilai) }}</td>
+                                    <td>{{ $data->sumber }}</td>
+                                    <td>{{ $data->nm_sumber_dana1 }}</td>
+                                    <td>{{ $data->volume }}</td>
+                                    <td>{{ $data->satuan }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);"
+                                            onclick="deleteData('{{ $data->kd_sub_kegiatan }}','{{ $data->kd_rek6 }}','{{ $data->nm_rek6 }}','{{ $data->sumber }}','{{ $data->nilai }}')"
+                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">
                         <label for="total" class="col-md-8 col-form-label" style="text-align: right">Total</label>
                         <div class="col-md-4">
                             <input type="text" style="text-align: right" readonly
-                                class="form-control @error('total') is-invalid @enderror" id="total" name="total">
+                                class="form-control @error('total') is-invalid @enderror" id="total" name="total"
+                                value="{{ nilai($sppls->nilai) }}">
                         </div>
                     </div>
                 </div>
@@ -438,14 +450,14 @@
                         <label for="opd_unit" class="col-md-2 col-form-label">OPD/Unit</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control @error('opd_unit') is-invalid @enderror"
-                                id="opd_unit" readonly name="opd_unit" value="{{ $data_opd->kd_skpd }}">
+                                id="opd_unit" readonly name="opd_unit" value="{{ $sppls->kd_skpd }}">
                             @error('opd_unit')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('nm_opd_unit') is-invalid @enderror"
-                                id="nm_opd_unit" readonly name="nm_opd_unit" value="{{ $data_opd->nm_skpd }}">
+                                id="nm_opd_unit" readonly name="nm_opd_unit" value="{{ $sppls->nm_skpd }}">
                             @error('nm_opd_unit')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -456,14 +468,15 @@
                         <label for="sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control @error('sub_kegiatan') is-invalid @enderror"
-                                id="sub_kegiatan" readonly name="nm_sub_kegiatan">
+                                id="sub_kegiatan" readonly name="nm_sub_kegiatan" value="{{ $sppls->kd_sub_kegiatan }}">
                             @error('sub_kegiatan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('nmsub_kegiatan') is-invalid @enderror"
-                                value="{{ old('nmsub_kegiatan') }}" id="nmsub_kegiatan" readonly name="nmsub_kegiatan">
+                                id="nmsub_kegiatan" readonly name="nmsub_kegiatan"
+                                value="{{ $sppls->nm_sub_kegiatan }}">
                             @error('nmsub_kegiatan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -712,5 +725,5 @@
     </div>
 @endsection
 @section('js')
-    @include('penatausahaan.pengeluaran.spp_ls.js.create');
+    @include('penatausahaan.pengeluaran.spp_ls.js.edit');
 @endsection

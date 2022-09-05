@@ -91,6 +91,10 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('spp_ls/cek_simpan', [SppLsController::class, 'cekSimpan'])->name('sppls.cek_simpan');
         Route::post('spp_ls/simpan_sppls', [SppLsController::class, 'simpanSppLs'])->name('sppls.simpan_sppls');
         Route::post('spp_ls/simpan_detail_sppls', [SppLsController::class, 'simpanDetailSppLs'])->name('sppls.simpan_detail_sppls');
+        Route::get('spp_ls/tampil/{no_spp}', [SppLsController::class, 'tampilSppLs'])->where('no_spp', '(.*)')->name('sppls.show');
+        Route::delete('spp_ls/hapus_sppls', [SppLsController::class, 'hapusSppLs'])->name('sppls.hapus_sppls');
+        Route::post('spp_ls/cari_penagihan_sppls', [SppLsController::class, 'cariPenagihanSpp'])->name('sppls.cari_penagihan_sppls');
+        Route::get('spp_ls/edit/{no_spp}', [SppLsController::class, 'editSppLs'])->where('no_spp', '(.*)')->name('sppls.edit');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

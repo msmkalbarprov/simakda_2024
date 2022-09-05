@@ -864,7 +864,7 @@ class SppLsController extends Controller
                 // set status trhtagih
                 if ($data['no_penagihan']) {
                     DB::table('trhtagih')->where(['no_bukti' => $data['no_penagihan'], 'kd_skpd' => $kd_skpd])->update([
-                        'status_tagih' => '1',
+                        'sts_tagih' => '1',
                     ]);
                 }
                 DB::table('trhspp')->where(['no_spp' => $data['no_spp'], 'kd_skpd' => $kd_skpd])->update([
@@ -901,6 +901,7 @@ class SppLsController extends Controller
                         'nilai' => $value['nilai'],
                         'kd_skpd' => $kd_skpd,
                         'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $data['nm_sub_kegiatan'],
                         'no_spd' => $data['nomor_spd'],
                         'kd_bidang' => $data['bidang'],
                         'sumber' => $value['sumber'],
@@ -924,5 +925,91 @@ class SppLsController extends Controller
                 'message' => '0'
             ]);
         }
+    }
+
+    public function tampilSppLs($no_spp)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data_sppls = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where('a.no_spp', $no_spp)->select('a.*')->first();
+        $data = [
+            'sppls' => $data_sppls,
+            'tgl_spd' => DB::table('trhspd')->select('tgl_spd')->where('no_spd', $data_sppls->no_spd)->first(),
+            'bank' => DB::table('ms_bank')->select('nama')->where('kode', $data_sppls->bank)->first(),
+            'detail_spp' => DB::table('trdspp as a')->select('a.*', 'c.nm_sumber_dana1')->join('trhspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->join('sumber_dana as c', 'a.sumber', '=', 'c.kd_sumber_dana1')->where('a.no_spp', $no_spp)->get(),
+        ];
+        return view('penatausahaan.pengeluaran.spp_ls.show')->with($data);
+    }
+
+    public function editSppLs($no_spp)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
+        $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $kd_skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);
+        $perusahaan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $kd_skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan2);
+        $perusahaan4 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $kd_skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan3);
+        $result = DB::table(DB::raw("({$perusahaan4->toSql()}) AS sub"))
+            ->select("nmrekan", "pimpinan", "npwp", "alamat")
+            ->mergeBindings($perusahaan4)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->orderBy('nmrekan', 'ASC')
+            ->orderBy('pimpinan', 'ASC')
+            ->orderBy('npwp', 'ASC')
+            ->orderBy('alamat', 'ASC')
+            ->get();
+        $data1 = DB::select(DB::raw("SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd='$kd_skpd' and (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih"));
+        $data2 = json_decode(json_encode($data1), true);
+        $data = [
+            'daftar_rekanan' => $result,
+            'sppls' => DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->where('a.no_spp', $no_spp)->select('a.*')->first(),
+            'daftar_penagihan' => DB::table('trhtagih as a')->select('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan', DB::raw('SUM(b.nilai) as total'))->join('trdtagih as b', 'a.no_bukti', '=', 'b.no_bukti')->where('a.kd_skpd', $kd_skpd)->where('a.jns_trs', '1')->whereNotIn('a.no_bukti', $data2)->groupBy('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan')->orderBy('a.no_bukti')->get(),
+            'data_tgl' => DB::table('trhspp')->selectRaw('MAX(tgl_spp) as tgl_spp')->where('kd_skpd', $kd_skpd)->where(function ($query) {
+                $query->where('sp2d_batal', '=', '0')
+                    ->orWhereNull('sp2d_batal');
+            })->first(),
+            'daftar_penerima' => DB::table('ms_rekening_bank_online')->select('rekening', 'nm_rekening', 'npwp')->where('kd_skpd', $kd_skpd)->orderBy('rekening')->get(),
+            'daftar_bank' => DB::table('ms_bank')->select('kode', 'nama')->orderBy('kode')->get(),
+            'detail_spp' => DB::table('trdspp as a')->select('a.*', 'c.nm_sumber_dana1')->join('trhspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->join('sumber_dana as c', 'a.sumber', '=', 'c.kd_sumber_dana1')->where('a.no_spp', $no_spp)->get(),
+        ];
+        return view('penatausahaan.pengeluaran.spp_ls.edit')->with($data);
+    }
+
+    public function hapusSppLs(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trhspp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trdspp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function cariPenagihanSpp(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trdtagih as a')->join('sumber_dana as b', 'a.sumber', '=', 'b.kd_sumber_dana1')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->get();
+        return response()->json($data);
     }
 }

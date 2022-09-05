@@ -5,7 +5,167 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#card_penagihan').hide();
+        document.getElementById('beban').setAttribute("disabled", "disabled");
+        document.getElementById('jenis').setAttribute("disabled", "disabled");
+        document.getElementById('nomor_spd').setAttribute("disabled", "disabled");
+        document.getElementById('kd_sub_kegiatan').setAttribute("disabled", "disabled");
+        let no_tagih_lalu = document.getElementById('no_penagihan').value;
+        if (no_tagih_lalu) {
+            document.getElementById('dengan_penagihan').checked = true;
+            document.getElementById('dengan_penagihan').setAttribute("disabled", "disabled");
+            document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
+            $('#card_penagihan').show();
+
+        } else {
+            document.getElementById('dengan_penagihan').checked = false;
+            document.getElementById('dengan_penagihan').setAttribute("disabled", "disabled");
+            $('#card_penagihan').hide();
+        }
+        let beban_lalu = document.getElementById('beban').value;
+        let tgl_spp_lalu = document.getElementById('tgl_spp').value;
+        let jenis_lalu = {!! json_encode($sppls->jns_beban) !!};
+        let no_spd_lalu = {!! json_encode($sppls->no_spd) !!};
+        let giat_lalu = {!! json_encode($sppls->kd_sub_kegiatan) !!};
+        if (beban_lalu) {
+            // cari jenis
+            $.ajax({
+                url: "{{ route('sppls.cari_jenis') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    beban: beban_lalu,
+                },
+                success: function(data) {
+                    $('#jenis').empty();
+                    $('#jenis').append(`<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        if (data.id == jenis_lalu) {
+                            $('#jenis').append(
+                                `<option value="${data.id}" data-nama="${data.text}" selected>${data.text}</option>`
+                            );
+                        } else {
+                            $('#jenis').append(
+                                `<option value="${data.id}" data-nama="${data.text}">${data.text}</option>`
+                            );
+                        }
+                    })
+                }
+            })
+            // cari nomor spd
+            $.ajax({
+                url: "{{ route('sppls.cari_nomor_spd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    beban: beban_lalu,
+                    tgl_spp: tgl_spp_lalu,
+                },
+                success: function(data) {
+                    $('#nomor_spd').empty();
+                    $('#nomor_spd').append(`<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        if (data.no_spd == no_spd_lalu) {
+                            $('#nomor_spd').append(
+                                `<option selected value="${data.no_spd}" data-tgl="${data.tgl_spd}" data-total="${data.total}">${data.no_spd} | ${data.tgl_spd} | ${data.total}</option>`
+                            );
+                        } else {
+                            $('#nomor_spd').append(
+                                `<option value="${data.no_spd}" data-tgl="${data.tgl_spd}" data-total="${data.total}">${data.no_spd} | ${data.tgl_spd} | ${data.total}</option>`
+                            );
+                        }
+                    })
+                }
+            })
+            // cari sub kegiatan
+            $.ajax({
+                url: "{{ route('sppls.cari_sub_kegiatan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    spd: no_spd_lalu,
+                },
+                success: function(data) {
+                    $('#kd_sub_kegiatan').empty();
+                    $('#kd_sub_kegiatan').append(
+                        `<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        if (data.kd_sub_kegiatan == giat_lalu) {
+                            $('#kd_sub_kegiatan').append(
+                                `<option selected value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}" data-kdprogram="${data.kd_program}" data-nmprogram="${data.nm_program}" data-bidang="${data.bidang}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
+                            );
+                        } else {
+                            $('#kd_sub_kegiatan').append(
+                                `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}" data-kdprogram="${data.kd_program}" data-nmprogram="${data.nm_program}" data-bidang="${data.bidang}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
+                            );
+                        }
+                    })
+                }
+            })
+        }
+        if (beban_lalu == '6' || beban_lalu == '5') {
+            document.getElementById('npwp').removeAttribute("disabled");
+            document.getElementById('tgl_awal').removeAttribute("disabled");
+            document.getElementById('tgl_akhir').removeAttribute("disabled");
+            document.getElementById('rekanan').removeAttribute("disabled");
+            document.getElementById('pimpinan').removeAttribute("disabled");
+            document.getElementById('alamat').removeAttribute("disabled");
+            document.getElementById('no_kontrak').removeAttribute("disabled");
+            document.getElementById('bank').removeAttribute("disabled");
+            document.getElementById('rekening').removeAttribute("disabled");
+        } else {
+            if (beban_lalu == '4' && jenis_lalu == '9') {
+                // kondisi
+                document.getElementById('npwp').removeAttribute("disabled");
+                document.getElementById('tgl_awal').setAttribute("disabled", "disabled");
+                document.getElementById('tgl_akhir').setAttribute("disabled", "disabled");
+                document.getElementById('rekanan').removeAttribute("disabled");
+                document.getElementById('pimpinan').removeAttribute("disabled");
+                document.getElementById('alamat').removeAttribute("disabled");
+                document.getElementById('no_kontrak').setAttribute("disabled", "disabled");
+                document.getElementById('bank').removeAttribute("disabled");
+                document.getElementById('rekening').removeAttribute("disabled");
+                // hapus data yang di disabled
+                document.getElementById('tgl_awal').value = '';
+                document.getElementById('tgl_akhir').value = '';
+                document.getElementById('no_kontrak').value = '';
+            } else {
+                document.getElementById('npwp').removeAttribute("disabled");
+                document.getElementById('tgl_awal').setAttribute("disabled", "disabled");
+                document.getElementById('tgl_akhir').setAttribute("disabled", "disabled");
+                document.getElementById('rekanan').setAttribute("disabled", "disabled");
+                document.getElementById('pimpinan').setAttribute("disabled", "disabled");
+                document.getElementById('alamat').setAttribute("disabled", "disabled");
+                document.getElementById('no_kontrak').setAttribute("disabled", "disabled");
+                document.getElementById('bank').removeAttribute("disabled");
+                document.getElementById('rekening').removeAttribute("disabled");
+
+                document.getElementById('tgl_awal').value = '';
+                document.getElementById('tgl_akhir').value = '';
+                $("#rekanan").val(null).change();
+                document.getElementById('pimpinan').value = '';
+                document.getElementById('alamat').value = '';
+                document.getElementById('no_kontrak').value = '';
+            }
+        }
+        if (giat_lalu) {
+            $.ajax({
+                url: "{{ route('sppls.cari_rekening') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_sub_kegiatan: giat_lalu,
+                },
+                success: function(data) {
+                    $('#kode_rekening').empty();
+                    $('#kode_rekening').append(`<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kode_rekening').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        );
+                    })
+                }
+            })
+        }
 
         let tabel = $('#rincian_sppls').DataTable({
             responsive: true,
@@ -177,10 +337,26 @@
                     document.getElementById('no_kontrak').setAttribute("disabled", "disabled");
                     document.getElementById('bank').removeAttribute("disabled");
                     document.getElementById('rekening').removeAttribute("disabled");
-                    // hapus data yang di disabled
-                    document.getElementById('tgl_awal').value = '';
-                    document.getElementById('tgl_akhir').value = '';
-                    document.getElementById('no_kontrak').value = '';
+                } else if (beban == '6' && jenis == '6') {
+                    document.getElementById('npwp').removeAttribute("disabled");
+                    document.getElementById('tgl_awal').removeAttribute("disabled");
+                    document.getElementById('tgl_akhir').removeAttribute("disabled");
+                    document.getElementById('rekanan').removeAttribute("disabled");
+                    document.getElementById('pimpinan').removeAttribute("disabled");
+                    document.getElementById('alamat').removeAttribute("disabled");
+                    document.getElementById('no_kontrak').removeAttribute("disabled");
+                    document.getElementById('bank').removeAttribute("disabled");
+                    document.getElementById('rekening').removeAttribute("disabled");
+                } else if (beban == '6' && jenis == '4') {
+                    document.getElementById('npwp').removeAttribute("disabled");
+                    document.getElementById('tgl_awal').setAttribute("disabled", "disabled");
+                    document.getElementById('tgl_akhir').setAttribute("disabled", "disabled");
+                    document.getElementById('rekanan').removeAttribute("disabled");
+                    document.getElementById('pimpinan').removeAttribute("disabled");
+                    document.getElementById('alamat').removeAttribute("disabled");
+                    document.getElementById('no_kontrak').removeAttribute("disabled");
+                    document.getElementById('bank').removeAttribute("disabled");
+                    document.getElementById('rekening').removeAttribute("disabled");
                 } else {
                     document.getElementById('npwp').removeAttribute("disabled");
                     document.getElementById('tgl_awal').setAttribute("disabled", "disabled");
@@ -1290,9 +1466,9 @@
                 return data.sumber == sumber_dana && data.kd_sub_kegiatan == kd_sub_kegiatan &&
                     data.kd_rek6 == kode_rekening
             }).remove().draw();
-            $('#total').val(new Intl.NumberFormat('id-ID', {
+            $('#total').val(total - nilai_rincian.toLocaleString({
                 minimumFractionDigits: 2
-            }).format(total - nilai_rincian));
+            }));
         }
     }
 </script>

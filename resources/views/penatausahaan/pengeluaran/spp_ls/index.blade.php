@@ -31,13 +31,17 @@
                                             </td>
                                             <td style="width: 400px">{{ $data->keperluan }}</td>
                                             <td style="width: 200px">
-                                                <a href="{{ route('penagihan.show', $data->no_spp) }}"
+                                                <a href="{{ route('sppls.show', $data->no_spp) }}"
                                                     class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a>
-                                                <a href="{{ route('penagihan.edit', $data->no_spp) }}"
+                                                <a href="{{ route('sppls.edit', $data->no_spp) }}"
                                                     class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                                <a href="javascript:void(0);" onclick="deleteData('{{ $data->no_spp }}');"
-                                                    class="btn btn-danger btn-sm" id="delete"><i
-                                                        class="fas fa-trash-alt"></i></a>
+                                                @if ($data->status == 0)
+                                                    <a href="javascript:void(0);"
+                                                        onclick="deleteData('{{ $data->no_spp }}');"
+                                                        class="btn btn-danger btn-sm" id="delete"><i
+                                                            class="fas fa-trash-alt"></i></a>
+                                                @else
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -60,5 +64,30 @@
             });
             $('#spp_ls').DataTable();
         });
+
+        function deleteData(no_spp) {
+            let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor SPP : ' + no_spp)
+            if (tanya == true) {
+                $.ajax({
+                    url: "{{ route('sppls.hapus_sppls') }}",
+                    type: "DELETE",
+                    dataType: 'json',
+                    data: {
+                        no_spp: no_spp
+                    },
+                    success: function(data) {
+                        if (data.message == '1') {
+                            alert('Data berhasil dihapus!');
+                            location.reload();
+                        } else {
+                            alert('Data gagal dihapus!');
+                            location.reload();
+                        }
+                    }
+                })
+            } else {
+                return false;
+            }
+        }
     </script>
 @endsection
