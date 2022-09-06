@@ -433,15 +433,15 @@
                     let rektotal = parseFloat(data.rektotal) || 0;
                     let rektotal_lalu = parseFloat(data.rektotal_lalu) || 0;
                     let sisa_dana = parseFloat(rektotal - rektotal_lalu) || 0;
-                    $("#total_penyusunan").val(rektotal.toLocaleString('id-ID', {
+                    $("#total_penyusunan").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
-                    $("#realisasi_penyusunan").val(rektotal_lalu.toLocaleString('id-ID', {
+                    }).format(rektotal));
+                    $("#realisasi_penyusunan").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
-                    $("#sisa_penyusunan").val(sisa_dana.toLocaleString('id-ID', {
+                    }).format(rektotal_lalu));
+                    $("#sisa_penyusunan").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
+                    }).format(sisa_dana));
                 }
             })
 
@@ -461,9 +461,9 @@
                 },
                 success: function(data) {
                     let total_spd = parseFloat(data.total_spd) || 0;
-                    $("#total_spd").val(total_spd.toLocaleString('id-ID', {
+                    $("#total_spd").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
+                    }).format(total_spd));
                 }
             })
 
@@ -486,9 +486,9 @@
                 },
                 success: function(data) {
                     let total_angkas = parseFloat(data.nilai) || 0;
-                    $("#total_angkas").val(total_angkas.toLocaleString('id-ID', {
+                    $("#total_angkas").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
+                    }).format(total_angkas));
                 }
             })
 
@@ -509,18 +509,18 @@
                     let total1 = total.split(",").join(".");
                     let total2 = parseFloat(total1) || 0;
                     let sisa_spd = total2 - realisasi_spd;
-                    $("#realisasi_spd").val(realisasi_spd.toLocaleString('id-ID', {
+                    $("#realisasi_spd").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
-                    $("#realisasi_angkas").val(realisasi_spd.toLocaleString('id-ID', {
+                    }).format(realisasi_spd));
+                    $("#realisasi_angkas").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
-                    $("#sisa_spd").val(sisa_spd.toLocaleString('id-ID', {
+                    }).format(realisasi_spd));
+                    $("#sisa_spd").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
-                    $("#sisa_angkas").val(sisa_spd.toLocaleString('id-ID', {
+                    }).format(sisa_spd));
+                    $("#sisa_angkas").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }));
+                    }).format(sisa_spd));
                 }
             })
         });
@@ -542,15 +542,15 @@
             let dana = parseInt(selected.data('nilai')) || 0;
             let dana_lalu = parseInt(selected.data('lalu')) || 0;
             let sisa_dana = parseInt(dana - dana_lalu) || 0;
-            $("#total_sumber").val(dana.toLocaleString('id-ID', {
+            $("#total_sumber").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }));
-            $("#realisasi_sumber").val(dana_lalu.toLocaleString('id-ID', {
+            }).format(dana));
+            $("#realisasi_sumber").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }));
-            $("#sisa_sumber").val(sisa_dana.toLocaleString('id-ID', {
+            }).format(dana_lalu));
+            $("#sisa_sumber").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }));
+            }).format(sisa_dana));
         });
 
         $('#no_penagihan').on('select2:select', function() {
@@ -559,9 +559,9 @@
             let total = parseFloat($(this).find(':selected').data('total')) || 0;
             $("#tgl_penagihan").val(tgl);
             $("#no_kontrak").val(no_kontrak);
-            $("#nilai_penagihan").val(total.toLocaleString('id-ID', {
+            $("#nilai_penagihan").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }));
+            }).format(total));
             tabel.clear().draw();
             $("#total").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
@@ -627,10 +627,10 @@
         $('#tambah_rincian').on("click", function() {
             // cek sub kegiatan sudah dipilih atau belum
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
-            // if (!kd_sub_kegiatan) {
-            //     alert('Isi kode kegiatan terlebih dahulu!');
-            //     return;
-            // }
+            if (!kd_sub_kegiatan) {
+                alert('Isi kode kegiatan terlebih dahulu!');
+                return;
+            }
             // cari status angkas
             let tgl_spp = document.getElementById('tgl_spp').value;
             // cek status anggaran
@@ -828,9 +828,9 @@
                 'kd_sub_kegiatan': kd_sub_kegiatan,
                 'kd_rek6': kode_rekening,
                 'nm_rek6': nm_rekening,
-                'nilai': nilai_rincian.toLocaleString('id-ID', {
+                'nilai': new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
-                }),
+                }).format(nilai_rincian),
                 'sumber': sumber_dana,
                 'nm_sumber': nm_sumber,
                 'volume_output': volume_output,
@@ -838,9 +838,9 @@
                 'hapus': `<a href="javascript:void(0);" onclick="deleteData('${kd_sub_kegiatan}','${kode_rekening}','${nm_rekening}','${sumber_dana}','${nilai_rincian}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             kosong_input_detail();
-            $("#total").val(akumulasi.toLocaleString('id-ID', {
+            $("#total").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }));
+            }).format(akumulasi));
         });
 
         $('#cari_nospp').on('click', function() {

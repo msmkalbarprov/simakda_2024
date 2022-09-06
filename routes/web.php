@@ -95,6 +95,9 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::delete('spp_ls/hapus_sppls', [SppLsController::class, 'hapusSppLs'])->name('sppls.hapus_sppls');
         Route::post('spp_ls/cari_penagihan_sppls', [SppLsController::class, 'cariPenagihanSpp'])->name('sppls.cari_penagihan_sppls');
         Route::get('spp_ls/edit/{no_spp}', [SppLsController::class, 'editSppLs'])->where('no_spp', '(.*)')->name('sppls.edit');
+        Route::post('spp_ls/simpan_sppls_edit', [SppLsController::class, 'simpanEditSppLs'])->name('sppls.simpan_sppls_edit');
+        // Cetak Pengantar Layar
+        Route::get('spp_ls/cetak_pengantar', [SppLsController::class, 'cetakPengantarLayar'])->name('sppls.cetak_pengantar_layar');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

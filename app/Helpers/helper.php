@@ -135,3 +135,84 @@ function nilai($data)
 {
     return number_format($data, 2, ',', '.');
 }
+
+function rupiah($data)
+{
+    return number_format($data, 2, ',', '.');
+}
+
+function terbilang($number)
+{
+    if (!is_numeric($number)) {
+        return false;
+    }
+
+    if ($number < 0) {
+        $hasil = "Minus " . trim(depan($number));
+        $poin = trim(belakang($number));
+    } else {
+        $poin = trim(belakang($number));
+        $hasil = trim(depan($number));
+    }
+
+    if ($poin) {
+        $hasil = $hasil . " koma " . $poin . " Rupiah";
+    } else {
+        $hasil = $hasil . " Rupiah";
+    }
+    return $hasil;
+}
+
+function depan($number)
+{
+    $number = abs($number);
+    $nomor_depan = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+    $depans = "";
+
+    if ($number < 12) {
+        $depans = " " . $nomor_depan[$number];
+    } else if ($number < 20) {
+        $depans = depan($number - 10) . " belas";
+    } else if ($number < 100) {
+        $depans = depan($number / 10) . " puluh " . depan(fmod($number, 10));
+    } else if ($number < 200) {
+        $depans = "seratus " . depan($number - 100);
+    } else if ($number < 1000) {
+        $depans = depan($number / 100) . " ratus " . depan(fmod($number, 100));
+        //$depans = depan($number/100)." Ratus ".depan($number%100);
+    } else if ($number < 2000) {
+        $depans = "seribu " . depan($number - 1000);
+    } else if ($number < 1000000) {
+        $depans = depan($number / 1000) . " ribu " . depan(fmod($number, 1000));
+    } else if ($number < 1000000000) {
+        $depans = depan($number / 1000000) . " juta " . depan(fmod($number, 1000000));
+    } else if ($number < 1000000000000) {
+        $depans = depan($number / 1000000000) . " milyar " . depan(fmod($number, 1000000000));
+        //$depans = ($number/1000000000)." Milyar ".(fmod($number,1000000000))."------".$number;
+
+    } else if ($number < 1000000000000000) {
+        $depans = depan($number / 1000000000000) . " triliun " . depan(fmod($number, 1000000000000));
+        //$depans = ($number/1000000000)." Milyar ".(fmod($number,1000000000))."------".$number;
+
+    } else {
+        $depans = "Undefined";
+    }
+    return $depans;
+}
+
+function belakang($number)
+{
+    $number = abs($number);
+    $number = stristr($number, ".");
+    $nomor_belakang = array("nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan");
+
+    $belakangs = "";
+    $length = strlen($number);
+    $i = 1;
+    while ($i < $length) {
+        $get = substr($number, $i, 1);
+        $i++;
+        $belakangs .= " " . $nomor_belakang[$get];
+    }
+    return $belakangs;
+}

@@ -386,8 +386,8 @@
             <div class="card">
                 <div class="card-header">
                     Input Detail SPP
-                    <button type="button" style="float: right" id="tambah_rincian"
-                        class="btn btn-primary btn-sm">Tambah Rekening</button>
+                    <button type="button" style="float: right" id="tambah_rincian" class="btn btn-primary btn-sm"
+                        disabled>Tambah Rekening</button>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="rincian_sppls" class="table" style="width: 100%">
@@ -401,7 +401,7 @@
                                 <th>Sumber</th> {{-- hidden --}}
                                 <th>Volume</th>
                                 <th>Satuan</th>
-                                <th>Aksi</th>
+                                {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -415,11 +415,11 @@
                                     <td>{{ $data->nm_sumber_dana1 }}</td>
                                     <td>{{ $data->volume }}</td>
                                     <td>{{ $data->satuan }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <a href="javascript:void(0);"
                                             onclick="deleteData('{{ $data->kd_sub_kegiatan }}','{{ $data->kd_rek6 }}','{{ $data->nm_rek6 }}','{{ $data->sumber }}','{{ $data->nilai }}')"
                                             class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
