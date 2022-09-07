@@ -216,3 +216,41 @@ function belakang($number)
     }
     return $belakangs;
 }
+
+function left($string, $count)
+{
+    return substr($string, 0, $count);
+}
+
+function right($value, $count)
+{
+    return substr($value, ($count * -1));
+}
+
+function dotrek($rek)
+{
+    $nrek = strlen($rek);
+    switch ($nrek) {
+        case 1:
+            $rek = left($rek, 1);
+            break;
+        case 2:
+            $rek = left($rek, 1) . '.' . substr($rek, 1, 1);
+            break;
+        case 4:
+            $rek = left($rek, 1) . '.' . substr($rek, 1, 1) . '.' . substr($rek, 2, 2);
+            break;
+        case 6:
+            $rek = left($rek, 1) . '.' . substr($rek, 1, 1) . '.' . substr($rek, 2, 2) . '.' . substr($rek, 4, 2);
+            break;
+        case 8:
+            $rek = left($rek, 1) . '.' . substr($rek, 1, 1) . '.' . substr($rek, 2, 1) . '.' . substr($rek, 4, 2) . '.' . substr($rek, 6, 2);
+            break;
+        case 12:
+            $rek = left($rek, 1) . '.' . substr($rek, 1, 1) . '.' . substr($rek, 2, 1) . '.' . substr($rek, 4, 2) . '.' . substr($rek, 6, 2) . '.' . substr($rek, 8, 4);
+            break;
+        default:
+            $rek = "";
+    }
+    return $rek;
+}

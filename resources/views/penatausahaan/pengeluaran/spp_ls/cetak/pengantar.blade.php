@@ -12,7 +12,7 @@
     <div style="text-align: left;margin-top:20px">
         <h5 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h5>
         <h5 style="margin: 2px 0px">{{ $cari_data->nm_skpd }}</h5>
-        <h5 style="margin: 2px 0px">TAHUN ANGGARAN 2022</h5>
+        <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h5>
         <div style="clear: both"></div>
     </div>
     <hr>
@@ -35,11 +35,35 @@
         <h5 style="margin: 2px 0px">Di <u>{{ strtoupper($daerah->daerah) }}</u></h5>
     </div>
     <div style="text-align: left">
-        <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat tentang {{ $nogub }}
-            Penjabaran APBD
-            Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat Permintaan Pembayaran Langsung
-            Barang dan Jasa sebagai
-            berikut:</h5>
+        @if ($beban == '4')
+            <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat {{ $nogub }}
+                tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat
+                Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
+        @elseif ($beban == '5')
+            @if ($kd_skpd == '1.03.01.01')
+                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat tentang
+                    {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015 tentang
+                    Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat Permintaan
+                    Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:</h5>
+            @else
+                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                    {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal 30
+                    Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami
+                    mengajukan Surat Permintaan Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:</h5>
+            @endif
+        @else
+            @if ($kd_skpd == '1.03.01.01')
+                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                    {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015 tentang
+                    Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat Permintaan
+                    Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
+            @else
+                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                    {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal 30
+                    Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami
+                    mengajukan Surat Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
+            @endif
+        @endif
     </div>
     <div>
         <table>
@@ -96,21 +120,57 @@
                 <td style="font-style: italic">({{ ucwords(terbilang($cari_data->nilai)) }})</td>
             </tr>
             {{-- Nama Bendahara Pengeluaran --}}
-            <tr>
-                <td>h. Nama Bendahara Pengeluaran</td>
-                <td>:</td>
-                <td>{{ $cari_bendahara->nama }}</td>
-            </tr>
+            @if ($beban == '4')
+                <tr>
+                    <td>h. Nama {{ ucwords($cari_bendahara->jabatan) }}</td>
+                    <td>:</td>
+                    <td>{{ $cari_bendahara->nama }}</td>
+                </tr>
+            @elseif ($beban == '5')
+                @if ($jenis == '3')
+                    <tr>
+                        <td>h. Nama Pihak Ketiga</td>
+                        <td>:</td>
+                        <td>{{ $cari_data->nmrekan }}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>h. Nama Bendahara Pengeluaran</td>
+                        <td>:</td>
+                        <td>{{ $cari_bendahara->nama }}</td>
+                    </tr>
+                @endif
+            @else
+                @if ($jenis == '3')
+                    <tr>
+                        <td>h. Nama Pihak Ketiga</td>
+                        <td>:</td>
+                        <td>{{ $cari_data->nmrekan }}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>h. Nama Bendahara Pengeluaran</td>
+                        <td>:</td>
+                        <td>{{ $cari_bendahara->nama }}</td>
+                    </tr>
+                @endif
+            @endif
             {{-- Nama Nomor Rekening Bank dan NPWP --}}
             <tr>
                 @if ($beban == '4')
-                    <td>i. Nama Nomor Rekening Bank dan NPWP</td>
+                    <td>i. Nama, Nomor Rekening Bank dan NPWP</td>
                     <td>:</td>
                     <td>{{ $bank->nama }} / {{ $cari_data->no_rek }} / {{ $cari_data->npwp }}</td>
                 @elseif ($beban == '5')
-                    <td>i. Nama, Nomor Rekening Bank</td>
-                    <td>:</td>
-                    <td>{{ $bank->nama }} / {{ $cari_data->no_rek }}</td>
+                    @if ($jenis == '3')
+                        <td>i. Nama, Nomor Rekening Bank dan NPWP</td>
+                        <td>:</td>
+                        <td>{{ $bank->nama }} / {{ $cari_data->no_rek }} / {{ $cari_data->npwp }}</td>
+                    @else
+                        <td>i. Nama, Nomor Rekening Bank</td>
+                        <td>:</td>
+                        <td>{{ $bank->nama }} / {{ $cari_data->no_rek }}</td>
+                    @endif
                 @else
                     <td>i. Nama, Nomor Rekening Bank</td>
                     <td>:</td>
@@ -124,8 +184,14 @@
         <div style="padding-top:20px">
             <table>
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:950px">{{ $daerah->daerah }},
-                        {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                    <td style="margin: 2px 0px;text-align: center;padding-left:950px">
+                        {{ $daerah->daerah }},
+                        @if ($tanpa == 1)
+                            ______________{{ $tahun_anggaran }}
+                        @else
+                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td style="padding-bottom: 50px;text-align: center;padding-left:950px">
@@ -148,8 +214,14 @@
             <div style="padding-top:20px">
                 <table>
                     <tr>
-                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">{{ $daerah->daerah }},
-                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                            {{ $daerah->daerah }},
+                            @if ($tanpa == 1)
+                                ______________{{ $tahun_anggaran }}
+                            @else
+                                {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
@@ -172,8 +244,14 @@
                 <table>
                     <tr>
                         <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
-                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">{{ $daerah->daerah }},
-                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                            {{ $daerah->daerah }},
+                            @if ($tanpa == 1)
+                                ______________{{ $tahun_anggaran }}
+                            @else
+                                {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
@@ -202,8 +280,14 @@
         @if ($sub_kegiatan == '5.02.00.0.06.62')
             <table>
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">{{ $daerah->daerah }},
-                        {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                        {{ $daerah->daerah }},
+                        @if ($tanpa == 1)
+                            ______________{{ $tahun_anggaran }}
+                        @else
+                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
@@ -224,8 +308,14 @@
             @if ($jumlah_spp > 0)
                 <table>
                     <tr>
-                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">{{ $daerah->daerah }},
-                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                            {{ $daerah->daerah }},
+                            @if ($tanpa == 1)
+                                ______________{{ $tahun_anggaran }}
+                            @else
+                                {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
@@ -247,8 +337,14 @@
                     <table>
                         <tr>
                             <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
-                            <td style="margin: 2px 0px;text-align: center;padding-left:300px">{{ $daerah->daerah }},
-                                {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                            <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                                {{ $daerah->daerah }},
+                                @if ($tanpa == 1)
+                                    ______________{{ $tahun_anggaran }}
+                                @else
+                                    {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
