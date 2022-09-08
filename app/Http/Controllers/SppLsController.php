@@ -1769,7 +1769,7 @@ class SppLsController extends Controller
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
-
+        $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
         if ($beban == '4') {
             $cari_jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
             $jenis = $cari_jenis->jns_beban;
@@ -1806,10 +1806,11 @@ class SppLsController extends Controller
             }
             // $cari_rek = DB::table('trdspp')->select('kd_rek6')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first();
             $cari_spp = DB::table('trhspp')->select('tgl_spp', 'no_spd')->where('no_spp', $no_spp)->first();
+            $tanggal = $cari_spp->tgl_spp;
             $cari_spd = DB::table('trhspd')->select('tgl_spd')->where('no_spd', $cari_spp->no_spd)->first();
 
             $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
-
+            $data_spp = '';
             $status = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
             $status_anggaran = $status->jns_ang;
             if ($status_anggaran == 'M') {
@@ -1846,12 +1847,514 @@ class SppLsController extends Controller
             $data_spp1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '3' AND revisi_ke = '$revisi1->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd');
             $data_spp2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '6' AND revisi_ke = '$revisi2->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp1);
             $data_spp3 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '9' AND revisi_ke = '$revisi3->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp2);
-            $data_spp4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '9' AND revisi_ke = '$revisi4->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp3);
+            $data_spp4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '12' AND revisi_ke = '$revisi4->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp3);
             $result = DB::table(DB::raw("({$data_spp4->toSql()}) AS sub"))
                 ->select("no_spd", "tgl_spd", "nilai")
                 ->mergeBindings($data_spp4)
                 ->get();
+            $nilai1 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17) AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '4' AND SUBSTRING(kd_rek6,1,5)='51010' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+            $nilai2 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17) AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '5' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+            $nilai3 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("a.kd_skpd= '$kd_skpd' AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '6' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+            $nilai4 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17) AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp IN ('1','2') AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+            $nilai5 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17) AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp ='3' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+            $totalbelanja = $nilai1->nilai + $nilai2->nilai + $nilai3->nilai + $nilai4->nilai + $nilai5->nilai;
+            $totalspd = 0;
+            foreach ($result as $nilai) {
+                $totalspd += $nilai->nilai;
+            }
+            $blmspd = $data_nilai->nilai - $totalspd;
+            $sisaspp = $totalspd - $totalbelanja;
+            $data_dpa = '';
+        } elseif ($beban == '5') {
+            $cari_jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
+            $jenis = $cari_jenis->jns_beban;
+            switch ($jenis) {
+                case '1': //UP
+                    $lcbeban = "Hibah";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Bantuan Sosial";
+                    break;
+                case '3': //TU
+                    $lcbeban = " Bantuan Keuangan";
+                    break;
+                case '4': //TU
+                    $lcbeban = "  Subsidi";
+                    break;
+                case '5': //TU
+                    $lcbeban = " Bagi Hasil";
+                    break;
+                case '6': //TU
+                    $lcbeban = " Belanja Tidak Terduga";
+                    break;
+                case '7': //TU
+                    $lcbeban = " Pihak Ketiga Lainnya";
+                    break;
+                case '8': //TU
+                    $lcbeban = " Pengeluaran Pembiayaan";
+                    break;
+                case '9': //TU
+                    $lcbeban = " Barang yang diserahkan ke masyarakat";
+                    break;
+            }
+            $cari_spp = DB::table('trhspp')->select('tgl_spp', 'no_spd')->where('no_spp', $no_spp)->first();
+            $tanggal = $cari_spp->tgl_spp;
+            $cari_spd = DB::table('trhspd')->select('tgl_spd')->where('no_spd', $cari_spp->no_spd)->first();
+
+            $data_spp = DB::table('trhspp as a')->select('nm_program', 'nm_sub_kegiatan', 'nmrekan', 'pimpinan', 'kontrak', 'alamat', 'tgl_mulai', 'tgl_akhir', 'lanjut', 'no_rek', 'keperluan', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nama_bank"))->where('a.no_spp', $no_spp)->first();
+            $status = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+            $status_anggaran = $status->jns_ang;
+            $data_dpa = DB::table('trhrka')->select('no_dpa', 'tgl_dpa')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first();
+            if (substr($kd_skpd, 18, 4) == '0000') {
+                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->whereRaw("LEFT(kd_rek6,1)= '5' AND left(kd_skpd,17) = LEFT('$kd_skpd', 17) AND kd_sub_kegiatan='$sub_kegiatan' AND jns_ang='$status_anggaran'")->first();
+            } else {
+                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
+            }
+            $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
+            $tglspd = $cari_spp->tgl_spp;
+
+            $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])->where('tgl_spd', '<=', $tglspd)->first();
+            $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])->where('tgl_spd', '<=', $tglspd)->first();
+            $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])->where('tgl_spd', '<=', $tglspd)->first();
+            $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])->where('tgl_spd', '<=', $tglspd)->first();
+
+            $data_spp1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '3' AND revisi_ke = '$revisi1->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd');
+            $data_spp2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '6' AND revisi_ke = '$revisi2->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp1);
+            $data_spp3 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '9' AND revisi_ke = '$revisi3->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp2);
+            $data_spp4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '12' AND revisi_ke = '$revisi4->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp3);
+            $result = DB::table(DB::raw("({$data_spp4->toSql()}) AS sub"))
+                ->select("no_spd", "tgl_spd", "nilai")
+                ->mergeBindings($data_spp4)
+                ->get();
+            if (substr($kd_skpd, 18, 4) == '0000') {
+                $sorting = "LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17)";
+            } else {
+                $sorting = "a.kd_skpd = '$kd_skpd'";
+            }
+            $nilai1 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '6' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+
+            $nilai2 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '5' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+
+            $nilai3 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp IN ('1','2') AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+
+            $nilai4 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp IN ('3') AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+
+            $nilai5 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp ='4' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->first();
+
+            $totalbelanja = $nilai1->nilai + $nilai2->nilai + $nilai3->nilai + $nilai4->nilai + $nilai5->nilai;
+            $totalspd = 0;
+            foreach ($result as $nilai) {
+                $totalspd += $nilai->nilai;
+            }
+            $blmspd = $data_nilai->nilai - $totalspd;
+            $sisaspp = $totalspd - $totalbelanja;
+        } elseif ($beban == '6') {
+            $cari_jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
+            $jenis = $cari_jenis->jns_beban;
+            switch ($jenis) {
+                case '1': //UP
+                    $lcbeban = "Tambahan Penghasilan";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Operasional KDH/WKDH";
+                    break;
+                case '3': //TU
+                    $lcbeban = " Operasional DPRD";
+                    break;
+                case '4': //TU
+                    $lcbeban = " Honor Kontrak";
+                    break;
+                case '5': //TU
+                    $lcbeban = " Jasa Pelayanan Kesehatan";
+                    break;
+                case '6': //TU
+                    $lcbeban = " Pihak ketiga";
+                    break;
+                case '7': //TU
+                    $lcbeban = " PNS";
+                    break;
+            }
+            $cari_spp = DB::table('trhspp')->select('tgl_spp', 'no_spd')->where('no_spp', $no_spp)->first();
+            $tanggal = $cari_spp->tgl_spp;
+            $cari_spd = DB::table('trhspd')->select('tgl_spd')->where('no_spd', $cari_spp->no_spd)->first();
+
+            $data_spp = DB::table('trhspp as a')->select('nm_program', 'nm_sub_kegiatan', 'nmrekan', 'pimpinan', 'kontrak', 'alamat', 'tgl_mulai', 'tgl_akhir', 'lanjut', 'no_rek', 'keperluan', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nama_bank"))->where('a.no_spp', $no_spp)->first();
+            $status = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+            $status_anggaran = $status->jns_ang;
+            $data_dpa = DB::table('trhrka')->select('no_dpa', 'tgl_dpa')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first();
+
+            if (substr($kd_skpd, 18, 4) == '0000') {
+                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->whereRaw("LEFT(kd_rek6,1)= '5' AND left(kd_skpd,17) = LEFT('$kd_skpd', 17) AND kd_sub_kegiatan='$sub_kegiatan' AND jns_ang='$status_anggaran'")->first();
+            } else {
+                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
+            }
+            $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
+            $tglspd = $cari_spp->tgl_spp;
+
+            $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi"))->whereRaw("LEFT(kd_skpd,17)=LEFT('$kd_skpd',17) AND bulan_akhir='3' AND tgl_spd<='$cari_spd->tgl_spd'")->first();
+            $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->whereRaw("LEFT(kd_skpd,17)=LEFT('$kd_skpd',17) AND bulan_akhir='6' AND tgl_spd<='$cari_spd->tgl_spd'")->first();
+            $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->whereRaw("LEFT(kd_skpd,17)=LEFT('$kd_skpd',17) AND bulan_akhir='9' AND tgl_spd<='$cari_spd->tgl_spd'")->first();
+            $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->whereRaw("LEFT(kd_skpd,17)=LEFT('$kd_skpd',17) AND bulan_akhir='12' AND tgl_spd<='$cari_spd->tgl_spd'")->first();
+
+            if (substr($kd_skpd, 18, 4) == '0000') {
+                $sorting = "LEFT(a.kd_unit,17) = LEFT('$kd_skpd',17)";
+                $sorting2 = "LEFT(a.kd_skpd,17) = LEFT('$kd_skpd',17)";
+            } else {
+                $sorting = "a.kd_unit = '$kd_skpd'";
+                $sorting2 = "a.kd_skpd = '$kd_skpd'";
+            }
+
+            $data_spp1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("$sorting AND b.tgl_spd <= '$cari_spd->tgl_spd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '3' AND revisi_ke = '$revisi1->revisi' AND b.jns_beban = '5'")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd');
+
+            $data_spp2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("$sorting AND b.tgl_spd <= '$cari_spd->tgl_spd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '6' AND revisi_ke = '$revisi2->revisi' AND b.jns_beban ='5'")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp1);
+
+            $data_spp3 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("$sorting AND b.tgl_spd <= '$cari_spd->tgl_spd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '9' AND revisi_ke = '$revisi3->revisi' AND b.jns_beban ='5'")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp2);
+
+            $data_spp4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("$sorting AND b.tgl_spd <= '$cari_spd->tgl_spd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '12' AND revisi_ke = '$revisi4->revisi' AND b.jns_beban ='5'")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp3);
+
+            $result = DB::table(DB::raw("({$data_spp4->toSql()}) AS sub"))
+                ->select("no_spd", "tgl_spd", "nilai")
+                ->mergeBindings($data_spp4)
+                ->get();
+
+            $nilai1 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting2 AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '6' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->where(function ($query) {
+                $query->where('a.sp2d_batal', '=', '')->orWhereNull('a.sp2d_batal');
+            })->first();
+
+            $nilai2 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting2 AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp IN ('1','2') AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->where(function ($query) {
+                $query->where('a.sp2d_batal', '=', '')->orWhereNull('a.sp2d_batal');
+            })->first();
+
+            $nilai3 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting2 AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '3' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->where(function ($query) {
+                $query->where('a.sp2d_batal', '=', '')->orWhereNull('a.sp2d_batal');
+            })->first();
+
+            $nilai4 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting2 AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp = '5' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->where(function ($query) {
+                $query->where('a.sp2d_batal', '=', '')->orWhereNull('a.sp2d_batal');
+            })->first();
+
+            $nilai5 = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
+                $join->on('b.no_spp', '=', 'a.no_spp');
+                $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+            })->join('trhsp2d as c', 'a.no_spp', '=', 'c.no_spp')->select(DB::raw("SUM(b.nilai) as nilai"))->whereRaw("$sorting2 AND b.kd_sub_kegiatan = '$sub_kegiatan' AND a.jns_spp ='4' AND a.no_spp != '$no_spp' AND c.tgl_sp2d <='$tglspd'")->where(function ($query) {
+                $query->where('a.sp2d_batal', '=', '')->orWhereNull('a.sp2d_batal');
+            })->first();
+
+            $totalbelanja = $nilai1->nilai + $nilai2->nilai + $nilai3->nilai + $nilai4->nilai + $nilai5->nilai;
+            $totalspd = 0;
+            foreach ($result as $nilai) {
+                $totalspd += $nilai->nilai;
+            }
+            $blmspd = $data_nilai->nilai - $totalspd;
+            $sisaspp = $totalspd - $totalbelanja;
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.ringkasan', compact('no_spp', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban'));
+        return view('penatausahaan.pengeluaran.spp_ls.cetak.ringkasan', compact('result', 'data_nilai', 'no_spp', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'nilai1', 'nilai2', 'nilai3', 'nilai4', 'nilai5', 'totalspd', 'blmspd', 'totalbelanja', 'sisaspp', 'tanpa', 'tanggal', 'cari_bendahara', 'cari_pptk', 'daerah', 'sub_kegiatan', 'jenis', 'data_spp', 'data_dpa', 'jumlah_spp'));
+    }
+
+    public function cetakPernyataanLayar(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $tahun_anggaran = '2022';
+
+        $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos', 'alamat')->where('kd_skpd', $kd_skpd)->first();
+        $cari_jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
+        $jenis = $cari_jenis->jns_beban;
+        $nama_skpd = $skpd->nm_skpd;
+        $alamat_skpd = $skpd->alamat;
+        $kodepos = $skpd->kodepos == '' ? "--------" : $skpd->kodepos;
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
+        $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
+        $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
+        $data = DB::table('trhspp as a')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('nm_skpd', 'tgl_spp', 'jns_beban', 'nilai')->first();
+        $daerah = DB::table('sclient')->where(['kd_skpd' => $kd_skpd])->select('daerah')->first();
+        if ($beban == '4') {
+            switch ($jenis) {
+                case '1': //UP
+                    $lcbeban = "Gaji dan Tunjangan";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Uang Kespeg";
+                    break;
+                case '3': //TU
+                    $lcbeban = "Uang Makan";
+                    break;
+                case '4': //TU
+                    $lcbeban = "Upah Pungut";
+                    break;
+                case '5': //TU
+                    $lcbeban = "Upah Pungut PBB";
+                    break;
+                case '6': //TU
+                    $lcbeban = "Upah Pungut PBB-KB PKB & BBN-KB ";
+                    break;
+                case '7': //TU
+                    $lcbeban = "Gaji & Tunjangan";
+                    break;
+                case '8': //TU
+                    $lcbeban = "Tunjangan Transport";
+                    break;
+                case '9': //TU
+                    $lcbeban = "Tunjangan Lainnya";
+                    break;
+                default:
+                    $lcbeban = "LS";
+            }
+        } elseif ($beban == '5') {
+            $lcbeban = "LS Pihak Ketiga Lainnya";
+        } elseif ($beban == '6') {
+            switch ($jenis) {
+                case '1': //UP
+                    $lcbeban = "Tambahan Penghasilan";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Operasional KDH/WKDH";
+                    break;
+                case '3': //TU
+                    $lcbeban = " Operasional DPRD";
+                    break;
+                case '4': //TU
+                    $lcbeban = "  Honor Kontrak";
+                    break;
+                case '5': //TU
+                    $lcbeban = " Jasa Pelayanan Kesehatan";
+                    break;
+                case '6': //TU
+                    $lcbeban = " Pihak ketiga";
+                    break;
+                case '7': //TU
+                    $lcbeban = " PNS";
+                    break;
+            }
+        }
+        return view('penatausahaan.pengeluaran.spp_ls.cetak.pernyataan', compact('data', 'beban', 'no_spp', 'tahun_anggaran', 'lcbeban', 'tanpa', 'daerah', 'cari_bendahara'));
+    }
+
+    public function cetakSptbLayar(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $tahun_anggaran = '2022';
+
+        $status = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+        $status_anggaran = $status->jns_ang;
+        $data_dpa = DB::table('trhrka')->select('no_dpa', 'tgl_dpa')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first();
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
+        $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
+        $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
+        $data = DB::table('trhspp as a')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('nm_skpd', 'tgl_spp', 'jns_beban', 'nilai')->first();
+        $daerah = DB::table('sclient')->where(['kd_skpd' => $kd_skpd])->select('daerah')->first();
+        $data = DB::table('trhspp as a')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->select('nm_skpd', 'tgl_spp', 'jns_beban', 'nilai', 'bulan')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->first();
+        if ($beban == '4') {
+            switch ($data->jns_beban) {
+                case '1': //UP
+                    $lcbeban = "Gaji dan Tunjangan";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Uang Kespeg";
+                    break;
+                case '3': //TU
+                    $lcbeban = "Uang Makan";
+                    break;
+                case '4': //TU
+                    $lcbeban = "Upah Pungut";
+                    break;
+                case '5': //TU
+                    $lcbeban = "Upah Pungut PBB";
+                    break;
+                case '6': //TU
+                    $lcbeban = "Upah Pungut PBB-KB PKB & BBN-KB ";
+                    break;
+                case '7': //TU
+                    $lcbeban = "Gaji & Tunjangan";
+                    break;
+                case '8': //TU
+                    $lcbeban = "Tunjangan Transport";
+                    break;
+                case '9': //TU
+                    $lcbeban = "Tunjangan Lainnya";
+                    break;
+                default:
+                    $lcbeban = "LS";
+            }
+        } elseif ($beban == '5') {
+            $lcbeban = '';
+        } elseif ($beban == '6') {
+            switch ($data->jns_beban) {
+                case '1': //UP
+                    $lcbeban = "Rutin PNS";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Rutin Non PNS";
+                    break;
+                case '3': //TU
+                    $lcbeban = "Barang dan Jasa";
+                    break;
+                default:
+                    $lcbeban = "LS";
+            }
+        }
+        return view('penatausahaan.pengeluaran.spp_ls.cetak.sptb', compact('tahun_anggaran', 'no_spp', 'beban', 'lcbeban', 'data', 'cari_bendahara', 'daerah', 'tanpa', 'kd_skpd', 'data_dpa'));
+    }
+
+    public function cetakSpp77Layar(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $tahun_anggaran = '2022';
+
+        $skpd = DB::table('ms_skpd')->select('nm_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
+        $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd, 'kode' => 'PPTK'])->first();
+        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
+        $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
+        if ($beban == 1) {
+            $jenisspp = 'Uang Persediaan';
+            $jenis_spp = 'SPP-UP';
+        } else if ($beban == 2) {
+            $jenisspp = 'Ganti Uang Persediaan';
+            $jenis_spp = 'SPP-GU';
+        } else if ($beban == 3) {
+            $jenisspp = 'Tambahan Uang Persediaan';
+            $jenis_spp = 'SPP-TU';
+        } else if ($beban == 4) {
+            $jenisspp = 'Langsung Gaji dan Tunjangan';
+            $jenis_spp = 'SPP-LS';
+        } else if ($beban == 5) {
+            $jenisspp = 'Langsung Pihak Ketiga Lainnya';
+            $jenis_spp = 'SPP-LS';
+        } else if ($beban == 6) {
+            $jenisspp = 'Langsung Barang dan Jasa';
+            $jenis_spp = 'SPP-LS';
+        }
+        $data = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['a.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'a.bank', 'no_rek', 'keperluan', 'a.no_spd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', DB::raw("SUM(b.nilai) as nilaispp"))->groupBy('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'a.bank', 'no_rek', 'keperluan', 'a.no_spd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan')->first();
+        $bank = DB::table('ms_bank')->select('nama')->where(['kode' => $data->bank])->first();
+        $tglspd = DB::table('trhspd')->select('tgl_spd')->where(['no_spd' => $data->no_spd])->first();
+        $nilaispd = DB::table('trhspp')->select('nilai')->where(['no_spp' => $no_spp])->first();
+        if ($beban == 1 || $beban == 2) {
+            $kd_sub_kegiatan1 = '';
+            $nm_sub_kegiatan1 = '';
+        } else {
+            $kd_sub_kegiatan1 = $data->kd_sub_kegiatan;
+            $nm_sub_kegiatan1 = $data->nm_sub_kegiatan;
+        }
+        $dataspd = DB::table('trhspd')->select('no_spd', 'tgl_spd', 'total')->whereRaw("LEFT(kd_skpd,17) = LEFT('$kd_skpd',17)")->get();
+        $datasp2d = DB::table('trhsp2d')->select('no_sp2d', 'tgl_sp2d', 'nilai as total')->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '6'])->get();
+        return view('penatausahaan.pengeluaran.spp_ls.cetak.spp77', compact('no_spp', 'jenisspp', 'jenis_spp', 'skpd', 'kd_sub_kegiatan1', 'nm_sub_kegiatan1', 'cari_bendahara', 'cari_pptk', 'cari_pa', 'bank', 'tglspd', 'data', 'nilaispd', 'dataspd', 'datasp2d', 'sub_kegiatan', 'tanpa'));
+    }
+
+    public function cetakRincian77Layar(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $tahun_anggaran = '2022';
+
+        $spp = DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp])->first();
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first();
+        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->first();
+        $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
+        $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
+
+        if ($beban == 1) {
+            $jenisspp = 'UANG PERSEDIAAN (SPP-UP)';
+        } else if ($beban == 2) {
+            $jenisspp = 'GANTI UANG PERSEDIAAN (SPP-GU)';
+        } else if ($beban == 3) {
+            $jenisspp = 'TAMBAHAN UANG PERSEDIAAN (SPP-TU)';
+        } else if ($beban == 4) {
+            $jenisspp = 'LANGSUNG (SPP-LS) GAJI DAN TUNJANGAN';
+        } else if ($beban == 5) {
+            $jenisspp = 'LANGSUNG (SPP-LS) PIHAK KETIGA LAINNYA';
+        } else if ($beban == 6) {
+            $jenisspp = 'LANGSUNG (SPP-LS) BARANG DAN JASA';
+        }
+
+        $data_spp = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['a.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd])->groupBy('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan')->select('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', DB::raw("SUM(b.nilai) as nilaisub"))->first();
+        $kd_kegiatan = substr($data_spp->kd_sub_kegiatan, 0, 12);
+        $nama_kegiatan = DB::table('ms_kegiatan')->select('nm_kegiatan')->where(['kd_kegiatan' => $kd_kegiatan])->first();
+        $data_spp_rinci = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['a.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->groupBy('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6')->select('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6', DB::raw("SUM(b.nilai) as nilaispp"))->get();
+        return view('penatausahaan.pengeluaran.spp_ls.cetak.rincian77', compact('jenisspp', 'no_spp', 'tahun_anggaran', 'data_spp', 'nama_kegiatan', 'data_spp_rinci'));
     }
 }

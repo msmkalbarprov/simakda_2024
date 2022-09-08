@@ -101,6 +101,10 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::get('spp_ls/cetak_rincian', [SppLsController::class, 'cetakRincianLayar'])->name('sppls.cetak_rincian_layar');
         Route::get('spp_ls/cetak_permintaan', [SppLsController::class, 'cetakPermintaanLayar'])->name('sppls.cetak_permintaan_layar');
         Route::get('spp_ls/cetak_ringkasan', [SppLsController::class, 'cetakRingkasanLayar'])->name('sppls.cetak_ringkasan_layar');
+        Route::get('spp_ls/cetak_pernyataan', [SppLsController::class, 'cetakPernyataanLayar'])->name('sppls.cetak_pernyataan_layar');
+        Route::get('spp_ls/cetak_sptb', [SppLsController::class, 'cetakSptbLayar'])->name('sppls.cetak_sptb_layar');
+        Route::get('spp_ls/cetak_spp77', [SppLsController::class, 'cetakSpp77Layar'])->name('sppls.cetak_spp77_layar');
+        Route::get('spp_ls/cetak_rincian77', [SppLsController::class, 'cetakRincian77Layar'])->name('sppls.cetak_rincian77_layar');
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

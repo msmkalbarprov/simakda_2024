@@ -12,6 +12,11 @@
         td {
             border-collapse: collapse;
         }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 
@@ -43,90 +48,375 @@
         <h5 style="margin: 2px 0px">Nomor : {{ $no_spp }}</h5>
         <h5 style="margin: 2px 0px;text-decoration:underline"><b>RINGKASAN</b></h5>
     </div>
-
-    {{-- <div>
-        <table class="table table-striped" style="width:100%" border="1">
-            <tr>
-                <th style="text-align: center">No Urut</th>
-                <th style="text-align: center">Kode Rekening</th>
-                <th style="text-align: center">Uraian</th>
-                <th style="text-align: center">Jumlah</th>
-            </tr>
-            @foreach ($result as $data)
-                <tr>
-                    @if ($beban == '4')
-                        @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @elseif ($data->urut == '5')
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @else
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @endif
-                    @elseif ($beban == '5')
-                        @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @elseif ($data->urut == '7')
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 15) }}.{{ dotrek(STR::substr($data->kode, 16, 13)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @else
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 16) }}{{ dotrek(STR::substr($data->kode, 16, 12)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @endif
-                    @elseif ($beban == '6')
-                        @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @elseif ($data->urut == '5')
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @else
-                            <td></td>
-                            <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
-                            </td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
-                        @endif
-                    @endif
-                </tr>
-            @endforeach
-            <tr>
-                <td></td>
-                <td></td>
-                <td style="text-align: center">JUMLAH</td>
-                <td style="text-align: right">Rp.{{ rupiah($total) }}</td>
-            </tr>
-        </table>
-    </div>
     <div>
-        <h5>Terbilang : {{ ucwords(terbilang($total)) }}</h5>
-    </div> --}}
+        @if ($beban == '4')
+            <table class="table table-striped" style="width: 100%" border="1">
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Jumlah dana DPA/DPPA/DPPAL-OPD</td>
+                    <td style="text-align: right">{{ rupiah($data_nilai->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN SPD</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center">No. Urut</td>
+                    <td style="text-align: center">Nomor SPD</td>
+                    <td style="text-align: center">Tanggal SPD</td>
+                    <td style="text-align: center">Jumlah Dana</td>
+                </tr>
+                @foreach ($result as $data)
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $data->no_spd }}</td>
+                        <td>{{ \Carbon\Carbon::parse($data->tgl_spd)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalspd) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">Sisa dana yang belum di SPD-kan</td>
+                    <td style="text-align: right">{{ rupiah($blmspd) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN BELANJA</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja UP/GU</td>
+                    <td style="text-align: right">{{ rupiah($nilai4->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja TU</td>
+                    <td style="text-align: right">{{ rupiah($nilai5->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pembayaran Gaji dan Tunjangan</td>
+                    <td style="text-align: right">{{ rupiah($nilai1->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pengadaan Barang dan Jasa</td>
+                    <td style="text-align: right">{{ rupiah($nilai3->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pihak Ketiga Lainnya</td>
+                    <td style="text-align: right">{{ rupiah($nilai2->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;font-style:italic">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalbelanja) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style:italic">Sisa SPD yang telah, belum dibelanjakan</td>
+                    <td style="text-align: right">{{ rupiah($sisaspp) }}</td>
+                </tr>
+            </table>
+        @elseif ($beban == '5')
+            @if ($jenis == '1' || $jenis == '2')
+                <table class="table table-striped" style="width: 100%;border:1px black solid">
+                    <tr>
+                        <td colspan="3" style="text-align: center;border-bottom:1px black solid">RINGKASAN KEGIATAN
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">1. Program</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nm_program }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">2. Kegiatan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nm_sub_kegiatan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">3. Nomor dan Tanggal DPA/DPPA/DPPAL-OPD</td>
+                        <td>:</td>
+                        <td>{{ $data_dpa->no_dpa }} -
+                            {{ \Carbon\Carbon::parse($data_dpa->tgl_dpa)->locale('id')->isoFormat('DD MMMM Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">4. Nama Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nmrekan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">5. Bentuk Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ substr($data_spp->nmrekan, 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">6. Alamat Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->alamat }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">7. Nama Pimpinan Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->pimpinan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">8. Nama dan Nomor Rekening Bank</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nama_bank }} - {{ $data_spp->no_rek }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">9. Nomor Kontrak</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->kontrak }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">10. Kegiatan Lanjutan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->lanjut == '1' ? 'Iya' : 'Bukan' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">11. Waktu Pelaksanaan Kegiatan</td>
+                        <td>:</td>
+                        <td>{{ \Carbon\Carbon::parse($data_spp->tgl_mulai)->locale('id')->isoFormat('DD MMMM Y') }} s/d
+                            {{ \Carbon\Carbon::parse($data_spp->tgl_akhir)->locale('id')->isoFormat('DD MMMM Y') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">12. Deskripsi Pekerjaan</td>
+                        <td>:</td>
+                        <td>
+                            <pre>{{ $data_spp->keperluan }}</pre>
+                        </td>
+                    </tr>
+                </table>
+            @endif
+            <table class="table table-striped" style="width: 100%" border="1">
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Jumlah dana DPA/DPPA/DPPAL-OPD</td>
+                    <td style="text-align: right">{{ rupiah($data_nilai->nilai) }} (I)</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN SPD</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center">No. Urut</td>
+                    <td style="text-align: center">Nomor SPD</td>
+                    <td style="text-align: center">Tanggal SPD</td>
+                    <td style="text-align: center">Jumlah Dana</td>
+                </tr>
+                @foreach ($result as $data)
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $data->no_spd }}</td>
+                        <td>{{ \Carbon\Carbon::parse($data->tgl_spd)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalspd) }} (II)</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">Sisa dana yang belum di SPD-kan
+                        (I-II)
+                    </td>
+                    <td style="text-align: right">{{ rupiah($blmspd) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN BELANJA</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja UP/GU</td>
+                    <td style="text-align: right">{{ rupiah($nilai3->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja TU</td>
+                    <td style="text-align: right">{{ rupiah($nilai4->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Gaji</td>
+                    <td style="text-align: right">{{ rupiah($nilai5->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pengadaan Barang dan Jasa</td>
+                    <td style="text-align: right">{{ rupiah($nilai1->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pihak Ketiga Lainnya</td>
+                    <td style="text-align: right">{{ rupiah($nilai2->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;font-style:italic">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalbelanja) }} (III)</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style:italic;text-align:right">Sisa SPD yang telah, belum
+                        dibelanjakan (II-III)
+                    </td>
+                    <td style="text-align: right">{{ rupiah($sisaspp) }}</td>
+                </tr>
+            </table>
+        @elseif ($beban == '6')
+            @if ($jenis == '6')
+                <table class="table table-striped" style="width: 100%;border:1px black solid">
+                    <tr>
+                        <td colspan="3" style="text-align: center;border-bottom:1px black solid">RINGKASAN KEGIATAN
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">1. Program</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nm_program }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">2. Kegiatan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nm_sub_kegiatan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">3. Nomor dan Tanggal DPA/DPPA/DPPAL-OPD</td>
+                        <td>:</td>
+                        <td>{{ $data_dpa->no_dpa }} -
+                            {{ \Carbon\Carbon::parse($data_dpa->tgl_dpa)->locale('id')->isoFormat('DD MMMM Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">4. Nama Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nmrekan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">5. Bentuk Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ substr($data_spp->nmrekan, 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">6. Alamat Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->alamat }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">7. Nama Pimpinan Perusahaan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->pimpinan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">8. Nama dan Nomor Rekening Bank</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->nama_bank }} - {{ $data_spp->no_rek }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">9. Nomor Kontrak</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->kontrak }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">10. Kegiatan Lanjutan</td>
+                        <td>:</td>
+                        <td>{{ $data_spp->lanjut == '1' ? 'Iya' : 'Bukan' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">11. Waktu Pelaksanaan Kegiatan</td>
+                        <td>:</td>
+                        <td>{{ \Carbon\Carbon::parse($data_spp->tgl_mulai)->locale('id')->isoFormat('DD MMMM Y') }} s/d
+                            {{ \Carbon\Carbon::parse($data_spp->tgl_akhir)->locale('id')->isoFormat('DD MMMM Y') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">12. Deskripsi Pekerjaan</td>
+                        <td>:</td>
+                        <td>
+                            <pre>{{ $data_spp->keperluan }}</pre>
+                        </td>
+                    </tr>
+                </table>
+            @endif
+            <table class="table table-striped" style="width: 100%" border="1">
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Jumlah dana DPA/DPPA/DPPAL-OPD</td>
+                    <td style="text-align: right">{{ rupiah($data_nilai->nilai) }} (I)</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN SPD</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center">No. Urut</td>
+                    <td style="text-align: center">Nomor SPD</td>
+                    <td style="text-align: center">Tanggal SPD</td>
+                    <td style="text-align: center">Jumlah Dana</td>
+                </tr>
+                @foreach ($result as $data)
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $data->no_spd }}</td>
+                        <td>{{ \Carbon\Carbon::parse($data->tgl_spd)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalspd) }} (II)</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style: italic;text-align:right">Sisa dana yang belum di SPD-kan
+                        (I-II)
+                    </td>
+                    <td style="text-align: right">{{ rupiah($blmspd) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center">RINGKASAN BELANJA</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja UP/GU</td>
+                    <td style="text-align: right">{{ rupiah($nilai2->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja TU</td>
+                    <td style="text-align: right">{{ rupiah($nilai3->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Gaji</td>
+                    <td style="text-align: right">{{ rupiah($nilai5->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pengadaan Barang dan Jasa</td>
+                    <td style="text-align: right">{{ rupiah($nilai1->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Belanja LS Pihak Ketiga Lainnya</td>
+                    <td style="text-align: right">{{ rupiah($nilai4->nilai) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;font-style:italic">JUMLAH</td>
+                    <td style="text-align: right">{{ rupiah($totalbelanja) }} (III)</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-style:italic;text-align:right">Sisa SPD yang telah, belum
+                        dibelanjakan (II-III)
+                    </td>
+                    <td style="text-align: right">{{ rupiah($sisaspp) }}</td>
+                </tr>
+            </table>
+        @endif
+    </div>
     {{-- tanda tangan --}}
-    {{-- <div style="padding-top:20px">
+    <div style="padding-top:20px">
         <table>
             @if ($beban == '4')
                 <tr>
@@ -154,7 +444,39 @@
                     <td style="text-align: center;padding-left:950px">NIP. {{ $cari_bendahara->nip }}</td>
                 </tr>
             @elseif ($beban == '5')
-                @if ($sub_kegiatan == '5.02.00.0.06.62')
+                <tr>
+                    <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
+                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                        {{ $daerah->daerah }},
+                        @if ($tanpa == 1)
+                            ______________{{ $tahun_anggaran }}
+                        @else
+                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                        {{ $cari_pptk->jabatan }}
+                    </td>
+                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                        {{ $cari_bendahara->jabatan }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nama }}</td>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->pangkat }}</td>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nip }}</td>
+                    <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
+                </tr>
+            @elseif ($beban == '6')
+                @if ($jumlah_spp > 0)
                     <tr>
                         <td style="margin: 2px 0px;text-align: center;padding-left:300px">
                             {{ $daerah->daerah }},
@@ -205,105 +527,17 @@
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_pptk->pangkat }}</td>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
+                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nip }}</td>
                         <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
                     </tr>
                 @endif
-            @elseif ($beban == '6')
-                @if ($sub_kegiatan == '5.02.00.0.06.62')
-                    <tr>
-                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">
-                            {{ $daerah->daerah }},
-                            @if ($tanpa == 1)
-                                ______________{{ $tahun_anggaran }}
-                            @else
-                                {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
-                            {{ $cari_bendahara->jabatan }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
-                    </tr>
-                @else
-                    @if ($jumlah_spp > 0)
-
-                        <tr>
-                            <td style="margin: 2px 0px;text-align: center;padding-left:300px">
-                                {{ $daerah->daerah }},
-                                @if ($tanpa == 1)
-                                    ______________{{ $tahun_anggaran }}
-                                @else
-                                    {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
-                                {{ $cari_bendahara->jabatan }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
-                        </tr>
-                    @else
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
-                            <td style="margin: 2px 0px;text-align: center;padding-left:300px">
-                                {{ $daerah->daerah }},
-                                @if ($tanpa == 1)
-                                    ______________{{ $tahun_anggaran }}
-                                @else
-                                    {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
-                                {{ $cari_pptk->jabatan }}
-                            </td>
-                            <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
-                                {{ $cari_bendahara->jabatan }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nama }}</td>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_pptk->pangkat }}</td>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nip }}</td>
-                            <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
-                        </tr>
-
-                    @endif
-                @endif
             @endif
         </table>
-    </div> --}}
+    </div>
 </body>
 
 </html>
