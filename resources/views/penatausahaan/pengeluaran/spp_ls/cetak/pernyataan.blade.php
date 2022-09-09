@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        .unbold {
+            font-weight: normal
+        }
+    </style>
 </head>
 
 <body>
@@ -26,7 +31,7 @@
     </div>
 
     <div style="text-align: justify">
-        <h5 style="margin: 8px 0px">
+        <h5 style="margin: 8px 0px" class="unbold">
             @if ($beban == '4' && $beban == '6')
                 Sehubungan dengan Surat Permintaan Pembayaran Langsung (SPP - LS {{ strtoupper($lcbeban) }})
             @elseif ($beban == '5')
@@ -37,43 +42,54 @@
             {{ \Carbon\Carbon::parse($data->tgl_spp)->locale('id')->isoFormat('DD MMMM Y') }} yang kami ajukan sebesar
             {{ rupiah($data->nilai) }} ({{ ucwords(terbilang($data->nilai)) }})
         </h5>
-        <h5 style="margin: 8px 0px">Untuk Keperluan OPD : {{ $data->nm_skpd }} Tahun Anggaran {{ $tahun_anggaran }}
+        <h5 style="margin: 8px 0px" class="unbold">Untuk Keperluan OPD : {{ $data->nm_skpd }} Tahun Anggaran
+            {{ $tahun_anggaran }}
         </h5>
-        <h5 style="margin: 8px 0px">Dengan ini menyatakan sebenarnya bahwa :</h5>
+        <h5 style="margin: 8px 0px" class="unbold">Dengan ini menyatakan sebenarnya bahwa :</h5>
     </div>
 
     <div style="text-align: justify">
-        <table>
+        <table class="table" style="width:100%">
             <tr>
                 <td style="padding-left:40px">1.</td>
-                <td>Jumlah Pembayaran Langsung (LS) {{ $lcbeban }} tersebut di atas akan dipergunakan untuk
-                    keperluan guna membiayai kegiatan yang akan kami laksanan sesuai DPA-OPD</td>
+                <td>
+                    <h5 class="unbold" style="margin: 2px 0px;text-align:justify">Jumlah Pembayaran Langsung (LS)
+                        {{ $lcbeban }}
+                        tersebut di atas akan
+                        dipergunakan untuk
+                        keperluan guna membiayai kegiatan yang akan kami laksanan sesuai DPA-OPD</h5>
+                </td>
             </tr>
             <tr>
                 <td style="padding-left:40px">2.</td>
-                <td>Jumlah Pembayaran Langsung (LS) {{ $lcbeban }} tersebut tidak akan dipergunakan untuk
-                    membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
-                    harus dilaksanakan dengan Pembayaran Langsung
-                    @if ($beban == '4')
-                        LS-Gaji
-                    @else
-                        LS-Barang dan Jasa
-                    @endif
+                <td>
+                    <h5 class="unbold" style="margin: 2px 0px;text-align:justify">Jumlah Pembayaran Langsung (LS)
+                        {{ $lcbeban }}
+                        tersebut tidak akan dipergunakan untuk
+                        membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
+                        harus dilaksanakan dengan Pembayaran Langsung
+                        @if ($beban == '4')
+                            LS-Gaji
+                        @else
+                            LS-Barang dan Jasa
+                        @endif
+                    </h5>
                 </td>
             </tr>
         </table>
     </div>
 
     <div>
-        <h5 style="margin: 8px 0px">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan SPP-LS
+        <h5 style="margin: 8px 0px" class="unbold">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan
+            pengajuan SPP-LS
             {{ $lcbeban }} OPD kami</h5>
     </div>
 
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table>
+        <table class="table" style="width: 100%">
             <tr>
-                <td style="margin: 2px 0px;text-align: center;padding-left:950px">
+                <td style="margin: 2px 0px;text-align: center;padding-left:600px">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
                         ______________{{ $tahun_anggaran }}
@@ -83,18 +99,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center;padding-left:950px">
+                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
                     {{ $cari_bendahara->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:950px">{{ $cari_bendahara->nama }}</td>
+                <td style="text-align: center;padding-left:600px">{{ $cari_bendahara->nama }}</td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:950px">{{ $cari_bendahara->pangkat }}</td>
+                <td style="text-align: center;padding-left:600px">{{ $cari_bendahara->pangkat }}</td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:950px">NIP. {{ $cari_bendahara->nip }}</td>
+                <td style="text-align: center;padding-left:600px">NIP. {{ $cari_bendahara->nip }}</td>
             </tr>
 
         </table>

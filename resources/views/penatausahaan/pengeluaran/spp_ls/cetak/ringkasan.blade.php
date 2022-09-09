@@ -417,36 +417,36 @@
     </div>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table>
+        <table class="table" style="width:100%">
             @if ($beban == '4')
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:950px">
+                    <td style="margin: 2px 0px;text-align: center;padding-left:500px">
                         {{ $daerah->daerah }},
                         @if ($tanpa == 1)
                             ______________{{ $tahun_anggaran }}
                         @else
-                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('D MMMM Y') }}
+                            {{ \Carbon\Carbon::parse($tanggal)->locale('id')->isoFormat('DD MMMM Y') }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:950px">
+                    <td style="padding-bottom: 50px;text-align: center;padding-left:500px">
                         {{ $cari_bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:950px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->nama }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:950px">{{ $cari_bendahara->pangkat }}</td>
+                    <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->pangkat }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:950px">NIP. {{ $cari_bendahara->nip }}</td>
+                    <td style="text-align: center;padding-left:500px">NIP. {{ $cari_bendahara->nip }}</td>
                 </tr>
             @elseif ($beban == '5')
                 <tr>
-                    <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                    <td style="text-align: center">MENGETAHUI :</td>
+                    <td style="margin: 2px 0px;text-align: center">
                         {{ $daerah->daerah }},
                         @if ($tanpa == 1)
                             ______________{{ $tahun_anggaran }}
@@ -456,24 +456,24 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                    <td style="padding-bottom: 50px;text-align: center">
                         {{ $cari_pptk->jabatan }}
                     </td>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                    <td style="padding-bottom: 50px;text-align: center">
                         {{ $cari_bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nama }}</td>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center">{{ $cari_pptk->nama }}</td>
+                    <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->pangkat }}</td>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
+                    <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
+                    <td style="text-align: center">{{ $cari_bendahara->pangkat }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nip }}</td>
-                    <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
+                    <td style="text-align: center">NIP. {{ $cari_pptk->nip }}</td>
+                    <td style="text-align: center">NIP. {{ $cari_bendahara->nip }}</td>
                 </tr>
             @elseif ($beban == '6')
                 @if ($jumlah_spp > 0)
@@ -503,8 +503,8 @@
                     </tr>
                 @else
                     <tr>
-                        <td style="text-align: center;padding-left:300px">MENGETAHUI :</td>
-                        <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                        <td style="text-align: center">MENGETAHUI :</td>
+                        <td style="margin: 2px 0px;text-align: center">
                             {{ $daerah->daerah }},
                             @if ($tanpa == 1)
                                 ______________{{ $tahun_anggaran }}
@@ -514,25 +514,25 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                        <td style="padding-bottom: 50px;text-align: center">
                             {{ $cari_pptk->jabatan }}
                         </td>
-                        <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                        <td style="padding-bottom: 50px;text-align: center">
                             {{ $cari_bendahara->jabatan }}
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nama }}</td>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center">{{ $cari_pptk->nama }}</td>
+                        <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_pptk->pangkat }}</td>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}
+                        <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
+                        <td style="text-align: center">{{ $cari_bendahara->pangkat }}
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_pptk->nip }}</td>
-                        <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
+                        <td style="text-align: center">NIP. {{ $cari_pptk->nip }}</td>
+                        <td style="text-align: center">NIP. {{ $cari_bendahara->nip }}</td>
                     </tr>
                 @endif
             @endif

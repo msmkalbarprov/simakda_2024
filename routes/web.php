@@ -11,6 +11,7 @@ use App\Http\Controllers\PenagihanController;
 use App\Http\Controllers\BankKalbarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SppLsController;
+use App\Http\Controllers\SpmController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -76,35 +77,47 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('simpan_edit_tampungan', [PenagihanController::class, 'simpanEditTampungan'])->name('penagihan.simpan_edit_tampungan');
 
         // SPP LS
-        Route::get('spp_ls', [SppLsController::class, 'index'])->name('sppls.index');
-        Route::get('spp_ls/create', [SppLsController::class, 'create'])->name('sppls.create');
-        Route::post('spp_ls/cari_jenis', [SppLsController::class, 'cariJenis'])->name('sppls.cari_jenis');
-        Route::post('spp_ls/cari_nomor_spd', [SppLsController::class, 'cariNomorSpd'])->name('sppls.cari_nomor_spd');
-        Route::post('spp_ls/cari_sub_kegiatan', [SppLsController::class, 'cariSubKegiatan'])->name('sppls.cari_sub_kegiatan');
-        Route::post('spp_ls/cari_rekening', [SppLsController::class, 'cariRekening'])->name('sppls.cari_rekening');
-        Route::post('spp_ls/jumlah_anggaran_penyusunan', [SppLsController::class, 'jumlahAnggaranPenyusunan'])->name('sppls.jumlah_anggaran_penyusunan');
-        Route::post('spp_ls/total_spd', [SppLsController::class, 'totalSpd'])->name('sppls.total_spd');
-        Route::post('spp_ls/total_angkas', [SppLsController::class, 'totalAngkas'])->name('sppls.total_angkas');
-        Route::post('spp_ls/realisasi_spd', [SppLsController::class, 'realisasiSpd'])->name('sppls.realisasi_spd');
-        Route::post('spp_ls/sumber_dana', [SppLsController::class, 'sumberDana'])->name('sppls.sumber_dana');
-        Route::post('spp_ls/cari_nospp', [SppLsController::class, 'cariNoSpp'])->name('sppls.cari_nospp');
-        Route::post('spp_ls/cek_simpan', [SppLsController::class, 'cekSimpan'])->name('sppls.cek_simpan');
-        Route::post('spp_ls/simpan_sppls', [SppLsController::class, 'simpanSppLs'])->name('sppls.simpan_sppls');
-        Route::post('spp_ls/simpan_detail_sppls', [SppLsController::class, 'simpanDetailSppLs'])->name('sppls.simpan_detail_sppls');
-        Route::get('spp_ls/tampil/{no_spp}', [SppLsController::class, 'tampilSppLs'])->where('no_spp', '(.*)')->name('sppls.show');
-        Route::delete('spp_ls/hapus_sppls', [SppLsController::class, 'hapusSppLs'])->name('sppls.hapus_sppls');
-        Route::post('spp_ls/cari_penagihan_sppls', [SppLsController::class, 'cariPenagihanSpp'])->name('sppls.cari_penagihan_sppls');
-        Route::get('spp_ls/edit/{no_spp}', [SppLsController::class, 'editSppLs'])->where('no_spp', '(.*)')->name('sppls.edit');
-        Route::post('spp_ls/simpan_sppls_edit', [SppLsController::class, 'simpanEditSppLs'])->name('sppls.simpan_sppls_edit');
-        // Cetak Pengantar Layar
-        Route::get('spp_ls/cetak_pengantar', [SppLsController::class, 'cetakPengantarLayar'])->name('sppls.cetak_pengantar_layar');
-        Route::get('spp_ls/cetak_rincian', [SppLsController::class, 'cetakRincianLayar'])->name('sppls.cetak_rincian_layar');
-        Route::get('spp_ls/cetak_permintaan', [SppLsController::class, 'cetakPermintaanLayar'])->name('sppls.cetak_permintaan_layar');
-        Route::get('spp_ls/cetak_ringkasan', [SppLsController::class, 'cetakRingkasanLayar'])->name('sppls.cetak_ringkasan_layar');
-        Route::get('spp_ls/cetak_pernyataan', [SppLsController::class, 'cetakPernyataanLayar'])->name('sppls.cetak_pernyataan_layar');
-        Route::get('spp_ls/cetak_sptb', [SppLsController::class, 'cetakSptbLayar'])->name('sppls.cetak_sptb_layar');
-        Route::get('spp_ls/cetak_spp77', [SppLsController::class, 'cetakSpp77Layar'])->name('sppls.cetak_spp77_layar');
-        Route::get('spp_ls/cetak_rincian77', [SppLsController::class, 'cetakRincian77Layar'])->name('sppls.cetak_rincian77_layar');
+        Route::group(['prefix' => 'spp_ls'], function () {
+            Route::get('', [SppLsController::class, 'index'])->name('sppls.index');
+            Route::get('create', [SppLsController::class, 'create'])->name('sppls.create');
+            Route::post('cari_jenis', [SppLsController::class, 'cariJenis'])->name('sppls.cari_jenis');
+            Route::post('cari_nomor_spd', [SppLsController::class, 'cariNomorSpd'])->name('sppls.cari_nomor_spd');
+            Route::post('cari_sub_kegiatan', [SppLsController::class, 'cariSubKegiatan'])->name('sppls.cari_sub_kegiatan');
+            Route::post('cari_rekening', [SppLsController::class, 'cariRekening'])->name('sppls.cari_rekening');
+            Route::post('jumlah_anggaran_penyusunan', [SppLsController::class, 'jumlahAnggaranPenyusunan'])->name('sppls.jumlah_anggaran_penyusunan');
+            Route::post('total_spd', [SppLsController::class, 'totalSpd'])->name('sppls.total_spd');
+            Route::post('total_angkas', [SppLsController::class, 'totalAngkas'])->name('sppls.total_angkas');
+            Route::post('realisasi_spd', [SppLsController::class, 'realisasiSpd'])->name('sppls.realisasi_spd');
+            Route::post('sumber_dana', [SppLsController::class, 'sumberDana'])->name('sppls.sumber_dana');
+            Route::post('cari_nospp', [SppLsController::class, 'cariNoSpp'])->name('sppls.cari_nospp');
+            Route::post('cek_simpan', [SppLsController::class, 'cekSimpan'])->name('sppls.cek_simpan');
+            Route::post('simpan_sppls', [SppLsController::class, 'simpanSppLs'])->name('sppls.simpan_sppls');
+            Route::post('simpan_detail_sppls', [SppLsController::class, 'simpanDetailSppLs'])->name('sppls.simpan_detail_sppls');
+            Route::get('tampil/{no_spp}', [SppLsController::class, 'tampilSppLs'])->where('no_spp', '(.*)')->name('sppls.show');
+            Route::delete('hapus_sppls', [SppLsController::class, 'hapusSppLs'])->name('sppls.hapus_sppls');
+            Route::post('cari_penagihan_sppls', [SppLsController::class, 'cariPenagihanSpp'])->name('sppls.cari_penagihan_sppls');
+            Route::get('edit/{no_spp}', [SppLsController::class, 'editSppLs'])->where('no_spp', '(.*)')->name('sppls.edit');
+            Route::post('simpan_sppls_edit', [SppLsController::class, 'simpanEditSppLs'])->name('sppls.simpan_sppls_edit');
+            Route::post('batal_sppls', [SppLsController::class, 'batalSppLs'])->name('sppls.batal_sppls');
+            // Cetakan SPPLS
+            Route::get('cetak_pengantar', [SppLsController::class, 'cetakPengantarLayar'])->name('sppls.cetak_pengantar_layar');
+            Route::get('cetak_rincian', [SppLsController::class, 'cetakRincianLayar'])->name('sppls.cetak_rincian_layar');
+            Route::get('cetak_permintaan', [SppLsController::class, 'cetakPermintaanLayar'])->name('sppls.cetak_permintaan_layar');
+            Route::get('cetak_ringkasan', [SppLsController::class, 'cetakRingkasanLayar'])->name('sppls.cetak_ringkasan_layar');
+            Route::get('cetak_pernyataan', [SppLsController::class, 'cetakPernyataanLayar'])->name('sppls.cetak_pernyataan_layar');
+            Route::get('cetak_sptb', [SppLsController::class, 'cetakSptbLayar'])->name('sppls.cetak_sptb_layar');
+            Route::get('cetak_spp77', [SppLsController::class, 'cetakSpp77Layar'])->name('sppls.cetak_spp77_layar');
+            Route::get('cetak_rincian77', [SppLsController::class, 'cetakRincian77Layar'])->name('sppls.cetak_rincian77_layar');
+        });
+
+        // SPM
+        Route::group(['prefix' => 'spm'], function () {
+            Route::get('', [SpmController::class, 'index'])->name('spm.index');
+            Route::get('create', [SpmController::class, 'create'])->name('spm.create');
+            Route::post('cari_jenis', [SpmController::class, 'cariJenis'])->name('spm.cari_jenis');
+            Route::post('cari_bank', [SpmController::class, 'cariBank'])->name('spm.cari_bank');
+            Route::post('detail_spm', [SpmController::class, 'detailSpm'])->name('spm.detail_spm');
+        });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');

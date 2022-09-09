@@ -44,6 +44,7 @@
                         <ul class="sub-menu" aria-expanded="true">
                             <li><a href="{{ route('penagihan.index') }}">Penagihan</a></li>
                             <li><a href="{{ route('sppls.index') }}">SPP LS</a></li>
+                            <li><a href="{{ route('spm.index') }}">SPM</a></li>
                         </ul>
                     </li>
                 </ul>

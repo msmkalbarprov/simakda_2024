@@ -6,8 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Return_;
-use SebastianBergmann\CodeCoverage\Driver\Selector;
+use PDF;
 
 class SppLsController extends Controller
 {
@@ -1084,6 +1083,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $cari_kode = DB::table('ms_skpd')->select('kodepos')->where('kd_skpd', $kd_skpd)->first();
@@ -1305,7 +1305,13 @@ class SppLsController extends Controller
 
             $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.pengantar', compact('tanpa', 'jenis', 'kd_skpd', 'beban', 'lcbeban', 'no_spp', 'peng', 'cari_data', 'tahun_anggaran', 'cari_bendahara', 'bank', 'daerah', 'tanggal', 'nogub', 'cari_pptk', 'sub_kegiatan', 'jumlah_spp'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.pengantar', compact('tanpa', 'jenis', 'kd_skpd', 'beban', 'lcbeban', 'no_spp', 'peng', 'cari_data', 'tahun_anggaran', 'cari_bendahara', 'bank', 'daerah', 'tanggal', 'nogub', 'cari_pptk', 'sub_kegiatan', 'jumlah_spp'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakRincianLayar(Request $request)
@@ -1319,6 +1325,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos')->where('kd_skpd', $kd_skpd)->first();
@@ -1571,7 +1578,13 @@ class SppLsController extends Controller
             }
             $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.rincian', compact('jumlah_spp', 'sub_kegiatan', 'cari_pptk', 'tanggal', 'cari_bendahara', 'tanpa', 'daerah', 'total', 'result', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'no_spp', 'cari_data'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.rincian', compact('jumlah_spp', 'sub_kegiatan', 'cari_pptk', 'tanggal', 'cari_bendahara', 'tanpa', 'daerah', 'total', 'result', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'no_spp', 'cari_data'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakPermintaanLayar(Request $request)
@@ -1585,6 +1598,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos', 'alamat')->where('kd_skpd', $kd_skpd)->first();
@@ -1743,7 +1757,13 @@ class SppLsController extends Controller
         }
         $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
         $dpa = DB::table('trhrka')->select('no_dpa', 'tgl_dpa')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first();
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.permintaan', compact('nama_kegiatan', 'nama_program', 'data_spp', 'dpa', 'alamat_skpd', 'lcbeban', 'nama_skpd', 'tahun_anggaran', 'no_spp', 'beban', 'daerah', 'nogub', 'jenis', 'no_spd', 'cari_bendahara', 'nama_bank', 'sub_kegiatan', 'jumlah_spp', 'cari_pptk', 'tanpa', 'tanggal'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.permintaan', compact('nama_kegiatan', 'nama_program', 'data_spp', 'dpa', 'alamat_skpd', 'lcbeban', 'nama_skpd', 'tahun_anggaran', 'no_spp', 'beban', 'daerah', 'nogub', 'jenis', 'no_spd', 'cari_bendahara', 'nama_bank', 'sub_kegiatan', 'jumlah_spp', 'cari_pptk', 'tanpa', 'tanggal'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakRingkasanLayar(Request $request)
@@ -1757,6 +1777,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos', 'alamat')->where('kd_skpd', $kd_skpd)->first();
@@ -2090,7 +2111,13 @@ class SppLsController extends Controller
             $blmspd = $data_nilai->nilai - $totalspd;
             $sisaspp = $totalspd - $totalbelanja;
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.ringkasan', compact('result', 'data_nilai', 'no_spp', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'nilai1', 'nilai2', 'nilai3', 'nilai4', 'nilai5', 'totalspd', 'blmspd', 'totalbelanja', 'sisaspp', 'tanpa', 'tanggal', 'cari_bendahara', 'cari_pptk', 'daerah', 'sub_kegiatan', 'jenis', 'data_spp', 'data_dpa', 'jumlah_spp'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.ringkasan', compact('result', 'data_nilai', 'no_spp', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'nilai1', 'nilai2', 'nilai3', 'nilai4', 'nilai5', 'totalspd', 'blmspd', 'totalbelanja', 'sisaspp', 'tanpa', 'tanggal', 'cari_bendahara', 'cari_pptk', 'daerah', 'sub_kegiatan', 'jenis', 'data_spp', 'data_dpa', 'jumlah_spp'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakPernyataanLayar(Request $request)
@@ -2104,6 +2131,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos', 'alamat')->where('kd_skpd', $kd_skpd)->first();
@@ -2177,7 +2205,13 @@ class SppLsController extends Controller
                     break;
             }
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.pernyataan', compact('data', 'beban', 'no_spp', 'tahun_anggaran', 'lcbeban', 'tanpa', 'daerah', 'cari_bendahara'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.pernyataan', compact('data', 'beban', 'no_spp', 'tahun_anggaran', 'lcbeban', 'tanpa', 'daerah', 'cari_bendahara'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakSptbLayar(Request $request)
@@ -2191,6 +2225,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $status = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
@@ -2252,7 +2287,13 @@ class SppLsController extends Controller
                     $lcbeban = "LS";
             }
         }
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.sptb', compact('tahun_anggaran', 'no_spp', 'beban', 'lcbeban', 'data', 'cari_bendahara', 'daerah', 'tanpa', 'kd_skpd', 'data_dpa'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.sptb', compact('tahun_anggaran', 'no_spp', 'beban', 'lcbeban', 'data', 'cari_bendahara', 'daerah', 'tanpa', 'kd_skpd', 'data_dpa'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakSpp77Layar(Request $request)
@@ -2266,6 +2307,7 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first();
@@ -2309,7 +2351,13 @@ class SppLsController extends Controller
         }
         $dataspd = DB::table('trhspd')->select('no_spd', 'tgl_spd', 'total')->whereRaw("LEFT(kd_skpd,17) = LEFT('$kd_skpd',17)")->get();
         $datasp2d = DB::table('trhsp2d')->select('no_sp2d', 'tgl_sp2d', 'nilai as total')->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '6'])->get();
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.spp77', compact('no_spp', 'jenisspp', 'jenis_spp', 'skpd', 'kd_sub_kegiatan1', 'nm_sub_kegiatan1', 'cari_bendahara', 'cari_pptk', 'cari_pa', 'bank', 'tglspd', 'data', 'nilaispd', 'dataspd', 'datasp2d', 'sub_kegiatan', 'tanpa'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.spp77', compact('no_spp', 'jenisspp', 'jenis_spp', 'skpd', 'kd_sub_kegiatan1', 'nm_sub_kegiatan1', 'cari_bendahara', 'cari_pptk', 'cari_pa', 'bank', 'tglspd', 'data', 'nilaispd', 'dataspd', 'datasp2d', 'sub_kegiatan', 'tanpa'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function cetakRincian77Layar(Request $request)
@@ -2323,11 +2371,12 @@ class SppLsController extends Controller
         $ppkd = $request->ppkd;
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
         $tahun_anggaran = '2022';
 
         $spp = DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp])->first();
         $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first();
-        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->first();
+        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
 
@@ -2355,6 +2404,55 @@ class SppLsController extends Controller
             $join->on('a.no_spp', '=', 'b.no_spp');
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where(['a.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->groupBy('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6')->select('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6', DB::raw("SUM(b.nilai) as nilaispp"))->get();
-        return view('penatausahaan.pengeluaran.spp_ls.cetak.rincian77', compact('jenisspp', 'no_spp', 'tahun_anggaran', 'data_spp', 'nama_kegiatan', 'data_spp_rinci'));
+        $view = view('penatausahaan.pengeluaran.spp_ls.cetak.rincian77', compact('jenisspp', 'no_spp', 'tahun_anggaran', 'data_spp', 'nama_kegiatan', 'data_spp_rinci', 'spp', 'cari_bendahara', 'sub_kegiatan', 'tanpa', 'cari_pa'));
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function batalSppLs(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $keterangan = $request->keterangan;
+        $beban = $request->beban;
+        $nama = Auth::user()->nama;
+        $waktu_ubah = date('Y-m-d H:i:s');
+
+        DB::beginTransaction();
+        try {
+            DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
+                'sp2d_batal' => '1',
+                'ket_batal' => $keterangan,
+                'user_batal' => $nama,
+                'tgl_batal' => $waktu_ubah
+            ]);
+            if ($beban == '6') {
+                $data = DB::table('trhspp')->select('no_tagih')->where(['no_spp' => $no_spp])->first();
+                if ($data->no_tagih) {
+                    DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
+                        'no_tagih' => '',
+                        'kontrak' => '',
+                        'sts_tagih' => '0',
+                        'nmrekan' => '',
+                        'pimpinan' => ''
+                    ]);
+                    DB::table('trhtagih')->where(['no_bukti' => $data->no_tagih])->update([
+                        'sts_tagih' => '0'
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 }
