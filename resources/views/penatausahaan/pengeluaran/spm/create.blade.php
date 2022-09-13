@@ -50,8 +50,9 @@
                         <div class="col-md-4">
                             <div class="md-form input-group mt-md-0 mb-0">
                                 <input type="text" class="form-control" id="no_spm" name="no_spm" readonly>
+                                <input type="text" class="form-control" id="urut" name="urut" hidden readonly>
                                 <span class="input-group-btn">
-                                    <button type="button" id="cari_nospp" class="btn btn-primary"><i
+                                    <button type="button" id="cari_nospm" class="btn btn-primary"><i
                                             class="uil-refresh"></i></button>
                                 </span>
                                 @error('no_spm')
@@ -63,6 +64,8 @@
                         <div class="col-md-4">
                             <input type="date" class="form-control @error('tgl_spm') is-invalid @enderror" id="tgl_spm"
                                 name="tgl_spm">
+                            <input type="date" class="form-control @error('tgl_spm_lalu') is-invalid @enderror"
+                                id="tgl_spm_lalu" name="tgl_spm_lalu" hidden>
                             @error('tgl_spm')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -80,7 +83,7 @@
                         </div>
                         <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('tgl_spd') is-invalid @enderror" type="text" id="tgl_spd"
+                            <input class="form-control @error('tgl_spd') is-invalid @enderror" type="date" id="tgl_spd"
                                 name="tgl_spd" required readonly>
                             @error('tgl_spd')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -191,7 +194,7 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        <button id="simpan_spp" class="btn btn-primary btn-md">Simpan</button>
+                        <button id="simpan_spm" class="btn btn-primary btn-md">Simpan</button>
                         <a href="{{ route('spm.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
@@ -228,6 +231,26 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="modal fade bs-example-modal-center" id="konfirmasi_potongan" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center">Apakah Anda ingin menambahkan potongan?</p>
+                    <div class="mt-2" style="text-align: center">
+                        <a href="{{ route('spm.tambah_potongan') }}" class="btn btn-primary btn-md">Ya</a>
+                        <a href="{{ route('spm.index') }}" class="btn btn-danger btn-md">Tidak</a>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div>
 @endsection
 @section('js')

@@ -480,7 +480,6 @@
                         dataType: "json",
                         success: function(data) {
                             let data1 = $.parseJSON(data);
-                            console.log(data1);
                             if (data1.status) {
                                 $("#npwp_validasi").val(data1.data[0].data
                                     .nomorPokokWajibPajak);

@@ -14,11 +14,11 @@
                             <table id="spm" class="table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 25px">No.</th>
-                                        <th style="width: 150px">Nomor SPM</th>
-                                        <th style="width: 100px">Tanggal</th>
-                                        <th style="width: 400px">Keterangan</th>
-                                        <th style="width: 200px">Aksi</th>
+                                        <th style="width: 25px;text-align:center">No.</th>
+                                        <th style="width: 100px;text-align:center">Nomor SPM</th>
+                                        <th style="width: 50px;text-align:center">Tanggal</th>
+                                        <th style="width: 150px;text-align:center">Keterangan</th>
+                                        <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -26,10 +26,13 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $spm->no_spm }}</td>
-                                            <td>{{ $spm->tgl_spm }}</td>
-                                            <td>{{ $spm->keperluan }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($spm->tgl_spm)->locale('id')->isoFormat('DD MMMM Y') }}
+                                            </td>
+                                            <td style="text-align: justify">{{ Str::limit($spm->keperluan, '20') }}</td>
                                             <td>
-
+                                                <a href="{{ route('spm.tambah_potongan', $spm->no_spm) }}"
+                                                    id="tambah_potongan" class="btn btn-secondary btn-sm"><i
+                                                        class="uil-percentage"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach

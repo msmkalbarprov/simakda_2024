@@ -5,7 +5,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
         let tabel = $('#rincian_spm').DataTable({
             responsive: true,
             ordering: false,
@@ -22,6 +21,15 @@
                     data: 'nilai'
                 },
             ]
+        });
+
+        $.ajax({
+            url: "{{ route('spm.tgl_spm_lalu') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                $('#tgl_spm_lalu').val(data.tanggal);
+            }
         });
 
         $('.select2-multiple').select2({
@@ -43,6 +51,8 @@
             let jenis = $(this).find(':selected').data('jenis');
             let npwp = $(this).find(':selected').data('npwp');
             let rekening = $(this).find(':selected').data('rekening');
+            let no_spm = document.getElementById('no_spm').value;
+            let tahun_anggaran = "2022";
             let nm_bulan = cari_bulan(bulan);
             let nm_beban = cari_beban(beban);
             let nm_jenis = cari_jenis(beban, jenis);
@@ -64,6 +74,7 @@
             $("#npwp").val(npwp);
             $("#rekening").val(rekening);
 
+            // Detail SPM
             $.ajax({
                 url: "{{ route('spm.detail_spm') }}",
                 type: "POST",
@@ -87,6 +98,125 @@
                     $('#total').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total))
+                }
+            });
+
+            // No SPD
+            $.ajax({
+                url: "{{ route('spm.cari_nospd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_spd: no_spd
+                },
+                success: function(data) {
+                    $('#tgl_spd').val(data.tgl_spd);
+                }
+            });
+
+            get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm);
+        });
+
+        $('#cari_nospm').on('click', function() {
+            let no_spp = document.getElementById('no_spp').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let beban = document.getElementById('beban').value;
+            let tahun_anggaran = '2022';
+            let no_spm = document.getElementById('no_spm').value;
+            get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm);
+        });
+
+        // simpan spm
+        $('#simpan_spm').on('click', function() {
+            let no_spm = document.getElementById("no_spm").value;
+            let no_spp = document.getElementById("no_spp").value;
+            let tgl_spm = document.getElementById("tgl_spm").value;
+            let tgl_spm_lalu = document.getElementById("tgl_spm_lalu").value;
+            let urut = document.getElementById("urut").value;
+            let tgl_spp = document.getElementById("tgl_spp").value;
+            let beban = document.getElementById("beban").value;
+            let bulan = document.getElementById("bulan").value;
+            let keperluan = document.getElementById("keperluan").value;
+            let rekanan = document.getElementById("rekanan").value;
+            let bank = document.getElementById("bank").value;
+            let npwp = document.getElementById("npwp").value;
+            let rekening = document.getElementById("rekening").value;
+            let nm_skpd = document.getElementById("nm_skpd").value;
+            let kd_skpd = document.getElementById("kd_skpd").value;
+            let no_spd = document.getElementById("no_spd").value;
+            let jenis = document.getElementById("jenis").value;
+            let total = rupiah(document.getElementById("total").value);
+            let tahun_anggaran = "2022";
+            let tahun_input = tgl_spm.substring(0, 4);
+            if (!tgl_spm) {
+                alert('Silahkan pilih tanggal SPM!');
+                return;
+            }
+            if (tgl_spm < tgl_spm_lalu) {
+                alert('Tanggal SPM tidak boleh kurang dari SPM Lalu...!!!');
+                return;
+            }
+            if (tahun_input != tahun_anggaran) {
+                alert('Tahun tidak sama dengan tahun Anggaran');
+                return;
+            }
+            if (!no_spm) {
+                alert("No SPM Tidak Boleh Kosong");
+                return;
+            }
+            if (!no_spd) {
+                alert("No SPD Tidak Boleh Kosong");
+                return;
+            }
+            if (tgl_spm < tgl_spp) {
+                alert("Tanggal SPM tidak boleh lebih kecil dari tanggal SPP");
+                return;
+            }
+            if (keperluan.length > 1000) {
+                alert('Keterangan Tidak boleh lebih dari 1000 karakter');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('spm.simpan_spm') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                    tgl_spm: tgl_spm,
+                    no_spp: no_spp,
+                    kd_skpd: kd_skpd,
+                    nm_skpd: nm_skpd,
+                    tgl_spp: tgl_spp,
+                    bulan: bulan,
+                    no_spd: no_spd,
+                    keperluan: keperluan,
+                    beban: beban,
+                    bank: bank,
+                    rekanan: rekanan,
+                    rekening: rekening,
+                    npwp: npwp,
+                    total: total,
+                    urut: urut,
+                    no_spp: no_spp,
+                    jenis: jenis,
+                },
+                success: function(data) {
+                    if (data.message == '0') {
+                        alert('Gagal Simpan..!!');
+                        return;
+                    } else if (data.message == '1') {
+                        alert('Nomor SPM Sudah Terpakai...!!!,  Ganti Nomor SPM...!!!');
+                        return;
+                    } else if (data.message == '3') {
+                        alert(
+                            'Nomor SPP Sudah Terpakai...!!!,  Pilih Nomor SPP Lainnya...!!!'
+                        );
+                        return;
+                    } else {
+                        alert('Nomor bisa dipakai');
+                        $('#konfirmasi_potongan').modal('show');
+                    }
                 }
             });
         });
@@ -186,6 +316,56 @@
                     $('#nm_bank').val(data.nama);
                 }
             })
+        }
+
+        function get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm) {
+            if (!no_spp) {
+                alert('Pilih terlebih dahulu No SPP');
+                return;
+            }
+            let jns;
+            let jns2;
+            if (beban == '4') {
+                if (no_spp.includes("BTL")) {
+                    jns = 'BTL';
+                } else {
+                    jns = 'GJ';
+                }
+            } else if (beban == '6' || beban == '5') {
+                jns = 'LS';
+            } else if (beban == '1') {
+                jns = 'UP';
+            } else if (beban == '2') {
+                jns = 'GU';
+            } else if (beban == '3') {
+                jns = 'TU';
+            }
+
+            if (beban == 4) {
+                $jns2 = 'BTL';
+            } else {
+                $jns2 = 'BL';
+            }
+
+            $.ajax({
+                url: "{{ route('spm.cari_nospm') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm
+                },
+                success: function(data) {
+                    let nomor = data.nilai + "/SPM/" + jns + "/" + kd_skpd + "/" + tahun_anggaran
+                    $('#no_spm').val(nomor);
+                    $('#urut').val(data.nilai);
+                }
+            });
+        }
+
+        function rupiah(n) {
+            let n1 = n.split('.').join('');
+            let rupiah = n1.split(',').join('.');
+            return parseFloat(rupiah) || 0;
         }
 
     });

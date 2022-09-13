@@ -117,6 +117,16 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('cari_jenis', [SpmController::class, 'cariJenis'])->name('spm.cari_jenis');
             Route::post('cari_bank', [SpmController::class, 'cariBank'])->name('spm.cari_bank');
             Route::post('detail_spm', [SpmController::class, 'detailSpm'])->name('spm.detail_spm');
+            Route::post('cari_nospd', [SpmController::class, 'cariNoSpd'])->name('spm.cari_nospd');
+            Route::post('cari_nospm', [SpmController::class, 'cariNoSpm'])->name('spm.cari_nospm');
+            Route::post('tgl_spm_lalu', [SpmController::class, 'tglSpmLalu'])->name('spm.tgl_spm_lalu');
+            Route::post('simpan_spm', [SpmController::class, 'simpanSpm'])->name('spm.simpan_spm');
+            Route::post('cari_rek_pot', [SpmController::class, 'cariRekPot'])->name('spm.cari_rek_pot');
+            Route::post('isi_list_pot', [BankKalbarController::class, 'isiListPot'])->name('spm.isi_list_pot');
+            Route::post('create_id_billing', [BankKalbarController::class, 'createBilling'])->name('spm.create_id_billing');
+            Route::post('load_rincian', [SpmController::class, 'loadRincian'])->name('spm.load_rincian');
+            Route::post('hapus_rincian_pajak', [SpmController::class, 'hapusRincianPajak'])->name('spm.hapus_rincian_pajak');
+            Route::get('tambah_potongan/{no_spm?}', [SpmController::class, 'tambahPotongan'])->where('no_spm', '(.*)')->name('spm.tambah_potongan');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
