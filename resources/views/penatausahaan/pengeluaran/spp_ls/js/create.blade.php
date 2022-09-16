@@ -1161,7 +1161,6 @@
             document.getElementById('nilai_rincian').value = '';
         }
 
-
         function kosong_input_detail() {
             $('#kode_rekening').val(null).change();
             $('#nm_rekening').val('');

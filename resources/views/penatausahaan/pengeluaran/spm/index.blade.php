@@ -33,6 +33,9 @@
                                                 <a href="{{ route('spm.tambah_potongan', $spm->no_spm) }}"
                                                     id="tambah_potongan" class="btn btn-secondary btn-sm"><i
                                                         class="uil-percentage"></i></a>
+                                                <button type="button"
+                                                    onclick="cetak('{{ $spm->no_spm }}', '{{ $spm->jns_spp }}', '{{ $spm->kd_skpd }}')"
+                                                    class="btn btn-success btn-sm"><i class="uil-print"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -80,481 +83,221 @@
             </div>
         </div>
     </div>
+
+    {{-- modul cetak --}}
+    <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cetak SPM</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- No SPM --}}
+                    <div class="mb-3 row">
+                        <label for="no_spm" class="col-md-2 col-form-label">No SPM</label>
+                        <div class="col-md-6">
+                            <input type="text" readonly class="form-control" id="no_spm" name="no_spm">
+                            <input type="text" hidden class="form-control" id="beban" name="beban">
+                            <input type="text" hidden class="form-control" id="kd_skpd" name="kd_skpd">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch form-switch-lg">
+                                <input type="checkbox" class="form-check-input" id="tanpa_tanggal">
+                                <label class="form-check-label" for="tanpa_tanggal">Tanpa Tanggal</label>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- Bendahara --}}
+                    <div class="mb-3 row">
+                        <label for="bendahara" class="col-md-2 col-form-label">Bendahara Pengeluaran</label>
+                        <div class="col-md-6">
+                            <select name="bendahara" class="form-control" id="bendahara">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($bendahara as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_bendahara" id="nama_bendahara" class="form-control"
+                                readonly>
+                        </div>
+                    </div>
+                    {{-- PPTK --}}
+                    <div class="mb-3 row">
+                        <label for="pptk" class="col-md-2 col-form-label">PPTK/PPK</label>
+                        <div class="col-md-6">
+                            <select name="pptk" class="form-control" id="pptk">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($pptk as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_pptk" id="nama_pptk" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- PA/KPA --}}
+                    <div class="mb-3 row">
+                        <label for="pa_kpa" class="col-md-2 col-form-label">PA/KPA</label>
+                        <div class="col-md-6">
+                            <select name="pa_kpa" class="form-control" id="pa_kpa">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($pa_kpa as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_pa_kpa" id="nama_pa_kpa" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- PPKD --}}
+                    <div class="mb-3 row">
+                        <label for="ppkd" class="col-md-2 col-form-label">PPKD</label>
+                        <div class="col-md-6">
+                            <select name="ppkd" class="form-control" id="ppkd">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($ppkd as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_ppkd" id="nama_ppkd" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- Jenis --}}
+                    <div class="mb-3 row">
+                        <label for="jenis_ls" class="col-md-2 col-form-label">Jenis</label>
+                        <div class="col-md-6">
+                            <select name="jenis_ls" class="form-control" id="jenis_ls">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                <option value="1">Gaji Induk, Gaji Terusan, Kekurangan Gaji</option>
+                                <option value="2">Gaji Susulan</option>
+                                <option value="3">Tambahan Penghasilan</option>
+                                <option value="4">Honorarium PNS</option>
+                                <option value="5">Honorarium Tenaga Kontrak</option>
+                                <option value="6">Pengadaan Barang dan Jasa/Konstruksi/Konsultansi</option>
+                                <option value="7">Pengadaan Konsumsi</option>
+                                <option value="8">Sewa Rumah Jabatan/Gedung untuk Kantor/Gedung Pertemuan/Tempat
+                                    Pertemuan/Tempat Penginapan/Kendaraan</option>
+                                <option value="9">Pengadaan Sertifikat Tanah</option>
+                                <option value="10">Pengadaan Tanah</option>
+                                <option value="11">Hibah Barang dan Jasa pada Pihak Ketiga</option>
+                                <option value="12">LS Bantuan Sosial pada Pihak Ketiga</option>
+                                <option value="13">Hibah Uang Pada Pihak Ketiga</option>
+                                <option value="14">Bantuan Keuangan Pada Kabupaten/Kota</option>
+                                <option value="15">Bagi Hasil Pajak dan Bukan Pajak</option>
+                                <option value="16">Hibah Konstruksi pada Pihak Ketiga</option>
+                                <option value="98">Belanja Operasional KDH/WKDH dan Pimpinan DPRD</option>
+                                <option value="99">Pembiayaan pada Pihak Ketiga Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_ppkd" id="nama_ppkd" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- Baris SPM --}}
+                    <div class="mb-3 row">
+                        <label for="baris_spm" class="col-md-2 col-form-label">Baris SPM</label>
+                        <div class="col-md-6">
+                            <input type="number" value="15" min="1" class="form-control" id="baris_spm"
+                                name="baris_spm">
+                        </div>
+                    </div>
+                    {{-- Kelengkapan, lampiran --}}
+                    <div class="mb-3 row">
+                        <label for="kelengkapan" class="col-md-2 col-form-label">Kelengkapan</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md kelengkapan" data-jenis="pdf"
+                                name="kelengkapan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md kelengkapan" data-jenis="layar"
+                                name="kelengkapan">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md kelengkapan" data-jenis="download"
+                                name="kelengkapan">Download</button>
+                        </div>
+                        <label for="lampiran" class="col-md-2 col-form-label">Lampiran</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md lampiran" data-jenis="pdf"
+                                name="lampiran_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md lampiran" data-jenis="layar"
+                                name="lampiran">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md lampiran" data-jenis="download"
+                                name="lampiran">Download</button>
+                        </div>
+                    </div>
+                    {{-- Berkas SPM, Tanggung Jawab SPM --}}
+                    <div class="mb-3 row">
+                        <label for="berkas_spm" class="col-md-2 col-form-label">Berkas SPM</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md berkas_spm" data-jenis="pdf"
+                                name="berkas_spm_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md berkas_spm" data-jenis="layar"
+                                name="berkas_spm">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md berkas_spm" data-jenis="download"
+                                name="berkas_spm">Download</button>
+                        </div>
+                        <label for="tanggung_jawab" class="col-md-2 col-form-label">Tanggung Jawab SPM</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md tanggung_jawab" data-jenis="pdf"
+                                name="tanggung_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md tanggung_jawab" data-jenis="layar"
+                                name="tanggung_jawab">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md tanggung_jawab" data-jenis="download"
+                                name="tanggung_jawab">Download</button>
+                        </div>
+                    </div>
+                    {{-- Ringkasan, Pernyataan --}}
+                    <div class="mb-3 row">
+                        <label for="ringkasan" class="col-md-2 col-form-label">Ringkasan</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md ringkasan" data-jenis="pdf"
+                                name="ringkasan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md ringkasan" data-jenis="layar"
+                                name="ringkasan">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md ringkasan" data-jenis="download"
+                                name="ringkasan">Download</button>
+                        </div>
+                        <label for="pernyataan" class="col-md-2 col-form-label">pernyataan Jawab SPM</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md pernyataan" data-jenis="pdf"
+                                name="pernyataan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md pernyataan" data-jenis="layar"
+                                name="pernyataan">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md pernyataan" data-jenis="download"
+                                name="pernyataan">Download</button>
+                        </div>
+                    </div>
+                    {{-- Pengantar --}}
+                    <div class="mb-3 row">
+                        <label for="pengantar" class="col-md-2 col-form-label">Pengantar</label>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-danger btn-md pengantar" data-jenis="pdf"
+                                name="pengantar_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md pengantar" data-jenis="layar"
+                                name="pengantar">Layar</button>
+                            <button type="button" class="btn btn-warning btn-md pengantar" data-jenis="download"
+                                name="pengantar">Download</button>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $('#spm').DataTable();
-
-            $('#bendahara').select2({
-                dropdownParent: $('#modal_cetak'),
-                theme: 'bootstrap-5'
-            });
-
-            $('#pptk').select2({
-                dropdownParent: $('#modal_cetak'),
-                theme: 'bootstrap-5'
-            });
-
-            $('#pa_kpa').select2({
-                dropdownParent: $('#modal_cetak'),
-                theme: 'bootstrap-5'
-            });
-
-            $('#ppkd').select2({
-                dropdownParent: $('#modal_cetak'),
-                theme: 'bootstrap-5'
-            });
-
-            $('#bendahara').on('select2:select', function() {
-                let nama = $(this).find(':selected').data('nama');
-                $('#nama_bendahara').val(nama);
-            });
-
-            $('#pptk').on('select2:select', function() {
-                let nama = $(this).find(':selected').data('nama');
-                $('#nama_pptk').val(nama);
-            });
-
-            $('#pa_kpa').on('select2:select', function() {
-                let nama = $(this).find(':selected').data('nama');
-                $('#nama_pa_kpa').val(nama);
-            });
-
-            $('#ppkd').on('select2:select', function() {
-                let nama = $(this).find(':selected').data('nama');
-                $('#nama_ppkd').val(nama);
-            });
-
-            // cetak pengantar layar
-            $('.pengantar_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_pengantar_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            // cetak rincian layar
-            $('.rincian_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_rincian_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            // cetak permintaan layar
-            $('.permintaan_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_permintaan_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('.ringkasan_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_ringkasan_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('.pernyataan_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_pernyataan_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('.sptb_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_sptb_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('.spp_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_spp77_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('.rincian77_layar').on('click', function() {
-                let spasi = document.getElementById('spasi').value;
-                let no_spp = document.getElementById('no_spp').value;
-                let beban = document.getElementById('beban').value;
-                let bendahara = document.getElementById('bendahara').value;
-                let pptk = document.getElementById('pptk').value;
-                let pa_kpa = document.getElementById('pa_kpa').value;
-                let ppkd = document.getElementById('ppkd').value;
-                let kd_skpd = document.getElementById('kd_skpd').value;
-                let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-                let jenis_print = $(this).data("jenis");
-                let tanpa;
-                if (tanpa_tanggal == false) {
-                    tanpa = 0;
-                } else {
-                    tanpa = 1;
-                }
-                if (!bendahara) {
-                    alert('Bendahara Penghasilan tidak boleh kosong!');
-                    return;
-                }
-                if (!pptk) {
-                    alert("PPTK tidak boleh kosong!");
-                    return;
-                }
-                if (!ppkd) {
-                    alert("PPKD tidak boleh kosong!");
-                    return;
-                }
-                let url = new URL("{{ route('sppls.cetak_rincian77_layar') }}");
-                let searchParams = url.searchParams;
-                searchParams.append("no_spp", no_spp);
-                searchParams.append("beban", beban);
-                searchParams.append("spasi", spasi);
-                searchParams.append("bendahara", bendahara);
-                searchParams.append("pptk", pptk);
-                searchParams.append("pa_kpa", pa_kpa);
-                searchParams.append("ppkd", ppkd);
-                searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tanpa", tanpa);
-                searchParams.append("jenis_print", jenis_print);
-                window.open(url.toString(), "_blank");
-            });
-
-            $('#batal_sppls').on('click', function() {
-                let no_spp = document.getElementById('no_spp_batal').value;
-                let keterangan = document.getElementById('keterangan_batal').value;
-                let beban = document.getElementById('beban_batal').value;
-                let tanya = confirm('Anda yakin akan Membatalkan SPP: ' + no_spp + '  ?');
-                if (tanya == true) {
-                    if (!keterangan) {
-                        alert('Keterangan harus diisi!');
-                        return;
-                    }
-                    $.ajax({
-                        url: "{{ route('sppls.batal_sppls') }}",
-                        type: "POST",
-                        dataType: 'json',
-                        data: {
-                            no_spp: no_spp,
-                            keterangan: keterangan,
-                            beban: beban
-                        },
-                        success: function(data) {
-                            if (data.message == '1') {
-                                alert('SPP Berhasil Dibatalkan');
-                                window.location.href = "{{ route('sppls.index') }}";
-                            } else {
-                                alert('SPP Berhasil Dibatalkan');
-                                return;
-                            }
-                        }
-                    })
-                }
-            });
-        });
-
-        function cetak(no_spp, beban, kd_skpd) {
-            $('#no_spp').val(no_spp);
-            $('#beban').val(beban);
-            $('#kd_skpd').val(kd_skpd);
-            $('#modal_cetak').modal('show');
-        }
-
-        function batal_spp(no_spp, beban, kd_skpd) {
-            $('#no_spp_batal').val(no_spp);
-            $('#beban_batal').val(beban);
-            $('#batal_spp').modal('show');
-        }
-
-        function deleteData(no_spp) {
-            let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor SPP : ' + no_spp)
-            if (tanya == true) {
-                $.ajax({
-                    url: "{{ route('sppls.hapus_sppls') }}",
-                    type: "DELETE",
-                    dataType: 'json',
-                    data: {
-                        no_spp: no_spp
-                    },
-                    success: function(data) {
-                        if (data.message == '1') {
-                            alert('Data berhasil dihapus!');
-                            location.reload();
-                        } else {
-                            alert('Data gagal dihapus!');
-                            location.reload();
-                        }
-                    }
-                })
-            } else {
-                return false;
-            }
-        }
-    </script>
+    @include('penatausahaan.pengeluaran.spm.js.cetak')
 @endsection

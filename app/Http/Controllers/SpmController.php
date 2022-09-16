@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class SpmController extends Controller
 {
@@ -15,6 +16,10 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_spm' => DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->where(['a.kd_skpd' => $kd_skpd])->select('a.*', DB::raw("ISNULL(b.sp2d_batal,'') as sp2d_batal"), DB::raw("ISNULL(ket_batal,'') as ket_batal"))->orderBy('a.no_spm', 'asc')->orderBy('a.kd_skpd', 'asc')->get(),
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK'])->get(),
+            'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'PPK'])->get(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
+            'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD'])->get(),
         ];
         return view('penatausahaan.pengeluaran.spm.index')->with($data);
     }
@@ -227,14 +232,9 @@ class SpmController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = $request->no_spm;
-        $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->whereIn('kd_rek6', ['210105010001', '210105020001', '210105030001', '210109010001', '210106010001'])->get();
-        return Datatables::of($data)
-            // ->addColumn('hapus', function ($data) {
-            //     return '<a href="javascript:void(0);" onclick="hapusPajak(' . $data->no_spm . ',' . $data->kd_rek6 . ',' . $data->nm_rek6 . ',' . $data->idBilling . ',' . $data->nilai . ')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
-            // })->rawColumns(['hapus'])
-            ->make(true);;
+        $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get();
+        return Datatables::of($data)->make(true);;
         return view('penatausahaan.pengeluaran.spm.tambah_potongan');
-        // return response()->json($data);
     }
 
     public function hapusRincianPajak(Request $request)
@@ -254,6 +254,197 @@ class SpmController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function tambahListPotongan(Request $request)
+    {
+        $rekening_transaksi = $request->rekening_transaksi;
+        $rekening_potongan = $request->rekening_potongan;
+        $map_pot = $request->map_pot;
+        $nm_rek_pot = $request->nm_rek_pot;
+        $id_billing = $request->id_billing;
+        $nilai_pot = $request->nilai_pot;
+        $no_spm = $request->no_spm;
+        $kd_skpd = $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trspmpot')->insert([
+                'no_spm' => $no_spm,
+                'kd_rek6' => $rekening_potongan,
+                'nm_rek6' => $nm_rek_pot,
+                'nilai' => $nilai_pot,
+                'kd_skpd' => $kd_skpd,
+                'pot' => '',
+                'kd_trans' => $rekening_transaksi,
+                'map_pot' => $map_pot,
+                'idBilling' => $id_billing
+            ]);
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // cetak kelengkapan
+    public function cetakKelengkapan(Request $request)
+    {
+        $no_spm = $request->no_spm;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $jenis_print = $request->jenis_print;
+        $baris_spm = $request->baris_spm;
+        $jenis_ls = $request->jenis_ls;
+        $kd_skpd = $request->kd_skpd;
+        $beban = $request->beban;
+
+        $data = [
+            'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),
+            'spm' => DB::table('trhspm')->select('no_spp', 'tgl_spp', 'jenis_beban')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->first(),
+            'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'kd_skpd', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
+            'skpd' => DB::table('trhspp')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'ms_skpd' => DB::table('ms_skpd')->select('alamat', 'email', 'kodepos')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => '2022',
+            'beban' => $beban,
+            'jenis' => $jenis_ls,
+            'beban5' => [
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '98', '99'
+            ]
+        ];
+        $view = view('penatausahaan.pengeluaran.spm.cetak.kelengkapan')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    // cetak berkas spm
+    public function cetakBerkas(Request $request)
+    {
+        $no_spm = $request->no_spm;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $jenis_print = $request->jenis_print;
+        $baris_spm = $request->baris_spm;
+        $jenis_ls = $request->jenis_ls;
+        $kd_skpd = $request->kd_skpd;
+        $skpd = Auth::user()->kd_skpd;
+        $beban = $request->beban;
+
+        $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspm as b', 'a.no_spp', '=', 'b.no_spp')->select('a.kd_sub_kegiatan')->where(['b.no_spm' => $no_spm])->groupBy('a.kd_sub_kegiatan')->first();
+        $data_spm = DB::table('trhspm as a')->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp) as pimpinan"), DB::raw("(SELECT tgl_spd FROM trhspd WHERE no_spd=a.no_spd and LEFT(kd_skpd,17)=LEFT(a.kd_skpd,17)) as tgl_spd"))->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])->first();
+        $status_angkas = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->select('b.nama', 'a.jns_ang')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->first();
+        $total_beban = total_beban($data_spm, $kd_skpd, $status_angkas);
+
+        if ($total_beban <= $baris_spm) {
+            $data_beban = data_beban($data_spm, $kd_skpd, $status_angkas);
+        } else {
+            $data_beban = data_beban1($data_spm, $kd_skpd, $status_angkas);
+        }
+        $data_potongan = DB::table('trspmpot as a')->select('a.nilai', 'b.nm_pot')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $no_spm, 'kelompok' => '1', 'kd_skpd' => $kd_skpd])->get();
+        $total_potongan = 0;
+        foreach ($data_potongan as $potongan) {
+            $total_potongan += $potongan->nilai;
+        }
+        $data_potongan1 = DB::table('trspmpot as a')->select('a.nilai', 'a.nm_rek6')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $no_spm, 'kelompok' => '2', 'kd_skpd' => $kd_skpd])->get();
+        $total_potongan1 = 0;
+        foreach ($data_potongan1 as $potongan) {
+            $total_potongan1 += $potongan->nilai;
+        }
+        $data = [
+            'no_spm' => $no_spm,
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'data_spm' => $data_spm,
+            'tahun_anggaran' => '2022',
+            'bank' => DB::table('ms_skpd as a')->select('bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'rekening', 'npwp')->where(['a.kd_skpd' => $kd_skpd])->first(),
+            'beban1' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->first(),
+            'beban' => $beban,
+            'kd_skpd' => $kd_skpd,
+            'baris' => $baris_spm,
+            'total_beban' => $total_beban,
+            'data_beban' => $data_beban,
+            'data_potongan' => $data_potongan,
+            'data_potongan1' => $data_potongan1,
+            'total_potongan' => $total_potongan,
+            'total_potongan1' => $total_potongan1,
+            'tanpa' => $tanpa
+        ];
+
+        $view = view('penatausahaan.pengeluaran.spm.cetak.berkas')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    // cetak ringkasan
+
+    // cetak pengantar
+    public function cetakPengantar(Request $request)
+    {
+        $no_spm = $request->no_spm;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $jenis_print = $request->jenis_print;
+        $baris_spm = $request->baris_spm;
+        $jenis_ls = $request->jenis_ls;
+        $kd_skpd = $request->kd_skpd;
+        $kd1 = substr($kd_skpd, 0, 17);
+        $skpd = Auth::user()->kd_skpd;
+        $beban = $request->beban;
+        $no_spp = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->first();
+        $data_spp = DB::table('trhspp')->select('tgl_spp', 'no_spd')->where(['no_spp' => $no_spp->no_spp, 'kd_skpd' => $kd_skpd])->first();
+        $tgl_spd = DB::table('trhspd')->select('tgl_spd')->where(['no_spd' => $data_spp->no_spd])->where(DB::raw("LEFT(kd_skpd,17)"), $kd1)->first();
+        $sub_giat = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp->no_spp])->groupBy('kd_sub_kegiatan')->first();
+        $giatspp = $sub_giat->kd_sub_kegiatan;
+        $cari_rek = DB::table('trdspp')->select('kd_rek6')->where(['no_spp' => $no_spp->no_spp, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->first();
+        $data_beban = pengantar_spm($no_spm, $kd_skpd, $beban, $data_spp, $no_spp, $tgl_spd, $giatspp, $cari_rek);
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'alamat', 'kodepos')->where(['kd_skpd' => $kd_skpd])->first(),
+            'no_spp' => $no_spp,
+            'data_spp' => $data_spp,
+            'tgl_spd' => $tgl_spd,
+            'sub_giat' => $sub_giat,
+            'tahun_anggaran' => '2022',
+            'beban' => $beban,
+            'status_anggaran' => DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first(),
+            'kd_skpd' => $kd_skpd,
+            'no_spm' => $no_spm,
+            'data_beban' => $data_beban,
+            'tanpa' => $tanpa,
+            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
+            'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first()
+        ];
+        $view = view('penatausahaan.pengeluaran.spm.cetak.pengantar')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 }

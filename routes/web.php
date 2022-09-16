@@ -122,11 +122,17 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('tgl_spm_lalu', [SpmController::class, 'tglSpmLalu'])->name('spm.tgl_spm_lalu');
             Route::post('simpan_spm', [SpmController::class, 'simpanSpm'])->name('spm.simpan_spm');
             Route::post('cari_rek_pot', [SpmController::class, 'cariRekPot'])->name('spm.cari_rek_pot');
+            Route::post('tambah_list_potongan', [SpmController::class, 'tambahListPotongan'])->name('spm.tambah_list_potongan');
             Route::post('isi_list_pot', [BankKalbarController::class, 'isiListPot'])->name('spm.isi_list_pot');
             Route::post('create_id_billing', [BankKalbarController::class, 'createBilling'])->name('spm.create_id_billing');
+            Route::post('create_report', [BankKalbarController::class, 'createReport'])->name('spm.create_report');
             Route::post('load_rincian', [SpmController::class, 'loadRincian'])->name('spm.load_rincian');
             Route::post('hapus_rincian_pajak', [SpmController::class, 'hapusRincianPajak'])->name('spm.hapus_rincian_pajak');
             Route::get('tambah_potongan/{no_spm?}', [SpmController::class, 'tambahPotongan'])->where('no_spm', '(.*)')->name('spm.tambah_potongan');
+            // Cetakan
+            Route::get('cetak_kelengkapan', [SpmController::class, 'cetakKelengkapan'])->name('spm.cetak_kelengkapan');
+            Route::get('berkas_spm', [SpmController::class, 'cetakBerkas'])->name('spm.berkas_spm');
+            Route::get('pengantar', [SpmController::class, 'cetakPengantar'])->name('spm.pengantar');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');

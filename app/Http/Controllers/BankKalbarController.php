@@ -201,51 +201,79 @@ class BankKalbarController extends Controller
         curl_close($curl);
         DB::beginTransaction();
         try {
-            // if ($potongan->data[0]->response_code == "00") {
-            // $inputtgl = date('Y-m-d H:i:s', strtotime($potongan->data[0]->data->tanggalExpiredBilling));
-            DB::table('trspmpot')->insert([
-                'no_spm' => $no_spm,
-                'kd_skpd' => $kd_skpd,
-                'kd_rek6' => $kode_akun_potongan,
-                'nm_rek6' => $nama_akun_potongan,
-                'nilai' => $jumlah_bayar,
-                'kd_trans' => $kode_akun_transaksi,
-                'nomorPokokWajibPajak' => $npwp,
-                'namaWajibPajak' => $nama_wajib_pajak,
-                'alamatWajibPajak' => $alamat_wajib_pajak,
-                'kota' => $kota,
-                'nik' => $nik,
-                'kodeMap' => $kode_map,
-                'keteranganKodeMap' => $nama_map,
-                'kodeSetor' => $kode_setor,
-                'keteranganKodeSetor' => $nama_setor,
-                'masaPajak' => $masa_pajak,
-                'tahunPajak' => $tahun_pajak,
-                'jumlahBayar' => $jumlah_bayar,
-                'nomorObjekPajak' => $nop,
-                'nomorSK' => $no_sk,
-                'nomorPokokWajibPajakPenyetor' => $npwp_setor,
-                'nomorPokokWajibPajakRekanan' => $npwp_rekanan,
-                'nikRekanan' => $nik_rekanan,
-                'nomorFakturPajak' => $no_faktur,
-                // 'idBilling' => $potongan->data[0]->data->idBilling,
-                'idBilling' => '12131',
-                // 'tanggalExpiredBilling' => $inputtgl,
-                'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
-                'jenis' => '2',
-                'username' => Auth::user()->nama,
-                'last_update' => date('Y-m-d H:i:s')
-            ]);
-            DB::commit();
-            // curl_close($curl);
-            // return response()->json($response);
-            return response()->json([
-                'message' => '1'
-            ]);
-            // }
+            if ($potongan->data[0]->response_code == "00") {
+                $inputtgl = date('Y-m-d H:i:s', strtotime($potongan->data[0]->data->tanggalExpiredBilling));
+                DB::table('trspmpot')->insert([
+                    'no_spm' => $no_spm,
+                    'kd_skpd' => $kd_skpd,
+                    'kd_rek6' => $kode_akun_potongan,
+                    'nm_rek6' => $nama_akun_potongan,
+                    'nilai' => $jumlah_bayar,
+                    'kd_trans' => $kode_akun_transaksi,
+                    'nomorPokokWajibPajak' => $npwp,
+                    'namaWajibPajak' => $nama_wajib_pajak,
+                    'alamatWajibPajak' => $alamat_wajib_pajak,
+                    'kota' => $kota,
+                    'nik' => $nik,
+                    'kodeMap' => $kode_map,
+                    'keteranganKodeMap' => $nama_map,
+                    'kodeSetor' => $kode_setor,
+                    'keteranganKodeSetor' => $nama_setor,
+                    'masaPajak' => $masa_pajak,
+                    'tahunPajak' => $tahun_pajak,
+                    'jumlahBayar' => $jumlah_bayar,
+                    'nomorObjekPajak' => $nop,
+                    'nomorSK' => $no_sk,
+                    'nomorPokokWajibPajakPenyetor' => $npwp_setor,
+                    'nomorPokokWajibPajakRekanan' => $npwp_rekanan,
+                    'nikRekanan' => $nik_rekanan,
+                    'nomorFakturPajak' => $no_faktur,
+                    // 'idBilling' => $potongan->data[0]->data->idBilling,
+                    'idBilling' => '12131',
+                    // 'tanggalExpiredBilling' => $inputtgl,
+                    'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
+                    'jenis' => '2',
+                    'username' => Auth::user()->nama,
+                    'last_update' => date('Y-m-d H:i:s')
+                ]);
+                DB::commit();
+                curl_close($curl);
+                return response()->json($response);
+            }
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json($response);
         }
+    }
+
+    public function createReport(Request $request)
+    {
+        $data['noReferensi'] = $request->id_billing;
+        $data['jenisReport'] = $request->jnsreport;
+        $data['tanggalReportAwal'] = '';
+        $data['tanggalReportAkhir'] = '';
+        $data['formatReport'] = 'pdf';
+        $datakirim = json_encode($data);
+        $api_key = $this->get_token_api();
+        $headers = array(
+            'Authorization: Bearer ' . $api_key,
+            "Content-Type: application/json"
+        );
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "222.124.219.178:10080/sppd/sppd/ntp/report",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $datakirim,
+            CURLOPT_HTTPHEADER => $headers,
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return response()->json($response);
     }
 }

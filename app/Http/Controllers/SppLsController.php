@@ -1070,7 +1070,6 @@ class SppLsController extends Controller
             ]);
         }
     }
-
     // cetak pengantar layar
     public function cetakPengantarLayar(Request $request)
     {
