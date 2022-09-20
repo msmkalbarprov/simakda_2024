@@ -36,6 +36,11 @@
                                                 <button type="button"
                                                     onclick="cetak('{{ $spm->no_spm }}', '{{ $spm->jns_spp }}', '{{ $spm->kd_skpd }}')"
                                                     class="btn btn-success btn-sm"><i class="uil-print"></i></button>
+                                                <button type="button"
+                                                    onclick="batal_spm('{{ $spm->no_spm }}', '{{ $spm->jns_spp }}', '{{ $spm->kd_skpd }}', '{{ $spm->no_spp }}')"
+                                                    class="btn btn-danger btn-sm"><i class="uil-ban"></i></button>
+                                                <a href="{{ route('spm.tampil', $spm->no_spm) }}"
+                                                    class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -48,33 +53,51 @@
         </div> <!-- end col -->
     </div>
 
-    {{-- modal batal spp --}}
-    <div id="batal_spp" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+    {{-- modal batal spm spp --}}
+    <div id="spm_batal" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">KETERANGAN PEMBATALAN SPP</h5>
+                    <h5 class="modal-title">KETERANGAN PEMBATALAN SPM</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     {{-- No SPP --}}
                     <div class="mb-3 row">
-                        <label for="no_spp_batal" class="col-md-2 col-form-label">No SPP</label>
+                        <label for="no_spm" class="col-md-12 col-form-label">No SPM</label>
                         <div class="col-md-12">
-                            <input type="text" readonly class="form-control" id="no_spp_batal" name="no_spp_batal">
+                            <input type="text" readonly class="form-control" id="no_spm_batal" name="no_spm_batal">
                             <input type="text" readonly class="form-control" id="beban_batal" name="beban_batal" hidden>
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="keterangan_batal" class="col-md-2 col-form-label">Keterangan</label>
+                        <label for="no_spp" class="col-md-2 col-form-label">No SPP</label>
+                        <div class="col-md-12">
+                            <input type="text" readonly class="form-control" id="no_spp_batal" name="no_spp_batal">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="batal_spm" class="col-md-12 col-form-label">BATAL SPM-SPP</label>
+                        <div class="col-md-2">
+                            <div class="form-check form-switch form-switch-lg">
+                                <input type="checkbox" class="form-check-input" id="batal_spm">
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <h5 style="font-size: 12px">(Jika Ya, Batal SPM - SPP)</h5>
+                            <h5 style="font-size: 12px">(Jika Tidak, Batal SPM Saja)</h5>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="keterangan_batal" class="col-md-12 col-form-label">KETERANGAN PEMBATALAN SPM</label>
                         <div class="col-md-12">
                             <textarea type="text" class="form-control" id="keterangan_batal" name="keterangan_batal"></textarea>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">
-                            <button type="button" class="btn btn-md btn-danger" id="batal_sppls"><i
-                                    class="uil-ban"></i>Batal SPP</button>
+                            <button type="button" class="btn btn-md btn-danger" id="input_batal"><i
+                                    class="uil-ban"></i>Batal SPM - SPP</button>
                             <button type="button" class="btn btn-md btn-warning" data-bs-dismiss="modal"><i
                                     class="fa fa-undo"></i>Keluar</button>
                         </div>
@@ -265,7 +288,7 @@
                             <button type="button" class="btn btn-warning btn-md ringkasan" data-jenis="download"
                                 name="ringkasan">Download</button>
                         </div>
-                        <label for="pernyataan" class="col-md-2 col-form-label">pernyataan Jawab SPM</label>
+                        <label for="pernyataan" class="col-md-2 col-form-label">Pernyataan</label>
                         <div class="col-md-4">
                             <button type="button" class="btn btn-danger btn-md pernyataan" data-jenis="pdf"
                                 name="pernyataan_pdf">PDF</button>

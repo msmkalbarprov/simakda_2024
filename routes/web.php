@@ -127,12 +127,22 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('create_id_billing', [BankKalbarController::class, 'createBilling'])->name('spm.create_id_billing');
             Route::post('create_report', [BankKalbarController::class, 'createReport'])->name('spm.create_report');
             Route::post('load_rincian', [SpmController::class, 'loadRincian'])->name('spm.load_rincian');
+            Route::post('load_rincian_show', [SpmController::class, 'loadRincianShow'])->name('spm.load_rincian_show');
             Route::post('hapus_rincian_pajak', [SpmController::class, 'hapusRincianPajak'])->name('spm.hapus_rincian_pajak');
+            Route::post('total_show', [SpmController::class, 'totalShow'])->name('spm.total_show');
             Route::get('tambah_potongan/{no_spm?}', [SpmController::class, 'tambahPotongan'])->where('no_spm', '(.*)')->name('spm.tambah_potongan');
+            Route::get('tampil/{no_spm?}', [SpmController::class, 'tampilSpm'])->where('no_spm', '(.*)')->name('spm.tampil');
             // Cetakan
             Route::get('cetak_kelengkapan', [SpmController::class, 'cetakKelengkapan'])->name('spm.cetak_kelengkapan');
             Route::get('berkas_spm', [SpmController::class, 'cetakBerkas'])->name('spm.berkas_spm');
             Route::get('pengantar', [SpmController::class, 'cetakPengantar'])->name('spm.pengantar');
+            Route::get('lampiran', [SpmController::class, 'cetakLampiran'])->name('spm.lampiran');
+            Route::get('tanggung', [SpmController::class, 'cetakTanggung'])->name('spm.tanggung');
+            Route::get('pernyataan', [SpmController::class, 'cetakPernyataan'])->name('spm.pernyataan');
+            Route::get('ringkasan_up', [SpmController::class, 'cetakRingkasanUp'])->name('spm.ringkasan_up');
+            Route::get('ringkasan_gu', [SpmController::class, 'cetakRingkasanGu'])->name('spm.ringkasan_gu');
+            Route::get('ringkasan_tu', [SpmController::class, 'cetakRingkasanTu'])->name('spm.ringkasan_tu');
+            Route::post('batal_spm', [SpmController::class, 'batalSpmSpp'])->name('spm.batal_spm');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');

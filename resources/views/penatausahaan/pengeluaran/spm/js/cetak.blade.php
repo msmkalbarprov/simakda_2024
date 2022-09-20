@@ -161,6 +161,63 @@
         });
 
         // cetak ringkasan
+        $('.ringkasan').on('click', function() {
+            let no_spm = document.getElementById('no_spm').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let baris_spm = document.getElementById('baris_spm').value;
+            let jenis_ls = document.getElementById('jenis_ls').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let beban = document.getElementById('beban').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+                return;
+            }
+            if (!pptk) {
+                alert("Pilih PPTK Terlebih Dahulu!");
+                return;
+            }
+            if (!pa_kpa) {
+                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+                return;
+            }
+            if (!ppkd) {
+                alert("Pilih PPKD Terlebih Dahulu!");
+                return;
+            }
+            if (!jenis_ls) {
+                jenis_ls = '';
+            }
+            let url;
+            if (beban == '1') {
+                url = new URL("{{ route('spm.ringkasan_up') }}");
+            } else if (beban == '2' || beban == '3' || beban == '4' || beban == '5' || beban == '6') {
+                url = new URL("{{ route('spm.ringkasan_gu') }}");
+            }
+            let searchParams = url.searchParams;
+            searchParams.append("jenis_ls", jenis_ls);
+            searchParams.append("no_spm", no_spm);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("beban", beban);
+            window.open(url.toString(), "_blank");
+        });
 
         // cetak pengantar
         $('.pengantar').on('click', function() {
@@ -216,37 +273,204 @@
             window.open(url.toString(), "_blank");
         });
 
-        $('#batal_sppls').on('click', function() {
+        // cetak lampiran
+        $('.lampiran').on('click', function() {
+            let no_spm = document.getElementById('no_spm').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let baris_spm = document.getElementById('baris_spm').value;
+            let jenis_ls = document.getElementById('jenis_ls').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let beban = document.getElementById('beban').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+                return;
+            }
+            if (!pptk) {
+                alert("Pilih PPTK Terlebih Dahulu!");
+                return;
+            }
+            if (!pa_kpa) {
+                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+                return;
+            }
+            if (!ppkd) {
+                alert("Pilih PPKD Terlebih Dahulu!");
+                return;
+            }
+            if (!jenis_ls) {
+                jenis_ls = '';
+            }
+            let url = new URL("{{ route('spm.lampiran') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("jenis_ls", jenis_ls);
+            searchParams.append("no_spm", no_spm);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("beban", beban);
+            window.open(url.toString(), "_blank");
+        });
+
+        // cetak tanggung jawab
+        $('.tanggung_jawab').on('click', function() {
+            let no_spm = document.getElementById('no_spm').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let baris_spm = document.getElementById('baris_spm').value;
+            let jenis_ls = document.getElementById('jenis_ls').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let beban = document.getElementById('beban').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+                return;
+            }
+            if (!pptk) {
+                alert("Pilih PPTK Terlebih Dahulu!");
+                return;
+            }
+            if (!pa_kpa) {
+                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+                return;
+            }
+            if (!ppkd) {
+                alert("Pilih PPKD Terlebih Dahulu!");
+                return;
+            }
+            if (!jenis_ls) {
+                jenis_ls = '';
+            }
+            let url = new URL("{{ route('spm.tanggung') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("jenis_ls", jenis_ls);
+            searchParams.append("no_spm", no_spm);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("beban", beban);
+            window.open(url.toString(), "_blank");
+        });
+
+        // cetak pernyataan
+        $('.pernyataan').on('click', function() {
+            let no_spm = document.getElementById('no_spm').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let baris_spm = document.getElementById('baris_spm').value;
+            let jenis_ls = document.getElementById('jenis_ls').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let beban = document.getElementById('beban').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+                return;
+            }
+            if (!pptk) {
+                alert("Pilih PPTK Terlebih Dahulu!");
+                return;
+            }
+            if (!pa_kpa) {
+                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+                return;
+            }
+            if (!ppkd) {
+                alert("Pilih PPKD Terlebih Dahulu!");
+                return;
+            }
+            if (!jenis_ls) {
+                jenis_ls = '';
+            }
+            let url = new URL("{{ route('spm.pernyataan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("jenis_ls", jenis_ls);
+            searchParams.append("no_spm", no_spm);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("beban", beban);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('#input_batal').on('click', function() {
+            let no_spm = document.getElementById('no_spm_batal').value;
             let no_spp = document.getElementById('no_spp_batal').value;
-            let keterangan = document.getElementById('keterangan_batal').value;
             let beban = document.getElementById('beban_batal').value;
-            let tanya = confirm('Anda yakin akan Membatalkan SPP: ' + no_spp + '  ?');
+            let keterangan = document.getElementById('keterangan_batal').value;
+            let tanya = confirm('Anda yakin akan Membatalkan SPM: ' + no_spm + '  ?');
+            let batal_spm = document.getElementById('batal_spm').checked;
             if (tanya == true) {
                 if (!keterangan) {
-                    alert('Keterangan harus diisi!');
+                    alert('Keterangan pembatalan SPM diisi terlebih dahulu!');
                     return;
                 }
                 $.ajax({
-                    url: "{{ route('sppls.batal_sppls') }}",
+                    url: "{{ route('spm.batal_spm') }}",
                     type: "POST",
                     dataType: 'json',
                     data: {
+                        no_spm: no_spm,
                         no_spp: no_spp,
                         keterangan: keterangan,
-                        beban: beban
+                        beban: beban,
+                        batal_spm: batal_spm,
                     },
                     success: function(data) {
                         if (data.message == '1') {
-                            alert('SPP Berhasil Dibatalkan');
-                            window.location.href = "{{ route('sppls.index') }}";
+                            alert('SPM Berhasil Dibatalkan');
+                            window.location.href = "{{ route('spm.index') }}";
                         } else {
-                            alert('SPP Berhasil Dibatalkan');
+                            alert('SPM Tidak Berhasil Dibatalkan');
                             return;
                         }
                     }
                 })
             }
         });
+
     });
 
     function cetak(no_spm, beban, kd_skpd) {
@@ -256,10 +480,11 @@
         $('#modal_cetak').modal('show');
     }
 
-    function batal_spp(no_spp, beban, kd_skpd) {
-        $('#no_spp_batal').val(no_spp);
+    function batal_spm(no_spm, beban, kd_skpd, no_spp) {
+        $('#no_spm_batal').val(no_spm);
         $('#beban_batal').val(beban);
-        $('#batal_spp').modal('show');
+        $('#no_spp_batal').val(no_spp);
+        $('#spm_batal').modal('show');
     }
 
     function deleteData(no_spp) {
