@@ -12,6 +12,7 @@ use App\Http\Controllers\BankKalbarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SppLsController;
 use App\Http\Controllers\SpmController;
+use App\Http\Controllers\Sp2dController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -143,6 +144,19 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::get('ringkasan_gu', [SpmController::class, 'cetakRingkasanGu'])->name('spm.ringkasan_gu');
             Route::get('ringkasan_tu', [SpmController::class, 'cetakRingkasanTu'])->name('spm.ringkasan_tu');
             Route::post('batal_spm', [SpmController::class, 'batalSpmSpp'])->name('spm.batal_spm');
+        });
+
+        // SP2D
+        Route::group(['prefix' => 'sp2d'], function () {
+            Route::get('', [Sp2dController::class, 'index'])->name('sp2d.index');
+            Route::get('tambah', [Sp2dController::class, 'create'])->name('sp2d.create');
+            Route::post('cari_spm', [Sp2dController::class, 'cariSpm'])->name('sp2d.cari_spm');
+            Route::post('cari_jenis', [Sp2dController::class, 'cariJenis'])->name('sp2d.cari_jenis');
+            Route::post('cari_bulan', [Sp2dController::class, 'cariBulan'])->name('sp2d.cari_bulan');
+            Route::post('load_rincian_spm', [Sp2dController::class, 'loadRincianSpm'])->name('sp2d.load_rincian_spm');
+            Route::post('load_rincian_potongan', [Sp2dController::class, 'loadRincianPotongan'])->name('sp2d.load_rincian_potongan');
+            Route::post('cari_total', [Sp2dController::class, 'cariTotal'])->name('sp2d.cari_total');
+            Route::post('cari_nomor', [Sp2dController::class, 'cariNomor'])->name('sp2d.cari_nomor');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');

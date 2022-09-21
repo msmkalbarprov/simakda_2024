@@ -45,6 +45,7 @@
                             <li><a href="{{ route('penagihan.index') }}">Penagihan</a></li>
                             <li><a href="{{ route('sppls.index') }}">SPP LS</a></li>
                             <li><a href="{{ route('spm.index') }}">SPM</a></li>
+                            <li><a href="{{ route('sp2d.index') }}">SP2D</a></li>
                         </ul>
                     </li>
                 </ul>
