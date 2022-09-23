@@ -10,10 +10,10 @@
                 </div>
                 <div class="card-body">
                     @csrf
-                    {{-- Beban dan Jenis --}}
+                    {{-- Beban --}}
                     <div class="mb-3 row">
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
-                        <div class="col-md-4">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple @error('beban') is-invalid @enderror"
                                 style="width: 100%" id="beban" name="beban">
                                 <optgroup label="Daftar Beban">
@@ -27,14 +27,6 @@
                                 </optgroup>
                             </select>
                             @error('beban')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="jenis" name="jenis" readonly hidden>
-                            <input type="text" class="form-control" id="nama_jenis" name="nama_jenis" readonly>
-                            @error('jenis')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -112,8 +104,8 @@
                         </div>
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('nm_skpd') is-invalid @enderror" type="text"
-                                id="nm_skpd" name="nm_skpd" required readonly>
+                            <input class="form-control @error('nm_skpd') is-invalid @enderror" type="text" id="nm_skpd"
+                                name="nm_skpd" required readonly>
                             @error('nm_skpd')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -140,13 +132,13 @@
                             @enderror
                         </div>
                     </div>
-                    {{-- Anggaran dan Keperluan --}}
+                    {{-- Jenis dan Keperluan --}}
                     <div class="mb-3 row">
-                        <label for="anggaran" class="col-md-2 col-form-label">Anggaran</label>
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('anggaran') is-invalid @enderror" type="text"
-                                id="anggaran" name="anggaran" required readonly>
-                            @error('anggaran')
+                            <input type="text" class="form-control" id="jenis" name="jenis" readonly hidden>
+                            <input type="text" class="form-control" id="nama_jenis" name="nama_jenis" readonly>
+                            @error('jenis')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -217,7 +209,7 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        <button id="simpan_spm" class="btn btn-primary btn-md">Simpan</button>
+                        <button id="simpan_sp2d" class="btn btn-primary btn-md">Simpan</button>
                         <a href="{{ route('sp2d.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
@@ -286,26 +278,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="modal fade bs-example-modal-center" id="konfirmasi_potongan" tabindex="-1" role="dialog"
-        aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Konfirmasi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p style="text-align: center">Apakah Anda ingin menambahkan potongan?</p>
-                    <div class="mt-2" style="text-align: center">
-                        <a href="{{ route('spm.tambah_potongan') }}" class="btn btn-primary btn-md">Ya</a>
-                        <a href="{{ route('sp2d.index') }}" class="btn btn-danger btn-md">Tidak</a>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
     </div>
 @endsection
 @section('js')

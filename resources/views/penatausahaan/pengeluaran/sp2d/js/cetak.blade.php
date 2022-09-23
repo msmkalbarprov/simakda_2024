@@ -7,267 +7,60 @@
         });
         $('#sp2d').DataTable();
 
-        $('#bendahara').select2({
+        $('#ttd_bud').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
 
-        $('#pptk').select2({
+        $('#ttd1').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
 
-        $('#pa_kpa').select2({
+        $('#ttd2').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
 
-        $('#ppkd').select2({
+        $('#jenis').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
 
-        $('#jenis_ls').select2({
-            dropdownParent: $('#modal_cetak'),
-            theme: 'bootstrap-5'
-        });
-
-        $('#bendahara').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_bendahara').val(nama);
-        });
-
-        $('#pptk').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_pptk').val(nama);
-        });
-
-        $('#pa_kpa').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_pa_kpa').val(nama);
-        });
-
-        $('#ppkd').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_ppkd').val(nama);
-        });
-
-        // cetak kelengkapan
-        $('.kelengkapan').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
+        // cetak sp2d
+        $('.sp2d').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let ttd_bud = document.getElementById('ttd_bud').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let baris = document.getElementById('baris').value;
+            let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+            if (!ttd_bud) {
+                alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
             }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
+            if (!ttd1) {
+                alert("Pilih Penandatangan I Terlebih Dahulu!");
                 return;
             }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+            if (!ttd2) {
+                alert("Pilih Penandatangan II Terlebih Dahulu!");
                 return;
             }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
+            if (!jenis) {
+                alert("Pilih Jenis Terlebih Dahulu!");
                 return;
             }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.cetak_kelengkapan') }}");
+            let url = new URL("{{ route('sp2d.cetak_sp2d') }}");
             let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
-            searchParams.append("kd_skpd", kd_skpd);
-            searchParams.append("beban", beban);
-            window.open(url.toString(), "_blank");
-        });
-
-        // cetak berkas spm
-        $('.berkas_spm').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
-                return;
-            }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
-                return;
-            }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
-                return;
-            }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
-                return;
-            }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.berkas_spm') }}");
-            let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
-            searchParams.append("kd_skpd", kd_skpd);
-            searchParams.append("beban", beban);
-            window.open(url.toString(), "_blank");
-        });
-
-        // cetak ringkasan
-        $('.ringkasan').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
-                return;
-            }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
-                return;
-            }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
-                return;
-            }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
-                return;
-            }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url;
-            if (beban == '1') {
-                url = new URL("{{ route('spm.ringkasan_up') }}");
-            } else if (beban == '2' || beban == '3' || beban == '4' || beban == '5' || beban == '6') {
-                url = new URL("{{ route('spm.ringkasan_gu') }}");
-            }
-            let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
-            searchParams.append("kd_skpd", kd_skpd);
-            searchParams.append("beban", beban);
-            window.open(url.toString(), "_blank");
-        });
-
-        // cetak pengantar
-        $('.pengantar').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
-                return;
-            }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
-                return;
-            }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
-                return;
-            }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
-                return;
-            }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.pengantar') }}");
-            let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("jenis", jenis);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("ttd_bud", ttd_bud);
+            searchParams.append("ttd1", ttd1);
+            searchParams.append("ttd2", ttd2);
+            searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
             window.open(url.toString(), "_blank");
@@ -275,195 +68,155 @@
 
         // cetak lampiran
         $('.lampiran').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let ttd_bud = document.getElementById('ttd_bud').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let baris = document.getElementById('baris').value;
+            let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+            if (!ttd_bud) {
+                alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
             }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
+            if (!ttd1) {
+                alert("Pilih Penandatangan I Terlebih Dahulu!");
                 return;
             }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+            if (!ttd2) {
+                alert("Pilih Penandatangan II Terlebih Dahulu!");
                 return;
             }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
+            if (!jenis) {
+                alert("Pilih Jenis Terlebih Dahulu!");
                 return;
             }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.lampiran') }}");
+            let url = new URL("{{ route('sp2d.cetak_lampiran') }}");
             let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("jenis", jenis);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("ttd_bud", ttd_bud);
+            searchParams.append("ttd1", ttd1);
+            searchParams.append("ttd2", ttd2);
+            searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
             window.open(url.toString(), "_blank");
         });
 
-        // cetak tanggung jawab
-        $('.tanggung_jawab').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
+        // cetak lampiran lama
+        $('.lampiran_lama').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let ttd_bud = document.getElementById('ttd_bud').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let baris = document.getElementById('baris').value;
+            let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+            if (!ttd_bud) {
+                alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
             }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
+            if (!ttd1) {
+                alert("Pilih Penandatangan I Terlebih Dahulu!");
                 return;
             }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+            if (!ttd2) {
+                alert("Pilih Penandatangan II Terlebih Dahulu!");
                 return;
             }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
+            if (!jenis) {
+                alert("Pilih Jenis Terlebih Dahulu!");
                 return;
             }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.tanggung') }}");
+            let url = new URL("{{ route('sp2d.cetak_lampiran_lama') }}");
             let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("jenis", jenis);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("ttd_bud", ttd_bud);
+            searchParams.append("ttd1", ttd1);
+            searchParams.append("ttd2", ttd2);
+            searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
             window.open(url.toString(), "_blank");
         });
 
-        // cetak pernyataan
-        $('.pernyataan').on('click', function() {
-            let no_spm = document.getElementById('no_spm').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pptk = document.getElementById('pptk').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let ppkd = document.getElementById('ppkd').value;
-            let baris_spm = document.getElementById('baris_spm').value;
-            let jenis_ls = document.getElementById('jenis_ls').value;
+        // cetak kelengkapan
+        $('.kelengkapan').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let ttd_bud = document.getElementById('ttd_bud').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let baris = document.getElementById('baris').value;
+            let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
-            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
-            let jenis_print = $(this).data("jenis");
-            let tanpa;
-            if (tanpa_tanggal == false) {
-                tanpa = 0;
-            } else {
-                tanpa = 1;
-            }
-            if (!bendahara) {
-                alert('Pilih Bendahara Pengeluarran Terlebih Dahulu!');
+            if (!ttd_bud) {
+                alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
             }
-            if (!pptk) {
-                alert("Pilih PPTK Terlebih Dahulu!");
+            if (!ttd1) {
+                alert("Pilih Penandatangan I Terlebih Dahulu!");
                 return;
             }
-            if (!pa_kpa) {
-                alert("Pilih Pengguna Anggaran Terlebih Dahulu!");
+            if (!ttd2) {
+                alert("Pilih Penandatangan II Terlebih Dahulu!");
                 return;
             }
-            if (!ppkd) {
-                alert("Pilih PPKD Terlebih Dahulu!");
+            if (!jenis) {
+                alert("Pilih Jenis Terlebih Dahulu!");
                 return;
             }
-            if (!jenis_ls) {
-                jenis_ls = '';
-            }
-            let url = new URL("{{ route('spm.pernyataan') }}");
+            let url = new URL("{{ route('sp2d.cetak_kelengkapan') }}");
             let searchParams = url.searchParams;
-            searchParams.append("jenis_ls", jenis_ls);
-            searchParams.append("no_spm", no_spm);
-            searchParams.append("bendahara", bendahara);
-            searchParams.append("pptk", pptk);
-            searchParams.append("pa_kpa", pa_kpa);
-            searchParams.append("ppkd", ppkd);
-            searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
-            searchParams.append("baris_spm", baris_spm);
+            searchParams.append("jenis", jenis);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("ttd_bud", ttd_bud);
+            searchParams.append("ttd1", ttd1);
+            searchParams.append("ttd2", ttd2);
+            searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
             window.open(url.toString(), "_blank");
         });
 
         $('#input_batal').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d_batal').value;
             let no_spm = document.getElementById('no_spm_batal').value;
             let no_spp = document.getElementById('no_spp_batal').value;
             let beban = document.getElementById('beban_batal').value;
+            let status_bud = document.getElementById('status_bud').value;
             let keterangan = document.getElementById('keterangan_batal').value;
-            let tanya = confirm('Anda yakin akan Membatalkan SPM: ' + no_spm + '  ?');
-            let batal_spm = document.getElementById('batal_spm').checked;
+            if (status_bud == '1') {
+                alert("SP2D telah diterima SKPD. Batalkan Penerimaan terlebih dahulu");
+                return;
+            }
+            let tanya = confirm('Anda yakin akan Membatalkan SP2D: ' + no_sp2d + '  ?');
             if (tanya == true) {
                 if (!keterangan) {
-                    alert('Keterangan pembatalan SPM diisi terlebih dahulu!');
+                    alert('Keterangan pembatalan SP2D diisi terlebih dahulu!');
                     return;
                 }
                 $.ajax({
-                    url: "{{ route('spm.batal_spm') }}",
+                    url: "{{ route('sp2d.batal_sp2d') }}",
                     type: "POST",
                     dataType: 'json',
                     data: {
+                        no_sp2d: no_sp2d,
                         no_spm: no_spm,
                         no_spp: no_spp,
                         keterangan: keterangan,
                         beban: beban,
-                        batal_spm: batal_spm,
                     },
                     success: function(data) {
                         if (data.message == '1') {
-                            alert('SPM Berhasil Dibatalkan');
-                            window.location.href = "{{ route('spm.index') }}";
+                            alert('SP2D Berhasil Dibatalkan');
+                            window.location.href = "{{ route('sp2d.index') }}";
                         } else {
-                            alert('SPM Tidak Berhasil Dibatalkan');
+                            alert('SP2D Tidak Berhasil Dibatalkan');
                             return;
                         }
                     }
@@ -473,18 +226,25 @@
 
     });
 
-    function cetak(no_spm, beban, kd_skpd) {
-        $('#no_spm').val(no_spm);
+    function cetak(no_sp2d, beban, kd_skpd) {
+        $('#no_sp2d').val(no_sp2d);
         $('#beban').val(beban);
         $('#kd_skpd').val(kd_skpd);
+        if (beban == '4') {
+            $('#lampiran_lama').show();
+        } else {
+            $('#lampiran_lama').hide();
+        }
         $('#modal_cetak').modal('show');
     }
 
-    function batal_spm(no_spm, beban, kd_skpd, no_spp) {
-        $('#no_spm_batal').val(no_spm);
+    function batal_sp2d(no_sp2d, beban, kd_skpd, no_spm, no_spp, status) {
+        $('#no_sp2d_batal').val(no_sp2d);
         $('#beban_batal').val(beban);
+        $('#no_spm_batal').val(no_spm);
         $('#no_spp_batal').val(no_spp);
-        $('#spm_batal').modal('show');
+        $('#status_bud').val(status);
+        $('#sp2d_batal').modal('show');
     }
 
     function deleteData(no_spp) {

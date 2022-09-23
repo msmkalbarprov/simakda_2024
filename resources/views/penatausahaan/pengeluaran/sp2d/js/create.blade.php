@@ -240,5 +240,58 @@
             })
         });
 
+        $('#simpan_sp2d').on('click', function() {
+            let beban = document.getElementById('beban').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let no_spm = document.getElementById('no_spm').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let tgl_sp2d = document.getElementById('tgl_sp2d').value;
+            if (!beban) {
+                alert('Silahkan pilih jenis beban!');
+                return;
+            }
+            if (!no_spm) {
+                alert('Silahkan pilih no spm!');
+                return;
+            }
+            if (!no_spp) {
+                alert('Silahkan pilih no spm!');
+                return;
+            }
+            if (!tgl_sp2d) {
+                alert('Silahkan pilih tanggal SP2D!');
+                return;
+            }
+            if (beban == '4') {
+                if (!no_sp2d) {
+                    alert('Nomor SP2D Tidak Boleh kosong');
+                    return;
+                }
+            }
+
+            // simpan sp2d
+            $.ajax({
+                url: "{{ route('sp2d.simpan_sp2d') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    beban: beban,
+                    tgl_sp2d: tgl_sp2d,
+                    no_spm: no_spm,
+                    no_spp: no_spp,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil ditambahkan, No SP2D yang tersimpan adalah: ' +
+                            data.no_sp2d);
+                        window.location.href = "{{ route('spm.index') }}";
+                    } else {
+                        alert('Data tidak berhasil ditambahkan!');
+                        return;
+                    }
+                }
+            })
+        });
+
     });
 </script>
