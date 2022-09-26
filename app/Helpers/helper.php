@@ -1618,3 +1618,9 @@ function cari_lampiran_lama($sp2d)
 
     return $data;
 }
+
+function cetak_penguji($kd_skpd)
+{
+    $data = DB::table('ms_ttd')->select('nama', 'jabatan')->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
+    return $data->nama;
+}
