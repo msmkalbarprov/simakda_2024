@@ -108,13 +108,8 @@
         function simpan_cair() {
             let no_kas = document.getElementById('no_kas').value;
             let tgl_cair = document.getElementById('tgl_cair').value;
-            let jenis = document.getElementById('jenis').value;
-            let tgl_terima = document.getElementById('tgl_terima').value;
             let nilai = rupiah(document.getElementById('nilai').value);
             let no_sp2d = document.getElementById('no_sp2d').value;
-            let beban = document.getElementById('beban').value;
-            let npwp = document.getElementById('npwp').value;
-            let tgl_sp2d = document.getElementById('tgl_sp2d').value;
             let no_advice = document.getElementById('no_advice').value;
             let tahun_anggaran = '2022';
 
@@ -163,6 +158,30 @@
                                 }
                             }
                         });
+                    }
+                }
+            });
+        }
+
+        function batal_cair() {
+            let no_kas = document.getElementById('no_kas').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+
+            $.ajax({
+                url: "{{ route('pencairan_sp2d.batal_cair') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_kas: no_kas,
+                    no_sp2d: no_sp2d,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('SP2D Telah Dibatalkan');
+                        window.location.reload();
+                    } else {
+                        alert('SP2D Tidak berhasil dibatalkan');
+                        return;
                     }
                 }
             });

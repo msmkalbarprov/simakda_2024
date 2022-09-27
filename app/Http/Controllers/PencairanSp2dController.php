@@ -139,4 +139,33 @@ class PencairanSp2dController extends Controller
             ]);
         }
     }
+
+    public function batalCair(Request $request)
+    {
+        $no_kas = $request->no_kas;
+        $no_sp2d = $request->no_sp2d;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
+                'status_bud' => '0',
+                'no_kas_bud' => '',
+                'tgl_kas_bud' => '',
+                'nocek' => '',
+                'no_advice' => ''
+            ]);
+            DB::table('trhju_pkd')->where(['no_voucher' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trdju_pkd')->where(['no_voucher' => $no_kas, 'kd_unit' => $kd_skpd])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
 }
