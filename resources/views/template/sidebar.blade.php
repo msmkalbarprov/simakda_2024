@@ -47,6 +47,7 @@
                             <li><a href="{{ route('spm.index') }}">SPM</a></li>
                             <li><a href="{{ route('sp2d.index') }}">SP2D</a></li>
                             <li><a href="{{ route('daftar_penguji.index') }}">Daftar Penguji</a></li>
+                            <li><a href="{{ route('pencairan_sp2d.index') }}">Pencairan SP2D</a></li>
                         </ul>
                     </li>
                 </ul>

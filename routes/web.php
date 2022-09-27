@@ -14,6 +14,7 @@ use App\Http\Controllers\SppLsController;
 use App\Http\Controllers\SpmController;
 use App\Http\Controllers\Sp2dController;
 use App\Http\Controllers\DaftarPengujiController;
+use App\Http\Controllers\PencairanSp2dController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -184,6 +185,16 @@ Route::group(['prefix' => 'simakda_2023'], function () {
 
             // cetakan
             Route::get('cetak_penguji', [DaftarPengujiController::class, 'cetakPenguji'])->name('daftar_penguji.cetak_penguji');
+        });
+
+        // Pencairan SP2D
+        Route::group(['prefix' => 'pencairan_sp2d'], function () {
+            Route::get('', [PencairanSp2dController::class, 'index'])->name('pencairan_sp2d.index');
+            Route::get('tampil/{no_sp2d?}', [PencairanSp2dController::class, 'tampilCair'])->where('no_sp2d', '(.*)')->name('pencairan_sp2d.tampil');
+            Route::post('load_rincian_spm', [PencairanSp2dController::class, 'loadRincianSpm'])->name('pencairan_sp2d.load_rincian_spm');
+            Route::post('load_rincian_potongan', [PencairanSp2dController::class, 'loadRincianPotongan'])->name('pencairan_sp2d.load_rincian_potongan');
+            Route::post('cek_simpan', [PencairanSp2dController::class, 'cekSimpan'])->name('pencairan_sp2d.cek_simpan');
+            Route::post('simpan_cair', [PencairanSp2dController::class, 'simpanCair'])->name('pencairan_sp2d.simpan_cair');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
