@@ -49,15 +49,19 @@ class PencairanSp2dController extends Controller
             if ($total_data > 0) {
                 $no_bukti = $no_kas + 1;
             }
-            $no_sts = $no_kas + 1;
-            $no_sts =  "$no_sts";
+            $sts = $no_kas + 1;
+            $no_sts =  "$sts";
+            $setor = $sts + 2;
+            $no_setor = "$setor";
             $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', function ($join) {
                 $join->on('a.no_spm', '=', 'b.no_spm');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])->whereIn('a.kd_rek6', ['2110801', '4140612'])->count();
             if ($total_data1 > 0) {
-                $no_sts = $no_kas + 1;
-                $no_sts = "$no_sts";
+                $sts = $no_kas + 1;
+                $no_sts = "$sts";
+                $setor = $sts + 2;
+                $no_setor = "$setor";
             }
 
             if (($beban < 5) || ($beban == 6 && $kontrak->kontrak == '')) {
