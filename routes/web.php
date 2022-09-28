@@ -202,9 +202,15 @@ Route::group(['prefix' => 'simakda_2023'], function () {
     });
 
     Route::group(['prefix' => 'skpd'], function () {
+        // Terima SP2D
         Route::group(['prefix' => 'terima_sp2d'], function () {
             Route::get('', [TerimaSp2dController::class, 'index'])->name('terima_sp2d.index');
             Route::get('tampil_sp2d/{no_sp2d?}', [TerimaSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('terima_sp2d.tampil_sp2d');
+        });
+        // Pencairan SP2D
+        Route::group(['prefix' => 'pencairan_sp2d'], function () {
+            Route::get('', [CairSp2dController::class, 'index'])->name('skpd.pencairan_sp2d.index');
+            Route::get('tampil_sp2d/{no_sp2d?}', [CairSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.tampil_sp2d');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
