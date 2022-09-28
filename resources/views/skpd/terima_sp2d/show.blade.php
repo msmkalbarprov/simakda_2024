@@ -144,8 +144,13 @@
                                 <td>:</td>
                                 <td colspan="4" class="kanan">{{ $data_sp2d->keperluan }}
                                     <br>
-                                    {{ right($kd_prog, 2) }} {{ $nm_prog }}<br>
-                                    {{ right($kd_kegi, 2) }} {{ $nm_kegi }}
+                                    @if ($data_sp2d->jns_spp == '6')
+                                        {{ right($kd_prog, 2) }} - {{ $nm_prog }}<br>
+                                        {{ right($kd_kegi, 2) }} - {{ $nm_kegi }}
+                                    @else
+                                        {{ right($kd_prog, 2) }} {{ $nm_prog }}<br>
+                                        {{ right($kd_kegi, 2) }} {{ $nm_kegi }}
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
