@@ -43,7 +43,7 @@
                                                         {{ $sp2d->status == '1' ? 'Sudah Cair' : 'Belum Cair' }}
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('pencairan_sp2d.tampil', $sp2d->no_sp2d) }}"
+                                                        <a href="{{ route('skpd.pencairan_sp2d.tampil_sp2d', $sp2d->no_sp2d) }}"
                                                             class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
                                                     </td>
                                                 </tr>
@@ -56,7 +56,7 @@
                                                     <td>{{ $sp2d->kd_skpd }}</td>
                                                     <td>{{ $sp2d->status == '1' ? 'Sudah Cair' : 'Belum Cair' }}</td>
                                                     <td>
-                                                        <a href="{{ route('pencairan_sp2d.tampil', $sp2d->no_sp2d) }}"
+                                                        <a href="{{ route('skpd.pencairan_sp2d.tampil_sp2d', $sp2d->no_sp2d) }}"
                                                             class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
                                                     </td>
                                                 </tr>

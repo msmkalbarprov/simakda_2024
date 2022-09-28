@@ -211,6 +211,7 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::group(['prefix' => 'pencairan_sp2d'], function () {
             Route::get('', [CairSp2dController::class, 'index'])->name('skpd.pencairan_sp2d.index');
             Route::get('tampil_sp2d/{no_sp2d?}', [CairSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.tampil_sp2d');
+            Route::post('batal_cair', [CairSp2dController::class, 'batalCair'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.batal_cair');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
