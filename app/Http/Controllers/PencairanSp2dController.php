@@ -153,7 +153,6 @@ class PencairanSp2dController extends Controller
                 'no_kas_bud' => '',
                 'tgl_kas_bud' => '',
                 'nocek' => '',
-                'no_advice' => ''
             ]);
             DB::table('trhju_pkd')->where(['no_voucher' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
             DB::table('trdju_pkd')->where(['no_voucher' => $no_kas, 'kd_unit' => $kd_skpd])->delete();

@@ -52,6 +52,21 @@
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="uil-window-section"></i>
+                    <span>Transaksi Bendahara</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="true">
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">SP2D</a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li><a href="{{ route('terima_sp2d.index') }}">Terima SP2D</a></li>
+                            <li><a href="{{ route('sppls.index') }}">Pencairan SP2D</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
 
         </ul>
     </div>

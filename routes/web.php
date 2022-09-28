@@ -15,6 +15,8 @@ use App\Http\Controllers\SpmController;
 use App\Http\Controllers\Sp2dController;
 use App\Http\Controllers\DaftarPengujiController;
 use App\Http\Controllers\PencairanSp2dController;
+use App\Http\Controllers\Skpd\PencairanSp2dController as CairSp2dController;
+use App\Http\Controllers\Skpd\TerimaSp2dController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -196,6 +198,13 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('cek_simpan', [PencairanSp2dController::class, 'cekSimpan'])->name('pencairan_sp2d.cek_simpan');
             Route::post('simpan_cair', [PencairanSp2dController::class, 'simpanCair'])->name('pencairan_sp2d.simpan_cair');
             Route::post('batal_cair', [PencairanSp2dController::class, 'batalCair'])->name('pencairan_sp2d.batal_cair');
+        });
+    });
+
+    Route::group(['prefix' => 'skpd'], function () {
+        Route::group(['prefix' => 'terima_sp2d'], function () {
+            Route::get('', [TerimaSp2dController::class, 'index'])->name('terima_sp2d.index');
+            Route::get('tampil_sp2d/{no_sp2d?}', [TerimaSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('terima_sp2d.tampil_sp2d');
         });
     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
