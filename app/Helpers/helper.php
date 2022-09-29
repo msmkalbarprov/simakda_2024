@@ -1736,3 +1736,8 @@ function cari_kontrak($data)
     }
     return $nama;
 }
+
+function no_up($data, $kd_skpd)
+{
+    return $data . "/SPP" . "/UP" . "/" . $kd_skpd . "/" . tahun_anggaran();
+}

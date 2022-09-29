@@ -33,6 +33,7 @@
                     <li><a href="{{ route('kontrak.index') }}">Kontrak</a></li>
                 </ul>
             </li>
+            {{-- Pengeluaran --}}
             <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
@@ -48,10 +49,12 @@
                             <li><a href="{{ route('sp2d.index') }}">SP2D</a></li>
                             <li><a href="{{ route('daftar_penguji.index') }}">Daftar Penguji</a></li>
                             <li><a href="{{ route('pencairan_sp2d.index') }}">Pencairan SP2D</a></li>
+                            <li><a href="{{ route('sppup.index') }}">SPP UP</a></li>
                         </ul>
                     </li>
                 </ul>
             </li>
+            {{-- Transaksi Bendahara --}}
             <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
