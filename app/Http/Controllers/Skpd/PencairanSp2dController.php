@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
+use function PHPUnit\Framework\isNull;
+
 class PencairanSp2dController extends Controller
 {
     public function index()
@@ -68,7 +70,7 @@ class PencairanSp2dController extends Controller
                 $no_setor = "$setor";
             }
 
-            if (($beban < 5) || ($beban == 6 && $kontrak->kontrak == '')) {
+            if (($beban < 5) || ($beban == 6 && isNull($kontrak))) {
                 $total_data2 = DB::table('tr_setorsimpanan')->where(['kd_skpd' => $kd_skpd, 'no_sp2d' => $no_sp2d])->count();
                 if ($total_data2 > 0) {
                     DB::table('tr_setorsimpanan')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
@@ -90,7 +92,7 @@ class PencairanSp2dController extends Controller
                 DB::table('trhtransout')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
             }
 
-            if (($beban == '6' && $kontrak->kontrak <> '') || $beban == '5') {
+            if (($beban == '6' && isset($kontrak)) || $beban == '5') {
                 DB::table('trdtransout')->where(['kd_skpd' => $kd_skpd, 'no_sp2d' => $no_sp2d])->delete();
                 DB::table('trhtransout')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
             }
@@ -150,7 +152,7 @@ class PencairanSp2dController extends Controller
                 $sts = $no_kas + 1;
                 $no_sts = "$sts";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
-                if ($data_pot->no_bukti == null) {
+                if (isNull($data_pot)) {
                     $no_bukti = '';
                 } else {
                     $no_bukti = $data_pot->no_bukti;
@@ -201,7 +203,6 @@ class PencairanSp2dController extends Controller
 
             $setor = $no_kas + 1;
             $no_setor = "$setor";
-
 
             $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
             if ($total_data1 > 0) {
@@ -288,13 +289,9 @@ class PencairanSp2dController extends Controller
                         }, $data_potongan));
                     }
                 }
-                return response()->json([
-                    'no_sts' => $no_sts,
-                    'no_kas' => $no_kas
-                ]);
             }
 
-            if (($beban < 5) || ($beban == '6' && $no_kontrak == '')) {
+            if (($beban < 5) || ($beban == '6' && isNull($kontrak))) {
                 DB::table('tr_setorsimpanan')->insert([
                     'no_kas' => $no_setor,
                     'tgl_kas' => $tgl_cair,
@@ -330,7 +327,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if ($beban == '5' || ($beban == '6' && $no_kontrak <> '')) {
+            if ($beban == '5' || ($beban == '6' && isset($kontrak))) {
                 DB::table('trhtransout')->insert([
                     'no_kas' => $no_kas,
                     'tgl_kas' => $tgl_cair,
@@ -350,7 +347,7 @@ class PencairanSp2dController extends Controller
 
             $data_spp = DB::table('trdspp as a')->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->leftJoin('trhspm as c', 'b.no_spp', '=', 'c.no_spp')->leftJoin('trhsp2d as d', 'c.no_spm', '=', 'd.no_spm')->where(['d.no_sp2d' => $no_sp2d])->select('a.no_spp', 'a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nilai', 'b.bulan', 'c.no_spm', 'd.no_sp2d', 'b.sts_tagih', 'a.sumber')->first();
 
-            if ($data_spp->kd_sub_kegiatan) {
+            if (isset($data_spp)) {
                 $giat = DB::table('trskpd')->select('nm_sub_kegiatan')->where(['kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->first();
                 $nm_giat = $giat->nm_sub_kegiatan;
             } else {
@@ -359,7 +356,7 @@ class PencairanSp2dController extends Controller
             if ($beban == '1') {
                 $nmrek6 = "Uang Persediaan";
             } else {
-                if ($data_spp->kd_rek6) {
+                if (isset($data_spp)) {
                     $rek6 = DB::table('ms_rek6')->select('nm_rek6')->where(['kd_rek6' => $data_spp->kd_rek6])->first();
                     $nmrek6 = $rek6->nm_rek6;
                 } else {
@@ -382,7 +379,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if (($beban == '6' && $no_kontrak <> '') || $beban == '5') {
+            if (($beban == '6' && isset($kontrak)) || $beban == '5') {
                 DB::table('trdtransout')->insert([
                     'no_bukti' => $no_kas,
                     'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,

@@ -117,7 +117,7 @@
             let keperluan = document.getElementById('keperluan').value;
             let beban = document.getElementById('beban').value;
             let npwp = document.getElementById('npwp').value;
-            let total_potongan = document.getElementById('total_potongan').value;
+            let total_potongan = rupiah(document.getElementById('total_potongan').value);
             let tgl_sp2d = document.getElementById('tgl_sp2d').value;
             let tahun_anggaran = '2022';
 

@@ -1729,5 +1729,10 @@ function cair_sp2d($data_sp2d)
 function cari_kontrak($data)
 {
     $hasil = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $data])->first();
-    return $hasil->kontrak;
+    if (!$hasil) {
+        $nama = '';
+    } else {
+        $nama = $hasil->kontrak;
+    }
+    return $nama;
 }
