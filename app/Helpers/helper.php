@@ -1627,6 +1627,7 @@ function cetak_penguji($kd_skpd)
 
 function no_urut($kd_skpd)
 {
+    $kd_skpd = "$kd_skpd";
     if ($kd_skpd == '1.01.2.22.0.00.01.0000' || $kd_skpd == '4.01.0.00.0.00.01.0003' || $kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000') {
         $urut1 = DB::table('trhtransout_blud')->where(['panjar' => '3'])->where(DB::raw("ISNUMERIC(no_bukti)"), '1')->select('no_bukti as nomor', DB::raw("'Transaksi BOS BLUD' as ket"), 'kd_skpd');
         $urut2 = DB::table('trhtransout_blud_penerimaan')->where(['panjar' => '3'])->where(DB::raw("ISNUMERIC(no_bukti)"), '1')->select('no_bukti as nomor', DB::raw("'Transaksi BOS BLUD' as ket"), 'kd_skpd')->unionAll($urut1);
@@ -1663,6 +1664,8 @@ function no_urut($kd_skpd)
         $urut = DB::table(DB::raw("({$urut27->toSql()}) AS sub"))
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut27)
+            ->whereRaw("kd_skpd = '$kd_skpd'")
+            ->groupBy('kd_skpd')
             ->first();
         return $urut->nomor;
     } else {
@@ -1694,6 +1697,8 @@ function no_urut($kd_skpd)
         $urut = DB::table(DB::raw("({$urut21->toSql()}) AS sub"))
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut21)
+            ->whereRaw("kd_skpd = '$kd_skpd'")
+            ->groupBy('kd_skpd')
             ->first();
         return $urut->nomor;
     }

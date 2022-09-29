@@ -108,9 +108,17 @@
         function simpan_cair() {
             let no_kas = document.getElementById('no_kas').value;
             let tgl_cair = document.getElementById('tgl_cair').value;
+            let jenis = document.getElementById('jenis').value;
+            let no_kontrak = document.getElementById('no_kontrak').value;
+            let tgl_terima = document.getElementById('tgl_terima').value;
             let nilai = rupiah(document.getElementById('nilai').value);
             let no_sp2d = document.getElementById('no_sp2d').value;
-            let no_advice = document.getElementById('no_advice').value;
+            let opd = document.getElementById('opd').value;
+            let keperluan = document.getElementById('keperluan').value;
+            let beban = document.getElementById('beban').value;
+            let npwp = document.getElementById('npwp').value;
+            let total_potongan = document.getElementById('total_potongan').value;
+            let tgl_sp2d = document.getElementById('tgl_sp2d').value;
             let tahun_anggaran = '2022';
 
             let tahun_input = tgl_cair.substring(0, 4);
@@ -122,42 +130,42 @@
                 alert('Tahun tidak sama dengan tahun anggaran!');
                 return;
             }
+            if (tgl_terima > tgl_cair) {
+                alert('Tanggal Pencairan tidak boleh lebih kecil dari tanggal Penerimaan');
+                return;
+            }
+            if (tgl_terima != tgl_cair) {
+                alert('Tanggal  Pencairan Harus sama dengan Tanggal Penerimaan');
+                return;
+            }
 
-            // cek simpan
             $.ajax({
-                url: "{{ route('pencairan_sp2d.cek_simpan') }}",
+                url: "{{ route('skpd.pencairan_sp2d.simpan_cair') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_kas: no_kas
+                    no_kas: no_kas,
+                    tgl_cair: tgl_cair,
+                    jenis: jenis,
+                    no_kontrak: no_kontrak,
+                    tgl_terima: tgl_terima,
+                    nilai: nilai,
+                    no_sp2d: no_sp2d,
+                    opd: opd,
+                    keperluan: keperluan,
+                    npwp: npwp,
+                    beban: beban,
+                    total_potongan: total_potongan,
+                    tgl_sp2d: tgl_sp2d,
                 },
                 success: function(data) {
-                    if (data > 0) {
-                        alert('Nomor telah dipakai!');
-                        return;
+                    console.log(data);
+                    if (data.message == '1') {
+                        alert('SP2D Telah Dicairkan');
+                        window.location.reload();
                     } else {
-                        alert('Nomor bisa dipakai!');
-                        $.ajax({
-                            url: "{{ route('pencairan_sp2d.simpan_cair') }}",
-                            type: "POST",
-                            dataType: 'json',
-                            data: {
-                                no_kas: no_kas,
-                                tgl_cair: tgl_cair,
-                                nilai: nilai,
-                                no_sp2d: no_sp2d,
-                                no_advice: no_advice,
-                            },
-                            success: function(data) {
-                                if (data.message == '1') {
-                                    alert('SP2D Telah Dicairkan');
-                                    window.location.reload();
-                                } else {
-                                    alert('SP2D Tidak berhasil dicairkan');
-                                    return;
-                                }
-                            }
-                        });
+                        alert('SP2D Tidak berhasil dicairkan');
+                        return;
                     }
                 }
             });

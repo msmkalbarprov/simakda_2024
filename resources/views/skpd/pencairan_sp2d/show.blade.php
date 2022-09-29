@@ -30,10 +30,9 @@
                                 <input type="text" class="form-control" id="no_kas" name="no_kas"
                                     value="{{ $sp2d->no_kas }}" readonly>
                             @else
-                                {{-- <input type="text" class="form-control" id="no_kas" name="no_kas"
-                                    value="{{ $urut }}" readonly> --}}
+                                <input type="text" class="form-control" id="no_kas" name="no_kas"
+                                    value="{{ $urut }}" readonly>
                             @endif
-
                         </div>
                         <label for="tgl_cair" class="col-md-1 col-form-label">Tgl Cair</label>
                         <div class="col-md-3">
