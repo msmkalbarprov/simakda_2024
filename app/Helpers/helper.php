@@ -1741,3 +1741,16 @@ function no_up($data, $kd_skpd)
 {
     return $data . "/SPP" . "/UP" . "/" . $kd_skpd . "/" . tahun_anggaran();
 }
+
+function title()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+    $data = DB::table('sclient')->select('provinsi')->where(['kd_skpd' => $kd_skpd])->first();
+    return $data->provinsi;
+}
+
+function daerah($kd_skpd)
+{
+    $data = DB::table('sclient')->where(['kd_skpd' => $kd_skpd])->select('daerah')->first();
+    return $data->daerah;
+}

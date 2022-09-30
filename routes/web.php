@@ -207,6 +207,17 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::group(['prefix' => 'spp_up'], function () {
             Route::get('', [SppUpController::class, 'index'])->name('sppup.index');
             Route::get('tambah', [SppUpController::class, 'create'])->name('sppup.create');
+            Route::get('edit/{no_spp?}', [SppUpController::class, 'edit'])->where('no_spp', '(.*)')->name('sppup.edit');
+            Route::post('simpan_spp', [SppUpController::class, 'simpanSpp'])->name('sppup.simpan_spp');
+            Route::post('simpan_detail_spp', [SppUpController::class, 'simpanDetailSpp'])->name('sppup.simpan_detail_spp');
+            Route::post('edit_spp', [SppUpController::class, 'editSpp'])->name('sppup.edit_spp');
+            Route::post('hapus', [SppUpController::class, 'hapus'])->name('sppup.hapus');
+            Route::get('pengantar_up', [SppUpController::class, 'pengantarUp'])->name('sppup.pengantar_up');
+            Route::get('ringkasan_up', [SppUpController::class, 'ringkasanUp'])->name('sppup.ringkasan_up');
+            Route::get('rincian_up', [SppUpController::class, 'rincianUp'])->name('sppup.rincian_up');
+            Route::get('pernyataan_up', [SppUpController::class, 'pernyataanUp'])->name('sppup.pernyataan_up');
+            Route::get('spp_up', [SppUpController::class, 'sppUp'])->name('sppup.spp_up');
+            Route::get('rincian77_up', [SppUpController::class, 'rincian77Up'])->name('sppup.rincian77_up');
         });
     });
 

@@ -62,7 +62,7 @@
                 return;
             }
             $.ajax({
-                url: "{{ route('sppup.simpan_spp') }}",
+                url: "{{ route('sppup.edit_spp') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
