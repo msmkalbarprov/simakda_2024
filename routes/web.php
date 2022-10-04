@@ -18,19 +18,9 @@ use App\Http\Controllers\DaftarPengujiController;
 use App\Http\Controllers\PencairanSp2dController;
 use App\Http\Controllers\Skpd\PencairanSp2dController as CairSp2dController;
 use App\Http\Controllers\Skpd\TerimaSp2dController;
+use App\Http\Controllers\Skpd\TransaksiCmsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/simakda_2023', function () {
     return view('welcome');
@@ -45,6 +35,7 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::resource('peran', RoleController::class);
         Route::resource('user', UserController::class);
     });
+
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
         Route::resource('kontrak', KontrakController::class);
@@ -54,6 +45,7 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::post('cek-npwp', [BankKalbarController::class, 'cek_npwp'])->name('penerima.cekNpwp');
         Route::post('cek-penerima', [PenerimaController::class, 'cekPenerima'])->name('penerima.cekPenerima');
     });
+
     Route::group(['prefix' => 'penatausahaan/pengeluaran'], function () {
         // Penagihan
         Route::group(['prefix' => 'penagihan'], function () {
@@ -234,7 +226,26 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('batal_cair', [CairSp2dController::class, 'batalCair'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.batal_cair');
             Route::post('simpan_cair', [CairSp2dController::class, 'simpanCair'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.simpan_cair');
         });
+        // Transaksi CMS
+        Route::group(['prefix' => 'transaksi_cms'], function () {
+            Route::get('', [TransaksiCmsController::class, 'index'])->name('skpd.transaksi_cms.index');
+            Route::get('tambah', [TransaksiCmsController::class, 'create'])->name('skpd.transaksi_cms.create');
+            Route::post('no_urut', [TransaksiCmsController::class, 'no_urut'])->name('skpd.transaksi_cms.no_urut');
+            Route::post('skpd', [TransaksiCmsController::class, 'skpd'])->name('skpd.transaksi_cms.skpd');
+            Route::post('cariKegiatan', [TransaksiCmsController::class, 'cariKegiatan'])->name('skpd.transaksi_cms.kegiatan');
+            Route::post('cariSp2d', [TransaksiCmsController::class, 'cariSp2d'])->name('skpd.transaksi_cms.nomor_sp2d');
+            Route::post('cariRekening', [TransaksiCmsController::class, 'cariRekening'])->name('skpd.transaksi_cms.rekening');
+            Route::post('cariSumber', [TransaksiCmsController::class, 'cariSumber'])->name('skpd.transaksi_cms.sumber');
+            Route::post('sisaBank', [TransaksiCmsController::class, 'sisaBank'])->name('skpd.transaksi_cms.sisa_bank');
+            Route::post('potonganLs', [TransaksiCmsController::class, 'potonganLs'])->name('skpd.transaksi_cms.potongan_ls');
+            Route::post('loadDana', [TransaksiCmsController::class, 'loadDana'])->name('skpd.transaksi_cms.load_dana');
+            Route::post('statusAng', [TransaksiCmsController::class, 'statusAng'])->name('skpd.transaksi_cms.status_ang');
+            Route::post('loadAngkas', [TransaksiCmsController::class, 'loadAngkas'])->name('skpd.transaksi_cms.load_angkas');
+            Route::post('loadAngkasLalu', [TransaksiCmsController::class, 'loadAngkasLalu'])->name('skpd.transaksi_cms.load_angkas_lalu');
+            Route::post('loadSpd', [TransaksiCmsController::class, 'loadSpd'])->name('skpd.transaksi_cms.load_spd');
+        });
     });
+
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');
     Route::get('/login', [LoginController::class, 'index'])->name('login.index');

@@ -178,7 +178,6 @@ class PenagihanController extends Controller
             $result = DB::table(DB::raw("({$urut54->toSql()}) AS sub"))
                 ->select("urut", "status", "nilai")
                 ->mergeBindings($urut54)
-                // ->where('nilai', '=', 1)
                 ->orderByRaw("CAST(urut AS INT) DESC")
                 ->first();
             return response()->json($result);
