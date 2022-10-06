@@ -243,6 +243,15 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('loadAngkas', [TransaksiCmsController::class, 'loadAngkas'])->name('skpd.transaksi_cms.load_angkas');
             Route::post('loadAngkasLalu', [TransaksiCmsController::class, 'loadAngkasLalu'])->name('skpd.transaksi_cms.load_angkas_lalu');
             Route::post('loadSpd', [TransaksiCmsController::class, 'loadSpd'])->name('skpd.transaksi_cms.load_spd');
+            Route::post('cekSimpan', [TransaksiCmsController::class, 'cekSimpan'])->name('skpd.transaksi_cms.cek_simpan');
+            Route::post('simpanCms', [TransaksiCmsController::class, 'simpanCms'])->name('skpd.transaksi_cms.simpan_cms');
+            Route::post('simpanDetailCms', [TransaksiCmsController::class, 'simpanDetailCms'])->name('skpd.transaksi_cms.simpan_detail_cms');
+            // EDIT
+            Route::get('edit/{no_voucher?}', [TransaksiCmsController::class, 'edit'])->where('no_voucher', '(.*)')->name('skpd.transaksi_cms.edit');
+            // HAPUS
+            Route::post('hapusCms', [TransaksiCmsController::class, 'hapusCms'])->name('skpd.transaksi_cms.hapus_cms');
+            // Cetak List
+            Route::get('cetak_list', [TransaksiCmsController::class, 'cetakList'])->name('skpd.transaksi_cms.cetak_list');
         });
     });
 

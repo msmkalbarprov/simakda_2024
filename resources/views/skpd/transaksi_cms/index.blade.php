@@ -9,6 +9,16 @@
                     <a href="{{ route('skpd.transaksi_cms.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="tgl_voucher" class="col-md-1 col-form-label">Tanggal</label>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control @error('tgl_voucher') is-invalid @enderror"
+                                id="tgl_voucher" name="tgl_voucher">
+                        </div>
+                        <div class="col-md-2">
+                            <button id="cetak_cms" class="btn btn-dark btn-md">Cetak List</button>
+                        </div>
+                    </div>
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="transaksi_cms" class="table" style="width: 100%">
@@ -31,8 +41,8 @@
                                     @endphp
                                     @foreach ($data_cms->chunk(5) as $data)
                                         @foreach ($data as $cms)
-                                            @if ($cms->status_upload == '1' && $cms->status_validasi == '1')
-                                                <tr>
+                                            <tr>
+                                                @if ($cms->status_upload == '1' && $cms->status_validasi == '1')
                                                     <td>{{ ++$no }}</td>
                                                     <td style="background-color: #00a5ff">{{ $cms->no_voucher }}</td>
                                                     <td style="background-color: #00a5ff">{{ $cms->tgl_voucher }}</td>
@@ -42,10 +52,7 @@
                                                     <td style="background-color: #00a5ff">{{ $cms->status_upload }}</td>
                                                     <td style="background-color: #00a5ff">{{ $cms->status_validasi }}</td>
                                                     <td style="background-color: #00a5ff">{{ $cms->status_trmpot }}</td>
-                                                    <td></td>
-                                                </tr>
-                                            @elseif ($cms->status_upload == '1')
-                                                <tr>
+                                                @elseif ($cms->status_upload == '1')
                                                     <td>{{ ++$no }}</td>
                                                     <td style="background-color: #12cc2e">{{ $cms->no_voucher }}</td>
                                                     <td style="background-color: #12cc2e">{{ $cms->tgl_voucher }}</td>
@@ -55,9 +62,28 @@
                                                     <td style="background-color: #12cc2e">{{ $cms->status_upload }}</td>
                                                     <td style="background-color: #12cc2e">{{ $cms->status_validasi }}</td>
                                                     <td style="background-color: #12cc2e">{{ $cms->status_trmpot }}</td>
-                                                    <td></td>
-                                                </tr>
-                                            @endif
+                                                @else
+                                                    <td>{{ ++$no }}</td>
+                                                    <td>{{ $cms->no_voucher }}</td>
+                                                    <td>{{ $cms->tgl_voucher }}</td>
+                                                    <td>{{ $cms->kd_skpd }}</td>
+                                                    <td>{{ Str::limit($cms->ket, 20) }}</td>
+                                                    <td>{{ $cms->status_upload }}</td>
+                                                    <td>{{ $cms->status_validasi }}</td>
+                                                    <td>{{ $cms->status_trmpot }}</td>
+                                                @endif
+                                                <td style="width:200px">
+                                                    <a href="{{ route('skpd.transaksi_cms.edit', $cms->no_voucher) }}"
+                                                        class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
+                                                    @if ($cms->status_upload == '1' || $cms->status_trmpot == '1')
+                                                    @else
+                                                        <a href="javascript:void(0);"
+                                                            onclick="deleteData('{{ $cms->no_voucher }}');"
+                                                            class="btn btn-danger btn-sm" id="delete"><i
+                                                                class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     @endforeach
                                 </tbody>

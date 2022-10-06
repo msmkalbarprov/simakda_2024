@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Skpd;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
@@ -25,6 +26,8 @@ class TransaksiCmsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_rek' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
         ];
 
         return view('skpd.transaksi_cms.create')->with($data);
@@ -142,8 +145,6 @@ class TransaksiCmsController extends Controller
             $data3 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber3', '<>', '0')->select('sumber3 as sumber_dana', DB::raw("ISNULL(nsumber3,0) as nilai"))->unionAll($data2);
             $data4 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber4', '<>', '0')->select('sumber4 as sumber_dana', DB::raw("ISNULL(nsumber4,0) as nilai"))->unionAll($data3);
             $data = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
-                ->select('sumber_dana as sumber', 'nilai')
-                ->selectRaw('? as kegiatan, ? as kd_rek6', [$kd_sub_kegiatan, $kd_rek6])
                 ->mergeBindings($data4)
                 ->whereRaw("sumber_dana <> ''")
                 ->get();
@@ -154,7 +155,7 @@ class TransaksiCmsController extends Controller
             })->join('trhsp2d as c', function ($join) {
                 $join->on('a.no_spp', '=', 'c.no_spp');
                 $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-            })->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])->groupBy('b.sumber')->select('b.sumber as sumber', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))->get();
+            })->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])->groupBy('b.sumber')->select('b.sumber as sumber_dana', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))->get();
         }
         return response()->json($data);
     }
@@ -390,5 +391,242 @@ class TransaksiCmsController extends Controller
         $data = load_spd($kd_sub_kegiatan, $kd_skpd, $kd_rekening);
 
         return response()->json($data);
+    }
+
+    public function cekSimpan(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = DB::table('trhtransout_cmsbank')->where(['no_voucher' => $no_bukti, 'kd_skpd' => $kd_skpd])->count();
+        return response()->json($data);
+    }
+
+    public function simpanCms(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trhtransout_cmsbank')->where(['kd_skpd' => $kd_skpd, 'no_voucher' => $data['no_bukti']])->delete();
+
+            DB::table('trhtransout_cmsbank')->insert([
+                'no_voucher' => $data['no_bukti'],
+                'tgl_voucher' => $data['tgl_voucher'],
+                'no_bukti' => $data['no_bukti'],
+                'tgl_bukti' => $data['tgl_voucher'],
+                'ket' => $data['keterangan'],
+                'username' => Auth::user()->nama,
+                'tgl_update' => date('Y-m-d H:i:s'),
+                'kd_skpd' => $data['kd_skpd'],
+                'nm_skpd' => $data['nm_skpd'],
+                'total' => $data['total_belanja'],
+                'no_tagih' => '',
+                'sts_tagih' => '0',
+                'tgl_tagih' => '',
+                'jns_spp' => $data['beban'],
+                'pay' => $data['pembayaran'],
+                'no_kas_pot' => $data['no_bukti'],
+                'panjar' => '0',
+                'no_sp2d' => $data['sp2d'],
+                'rekening_awal' => $data['rekening'],
+                'nm_rekening_tujuan' => '',
+                'rekening_tujuan' => '',
+                'bank_tujuan' => '',
+                'status_validasi' => '0',
+                'status_upload' => '0',
+                'ket_tujuan' => $data['ketcms'],
+            ]);
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function simpanDetailCms(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trdtransout_cmsbank')->where(['no_voucher' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trdtransout_transfercms')->where(['no_voucher' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+            if (isset($data['rincian_rekening'])) {
+                DB::table('trdtransout_cmsbank')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_voucher' => $data['no_bukti'],
+                        'no_sp2d' => $value['no_sp2d'],
+                        'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'nm_rek6' => $value['nm_rek6'],
+                        'nilai' => $value['nilai'],
+                        'kd_skpd' => $kd_skpd,
+                        'sumber' => $value['sumber'],
+                        'volume' => $value['volume'],
+                        'satuan' => $value['satuan'],
+                    ];
+                }, $data['rincian_rekening']));
+            }
+            if (isset($data['rincian_rek_tujuan'])) {
+                DB::table('trdtransout_transfercms')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_voucher' => $data['no_bukti'],
+                        'tgl_voucher' => $data['tgl_voucher'],
+                        'rekening_awal' => $value['rekening_awal'],
+                        'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
+                        'rekening_tujuan' => $value['rekening_tujuan'],
+                        'bank_tujuan' => $value['bank_tujuan'],
+                        'kd_skpd' => $value['kd_skpd'],
+                        'nilai' => $value['nilai'],
+                    ];
+                }, $data['rincian_rek_tujuan']));
+            }
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // EDIT
+    public function edit($no_voucher)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $rek_tujuan = DB::table('trdtransout_transfercms as a')->join('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['a.no_voucher' => $no_voucher, 'a.kd_skpd' => $kd_skpd])->select('a.*')->get();
+        $total_transfer = 0;
+        foreach ($rek_tujuan as $tujuan) {
+            $total_transfer += $tujuan->nilai;
+        }
+        $data = [
+            'cms' => DB::table('trhtransout_cmsbank as a')->where(['a.panjar' => '0', 'kd_skpd' => $kd_skpd, 'no_voucher' => $no_voucher])->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("'' as kete"))->first(),
+            'data_rek' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'data_rincian_rekening' => DB::table('trdtransout_cmsbank as a')->join('trhtransout_cmsbank as b', function ($join) {
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->where(['a.no_voucher' => $no_voucher, 'a.kd_skpd' => $kd_skpd])->select('a.*')->get(),
+            'rincian_rek_tujuan' => $rek_tujuan,
+            'total_transfer' => $total_transfer
+        ];
+
+        return view('skpd.transaksi_cms.edit')->with($data);
+    }
+
+    // Hapus
+    public function hapusCms(Request $request)
+    {
+        $no_voucher = $request->no_voucher;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trdtransout_cmsbank')->where(['no_voucher' => $no_voucher, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trhtransout_cmsbank')->where(['no_voucher' => $no_voucher, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trdtransout_transfercms')->where(['no_voucher' => $no_voucher, 'kd_skpd' => $kd_skpd])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // Cetak List
+    public function cetakList(Request $request)
+    {
+        $tgl_voucher = $request->tgl_voucher;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $tahun_anggaran = tahun_anggaran();
+
+        $data1 = DB::table('trhtransout_cmsbank as a')->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'1' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'a.no_sp2d as kegiatan', DB::raw("'' as rekening"), 'a.ket', DB::raw("'0' as terima"), DB::raw("'0' as keluar"), 'a.jns_spp', 'a.status_upload');
+
+        $data2 = DB::table('trhtransout_cmsbank as a')->leftJoin('trdtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'2' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'b.kd_sub_kegiatan as kegiatan', 'b.kd_rek6 as rekening', DB::raw("b.nm_sub_kegiatan + ', ' + b.nm_rek6 as ket"), DB::raw("'0' as terima"), 'b.nilai as keluar', 'a.jns_spp', DB::raw("'' as status_upload"))->union($data1);
+
+        $data3 = DB::table('trdtransout_transfercms as a')->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'3' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', DB::raw("'Rek. Tujuan :' as kegiatan"), DB::raw("'' as rekening"), DB::raw("RTRIM(a.rekening_tujuan) + ' , AN : ' + RTRIM(a.nm_rekening_tujuan) as ket"), DB::raw("'0' as terima"), 'a.nilai as keluar', DB::raw("'' as jns_spp"), DB::raw("'' as status_upload"))->union($data2);
+
+        $data4 = DB::table('trhtransout_cmsbank as a')->join('trhtrmpot_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->join('trdtrmpot_cmsbank as c', function ($join) {
+            $join->on('b.no_bukti', '=', 'c.no_bukti');
+            $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+        })->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'4' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'b.kd_sub_kegiatan as kegiatan', 'c.kd_rek6 as rekening', DB::raw("'Terima ' + c.nm_rek6 as ket"), 'c.nilai as terima', DB::raw("'0' as keluar"), DB::raw("'' as jns_spp"), DB::raw("'' as status_upload"))->union($data3);
+
+        $bank1 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode');
+
+        $bank2 = DB::table('TRHINLAIN')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where('pay', 'BANK')->unionAll($bank1);
+
+        $bank3 = DB::table('tr_jpanjar as c')->join('tr_panjar as d', function ($join) {
+            $join->on('c.no_panjar_lalu', '=', 'd.no_panjar');
+            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        })->select('c.tgl_kas as tgl', 'c.no_kas as bku', 'c.keterangan as ket', 'c.nilai as jumlah', DB::raw("'1' as jns"), 'c.kd_skpd as kode')->where(['c.jns' => '1', 'c.kd_skpd' => $kd_skpd, 'd.pay' => 'BANK'])->unionAll($bank2);
+
+        $bank4 = DB::table('trhtrmpot')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['pay' => 'BANK', 'kd_skpd' => $kd_skpd])->unionAll($bank3);
+
+        $bank5 = DB::table('tr_ambilsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->unionAll($bank4);
+
+        $bank6 = DB::table('trhoutlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where('pay', 'BANK')->unionAll($bank5);
+
+        $bank7 = DB::table('tr_panjar')->select('tgl_panjar as tgl', 'no_panjar as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['jns' => '1', 'kd_skpd' => $kd_skpd, 'pay' => 'BANK'])->unionAll($bank6);
+
+        $leftjoin1 = DB::table('trspmpot')->select('no_spm', DB::raw("SUM(nilai) as pot"))->groupBy('no_spm');
+
+        $bank8 = DB::table('trhtransout as a')->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')->leftJoinSub($leftjoin1, 'c', function ($join) {
+            $join->on('b.no_spm', '=', 'c.no_spm');
+        })->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', DB::raw("total - ISNULL(pot,0) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pay' => 'BANK'])->unionAll($bank7);
+
+        $bank9 = DB::table('trhkasin_pkd as a')->join('trdkasin_pkd as b', function ($join) {
+            $join->on('a.no_sts', '=', 'b.no_sts');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['pot_khusus' => '0', 'bank' => 'BANK', 'a.kd_skpd' => $kd_skpd])->whereNotIn('jns_trans', ['4', '2'])->groupBy('a.tgl_sts', 'a.no_sts', 'a.keterangan', 'a.kd_skpd')->select('a.tgl_sts as tgl', 'a.no_sts as bku', 'a.keterangan as ket', DB::raw("SUM(b.rupiah) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->unionAll($bank8);
+
+        $bank10 = DB::table('trhstrpot')->where(['kd_skpd' => $kd_skpd, 'pay' => 'BANK'])->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->unionAll($bank9);
+
+        $data = [
+            'daerah' => DB::table('sclient')->select('daerah', 'kab_kota')->where(['kd_skpd' => $kd_skpd])->first(),
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tgl_voucher' => $tgl_voucher,
+            'data_cms' => DB::table(DB::raw("({$data4->toSql()}) AS sub"))
+                ->mergeBindings($data4)
+                ->orderBy('kd_skpd')
+                ->orderBy('tgl_voucher')
+                ->orderBy(DB::raw("CAST(no_voucher as INT)"))
+                ->orderBy('urut')
+                ->get(),
+            'bank' => DB::table(DB::raw("({$bank10->toSql()}) AS sub"))
+                ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END) as terima"), DB::raw("SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) as keluar"))
+                ->mergeBindings($bank10)
+                ->whereRaw("tgl<='$tgl_voucher' AND kode='$kd_skpd'")
+                ->first()
+        ];
+
+        return view('skpd.transaksi_cms.cetak')->with($data);
     }
 }

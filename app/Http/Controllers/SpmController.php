@@ -233,7 +233,7 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = $request->no_spm;
         $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get();
-        return Datatables::of($data)->make(true);;
+        return Datatables::of($data)->make(true);
         return view('penatausahaan.pengeluaran.spm.tambah_potongan');
     }
 
