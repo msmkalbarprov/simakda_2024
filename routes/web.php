@@ -19,6 +19,7 @@ use App\Http\Controllers\PencairanSp2dController;
 use App\Http\Controllers\Skpd\PencairanSp2dController as CairSp2dController;
 use App\Http\Controllers\Skpd\TerimaSp2dController;
 use App\Http\Controllers\Skpd\TransaksiCmsController;
+use App\Http\Controllers\Skpd\UploadCmsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -252,6 +253,14 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('hapusCms', [TransaksiCmsController::class, 'hapusCms'])->name('skpd.transaksi_cms.hapus_cms');
             // Cetak List
             Route::get('cetak_list', [TransaksiCmsController::class, 'cetakList'])->name('skpd.transaksi_cms.cetak_list');
+        });
+        // UPLOAD TRANSAKSI CMS
+        Route::group(['prefix' => 'upload_cms'], function () {
+            Route::get('', [UploadCmsController::class, 'index'])->name('skpd.upload_cms.index');
+            Route::post('load_upload', [UploadCmsController::class, 'loadUpload'])->name('skpd.upload_cms.load_data');
+            Route::post('rekening_transaksi', [UploadCmsController::class, 'rekeningTransaksi'])->name('skpd.upload_cms.rekening_transaksi');
+            Route::post('rekening_potongan', [UploadCmsController::class, 'rekeningPotongan'])->name('skpd.upload_cms.rekening_potongan');
+            Route::post('rekening_tujuan', [UploadCmsController::class, 'rekeningTujuan'])->name('skpd.upload_cms.rekening_tujuan');
         });
     });
 

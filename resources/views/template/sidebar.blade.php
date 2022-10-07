@@ -72,6 +72,7 @@
                         <a href="javascript: void(0);" class="has-arrow">Transaksi</a>
                         <ul class="sub-menu" aria-expanded="true">
                             <li><a href="{{ route('skpd.transaksi_cms.index') }}">Transaksi CMS</a></li>
+                            <li><a href="{{ route('skpd.upload_cms.index') }}">Upload Transaksi CMS</a></li>
                             <li><a href="{{ route('skpd.pencairan_sp2d.index') }}">Transaksi Tunai</a></li>
                             <li><a href="{{ route('skpd.pencairan_sp2d.index') }}">Transaksi Pemindahbukuan</a></li>
                         </ul>
