@@ -1,3 +1,12 @@
+<style>
+    input[type=checkbox] {
+        -ms-transform: scale(1);
+        -moz-transform: scale(1);
+        -webkit-transform: scale(1);
+        -o-transform: scale(1);
+        padding: 10px;
+    }
+</style>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -61,6 +70,14 @@
                     width: 200,
                     render: function(data, type, row, meta) {
                         return `<button type="button" onclick="lihatData('${data.nm_skpd}','${data.no_voucher}','${data.tgl_voucher}','${data.no_sp2d}','${data.ket}','${data.kd_sub_kegiatan}','${data.nm_sub_kegiatan}','${data.kd_skpd}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>`
+                    }
+                },
+                {
+                    data: null,
+                    name: 'tambah',
+                    width: 50,
+                    render: function(data, type, row, meta) {
+                        return `<input class="form-check-input" type="checkbox" id="pilih${data.no_voucher}" onclick="pilihUpload('${data.no_voucher}','${data.tgl_voucher}','${data.kd_skpd}','${data.ket}','${data.total}','${data.bersih}','${data.status_upload}','${data.rekening_awal}','${data.nm_rekening_tujuan}','${data.rekening_tujuan}','${data.bank_tujuan}','${data.ket_tujuan}')">`
                     }
                 },
                 {
@@ -230,6 +247,93 @@
             console.log(data);
         });
 
+        $('#proses_list').on('click', function() {
+            let data = data_transaksi.rows().data().toArray();
+            if (data.length == 0) {
+                Swal.fire({
+                    title: "Peringatan",
+                    text: 'Data transaksi harus dipilih!',
+                    icon: 'error',
+                    confirmButtonColor: '#5b73e8'
+                })
+            } else {
+                $('#modal_transaksi').modal('show');
+            }
+        });
+
+    });
+
+    let data_transaksi = $('#data_transaksi').DataTable({
+        responsive: true,
+        processing: true,
+        ordering: false,
+        columns: [{
+                data: 'no_voucher',
+                name: 'no_voucher',
+            },
+            {
+                data: 'tgl_voucher',
+                name: 'tgl_voucher',
+            },
+            {
+                data: 'kd_skpd',
+                name: 'kd_skpd',
+            },
+            {
+                data: null,
+                name: 'ket',
+                render: function(data, type, row, meta) {
+                    return data.ket.substr(0, 10) + '.....';
+                }
+            },
+            {
+                data: 'total',
+                name: 'total',
+                visible: false
+            },
+            {
+                data: 'netto',
+                name: 'netto',
+            },
+            {
+                data: 'pot',
+                name: 'pot',
+            },
+            {
+                data: 'nilai_total',
+                name: 'nilai_total',
+            },
+            {
+                data: 'status_upload',
+                name: 'status_upload',
+                visible: false
+            },
+            {
+                data: 'rekening_awal',
+                name: 'rekening_awal',
+                visible: false
+            },
+            {
+                data: 'nm_rekening_tujuan',
+                name: 'nm_rekening_tujuan',
+                visible: false
+            },
+            {
+                data: 'rekening_tujuan',
+                name: 'rekening_tujuan',
+                visible: false
+            },
+            {
+                data: 'bank_tujuan',
+                name: 'bank_tujuan',
+                visible: false
+            },
+            {
+                data: 'ket_tujuan',
+                name: 'ket_tujuan',
+                visible: false
+            },
+        ]
     });
 
     // function deleteData(no_voucher) {
@@ -256,6 +360,16 @@
     //         return false;
     //     }
     // }
+    function angka(n) {
+        let nilai = n.split(',').join('');
+        return parseFloat(nilai) || 0;
+    }
+
+    function rupiah(n) {
+        let n1 = n.split('.').join('');
+        let rupiah = n1.split(',').join('.');
+        return parseFloat(rupiah) || 0;
+    }
 
     function lihatData(nm_skpd, no_voucher, tgl_voucher, no_sp2d, ket, kd_sub_kegiatan, nm_sub_kegiatan, kd_skpd) {
         $('#kd_skpd').val(kd_skpd);
@@ -270,5 +384,50 @@
         $('#rekening_potongan').DataTable().ajax.reload();
         $('#rekening_tujuan').DataTable().ajax.reload();
         $('#modal_lihat').modal('show');
+    }
+
+    function pilihUpload(no_voucher, tgl_voucher, kd_skpd, ket, total, bersih, status_upload, rekening_awal,
+        nm_rekening_tujuan, rekening_tujuan, bank_tujuan, ket_tujuan) {
+        let total_transaksi = rupiah(document.getElementById('total_transaksi').value);
+        let nilai = parseFloat(total);
+        let nilai_bersih = parseFloat(bersih);
+        let pot = nilai - nilai_bersih;
+
+        let pilih = document.getElementById('pilih' + no_voucher).checked;
+        if (pilih == true) {
+            data_transaksi.row.add({
+                'no_voucher': no_voucher,
+                'tgl_voucher': tgl_voucher,
+                'kd_skpd': kd_skpd,
+                'ket': ket,
+                'total': parseFloat(total),
+                'netto': new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(nilai_bersih),
+                'pot': new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(pot),
+                'nilai_total': new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(total),
+                'status_upload': status_upload,
+                'rekening_awal': rekening_awal,
+                'nm_rekening_tujuan': nm_rekening_tujuan,
+                'rekening_tujuan': rekening_tujuan,
+                'bank_tujuan': bank_tujuan,
+                'ket_tujuan': ket_tujuan,
+            }).draw();
+            $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total_transaksi + nilai));
+        } else {
+            data_transaksi.rows(function(idx, data, node) {
+                return data.no_voucher == no_voucher
+            }).remove().draw();
+            $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total_transaksi - nilai));
+        }
+
     }
 </script>

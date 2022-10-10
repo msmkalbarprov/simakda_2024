@@ -18,6 +18,11 @@
                         <div class="col-md-2">
                             <button id="cetak_cms" class="btn btn-dark btn-md">Cari</button>
                         </div>
+                        <div class="col-md-7">
+                            <button id="proses_list" class="btn btn-primary btn-md" style="float: right"><i
+                                    class="uil-search-alt"></i>Proses
+                                Upload</button>
+                        </div>
                     </div>
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
@@ -33,6 +38,7 @@
                                         <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
                                         <th style="width: 50px;text-align:center">STT</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>
+                                        <th style="width: 50px;text-align:center">Tambah</th>
                                         <th>Bersih</th>
                                         <th>Rek Bend</th>
                                         <th>Nama Rek</th>
@@ -42,74 +48,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @php
-                                        $no = 0;
-                                    @endphp
-                                    @foreach ($upload_cms->chunk(5) as $data)
-                                        @foreach ($data as $cms)
-                                            <tr>
-                                                @if ($cms->status_upload == '1' && $cms->status_validasi == '1')
-                                                    <td style="background-color:#B0E0E6">{{ ++$no }}</td>
-                                                    <td style="background-color:#B0E0E6">{{ $cms->no_voucher }}</td>
-                                                    <td style="background-color:#B0E0E6">{{ $cms->tgl_voucher }}</td>
-                                                    <td style="background-color:#B0E0E6">{{ $cms->tgl_upload }}</td>
-                                                    <td style="background-color:#B0E0E6">{{ $cms->kd_skpd }}</td>
-                                                    <td style="background-color:#B0E0E6">{{ Str::limit($cms->ket, 20) }}
-                                                    </td>
-                                                    <td style="text-align: right;background-color:#B0E0E6">
-                                                        {{ rupiah($cms->total) }}</td>
-                                                    <td style="background-color:#B0E0E6">&#10004</td>
-                                                @elseif ($cms->status_upload == '1')
-                                                    <td style="background-color:#90EE90">{{ ++$no }}</td>
-                                                    <td style="background-color:#90EE90">{{ $cms->no_voucher }}</td>
-                                                    <td style="background-color:#90EE90">{{ $cms->tgl_voucher }}</td>
-                                                    <td style="background-color:#90EE90">{{ $cms->tgl_upload }}</td>
-                                                    <td style="background-color:#90EE90">{{ $cms->kd_skpd }}</td>
-                                                    <td style="background-color:#90EE90">{{ Str::limit($cms->ket, 20) }}
-                                                    </td>
-                                                    <td style="text-align: right;background-color:#90EE90">
-                                                        {{ rupiah($cms->total) }}</td>
-                                                    <td style="background-color:#90EE90">X</td>
-                                                @else
-                                                    <td>{{ ++$no }}</td>
-                                                    <td>{{ $cms->no_voucher }}</td>
-                                                    <td>{{ $cms->tgl_voucher }}</td>
-                                                    <td>{{ $cms->tgl_upload }}</td>
-                                                    <td>{{ $cms->kd_skpd }}</td>
-                                                    <td>{{ Str::limit($cms->ket, 20) }}</td>
-                                                    <td style="text-align: right">{{ rupiah($cms->total) }}</td>
-                                                    <td>X</td>
-                                                @endif
-                                                <td style="width:200px">
-                                                    <a href="{{ route('skpd.transaksi_cms.edit', $cms->no_voucher) }}"
-                                                        class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
-                                                    <a href="javascript:void(0);"
-                                                        onclick="deleteData('{{ $cms->no_voucher }}');"
-                                                        class="btn btn-danger btn-sm" id="delete"><i
-                                                            class="fas fa-trash-alt"></i></a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endforeach --}}
                                 </tbody>
                             </table>
                             <hr>
                             <table style="width: 100%">
                                 <tbody>
                                     <tr>
-                                        <td style="padding-left: 700px">Total Transaksi</td>
+                                        <td style="padding-left: 600px">Total Transaksi</td>
+                                        <td>:</td>
+                                        <td style="text-align: right"><input type="text"
+                                                style="border:none;background-color:white;text-align:right"
+                                                class="form-control" readonly id="total_transaksi">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left: 600px">Total Potongan</td>
                                         <td>:</td>
                                         <td style="text-align: right"></td>
                                     </tr>
                                     <tr>
-                                        <td style="padding-left: 700px">Total Potongan</td>
+                                        <td style="padding-left: 600px">Sisa Saldo Bank</td>
                                         <td>:</td>
-                                        <td style="text-align: right"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-left: 700px">Sisa Saldo Bank</td>
-                                        <td>:</td>
-                                        <td style="text-align: right">{{ rupiah($sisa_bank->sisa) }}</td>
+                                        <td><input type="text"
+                                                style="border:none;background-color:white;text-align:right" readonly
+                                                id="sisa_saldo" class="form-control" value="{{ rupiah($sisa_bank->sisa) }}">
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -231,6 +194,53 @@
                                         <th>Kd Skpd</th>
                                         <th>Nilai</th>
                                         <th>Bank</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mb-1 row">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-md btn-warning" data-bs-dismiss="modal"><i
+                                    class="fa fa-undo"></i>Kembali</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_transaksi" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lis Data Upload</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-header">
+                            Data Transaksi
+                        </div>
+                        <div class="card-body">
+                            <table style="width: 100%" id="data_transaksi">
+                                <thead>
+                                    <tr>
+                                        <th>No Voucher</th>
+                                        <th>Tanggal Voucher</th>
+                                        <th>KD SKPD</th>
+                                        <th>Keterangan</th>
+                                        <th>Total</th>
+                                        <th>Netto</th>
+                                        <th>Potongan</th>
+                                        <th>Nilai Pengeluaran</th>
+                                        <th>Status Upload</th>
+                                        <th>Rek Bend</th>
+                                        <th>Nama Rek</th>
+                                        <th>Rek Tujuan</th>
+                                        <th>Bank Tujuan</th>
+                                        <th>Ket. Tujuan</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
