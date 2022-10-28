@@ -456,6 +456,28 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($list_rekening_belanja as $rekening_belanja)
+                                        <tr>
+                                            <td>{{ $rekening_belanja->no_bukti }}</td>
+                                            <td>{{ $rekening_belanja->no_sp2d }}</td>
+                                            <td>{{ $rekening_belanja->kd_sub_kegiatan }}</td>
+                                            <td>{{ $rekening_belanja->nm_sub_kegiatan }}</td>
+                                            <td>{{ $rekening_belanja->kd_rek6 }}</td>
+                                            <td>{{ $rekening_belanja->nm_rek6 }}</td>
+                                            <td>{{ rupiah($rekening_belanja->nilai) }}</td>
+                                            <td>{{ $rekening_belanja->sumber }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $rekening_belanja->volume }}</td>
+                                            <td>{{ $rekening_belanja->satuan }}</td>
+                                            <td>
+                                                <a href="javascript:void(0);"
+                                                    onclick="deleteData('{{ $rekening_belanja->no_bukti }}','{{ $rekening_belanja->kd_sub_kegiatan }}','{{ $rekening_belanja->kd_rek6 }}','{{ $rekening_belanja->sumber }}','{{ $rekening_belanja->nilai }}')"
+                                                    class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
