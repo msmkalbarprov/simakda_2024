@@ -1,17 +1,3 @@
-<style>
-    input[type=checkbox] {
-        -ms-transform: scale(1);
-        -moz-transform: scale(1);
-        -webkit-transform: scale(1);
-        -o-transform: scale(1);
-        padding: 10px;
-    }
-
-    .card:hover {
-        transform: scale(1);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
-    }
-</style>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -20,19 +6,88 @@
             }
         });
 
-        let data_awal = $('#upload_cms').DataTable({
+        let data_awal = $('#draft_potongan').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('skpd.upload_cms.load_data') }}",
+                "url": "{{ route('skpd.potongan_pajak_cms.load_data') }}",
                 "type": "POST",
             },
             columns: [{
                     data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
+                    name: 'DT_RowIndex',
+                    className: "text-center",
+                }, {
+                    data: 'no_bukti',
+                    name: 'no_bukti',
+                    className: "text-center",
+                },
+                {
+                    data: 'tgl_bukti',
+                    name: 'tgl_bukti'
+                },
+                {
+                    data: null,
+                    name: 'ket',
+                    render: function(data, type, row, meta) {
+                        return data.ket.substr(0, 10) + '.....';
+                    }
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    visible: false
+                },
+                {
+                    data: null,
+                    name: 'status_upload',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_upload == '1') {
+                            return '&#10004'
+                        } else {
+                            return '&#10008'
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    name: 'status_validasi',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_validasi == '1') {
+                            return '&#10004'
+                        } else {
+                            return '&#10008'
+                        }
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 100,
+                    className: "text-center",
+                },
+            ],
+        });
+
+        let data_validasi = $('#draft_validasi').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            autoWidth: false,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('skpd.validasi_cms.draft_validasi') }}",
+                "type": "POST",
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
                 }, {
                     data: 'no_voucher',
                     name: 'no_voucher'
@@ -42,8 +97,12 @@
                     name: 'tgl_voucher'
                 },
                 {
-                    data: 'tgl_upload',
-                    name: 'tgl_upload',
+                    data: 'no_bukti',
+                    name: 'no_bukti',
+                },
+                {
+                    data: 'tgl_validasi',
+                    name: 'tgl_validasi',
                 },
                 {
                     data: 'kd_skpd',
@@ -67,20 +126,23 @@
                     }
                 },
                 {
+                    data: 'no_upload',
+                    name: 'no_upload',
+                    visible: false
+                },
+                {
                     data: 'status_upload',
-                    name: 'status_upload'
+                    name: 'status_upload',
+                    visible: false
                 },
                 {
-                    data: null,
-                    name: 'aksi',
-                    width: 200,
-                    render: function(data, type, row, meta) {
-                        return `<button type="button" onclick="lihatData('${data.nm_skpd}','${data.no_voucher}','${data.tgl_voucher}','${data.no_sp2d}','${data.ket}','${data.kd_sub_kegiatan}','${data.nm_sub_kegiatan}','${data.kd_skpd}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>`
-                    }
+                    data: 'tgl_upload',
+                    name: 'tgl_upload',
+                    visible: false
                 },
                 {
-                    data: 'bersih',
-                    name: 'bersih',
+                    data: 'status_validasi',
+                    name: 'status_validasi',
                     visible: false
                 },
                 {
@@ -108,56 +170,17 @@
                     name: 'ket_tujuan',
                     visible: false
                 },
-            ],
-        });
-
-        let data_upload = $('#draft_upload').DataTable({
-            responsive: true,
-            ordering: false,
-            serverSide: true,
-            processing: true,
-            autoWidth: false,
-            lengthMenu: [5, 10],
-            ajax: {
-                "url": "{{ route('skpd.upload_cms.draft_upload') }}",
-                "type": "POST",
-            },
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                }, {
-                    data: 'no_upload_tgl',
-                    name: 'no_upload_tgl'
-                },
                 {
-                    data: 'no_upload',
-                    name: 'no_upload'
-                },
-                {
-                    data: 'tgl_upload',
-                    name: 'tgl_upload',
-                },
-                {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd'
-                },
-                {
-                    data: null,
-                    name: 'total',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.total)
-                    }
+                    data: 'status_trmpot',
+                    name: 'status_trmpot',
+                    visible: false
                 },
                 {
                     data: null,
                     name: 'aksi',
                     width: '100px',
                     render: function(data, type, row, meta) {
-                        return `<button type="button" onclick="lihatDataUpload('${data.no_upload}','${data.total}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>
-                        <a href = "javascript:void(0);" onclick = "batalUpload('${data.no_upload}','${data.kd_skpd}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
+                        return `<a href = "javascript:void(0);" onclick = "batalValidasi('${data.no_voucher}','${data.kd_skpd}','${data.no_bukti}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
                     }
                 },
             ],
@@ -262,135 +285,6 @@
                     visible: false
                 },
             ],
-        });
-
-        let rekening_transaksi = $('#rekening_transaksi').DataTable({
-            responsive: true,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": "{{ route('skpd.upload_cms.rekening_transaksi') }}",
-                "type": "POST",
-                "data": function(d) {
-                    d.nomor = document.getElementById('nomor').value;
-                    d.kd_skpd = document.getElementById('kd_skpd').value;
-                }
-            },
-            ordering: false,
-            columns: [{
-                    data: 'kd_rek6',
-                    name: 'kd_rek6',
-                },
-                {
-                    data: 'nm_rek6',
-                    name: 'nm_rek6',
-                },
-                {
-                    data: null,
-                    name: 'nilai',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)
-                    }
-                },
-                {
-                    data: 'sumber',
-                    name: 'sumber',
-                },
-            ]
-        });
-
-        let rekening_potongan = $('#rekening_potongan').DataTable({
-            responsive: true,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": "{{ route('skpd.upload_cms.rekening_potongan') }}",
-                "type": "POST",
-                "data": function(d) {
-                    d.nomor = document.getElementById('nomor').value;
-                    d.kd_skpd = document.getElementById('kd_skpd').value;
-                }
-            },
-            ordering: false,
-            columns: [{
-                    data: 'kd_rek6',
-                    name: 'kd_rek6',
-                },
-                {
-                    data: 'nm_rek6',
-                    name: 'nm_rek6',
-                },
-                {
-                    data: null,
-                    name: 'nilai',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)
-                    }
-                },
-            ]
-        });
-
-        let rekening_tujuan = $('#rekening_tujuan').DataTable({
-            responsive: true,
-            serverSide: true,
-            processing: true,
-            ajax: {
-                "url": "{{ route('skpd.upload_cms.rekening_tujuan') }}",
-                "type": "POST",
-                "data": function(d) {
-                    d.nomor = document.getElementById('nomor').value;
-                    d.kd_skpd = document.getElementById('kd_skpd').value;
-                }
-            },
-            ordering: false,
-            columns: [{
-                    data: 'no_voucher',
-                    name: 'no_voucher',
-                    visible: false
-                },
-                {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher',
-                    visible: false
-                },
-                {
-                    data: 'rekening_awal',
-                    name: 'rekening_awal',
-                },
-                {
-                    data: 'nm_rekening_tujuan',
-                    name: 'nm_rekening_tujuan',
-                },
-                {
-                    data: 'rekening_tujuan',
-                    name: 'rekening_tujuan',
-                },
-                {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd',
-                    visible: false
-                },
-                {
-                    data: null,
-                    name: 'nilai',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)
-                    }
-                },
-                {
-                    data: 'bank_tujuan',
-                    name: 'bank_tujuan',
-                },
-            ]
         });
 
         $('#cetak_cms').on('click', function() {
@@ -560,23 +454,49 @@
 
     }
 
-    function batalUpload(no_upload, kd_skpd) {
-        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Upload : ' + no_upload);
+    function batalValidasi(no_voucher, kd_skpd, no_bukti) {
+        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Voucher : ' + no_voucher);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('skpd.upload_cms.batal_upload') }}",
+                url: "{{ route('skpd.validasi_cms.batal_validasi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_upload: no_upload,
+                    no_voucher: no_voucher,
                     kd_skpd: kd_skpd,
+                    no_bukti: no_bukti,
                 },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Batal Berhasil');
-                        window.location.href = "{{ route('skpd.upload_cms.index') }}";
+                        window.location.href = "{{ route('skpd.validasi_cms.index') }}";
                     } else {
                         alert('Proses Batal Gagal...!!!');
+                    }
+                }
+            })
+        } else {
+            return false;
+        }
+    }
+
+    function hapusPotongan(no_bukti, no_voucher) {
+        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Bukti : ' + no_bukti);
+        if (tanya == true) {
+            $.ajax({
+                url: "{{ route('skpd.potongan_pajak_cms.hapus_potongan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_bukti: no_bukti,
+                    no_voucher: no_voucher,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Proses Hapus Berhasil');
+                        window.location.reload();
+                    } else {
+                        alert('Proses Hapus Gagal...!!!');
                     }
                 }
             })

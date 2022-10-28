@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 function tahun_anggaran()
@@ -2105,4 +2106,45 @@ function sisa_bank()
         ->first();
 
     return $data;
+}
+
+function cek_status_spj($kd_skpd)
+{
+    $data = DB::table('trhspj_ppkd')->select(DB::raw("CAST(bulan as int) as bulan"))->where(['kd_skpd' => $kd_skpd, 'cek' => '1'])->orderByDesc(DB::raw("CAST(bulan as int)"))->first();
+
+    return $data->bulan;
+}
+
+function filter_menu()
+{
+    $id = Auth::user()->id;
+
+    $hak_akses = DB::table('user_role as a')->select('c.*')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
+
+    return $hak_akses;
+}
+
+function daftar_menu()
+{
+    $id = Auth::user()->id;
+
+    $hak_akses = DB::table('user_role as a')->select('c.*')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
+
+    return $hak_akses;
+}
+
+function cek_akses()
+{
+    $route = Route::currentRouteName();
+    $id = Auth::user()->id;
+
+    $hak_akses = DB::table('user_role as a')->select('c.name')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
+    $hak = [];
+    foreach ($hak_akses as $akses) {
+        $hak[] = $akses->name;
+    }
+    if (!in_array($route, $hak)) {
+        return '0';
+    }
+    return '1';
 }

@@ -2,142 +2,6 @@
 @section('title', 'Upload CMS | SIMAKDA')
 @section('content')
     <div class="row">
-        {{-- <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="form-check form-switch form-switch-lg">
-                        <input type="checkbox" class="form-check-input" id="header_transaksi">
-                        <label class="form-check-label" for="header_transaksi">List Data Transaksi</label>
-                    </div>
-                </div>
-                <div class="card-body" id="card_transaksi">
-                    <div class="mb-3 row">
-                        <label for="tgl_voucher" class="col-md-1 col-form-label">Tanggal</label>
-                        <div class="col-md-2">
-                            <input type="date" class="form-control @error('tgl_voucher') is-invalid @enderror"
-                                id="tgl_voucher" name="tgl_voucher">
-                        </div>
-                        <div class="col-md-2">
-                            <button id="cetak_cms" class="btn btn-dark btn-md">Cari</button>
-                        </div>
-                        <div class="col-md-7">
-                            <a href="{{ route('skpd.upload_cms.create') }}" class="btn btn-primary"
-                                style="float: right;">Tambah Upload</a>
-                        </div>
-                    </div>
-                    <div class="table-rep-plugin">
-                        <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="upload_cms" class="table" style="width: 100%">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 50px;text-align:center">Nomor Transaksi</th>
-                                        <th style="width: 100px;text-align:center">Tanggal Voucher</th>
-                                        <th style="width: 100px;text-align:center">Tanggal Upload</th>
-                                        <th style="width: 100px;text-align:center">SKPD</th>
-                                        <th style="width: 50px;text-align:center">Keterangan</th>
-                                        <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
-                                        <th style="width: 50px;text-align:center">STT</th>
-                                        <th style="width: 200px;text-align:center">Aksi</th>
-                                        <th>Bersih</th>
-                                        <th>Rek Bend</th>
-                                        <th>Nama Rek</th>
-                                        <th>Rek Tujuan</th>
-                                        <th>Bank Tujuan</th>
-                                        <th>Ket. Tujuan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                            <hr>
-                            <table style="width: 100%">
-                                <tbody>
-                                    <tr>
-                                        <td style="padding-left: 600px">Total Transaksi</td>
-                                        <td>:</td>
-                                        <td style="text-align: right"><input type="text"
-                                                style="border:none;background-color:white;text-align:right"
-                                                class="form-control" readonly id="total_transaksi">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-left: 600px">Total Potongan</td>
-                                        <td>:</td>
-                                        <td style="text-align: right"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-left: 600px">Sisa Saldo Bank</td>
-                                        <td>:</td>
-                                        <td><input type="text"
-                                                style="border:none;background-color:white;text-align:right" readonly
-                                                id="sisa_saldo" class="form-control" value="{{ rupiah($sisa_bank->sisa) }}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        {{-- <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="form-check form-switch form-switch-lg">
-                        <input type="checkbox" class="form-check-input" id="header_upload">
-                        <label class="form-check-label" for="header_upload">List Data Upload</label>
-                    </div>
-                </div>
-                <div class="card-body" id="card_upload">
-                    <div class="mb-3 row">
-                        <label for="tgl_upload" class="col-md-1 col-form-label">Tanggal</label>
-                        <div class="col-md-2">
-                            <input type="date" class="form-control @error('tgl_upload') is-invalid @enderror"
-                                id="tgl_upload" name="tgl_upload">
-                        </div>
-                        <div class="col-md-2">
-                            <button id="cari_upload" class="btn btn-dark btn-md">Cari</button>
-                        </div>
-                    </div>
-                    <div class="table-rep-plugin">
-                        <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="draft_upload" class="table" style="width: 100%">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 100px;text-align:center">Urutan Upload</th>
-                                        <th style="width: 50px;text-align:center">Nomor Upload</th>
-                                        <th style="width: 100px;text-align:center">Tanggal Upload</th>
-                                        <th style="width: 50px;text-align:center">SKPD</th>
-                                        <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
-                                        <th style="width: 200px;text-align:center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                            <hr>
-                            <table style="width: 100%">
-                                <tbody>
-                                    <tr>
-                                        <td style="padding-left: 600px">Total Upload</td>
-                                        <td>:</td>
-                                        <td><input type="text"
-                                                style="border:none;background-color:white;text-align:right" readonly
-                                                id="total_upload" class="form-control"
-                                                value="{{ rupiah($sisa_bank->sisa) }}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> <!-- end col --> --}}
-
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -162,30 +26,32 @@
                                         <button id="cetak_cms" class="btn btn-dark btn-md">Cari</button>
                                     </div>
                                     <div class="col-md-7">
-                                        <a href="{{ route('skpd.upload_cms.create') }}" class="btn btn-primary"
-                                            style="float: right;">Tambah Upload</a>
+                                        <a href="{{ route('skpd.validasi_cms.create') }}" class="btn btn-primary"
+                                            style="float: right;">Tambah Validasi</a>
                                     </div>
                                 </div>
                                 <div class="table-rep-plugin">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="upload_cms" class="table" style="width: 100%">
+                                        <table id="list_blm_validasi" class="table" style="width: 100%">
                                             <thead>
                                                 <tr>
                                                     <th style="width: 25px;text-align:center">No.</th>
-                                                    <th style="width: 50px;text-align:center">Nomor Transaksi</th>
-                                                    <th style="width: 100px;text-align:center">Tanggal Voucher</th>
-                                                    <th style="width: 100px;text-align:center">Tanggal Upload</th>
+                                                    <th style="width: 50px;text-align:center">No. Voucher</th>
+                                                    <th style="width: 100px;text-align:center">Tanggal Transaksi</th>
+                                                    <th style="width: 100px;text-align:center">Tanggal Validasi</th>
                                                     <th style="width: 100px;text-align:center">SKPD</th>
                                                     <th style="width: 50px;text-align:center">Keterangan</th>
                                                     <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
-                                                    <th style="width: 50px;text-align:center">STT</th>
-                                                    <th style="width: 200px;text-align:center">Aksi</th>
-                                                    <th>Bersih</th>
+                                                    <th>No Upload</th>
+                                                    <th>Status Upload</th>
+                                                    <th>Tanggal Upload</th>
+                                                    <th style="width: 50px;text-align:center">Status Validasi</th>
                                                     <th>Rek Bend</th>
                                                     <th>Nama Rek</th>
                                                     <th>Rek Tujuan</th>
                                                     <th>Bank Tujuan</th>
                                                     <th>Ket. Tujuan</th>
+                                                    <th>Status Pot</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -229,7 +95,7 @@
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        List Data Upload
+                        List Data Validasi
                     </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -249,16 +115,28 @@
                                 </div>
                                 <div class="table-rep-plugin">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="draft_upload" class="table" style="width: 100%">
+                                        <table id="draft_validasi" class="table" style="width: 100%">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 5px;text-align:center">No.</th>
-                                                    <th style="width: 10px;text-align:center">Urutan Upload</th>
-                                                    <th style="width: 10px;text-align:center">Nomor Upload</th>
-                                                    <th style="width: 10px;text-align:center">Tanggal Upload</th>
-                                                    <th style="width: 10px;text-align:center">SKPD</th>
-                                                    <th style="width: 10px;text-align:center">Nilai Pengeluaran</th>
-                                                    <th style="width: 300px;text-align:center">Aksi</th>
+                                                    <th style="width: 25px;text-align:center">No.</th>
+                                                    <th>No Voucher</th>
+                                                    <th>Tanggal Voucher</th>
+                                                    <th style="width: 20px;text-align:center">No. BKU</th>
+                                                    <th style="width: 100px;text-align:center">Tanggal Validasi</th>
+                                                    <th style="width: 50px;text-align:center">SKPD</th>
+                                                    <th style="width: 50px;text-align:center">Keterangan</th>
+                                                    <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
+                                                    <th>No Upload</th>
+                                                    <th>Status Upload</th>
+                                                    <th>Tanggal Upload</th>
+                                                    <th>Status Validasi</th>
+                                                    <th>Rek Bend</th>
+                                                    <th>Nama Rek</th>
+                                                    <th>Rek Tujuan</th>
+                                                    <th>Bank Tujuan</th>
+                                                    <th>Ket. Tujuan</th>
+                                                    <th>POT</th>
+                                                    <th style="width: 200px;text-align:center">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -486,5 +364,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.upload_cms.js.index')
+    @include('skpd.validasi_cms.js.index')
 @endsection

@@ -20,11 +20,14 @@ use App\Http\Controllers\Skpd\PencairanSp2dController as CairSp2dController;
 use App\Http\Controllers\Skpd\TerimaSp2dController;
 use App\Http\Controllers\Skpd\TransaksiCmsController;
 use App\Http\Controllers\Skpd\UploadCmsController;
+use App\Http\Controllers\Skpd\ValidasiCmsController;
+use App\Http\Controllers\Skpd\PotonganPajakCmsController;
+use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
 Route::get('/simakda_2023', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
@@ -258,15 +261,60 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::group(['prefix' => 'upload_cms'], function () {
             Route::get('', [UploadCmsController::class, 'index'])->name('skpd.upload_cms.index');
             Route::post('load_upload', [UploadCmsController::class, 'loadUpload'])->name('skpd.upload_cms.load_data');
+            Route::post('draft_upload', [UploadCmsController::class, 'draftUpload'])->name('skpd.upload_cms.draft_upload');
+            Route::post('data_upload', [UploadCmsController::class, 'dataUpload'])->name('skpd.upload_cms.data_upload');
+            Route::get('tambah', [UploadCmsController::class, 'create'])->name('skpd.upload_cms.create');
+            Route::post('proses_upload', [UploadCmsController::class, 'prosesUpload'])->name('skpd.upload_cms.proses_upload');
+            Route::post('batal_upload', [UploadCmsController::class, 'batalUpload'])->name('skpd.upload_cms.batal_upload');
+            Route::get('cetak_csv_kalbar', [UploadCmsController::class, 'cetakCsvKalbar'])->name('skpd.upload_cms.cetak_csv_kalbar');
+            Route::get('cetak_csv_luar_kalbar', [UploadCmsController::class, 'cetakCsvLuarKalbar'])->name('skpd.upload_cms.cetak_csv_luar_kalbar');
             Route::post('rekening_transaksi', [UploadCmsController::class, 'rekeningTransaksi'])->name('skpd.upload_cms.rekening_transaksi');
             Route::post('rekening_potongan', [UploadCmsController::class, 'rekeningPotongan'])->name('skpd.upload_cms.rekening_potongan');
             Route::post('rekening_tujuan', [UploadCmsController::class, 'rekeningTujuan'])->name('skpd.upload_cms.rekening_tujuan');
+        });
+        // VALIDASI TRANSAKSI CMS
+        Route::group(['prefix' => 'validasi_cms'], function () {
+            Route::get('', [ValidasiCmsController::class, 'index'])->name('skpd.validasi_cms.index');
+            Route::post('load_data', [ValidasiCmsController::class, 'loadData'])->name('skpd.validasi_cms.load_data');
+            Route::post('draft_validasi', [ValidasiCmsController::class, 'draftValidasi'])->name('skpd.validasi_cms.draft_validasi');
+            Route::post('data_upload', [ValidasiCmsController::class, 'dataUpload'])->name('skpd.validasi_cms.data_upload');
+            Route::get('tambah', [ValidasiCmsController::class, 'create'])->name('skpd.validasi_cms.create');
+            Route::post('proses_validasi', [ValidasiCmsController::class, 'prosesValidasi'])->name('skpd.validasi_cms.proses_validasi');
+            Route::post('batal_validasi', [ValidasiCmsController::class, 'batalValidasi'])->name('skpd.validasi_cms.batal_validasi');
+        });
+        // Terima Potongan Pajak CMS
+        Route::group(['prefix' => 'potongan_pajak_cms'], function () {
+            Route::get('', [PotonganPajakCmsController::class, 'index'])->name('skpd.potongan_pajak_cms.index');
+            Route::post('load_data', [PotonganPajakCmsController::class, 'loadData'])->name('skpd.potongan_pajak_cms.load_data');
+            Route::get('tambah', [PotonganPajakCmsController::class, 'create'])->name('skpd.potongan_pajak_cms.create');
+            Route::get('edit/{no_bukti?}', [PotonganPajakCmsController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.potongan_pajak_cms.edit');
+            Route::post('cari_kegiatan', [PotonganPajakCmsController::class, 'cariKegiatan'])->name('skpd.potongan_pajak_cms.cari_kegiatan');
+            Route::post('simpan_potongan', [PotonganPajakCmsController::class, 'simpanPotongan'])->name('skpd.potongan_pajak_cms.simpan_potongan');
+            Route::post('edit_potongan', [PotonganPajakCmsController::class, 'editPotongan'])->name('skpd.potongan_pajak_cms.edit_potongan');
+            Route::post('hapus_potongan', [PotonganPajakCmsController::class, 'hapusPotongan'])->name('skpd.potongan_pajak_cms.hapus_potongan');
+        });
+        // Transaksi PemindahBukuan
+        Route::group(['prefix' => 'transaksi_pemindahbukuan'], function () {
+            Route::get('', [TransaksiPemindahbukuanController::class, 'index'])->name('skpd.transaksi_pemindahbukuan.index');
+            Route::post('load_data', [TransaksiPemindahbukuanController::class, 'loadData'])->name('skpd.transaksi_pemindahbukuan.load_data');
+            Route::get('tambah', [TransaksiPemindahbukuanController::class, 'create'])->name('skpd.transaksi_pemindahbukuan.create');
+            Route::post('simpan_transaksi', [TransaksiPemindahbukuanController::class, 'simpanTransaksi'])->name('skpd.transaksi_pemindahbukuan.simpan_transaksi');
+            Route::post('hapus_transaksi', [TransaksiPemindahbukuanController::class, 'hapusTransaksi'])->name('skpd.transaksi_pemindahbukuan.hapus_transaksi');
+            Route::get('edit/{no_bukti?}', [TransaksiPemindahbukuanController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.transaksi_pemindahbukuan.edit');
+
+            Route::post('cari_kegiatan', [TransaksiPemindahbukuanController::class, 'cariKegiatan'])->name('skpd.transaksi_pemindahbukuan.cari_kegiatan');
+            Route::post('simpan_potongan', [TransaksiPemindahbukuanController::class, 'simpanPotongan'])->name('skpd.transaksi_pemindahbukuan.simpan_potongan');
+            Route::post('edit_potongan', [TransaksiPemindahbukuanController::class, 'editPotongan'])->name('skpd.transaksi_pemindahbukuan.edit_potongan');
         });
     });
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/coba', [HomeController::class, 'coba'])->name('coba');
     Route::get('/login', [LoginController::class, 'index'])->name('login.index');
-    Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+    Route::post('/login', [LoginController::class, 'authenticate'])->name('login')->middleware("throttle:3,30");
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
+
+Route::get('/{any}', function () {
+    return view('auth.login');
+})->where('any', '.*');

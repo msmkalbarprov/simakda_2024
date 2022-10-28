@@ -33,7 +33,8 @@
     <!-- Or for RTL support -->
     <style>
         .select2-container {
-            width: 100% !important;
+            width: auto !important;
+            display: block;
         }
 
         .select2-search--dropdown .select2-search__field {

@@ -25,8 +25,8 @@
                                             <td style="text-align: center;">{{ $loop->iteration }}</td>
                                             <td style="text-align: center;">{{ $user->username }}</td>
                                             <td style="text-align: center;">
-                                                <a href="{{ route('user.show', $user->id) }}" class="btn btn-info btn-sm"><i
-                                                        class="fas fa-info-circle"></i></a>
+                                                <a href="{{ route('user.show', encrypt($user->id)) }}"
+                                                    class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a>
                                                 <a href="{{ route('user.edit', $user->id) }}"
                                                     class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                                 <a href="javascript:void(0);" onclick="deleteData({{ $user->id }});"
