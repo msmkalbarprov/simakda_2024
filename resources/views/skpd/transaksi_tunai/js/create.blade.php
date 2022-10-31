@@ -9,7 +9,7 @@
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
 
-        let rekening_belanja = $('#rekening_belanja').DataTable({
+        let rincian_rekening = $('#rincian_rekening').DataTable({
             responsive: true,
             processing: true,
             ordering: false,
@@ -65,72 +65,13 @@
                     visible: false
                 },
                 {
-                    data: 'volume',
-                    name: 'volume',
-                    visible: false
-                },
-                {
-                    data: 'satuan',
-                    name: 'Satuan',
-                    visible: false
-                },
-                {
                     data: 'aksi',
                     name: 'aksi',
                 },
             ]
         });
 
-        let rekening_tujuan = $('#rekening_tujuan').DataTable({
-            responsive: true,
-            processing: true,
-            ordering: false,
-            lengthMenu: [5, 10],
-            columns: [{
-                    data: 'no_bukti',
-                    name: 'no_bukti',
-                    visible: false
-                },
-                {
-                    data: 'tgl_bukti',
-                    name: 'tgl_bukti',
-                    visible: false
-                },
-                {
-                    data: 'rekening_awal',
-                    name: 'rekening_awal',
-                    visible: false
-                },
-                {
-                    data: 'nm_rekening_tujuan',
-                    name: 'nm_rekening_tujuan',
-                },
-                {
-                    data: 'rekening_tujuan',
-                    name: 'rekening_tujuan',
-                },
-                {
-                    data: 'bank_tujuan',
-                    name: 'bank_tujuan',
-                    visible: false
-                },
-                {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd',
-                    visible: false
-                },
-                {
-                    data: 'nilai',
-                    name: 'nilai',
-                },
-                {
-                    data: 'aksi',
-                    name: 'aksi',
-                },
-            ]
-        });
-
-        let tabel_rekening = $('#input_rekening').DataTable({
+        let input_rekening = $('#input_rekening').DataTable({
             responsive: true,
             processing: true,
             ordering: false,
@@ -182,14 +123,6 @@
                     data: 'anggaran',
                     name: 'anggaran',
                     visible: false
-                },
-                {
-                    data: 'volume',
-                    name: 'volume',
-                },
-                {
-                    data: 'satuan',
-                    name: 'satuan',
                 },
                 {
                     data: 'aksi',
@@ -213,12 +146,11 @@
             theme: 'bootstrap-5'
         });
 
-
         $('#tambah_rekening').on('click', function() {
             let beban = document.getElementById('beban').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
-            if (beban && kd_skpd && tgl_voucher) {
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
+            if (beban && kd_skpd && tgl_bukti) {
                 status_anggaran();
                 status_angkas();
                 $('#modal_rekening').modal('show');
@@ -265,9 +197,9 @@
         $('#no_sp2d').on('select2:select', function() {
             let no_sp2d = this.value;
             let tgl_sp2d = $(this).find(':selected').data('tgl');
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
             let beban = document.getElementById('beban').value;
-            if (tgl_sp2d < tgl_voucher) {
+            if (tgl_sp2d < tgl_bukti) {
                 alert('Kesalahan, Tanggal Sp2d lebih kecil Dari Tanggal Bukti');
                 $("#no_sp2d").val(null).change();
                 return;
@@ -294,6 +226,7 @@
             $('#total_sisa').val(null);
             cari_rekening(no_sp2d);
             load_sisa_bank();
+            load_sisa_tunai();
             load_potongan_ls(no_sp2d);
         });
 
@@ -305,7 +238,6 @@
             $('#nm_rekening').val(nama);
             let kd_rek6 = this.value;
             let beban = document.getElementById('beban').value;
-
             $('#sumber').empty();
             $('#nm_sumber').val(null);
             $('#total_spd').val(null);
@@ -320,28 +252,11 @@
             $('#total_sumber').val(null);
             $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
+            load_angkas();
+            load_spd();
             cari_sumber(kd_rek6);
-            if (kd_rek6.substr(0, 2) == '52') {
-                $('#volume').prop('disabled', false);
-                $('#satuan').prop('disabled', false);
-            }
-            if (kd_rek6.substr(0, 4) == '5105') {
-                $('#volume').prop('disabled', false);
-                $('#satuan').prop('disabled', false);
-            }
-            if (kd_rek6.substr(0, 4) == '5106') {
-                $('#volume').prop('disabled', false);
-                $('#satuan').prop('disabled', false);
-            }
-            if (kd_rek6.substr(0, 4) == '5402') {
-                $('#volume').prop('disabled', false);
-                $('#satuan').prop('disabled', false);
-            }
-            if (kd_rek6.substr(0, 6) == '510203') {
-                $('#volume').prop('disabled', false);
-                $('#satuan').prop('disabled', false);
-            }
             let sisa = 0;
+
             if (beban == '1') {
                 sisa = anggaran - lalu;
                 $('#total_anggaran').val(new Intl.NumberFormat('id-ID', {
@@ -359,15 +274,34 @@
             $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(sisa));
-            load_angkas();
+            $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(lalu));
+
         })
 
         $('#sumber').on('select2:select', function() {
             let sumber = this.value;
-            let anggaran = $(this).find(':selected').data('anggaran');
-            $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
+            let beban = document.getElementById('beban').value;
+            let realisasi_sumber = rupiah(document.getElementById('realisasi_sumber').value);
+            let nilai = $(this).find(':selected').data('nilai');
+            let sisa = 0;
+            if (beban == '1') {
+                sisa = nilai - realisasi_sumber;
+                $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(nilai));
+            } else {
+                let sp2d = rupiah(document.getElementById('total_anggaran').value);
+                sisa = sp2d - realisasi_sumber;
+                $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(sp2d));
+            }
+            $('#sisa_sumber').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(anggaran));
+            }).format(sisa));
+
             $.ajax({
                 url: "{{ route('penagihan.cari_nama_sumber') }}",
                 type: "POST",
@@ -379,13 +313,10 @@
                     $('#nm_sumber').val(data.nm_sumber_dana1);
                 }
             })
-            $('#realisasi_sumber').val(null);
-            $('#sisa_sumber').val(null);
-            load_dana(sumber);
         })
 
         $('#simpan_rekening').on('click', function() {
-            let no_bukti = document.getElementById('no_voucher').value;
+            let no_bukti = document.getElementById('no_bukti').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let nm_sub_kegiatan = document.getElementById('nm_sub_kegiatan').value;
             let no_sp2d = document.getElementById('no_sp2d').value;
@@ -395,8 +326,6 @@
             let nm_rekening = document.getElementById('nm_rekening').value;
             let pembayaran = document.getElementById('pembayaran').value;
             let status_anggaran = document.getElementById('status_anggaran').value;
-            let volume = document.getElementById('volume').value;
-            let satuan = document.getElementById('satuan').value;
 
             let sisa_anggaran = rupiah(document.getElementById('sisa_anggaran').value);
             let nilai = angka(document.getElementById('nilai').value);
@@ -417,54 +346,6 @@
             $('#ketcms').val(sp2d_2);
 
             let akumulasi = nilai + total_input_rekening;
-
-            if (sumber == '221020101') {
-                alert(
-                    'Silahkan konfirmasi ke perbendaharaan jika ingin transaksi sumber dana DID, jika tidak maka transaksi tidak bisa di approve oleh perbendahaaraan, terima kasih'
-                );
-            }
-
-            if (kd_rekening.substr(0, 2) == '52' && (!satuan || !volume)) {
-                alert('Volume atau Satuan Output Harus Diisi');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 4) == '5105' && (!satuan || !volume)) {
-                alert('Volume atau Satuan Output Harus Diisi');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 4) == '5106' && (!satuan || !volume)) {
-                alert('Volume atau Satuan Output Harus Diisi');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 4) == '5402' && (!satuan || !volume)) {
-                alert('Volume atau Satuan Output Harus Diisi');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 6) == '510203' && (!satuan || !volume)) {
-                alert('Volume atau Satuan Output Harus Diisi');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 2) == '52' && nilai > 15000000) {
-                alert('Akun Belanja ini tidak boleh melebihi 15 juta');
-                return;
-            }
-
-            if (beban == '1' && kd_sub_kegiatan.substr(0, 15) == '5.06.01.1.09.02' && kd_rekening
-                .substr(0, 12) == '510203020035' && nilai > 50000000) {
-                alert('Akun Belanja ini tidak boleh melebihi 50 juta');
-                return;
-            }
-
-            if (kd_rekening.substr(0, 6) == '510203' && nilai > 15000000 && kd_sub_kegiatan.substr(0,
-                    15) == '5.06.01.1.09.02') {
-                alert('Akun Belanja ini tidak boleh melebihi 15 juta');
-                return;
-            }
 
             if (!kd_sub_kegiatan) {
                 alert('Pilih Kegiatan Dahulu');
@@ -501,7 +382,7 @@
                 return;
             }
 
-            let tampungan = tabel_rekening.rows().data().toArray().map((value) => {
+            let tampungan = rincian_rekening.rows().data().toArray().map((value) => {
                 let result = {
                     kd_sub_kegiatan: value.kd_sub_kegiatan,
                     kd_rek6: value.kd_rek6,
@@ -530,10 +411,10 @@
                 return;
             }
 
-            if (pembayaran == 'BANK' && (nilai > total_sisa)) {
-                alert('Total Transaksi melebihi Sisa Simpanan Bank');
-                return;
-            }
+            // if (pembayaran == 'TUNAI' && (nilai > total_sisa)) {
+            //     alert('Total Transaksi melebihi Sisa Kas Tunai');
+            //     return;
+            // }
 
             if (nilai == 0) {
                 alert('Nilai Nol.....!!!, Cek Lagi...!!!');
@@ -560,7 +441,7 @@
                 return;
             }
 
-            rekening_belanja.row.add({
+            rincian_rekening.row.add({
                 'no_bukti': no_bukti,
                 'no_sp2d': no_sp2d,
                 'kd_sub_kegiatan': kd_sub_kegiatan,
@@ -580,11 +461,9 @@
                 'anggaran': new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
                 }).format(anggaran),
-                'volume': volume,
-                'satuan': satuan,
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
-            tabel_rekening.row.add({
+            input_rekening.row.add({
                 'no_bukti': no_bukti,
                 'no_sp2d': no_sp2d,
                 'kd_sub_kegiatan': kd_sub_kegiatan,
@@ -598,15 +477,13 @@
                 'lalu': lalu,
                 'sp2d': sp2d,
                 'anggaran': anggaran,
-                'volume': volume,
-                'satuan': satuan,
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
 
             $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_input_rekening + nilai));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+            $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_input_rekening + nilai));
         });
@@ -621,122 +498,27 @@
         });
 
         $('#beban').on('select2:select', function() {
-            rekening_belanja.clear().draw();
-            tabel_rekening.clear().draw();
-            $('#total_belanja').val(null);
+            rincian_rekening.clear().draw();
+            input_rekening.clear().draw();
+            $('#total').val(null);
             $('#total_input_rekening').val(null);
-        });
-
-        $('#rek_tujuan').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $("#nm_rekening_tujuan").val(nama);
-        });
-
-        $('#simpan_rekening_tujuan').on('click', function() {
-            let no_bukti = document.getElementById('no_bukti').value;
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let rekening = document.getElementById('rekening').value;
-            let nm_rekening_tujuan = document.getElementById('nm_rekening_tujuan').value;
-            let rek_tujuan = document.getElementById('rek_tujuan').value;
-            let bank = document.getElementById('bank').value;
-            let total_belanja = rupiah(document.getElementById('total_belanja').value);
-            let total_transfer = rupiah(document.getElementById('total_transfer').value);
-            let total_potongan = rupiah(document.getElementById('total_potongan').value);
-            let nilai_potongan = angka(document.getElementById('nilai_potongan').value);
-            let nilai_transfer = angka(document.getElementById('nilai_transfer').value);
-
-            let hasil_akumulasi = total_belanja - nilai_potongan;
-            let akumulasi = total_transfer + nilai_transfer;
-
-            if (nilai_transfer == 0) {
-                alert("Nilai Tidak Boleh Nol");
-                return;
-            }
-
-            if (akumulasi > hasil_akumulasi) {
-                alert('Nilai Melebihi Total Belanja');
-                return;
-            }
-
-            if (nilai_transfer > hasil_akumulasi) {
-                alert('Nilai Melebihi Total Belanja');
-                return;
-            }
-
-            if (total_transfer > hasil_akumulasi) {
-                alert('Nilai Melebihi Total Belanja');
-                return;
-            }
-
-            if (!rekening) {
-                alert('Pilih Rekening Sumber');
-                return;
-            }
-
-            if (!nm_rekening_tujuan) {
-                alert('Pilih rekening');
-                return;
-            }
-
-            if (!rek_tujuan) {
-                alert('Pilih rekening');
-                return;
-            }
-
-            if (!bank) {
-                alert('Pilih rekening');
-                return;
-            }
-
-            rekening_tujuan.row.add({
-                'no_bukti': no_bukti,
-                'tgl_bukti': tgl_voucher,
-                'rekening_awal': rekening,
-                'nm_rekening_tujuan': nm_rekening_tujuan,
-                'rekening_tujuan': rek_tujuan,
-                'bank_tujuan': bank,
-                'kd_skpd': kd_skpd,
-                'nilai': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(nilai_transfer),
-                'aksi': `<a href="javascript:void(0);" onclick="deleteRek('${no_bukti}','${rek_tujuan}','${nilai_transfer}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
-
-            $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_potongan + nilai_potongan));
-            $('#total_transfer').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_transfer + nilai_transfer));
-
-            $('#nilai_potongan').val(null);
-            $('#rek_tujuan').val(null).change();
-            $('#nm_rekening_tujuan').val(null);
-            $('#bank').val(null).change();
-            $('#nilai_transfer').val(null);
-            $('#modal_rekening').modal('hide');
         });
 
         $('#simpan_transaksi').on('click', function() {
             let no_bukti = document.getElementById('no_bukti').value;
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
-            let no_voucher = document.getElementById('no_voucher').value;
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
             let keterangan = document.getElementById('keterangan').value;
             let beban = document.getElementById('beban').value;
             let pembayaran = document.getElementById('pembayaran').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
-            let rekening = document.getElementById('rekening').value;
             let ketcms = document.getElementById('ketcms').value;
 
-            let total_belanja = rupiah(document.getElementById('total_belanja').value);
+            let total = rupiah(document.getElementById('total').value);
             let total_sisa = rupiah(document.getElementById('total_sisa').value);
-            let total_potongan = rupiah(document.getElementById('total_potongan').value);
-            let total_transfer = rupiah(document.getElementById('total_transfer').value);
 
-            let rincian_rekening = rekening_belanja.rows().data().toArray().map((value) => {
+            let tabel_rincian = rincian_rekening.rows().data().toArray().map((value) => {
                 let data = {
                     no_bukti: value.no_bukti,
                     no_sp2d: value.no_sp2d,
@@ -761,12 +543,12 @@
                 );
             }
 
-            if (rincian_rekening.length == 0) {
+            if (tabel_rincian.length == 0) {
                 alert('Rincian Rekening tidak boleh kosong!');
                 return;
             }
 
-            let no_sp2d = rekening_belanja.rows().data().toArray().map((value) => {
+            let no_sp2d = rincian_rekening.rows().data().toArray().map((value) => {
                 let data = {
                     no_sp2d: value.no_sp2d,
                 };
@@ -774,38 +556,19 @@
             });
             let sp2d = no_sp2d[0]['no_sp2d'];
 
-            let rincian_rek_tujuan = rekening_tujuan.rows().data().toArray().map((value) => {
-                let data = {
-                    no_bukti: value.no_bukti,
-                    tgl_bukti: value.tgl_bukti,
-                    rekening_awal: value.rekening_awal,
-                    nm_rekening_tujuan: value.nm_rekening_tujuan,
-                    rekening_tujuan: value.rekening_tujuan,
-                    bank_tujuan: value.bank_tujuan,
-                    kd_skpd: value.kd_skpd,
-                    nilai: rupiah(value.nilai),
-                };
-                return data;
-            });
-
-            let tahun_input = tgl_voucher.substr(0, 4);
+            let tahun_input = tgl_bukti.substr(0, 4);
 
             if (tahun_input != tahun_anggaran) {
                 alert('Tahun tidak sama dengan tahun Anggaran');
                 return;
             }
 
-            if (pembayaran == 'BANK' && total_belanja > total_sisa) {
-                alert('Nilai Melebihi sisa Simpanan Bank');
-                return;
-            }
-
-            // if (!no_bukti) {
-            //     alert('Nomor Bukti Tidak Boleh Kosong');
+            // if (pembayaran == 'TUNAI' && total > total_sisa) {
+            //     alert('Nilai Melebihi sisa KAS Tunai');
             //     return;
             // }
 
-            if (!tgl_voucher) {
+            if (!tgl_bukti) {
                 alert('Tanggal Bukti Tidak Boleh Kosong');
                 return;
             }
@@ -830,40 +593,28 @@
                 return;
             }
 
-            if (total_belanja == '0') {
+            if (total == '0') {
                 alert('Rincian Tidak ada rekening!');
-                return;
-            }
-
-            if (total_transfer > total_belanja) {
-                alert('Total Transfer melebihi Total Belanja!');
-                return;
-            }
-
-            if (!rekening) {
-                alert('Isian Rekening Belum Lengkap!');
                 return;
             }
 
             let response = {
                 no_bukti,
-                tgl_voucher,
+                tgl_bukti,
                 kd_skpd,
                 nm_skpd,
                 beban,
                 keterangan,
-                total_belanja,
+                total,
                 pembayaran,
-                rekening,
                 ketcms,
                 sp2d,
-                rincian_rekening,
-                rincian_rek_tujuan
+                tabel_rincian,
             };
 
             $('#simpan_transaksi').prop('disabled', true);
             $.ajax({
-                url: "{{ route('skpd.transaksi_pemindahbukuan.edit_transaksi') }}",
+                url: "{{ route('skpd.transaksi_tunai.simpan_transaksi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -874,7 +625,7 @@
                         alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
                             .no_bukti);
                         window.location.href =
-                            "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                            "{{ route('skpd.transaksi_tunai.index') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan_transaksi').prop('disabled', true);
@@ -886,7 +637,7 @@
 
         function cari_nomor(kd_sub_kegiatan) {
             $.ajax({
-                url: "{{ route('skpd.transaksi_cms.nomor_sp2d') }}",
+                url: "{{ route('skpd.transaksi_tunai.nomor_sp2d') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -909,12 +660,12 @@
 
         function cari_rekening(no_sp2d) {
             $.ajax({
-                url: "{{ route('skpd.transaksi_cms.rekening') }}",
+                url: "{{ route('skpd.transaksi_tunai.cari_rekening') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     no_sp2d: no_sp2d,
-                    no_bukti: document.getElementById('no_voucher').value,
+                    no_bukti: document.getElementById('no_bukti').value,
                     beban: document.getElementById('beban').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
@@ -934,7 +685,7 @@
 
         function cari_sumber(kd_rek6) {
             $.ajax({
-                url: "{{ route('skpd.transaksi_cms.sumber') }}",
+                url: "{{ route('skpd.transaksi_tunai.cari_sumber') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -950,7 +701,7 @@
                         `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(data, function(index, data) {
                         $('#sumber').append(
-                            `<option value="${data.sumber_dana}" data-anggaran="${data.nilai}" data-kd_rek6="${data.kd_rek6}" data-kegiatan="${data.kegiatan}">${data.sumber_dana}</option>`
+                            `<option value="${data.sumber_dana}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
                         );
                     })
                 }
@@ -971,6 +722,20 @@
             })
         }
 
+        function load_sisa_tunai() {
+            $.ajax({
+                url: "{{ route('skpd.transaksi_tunai.sisa_tunai') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    let nilai = parseFloat(data.terima - data.keluar) || 0;
+                    $('#sisa_tunai').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai))
+                }
+            })
+        }
+
         function load_potongan_ls(no_sp2d) {
             $.ajax({
                 url: "{{ route('skpd.transaksi_cms.potongan_ls') }}",
@@ -984,10 +749,10 @@
                     $('#potongan_ls').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(nilai));
-                    let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+                    let sisa_tunai = rupiah(document.getElementById('sisa_tunai').value);
                     $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(sisa_kas + nilai));
+                    }).format(sisa_tunai + nilai));
                 }
             })
         }
@@ -996,7 +761,7 @@
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let kd_rekening = document.getElementById('kd_rekening').value;
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
+            let tgl_voucher = document.getElementById('tgl_bukti').value;
             let beban = document.getElementById('beban').value;
             let status_angkas = document.getElementById('status_angkas').value;
 
@@ -1026,7 +791,7 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let kd_rekening = document.getElementById('kd_rekening').value;
             let no_sp2d = document.getElementById('no_sp2d').value;
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
+            let tgl_voucher = document.getElementById('tgl_bukti').value;
             let beban = document.getElementById('beban').value;
             let total_angkas = rupiah(document.getElementById('total_angkas').value);
             $.ajax({
@@ -1051,7 +816,6 @@
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_angkas - data.total));
-                    load_spd();
                 }
             })
         }
@@ -1119,7 +883,7 @@
         }
 
         function status_angkas() {
-            let tanggal = document.getElementById('tgl_voucher').value;
+            let tanggal = document.getElementById('tgl_bukti').value;
             $.ajax({
                 url: "{{ route('penagihan.cek_status_ang') }}",
                 type: "POST",
@@ -1216,25 +980,6 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function deletePotongan(kd_rek_trans, kd_rek6, nm_rek6, nilai) {
-        let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor Transaksi : ' + kd_rek6);
-        let tabel = $('#list_potongan').DataTable();
-        let nilai_potongan = new Intl.NumberFormat('id-ID', {
-            minimumFractionDigits: 2
-        }).format(nilai);
-        let total_potongan = angka(document.getElementById('total_potongan').value);
-        if (tanya == true) {
-            tabel.rows(function(idx, data, node) {
-                return data.nilai == nilai_potongan
-            }).remove().draw();
-            $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_potongan - parseFloat(nilai)));
-        } else {
-            return false;
-        }
-    }
-
     function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
         let tabel = $('#input_rekening').DataTable();
         let tabel1 = $('#rekening_belanja').DataTable();
@@ -1257,28 +1002,6 @@
             $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
-        } else {
-            return false;
-        }
-
-    }
-
-    function deleteRek(no_bukti, rek_tujuan, nilai_transfer) {
-        let tabel = $('#rekening_tujuan').DataTable();
-        let potongan_sementara = rupiah(document.getElementById('total_potongan').value);
-        let transfer_sementara = rupiah(document.getElementById('total_transfer').value);
-        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + rek_tujuan + '  Nilai :  ' + nilai_transfer +
-            ' ?');
-        if (hapus == true) {
-            tabel.rows(function(idx, data, node) {
-                return data.no_bukti == no_bukti && data.rekening_tujuan == rek_tujuan
-            }).remove().draw();
-            // $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-            //     minimumFractionDigits: 2
-            // }).format(potongan_sementara - nilai_potongan));
-            $('#total_transfer').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(transfer_sementara - nilai_transfer));
         } else {
             return false;
         }

@@ -23,6 +23,7 @@ use App\Http\Controllers\Skpd\UploadCmsController;
 use App\Http\Controllers\Skpd\ValidasiCmsController;
 use App\Http\Controllers\Skpd\PotonganPajakCmsController;
 use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
+use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -301,10 +302,21 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::post('simpan_transaksi', [TransaksiPemindahbukuanController::class, 'simpanTransaksi'])->name('skpd.transaksi_pemindahbukuan.simpan_transaksi');
             Route::post('hapus_transaksi', [TransaksiPemindahbukuanController::class, 'hapusTransaksi'])->name('skpd.transaksi_pemindahbukuan.hapus_transaksi');
             Route::get('edit/{no_bukti?}', [TransaksiPemindahbukuanController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.transaksi_pemindahbukuan.edit');
-
-            Route::post('cari_kegiatan', [TransaksiPemindahbukuanController::class, 'cariKegiatan'])->name('skpd.transaksi_pemindahbukuan.cari_kegiatan');
-            Route::post('simpan_potongan', [TransaksiPemindahbukuanController::class, 'simpanPotongan'])->name('skpd.transaksi_pemindahbukuan.simpan_potongan');
-            Route::post('edit_potongan', [TransaksiPemindahbukuanController::class, 'editPotongan'])->name('skpd.transaksi_pemindahbukuan.edit_potongan');
+            Route::post('edit_transaksi', [TransaksiPemindahbukuanController::class, 'editTransaksi'])->name('skpd.transaksi_pemindahbukuan.edit_transaksi');
+        });
+        // Transaksi Tunai
+        Route::group(['prefix' => 'transaksi_tunai'], function () {
+            Route::get('', [TransaksiTunaiController::class, 'index'])->name('skpd.transaksi_tunai.index');
+            Route::post('load_data', [TransaksiTunaiController::class, 'loadData'])->name('skpd.transaksi_tunai.load_data');
+            Route::get('tambah', [TransaksiTunaiController::class, 'create'])->name('skpd.transaksi_tunai.create');
+            Route::post('nomor_sp2d', [TransaksiTunaiController::class, 'nomorSp2d'])->name('skpd.transaksi_tunai.nomor_sp2d');
+            Route::post('cari_rekening', [TransaksiTunaiController::class, 'cariRekening'])->name('skpd.transaksi_tunai.cari_rekening');
+            Route::post('cari_sumber', [TransaksiTunaiController::class, 'cariSumber'])->name('skpd.transaksi_tunai.cari_sumber');
+            Route::post('sisa_tunai', [TransaksiTunaiController::class, 'sisaTunai'])->name('skpd.transaksi_tunai.sisa_tunai');
+            Route::post('simpan_transaksi', [TransaksiTunaiController::class, 'simpanTransaksi'])->name('skpd.transaksi_tunai.simpan_transaksi');
+            Route::post('hapus_transaksi', [TransaksiTunaiController::class, 'hapusTransaksi'])->name('skpd.transaksi_tunai.hapus_transaksi');
+            Route::get('edit/{no_bukti?}', [TransaksiTunaiController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.transaksi_tunai.edit');
+            Route::post('edit_transaksi', [TransaksiTunaiController::class, 'editTransaksi'])->name('skpd.transaksi_tunai.edit_transaksi');
         });
     });
 

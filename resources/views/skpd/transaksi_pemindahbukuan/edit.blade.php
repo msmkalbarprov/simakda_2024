@@ -74,8 +74,12 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="rekening"
                                 name="rekening">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="{{ $rekening_awal->rekening }}">{{ $rekening_awal->rekening }}</option>
+                                <option value="" disabled>Silahkan Pilih</option>
+                                @foreach ($rekening_awal as $rek_awal)
+                                    <option value="{{ $rek_awal->rekening }}"
+                                        {{ $rek_awal->rekening == $data_transaksi->rekening_awal ? 'selected' : '' }}>
+                                        {{ $rek_awal->rekening }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -127,7 +131,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $total_belanja = 0;
+                            @endphp
                             @foreach ($list_rekening_belanja as $rekening_belanja)
+                                @php
+                                    $total_belanja += $rekening_belanja->nilai;
+                                @endphp
                                 <tr>
                                     <td>{{ $rekening_belanja->no_bukti }}</td>
                                     <td>{{ $rekening_belanja->no_sp2d }}</td>
@@ -159,7 +169,7 @@
                                 <td>:</td>
                                 <td style="text-align: right"><input type="text"
                                         style="border:none;background-color:white;text-align:right" class="form-control"
-                                        readonly id="total_belanja">
+                                        readonly id="total_belanja" value="{{ rupiah($total_belanja) }}">
                                 </td>
                             </tr>
                             <tr>
@@ -200,17 +210,44 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $total_transfer = 0;
+                            @endphp
+                            @foreach ($list_rekening_tujuan as $rekening_tujuan)
+                                @php
+                                    $total_transfer += $rekening_tujuan->nilai;
+                                @endphp
+                                <tr>
+                                    <td>{{ $rekening_tujuan->no_bukti }}</td>
+                                    <td>{{ $rekening_tujuan->tgl_bukti }}</td>
+                                    <td>{{ $rekening_tujuan->rekening_awal }}</td>
+                                    <td>{{ $rekening_tujuan->nm_rekening_tujuan }}</td>
+                                    <td>{{ $rekening_tujuan->rekening_tujuan }}</td>
+                                    <td>{{ $rekening_tujuan->bank_tujuan }}</td>
+                                    <td>{{ $rekening_tujuan->kd_skpd }}</td>
+                                    <td>{{ rupiah($rekening_tujuan->nilai) }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);"
+                                            onclick="deleteRek('{{ $rekening_tujuan->no_bukti }}','{{ $rekening_tujuan->rekening_tujuan }}','{{ $rekening_tujuan->nilai }}')"
+                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
-                    <div class="mb-2 mt-2 row">
-                        <label for="total_transfer" class="col-md-8 col-form-label" style="text-align: right">Total
-                            Transfer</label>
-                        <div class="col-md-4">
-                            <input type="text" style="text-align: right" readonly
-                                class="form-control @error('total_transfer') is-invalid @enderror" id="total_transfer"
-                                name="total_transfer">
-                        </div>
-                    </div>
+                    <hr>
+                    <table style="width: 100%">
+                        <tbody>
+                            <tr>
+                                <td style="padding-left: 600px">Total Transfer</td>
+                                <td>:</td>
+                                <td style="text-align: right"><input type="text"
+                                        style="border:none;background-color:white;text-align:right" class="form-control"
+                                        readonly id="total_transfer" value="{{ rupiah($total_transfer) }}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -421,14 +458,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 row">
-                    <label for="total_input_rekening" style="text-align: right"
-                        class="col-md-9 col-form-label">Total</label>
-                    <div class="col-md-3" style="padding-right: 30px">
-                        <input type="text" width="100%" class="form-control" style="text-align: right" readonly
-                            name="total_input_rekening" id="total_input_rekening">
-                    </div>
-                </div>
                 <div class="card" style="margin: 4px">
                     <div class="card-header">
                         Input Rekening
@@ -456,7 +485,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $total_input_rekening = 0;
+                                    @endphp
                                     @foreach ($list_rekening_belanja as $rekening_belanja)
+                                        @php
+                                            $total_input_rekening += $rekening_belanja->nilai;
+                                        @endphp
                                         <tr>
                                             <td>{{ $rekening_belanja->no_bukti }}</td>
                                             <td>{{ $rekening_belanja->no_sp2d }}</td>
@@ -478,6 +513,20 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                </tbody>
+                            </table>
+                            <hr>
+                            <table style="width: 100%">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-left: 600px">Total</td>
+                                        <td>:</td>
+                                        <td style="text-align: right"><input type="text"
+                                                style="border:none;background-color:white;text-align:right"
+                                                class="form-control" readonly id="total_input_rekening"
+                                                value="{{ rupiah($total_input_rekening) }}">
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
