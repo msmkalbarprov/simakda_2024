@@ -66,7 +66,10 @@ class KontrakController extends Controller
 
     public function edit($id)
     {
-        $data_awal = DB::table('ms_kontrak')->where('id', $id)->first();
+        $data_awal = DB::table('ms_kontrak as a')->where('id', $id)->join('ms_rekening_bank_online as b', function ($join) {
+            $join->on('a.nm_rekening', '=', 'b.nm_rekening');
+        })->select('a.*', 'b.rekening')->first();
+
         $data = [
             'data_kontrak' => $data_awal,
             'daftar_rekening' => DB::table('ms_rekening_bank_online')->where('kd_skpd', $data_awal->kd_skpd)->get(),

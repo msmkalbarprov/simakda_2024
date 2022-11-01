@@ -15,7 +15,7 @@
                         <label for="no_bukti" class="col-md-2 col-form-label">No Bukti Terima</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="no_bukti" name="no_bukti"
-                                value="{{ $no_bukti }}" required readonly>
+                                value="{{ $data_potongan->no_bukti }}" required readonly>
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ $tahun_anggaran }}">
                         </div>
@@ -38,13 +38,29 @@
                                 value="{{ $data_potongan->nm_skpd }}" required readonly>
                         </div>
                     </div>
-                    {{-- No Transaksi dan No SP2D --}}
+                    {{-- No Transaksi dan Tanggal Transaksi --}}
                     <div class="mb-3 row">
                         <label for="no_transaksi" class="col-md-2 col-form-label">No Transaksi</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_transaksi" name="no_transaksi"
-                                value="{{ $data_potongan->no_voucher }}" required readonly>
+                            <select class="form-control select2-multiple" style="width: 100%" id="no_transaksi"
+                                name="no_transaksi">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                @foreach ($daftar_potongan as $potongan)
+                                    <option value="{{ $potongan->no_bukti }}" data-tgl="{{ $potongan->tgl_bukti }}"
+                                        {{ $potongan->no_bukti == $data_potongan->no_kas ? 'selected' : '' }}>
+                                        {{ $potongan->no_bukti }} |
+                                        {{ $potongan->tgl_bukti }}</option>
+                                @endforeach
+                            </select>
                         </div>
+                        <label for="tgl_transaksi" class="col-md-2 col-form-label">Tanggal Transaksi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi"
+                                value="{{ $data_potongan->tgl_bukti }}" readonly>
+                        </div>
+                    </div>
+                    {{-- NO SP2D dan Pembayaran --}}
+                    <div class="mb-3 row">
                         <label for="no_sp2d" class="col-md-2 col-form-label">No SP2D</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="no_sp2d" name="no_sp2d">
@@ -56,13 +72,21 @@
                                 @endforeach
                             </select>
                         </div>
+                        <label for="pembayaran" class="col-md-2 col-form-label">Pembayaran</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="pembayaran"
+                                name="pembayaran">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="" {{ $data_potongan->pay == 'TUNAI' ? 'selected' : '' }}>TUNAI
+                                </option>
+                                <option value="BANK" {{ $data_potongan->pay == 'BANK' ? 'selected' : '' }}>BANK</option>
+                            </select>
+                        </div>
                     </div>
                     {{-- Kode Kegiatan dan Nama Kegiatan --}}
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Kode Kegiatan</label>
                         <div class="col-md-4">
-                            <input type="hidden" name="kd_giat" id="kd_giat"
-                                value="{{ $data_potongan->kd_sub_kegiatan }}">
                             <select class="form-control select2-multiple" style="width: 100%" id="kd_sub_kegiatan"
                                 name="kd_sub_kegiatan">
                                 <option value="" disabled selected>Silahkan Pilih</option>
@@ -72,19 +96,25 @@
                         <div class="col-md-4">
                             <input type="text" class="form-control" id="nm_sub_kegiatan" name="nm_sub_kegiatan"
                                 value="{{ $data_potongan->nm_sub_kegiatan }}" readonly>
+                            <input type="text" class="form-control" id="kd_giat" name="kd_giat"
+                                value="{{ $data_potongan->kd_sub_kegiatan }}" readonly hidden>
                         </div>
                     </div>
                     {{-- Kode Rekening dan Nama Rekening --}}
                     <div class="mb-3 row">
                         <label for="kd_rekening" class="col-md-2 col-form-label">Kode Rekening</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" value="{{ $data_potongan->kd_rek6 }}"
-                                id="kd_rekening" name="kd_rekening" readonly>
+                            <select class="form-control select2-multiple" style="width: 100%" id="kd_rekening"
+                                name="kd_rekening">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
                         </div>
                         <label for="nm_rekening" class="col-md-2 col-form-label">Nama Rekening</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" value="{{ $data_potongan->nm_rek6 }}"
-                                id="nm_rekening" name="nm_rekening" readonly>
+                            <input type="text" class="form-control" id="nm_rekening" name="nm_rekening"
+                                value="{{ $data_potongan->nm_rek6 }}" readonly>
+                            <input type="text" class="form-control" id="kd_rek6" name="kd_rek6"
+                                value="{{ $data_potongan->kd_rek6 }}" readonly hidden>
                         </div>
                     </div>
                     {{-- Rekanan dan Pimpinan --}}
@@ -114,22 +144,22 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="beban"
                                 name="beban">
-                                <option value="" disabled>Silahkan Pilih</option>
-                                <option value="1" {{ $data_potongan->jns_spp == '1' ? 'selected' : '' }}>UP</option>
-                                <option value='2' {{ $data_potongan->jns_spp == '2' ? 'selected' : '' }}>GU</option>
-                                <option value='3' {{ $data_potongan->jns_spp == '3' ? 'selected' : '' }}>TU</option>
-                                <option value='4' {{ $data_potongan->jns_spp == '4' ? 'selected' : '' }}>LS GAJI
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1" {{ $data_potongan->jns_spp == 1 ? 'selected' : '' }}>UP</option>
+                                <option value='2' {{ $data_potongan->jns_spp == 2 ? 'selected' : '' }}>GU</option>
+                                <option value='3' {{ $data_potongan->jns_spp == 3 ? 'selected' : '' }}>TU</option>
+                                <option value='4' {{ $data_potongan->jns_spp == 4 ? 'selected' : '' }}>LS GAJI
                                 </option>
-                                <option value='5' {{ $data_potongan->jns_spp == '5' ? 'selected' : '' }}>LS PPKD
+                                <option value='5' {{ $data_potongan->jns_spp == 5 ? 'selected' : '' }}>LS PPKD
                                 </option>
-                                <option value='6' {{ $data_potongan->jns_spp == '6' ? 'selected' : '' }}>LS Barang
+                                <option value='6' {{ $data_potongan->jns_spp == 6 ? 'selected' : '' }}>LS Barang
                                     Jasa</option>
                             </select>
                         </div>
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="npwp"
-                                value="{{ $data_potongan->npwp }}" name="npwp" readonly>
+                            <input type="text" class="form-control" id="npwp" name="npwp"
+                                value="{{ $data_potongan->npwp }}" readonly>
                         </div>
                     </div>
                     {{-- Alamat Perusahaan --}}
@@ -190,8 +220,7 @@
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan_potongan" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('skpd.potongan_pajak_cms.index') }}"
-                                class="btn btn-warning btn-md">Kembali</a>
+                            <a href="{{ route('skpd.potongan_pajak.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
 
@@ -263,5 +292,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.potongan_pajak_cms.js.edit');
+    @include('skpd.potongan_pajak.js.edit');
 @endsection

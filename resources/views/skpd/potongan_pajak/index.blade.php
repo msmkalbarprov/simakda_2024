@@ -1,12 +1,12 @@
 @extends('template.app')
-@section('title', 'Terima Potongan Pajak CMS | SIMAKDA')
+@section('title', 'Terima Potongan Pajak | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     List Terima Potongan
-                    <a href="{{ route('skpd.potongan_pajak_cms.create') }}" class="btn btn-primary"
+                    <a href="{{ route('skpd.potongan_pajak.create') }}" class="btn btn-primary"
                         style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
@@ -19,9 +19,7 @@
                                         <th style="width: 50px;text-align:center">Nomor Bukti</th>
                                         <th style="width: 50px;text-align:center">Tanggal Bukti</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
-                                        <th>Status</th>
-                                        <th style="width: 50px;text-align:center">Upload</th>
-                                        <th style="width: 50px;text-align:center">Validasi</th>
+                                        <th style="width: 50px;text-align:center">Status</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -233,5 +231,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.potongan_pajak_cms.js.index')
+    @include('skpd.potongan_pajak.js.index')
 @endsection

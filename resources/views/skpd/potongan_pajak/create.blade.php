@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Tambah Potongan Pajak CMS | SIMAKDA')
+@section('title', 'Tambah Potongan Pajak | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -37,7 +37,7 @@
                                 value="{{ $skpd->nm_skpd }}" required readonly>
                         </div>
                     </div>
-                    {{-- No Transaksi dan No SP2D --}}
+                    {{-- No Transaksi dan Tanggal Transaksi --}}
                     <div class="mb-3 row">
                         <label for="no_transaksi" class="col-md-2 col-form-label">No Transaksi</label>
                         <div class="col-md-4">
@@ -45,12 +45,19 @@
                                 name="no_transaksi">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_potongan as $potongan)
-                                    <option value="{{ $potongan->no_voucher }}" data-kode="{{ $potongan->kd_rek6 }}"
-                                        data-nama="{{ $potongan->nm_rek6 }}">{{ $potongan->no_voucher }} |
-                                        {{ $potongan->tgl_voucher }}</option>
+                                    <option value="{{ $potongan->no_bukti }}" data-tgl="{{ $potongan->tgl_bukti }}">
+                                        {{ $potongan->no_bukti }} |
+                                        {{ $potongan->tgl_bukti }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <label for="tgl_transaksi" class="col-md-2 col-form-label">Tanggal Transaksi</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi" readonly>
+                        </div>
+                    </div>
+                    {{-- NO SP2D dan Pembayaran --}}
+                    <div class="mb-3 row">
                         <label for="no_sp2d" class="col-md-2 col-form-label">No SP2D</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="no_sp2d" name="no_sp2d">
@@ -58,6 +65,15 @@
                                 @foreach ($daftar_sp2d as $sp2d)
                                     <option value="{{ $sp2d->no_sp2d }}">{{ $sp2d->no_sp2d }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <label for="pembayaran" class="col-md-2 col-form-label">Pembayaran</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="pembayaran"
+                                name="pembayaran">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="">TUNAI</option>
+                                <option value="BANK">BANK</option>
                             </select>
                         </div>
                     </div>
@@ -79,7 +95,10 @@
                     <div class="mb-3 row">
                         <label for="kd_rekening" class="col-md-2 col-form-label">Kode Rekening</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="kd_rekening" name="kd_rekening" readonly>
+                            <select class="form-control select2-multiple" style="width: 100%" id="kd_rekening"
+                                name="kd_rekening">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
                         </div>
                         <label for="nm_rekening" class="col-md-2 col-form-label">Nama Rekening</label>
                         <div class="col-md-4">
@@ -234,5 +253,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.potongan_pajak_cms.js.create');
+    @include('skpd.potongan_pajak.js.create');
 @endsection

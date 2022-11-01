@@ -128,16 +128,13 @@
 
         $('#no_sp2d').on('select2:select', function() {
             let no_sp2d = this.value;
-            let no_transaksi = document.getElementById('no_transaksi').value;
-
             // Cari Kegiatan
             $.ajax({
-                url: "{{ route('skpd.potongan_pajak_cms.cari_kegiatan') }}",
+                url: "{{ route('skpd.potongan_pajak.cari_kegiatan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     no_sp2d: no_sp2d,
-                    no_transaksi: no_transaksi,
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -153,10 +150,8 @@
         });
 
         $('#no_transaksi').on('select2:select', function() {
-            let kd_rekening = $(this).find(':selected').data('kode');
-            let nm_rekening = $(this).find(':selected').data('nama');
-            $('#kd_rekening').val(kd_rekening);
-            $('#nm_rekening').val(nm_rekening);
+            let tgl = $(this).find(':selected').data('tgl');
+            $('#tgl_transaksi').val(tgl);
         });
 
         $('#rekanan').on('select2:select', function() {
@@ -174,124 +169,34 @@
         });
 
         $('#kd_sub_kegiatan').on('select2:select', function() {
+            let kd_sub_kegiatan = this.value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
             let nama = $(this).find(':selected').data('nama');
             $('#nm_sub_kegiatan').val(nama);
-        });
-
-        $('#data_transaksi').on('select2:select', function() {
-            let no_voucher = this.value;
-            let total_transaksi = angka(document.getElementById('total_transaksi').value);
-            let total = parseFloat($(this).find(':selected').data('total'));
-
-            let tampungan = rincian_upload.rows().data().toArray().map((value) => {
-                let result = {
-                    no_voucher: value.no_voucher,
-                };
-                return result;
-            });
-            let kondisi = tampungan.map(function(data) {
-                if (data.no_voucher == no_voucher) {
-                    return '1';
+            $.ajax({
+                url: "{{ route('skpd.potongan_pajak.cari_rekening') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_sub_kegiatan: kd_sub_kegiatan,
+                    no_sp2d: no_sp2d,
+                },
+                success: function(data) {
+                    $('#kd_rekening').empty();
+                    $('#kd_rekening').append(
+                        `<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_rekening').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        );
+                    })
                 }
-            });
-            if (kondisi.includes("1")) {
-                alert('Nomor Transaksi ini sudah ada di LIST!');
-                $("#data_transaksi").val(null).change();
-                return;
-            }
-
-            rincian_upload.row.add({
-                'no_voucher': no_voucher,
-                'tgl_voucher': $(this).find(':selected').data('tgl'),
-                'kd_skpd': $(this).find(':selected').data('kd_skpd'),
-                'ket': $(this).find(':selected').data('ket'),
-                'status_upload': $(this).find(':selected').data('status_upload'),
-                'no_upload': $(this).find(':selected').data('no_upload'),
-                'total': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format($(this).find(':selected').data('total')),
-                'rekening_awal': $(this).find(':selected').data('rekening_awal'),
-                'nm_rekening_tujuan': $(this).find(':selected').data('nm_rekening_tujuan'),
-                'rekening_tujuan': $(this).find(':selected').data('rekening_tujuan'),
-                'bank_tujuan': $(this).find(':selected').data('bank_tujuan'),
-                'ket_tujuan': $(this).find(':selected').data('ket_tujuan'),
-                'potongan': $(this).find(':selected').data('tot_pot'),
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_voucher}','${total}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
-            $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_transaksi + total));
-            $("#data_transaksi").val(null).change();
+            })
         });
 
-        $('#proses_upload').on('click', function() {
-            let total_transaksi = angka(document.getElementById('total_transaksi').value);
-            let sisa_saldo = angka(document.getElementById('sisa_saldo').value);
-            let tanggal_validasi = document.getElementById('tanggal_validasi').value;
-            let rincian = rincian_upload.rows().data().toArray();
-
-            if (!tanggal_validasi) {
-                alert('Tanggal validasi belum dipilih!');
-                return;
-            }
-            if (rincian.length == 0) {
-                alert('List Data belum dipilih');
-                return;
-            }
-
-            let total_potongan = rincian_upload.rows().data().toArray().reduce((previousValue,
-                currentValue) => (previousValue += currentValue.potongan), 0);
-
-            let total_transfer = total_transaksi - total_potongan;
-            if (total_transfer > sisa_saldo) {
-                alert('Total Transaksi melebihi sisa Bank, Cek Kembali !');
-                return;
-            }
-
-            let tanya = confirm("Apakah data yang akan di-Validasi sudah benar ?");
-            if (tanya == true) {
-                $('#proses_upload').prop("disabled", true);
-                let rincian_data = rincian_upload.rows().data().toArray().map((value) => {
-                    let data = {
-                        no_voucher: value.no_voucher,
-                        tgl_voucher: value.tgl_voucher,
-                        kd_skpd: value.kd_skpd,
-                        ket: value.ket,
-                        total: angka(value.total),
-                        no_upload: value.no_upload,
-                        status_upload: value.status_upload,
-                        rekening_awal: value.rekening_awal,
-                        nm_rekening_tujuan: value.nm_rekening_tujuan,
-                        rekening_tujuan: value.rekening_tujuan,
-                        bank_tujuan: value.bank_tujuan,
-                        ket_tujuan: value.ket_tujuan,
-                    };
-                    return data;
-                });
-                $.ajax({
-                    url: "{{ route('skpd.validasi_cms.proses_validasi') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        rincian_data: rincian_data,
-                        tanggal_validasi: tanggal_validasi,
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        if (data.message == '1') {
-                            alert('Data berhasil divalidasi');
-                            window.location.href =
-                                "{{ route('skpd.validasi_cms.index') }}";
-                        } else {
-                            alert('Data tidak berhasil divalidasi!');
-                            $('#proses_upload').prop("disabled", false);
-                        }
-                    }
-                })
-            } else {
-                alert('Silahkan Cek lagi, Pastikan Data Sudah Benar...');
-                $('#proses_upload').prop("disabled", false);
-            }
+        $('#kd_rekening').on('select2:select', function() {
+            let nama = $(this).find(':selected').data('nama');
+            $('#nm_rekening').val(nama);
         });
 
         $('#tambah_potongan').on('click', function() {
@@ -349,8 +254,6 @@
         });
 
         $('#simpan_potongan').on('click', function() {
-            $('#simpan_potongan').prop('disabled', true);
-
             let no_bukti = document.getElementById('no_bukti').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let npwp = document.getElementById('npwp').value;
@@ -369,9 +272,11 @@
             let nm_skpd = document.getElementById('nm_skpd').value;
             let no_billing = document.getElementById('no_billing').value;
             let keterangan = document.getElementById('keterangan').value;
+            let pembayaran = document.getElementById('pembayaran').value;
             let total_potongan = angka(document.getElementById('total_potongan').value);
             let tahun_input = tgl_bukti.substring(0, 4);
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
+            let tgl_transaksi = document.getElementById('tgl_transaksi').value;
 
             let rincian_potongan = list_potongan.rows().data().toArray().map((value) => {
                 let data = {
@@ -385,6 +290,35 @@
                 };
                 return data;
             });
+
+            if (beban == '1' || beban == '2' || beban == '3') {
+                if (pembayaran == 'BANK') {
+                    let tanggal1 = new Date(tgl_bukti);
+                    let bulan1 = tanggal1.getMonth() + 1;
+                    let tanggal2 = new Date(tgl_transaksi);
+                    let bulan2 = tanggal2.getMonth() + 1;
+
+                    if (!no_transaksi) {
+                        alert('No Transaksi Tidak boleh kosong utk pembayaran Bank');
+                        return;
+                    }
+                    if (bulan1 != bulan2) {
+                        alert('Bulan Terima Pajak dan Bulan Transaksi yg dipilih harus sama');
+                        return;
+                    }
+                    if (tgl_bukti != tgl_transaksi) {
+                        alert('Tanggal Terima Pajak dan Tanggal Transaksi yg dipilih harus sama');
+                        return;
+                    }
+                }
+            } else {
+                if (!no_transaksi) {
+                    alert(
+                        'No Transaksi Hanya untuk jenis beban UP/GU/TU BANK. Kosongkan No Transaksi.'
+                    );
+                    return;
+                }
+            }
 
             if (npwp1.length > 0) {
                 if (npwp1.length != 15) {
@@ -443,11 +377,13 @@
                 nm_skpd,
                 no_billing,
                 keterangan,
+                pembayaran,
                 total_potongan
             };
+            $('#simpan_potongan').prop('disabled', true);
             // Simpan Potongan
             $.ajax({
-                url: "{{ route('skpd.potongan_pajak_cms.simpan_potongan') }}",
+                url: "{{ route('skpd.potongan_pajak.simpan_potongan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -458,7 +394,7 @@
                         alert('Potongan berhasil disimpan, dengan Nomor Bukti : ' +
                             response.no_bukti);
                         window.location.href =
-                            "{{ route('skpd.potongan_pajak_cms.index') }}"
+                            "{{ route('skpd.potongan_pajak.index') }}"
                     } else {
                         alert('Potongan tidak berhasil disimpan!');
                         $('#simpan_potongan').prop('disabled', false);
