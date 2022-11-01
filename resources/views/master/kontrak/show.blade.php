@@ -3,6 +3,24 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0">{{'View Kontrak'}}</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{'Kontrak'}}</a></li>
+                                <li class="breadcrumb-item active">{{'View'}}</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
             <div class="card">
                 <div class="card-header">
                     <a href="{{ route('kontrak.index') }}" class="btn btn-warning btn-md" style="float: right;">Kembali</a>

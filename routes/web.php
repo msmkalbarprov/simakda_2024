@@ -25,6 +25,7 @@ use App\Http\Controllers\Skpd\PotonganPajakCmsController;
 use App\Http\Controllers\Skpd\PotonganPajakController;
 use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -47,6 +48,10 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
         Route::resource('kontrak', KontrakController::class);
+        
+        Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
+        Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
+
         Route::post('cabang', [PenerimaController::class, 'cabang'])->name('penerima.cabang');
         Route::post('kode-setor', [PenerimaController::class, 'kode_setor'])->name('penerima.kodeSetor');
         Route::post('cek-rekening', [BankKalbarController::class, 'cek_rekening'])->name('penerima.cekRekening');
@@ -337,6 +342,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
 });
 
 Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
 Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
 Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login')->middleware(['throttle:3,1']);

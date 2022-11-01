@@ -2148,3 +2148,11 @@ function cek_akses()
     }
     return '1';
 }
+
+
+function rename_image($newfilename,$filename){
+    $splitName   = explode(".", $filename);
+    $fileExt     = end($splitName);
+    $new_logo    =  strtolower($newfilename.'.'.$fileExt);
+    return $new_logo;
+}

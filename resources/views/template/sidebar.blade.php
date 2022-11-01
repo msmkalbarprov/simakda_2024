@@ -85,6 +85,12 @@
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="{{ route('setting.edit') }}">
+                    <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                    <span>Setting</span>
+                </a>
+            </li>
             {{-- @php
                 $daftar_menu = filter_menu();
                 $daftar_menu1 = daftar_menu();
