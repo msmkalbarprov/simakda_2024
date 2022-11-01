@@ -84,7 +84,7 @@ class SettingController extends Controller
             $image = public_path('/template/assets/images/'.$new_logo);
             unset($image);
             $image2 = public_path('/template/assets/images/'.$new_logo_hp);
-            unlink($image2);
+            unset($image2);
 
             $path = public_path('template/assets/images/');
             $file->move($path, $new_logo);
