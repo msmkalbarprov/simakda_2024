@@ -40,6 +40,8 @@ Route::group(['prefix' => 'simakda_2023'], function () {
         Route::resource('user', UserController::class);
     });
 
+    // index, create, store, update, show, destroy
+    
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
         Route::resource('kontrak', KontrakController::class);
