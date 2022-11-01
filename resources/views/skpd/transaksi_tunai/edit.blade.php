@@ -14,14 +14,16 @@
                     <div class="mb-3 row">
                         <label for="no_bku" class="col-md-2 col-form-label">No BKU</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_bku" name="no_bku"
-                                style="text-align: center" required readonly value="{{ $transaksi->no_bukti }}">
+                            <input class="form-control" type="text" id="no_bku" name="no_bku" required readonly
+                                value="{{ $transaksi->no_bukti }}">
                             <input type="text" class="form-control" id="ketcms" name="ketcms" hidden>
                             <input type="text" class="form-control" id="tahun_anggaran" name="tahun_anggaran"
                                 value="{{ tahun_anggaran() }}" hidden>
                         </div>
-                        <input type="text" class="form-control" placeholder="Tidak perlu diisi atau diedit"
-                            style="text-align: center" required readonly>
+                        <div class="col-md-6">
+                            <input type="text" style="border:none;background-color:white;text-align:center"
+                                class="form-control" readonly placeholder="Tidak perlu diisi atau diedit">
+                        </div>
                     </div>
                     {{-- Nomor dan Tanggal --}}
                     <div class="mb-3 row">

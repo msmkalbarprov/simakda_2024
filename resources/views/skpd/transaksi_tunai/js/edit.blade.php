@@ -253,7 +253,6 @@
             $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
             load_angkas();
-            load_spd();
             cari_sumber(kd_rek6);
             let sisa = 0;
 
@@ -614,7 +613,7 @@
 
             $('#simpan_transaksi').prop('disabled', true);
             $.ajax({
-                url: "{{ route('skpd.transaksi_tunai.simpan_transaksi') }}",
+                url: "{{ route('skpd.transaksi_tunai.edit_transaksi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -816,6 +815,7 @@
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_angkas - data.total));
+                    load_spd();
                 }
             })
         }
@@ -982,7 +982,7 @@
 
     function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
         let tabel = $('#input_rekening').DataTable();
-        let tabel1 = $('#rekening_belanja').DataTable();
+        let tabel1 = $('#rincian_rekening').DataTable();
         let nilai_rekening = parseFloat(nilai);
         let nilai_sementara = rupiah(document.getElementById('total_input_rekening').value);
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek + '  Nilai :  ' + nilai +
@@ -999,7 +999,7 @@
             $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+            $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
         } else {

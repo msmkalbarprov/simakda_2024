@@ -37,7 +37,7 @@
                         <label for="beban" class="col-md-2 col-form-label">Jenis Beban</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="beban" name="beban">
-                                <option value="" disabled>Silahkan Pilih</option>
+                                <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="1" {{ $data_transaksi->jns_spp == '1' ? 'selected' : '' }}>UP/GU
                                 </option>
                                 <option value='3' {{ $data_transaksi->jns_spp == '3' ? 'selected' : '' }}>TU</option>
@@ -66,7 +66,7 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="pembayaran"
                                 name="pembayaran">
-                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value=" " disabled selected>Silahkan Pilih</option>
                                 <option value="BANK" {{ $data_transaksi->pay == 'BANK' ? 'selected' : '' }}>BANK</option>
                             </select>
                         </div>
@@ -74,7 +74,7 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="rekening"
                                 name="rekening">
-                                <option value="" disabled>Silahkan Pilih</option>
+                                <option value=" " disabled selected>Silahkan Pilih</option>
                                 @foreach ($rekening_awal as $rek_awal)
                                     <option value="{{ $rek_awal->rekening }}"
                                         {{ $rek_awal->rekening == $data_transaksi->rekening_awal ? 'selected' : '' }}>

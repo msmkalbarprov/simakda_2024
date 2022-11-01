@@ -22,19 +22,20 @@ use App\Http\Controllers\Skpd\TransaksiCmsController;
 use App\Http\Controllers\Skpd\UploadCmsController;
 use App\Http\Controllers\Skpd\ValidasiCmsController;
 use App\Http\Controllers\Skpd\PotonganPajakCmsController;
+use App\Http\Controllers\Skpd\PotonganPajakController;
 use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
-Route::get('/simakda_2023', function () {
-    return view('auth.login');
-});
+// Route::get('/simakda_2023', function () {
+//     return view('auth.login');
+// });
 
 Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
 // Auth::routes();
-Route::group(['prefix' => 'simakda_2023'], function () {
+Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'kelola-akses'], function () {
         Route::resource('hak-akses', PermissionController::class);
         Route::resource('peran', RoleController::class);
@@ -42,7 +43,7 @@ Route::group(['prefix' => 'simakda_2023'], function () {
     });
 
     // index, create, store, update, show, destroy
-    
+
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
         Route::resource('kontrak', KontrakController::class);
@@ -320,15 +321,28 @@ Route::group(['prefix' => 'simakda_2023'], function () {
             Route::get('edit/{no_bukti?}', [TransaksiTunaiController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.transaksi_tunai.edit');
             Route::post('edit_transaksi', [TransaksiTunaiController::class, 'editTransaksi'])->name('skpd.transaksi_tunai.edit_transaksi');
         });
-    });
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/coba', [HomeController::class, 'coba'])->name('coba');
-    Route::get('/login', [LoginController::class, 'index'])->name('login.index');
-    Route::post('/login', [LoginController::class, 'authenticate'])->name('login')->middleware("throttle:3,30");
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+        // Terima Potongan Pajak
+        Route::group(['prefix' => 'potongan_pajak'], function () {
+            Route::get('', [PotonganPajakController::class, 'index'])->name('skpd.potongan_pajak.index');
+            Route::post('load_data', [PotonganPajakController::class, 'loadData'])->name('skpd.potongan_pajak.load_data');
+            Route::get('tambah', [PotonganPajakController::class, 'create'])->name('skpd.potongan_pajak.create');
+            Route::get('edit/{no_bukti?}', [PotonganPajakController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.potongan_pajak.edit');
+            Route::post('cari_kegiatan', [PotonganPajakController::class, 'cariKegiatan'])->name('skpd.potongan_pajak.cari_kegiatan');
+            Route::post('simpan_potongan', [PotonganPajakController::class, 'simpanPotongan'])->name('skpd.potongan_pajak.simpan_potongan');
+            Route::post('edit_potongan', [PotonganPajakController::class, 'editPotongan'])->name('skpd.potongan_pajak.edit_potongan');
+            Route::post('hapus_potongan', [PotonganPajakController::class, 'hapusPotongan'])->name('skpd.potongan_pajak.hapus_potongan');
+        });
+    });
 });
 
+Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
+Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
+Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login')->middleware(['throttle:3,1']);
+Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
+
 Route::get('/{any}', function () {
-    return view('auth.login');
+    // return view('auth.login');
+    return abort(404);
 })->where('any', '.*');

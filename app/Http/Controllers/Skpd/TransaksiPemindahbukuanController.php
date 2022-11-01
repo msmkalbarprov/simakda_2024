@@ -160,12 +160,14 @@ class TransaksiPemindahbukuanController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $jns_ang = status_anggaran();
-
         $data = [
-            'data_transaksi' => DB::table('trhtransout as a')->join('trdtransout_transfer as b', function ($join) {
+            'data_transaksi' => DB::table('trhtransout as a')->join('trdtransout as b', function ($join) {
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->select('a.*', 'b.rekening_awal')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->first(),
+            })->leftJoin('trdtransout_transfer as c', function ($join) {
+                $join->on('b.no_bukti', '=', 'c.no_bukti');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })->select('a.*', 'c.rekening_awal')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->first(),
             'list_rekening_belanja' => DB::table('trdtransout as a')->join('trhtransout as b', function ($join) {
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -182,6 +184,7 @@ class TransaksiPemindahbukuanController extends Controller
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
         ];
+
         return view('skpd.transaksi_pemindahbukuan.edit')->with($data);
     }
 

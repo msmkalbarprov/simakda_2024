@@ -246,6 +246,69 @@ class TransaksiTunaiController extends Controller
         }
     }
 
+    public function editTransaksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            // TRHTRANSOUT
+            DB::table('trhtransout')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->delete();
+
+            DB::table('trhtransout')->insert([
+                'no_kas' => $data['no_bukti'],
+                'tgl_kas' => $data['tgl_bukti'],
+                'no_bukti' => $data['no_bukti'],
+                'tgl_bukti' => $data['tgl_bukti'],
+                'ket' => $data['keterangan'],
+                'username' => Auth::user()->nama,
+                'tgl_update' => date('Y-m-d H:i:s'),
+                'kd_skpd' => $kd_skpd,
+                'nm_skpd' => $data['nm_skpd'],
+                'total' => $data['total'],
+                'no_tagih' => '',
+                'sts_tagih' => '0',
+                'tgl_tagih' => '',
+                'jns_spp' => $data['beban'],
+                'pay' => $data['pembayaran'],
+                'no_kas_pot' => $data['no_bukti'],
+                'panjar' => '0',
+                'no_sp2d' => $data['sp2d'],
+            ]);
+
+            // TRDTRANSOUT
+            DB::table('trdtransout')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
+            if (isset($data['tabel_rincian'])) {
+                DB::table('trdtransout')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_bukti' => $data['no_bukti'],
+                        'no_sp2d' => $value['no_sp2d'],
+                        'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'nm_rek6' => $value['nm_rek6'],
+                        'nilai' => $value['nilai'],
+                        'kd_skpd' => $kd_skpd,
+                        'sumber' => $value['sumber'],
+                    ];
+                }, $data['tabel_rincian']));
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'no_bukti' => $data['no_bukti']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
     public function edit($no_bukti)
     {
         $kd_skpd = Auth::user()->kd_skpd;

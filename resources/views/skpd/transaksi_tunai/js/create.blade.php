@@ -253,7 +253,6 @@
             $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
             load_angkas();
-            load_spd();
             cari_sumber(kd_rek6);
             let sisa = 0;
 
@@ -411,10 +410,10 @@
                 return;
             }
 
-            // if (pembayaran == 'TUNAI' && (nilai > total_sisa)) {
-            //     alert('Total Transaksi melebihi Sisa Kas Tunai');
-            //     return;
-            // }
+            if (pembayaran == 'TUNAI' && (nilai > total_sisa)) {
+                alert('Total Transaksi melebihi Sisa Kas Tunai');
+                return;
+            }
 
             if (nilai == 0) {
                 alert('Nilai Nol.....!!!, Cek Lagi...!!!');
@@ -563,10 +562,10 @@
                 return;
             }
 
-            // if (pembayaran == 'TUNAI' && total > total_sisa) {
-            //     alert('Nilai Melebihi sisa KAS Tunai');
-            //     return;
-            // }
+            if (pembayaran == 'TUNAI' && total > total_sisa) {
+                alert('Nilai Melebihi sisa KAS Tunai');
+                return;
+            }
 
             if (!tgl_bukti) {
                 alert('Tanggal Bukti Tidak Boleh Kosong');
@@ -816,6 +815,7 @@
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_angkas - data.total));
+                    load_spd();
                 }
             })
         }
@@ -836,6 +836,8 @@
                     kd_rekening: kd_rekening,
                 },
                 success: function(data) {
+                    console.log(data.total);
+                    console.log(realisasi_spd);
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.total));
@@ -982,7 +984,7 @@
 
     function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
         let tabel = $('#input_rekening').DataTable();
-        let tabel1 = $('#rekening_belanja').DataTable();
+        let tabel1 = $('#rincian_rekening').DataTable();
         let nilai_rekening = parseFloat(nilai);
         let nilai_sementara = rupiah(document.getElementById('total_input_rekening').value);
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek + '  Nilai :  ' + nilai +
@@ -999,7 +1001,7 @@
             $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+            $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
         } else {

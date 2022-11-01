@@ -79,6 +79,8 @@
                             <li><a href="{{ route('skpd.transaksi_tunai.index') }}">Transaksi Tunai</a></li>
                             <li><a href="{{ route('skpd.transaksi_pemindahbukuan.index') }}">Transaksi
                                     Pemindahbukuan</a></li>
+                            <li><a href="{{ route('skpd.potongan_pajak.index') }}">Terima Potongan Pajak</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
