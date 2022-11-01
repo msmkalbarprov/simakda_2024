@@ -76,7 +76,7 @@
                             <li><a href="{{ route('skpd.validasi_cms.index') }}">Validasi Transaksi CMS</a></li>
                             <li><a href="{{ route('skpd.potongan_pajak_cms.index') }}">Terima Potongan Pajak (CMS)</a>
                             </li>
-                            <li><a href="{{ route('skpd.pencairan_sp2d.index') }}">Transaksi Tunai</a></li>
+                            <li><a href="{{ route('skpd.transaksi_tunai.index') }}">Transaksi Tunai</a></li>
                             <li><a href="{{ route('skpd.transaksi_pemindahbukuan.index') }}">Transaksi
                                     Pemindahbukuan</a></li>
                         </ul>

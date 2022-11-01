@@ -34,7 +34,7 @@ class TransaksiPemindahbukuanController extends Controller
         $jns_ang = status_anggaran();
 
         $data = [
-            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::table('trdrka as a')->join('trskpd as b', function ($join) {
                 $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
@@ -162,16 +162,19 @@ class TransaksiPemindahbukuanController extends Controller
         $jns_ang = status_anggaran();
 
         $data = [
-            'data_transaksi' => DB::table('trhtransout as a')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->first(),
+            'data_transaksi' => DB::table('trhtransout as a')->join('trdtransout_transfer as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->select('a.*', 'b.rekening_awal')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->first(),
             'list_rekening_belanja' => DB::table('trdtransout as a')->join('trhtransout as b', function ($join) {
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->select('a.*')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->get(),
+            })->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->get(),
             'list_rekening_tujuan' => DB::table('trdtransout_transfer as a')->join('trhtransout as b', function ($join) {
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->select('a.*')->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->get(),
-            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
             'daftar_kegiatan' => DB::table('trdrka as a')->join('trskpd as b', function ($join) {
                 $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -180,5 +183,88 @@ class TransaksiPemindahbukuanController extends Controller
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
         ];
         return view('skpd.transaksi_pemindahbukuan.edit')->with($data);
+    }
+
+    public function editTransaksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            // TRHTRANSOUT
+            DB::table('trhtransout')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
+            DB::table('trhtransout')->insert([
+                'no_kas' => $data['no_bukti'],
+                'tgl_kas' => $data['tgl_voucher'],
+                'no_bukti' => $data['no_bukti'],
+                'tgl_bukti' => $data['tgl_voucher'],
+                'ket' => $data['keterangan'],
+                'username' => Auth::user()->nama,
+                'tgl_update' => date('Y-m-d H:i:s'),
+                'kd_skpd' => $kd_skpd,
+                'nm_skpd' => $data['nm_skpd'],
+                'total' => $data['total_belanja'],
+                'no_tagih' => '',
+                'sts_tagih' => '0',
+                'tgl_tagih' => '',
+                'jns_spp' => $data['beban'],
+                'pay' => $data['pembayaran'],
+                'no_kas_pot' => $data['no_bukti'],
+                'panjar' => '0',
+                'no_sp2d' => $data['sp2d'],
+            ]);
+
+            // TRDTRANSOUT
+            DB::table('trdtransout')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
+            DB::table('trdtransout_transfer')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
+            if (isset($data['rincian_rekening'])) {
+                DB::table('trdtransout')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_bukti' => $data['no_bukti'],
+                        'no_sp2d' => $value['no_sp2d'],
+                        'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'nm_rek6' => $value['nm_rek6'],
+                        'nilai' => $value['nilai'],
+                        'kd_skpd' => $kd_skpd,
+                        'sumber' => $value['sumber'],
+                        'volume' => $value['volume'],
+                        'satuan' => $value['satuan'],
+                    ];
+                }, $data['rincian_rekening']));
+            }
+
+            // TRDTRANSOUT_TRANSFER
+            if (isset($data['rincian_rek_tujuan'])) {
+                DB::table('trdtransout_transfer')->insert(array_map(function ($value) use ($data) {
+                    return [
+                        'no_bukti' => $data['no_bukti'],
+                        'tgl_bukti' => $value['tgl_bukti'],
+                        'rekening_awal' => $value['rekening_awal'],
+                        'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
+                        'rekening_tujuan' => $value['rekening_tujuan'],
+                        'bank_tujuan' => $value['bank_tujuan'],
+                        'kd_skpd' => $value['kd_skpd'],
+                        'nilai' => $value['nilai'],
+                    ];
+                }, $data['rincian_rek_tujuan']));
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'no_bukti' => $data['no_bukti']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 }
