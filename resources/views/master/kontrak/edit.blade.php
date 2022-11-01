@@ -121,7 +121,7 @@
                                             <option value="{{ $data_rekening->nm_rekening }}"
                                                 data-npwp="{{ $data_rekening->npwp }}"
                                                 data-rekening="{{ $data_rekening->rekening }}"
-                                                {{ $data_kontrak->nm_rekening == $data_rekening->nm_rekening ? 'selected' : '' }}>
+                                                {{ $data_kontrak->rekening == $data_rekening->rekening ? 'selected' : '' }}>
                                                 {{ $data_rekening->nm_rekening }} | {{ $data_rekening->rekening }} |
                                                 {{ $data_rekening->npwp }}</option>
                                         @endforeach
@@ -183,6 +183,12 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5',
             });
+        });
+        $('#nm_rekening').on("change", function() {
+            let rekening = $(this).find(':selected').data('rekening');
+            let npwp = $(this).find(':selected').data('npwp');
+            $("#no_rekening").val(rekening);
+            $("#npwp").val(npwp);
         });
     </script>
 @endsection

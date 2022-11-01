@@ -23,6 +23,7 @@ use App\Http\Controllers\Skpd\UploadCmsController;
 use App\Http\Controllers\Skpd\ValidasiCmsController;
 use App\Http\Controllers\Skpd\PotonganPajakCmsController;
 use App\Http\Controllers\Skpd\PotonganPajakController;
+use App\Http\Controllers\Skpd\SetorPotonganController;
 use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use App\Http\Controllers\SettingController;
@@ -326,7 +327,6 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('edit/{no_bukti?}', [TransaksiTunaiController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.transaksi_tunai.edit');
             Route::post('edit_transaksi', [TransaksiTunaiController::class, 'editTransaksi'])->name('skpd.transaksi_tunai.edit_transaksi');
         });
-
         // Terima Potongan Pajak
         Route::group(['prefix' => 'potongan_pajak'], function () {
             Route::get('', [PotonganPajakController::class, 'index'])->name('skpd.potongan_pajak.index');
@@ -334,9 +334,22 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('tambah', [PotonganPajakController::class, 'create'])->name('skpd.potongan_pajak.create');
             Route::get('edit/{no_bukti?}', [PotonganPajakController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.potongan_pajak.edit');
             Route::post('cari_kegiatan', [PotonganPajakController::class, 'cariKegiatan'])->name('skpd.potongan_pajak.cari_kegiatan');
+            Route::post('cari_rekening', [PotonganPajakController::class, 'cariRekening'])->name('skpd.potongan_pajak.cari_rekening');
             Route::post('simpan_potongan', [PotonganPajakController::class, 'simpanPotongan'])->name('skpd.potongan_pajak.simpan_potongan');
             Route::post('edit_potongan', [PotonganPajakController::class, 'editPotongan'])->name('skpd.potongan_pajak.edit_potongan');
             Route::post('hapus_potongan', [PotonganPajakController::class, 'hapusPotongan'])->name('skpd.potongan_pajak.hapus_potongan');
+        });
+        // Setor Potongan Pajak
+        Route::group(['prefix' => 'setor_potongan'], function () {
+            Route::get('', [SetorPotonganController::class, 'index'])->name('skpd.setor_potongan.index');
+            Route::post('load_data', [SetorPotonganController::class, 'loadData'])->name('skpd.setor_potongan.load_data');
+            Route::get('tambah', [SetorPotonganController::class, 'create'])->name('skpd.setor_potongan.create');
+            Route::get('edit/{no_bukti?}', [SetorPotonganController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.setor_potongan.edit');
+            Route::post('cari_kegiatan', [SetorPotonganController::class, 'cariKegiatan'])->name('skpd.setor_potongan.cari_kegiatan');
+            Route::post('cari_rekening', [SetorPotonganController::class, 'cariRekening'])->name('skpd.setor_potongan.cari_rekening');
+            Route::post('simpan_potongan', [SetorPotonganController::class, 'simpanPotongan'])->name('skpd.setor_potongan.simpan_potongan');
+            Route::post('edit_potongan', [SetorPotonganController::class, 'editPotongan'])->name('skpd.setor_potongan.edit_potongan');
+            Route::post('hapus_potongan', [SetorPotonganController::class, 'hapusPotongan'])->name('skpd.setor_potongan.hapus_potongan');
         });
     });
 });
