@@ -50,7 +50,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
         Route::resource('kontrak', KontrakController::class);
-        
+
         Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
         Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
 
@@ -344,17 +344,20 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         Route::group(['prefix' => 'setor_potongan'], function () {
             Route::get('', [SetorPotonganController::class, 'index'])->name('skpd.setor_potongan.index');
             Route::post('load_data', [SetorPotonganController::class, 'loadData'])->name('skpd.setor_potongan.load_data');
+            Route::post('list_potongan', [SetorPotonganController::class, 'loadPotongan'])->name('skpd.setor_potongan.list_potongan');
+            Route::post('total_potongan', [SetorPotonganController::class, 'totalPotongan'])->name('skpd.setor_potongan.total_potongan');
+            Route::post('cek_billing', [BankKalbarController::class, 'cekBilling'])->name('skpd.setor_potongan.cek_billing');
+            Route::post('simpan_ntpn', [SetorPotonganController::class, 'simpanNtpn'])->name('skpd.setor_potongan.simpan_ntpn');
+            Route::post('edit_ntpn', [SetorPotonganController::class, 'editNtpn'])->name('skpd.setor_potongan.edit_ntpn');
             Route::get('tambah', [SetorPotonganController::class, 'create'])->name('skpd.setor_potongan.create');
-            Route::get('edit/{no_bukti?}', [SetorPotonganController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.setor_potongan.edit');
-            Route::post('cari_kegiatan', [SetorPotonganController::class, 'cariKegiatan'])->name('skpd.setor_potongan.cari_kegiatan');
-            Route::post('cari_rekening', [SetorPotonganController::class, 'cariRekening'])->name('skpd.setor_potongan.cari_rekening');
             Route::post('simpan_potongan', [SetorPotonganController::class, 'simpanPotongan'])->name('skpd.setor_potongan.simpan_potongan');
+            Route::get('edit/{no_bukti?}', [SetorPotonganController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.setor_potongan.edit');
             Route::post('edit_potongan', [SetorPotonganController::class, 'editPotongan'])->name('skpd.setor_potongan.edit_potongan');
             Route::post('hapus_potongan', [SetorPotonganController::class, 'hapusPotongan'])->name('skpd.setor_potongan.hapus_potongan');
         });
 
-         // Laporan Bendahara
-         Route::group(['prefix' => 'laporan_bendahara'], function () {
+        // Laporan Bendahara
+        Route::group(['prefix' => 'laporan_bendahara'], function () {
             Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
             // Cetak BKU
             Route::get('cetak_bku', [LaporanBendaharaController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
@@ -366,7 +369,7 @@ Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')
 Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
 Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
-Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login');//->middleware(['throttle:3,1']);
+Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login'); //->middleware(['throttle:3,1']);
 Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/{any}', function () {

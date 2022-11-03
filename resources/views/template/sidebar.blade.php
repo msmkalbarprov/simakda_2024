@@ -80,7 +80,7 @@
                             <li><a href="{{ route('skpd.transaksi_pemindahbukuan.index') }}">Transaksi
                                     Pemindahbukuan</a></li>
                             <li><a href="{{ route('skpd.potongan_pajak.index') }}">Terima Potongan Pajak</a>
-                            <li><a href="{{ route('skpd.potongan_pajak.index') }}">Setor Potongan Pajak</a>
+                            <li><a href="{{ route('skpd.setor_potongan.index') }}">Setor Potongan Pajak</a>
                             </li>
                         </ul>
                     </li>
