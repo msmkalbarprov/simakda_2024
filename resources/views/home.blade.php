@@ -112,16 +112,16 @@
         <!-- apexcharts init -->
 {{-- <script src="{{asset('template/assets/js/pages/apexcharts.init.js')}}"></script> --}}
 <script>
-    let pendapatan  = "{{ $data_pendapatan->pendapatan }}";
-    let belanja     = "{{ $data_belanja->belanja }}";
+    let pendapatan  = parseFloat("{{ $data_pendapatan->pendapatan }}");
+    let belanja     = parseFloat("{{ $data_belanja->belanja }}");
 
-   
+   console.log(belanja);
     var options = {
   chart: {
       height: 320,
       type: 'donut',
   }, 
-  series: [ {pendapatan,belanja} ],
+  series: [ pendapatan, belanja ],
   labels: ["Pendapatan", "Belanja"],
   colors: ["#34c38f", "#5b73e8"],
   legend: {
@@ -160,7 +160,7 @@ var options = {
       height: 320,
       type: 'donut',
   }, 
-  series: ["{{ $data_pem_keluar->pem_keluar }}, {{$data_pem_terima->pem_terima}}"],
+  series: [{{ $data_pem_keluar->pem_keluar }}, {{$data_pem_terima->pem_terima}}],
   labels: ["Pengeluaran Pembiayaan", "Penerimaan Pembiayaan"],
   colors: ["#34c38f", "#5b73e8"],
   legend: {
@@ -186,11 +186,11 @@ var options = {
 
 }
 
-var chart = new ApexCharts(
+var chart1 = new ApexCharts(
   document.querySelector("#donut_chart"),
   options
 );
 
-chart.render();
+chart1.render();
 </script>
 @endsection

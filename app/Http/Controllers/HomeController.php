@@ -28,22 +28,22 @@ class HomeController extends Controller
         $data = [
             'data_pendapatan' => DB::table('trdrka')
                 ->select(DB::raw("sum(nilai) as pendapatan"))
-                ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+                ->where(['jns_ang' => 'M'])
                 ->where(DB::raw('left(kd_rek6,1)'), 4)
                 ->first(),
             'data_belanja' => DB::table('trdrka')
             ->select(DB::raw("sum(nilai) as belanja"))
-            ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+            ->where(['jns_ang' => 'M'])
             ->where(DB::raw('left(kd_rek6,1)'), 5)
             ->first(),
             'data_pem_terima' => DB::table('trdrka')
                 ->select(DB::raw("sum(nilai)as pem_terima"))
-                ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+                ->where(['jns_ang' => 'M'])
                 ->where(DB::raw('left(kd_rek6,2)'), 61)
                 ->first(),
             'data_pem_keluar' => DB::table('trdrka')
             ->select(DB::raw("sum(nilai) as pem_keluar"))
-            ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+            ->where(['jns_ang' => 'M'])
             ->where(DB::raw('left(kd_rek6,2)'),62)
             ->first()
         ];

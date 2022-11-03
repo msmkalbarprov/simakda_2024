@@ -366,7 +366,7 @@ Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')
 Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
 Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
-Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login')->middleware(['throttle:3,1']);
+Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login');//->middleware(['throttle:3,1']);
 Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/{any}', function () {
