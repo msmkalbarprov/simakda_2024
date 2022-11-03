@@ -87,8 +87,18 @@
                 </ul>
             </li>
             <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="uil-window-section"></i>
+                    <span>Laporan bendahara</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="true">
+                    <li><a href="{{ route('penerima.index') }}">Penerimaan x</a></li>
+                    <li><a href="{{ route('skpd.laporan_bendahara.index') }}">pengeluaran</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="{{ route('setting.edit') }}">
-                    <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                    <i class="uil-cog"></i><span class="badge rounded-pill bg-primary float-end"></span>
                     <span>Setting</span>
                 </a>
             </li>

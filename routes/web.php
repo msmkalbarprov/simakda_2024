@@ -27,6 +27,7 @@ use App\Http\Controllers\Skpd\SetorPotonganController;
 use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\skpd\LaporanBendaharaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -350,6 +351,13 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('simpan_potongan', [SetorPotonganController::class, 'simpanPotongan'])->name('skpd.setor_potongan.simpan_potongan');
             Route::post('edit_potongan', [SetorPotonganController::class, 'editPotongan'])->name('skpd.setor_potongan.edit_potongan');
             Route::post('hapus_potongan', [SetorPotonganController::class, 'hapusPotongan'])->name('skpd.setor_potongan.hapus_potongan');
+        });
+
+         // Laporan Bendahara
+         Route::group(['prefix' => 'laporan_bendahara'], function () {
+            Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
+            // Cetak BKU
+            Route::get('cetak_bku', [LaporanBendaharaController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
         });
     });
 });

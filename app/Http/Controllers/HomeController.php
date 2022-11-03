@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,7 +24,31 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'data_pendapatan' => DB::table('trdrka')
+                ->select(DB::raw("sum(nilai) as pendapatan"))
+                ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+                ->where(DB::raw('left(kd_rek6,1)'), 4)
+                ->first(),
+            'data_belanja' => DB::table('trdrka')
+            ->select(DB::raw("sum(nilai) as belanja"))
+            ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+            ->where(DB::raw('left(kd_rek6,1)'), 5)
+            ->first(),
+            'data_pem_terima' => DB::table('trdrka')
+                ->select(DB::raw("sum(nilai)as pem_terima"))
+                ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+                ->where(DB::raw('left(kd_rek6,2)'), 61)
+                ->first(),
+            'data_pem_keluar' => DB::table('trdrka')
+            ->select(DB::raw("sum(nilai) as pem_keluar"))
+            ->where(['kd_skpd' => $kd_skpd ,'jns_ang' => 'M'])
+            ->where(DB::raw('left(kd_rek6,2)'),62)
+            ->first()
+        ];
+        // dd($data);
+        return view('home')->with($data);;
     }
     public function coba()
     {

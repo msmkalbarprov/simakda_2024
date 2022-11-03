@@ -60,6 +60,106 @@ var options1 = {
 var chart1 = new ApexCharts(document.querySelector("#total-revenue-chart"), options1);
 chart1.render();
 
+
+var options1 = {
+    series: [{
+        data: [25, 66, 41, 89, 63, 25, 44, 20, 36, 40, 54]
+    }],
+    fill: {
+        colors: ['#5b73e8']
+    },
+    chart: {
+        type: 'bar',
+        width: 70,
+        height: 40,
+        sparkline: {
+            enabled: true
+        }
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '50%'
+        }
+    },
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    xaxis: {
+        crosshairs: {
+            width: 1
+        },
+    },
+    tooltip: {
+        fixed: {
+            enabled: false
+        },
+        x: {
+            show: false
+        },
+        y: {
+            title: {
+                formatter: function (seriesName) {
+                    return ''
+                }
+            }
+        },
+        marker: {
+            show: false
+        }
+    }
+};
+
+var chart3 = new ApexCharts(document.querySelector("#total-revenue-chart2"), options1);
+chart3.render();
+
+
+var options1 = {
+    series: [{
+        data: [25, 66, 41, 89, 63, 25, 44, 20, 36, 40, 54]
+    }],
+    fill: {
+        colors: ['#f1b44c']
+    },
+    chart: {
+        type: 'bar',
+        width: 70,
+        height: 40,
+        sparkline: {
+            enabled: true
+        }
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '50%'
+        }
+    },
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    xaxis: {
+        crosshairs: {
+            width: 1
+        },
+    },
+    tooltip: {
+        fixed: {
+            enabled: false
+        },
+        x: {
+            show: false
+        },
+        y: {
+            title: {
+                formatter: function (seriesName) {
+                    return ''
+                }
+            }
+        },
+        marker: {
+            show: false
+        }
+    }
+};
+
+var chart4 = new ApexCharts(document.querySelector("#total-revenue-chart4"), options1);
+chart4.render();
+
 //
 // Orders Chart
 //
