@@ -28,6 +28,8 @@ use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\skpd\LaporanBendaharaController;
+use App\Http\Controllers\Skpd\PelimpahanController;
+use App\Http\Controllers\Skpd\SimpananBankController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -355,7 +357,73 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('edit_potongan', [SetorPotonganController::class, 'editPotongan'])->name('skpd.setor_potongan.edit_potongan');
             Route::post('hapus_potongan', [SetorPotonganController::class, 'hapusPotongan'])->name('skpd.setor_potongan.hapus_potongan');
         });
-
+        // Pelimpahan
+        Route::group(['prefix' => 'pelimpahan'], function () {
+            // Pelimpahan UP
+            Route::get('up', [PelimpahanController::class, 'indexUp'])->name('skpd.pelimpahan.up_index');
+            Route::post('load_data_up', [PelimpahanController::class, 'loadDataUp'])->name('skpd.pelimpahan.load_data_up');
+            Route::get('tambah_up', [PelimpahanController::class, 'tambahUp'])->name('skpd.pelimpahan.tambah_up');
+            Route::post('simpan_up', [PelimpahanController::class, 'simpanUp'])->name('skpd.pelimpahan.simpan_up');
+            Route::get('edit_up/{no_kas?}', [PelimpahanController::class, 'editUp'])->where('no_kas', '(.*)')->name('skpd.pelimpahan.edit_up');
+            Route::post('update_up', [PelimpahanController::class, 'updateUp'])->name('skpd.pelimpahan.update_up');
+            Route::post('hapus_up', [PelimpahanController::class, 'hapusUp'])->name('skpd.pelimpahan.hapus_up');
+            // Pelimpahan GU
+            Route::get('gu', [PelimpahanController::class, 'indexGu'])->name('skpd.pelimpahan.gu_index');
+            Route::post('load_data_gu', [PelimpahanController::class, 'loadDataGu'])->name('skpd.pelimpahan.load_data_gu');
+            Route::get('tambah_gu', [PelimpahanController::class, 'tambahGu'])->name('skpd.pelimpahan.tambah_gu');
+            Route::post('simpan_gu', [PelimpahanController::class, 'simpanGu'])->name('skpd.pelimpahan.simpan_gu');
+            Route::get('edit_gu/{no_kas?}', [PelimpahanController::class, 'editGu'])->where('no_kas', '(.*)')->name('skpd.pelimpahan.edit_gu');
+            Route::post('update_gu', [PelimpahanController::class, 'updateGu'])->name('skpd.pelimpahan.update_gu');
+            Route::post('hapus_gu', [PelimpahanController::class, 'hapusGu'])->name('skpd.pelimpahan.hapus_gu');
+            // Upload Pelimpahan
+            Route::get('upload', [PelimpahanController::class, 'upload'])->name('skpd.pelimpahan.upload');
+            Route::post('load_upload', [PelimpahanController::class, 'loadUpload'])->name('skpd.pelimpahan.load_upload');
+            Route::post('draft_upload', [PelimpahanController::class, 'draftUpload'])->name('skpd.pelimpahan.draft_upload');
+            Route::post('data_upload', [PelimpahanController::class, 'dataUpload'])->name('skpd.pelimpahan.data_upload');
+            Route::get('tambah_upload', [PelimpahanController::class, 'tambahUpload'])->name('skpd.pelimpahan.tambah_upload');
+            Route::post('proses_upload', [PelimpahanController::class, 'prosesUpload'])->name('skpd.pelimpahan.proses_upload');
+            Route::post('batal_upload', [PelimpahanController::class, 'batalUpload'])->name('skpd.pelimpahan.batal_upload');
+            Route::get('cetak_csv_kalbar', [PelimpahanController::class, 'cetakCsvKalbar'])->name('skpd.pelimpahan.cetak_csv_kalbar');
+            Route::get('cetak_csv_luar_kalbar', [PelimpahanController::class, 'cetakCsvLuarKalbar'])->name('skpd.pelimpahan.cetak_csv_luar_kalbar');
+            Route::post('rekening_transaksi', [PelimpahanController::class, 'rekeningTransaksi'])->name('skpd.pelimpahan.rekening_transaksi');
+            Route::post('rekening_potongan', [PelimpahanController::class, 'rekeningPotongan'])->name('skpd.pelimpahan.rekening_potongan');
+            Route::post('rekening_tujuan', [PelimpahanController::class, 'rekeningTujuan'])->name('skpd.pelimpahan.rekening_tujuan');
+            // Validasi Pelimpahan
+            Route::get('validasi', [PelimpahanController::class, 'validasi'])->name('skpd.pelimpahan.validasi');
+            Route::post('load_validasi', [PelimpahanController::class, 'loadValidasi'])->name('skpd.pelimpahan.load_validasi');
+            Route::post('draft_validasi', [PelimpahanController::class, 'draftValidasi'])->name('skpd.pelimpahan.draft_validasi');
+            Route::post('data_validasi', [PelimpahanController::class, 'dataValidasi'])->name('skpd.pelimpahan.data_validasi');
+            Route::get('tambah_validasi', [PelimpahanController::class, 'tambahValidasi'])->name('skpd.pelimpahan.tambah_validasi');
+            Route::post('proses_validasi', [PelimpahanController::class, 'prosesValidasi'])->name('skpd.pelimpahan.proses_validasi');
+            Route::post('batal_validasi', [PelimpahanController::class, 'batalValidasi'])->name('skpd.pelimpahan.batal_validasi');
+        });
+        // Ambil Uang Simpanan
+        Route::group(['prefix' => 'simpanan_bank'], function () {
+            // Ambil Simpanan Bank ke Kasben
+            Route::get('kasben', [SimpananBankController::class, 'kasben'])->name('skpd.simpanan_bank.kasben');
+            Route::post('load_kasben', [SimpananBankController::class, 'loadKasben'])->name('skpd.simpanan_bank.load_kasben');
+            Route::get('tambah_kasben', [SimpananBankController::class, 'tambahKasben'])->name('skpd.simpanan_bank.tambah_kasben');
+            Route::post('simpan_kasben', [SimpananBankController::class, 'simpanKasben'])->name('skpd.simpanan_bank.simpan_kasben');
+            Route::get('editKasben/{no_bukti?}', [SimpananBankController::class, 'editKasben'])->where('no_bukti', '(.*)')->name('skpd.simpanan_bank.edit_kasben');
+            Route::post('update_kasben', [SimpananBankController::class, 'updateKasben'])->name('skpd.simpanan_bank.update_kasben');
+            Route::post('hapus_kasben', [SimpananBankController::class, 'hapusKasben'])->name('skpd.simpanan_bank.hapus_kasben');
+            // Ambil Simpanan Bank ke Tunai
+            Route::get('tunai', [SimpananBankController::class, 'tunai'])->name('skpd.simpanan_bank.tunai');
+            Route::post('load_tunai', [SimpananBankController::class, 'loadTunai'])->name('skpd.simpanan_bank.load_tunai');
+            Route::get('tambah_tunai', [SimpananBankController::class, 'tambahTunai'])->name('skpd.simpanan_bank.tambah_tunai');
+            Route::post('simpan_tunai', [SimpananBankController::class, 'simpanTunai'])->name('skpd.simpanan_bank.simpan_tunai');
+            Route::get('editTunai/{no_bukti?}', [SimpananBankController::class, 'editTunai'])->where('no_bukti', '(.*)')->name('skpd.simpanan_bank.edit_tunai');
+            Route::post('update_tunai', [SimpananBankController::class, 'updateTunai'])->name('skpd.simpanan_bank.update_tunai');
+            Route::post('hapus_tunai', [SimpananBankController::class, 'hapusTunai'])->name('skpd.simpanan_bank.hapus_tunai');
+            // Setor Simpanan Bank
+            Route::get('setor', [SimpananBankController::class, 'setor'])->name('skpd.simpanan_bank.setor');
+            Route::post('load_setor', [SimpananBankController::class, 'loadSetor'])->name('skpd.simpanan_bank.load_setor');
+            Route::get('tambah_setor', [SimpananBankController::class, 'tambahSetor'])->name('skpd.simpanan_bank.tambah_setor');
+            Route::post('simpan_setor', [SimpananBankController::class, 'simpanSetor'])->name('skpd.simpanan_bank.simpan_setor');
+            Route::get('editSetor/{no_bukti?}', [SimpananBankController::class, 'editSetor'])->where('no_bukti', '(.*)')->name('skpd.simpanan_bank.edit_setor');
+            Route::post('update_setor', [SimpananBankController::class, 'updateSetor'])->name('skpd.simpanan_bank.update_setor');
+            Route::post('hapus_setor', [SimpananBankController::class, 'hapusSetor'])->name('skpd.simpanan_bank.hapus_setor');
+        });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {
             Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');

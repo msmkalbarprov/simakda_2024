@@ -69,6 +69,24 @@
                         </ul>
                     </li>
                     <li>
+                        <a href="javascript: void(0);" class="has-arrow">Pelimpahan</a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li><a href="{{ route('skpd.pelimpahan.up_index') }}">Pelimpahan UP</a></li>
+                            <li><a href="{{ route('skpd.pelimpahan.gu_index') }}">Pelimpahan GU</a></li>
+                            <li><a href="{{ route('skpd.pelimpahan.upload') }}">Upload Pelimpahan</a></li>
+                            <li><a href="{{ route('skpd.pelimpahan.validasi') }}">Validasi Pelimpahan</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">Ambil Uang Simpanan</a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li><a href="{{ route('skpd.simpanan_bank.kasben') }}">Ambil Pelimpahan Ke Kas Bank</a>
+                            </li>
+                            <li><a href="{{ route('skpd.simpanan_bank.tunai') }}">Ambil Uang Bank Ke Tunai</a></li>
+                            <li><a href="{{ route('skpd.simpanan_bank.setor') }}">Setor Simpanan</a></li>
+                        </ul>
+                    </li>
+                    <li>
                         <a href="javascript: void(0);" class="has-arrow">Transaksi</a>
                         <ul class="sub-menu" aria-expanded="true">
                             <li><a href="{{ route('skpd.transaksi_cms.index') }}">Transaksi CMS</a></li>
