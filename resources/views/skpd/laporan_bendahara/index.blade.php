@@ -411,6 +411,19 @@
                     searchParams.append("jenis_print", jenis_print);
                     
                     window.open(url.toString(), "_blank");
+                }else if(jenis_cetak =='Cetak Buku Pembantu Kas Tunai'){
+                    let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kastunai') }}");
+                    let searchParams = url.searchParams;
+                    searchParams.append("spasi", spasi);
+                    searchParams.append("bendahara", bendahara);
+                    searchParams.append("pa_kpa", pa_kpa);
+                    searchParams.append("bulan", bulan);
+                    searchParams.append("jns_anggaran",jns_anggaran);
+                    searchParams.append("kd_skpd", kd_skpd);
+                    searchParams.append("tgl_ttd", tgl_ttd);
+                    searchParams.append("jenis_print", jenis_print);
+                    
+                    window.open(url.toString(), "_blank");
                 }else{
                     alert('-'+jenis_cetak+'- Tidak dapat url');
                 }
