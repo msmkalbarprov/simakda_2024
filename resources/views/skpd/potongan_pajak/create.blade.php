@@ -202,8 +202,7 @@
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan_potongan" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('skpd.potongan_pajak_cms.index') }}"
-                                class="btn btn-warning btn-md">Kembali</a>
+                            <a href="{{ route('skpd.potongan_pajak.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
 

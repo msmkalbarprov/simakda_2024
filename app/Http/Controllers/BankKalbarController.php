@@ -276,4 +276,35 @@ class BankKalbarController extends Controller
         curl_close($curl);
         return response()->json($response);
     }
+
+    public function cekBilling(Request $request)
+    {
+        $data['idBilling'] = $request->id_billing;
+        $datakirim = json_encode($data);
+
+        $api_key = $this->get_token_api();
+        $headers = array(
+            'Authorization: Bearer ' . $api_key,
+            "Content-Type: application/json"
+        );
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/idbilling/validasi",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $datakirim,
+            CURLOPT_HTTPHEADER => $headers,
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return response()->json($response);
+    }
 }
