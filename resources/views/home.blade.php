@@ -85,6 +85,15 @@
         </div>
     </div> <!-- end col-->
 </div> <!-- end row-->
+
+{{-- ALERT START--}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fa fa-info-circle"> Perhatian</i>
+    <p>Bapak/Ibu sekalian mulai tanggal 4 November 2022, Kami akan melakukan rekal data mingguan setiap hari jumat pukul 12.00-13.00 WIB untuk keperluan pengiriman data mingguan ke Kementerian Dalam Negeri RI.
+        Diharapkan untuk tidak melakukan input data di dalam aplikasi SIMAKDA pada jam tersebut, karena akan mengakibatkan hilangnya data.</p>
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{-- ALERT END --}}
 <div class="row">
     <div class="col-xl-6">
         <div class="card">
@@ -105,6 +114,7 @@
         </div>
     </div>
 </div>
+
 <!-- apexcharts -->
 <script src="{{asset('template/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
 
@@ -192,5 +202,9 @@ var chart1 = new ApexCharts(
 );
 
 chart1.render();
+
+
+
+  
 </script>
 @endsection

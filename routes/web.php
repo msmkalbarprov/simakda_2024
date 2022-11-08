@@ -28,6 +28,7 @@ use App\Http\Controllers\Skpd\TransaksiPemindahbukuanController;
 use App\Http\Controllers\Skpd\TransaksiTunaiController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\skpd\LaporanBendaharaController;
+use App\Http\Controllers\skpd\SpjFungsionalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
@@ -356,8 +357,13 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
          // Laporan Bendahara
          Route::group(['prefix' => 'laporan_bendahara'], function () {
             Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
+            Route::post('cari_skpd', [LaporanBendaharaController::class, 'cariSkpd'])->name('skpd.laporan_bendahara.skpd');
+            Route::post('cari_bendahara', [LaporanBendaharaController::class, 'cariBendahara'])->name('skpd.laporan_bendahara.bendahara');
+            Route::post('cari_pakpa', [LaporanBendaharaController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara.pakpa');
             // Cetak BKU
             Route::get('cetak_bku', [LaporanBendaharaController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
+            // Cetak SPJ Fungsional
+            Route::get('cetak_spj_fungsional', [SpjFungsionalController::class, 'cetakSpjFungsional'])->name('skpd.laporan_bendahara.cetak_spj_fungsional');
         });
     });
 });

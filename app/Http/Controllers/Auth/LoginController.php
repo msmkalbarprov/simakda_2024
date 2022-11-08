@@ -29,8 +29,11 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
     public function index()
-    {
-        return view('auth.login');
+    {   
+        $data = [
+        'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first()
+        ];
+        return view('auth.login')->with($data);
     }
 
     public function authenticate(Request $request)

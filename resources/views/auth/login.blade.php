@@ -7,7 +7,7 @@
 <head>
         
         <meta charset="utf-8" />
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ 'SIMAKDA' }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
         <meta content="Themesbrand" name="author" />
@@ -42,8 +42,8 @@
                            
                             <div class="card-body p-4"> 
                                 <div class="text-center mt-2">
-                                    <h5 class="text-primary">PROVINSI KALIMANTAN BARAT</h5>
-                                    <p class="text-muted">Badan Keuangan dan Aset Daerah</p>
+                                    <h5 class="text-primary">{{$daerah->nm_pemda}}</h5>
+                                    <p class="text-muted">{{$daerah->nm_badan}}</p>
                                 </div>
                                 <div class="p-2 mt-4">
                                     <form method="POST" action="{{ route('login') }}">
