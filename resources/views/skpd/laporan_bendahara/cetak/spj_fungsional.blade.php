@@ -39,8 +39,8 @@
     </style>
 </head>
 
-{{-- <body onload="window.print()"> --}}
-<body>
+<body onload="window.print()">
+{{-- <body> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -48,7 +48,7 @@
             </td>
             <td align="left" style="font-size:14px" width="93%">&nbsp;</td></tr>
             <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>{{ strtoupper($header->nm_pemda) }}</strong></td></tr>
+            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td></tr>
             <tr>
             <td align="left" style="font-size:14px" ><strong>SKPD {{ $skpd->nm_skpd }}</strong></td></tr>
             <tr>

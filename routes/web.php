@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Request as FacadesRequest;
 use App\Http\Controllers\skpd\SpjFungsionalController;
 use App\Http\Controllers\Skpd\PelimpahanController;
 use App\Http\Controllers\Skpd\SimpananBankController;
+use App\Http\Controllers\Skpd\BpKasBankController;
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -434,6 +435,8 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_bku', [LaporanBendaharaController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
             // Cetak SPJ Fungsional
             Route::get('cetak_spj_fungsional', [SpjFungsionalController::class, 'cetakSpjFungsional'])->name('skpd.laporan_bendahara.cetak_spj_fungsional');
+            // BP Kas Bank
+            Route::get('cetak_bp_kasbank', [BpKasBankController::class, 'cetakBpkasBank'])->name('skpd.laporan_bendahara.cetak_bp_kasbank');
         });
     });
 });

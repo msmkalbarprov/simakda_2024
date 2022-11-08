@@ -41,7 +41,7 @@
             </td>
             <td align="left" style="font-size:14px" width="93%">&nbsp;</td></tr>
             <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>{{ strtoupper($header->nm_pemda) }}</strong></td></tr>
+            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td></tr>
             <tr>
             <td align="left" style="font-size:14px" ><strong>SKPD {{ $skpd->nm_skpd }}</strong></td></tr>
             <tr>

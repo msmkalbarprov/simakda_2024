@@ -46,6 +46,32 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-6">
+      <div class="card card-info collapsed-card card-outline" id="lapbpbank">
+        <div class="card-body">
+            {{'Buku Pembantu Kas Bank'}}
+            <a class="card-block stretched-link" href="#">
+            
+            </a>
+                <i class="fa fa-chevron-right float-end mt-2"></i>
+                
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-info collapsed-card card-outline" id="lapbptunai">
+          <div class="card-body">
+              {{'Buku Pembantu Kas Tunai'}}
+              <a class="card-block stretched-link" href="#">
+              
+              </a>
+                  <i class="fa fa-chevron-right float-end mt-2"></i>
+                  
+          </div>
+        </div>
+    </div>
+</div>
 
 {{-- modal cetak SPJ --}}
 <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
@@ -179,20 +205,10 @@
             }
         });
 
-        // $('#bendahara').select2({
-        //     dropdownParent: $('#modal_cetak'),
-        //     theme: 'bootstrap-5'
-        // });
-
         $('#bendahara').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
-
-        // $('#bulan').select2({
-        //     dropdownParent: $('#modal_cetak'),
-        //     theme: 'bootstrap-5'
-        // });
 
         $('#bulan').select2({
             dropdownParent: $('#modal_cetak'),
@@ -233,6 +249,23 @@
             document.getElementById('row-hidden').hidden        = false; //show
     });
 
+    $('#lapbpbank').on('click', function() {
+        let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak').modal('show');
+            document.getElementById('jns_anggaran').disabled    = true;
+            $("#labelcetak").html("Cetak Buku Pembantu Kas Bank");
+            document.getElementById('row-hidden').hidden        = true;      // Hide
+            cari_skpd(kd_skpd,'unit');
+    });
+
+    $('#lapbptunai').on('click', function() {
+        let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak').modal('show');
+            document.getElementById('jns_anggaran').disabled    = true;
+            $("#labelcetak").html("Cetak Buku Pembantu Kas Tunai");
+            document.getElementById('row-hidden').hidden        = true;      // Hide
+            cari_skpd(kd_skpd,'unit');
+    });
 
     
 
@@ -354,6 +387,19 @@
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak SPJ Fungsional'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_spj_fungsional') }}");
+                    let searchParams = url.searchParams;
+                    searchParams.append("spasi", spasi);
+                    searchParams.append("bendahara", bendahara);
+                    searchParams.append("pa_kpa", pa_kpa);
+                    searchParams.append("bulan", bulan);
+                    searchParams.append("jns_anggaran",jns_anggaran);
+                    searchParams.append("kd_skpd", kd_skpd);
+                    searchParams.append("tgl_ttd", tgl_ttd);
+                    searchParams.append("jenis_print", jenis_print);
+                    
+                    window.open(url.toString(), "_blank");
+                }else if(jenis_cetak =='Cetak Buku Pembantu Kas Bank'){
+                    let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kasbank') }}");
                     let searchParams = url.searchParams;
                     searchParams.append("spasi", spasi);
                     searchParams.append("bendahara", bendahara);
