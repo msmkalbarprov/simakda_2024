@@ -30,7 +30,9 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\skpd\LaporanBendaharaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
-
+use App\Http\Controllers\skpd\SpjFungsionalController;
+use App\Http\Controllers\Skpd\PelimpahanController;
+use App\Http\Controllers\Skpd\SimpananBankController;
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
