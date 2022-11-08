@@ -929,16 +929,6 @@
                 <td colspan='12'></td>   
                 <td>&ensp;&ensp;</td>
             </tr>
-            
-
-
-
-
-
-
-
-
-$sub_str
             <tr>
                 <td align='left' style='font-size:12px;border-top:hidden;'>&ensp;&ensp;</td>
                     <td align='left' style='font-size:12px' colspan='2'>Saldo Kas</td>
