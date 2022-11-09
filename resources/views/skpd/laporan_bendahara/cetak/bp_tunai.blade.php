@@ -33,8 +33,8 @@
     </style>
 </head>
 
-<!-- <body onload="window.print()"> -->
-<body>
+<body onload="window.print()">
+{{-- <body> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -121,6 +121,7 @@
         <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;">
+                    Disetujui oleh
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},

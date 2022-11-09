@@ -440,6 +440,8 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_bp_kasbank', [BpKasBankController::class, 'cetakBpkasBank'])->name('skpd.laporan_bendahara.cetak_bp_kasbank');
             // BP Kas Tunai
             Route::get('cetak_bp_kastunai', [BpKasTunaiController::class, 'cetakBpkasTunai'])->name('skpd.laporan_bendahara.cetak_bp_kastunai');
+            
+            
         });
     });
 });

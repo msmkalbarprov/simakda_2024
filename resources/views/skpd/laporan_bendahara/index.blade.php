@@ -60,9 +60,36 @@
       </div>
     </div>
     <div class="col-md-6">
-        <div class="card card-info collapsed-card card-outline" id="lapbptunai">
+        <div class="card card-info collapsed-card card-outline" id="lapspja">
           <div class="card-body">
-              {{'Buku Pembantu Kas Tunai'}}
+              {{'SPJ Administratif'}}
+              <a class="card-block stretched-link" href="#">
+              
+              </a>
+                  <i class="fa fa-chevron-right float-end mt-2"></i>
+                  
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+      <div class="card card-info collapsed-card card-outline" id="lapbptunai">
+        <div class="card-body">
+            {{'Buku Pembantu Kas Tunai'}}
+            <a class="card-block stretched-link" href="#">
+            
+            </a>
+                <i class="fa fa-chevron-right float-end mt-2"></i>
+                
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-info collapsed-card card-outline" id="lapbppajak">
+          <div class="card-body">
+              {{'Buku Pembantu Pajak'}}
               <a class="card-block stretched-link" href="#">
               
               </a>
@@ -177,7 +204,41 @@
                             name="spasi">
                     </div>
                 </div>
-                
+                <div class="mb-3 row" id="row-hidden2">
+                    {{-- pilihan1 --}}
+                    <div class="col-md-4">
+                        <label for="pajak1" class="form-label">Pilihan 1</label>
+                        <select name="pajak1" class="form-control" id="pajak1">
+                            <option value="" selected disabled>Silahkan Pilih</option>
+                            <option value="semua">Cetak Semua</option>
+                            <option value="tanpalsphk">Cetak Tanpa LS Barang & Jasa Pihak Ketiga</option>
+                            <option value="hanyalsphk">Cetak Hanya LS Barang & Jasa Pihak Ketiga</option>
+                            <option value="upgutu">UP/GU/TU</option>
+                            <option value="ls">LS</option>
+                        </select>
+                    </div>
+                    {{-- pilihan2 --}}
+                    <div class="col-md-4">
+                        <label for="pajak2" class="form-label">Pilihan 2</label>
+                        <select class="form-control select2-multiple @error('pajak2') is-invalid @enderror"
+                                style=" width: 100%;" id="pajak2" name="pajak2" data-placeholder="Silahkan Pilih">
+
+                            </select>
+                            @error('pajak2')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                    </div>
+                    {{-- pilihan pasal --}}
+                    <div class="col-md-4">
+                        <label for="pajak3" class="form-label">Pasal</label>
+                        <select class="form-control select2-multiple @error('pajak3') is-invalid @enderror"
+                                style=" width: 100%;" id="pajak3" name="pajak3" data-placeholder="Silahkan Pilih" disabled>
+                        </select>
+                            @error('pajak3')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                    </div>
+                </div>
              
                
                 <div class="mb-3 row">
@@ -224,7 +285,18 @@
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
-
+        $('#pajak1').select2({
+            dropdownParent: $('#modal_cetak'),
+            theme: 'bootstrap-5'
+        });
+        $('#pajak2').select2({
+            dropdownParent: $('#modal_cetak'),
+            theme: 'bootstrap-5'
+        });
+        $('#pajak3').select2({
+            dropdownParent: $('#modal_cetak'),
+            theme: 'bootstrap-5'
+        });
         $('#jns_anggaran').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
@@ -240,6 +312,7 @@
             document.getElementById('jns_anggaran').disabled    = true;
             $("#labelcetak").html("Cetak BKU");
             document.getElementById('row-hidden').hidden        = true;      // Hide
+            document.getElementById('row-hidden2').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
     $('#lapspj').on('click', function() {
@@ -247,6 +320,15 @@
             $("#labelcetak").html("Cetak SPJ Fungsional");
             document.getElementById('jns_anggaran').disabled    = false;
             document.getElementById('row-hidden').hidden        = false; //show
+            document.getElementById('row-hidden2').hidden        = true;      // Hide
+    });
+
+    $('#lapspja').on('click', function() {
+            $('#modal_cetak').modal('show');
+            $("#labelcetak").html("Cetak SPJ Administratif");
+            document.getElementById('jns_anggaran').disabled    = false;
+            document.getElementById('row-hidden').hidden        = false; //show
+            document.getElementById('row-hidden2').hidden        = true;      // Hide
     });
 
     $('#lapbpbank').on('click', function() {
@@ -255,6 +337,7 @@
             document.getElementById('jns_anggaran').disabled    = true;
             $("#labelcetak").html("Cetak Buku Pembantu Kas Bank");
             document.getElementById('row-hidden').hidden        = true;      // Hide
+            document.getElementById('row-hidden2').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -264,6 +347,17 @@
             document.getElementById('jns_anggaran').disabled    = true;
             $("#labelcetak").html("Cetak Buku Pembantu Kas Tunai");
             document.getElementById('row-hidden').hidden        = true;      // Hide
+            document.getElementById('row-hidden2').hidden        = true;      // Hide
+            cari_skpd(kd_skpd,'unit');
+    });
+
+    $('#lapbppajak').on('click', function() {
+        let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak').modal('show');
+            document.getElementById('jns_anggaran').disabled    = true;
+            $("#labelcetak").html("Cetak Buku Pembantu Pajak");
+            document.getElementById('row-hidden').hidden        = true;      // Hide
+            document.getElementById('row-hidden2').hidden        = false;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -351,6 +445,48 @@
         })
     }
 
+    $('#pajak1').on('select2:select', function() {
+        let pajak1 = document.getElementById('pajak1').value;
+        $.ajax({
+                url: "{{ route('cetak_bppajak.cari_jenis') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    pajak1: pajak1,
+                },
+                success: function(data) {
+                    $('#pajak2').empty();
+                    $('#pajak2').append(`<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pajak2').append(
+                            `<option value="${data.id}" data-nama="${data.text}">${data.text}</option>`
+                        );
+                    })
+                }
+            })
+    });
+    $('#pajak2').on('select2:select', function() {
+        if (document.getElementById('pajak2').value == '3'){
+            document.getElementById('pajak3').disabled      = false;
+            $.ajax({
+                url: "{{ route('cetak_bppajak.cari_pasal') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    $('#pajak3').empty();
+                    $('#pajak3').append(`<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pajak3').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} - ${data.nm_rek6}</option>`
+                        );
+                    })
+                }
+            })
+        }else{
+            document.getElementById('pajak3').disabled      = true;
+            document.getElementById('pajak3').value         = '';
+        }
+    });
 
             // CETAK BKU
             $('.bku_layar').on('click', function() {
@@ -362,11 +498,17 @@
                 let kd_skpd     = document.getElementById('kd_skpd').value;
                 let jns_anggaran= document.getElementById('jns_anggaran').value;
                 let jenis_print = $(this).data("jenis");
-
+                let pajak1      = document.getElementById('pajak1').value;
+                let pajak2      = document.getElementById('pajak2').value;
+                let pajak3      = document.getElementById('pajak3').value;
                 jenis_cetak     = document.getElementById('labelcetak').textContent
 
                 if (!bendahara) {
                     alert('Bendahara Pengeluaran tidak boleh kosong!');
+                    return;
+                }
+                if (!kd_skpd) {
+                    alert('kd_skpd tidak boleh kosong!');
                     return;
                 }
                 if (!pa_kpa) {
@@ -396,7 +538,20 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("judul", 'Fungsional');
+                    window.open(url.toString(), "_blank");
+                }else if(jenis_cetak =='Cetak SPJ Administratif'){
+                    let url = new URL("{{ route('skpd.laporan_bendahara.cetak_spj_fungsional') }}");
+                    let searchParams = url.searchParams;
+                    searchParams.append("spasi", spasi);
+                    searchParams.append("bendahara", bendahara);
+                    searchParams.append("pa_kpa", pa_kpa);
+                    searchParams.append("bulan", bulan);
+                    searchParams.append("jns_anggaran",jns_anggaran);
+                    searchParams.append("kd_skpd", kd_skpd);
+                    searchParams.append("tgl_ttd", tgl_ttd);
+                    searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("judul", 'Administratif');
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Kas Bank'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kasbank') }}");
@@ -422,6 +577,36 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    
+                    window.open(url.toString(), "_blank");
+                }else if(jenis_cetak =='Cetak Buku Pembantu Pajak'){
+                    let url
+                    if (!pajak2) {
+                        alert('Bendahara Pengeluaran tidak boleh kosong!');
+                        return;
+                    }
+                    if(pajak2=='1'){
+                        url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_pajak1') }}");
+                    }else if(pajak2=='2'){
+                        url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_pajak2') }}");
+                    }else if(pajak2=='3'){
+                        url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_pajak3') }}");
+                    }else if(pajak2=='4' || pajak2=='5'){
+                        url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_pajak4') }}");
+                    }
+                    
+                    let searchParams = url.searchParams;
+                    searchParams.append("spasi", spasi);
+                    searchParams.append("bendahara", bendahara);
+                    searchParams.append("pa_kpa", pa_kpa);
+                    searchParams.append("bulan", bulan);
+                    searchParams.append("jns_anggaran",jns_anggaran);
+                    searchParams.append("kd_skpd", kd_skpd);
+                    searchParams.append("tgl_ttd", tgl_ttd);
+                    searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("pilihan1", pajak1);
+                    searchParams.append("pilihan2", pajak2);
+                    searchParams.append("pilihan3", pajak3);
                     
                     window.open(url.toString(), "_blank");
                 }else{

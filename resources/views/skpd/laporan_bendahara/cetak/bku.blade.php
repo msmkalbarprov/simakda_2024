@@ -277,6 +277,7 @@
         <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;">
+                    Disetujui oleh
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},

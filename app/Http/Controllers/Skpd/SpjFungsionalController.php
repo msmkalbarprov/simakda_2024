@@ -16,6 +16,7 @@ class SpjFungsionalController extends Controller
     {   
         
         $tanggal_ttd    = $request->tgl_ttd ;
+        $judul          = $request->judul ;
         $pa_kpa         = $request->pa_kpa ;
         $bendahara      = $request->bendahara ;
         $jns_anggaran   = $request->jns_anggaran ;
@@ -646,6 +647,7 @@ class SpjFungsionalController extends Controller
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'bulan'             => $bulan,
             'rincian'           => $rincian,
+            'judul'             =>$judul,
             // terima
                 // sp2d
                 'sp2d_gj_ll'        => $sp2d_gj_ll,

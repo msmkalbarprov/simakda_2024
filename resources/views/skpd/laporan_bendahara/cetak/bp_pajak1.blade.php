@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BP Kas Bank</title>
+    <title>BP Pajak</title>
     <style>
         table {
             border-collapse: collapse
@@ -33,8 +33,8 @@
     </style>
 </head>
 
-<!-- <body onload="window.print()"> -->
-<body>
+<body onload="window.print()">
+{{-- <body> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -53,7 +53,7 @@
     <hr>
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="text-align: center"><b>BUKU PEMBANTU BANK</b></td>
+            <td style="text-align: center"><b>BUKU PEMBANTU PAJAK</b></td>
         </tr>
         <tr>
             <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(bulan($bulan)) }}</b></td>
@@ -89,38 +89,24 @@
                 @endphp
                     @foreach ($rincian as $rinci)
                         @php
-                            $nomor   += $nomor;
+                            $nomor   = $nomor+1;
                         @endphp
-                       @if ($rinci->jns == 1)
                             @php
-                            $saldo=$saldo+$rinci->jumlah;
-					        $total_terima=$total_terima+$rinci->jumlah;
+                            $saldo=$saldo+$rinci->terima-$rinci->keluar;
+
+					        $total_terima=$total_terima+$rinci->terima;
+                            $total_keluar=$total_keluar+$rinci->keluar;
                             @endphp
                                 <tr>
                                   <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$nomor}}</td>
                                   <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{tanggal_indonesia($rinci->tgl)}}</td>
                                   <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$rinci->bku}}</td>
                                   <td align='left' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$rinci->ket}}</td>
-                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($rinci->jumlah)}}</td>
-                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'></td>
+                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($rinci->terima)}}</td>
+                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($rinci->keluar)}}</td>
                                   <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($saldo)}}</td>
                                   </tr>
-                                                        
-                       @else
-                            @php
-                            $saldo=$saldo-$rinci->jumlah;
-							$total_keluar=$total_keluar+$rinci->jumlah;
-                            @endphp
-                                <tr>
-                                  <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$nomor}}</td>
-                                  <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{tanggal_indonesia($rinci->tgl)}}</td>
-                                  <td align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$rinci->bku}}</td>
-                                  <td align='left' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{$rinci->ket}}</td>
-                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'></td>
-                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($rinci->jumlah)}}</td>
-                                  <td align='right' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>{{rupiah($saldo)}}</td>
-                                  </tr> 
-                       @endif          
+                     
                     @endforeach
                 <tr>
                     <td bgcolor='#CCCCCC' colspan='4' valign='top' align='center' style='font-size:12px;border-bottom:solid 1px black;border-top:solid 1px black'>JUMLAH</td>

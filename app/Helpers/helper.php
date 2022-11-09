@@ -2289,3 +2289,9 @@ function get_setorpotongan($kd_skpd,$kd_rek6,$bulan)
                         [$bulan,$bulan,$bulan,$bulan,$bulan,$bulan,$kd_rek6,$kd_skpd]);
     return $str_pot;
 }
+    function cari_nama($kode,$namatabel,$namakolomwhere,$namakolomtarget)
+    {
+        $data_bank = DB::table($namatabel)->select(DB::raw("$namakolomtarget as nama"))->where([$namakolomwhere => $kode])->first();
+        return $data_bank->nama;
+    }
+

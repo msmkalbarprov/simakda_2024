@@ -60,7 +60,7 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td style="text-align: center"><b>LAPORAN PERTANGGUNGJAWABAN BENDAHARA PENGELUARAN<br />
-                (SPJ FUNGSIONAL)</b></td>
+                (SPJ {{strtoupper($judul)}})</b></td>
         </tr>
         <tr>
             <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(bulan($bulan)) }}</b></td>
@@ -951,6 +951,7 @@
         <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;">
+                    Disetujui oleh
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},
