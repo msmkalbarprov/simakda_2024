@@ -2326,4 +2326,10 @@ function no_urut_tunai($kd_skpd)
         ->first();
     return $urut->nomor;
 }
->>>>>>> 408b38606e9adc4acf4563efc644a0b7f6254ea4
+
+function cari_nama($kode,$namatabel,$namakolomwhere,$namakolomtarget)
+{
+    $data_bank = DB::table($namatabel)->select(DB::raw("$namakolomtarget as nama"))->where([$namakolomwhere => $kode])->first();
+    return $data_bank->nama;
+}
+

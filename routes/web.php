@@ -36,6 +36,7 @@ use App\Http\Controllers\Skpd\SimpananBankController;
 use App\Http\Controllers\Skpd\BpKasBankController;
 use App\Http\Controllers\Skpd\BpKasTunaiController;
 use App\Http\Controllers\Skpd\PelimpahanKegiatanController;
+use App\Http\Controllers\Skpd\BpPajakController;
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -549,7 +550,14 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_bp_kasbank', [BpKasBankController::class, 'cetakBpkasBank'])->name('skpd.laporan_bendahara.cetak_bp_kasbank');
             // BP Kas Tunai
             Route::get('cetak_bp_kastunai', [BpKasTunaiController::class, 'cetakBpkasTunai'])->name('skpd.laporan_bendahara.cetak_bp_kastunai');
-            
+            // BP Pajak
+            Route::get('cetak_bp_pajak1', [BpPajakController::class, 'cetakBpPajak'])->name('skpd.laporan_bendahara.cetak_bp_pajak1');
+            Route::get('cetak_bp_pajak2', [BpPajakController::class, 'cetakBpPajak2'])->name('skpd.laporan_bendahara.cetak_bp_pajak2');
+            Route::get('cetak_bp_pajak3', [BpPajakController::class, 'cetakBpPajak3'])->name('skpd.laporan_bendahara.cetak_bp_pajak3');
+            Route::get('cetak_bp_pajak4', [BpPajakController::class, 'cetakBpPajak4'])->name('skpd.laporan_bendahara.cetak_bp_pajak4');
+            Route::get('cetak_bp_pajak5', [BpPajakController::class, 'cetakBpPajak5'])->name('skpd.laporan_bendahara.cetak_bp_pajak5');
+            Route::post('cari_jenis', [BpPajakController::class, 'cariJenis'])->name('cetak_bppajak.cari_jenis');
+            Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
             
         });
     });
