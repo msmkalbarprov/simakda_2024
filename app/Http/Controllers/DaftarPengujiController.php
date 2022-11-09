@@ -242,13 +242,13 @@ class DaftarPengujiController extends Controller
             $join->on('b.kd_skpd', '=', 'a.kd_skpd');
         })->groupBy('no_sp2d', 'a.no_spm', 'tgl_sp2d', 'a.nmrekan', 'a.alamat', 'a.pimpinan', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.jenis_beban', 'a.kotor')->select('a.*', DB::raw("ISNULL(SUM(b.nilai),0) as pot"));
 
-        $data2 = DB::table('trhuji as a')->join('trduji as b', 'a.no_uji', '=', 'b.no_uji')->leftJoinSub($data2, 'c', function ($join) {
+        $data3 = DB::table('trhuji as a')->join('trduji as b', 'a.no_uji', '=', 'b.no_uji')->leftJoinSub($data2, 'c', function ($join) {
             $join->on('b.no_sp2d', '=', 'c.no_sp2d');
         })->where(['a.no_uji' => $no_uji])->select('b.no_sp2d', 'c.tgl_sp2d', 'c.nmrekan', 'c.pimpinan', 'c.alamat', 'c.kd_skpd', 'c.nm_skpd', 'c.jns_spp', 'c.jenis_beban', 'c.kotor', 'c.pot')->get();
 
         $total_kotor = 0;
         $total_pot = 0;
-        foreach ($data2 as $total) {
+        foreach ($data3 as $total) {
             $total_kotor += $total->kotor;
             $total_pot += $total->pot;
         }
