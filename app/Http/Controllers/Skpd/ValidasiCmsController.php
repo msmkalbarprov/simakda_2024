@@ -59,7 +59,7 @@ class ValidasiCmsController extends Controller
         DB::beginTransaction();
         try {
             $nomor1 = DB::table('trvalidasi_cmsbank')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
-            $nomor2 = DB::table('trvalidasi_cmsbank_panjar')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
+            $nomor2 = DB::table('trvalidasi_cmsbank_panjar')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms Panjar' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
             $nomor = DB::table(DB::raw("({$nomor2->toSql()}) AS sub"))
                 ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
                 ->mergeBindings($nomor2)

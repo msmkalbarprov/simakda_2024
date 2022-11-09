@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Validasi CMS | SIMAKDA')
+@section('title', 'Validasi Pelimpahan UP/GU | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="accordion" id="accordionExample">
@@ -26,7 +26,7 @@
                                         <button id="cetak_cms" class="btn btn-dark btn-md">Cari</button>
                                     </div>
                                     <div class="col-md-7">
-                                        <a href="{{ route('skpd.validasi_cms.create') }}" class="btn btn-primary"
+                                        <a href="{{ route('skpd.pelimpahan.tambah_validasi') }}" class="btn btn-primary"
                                             style="float: right;">Tambah Validasi</a>
                                     </div>
                                 </div>
@@ -36,8 +36,8 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 25px;text-align:center">No.</th>
-                                                    <th style="width: 50px;text-align:center">No. Voucher</th>
-                                                    <th style="width: 100px;text-align:center">Tanggal Transaksi</th>
+                                                    <th style="width: 50px;text-align:center">No. Bukti</th>
+                                                    <th style="width: 100px;text-align:center">Tanggal Bukti</th>
                                                     <th style="width: 100px;text-align:center">Tanggal Validasi</th>
                                                     <th style="width: 100px;text-align:center">SKPD</th>
                                                     <th style="width: 50px;text-align:center">Keterangan</th>
@@ -51,7 +51,6 @@
                                                     <th>Rek Tujuan</th>
                                                     <th>Bank Tujuan</th>
                                                     <th>Ket. Tujuan</th>
-                                                    <th>Status Pot</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -67,11 +66,6 @@
                                                             style="border:none;background-color:white;text-align:right"
                                                             class="form-control" readonly id="total_transaksi">
                                                     </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="padding-left: 600px">Total Potongan</td>
-                                                    <td>:</td>
-                                                    <td style="text-align: right"></td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-left: 600px">Sisa Saldo Bank</td>
@@ -119,8 +113,8 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 25px;text-align:center">No.</th>
-                                                    <th>No Voucher</th>
-                                                    <th>Tanggal Voucher</th>
+                                                    <th>No Bukti</th>
+                                                    <th>Tanggal Bukti</th>
                                                     <th style="width: 20px;text-align:center">No. BKU</th>
                                                     <th style="width: 100px;text-align:center">Tanggal Validasi</th>
                                                     <th style="width: 50px;text-align:center">SKPD</th>
@@ -135,7 +129,6 @@
                                                     <th>Rek Tujuan</th>
                                                     <th>Bank Tujuan</th>
                                                     <th>Ket. Tujuan</th>
-                                                    <th>POT</th>
                                                     <th style="width: 200px;text-align:center">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -364,5 +357,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.validasi_cms.js.index')
+    @include('skpd.validasi_pelimpahan.js.index')
 @endsection

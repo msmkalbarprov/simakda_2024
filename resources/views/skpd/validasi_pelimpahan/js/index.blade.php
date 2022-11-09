@@ -13,19 +13,19 @@
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('skpd.validasi_cms.load_data') }}",
+                "url": "{{ route('skpd.pelimpahan.load_validasi') }}",
                 "type": "POST",
             },
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 }, {
-                    data: 'no_voucher',
-                    name: 'no_voucher'
+                    data: 'no_bukti',
+                    name: 'no_bukti'
                 },
                 {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher'
+                    data: 'tgl_bukti',
+                    name: 'tgl_bukti'
                 },
                 {
                     data: 'tgl_validasi',
@@ -37,19 +37,19 @@
                 },
                 {
                     data: null,
-                    name: 'ket',
+                    name: 'keterangan',
                     render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
+                        return data.keterangan.substr(0, 10) + '.....';
                     }
                 },
                 {
                     data: null,
-                    name: 'total',
+                    name: 'nilai',
                     className: 'text-right',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.total)
+                        }).format(data.nilai)
                     }
                 },
                 {
@@ -68,8 +68,16 @@
                     visible: false
                 },
                 {
-                    data: 'status_validasi',
+                    data: null,
                     name: 'status_validasi',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_validasi == '1') {
+                            return '&#10004';
+                        } else {
+                            return '&#10008';
+                        }
+                    }
                 },
                 {
                     data: 'rekening_awal',
@@ -96,19 +104,6 @@
                     name: 'ket_tujuan',
                     visible: false
                 },
-                {
-                    data: 'status_trmpot',
-                    name: 'status_trmpot',
-                    visible: false
-                },
-                // {
-                //     data: null,
-                //     name: 'aksi',
-                //     width: 200,
-                //     render: function(data, type, row, meta) {
-                //         return `<button type="button" onclick="lihatData('${data.nm_skpd}','${data.no_voucher}','${data.tgl_voucher}','${data.no_sp2d}','${data.ket}','${data.kd_sub_kegiatan}','${data.nm_sub_kegiatan}','${data.kd_skpd}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>`
-                //     }
-                // },
             ],
         });
 
@@ -120,23 +115,25 @@
             autoWidth: false,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('skpd.validasi_cms.draft_validasi') }}",
+                "url": "{{ route('skpd.pelimpahan.draft_validasi') }}",
                 "type": "POST",
             },
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                 }, {
-                    data: 'no_voucher',
-                    name: 'no_voucher'
-                },
-                {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher'
-                },
-                {
                     data: 'no_bukti',
                     name: 'no_bukti',
+                    visible: false
+                },
+                {
+                    data: 'tgl_bukti',
+                    name: 'tgl_bukti',
+                    visible: false
+                },
+                {
+                    data: 'no_kas',
+                    name: 'no_kas',
                 },
                 {
                     data: 'tgl_validasi',
@@ -148,19 +145,19 @@
                 },
                 {
                     data: null,
-                    name: 'ket',
+                    name: 'keterangan',
                     render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
+                        return data.keterangan.substr(0, 10) + '.....';
                     }
                 },
                 {
                     data: null,
-                    name: 'total',
+                    name: 'nilai',
                     className: 'text-right',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.total)
+                        }).format(data.nilai)
                     }
                 },
                 {
@@ -209,16 +206,16 @@
                     visible: false
                 },
                 {
-                    data: 'status_trmpot',
-                    name: 'status_trmpot',
-                    visible: false
-                },
-                {
                     data: null,
                     name: 'aksi',
                     width: '100px',
+                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return `<a href = "javascript:void(0);" onclick = "batalValidasi('${data.no_voucher}','${data.kd_skpd}','${data.no_bukti}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
+                        if (data.status_ambil1 == '1' || !data.tgl_validasi) {
+                            return ``;
+                        } else {
+                            return `<a href = "javascript:void(0);" onclick = "batalValidasi('${data.no_kas}','${data.kd_skpd}','${data.no_bukti}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
+                        }
                     }
                 },
             ],
@@ -456,35 +453,10 @@
 
         let pilih = document.getElementById('pilih' + no_voucher).checked;
         if (pilih == true) {
-            // data_transaksi.row.add({
-            //     'no_voucher': no_voucher,
-            //     'tgl_voucher': tgl_voucher,
-            //     'kd_skpd': kd_skpd,
-            //     'ket': ket,
-            //     'total': parseFloat(total),
-            //     'netto': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(nilai_bersih),
-            //     'pot': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(pot),
-            //     'nilai_total': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(total),
-            //     'status_upload': status_upload,
-            //     'rekening_awal': rekening_awal,
-            //     'nm_rekening_tujuan': nm_rekening_tujuan,
-            //     'rekening_tujuan': rekening_tujuan,
-            //     'bank_tujuan': bank_tujuan,
-            //     'ket_tujuan': ket_tujuan,
-            // }).draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi + nilai));
         } else {
-            // data_transaksi.rows(function(idx, data, node) {
-            //     return data.no_voucher == no_voucher
-            // }).remove().draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi - nilai));
@@ -492,22 +464,22 @@
 
     }
 
-    function batalValidasi(no_voucher, kd_skpd, no_bukti) {
-        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Voucher : ' + no_voucher);
+    function batalValidasi(no_kas, kd_skpd, no_bukti) {
+        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Bukti : ' + no_kas);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('skpd.validasi_cms.batal_validasi') }}",
+                url: "{{ route('skpd.pelimpahan.batal_validasi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_voucher: no_voucher,
+                    no_kas: no_kas,
                     kd_skpd: kd_skpd,
                     no_bukti: no_bukti,
                 },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Batal Berhasil');
-                        window.location.href = "{{ route('skpd.validasi_cms.index') }}";
+                        window.location.href = "{{ route('skpd.pelimpahan.validasi') }}";
                     } else {
                         alert('Proses Batal Gagal...!!!');
                     }

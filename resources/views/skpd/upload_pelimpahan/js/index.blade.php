@@ -1,3 +1,17 @@
+<style>
+    input[type=checkbox] {
+        -ms-transform: scale(1);
+        -moz-transform: scale(1);
+        -webkit-transform: scale(1);
+        -o-transform: scale(1);
+        padding: 10px;
+    }
+
+    .card:hover {
+        transform: scale(1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+    }
+</style>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -6,70 +20,83 @@
             }
         });
 
-        let data_awal = $('#list_blm_validasi').DataTable({
+        let data_awal = $('#upload_pelimpahan').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('skpd.validasi_cms.load_data') }}",
+                "url": "{{ route('skpd.pelimpahan.load_upload') }}",
                 "type": "POST",
+            },
+            createdRow: function(row, data, index) {
+                if (data.status_upload == "1" && data.status_validasi == "1") {
+                    $(row).css("background-color", "#B0E0E6");
+                } else if (data.status_upload == "1") {
+                    $(row).css("background-color", "#98FB98");
+                }
             },
             columns: [{
                     data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
+                    name: 'DT_RowIndex',
+                    className: 'text-center'
                 }, {
-                    data: 'no_voucher',
-                    name: 'no_voucher'
+                    data: 'no_bukti',
+                    name: 'no_bukti',
+                    className: 'text-center'
                 },
                 {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher'
-                },
-                {
-                    data: 'tgl_validasi',
-                    name: 'tgl_validasi',
-                },
-                {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd'
-                },
-                {
-                    data: null,
-                    name: 'ket',
-                    render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
-                    }
-                },
-                {
-                    data: null,
-                    name: 'total',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.total)
-                    }
-                },
-                {
-                    data: 'no_upload',
-                    name: 'no_upload',
-                    visible: false
-                },
-                {
-                    data: 'status_upload',
-                    name: 'status_upload',
-                    visible: false
+                    data: 'tgl_bukti',
+                    name: 'tgl_bukti',
+                    className: 'text-center'
                 },
                 {
                     data: 'tgl_upload',
                     name: 'tgl_upload',
-                    visible: false
+                    className: 'text-center'
                 },
                 {
-                    data: 'status_validasi',
-                    name: 'status_validasi',
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
+                    className: 'text-center'
+                },
+                {
+                    data: null,
+                    name: 'keterangan',
+                    render: function(data, type, row, meta) {
+                        return data.keterangan.substr(0, 10) + '.....';
+                    }
+                },
+                {
+                    data: null,
+                    name: 'nilai',
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
+                },
+                {
+                    data: null,
+                    name: 'status_upload',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_upload == '1') {
+                            return '&#10004';
+                        } else {
+                            return '&#10008';
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    name: 'aksi',
+                    width: 200,
+                    render: function(data, type, row, meta) {
+                        return `<button type="button" onclick="lihatData('${data.nm_skpd}','${data.no_voucher}','${data.tgl_voucher}','${data.no_sp2d}','${data.ket}','${data.kd_sub_kegiatan}','${data.nm_sub_kegiatan}','${data.kd_skpd}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>`
+                    }
                 },
                 {
                     data: 'rekening_awal',
@@ -96,23 +123,10 @@
                     name: 'ket_tujuan',
                     visible: false
                 },
-                {
-                    data: 'status_trmpot',
-                    name: 'status_trmpot',
-                    visible: false
-                },
-                // {
-                //     data: null,
-                //     name: 'aksi',
-                //     width: 200,
-                //     render: function(data, type, row, meta) {
-                //         return `<button type="button" onclick="lihatData('${data.nm_skpd}','${data.no_voucher}','${data.tgl_voucher}','${data.no_sp2d}','${data.ket}','${data.kd_sub_kegiatan}','${data.nm_sub_kegiatan}','${data.kd_skpd}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>`
-                //     }
-                // },
             ],
         });
 
-        let data_validasi = $('#draft_validasi').DataTable({
+        let data_upload = $('#draft_upload').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
@@ -120,27 +134,31 @@
             autoWidth: false,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('skpd.validasi_cms.draft_validasi') }}",
+                "url": "{{ route('skpd.pelimpahan.draft_upload') }}",
                 "type": "POST",
+            },
+            createdRow: function(row, data, index) {
+                if (data.status_upload == "1" && data.status_validasi == "1") {
+                    $(row).css("background-color", "#B0E0E6");
+                } else if (data.status_upload == "1") {
+                    $(row).css("background-color", "#98FB98");
+                }
             },
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                 }, {
-                    data: 'no_voucher',
-                    name: 'no_voucher'
+                    data: 'no_upload',
+                    name: 'no_upload',
+                    visible: false
                 },
                 {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher'
+                    data: 'no_upload_tgl',
+                    name: 'no_upload_tgl'
                 },
                 {
-                    data: 'no_bukti',
-                    name: 'no_bukti',
-                },
-                {
-                    data: 'tgl_validasi',
-                    name: 'tgl_validasi',
+                    data: 'tgl_upload',
+                    name: 'tgl_upload',
                 },
                 {
                     data: 'kd_skpd',
@@ -148,9 +166,9 @@
                 },
                 {
                     data: null,
-                    name: 'ket',
+                    name: 'keterangan',
                     render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
+                        return data.keterangan.substr(0, 10) + '.....';
                     }
                 },
                 {
@@ -164,24 +182,22 @@
                     }
                 },
                 {
-                    data: 'no_upload',
-                    name: 'no_upload',
-                    visible: false
-                },
-                {
-                    data: 'status_upload',
+                    data: null,
                     name: 'status_upload',
-                    visible: false
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_upload == '1') {
+                            return '&#10004';
+                        } else {
+                            return '&#10008';
+                        }
+                    }
                 },
                 {
-                    data: 'tgl_upload',
-                    name: 'tgl_upload',
-                    visible: false
-                },
-                {
-                    data: 'status_validasi',
-                    name: 'status_validasi',
-                    visible: false
+                    data: 'aksi',
+                    name: 'aksi',
+                    className: 'text-center',
+                    width: '150px',
                 },
                 {
                     data: 'rekening_awal',
@@ -207,19 +223,6 @@
                     data: 'ket_tujuan',
                     name: 'ket_tujuan',
                     visible: false
-                },
-                {
-                    data: 'status_trmpot',
-                    name: 'status_trmpot',
-                    visible: false
-                },
-                {
-                    data: null,
-                    name: 'aksi',
-                    width: '100px',
-                    render: function(data, type, row, meta) {
-                        return `<a href = "javascript:void(0);" onclick = "batalValidasi('${data.no_voucher}','${data.kd_skpd}','${data.no_bukti}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
-                    }
                 },
             ],
         });
@@ -229,7 +232,7 @@
             serverSide: true,
             processing: true,
             ajax: {
-                "url": "{{ route('skpd.upload_cms.data_upload') }}",
+                "url": "{{ route('skpd.pelimpahan.data_upload') }}",
                 "type": "POST",
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
@@ -240,12 +243,12 @@
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 }, {
-                    data: 'no_voucher',
-                    name: 'no_voucher'
+                    data: 'no_bukti',
+                    name: 'no_bukti'
                 },
                 {
-                    data: 'tgl_voucher',
-                    name: 'tgl_voucher'
+                    data: 'tgl_bukti',
+                    name: 'tgl_bukti'
                 },
                 {
                     data: 'kd_skpd',
@@ -253,35 +256,67 @@
                 },
                 {
                     data: null,
-                    name: 'ket',
+                    name: 'total',
+                    className: 'text-right',
                     render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.total)
                     }
                 },
                 {
-                    data: 'total',
-                    name: 'total',
+                    data: 'status_upload',
+                    name: 'status_upload',
                     visible: false
                 },
                 {
-                    data: null,
-                    name: 'bersh',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.bersih)
-                    }
+                    data: 'rekening_awal',
+                    name: 'rekening_awal',
+                    visible: false
                 },
                 {
-                    data: null,
-                    name: 'pot',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.pot)
-                    }
+                    data: 'nm_rekening_tujuan',
+                    name: 'nm_rekening_tujuan',
+                    visible: false
+                },
+                {
+                    data: 'rekening_tujuan',
+                    name: 'rekening_tujuan',
+                    visible: false
+                },
+                {
+                    data: 'bank_tujuan',
+                    name: 'bank_tujuan',
+                    visible: false
+                },
+                {
+                    data: 'ket_tujuan',
+                    name: 'ket_tujuan',
+                    visible: false
+                },
+            ],
+        });
+
+        let rekening_transaksi = $('#rekening_transaksi').DataTable({
+            responsive: true,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": "{{ route('skpd.upload_cms.rekening_transaksi') }}",
+                "type": "POST",
+                "data": function(d) {
+                    d.nomor = document.getElementById('nomor').value;
+                    d.kd_skpd = document.getElementById('kd_skpd').value;
+                }
+            },
+            ordering: false,
+            columns: [{
+                    data: 'kd_rek6',
+                    name: 'kd_rek6',
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6',
                 },
                 {
                     data: null,
@@ -294,55 +329,111 @@
                     }
                 },
                 {
-                    data: 'status_upload',
-                    name: 'status_upload',
+                    data: 'sumber',
+                    name: 'sumber',
+                },
+            ]
+        });
+
+        let rekening_potongan = $('#rekening_potongan').DataTable({
+            responsive: true,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": "{{ route('skpd.upload_cms.rekening_potongan') }}",
+                "type": "POST",
+                "data": function(d) {
+                    d.nomor = document.getElementById('nomor').value;
+                    d.kd_skpd = document.getElementById('kd_skpd').value;
+                }
+            },
+            ordering: false,
+            columns: [{
+                    data: 'kd_rek6',
+                    name: 'kd_rek6',
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6',
+                },
+                {
+                    data: null,
+                    name: 'nilai',
+                    className: 'text-right',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
+                },
+            ]
+        });
+
+        let rekening_tujuan = $('#rekening_tujuan').DataTable({
+            responsive: true,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": "{{ route('skpd.upload_cms.rekening_tujuan') }}",
+                "type": "POST",
+                "data": function(d) {
+                    d.nomor = document.getElementById('nomor').value;
+                    d.kd_skpd = document.getElementById('kd_skpd').value;
+                }
+            },
+            ordering: false,
+            columns: [{
+                    data: 'no_voucher',
+                    name: 'no_voucher',
+                    visible: false
+                },
+                {
+                    data: 'tgl_voucher',
+                    name: 'tgl_voucher',
+                    visible: false
                 },
                 {
                     data: 'rekening_awal',
                     name: 'rekening_awal',
-                    visible: false
                 },
                 {
                     data: 'nm_rekening_tujuan',
                     name: 'nm_rekening_tujuan',
-                    visible: false
                 },
                 {
                     data: 'rekening_tujuan',
                     name: 'rekening_tujuan',
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
                     visible: false
+                },
+                {
+                    data: null,
+                    name: 'nilai',
+                    className: 'text-right',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
                 },
                 {
                     data: 'bank_tujuan',
                     name: 'bank_tujuan',
-                    visible: false
                 },
-                {
-                    data: 'ket_tujuan',
-                    name: 'ket_tujuan',
-                    visible: false
-                },
-            ],
+            ]
         });
 
-        $('#cetak_cms').on('click', function() {
-            let data = JSON.stringify(data_awal.rows().data().toArray());
-            console.log(data);
-        });
-
-        $('#cetakCsvKalbar').on('click', function() {
+        $('#cetakCsv').on('click', function() {
             let no_upload = document.getElementById('no_upload').value;
-            let url = new URL("{{ route('skpd.upload_cms.cetak_csv_kalbar') }}");
+            let tgl_upload = document.getElementById('tgl_upload').value;
+
+            let url = new URL("{{ route('skpd.pelimpahan.cetak_csv') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_upload", no_upload);
-            window.open(url.toString(), "_blank");
-        });
-
-        $('#cetakCsvLuarKalbar').on('click', function() {
-            let no_upload = document.getElementById('no_upload').value;
-            let url = new URL("{{ route('skpd.upload_cms.cetak_csv_luar_kalbar') }}");
-            let searchParams = url.searchParams;
-            searchParams.append("no_upload", no_upload);
+            searchParams.append("tgl_upload", tgl_upload);
             window.open(url.toString(), "_blank");
         });
 
@@ -456,35 +547,10 @@
 
         let pilih = document.getElementById('pilih' + no_voucher).checked;
         if (pilih == true) {
-            // data_transaksi.row.add({
-            //     'no_voucher': no_voucher,
-            //     'tgl_voucher': tgl_voucher,
-            //     'kd_skpd': kd_skpd,
-            //     'ket': ket,
-            //     'total': parseFloat(total),
-            //     'netto': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(nilai_bersih),
-            //     'pot': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(pot),
-            //     'nilai_total': new Intl.NumberFormat('id-ID', {
-            //         minimumFractionDigits: 2
-            //     }).format(total),
-            //     'status_upload': status_upload,
-            //     'rekening_awal': rekening_awal,
-            //     'nm_rekening_tujuan': nm_rekening_tujuan,
-            //     'rekening_tujuan': rekening_tujuan,
-            //     'bank_tujuan': bank_tujuan,
-            //     'ket_tujuan': ket_tujuan,
-            // }).draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi + nilai));
         } else {
-            // data_transaksi.rows(function(idx, data, node) {
-            //     return data.no_voucher == no_voucher
-            // }).remove().draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi - nilai));
@@ -492,22 +558,23 @@
 
     }
 
-    function batalValidasi(no_voucher, kd_skpd, no_bukti) {
-        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Voucher : ' + no_voucher);
+    function batalUpload(no_upload, tgl_upload, no_upload_tgl, kd_skpd) {
+        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Upload : ' + no_upload);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('skpd.validasi_cms.batal_validasi') }}",
+                url: "{{ route('skpd.pelimpahan.batal_upload') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_voucher: no_voucher,
+                    no_upload: no_upload,
+                    tgl_upload: tgl_upload,
+                    no_upload_tgl: no_upload_tgl,
                     kd_skpd: kd_skpd,
-                    no_bukti: no_bukti,
                 },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Batal Berhasil');
-                        window.location.href = "{{ route('skpd.validasi_cms.index') }}";
+                        window.location.href = "{{ route('skpd.pelimpahan.upload') }}";
                     } else {
                         alert('Proses Batal Gagal...!!!');
                     }
@@ -518,8 +585,9 @@
         }
     }
 
-    function lihatDataUpload(no_upload, total) {
+    function lihatDataUpload(no_upload, tgl_upload, total) {
         $('#no_upload').val(no_upload);
+        $('#tgl_upload').val(tgl_upload);
         $('#total_transaksi_satuan').val(new Intl.NumberFormat('id-ID', {
             minimumFractionDigits: 2
         }).format(total));

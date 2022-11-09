@@ -31,6 +31,7 @@
                 <ul class="sub-menu" aria-expanded="true">
                     <li><a href="{{ route('penerima.index') }}">Penerima</a></li>
                     <li><a href="{{ route('kontrak.index') }}">Kontrak</a></li>
+                    <li><a href="{{ route('skpd.pelimpahan_kegiatan.index') }}">Pelimpahan Sub Kegiatan</a></li>
                 </ul>
             </li>
             {{-- Pengeluaran --}}
