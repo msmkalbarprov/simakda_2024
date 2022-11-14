@@ -258,11 +258,12 @@ class DaftarPengujiController extends Controller
             'tanggal' => DB::table('trhuji')->select('tgl_uji')->where(['no_uji' => $no_uji])->first(),
             'jumlah_detail' => DB::table('trduji as a')->join('trhuji as b', 'a.no_uji', '=', 'b.no_uji')->where(['a.no_uji' => $no_uji])->count(),
             'no_uji' => $no_uji,
-            'data_penguji' => $data2,
+            'data_penguji' => $data3,
             'total_kotor' => $total_kotor,
             'total_pot' => $total_pot,
             'jumlah_bersih' => $total_kotor - $total_pot
         ];
+
         $view = view('penatausahaan.pengeluaran.daftar_penguji.cetak')->with($data);
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view);

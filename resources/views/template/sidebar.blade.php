@@ -103,6 +103,25 @@
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">Transaksi Kas</a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li><a href="{{ route('skpd.setor_sisa.index') }}">Setor Sisa Kas/CP</a></li>
+                            <li><a href="{{ route('skpd.penerimaan_lain.index') }}">Penerimaan Lain Pengurang
+                                    Belanja</a>
+                            </li>
+                            <li><a href="{{ route('skpd.pengeluaran_lain.index') }}">Pengeluaran Lain-Lain</a></li>
+                            <li><a href="{{ route('skpd.setor.index') }}">List Setor (CMS)</a>
+                            </li>
+                            <li><a href="{{ route('skpd.upload_setor.index') }}">List Upload Setor (CMS)</a></li>
+                            <li><a href="{{ route('skpd.validasi_setor.index') }}">List Validasi Setor
+                                    (CMS)</a></li>
+                            <li><a href="{{ route('skpd.setor_tunai.index') }}">List Setor (Tunai Ke Bank)</a>
+                            <li><a href="{{ route('skpd.uyhd.index') }}">UYHD</a>
+                            <li><a href="{{ route('skpd.uyhd_pajak.index') }}">UYHD Pajak</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li>

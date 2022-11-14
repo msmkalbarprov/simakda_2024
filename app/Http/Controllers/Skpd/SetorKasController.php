@@ -10,47 +10,46 @@ use Yajra\DataTables\Facades\DataTables;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
 
-class PelimpahanController extends Controller
+class SetorKasController extends Controller
 {
-    // PELIMPAHAN UP DARI indexUp
-    public function indexUp()
+    // List Setor CMS (AWAL)
+    public function index()
     {
-        return view('skpd.pelimpahan_up.index');
+        return view('skpd.list_setor_cms.index');
     }
 
-    public function loadDataUp()
+    public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("CAST(no_kas as INT)"))->orderBy('kd_skpd')->get();
+        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("cast(no_kas as int)"))->orderBy('kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->status_upload != '1') {
-                $btn = '<a href="' . route("skpd.pelimpahan.edit_up", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="hapusPelimpahan(' . $row->no_kas . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn = '<a href="' . route("skpd.setor.edit", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+            if ($row->status_validasi != '1' || $row->status_upload != '1') {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusSetor(' . $row->no_kas . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             } else {
-                $btn = '';
+                $btn .= '';
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
-        return view('skpd.pelimpahan_up.index');
     }
 
-    public function tambahUp()
+    public function create()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $skpd = substr($kd_skpd, 0, 17);
-
         $data = [
-            'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
+            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17) AND right(kd_skpd,2)=?", [$kd_skpd, '00'])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
             'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
-            'sisa_bank' => sisa_bank()
+            'kd_skpd' => $kd_skpd,
+            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank)"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'bank_tujuan' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'sisa_bank' => sisa_bank(),
         ];
 
-        return view('skpd.pelimpahan_up.create')->with($data);
+        return view('skpd.list_setor_cms.create')->with($data);
     }
 
-    public function simpanUp(Request $request)
+    public function simpan(Request $request)
     {
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
@@ -59,7 +58,7 @@ class PelimpahanController extends Controller
         try {
             $no_urut = no_urut($kd_skpd);
 
-            // SETOR PELIMPAHAN UP
+            // Simpan Setor CMS
 
             DB::table('tr_setorpelimpahan_bank_cms')->insert([
                 'no_kas' => $no_urut,
@@ -69,13 +68,13 @@ class PelimpahanController extends Controller
                 'kd_skpd' => $data['kd_skpd'],
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
-                'kd_skpd_sumber' => $data['skpd_sumber'],
+                'kd_skpd_sumber' => $data['kd_unit'],
                 'jenis_spp' => $data['beban'],
-                'rekening_awal' => $data['rekening_bendahara'],
+                'rekening_awal' => $data['rekening_awal'],
                 'nm_rekening_tujuan' => $data['nama_tujuan'],
                 'rekening_tujuan' => $data['rekening_tujuan'],
                 'bank_tujuan' => $data['bank_tujuan'],
-                'ket_tujuan' => $data['ketcms'],
+                'ket_tujuan' => $data['nama_beban'],
                 'status_validasi' => '0',
                 'status_upload' => '0',
             ]);
@@ -83,7 +82,7 @@ class PelimpahanController extends Controller
             DB::commit();
             return response()->json([
                 'message' => '1',
-                'no_kas' => $no_urut
+                'nomor' => $no_urut
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -93,58 +92,51 @@ class PelimpahanController extends Controller
         }
     }
 
-    public function editUp($no_kas)
+    public function edit($no_kas)
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $skpd = substr($kd_skpd, 0, 17);
         $no_kas = Crypt::decryptString($no_kas);
-        $data_up = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd, 'no_kas' => $no_kas])->first();
 
         $data = [
-            'data_up' => $data_up,
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))->where(['kd_skpd' => $data_up->kd_skpd])->first(),
-            'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
+            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17)", [$kd_skpd])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
             'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
-            'sisa_bank' => sisa_bank()
+            'kd_skpd' => $kd_skpd,
+            'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank)"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'bank_tujuan' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'sisa_bank' => sisa_bank(),
+            'setor' => DB::table('tr_setorpelimpahan_bank_cms')->where(['no_kas' => $no_kas, 'kd_skpd_sumber' => $kd_skpd])->first()
         ];
 
-        return view('skpd.pelimpahan_up.edit')->with($data);
+        return view('skpd.list_setor_cms.edit')->with($data);
     }
 
-    public function updateUp(Request $request)
+    public function update(Request $request)
     {
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
 
         DB::beginTransaction();
         try {
-            DB::table('tr_setorpelimpahan_bank_cms')->where(['no_kas' => $data['no_kas'], 'kd_skpd_sumber' => $kd_skpd])->delete();
+            // Simpan Setor CMS
 
-            DB::table('tr_setorpelimpahan_bank_cms')->insert([
-                'no_kas' => $data['no_kas'],
+            DB::table('tr_setorpelimpahan_bank_cms')->where(['no_kas' => $data['no_kas'], 'kd_skpd' => $data['kd_skpd'], 'kd_skpd_sumber' => $kd_skpd])->update([
                 'tgl_kas' => $data['tgl_kas'],
-                'no_bukti' => $data['no_kas'],
                 'tgl_bukti' => $data['tgl_kas'],
-                'kd_skpd' => $data['kd_skpd'],
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
-                'kd_skpd_sumber' => $data['skpd_sumber'],
                 'jenis_spp' => $data['beban'],
-                'rekening_awal' => $data['rekening_bendahara'],
+                'rekening_awal' => $data['rekening_awal'],
                 'nm_rekening_tujuan' => $data['nama_tujuan'],
                 'rekening_tujuan' => $data['rekening_tujuan'],
                 'bank_tujuan' => $data['bank_tujuan'],
-                'ket_tujuan' => $data['ketcms'],
-                'status_validasi' => '0',
-                'status_upload' => '0',
+                'ket_tujuan' => $data['nama_beban'],
             ]);
 
             DB::commit();
             return response()->json([
                 'message' => '1',
-                'no_kas' => $data['no_kas']
+                'nomor' => $data['no_kas']
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -154,7 +146,7 @@ class PelimpahanController extends Controller
         }
     }
 
-    public function hapusUp(Request $request)
+    public function hapus(Request $request)
     {
         $no_kas = $request->no_kas;
         $kd_skpd = $request->kd_skpd;
@@ -174,194 +166,19 @@ class PelimpahanController extends Controller
             ]);
         }
     }
-    // Pelimpahan UP Sampai hapusUp
+    // LIST SETOR CMS (AKHIR)
 
-    // PELIMPAHAN GU DARI indexGu
-    public function indexGu()
+    // UPLOAD SETOR CMS (AWAL)
+    public function indexUpload()
     {
-        return view('skpd.pelimpahan_gu.index');
+        return view('skpd.upload_setor_cms.index');
     }
 
-    public function loadDataGu()
+    public function loadDataUpload()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("CAST(no_kas as INT)"))->orderBy('kd_skpd')->get();
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->status_upload != '1') {
-                $btn = '<a href="' . route("skpd.pelimpahan.edit_gu", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="hapusPelimpahan(' . $row->no_kas . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
-            } else {
-                $btn = '';
-            }
-            return $btn;
-        })->rawColumns(['aksi'])->make(true);
-        return view('skpd.pelimpahan_gu.index');
-    }
-
-    public function tambahGu()
-    {
-        $kd_skpd = Auth::user()->kd_skpd;
-        $skpd = substr($kd_skpd, 0, 17);
-
-        $data = [
-            'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
-            'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
-            'sisa_bank' => sisa_bank()
-        ];
-
-        return view('skpd.pelimpahan_gu.create')->with($data);
-    }
-
-    public function noLpj(Request $request)
-    {
-        $kd_skpd = $request->kd_skpd;
-
-        $data = DB::table('trhlpj_unit')->select('no_lpj', 'kd_skpd')->selectRaw("(SELECT sum(nilai) from trlpj_unit where no_lpj=trhlpj_unit.no_lpj and kd_skpd=?) as nilai", [$kd_skpd])->where(['kd_skpd' => $kd_skpd])->whereRaw("no_lpj not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")->get();
-        return response()->json($data);
-    }
-
-    public function simpanGu(Request $request)
-    {
-        $data = $request->data;
-        $kd_skpd = Auth::user()->kd_skpd;
-
-        DB::beginTransaction();
-        try {
-            $no_urut = no_urut($kd_skpd);
-
-            // SETOR PELIMPAHAN UP
-
-            DB::table('tr_setorpelimpahan_bank_cms')->insert([
-                'no_kas' => $no_urut,
-                'tgl_kas' => $data['tgl_kas'],
-                'no_bukti' => $no_urut,
-                'tgl_bukti' => $data['tgl_kas'],
-                'kd_skpd' => $data['kd_skpd'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'kd_skpd_sumber' => $data['skpd_sumber'],
-                'jenis_spp' => $data['beban'],
-                'rekening_awal' => $data['rekening_bendahara'],
-                'nm_rekening_tujuan' => $data['nama_tujuan'],
-                'rekening_tujuan' => $data['rekening_tujuan'],
-                'bank_tujuan' => $data['bank_tujuan'],
-                'ket_tujuan' => $data['ketcms'],
-                'status_validasi' => '0',
-                'status_upload' => '0',
-                'lpj_unit' => $data['no_lpj'],
-            ]);
-
-            DB::commit();
-            return response()->json([
-                'message' => '1',
-                'no_kas' => $no_urut
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => '0'
-            ]);
-        }
-    }
-
-    public function editGu($no_kas)
-    {
-        $kd_skpd = Auth::user()->kd_skpd;
-        $no_kas = Crypt::decryptString($no_kas);
-        $data_up = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd, 'no_kas' => $no_kas])->first();
-
-        $data = [
-            'data_up' => $data_up,
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))->where(['kd_skpd' => $data_up->kd_skpd])->first(),
-            'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
-            'sisa_bank' => sisa_bank()
-        ];
-
-        return view('skpd.pelimpahan_gu.edit')->with($data);
-    }
-
-    public function updateGu(Request $request)
-    {
-        $data = $request->data;
-        $kd_skpd = Auth::user()->kd_skpd;
-
-        DB::beginTransaction();
-        try {
-            // DELETE PELIMPAHAN GU
-            DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $data['no_kas']])->delete();
-            // SETOR PELIMPAHAN GU
-            DB::table('tr_setorpelimpahan_bank_cms')->insert([
-                'no_kas' => $data['no_kas'],
-                'tgl_kas' => $data['tgl_kas'],
-                'no_bukti' => $data['no_kas'],
-                'tgl_bukti' => $data['tgl_kas'],
-                'kd_skpd' => $data['kd_skpd'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'kd_skpd_sumber' => $data['skpd_sumber'],
-                'jenis_spp' => $data['beban'],
-                'rekening_awal' => $data['rekening_bendahara'],
-                'nm_rekening_tujuan' => $data['nama_tujuan'],
-                'rekening_tujuan' => $data['rekening_tujuan'],
-                'bank_tujuan' => $data['bank_tujuan'],
-                'ket_tujuan' => $data['ketcms'],
-                'status_validasi' => '0',
-                'status_upload' => '0',
-                'lpj_unit' => $data['no_lpj'],
-            ]);
-
-            DB::commit();
-            return response()->json([
-                'message' => '1',
-                'no_kas' => $data['no_kas']
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => '0'
-            ]);
-        }
-    }
-
-    public function hapusGu(Request $request)
-    {
-        $no_kas = $request->no_kas;
-        $kd_skpd = $request->kd_skpd;
-
-        DB::beginTransaction();
-        try {
-            DB::table('tr_setorpelimpahan_bank_cms')->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
-
-            DB::commit();
-            return response()->json([
-                'message' => '1'
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => '0'
-            ]);
-        }
-    }
-    // Pelimpahan GU Sampai hapusGu
-
-    // Upload UP/GU
-    public function upload()
-    {
-        return view('skpd.upload_pelimpahan.index');
-    }
-
-    public function loadUpload()
-    {
-        $kd_skpd = Auth::user()->kd_skpd;
-
-        $data = DB::table('tr_setorpelimpahan_bank_cms as a')->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '0'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get();
-        return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.upload_pelimpahan.index');
+        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd, 'status_upload' => '0'])->orderBy(DB::raw("cast(no_bukti as int)"))->orderBy('kd_skpd')->get();
+        return DataTables::of($data)->addIndexColumn()->make(true);
     }
 
     public function draftUpload()
@@ -387,7 +204,6 @@ class PelimpahanController extends Controller
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
-        return view('skpd.upload_pelimpahan.index');
     }
 
     public function dataUpload(Request $request)
@@ -405,67 +221,23 @@ class PelimpahanController extends Controller
             $join->on('a.no_upload', '=', 'b.no_upload');
         })->whereRaw($init_skpd, $kd_skpd)->where('a.no_upload', $no_upload)->orderBy(DB::raw("CAST(a.no_upload as int)"))->orderBy('a.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.upload_pelimpahan.index');
     }
 
-    public function rekeningTransaksi(Request $request)
-    {
-        $no_voucher = $request->nomor;
-        $kd_skpd = $request->kd_skpd;
-
-        $data = DB::table('trhtransout_cmsbank as a')->join('trdtransout_cmsbank as b', function ($join) {
-            $join->on('a.no_voucher', '=', 'b.no_voucher');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['a.no_voucher' => $no_voucher, 'a.kd_skpd' => $kd_skpd])->orderBy('b.kd_sub_kegiatan')->orderBy('b.kd_rek6')->select('b.*', DB::raw("'0' as lalu"), DB::raw("'0' as sp2d"), DB::raw("'0' as anggaran"))->get();
-
-        return DataTables::of($data)->addIndexColumn()->make(true);;
-        return view('skpd.upload_cms.index');
-    }
-
-    public function rekeningPotongan(Request $request)
-    {
-        $no_voucher = $request->nomor;
-        $kd_skpd = $request->kd_skpd;
-
-        $data = DB::table('trdtrmpot_cmsbank as a')->join('trhtrmpot_cmsbank as b', function ($join) {
-            $join->on('a.no_bukti', '=', 'b.no_bukti');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['b.no_voucher' => $no_voucher, 'b.kd_skpd' => $kd_skpd])->select('a.*')->get();
-
-        return DataTables::of($data)->addIndexColumn()->make(true);;
-        return view('skpd.upload_cms.index');
-    }
-
-    public function rekeningTujuan(Request $request)
-    {
-        $no_voucher = $request->nomor;
-        $kd_skpd = $request->kd_skpd;
-
-        $data = DB::table('trhtransout_cmsbank as a')->join('trdtransout_transfercms as b', function ($join) {
-            $join->on('a.no_voucher', '=', 'b.no_voucher');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['b.no_voucher' => $no_voucher, 'b.kd_skpd' => $kd_skpd])->groupBy('b.no_voucher', 'b.tgl_voucher', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.kd_skpd', 'b.nilai')->select('b.no_voucher', 'b.tgl_voucher', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.kd_skpd', 'b.nilai', DB::raw("(SELECT SUM(nilai) FROM trdtransout_transfercms WHERE no_voucher=b.no_voucher AND kd_skpd=b.kd_skpd) as total"))->get();
-
-        return DataTables::of($data)->addIndexColumn()->make(true);;
-        return view('skpd.upload_cms.index');
-    }
-
-    public function tambahUpload()
+    public function createUpload()
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'daftar_pelimpahan' => DB::table('tr_setorpelimpahan_bank_cms as a')->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '0'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get()
+            'daftar_upload' => DB::table('tr_setorpelimpahan_bank_cms as a')->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '0'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get()
         ];
 
-        return view('skpd.upload_pelimpahan.create')->with($data);
+        return view('skpd.upload_setor_cms.create')->with($data);
     }
 
-    public function prosesUpload(Request $request)
+    public function simpanUpload(Request $request)
     {
-        $total_pelimpahan = $request->total_pelimpahan;
+        $total_upload = $request->total_upload;
         $rincian_data = $request->rincian_data;
-        $tanggal = date("Y-m-d");
         $kd_skpd = Auth::user()->kd_skpd;
         $username = Auth::user()->nama;
 
@@ -483,19 +255,19 @@ class PelimpahanController extends Controller
                 ->first();
 
             // Nomor Upload Hari
-            $no_upload1 = DB::table('trhupload_cmsbank')->select('no_upload_tgl as nomor', 'tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
+            $no_upload1 = DB::table('trhupload_cmsbank')->select('no_upload_tgl as nomor', 'tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd, 'tgl_upload' => date("Y-m-d")]);
             $no_upload2 = DB::table('trdupload_cmsbank_bidang as a')->leftJoin('trhupload_cmsbank_bidang as b', function ($join) {
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Setor Dropping Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload1);
+            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Setor Dropping Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => date("Y-m-d")])->unionAll($no_upload1);
             $no_upload3 = DB::table('trdupload_cmsbank_panjar as a')->leftJoin('trhupload_cmsbank_panjar as b', function ($join) {
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload2);
+            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => date("Y-m-d")])->unionAll($no_upload2);
             $no_upload4 = DB::table('trdupload_sts_cmsbank as a')->leftJoin('trhupload_sts_cmsbank as b', function ($join) {
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload3);
+            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => date("Y-m-d")])->unionAll($no_upload3);
             $no_upload = DB::table(DB::raw("({$no_upload4->toSql()}) AS sub"))
                 ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
                 ->mergeBindings($no_upload4)
@@ -536,7 +308,7 @@ class PelimpahanController extends Controller
                 'no_upload' => $nomor->nomor,
                 'tgl_upload' => date('Y-m-d'),
                 'kd_skpd' => $kd_skpd,
-                'total' => $total_pelimpahan,
+                'total' => $total_upload,
                 'no_upload_tgl' => $no_upload5,
                 'username' => $username,
             ]);
@@ -556,7 +328,8 @@ class PelimpahanController extends Controller
 
             DB::commit();
             return response()->json([
-                'message' => '1'
+                'message' => '1',
+                'no_upload' => $nomor->nomor
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -566,7 +339,7 @@ class PelimpahanController extends Controller
         }
     }
 
-    public function batalUpload(Request $request)
+    public function hapusUpload(Request $request)
     {
         $no_upload = $request->no_upload;
         $tgl_upload = $request->tgl_upload;
@@ -639,18 +412,19 @@ class PelimpahanController extends Controller
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachement; filename="' . $filename . '.csv"');
     }
+    // UPLOAD SETOR CMS (AKHIR)
 
-    // VALIDASI UP/GU
-    public function validasi()
+    // VALIDASI SETOR CMS (AWAL)
+    public function indexValidasi()
     {
         $data = [
             'sisa_bank' => sisa_bank()
         ];
 
-        return view('skpd.validasi_pelimpahan.index')->with($data);
+        return view('skpd.validasi_setor_cms.index')->with($data);
     }
 
-    public function loadValidasi(Request $request)
+    public function loadDataValidasi(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('tr_setorpelimpahan_bank_cms as a')->leftJoin('trdupload_cmsbank_bidang as b', function ($join) {
@@ -658,10 +432,9 @@ class PelimpahanController extends Controller
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->select('a.*', 'b.no_upload')->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '1', 'a.status_validasi' => '0'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.validasi_pelimpahan.index');
     }
 
-    public function tambahValidasi()
+    public function createValidasi()
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
@@ -672,10 +445,10 @@ class PelimpahanController extends Controller
             'sisa_bank' => sisa_bank()
         ];
 
-        return view('skpd.validasi_pelimpahan.create')->with($data);
+        return view('skpd.validasi_setor_cms.create')->with($data);
     }
 
-    public function prosesValidasi(Request $request)
+    public function simpanValidasi(Request $request)
     {
         $rincian_data = $request->rincian_data;
         $tanggal_validasi = $request->tanggal_validasi;
@@ -757,10 +530,9 @@ class PelimpahanController extends Controller
             $join->on('a.kd_skpd', '=', 'c.kd_skpd');
         })->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_validasi' => '1'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
-        // return view('skpd.pelimpahan.validasi');
     }
 
-    public function batalValidasi(Request $request)
+    public function hapusValidasi(Request $request)
     {
         $no_kas = $request->no_kas;
         $no_bukti = $request->no_bukti;
@@ -794,4 +566,161 @@ class PelimpahanController extends Controller
             ]);
         }
     }
+    // VALIDASI SETOR CMS (AKHIR)
+
+    // List Setor Tunai Ke Bank (AWAL)
+    public function indexTunai()
+    {
+        return view('skpd.setor_tunai.index');
+    }
+
+    public function loadDataTunai()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('tr_setorpelimpahan_tunai')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("cast(no_kas as int)"))->orderBy('kd_skpd')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("skpd.setor_tunai.edit", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+            if ($row->status_validasi != '1' || $row->status_upload != '1') {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusSetor(' . $row->no_kas . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function createTunai()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17) AND right(kd_skpd,2)=?", [$kd_skpd, '00'])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'kd_skpd' => $kd_skpd,
+            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'sisa_tunai' => load_sisa_tunai(),
+        ];
+
+        return view('skpd.setor_tunai.create')->with($data);
+    }
+
+    public function bank(Request $reques)
+    {
+        $data = DB::table('ms_bank')->select('kode', 'nama')->get();
+        return response()->json($data);
+    }
+
+    public function simpanTunai(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_urut = no_urut($kd_skpd);
+
+            // Simpan Setor Tunai Ke Bank
+
+            DB::table('tr_setorpelimpahan_tunai')->insert([
+                'no_kas' => $no_urut,
+                'tgl_kas' => $data['tgl_kas'],
+                'no_bukti' => $no_urut,
+                'tgl_bukti' => $data['tgl_kas'],
+                'kd_skpd' => $data['kd_skpd'],
+                'nilai' => $data['nilai'],
+                'keterangan' => $data['keterangan'],
+                'kd_skpd_sumber' => $data['kd_unit'],
+                'jenis_spp' => $data['beban'],
+                'nm_rekening_tujuan' => $data['nama_tujuan'],
+                'rekening_tujuan' => $data['rekening_tujuan'],
+                'bank_tujuan' => $data['bank_tujuan'],
+                'ket_tujuan' => $data['nama_beban'],
+                'status_validasi' => '0',
+                'status_upload' => '0',
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editTunai($no_kas)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_kas = Crypt::decryptString($no_kas);
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17) AND right(kd_skpd,2)=?", [$kd_skpd, '00'])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'kd_skpd' => $kd_skpd,
+            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'sisa_tunai' => load_sisa_tunai(),
+            'setor' => DB::table('tr_setorpelimpahan_tunai')->where(['no_kas' => $no_kas, 'kd_skpd_sumber' => $kd_skpd])->first()
+        ];
+
+        return view('skpd.setor_tunai.edit')->with($data);
+    }
+
+    public function updateTunai(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            // Setor Tunai
+
+            DB::table('tr_setorpelimpahan_tunai')->where(['no_kas' => $data['no_kas'], 'kd_skpd' => $data['kd_skpd'], 'kd_skpd_sumber' => $kd_skpd])->update([
+                'tgl_kas' => $data['tgl_kas'],
+                'tgl_bukti' => $data['tgl_kas'],
+                'nilai' => $data['nilai'],
+                'keterangan' => $data['keterangan'],
+                'jenis_spp' => $data['beban'],
+                'nm_rekening_tujuan' => $data['nama_tujuan'],
+                'rekening_tujuan' => $data['rekening_tujuan'],
+                'bank_tujuan' => $data['bank_tujuan'],
+                'ket_tujuan' => $data['nama_beban'],
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusTunai(Request $request)
+    {
+        $no_kas = $request->no_kas;
+        $kd_skpd = $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('tr_setorpelimpahan_tunai')->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+    // List Setor Tunai Ke Bank (AKHIR)
 }

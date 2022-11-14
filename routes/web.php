@@ -37,6 +37,14 @@ use App\Http\Controllers\Skpd\BpKasBankController;
 use App\Http\Controllers\Skpd\BpKasTunaiController;
 use App\Http\Controllers\Skpd\PelimpahanKegiatanController;
 use App\Http\Controllers\Skpd\BpPajakController;
+use App\Http\Controllers\Skpd\PenerimaanLainController;
+use App\Http\Controllers\Skpd\PengeluaranLainController;
+use App\Http\Controllers\Skpd\SetorKasController;
+use App\Http\Controllers\Skpd\SetorSisaController;
+use App\Http\Controllers\Skpd\UyhdController;
+use App\Http\Controllers\Skpd\UyhdPajakController;
+
+
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -388,8 +396,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('tambah_upload', [PelimpahanController::class, 'tambahUpload'])->name('skpd.pelimpahan.tambah_upload');
             Route::post('proses_upload', [PelimpahanController::class, 'prosesUpload'])->name('skpd.pelimpahan.proses_upload');
             Route::post('batal_upload', [PelimpahanController::class, 'batalUpload'])->name('skpd.pelimpahan.batal_upload');
-            Route::get('cetak_csv_kalbar', [PelimpahanController::class, 'cetakCsvKalbar'])->name('skpd.pelimpahan.cetak_csv_kalbar');
-            Route::get('cetak_csv_luar_kalbar', [PelimpahanController::class, 'cetakCsvLuarKalbar'])->name('skpd.pelimpahan.cetak_csv_luar_kalbar');
+            Route::get('cetak_csv', [PelimpahanController::class, 'cetakCsv'])->name('skpd.pelimpahan.cetak_csv');
             Route::post('rekening_transaksi', [PelimpahanController::class, 'rekeningTransaksi'])->name('skpd.pelimpahan.rekening_transaksi');
             Route::post('rekening_potongan', [PelimpahanController::class, 'rekeningPotongan'])->name('skpd.pelimpahan.rekening_potongan');
             Route::post('rekening_tujuan', [PelimpahanController::class, 'rekeningTujuan'])->name('skpd.pelimpahan.rekening_tujuan');
@@ -444,96 +451,100 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         Route::group(['prefix' => 'transaksi_kas'], function () {
             // Setor Sisa Kas/CP
             Route::group(['prefix' => 'setor_sisa'], function () {
-                Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::get('index', [SetorSisaController::class, 'index'])->name('skpd.setor_sisa.index');
+                Route::post('load_data', [SetorSisaController::class, 'loadData'])->name('skpd.setor_sisa.load_data');
+                Route::post('no_sp2d', [SetorSisaController::class, 'noSp2d'])->name('skpd.setor_sisa.no_sp2d');
+                Route::post('kegiatan', [SetorSisaController::class, 'kegiatan'])->name('skpd.setor_sisa.kegiatan');
+                Route::post('rekening', [SetorSisaController::class, 'rekening'])->name('skpd.setor_sisa.rekening');
+                Route::get('create', [SetorSisaController::class, 'create'])->name('skpd.setor_sisa.create');
+                Route::post('simpan', [SetorSisaController::class, 'simpan'])->name('skpd.setor_sisa.simpan');
+                Route::get('edit/{no_sts?}', [SetorSisaController::class, 'edit'])->where('no_sts', '(.*)')->name('skpd.setor_sisa.edit');
+                Route::post('update', [SetorSisaController::class, 'update'])->name('skpd.setor_sisa.update');
+                Route::post('hapus', [SetorSisaController::class, 'hapus'])->name('skpd.setor_sisa.hapus');
             });
             // Penerimaan Lain-Lain Pengurang Belanja
             Route::group(['prefix' => 'penerimaan_lain'], function () {
-                Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::get('index', [PenerimaanLainController::class, 'index'])->name('skpd.penerimaan_lain.index');
+                Route::post('load_data', [PenerimaanLainController::class, 'loadData'])->name('skpd.penerimaan_lain.load_data');
+                Route::get('create', [PenerimaanLainController::class, 'create'])->name('skpd.penerimaan_lain.create');
+                Route::post('simpan', [PenerimaanLainController::class, 'simpan'])->name('skpd.penerimaan_lain.simpan');
+                Route::get('edit/{id_user?}/{kd_bpp}', [PenerimaanLainController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.penerimaan_lain.edit');
+                Route::post('update', [PenerimaanLainController::class, 'update'])->name('skpd.penerimaan_lain.update');
+                Route::post('hapus', [PenerimaanLainController::class, 'hapus'])->name('skpd.penerimaan_lain.hapus');
             });
             // Pengeluaran Lain-Lain
             Route::group(['prefix' => 'pengeluaran_lain'], function () {
-                Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::get('index', [PengeluaranLainController::class, 'index'])->name('skpd.pengeluaran_lain.index');
+                Route::post('load_data', [PengeluaranLainController::class, 'loadData'])->name('skpd.pengeluaran_lain.load_data');
+                Route::get('create', [PengeluaranLainController::class, 'create'])->name('skpd.pengeluaran_lain.create');
+                Route::post('simpan', [PengeluaranLainController::class, 'simpan'])->name('skpd.pengeluaran_lain.simpan');
+                Route::get('edit/{no_bukti?}', [PengeluaranLainController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.pengeluaran_lain.edit');
+                Route::post('update', [PengeluaranLainController::class, 'update'])->name('skpd.pengeluaran_lain.update');
+                Route::post('hapus', [PengeluaranLainController::class, 'hapus'])->name('skpd.pengeluaran_lain.hapus');
             });
             // Setor Kas Unit Ke SKPD
             Route::group(['prefix' => 'setor_kas'], function () {
                 // List Setor (CMS)
                 Route::group(['prefix' => 'setor'], function () {
-                    Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                    Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                    Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                    Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                    Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                    Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                    Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                    Route::get('index', [SetorKasController::class, 'index'])->name('skpd.setor.index');
+                    Route::post('load_data', [SetorKasController::class, 'loadData'])->name('skpd.setor.load_data');
+                    Route::get('create', [SetorKasController::class, 'create'])->name('skpd.setor.create');
+                    Route::post('simpan', [SetorKasController::class, 'simpan'])->name('skpd.setor.simpan');
+                    Route::get('edit/{no_kas?}', [SetorKasController::class, 'edit'])->where('no_kas', '(.*)')->name('skpd.setor.edit');
+                    Route::post('update', [SetorKasController::class, 'update'])->name('skpd.setor.update');
+                    Route::post('hapus', [SetorKasController::class, 'hapus'])->name('skpd.setor.hapus');
                 });
                 // List Upload Setor (CMS)
                 Route::group(['prefix' => 'upload_setor'], function () {
-                    Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                    Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                    Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                    Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                    Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                    Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                    Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                    Route::get('index', [SetorKasController::class, 'indexUpload'])->name('skpd.upload_setor.index');
+                    Route::post('load_data', [SetorKasController::class, 'loadDataUpload'])->name('skpd.upload_setor.load_data');
+                    Route::post('draft_upload', [SetorKasController::class, 'draftUpload'])->name('skpd.upload_setor.draft_upload');
+                    Route::post('data_upload', [SetorKasController::class, 'dataUpload'])->name('skpd.upload_setor.data_upload');
+                    Route::get('create', [SetorKasController::class, 'createUpload'])->name('skpd.upload_setor.create');
+                    Route::post('simpan', [SetorKasController::class, 'simpanUpload'])->name('skpd.upload_setor.simpan');
+                    Route::post('hapus', [SetorKasController::class, 'hapusUpload'])->name('skpd.upload_setor.hapus');
+                    Route::get('cetak_csv', [SetorKasController::class, 'cetakCsv'])->name('skpd.upload_setor.cetak_csv');
                 });
                 // List Validasi Setor (CMS)
                 Route::group(['prefix' => 'validasi_setor'], function () {
-                    Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                    Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                    Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                    Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                    Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                    Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                    Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                    Route::get('index', [SetorKasController::class, 'indexValidasi'])->name('skpd.validasi_setor.index');
+                    Route::post('load_data', [SetorKasController::class, 'loadDataValidasi'])->name('skpd.validasi_setor.load_data');
+                    Route::get('create', [SetorKasController::class, 'createValidasi'])->name('skpd.validasi_setor.create');
+                    Route::post('simpan', [SetorKasController::class, 'simpanValidasi'])->name('skpd.validasi_setor.simpan');
+                    Route::post('draft_validasi', [SetorKasController::class, 'draftValidasi'])->name('skpd.validasi_setor.draft_validasi');
+                    Route::post('hapus', [SetorKasController::class, 'hapusValidasi'])->name('skpd.validasi_setor.hapus');
                 });
                 // List Setor (Tunai Ke Bank)
-                Route::group(['prefix' => 'list_setor'], function () {
-                    Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                    Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                    Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                    Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                    Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                    Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                    Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::group(['prefix' => 'setor_tunai'], function () {
+                    Route::get('index', [SetorKasController::class, 'indexTunai'])->name('skpd.setor_tunai.index');
+                    Route::post('load_data', [SetorKasController::class, 'loadDataTunai'])->name('skpd.setor_tunai.load_data');
+                    Route::get('create', [SetorKasController::class, 'createTunai'])->name('skpd.setor_tunai.create');
+                    Route::post('simpan', [SetorKasController::class, 'simpanTunai'])->name('skpd.setor_tunai.simpan');
+                    Route::post('bank', [SetorKasController::class, 'bank'])->name('skpd.setor_tunai.bank');
+                    Route::get('edit/{no_kas?}', [SetorKasController::class, 'editTunai'])->where('no_kas', '(.*)')->name('skpd.setor_tunai.edit');
+                    Route::post('update', [SetorKasController::class, 'updateTunai'])->name('skpd.setor_tunai.update');
+                    Route::post('hapus', [SetorKasController::class, 'hapusTunai'])->name('skpd.setor_tunai.hapus');
                 });
             });
             // UYHD
             Route::group(['prefix' => 'uyhd'], function () {
-                Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::get('index', [UyhdController::class, 'index'])->name('skpd.uyhd.index');
+                Route::post('load_data', [UyhdController::class, 'loadData'])->name('skpd.uyhd.load_data');
+                Route::get('create', [UyhdController::class, 'create'])->name('skpd.uyhd.create');
+                Route::post('simpan', [UyhdController::class, 'simpan'])->name('skpd.uyhd.simpan');
+                Route::get('edit/{no_bukti?}', [UyhdController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.uyhd.edit');
+                Route::post('update', [UyhdController::class, 'update'])->name('skpd.uyhd.update');
+                Route::post('hapus', [UyhdController::class, 'hapus'])->name('skpd.uyhd.hapus');
             });
             // UYHD Pajak
             Route::group(['prefix' => 'uyhd_pajak'], function () {
-                Route::get('index', [PelimpahanKegiatanController::class, 'index'])->name('skpd.pelimpahan_kegiatan.index');
-                Route::post('load_data', [PelimpahanKegiatanController::class, 'loadData'])->name('skpd.pelimpahan_kegiatan.load_data');
-                Route::get('create', [PelimpahanKegiatanController::class, 'create'])->name('skpd.pelimpahan_kegiatan.create');
-                Route::post('simpan', [PelimpahanKegiatanController::class, 'simpan'])->name('skpd.pelimpahan_kegiatan.simpan');
-                Route::get('edit/{id_user?}/{kd_bpp}', [PelimpahanKegiatanController::class, 'edit'])->where('id_user', '(.*)')->where('kd_bpp', '(.*)')->name('skpd.pelimpahan_kegiatan.edit');
-                Route::post('update', [PelimpahanKegiatanController::class, 'update'])->name('skpd.pelimpahan_kegiatan.update');
-                Route::post('hapus', [PelimpahanKegiatanController::class, 'hapus'])->name('skpd.pelimpahan_kegiatan.hapus');
+                Route::get('index', [UyhdPajakController::class, 'index'])->name('skpd.uyhd_pajak.index');
+                Route::post('load_data', [UyhdPajakController::class, 'loadData'])->name('skpd.uyhd_pajak.load_data');
+                Route::get('create', [UyhdPajakController::class, 'create'])->name('skpd.uyhd_pajak.create');
+                Route::post('simpan', [UyhdPajakController::class, 'simpan'])->name('skpd.uyhd_pajak.simpan');
+                Route::get('edit/{no_bukti?}', [UyhdPajakController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.uyhd_pajak.edit');
+                Route::post('update', [UyhdPajakController::class, 'update'])->name('skpd.uyhd_pajak.update');
+                Route::post('hapus', [UyhdPajakController::class, 'hapus'])->name('skpd.uyhd_pajak.hapus');
             });
         });
         // Laporan Bendahara
@@ -558,7 +569,6 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_bp_pajak5', [BpPajakController::class, 'cetakBpPajak5'])->name('skpd.laporan_bendahara.cetak_bp_pajak5');
             Route::post('cari_jenis', [BpPajakController::class, 'cariJenis'])->name('cetak_bppajak.cari_jenis');
             Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
-            
         });
     });
 });
