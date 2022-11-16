@@ -43,7 +43,7 @@ use App\Http\Controllers\Skpd\SetorKasController;
 use App\Http\Controllers\Skpd\SetorSisaController;
 use App\Http\Controllers\Skpd\UyhdController;
 use App\Http\Controllers\Skpd\UyhdPajakController;
-
+use App\Http\Controllers\Skpd\Anggaran\RakController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -79,6 +79,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         // Penagihan
         Route::group(['prefix' => 'penagihan'], function () {
             Route::get('', [PenagihanController::class, 'index'])->name('penagihan.index');
+            Route::post('load_data', [PenagihanController::class, 'loadData'])->name('penagihan.load_data');
             Route::get('create', [PenagihanController::class, 'create'])->name('penagihan.create');
             Route::get('show/{no_bukti?}', [PenagihanController::class, 'show'])->where('no_bukti', '(.*)')->name('penagihan.show');
             Route::get('edit/{no_bukti?}', [PenagihanController::class, 'edit'])->where('no_bukti', '(.*)')->name('penagihan.edit');
@@ -108,6 +109,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         // SPP LS
         Route::group(['prefix' => 'spp_ls'], function () {
             Route::get('', [SppLsController::class, 'index'])->name('sppls.index');
+            Route::post('load_data', [SppLsController::class, 'loadData'])->name('sppls.load_data');
             Route::get('create', [SppLsController::class, 'create'])->name('sppls.create');
             Route::post('cari_jenis', [SppLsController::class, 'cariJenis'])->name('sppls.cari_jenis');
             Route::post('cari_nomor_spd', [SppLsController::class, 'cariNomorSpd'])->name('sppls.cari_nomor_spd');
@@ -547,6 +549,39 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
                 Route::post('hapus', [UyhdPajakController::class, 'hapus'])->name('skpd.uyhd_pajak.hapus');
             });
         });
+        // Anggaran (RAK)
+        Route::group(['prefix' => 'anggaran'], function () {
+            // Input RAK
+            Route::group(['prefix' => 'input_rak'], function () {
+                Route::get('index', [RakController::class, 'index'])->name('skpd.input_rak.index');
+                Route::post('load_data', [RakController::class, 'loadData'])->name('skpd.input_rak.load_data');
+                Route::post('jenis_anggaran', [RakController::class, 'jenisAnggaran'])->name('skpd.input_rak.jenis_anggaran');
+                Route::post('jenis_rak', [RakController::class, 'jenisRak'])->name('skpd.input_rak.jenis_rak');
+                Route::post('sub_kegiatan', [RakController::class, 'subKegiatan'])->name('skpd.input_rak.sub_kegiatan');
+                Route::post('rekening_rak', [RakController::class, 'rekeningRak'])->name('skpd.input_rak.rekening_rak');
+                Route::post('nilai_triwulan', [RakController::class, 'nilaiTriwulan'])->name('skpd.input_rak.nilai_triwulan');
+                Route::post('nilai_realisasi', [RakController::class, 'nilaiRealisasi'])->name('skpd.input_rak.nilai_realisasi');
+                Route::post('nilai_realisasi_bulan', [RakController::class, 'nilaiRealisasiBulan'])->name('skpd.input_rak.nilai_realisasi_bulan');
+                Route::post('status_kunci', [RakController::class, 'statusKunci'])->name('skpd.input_rak.status_kunci');
+                Route::post('simpan_rak', [RakController::class, 'simpanRak'])->name('skpd.input_rak.simpan_rak');
+            });
+            // Cetak RAK
+            Route::group(['prefix' => 'cetak_rak'], function () {
+                Route::group(['prefix' => 'per_sub_kegiatan'], function () {
+                    Route::get('cetak_anggaran_per_sub_kegiatan', [RakController::class, 'cetakPerSubKegiatanIndex'])->name('skpd.cetak_rak.per_sub_kegiatan');
+                    Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerKegiatan'])->name('skpd.cetak_rak.cetak');
+                });
+                Route::group(['prefix' => 'per_sub_rincian_objek'], function () {
+                    Route::get('cetak_anggaran_per_sub_rincian_objek', [RakController::class, 'rincianObjekIndex'])->name('skpd.cetak_rak.per_sub_rincian_objek');
+                    Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerObjek'])->name('skpd.cetak_rak.cetak_objek');
+                });
+            });
+            // CEK RAK
+            Route::group(['prefix' => 'cek_rak'], function () {
+                Route::get('cek_anggaran', [RakController::class, 'cekAnggaranIndex'])->name('skpd.cek_rak.cek_anggaran');
+                Route::get('cetakan_cek_anggaran', [RakController::class, 'cetakCekAnggaran'])->name('skpd.cek_rak.cetakan_cek_anggaran');
+            });
+        });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {
             Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
@@ -574,13 +609,18 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
 });
 
 Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('/simakda_2023/ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
+Route::post('/simakda_2023/ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
 Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
 Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
 Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login'); //->middleware(['throttle:3,1']);
 Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('403', function () {
+    return abort(401);
+})->name('403');
+
 Route::get('/{any}', function () {
-    // return view('auth.login');
     return abort(404);
 })->where('any', '.*');

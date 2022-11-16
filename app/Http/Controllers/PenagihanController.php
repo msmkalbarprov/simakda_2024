@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PenagihanController extends Controller
 {
@@ -15,6 +17,17 @@ class PenagihanController extends Controller
             'data_penagihan' => DB::table('trhtagih')->get(),
         ];
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
+    }
+
+    public function loadData()
+    {
+        $data = DB::table('trhtagih')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("penagihan.show", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
+            $btn .= '<a href="' . route("penagihan.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(' . $row->no_bukti . ', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()

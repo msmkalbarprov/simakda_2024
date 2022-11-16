@@ -8,13 +8,17 @@ use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
     public function index()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $data = [
             'daftar_pengguna' => DB::table('user')->get()
         ];
@@ -24,14 +28,15 @@ class UserController extends Controller
 
     public function create()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $data = [
             'daftar_role' => DB::table('role')->get(),
             'daftar_skpd' => DB::table('ms_skpd')->get()
         ];
 
-        $hak = cek_akses();
-
-        if ($hak == '0') abort(403);
         return view('master.user.create')->with($data);
     }
 
@@ -53,21 +58,25 @@ class UserController extends Controller
 
     public function show($id)
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $user = DB::table('user')->where('id', decrypt($id))->first();
         $data = [
             'user' => $user,
             'role' => DB::table('role')->where('id', $user->role)->first()
         ];
 
-        $hak = cek_akses();
-
-        if ($hak == '0') abort(403);
-
         return view('master.user.show')->with($data);
     }
 
     public function edit($id)
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $user = DB::table('user')->where('id', $id)->first();
         $data = [
             'user' => $user,
@@ -75,10 +84,6 @@ class UserController extends Controller
             'daftar_skpd' => DB::table('ms_skpd')->get(),
             'role' => DB::table('role')->where('id', $user->role)->first(),
         ];
-
-        $hak = cek_akses();
-
-        if ($hak == '0') abort(403);
 
         return view('master.user.edit')->with($data);
     }
@@ -100,10 +105,24 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $hak = cek_akses();
+        if (Gate::denies('akses')) {
+            return response()->json([
+                'message' => '403',
+            ]);
+        }
 
-        if ($hak == '0') abort(403);
-        DB::table('user')->where('id', $id)->delete();
-        return redirect()->route('user.index');
+        DB::beginTransaction();
+        try {
+            DB::table('user')->where('id', $id)->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 }

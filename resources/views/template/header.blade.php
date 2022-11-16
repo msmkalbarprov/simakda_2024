@@ -171,7 +171,8 @@
                     <a class="dropdown-item" href="#"><i
                             class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i> <span
                             class="align-middle">Ubah Password</span></a>
-                    <a class="dropdown-item" href="#"><i
+                    <a class="dropdown-item"
+                        href="{{ route('ubah_skpd', Crypt::encryptString(Auth::user()->id)) }}"><i
                             class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span
                             class="align-middle">Ganti SKPD</span></a>
                     <a class="dropdown-item"

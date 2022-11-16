@@ -5,13 +5,13 @@
         <!-- Left Menu Start -->
         <ul class="metismenu list-unstyled" id="side-menu">
             <li class="menu-title">Menu</li>
-
             <li>
                 <a href="{{ route('home') }}">
                     <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
                     <span>Dashboard</span>
                 </a>
             </li>
+            {{-- Kelola Akses --}}
             <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
@@ -23,6 +23,7 @@
                     <li><a href="{{ route('hak-akses.index') }}">Hak Akses</a></li>
                 </ul>
             </li>
+            {{-- Master --}}
             <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
@@ -32,6 +33,25 @@
                     <li><a href="{{ route('penerima.index') }}">Penerima</a></li>
                     <li><a href="{{ route('kontrak.index') }}">Kontrak</a></li>
                     <li><a href="{{ route('skpd.pelimpahan_kegiatan.index') }}">Pelimpahan Sub Kegiatan</a></li>
+                </ul>
+            </li>
+            {{-- Anggaran --}}
+            <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="uil-window-section"></i>
+                    <span>Anggaran</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="true">
+                    <li><a href="{{ route('skpd.input_rak.index') }}">Input RAK</a></li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">Cetak RAK</a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li><a href="{{ route('skpd.cetak_rak.per_sub_kegiatan') }}">Per Sub Kegiatan</a></li>
+                            <li><a href="{{ route('skpd.cetak_rak.per_sub_rincian_objek') }}">Per Sub Rincian Objek</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ route('skpd.cek_rak.cek_anggaran') }}">Cek RAK</a></li>
                 </ul>
             </li>
             {{-- Pengeluaran --}}

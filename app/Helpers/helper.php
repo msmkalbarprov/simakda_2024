@@ -2387,3 +2387,9 @@ function nama_skpd($kd_skpd)
     $data = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first();
     return $data->nm_skpd;
 }
+
+function anggaran_rekening_objek($kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jenis_anggaran)
+{
+    $data = DB::table('trdrka')->select(DB::raw("SUM(nilai) as anggaran"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'jns_ang' => $jenis_anggaran])->first();
+    return $data->anggaran;
+}

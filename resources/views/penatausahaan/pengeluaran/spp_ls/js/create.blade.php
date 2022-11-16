@@ -154,6 +154,22 @@
                 }
             })
 
+            // PROTEKSI LS PIHAK KETIGA LAINNYA
+            if (beban == '5') {
+                document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
+                document.getElementById('dengan_penagihan').checked = true;
+                $('#card_penagihan').show();
+            } else {
+                document.getElementById('tambah_rincian').removeAttribute("disabled");
+                document.getElementById('dengan_penagihan').checked = false;
+                $('#card_penagihan').hide();
+                $('#no_penagihan').val(null).change();
+                $('#tgl_penagihan').val(null);
+                $('#nilai_penagihan').val(null);
+                $('#total').val(null);
+                tabel.clear().draw();
+            }
+
             // cek beban dan jenis
             if (beban == '6' || beban == '5') {
                 document.getElementById('npwp').removeAttribute("disabled");
@@ -205,6 +221,27 @@
         $('#jenis').on('select2:select', function() {
             let jenis = this.value;
             let beban = document.getElementById('beban').value;
+
+            // PROTEKSI LS BARANG JASA DAN LS PIHAK KETIGA LAINNYA
+            if (beban == '6' && jenis == '6') {
+                document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
+                document.getElementById('dengan_penagihan').checked = true;
+                $('#card_penagihan').show();
+            } else if (beban == '5') {
+                document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
+                document.getElementById('dengan_penagihan').checked = true;
+                $('#card_penagihan').show();
+            } else {
+                document.getElementById('tambah_rincian').removeAttribute("disabled");
+                document.getElementById('dengan_penagihan').checked = false;
+                $('#card_penagihan').hide();
+                $('#no_penagihan').val(null).change();
+                $('#tgl_penagihan').val(null);
+                $('#nilai_penagihan').val(null);
+                $('#total').val(null);
+                tabel.clear().draw();
+            }
+
             // cek beban dan jenis
             if (beban == '6' && jenis == '6') {
                 document.getElementById('npwp').removeAttribute("disabled");

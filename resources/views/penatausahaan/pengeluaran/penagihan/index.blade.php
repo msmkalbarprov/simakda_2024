@@ -22,7 +22,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_penagihan as $data)
+                                    {{-- @foreach ($data_penagihan as $data)
                                         <tr>
                                             <td style="width: 25px">{{ $loop->iteration }}</td>
                                             <td style="width: 100px">{{ $data->no_bukti }}</td>
@@ -40,7 +40,7 @@
                                                         class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -58,7 +58,39 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#penagihan').DataTable();
+
+            $('#penagihan').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('penagihan.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    }, {
+                        data: 'no_bukti',
+                        name: 'no_bukti'
+                    },
+                    {
+                        data: 'tgl_bukti',
+                        name: 'tgl_bukti'
+                    },
+                    {
+                        data: 'nm_rekanan',
+                        name: 'nm_rekanan',
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        width: 200,
+                    },
+                ],
+            });
 
             $('#tambah_penagihan').on('click', function() {
                 $.ajax({

@@ -17,12 +17,12 @@
                                         <th style="width: 25px">No.</th>
                                         <th style="width: 150px">Nomor SPP</th>
                                         <th style="width: 100px">Tanggal</th>
-                                        <th style="width: 400px">Keterangan</th>
+                                        <th style="width: 100px">Keterangan</th>
                                         <th style="width: 200px">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_spp as $data)
+                                    {{-- @foreach ($data_spp as $data)
                                         <tr>
                                             <td style="width: 25px">{{ $loop->iteration }}</td>
                                             <td style="width: 150px">{{ $data->no_spp }}</td>
@@ -51,7 +51,7 @@
 
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -280,7 +280,44 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#spp_ls').DataTable();
+
+            $('#spp_ls').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('sppls.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    }, {
+                        data: 'no_spp',
+                        name: 'no_spp'
+                    },
+                    {
+                        data: 'tgl_spp',
+                        name: 'tgl_spp'
+                    },
+                    {
+                        data: null,
+                        name: 'keperluan',
+                        render: function(data, type, row, meta) {
+                            return data.keperluan.substr(0, 10) + '.....';
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        width: '200px',
+                        className: 'text-center'
+                    },
+                ],
+            });
+
             $('#bendahara').select2({
                 dropdownParent: $('#modal_cetak'),
                 theme: 'bootstrap-5'

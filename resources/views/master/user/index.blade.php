@@ -71,6 +71,8 @@
                         if (data.message == '1') {
                             alert('Data berhasil dihapus!');
                             window.location.reload();
+                        } else if (data.message == '403') {
+                            window.location.href = "{{ route('403') }}";
                         } else {
                             alert('Data gagal dihapus!');
                         }
