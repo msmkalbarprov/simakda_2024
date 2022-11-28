@@ -1,6 +1,9 @@
 <script>
     $(document).ready(function() {
-        $('.select2-multiple').select2();
+        $('.select2-multiple').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
         $('#kd_sub_kegiatan').select2({
             dropdownParent: $('#tambah-penagihan')
         });
@@ -829,42 +832,68 @@
         }
     });
 
+    function angka(data) {
+        let n1 = data.split('.').join('');
+        let rupiah = n1.split(',').join('.');
+        return parseFloat(rupiah) || 0;
+    }
+
+    function rupiah(n) {
+        let nilai = n.split(',').join('');
+        return parseFloat(nilai) || 0;
+    }
+
     function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
         let tabel = $('#input_penagihan').DataTable();
         let tabel1 = $('#rincian_penagihan').DataTable();
         let nilai_penagihan = parseFloat(nilai);
-        let nilai_sementara_penagihan = parseFloat(document.getElementById('total_input_penagihan').value);
-        let nilai_rincian_penagihan = parseFloat(document.getElementById('total_nilai').value);
-        $.ajax({
-            url: "{{ route('penagihan.hapus_detail_edit_penagihan') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                no_bukti: no_bukti,
-                kd_sub_kegiatan: kd_sub_kegiatan,
-                kd_rek: kd_rek,
-                sumber: sumber,
-                nilai: nilai,
-            },
-            success: function(data) {
-                console.log(data);
-                if (data.message == '1') {
-                    tabel.rows(function(idx, data, node) {
-                        return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                            data.kd_rek == kd_rek && data.no_bukti == no_bukti
-                    }).remove().draw();
-                    tabel1.rows(function(idx, data, node) {
-                        return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                            data.kd_rek == kd_rek && data.no_bukti == no_bukti
-                    }).remove().draw();
-                    $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
-                    $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
-                    alert('Data berhasil dihapus!');
-                } else {
-                    alert('Data gagal dihapus!');
-                    return;
-                }
-            }
-        })
+        let nilai_sementara_penagihan = angka(document.getElementById('total_input_penagihan').value);
+        let nilai_rincian_penagihan = angka(document.getElementById('total_nilai').value);
+        // $.ajax({
+        //     url: "{{ route('penagihan.hapus_detail_edit_penagihan') }}",
+        //     type: "POST",
+        //     dataType: 'json',
+        //     data: {
+        //         no_bukti: no_bukti,
+        //         kd_sub_kegiatan: kd_sub_kegiatan,
+        //         kd_rek: kd_rek,
+        //         sumber: sumber,
+        //         nilai: nilai,
+        //     },
+        //     success: function(data) {
+        //         console.log(data);
+        //         if (data.message == '1') {
+        //             tabel.rows(function(idx, data, node) {
+        //                 return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+        //                     data.kd_rek == kd_rek && data.no_bukti == no_bukti
+        //             }).remove().draw();
+        //             tabel1.rows(function(idx, data, node) {
+        //                 return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+        //                     data.kd_rek == kd_rek && data.no_bukti == no_bukti
+        //             }).remove().draw();
+        //             $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
+        //             $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
+        //             alert('Data berhasil dihapus!');
+        //         } else {
+        //             alert('Data gagal dihapus!');
+        //             return;
+        //         }
+        //     }
+        // })
+        let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor Bukti : ' + no_bukti);
+        if (tanya == true) {
+            tabel.rows(function(idx, data, node) {
+                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+                    data.kd_rek == kd_rek && data.no_bukti == no_bukti
+            }).remove().draw();
+            tabel1.rows(function(idx, data, node) {
+                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
+                    data.kd_rek == kd_rek && data.no_bukti == no_bukti
+            }).remove().draw();
+            $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
+            $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
+        } else {
+            return false;
+        }
     }
 </script>

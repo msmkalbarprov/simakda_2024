@@ -21,11 +21,15 @@ class PenagihanController extends Controller
 
     public function loadData()
     {
-        $data = DB::table('trhtagih')->get();
+        $data = DB::table('trhtagih as a')->select('a.*', DB::raw("(SELECT COUNT(*) FROM trhspp WHERE no_tagih=a.no_bukti) as jumlah_spp"))->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penagihan.show", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
             $btn .= '<a href="' . route("penagihan.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="deleteData(' . $row->no_bukti . ', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            if ($row->jumlah_spp > 0) {
+                $btn .= '';
+            } else {
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(' . $row->no_bukti . ', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -51,6 +55,7 @@ class PenagihanController extends Controller
 
     public function show($no_bukti)
     {
+        $no_bukti = Crypt::decryptString($no_bukti);
         $data_tagih = DB::table('trhtagih')->where('no_bukti', $no_bukti)->first();
         $data = [
             'data_tagih' => DB::table('trhtagih as a')->join('trdtagih as b', function ($join) {
@@ -63,7 +68,7 @@ class PenagihanController extends Controller
             })->where('a.no_bukti', $no_bukti)->get(),
             'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
         ];
-        // return $data['detail_tagih'];
+
         return view('penatausahaan.pengeluaran.penagihan.show')->with($data);
     }
 
@@ -692,7 +697,9 @@ class PenagihanController extends Controller
 
     public function edit($no_bukti)
     {
+        $no_bukti = Crypt::decryptString($no_bukti);
         $data_tagih = DB::table('trhtagih')->where('no_bukti', $no_bukti)->first();
+        // dd($data_tagih);
         $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $data_tagih->kd_skpd, 'status' => 1])->orderBy('tgl_dpa', 'DESC')->first();
         $data = [
             'data_tagih' => DB::table('trhtagih as a')->join('trdtagih as b', function ($join) {
@@ -713,7 +720,7 @@ class PenagihanController extends Controller
                 ->where(['a.kd_skpd' => $data_tagih->kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get(),
             'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
         ];
-        // return $data['detail_tagih'];
+
         return view('penatausahaan.pengeluaran.penagihan.edit')->with($data);
     }
 

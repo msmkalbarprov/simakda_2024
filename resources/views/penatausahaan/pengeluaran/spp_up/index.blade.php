@@ -22,7 +22,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_spp as $data)
+                                    {{-- @foreach ($data_spp as $data)
                                         <tr>
                                             <td style="width: 25px">{{ $loop->iteration }}</td>
                                             <td style="width: 150px">{{ $data->no_spp }}</td>
@@ -31,8 +31,6 @@
                                             </td>
                                             <td style="width: 100px">{{ Str::limit($data->keperluan, 20) }}</td>
                                             <td style="width: 200px">
-                                                {{-- <a href="{{ route('sppup.edit', $data->no_spp) }}"
-                                                    class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a> --}}
                                                 <a href="{{ route('sppup.edit', $data->no_spp) }}"
                                                     class="btn btn-warning btn-sm"><i class="uil-edit"></i></a>
                                                 <button type="button"
@@ -46,7 +44,7 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

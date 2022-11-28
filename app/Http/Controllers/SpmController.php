@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Crypt;
 use PDF;
 
 class SpmController extends Controller
@@ -15,13 +16,30 @@ class SpmController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
-            'data_spm' => DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->where(['a.kd_skpd' => $kd_skpd])->select('a.*', DB::raw("ISNULL(b.sp2d_batal,'') as sp2d_batal"), DB::raw("ISNULL(b.ket_batal,'') as ket_batal"))->orderBy('a.no_spm', 'asc')->orderBy('a.kd_skpd', 'asc')->get(),
             'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'PPK'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD'])->get(),
         ];
+
         return view('penatausahaan.pengeluaran.spm.index')->with($data);
+    }
+
+    public function loadData()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->where(['a.kd_skpd' => $kd_skpd])->select('a.*', DB::raw("ISNULL(b.sp2d_batal,'') as sp2d_batal"), DB::raw("ISNULL(b.ket_batal,'') as ket_batal"))->orderBy('a.no_spm', 'asc')->orderBy('a.kd_skpd', 'asc')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("spm.tambah_potongan", Crypt::encryptString($row->no_spm)) . '" class="btn btn-secondary btn-sm" id="tambah_potongan" style="margin-right:4px"><i class="uil-percentage"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spm . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn .= '<a href="' . route("spm.tampil", Crypt::encryptString($row->no_spm)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            if ($row->status != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="batal_spm(\'' . $row->no_spm . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -208,6 +226,7 @@ class SpmController extends Controller
     public function tambahPotongan($no_spm)
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $no_spm = Crypt::decryptString($no_spm);
         $cari_spm = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm])->first();
         $data = [
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
@@ -215,7 +234,8 @@ class SpmController extends Controller
             'daftar_transaksi' => DB::table('trdspp')->select('kd_rek6', 'nm_rek6')->where(['no_spp' => $cari_spm->no_spp, 'kd_skpd' => $kd_skpd])->groupBy('kd_rek6', 'nm_rek6')->get(),
             'daftar_potongan' => DB::table('ms_pot')->select('kd_rek6', 'map_pot', 'nm_pot as nm_rek6')->groupBy('kd_rek6', 'nm_pot', 'map_pot')->get(),
             'total_pajak' => DB::table('trspmpot')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spm' => $no_spm])->first(),
-            'kd_skpd' => $kd_skpd
+            'kd_skpd' => $kd_skpd,
+            'rincian_spm' => DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get(),
         ];
         return view('penatausahaan.pengeluaran.spm.tambah_potongan')->with($data);
     }
@@ -234,7 +254,6 @@ class SpmController extends Controller
         $no_spm = $request->no_spm;
         $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get();
         return Datatables::of($data)->make(true);
-        return view('penatausahaan.pengeluaran.spm.tambah_potongan');
     }
 
     public function hapusRincianPajak(Request $request)
@@ -756,6 +775,7 @@ class SpmController extends Controller
     public function tampilSpm($no_spm)
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $no_spm = Crypt::decryptString($no_spm);
         $data = [
             'data_spm' => DB::table('trhspm')->where(['kd_skpd' => $kd_skpd, 'no_spm' => $no_spm])->first(),
         ];

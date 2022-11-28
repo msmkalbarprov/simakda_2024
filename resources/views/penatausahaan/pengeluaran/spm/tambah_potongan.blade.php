@@ -452,11 +452,28 @@
                                 <th>Map Pot</th>
                                 <th>Nama Rekening</th>
                                 <th>ID Billing</th>
-                                <th>Nilai</th>
+                                <th style="text-align: center">Nilai</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($rincian_spm as $spm)
+                                <tr>
+                                    <td>{{ $spm->kd_trans }}</td>
+                                    <td>{{ $spm->kd_rek6 }}</td>
+                                    <td>{{ $spm->map_pot }}</td>
+                                    <td>{{ $spm->nm_rek6 }}</td>
+                                    <td>{{ $spm->idBilling }}</td>
+                                    <td>{{ rupiah($spm->nilai) }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);"
+                                            onclick="hapusPot('{{ $spm->kd_trans }}','{{ $spm->kd_rek6 }}','{{ $spm->map_pot }}','{{ $spm->nm_rek6 }}','{{ $spm->idBilling }}','{{ $spm->nilai }}','{{ $spm->no_spm }}')"
+                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                        <button type="button" onclick="cetakPot('{{ $spm->idBilling }}')"
+                                            class="btn btn-success btn-sm"><i class="uil-print"></i></button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">
@@ -485,11 +502,28 @@
                                 <th>Kode Potongan</th>
                                 <th>Nama Rekening</th>
                                 <th>ID Billing</th>
-                                <th>Nilai</th>
+                                <th style="text-align: center">Nilai</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($rincian_spm as $spm)
+                                <tr>
+                                    <td>{{ $spm->no_spm }}</td>
+                                    <td>{{ $spm->kd_rek6 }}</td>
+                                    <td>{{ $spm->nm_rek6 }}</td>
+                                    <td>{{ $spm->idBilling }}</td>
+                                    <td>{{ rupiah($spm->nilai) }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);"
+                                            onclick="hapusPajak('{{ $spm->no_spm }}','{{ $spm->kd_rek6 }}','{{ $spm->nm_rek6 }}','{{ $spm->idBilling }}','{{ $spm->nilai }}')"
+                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                        <button type="button"
+                                            onclick="cetakPajak('{{ $spm->no_spm }}', '{{ $spm->kd_rek6 }}', '{{ $spm->nm_rek6 }}','{{ $spm->nilai }}')"
+                                            class="btn btn-success btn-sm"><i class="uil-print"></i></button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">

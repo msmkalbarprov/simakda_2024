@@ -5,7 +5,42 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#spp_ls').DataTable();
+        $('#spp_ls').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('sppup.load_data') }}",
+                "type": "POST",
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                }, {
+                    data: 'no_spp',
+                    name: 'no_spp'
+                },
+                {
+                    data: 'tgl_spp',
+                    name: 'tgl_spp'
+                },
+                {
+                    data: null,
+                    name: 'keperluan',
+                    render: function(data, type, row, meta) {
+                        return data.keperluan.substr(0, 10) + '.....';
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: '200px',
+                    className: 'text-center'
+                },
+            ],
+        });
 
         $('.select2-multiple').select2({
             dropdownParent: $('#modal_cetak .modal-content'),

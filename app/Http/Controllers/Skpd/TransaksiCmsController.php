@@ -42,7 +42,6 @@ class TransaksiCmsController extends Controller
         $urut = DB::table(DB::raw("({$urut3->toSql()}) AS sub"))
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut3)
-            ->whereRaw("kd_skpd = '$kd_skpd'")
             ->groupBy('kd_skpd')
             ->first();
         return response()->json($urut->nomor);

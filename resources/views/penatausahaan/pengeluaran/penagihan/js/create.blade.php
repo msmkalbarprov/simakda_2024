@@ -1,6 +1,9 @@
 <script>
     $(document).ready(function() {
-        $('.select2-multiple').select2();
+        $('.select2-multiple').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
         $('#kd_sub_kegiatan').select2({
             dropdownParent: $('#tambah-penagihan')
         });

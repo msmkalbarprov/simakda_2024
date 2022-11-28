@@ -5,30 +5,80 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#spm').DataTable();
+
+        $('#spm').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('spm.load_data') }}",
+                "type": "POST",
+            },
+            createdRow: function(row, data, index) {
+                if (data.status == 1) {
+                    $(row).css("background-color", "#4bbe68");
+                    $(row).css("color", "white");
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
+                    data: 'no_spm',
+                    name: 'no_spm',
+                    className: "text-center",
+                },
+                {
+                    data: 'tgl_spm',
+                    name: 'tgl_spm',
+                    // className: "text-center",
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
+                    className: "text-center",
+                },
+                {
+                    data: null,
+                    name: 'keperluan',
+                    render: function(data, type, row, meta) {
+                        return data.keperluan.substr(0, 10) + '.....';
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 200,
+                    className: "text-center",
+                },
+            ],
+        });
 
         $('#bendahara').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#pptk').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#pa_kpa').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#ppkd').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#jenis_ls').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 

@@ -14,15 +14,16 @@
                             <table id="spm" class="table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 100px;text-align:center">Nomor SPM</th>
+                                        <th style="width: 10px;text-align:center">No.</th>
+                                        <th style="width: 50px;text-align:center">Nomor SPM</th>
                                         <th style="width: 50px;text-align:center">Tanggal</th>
-                                        <th style="width: 150px;text-align:center">Keterangan</th>
+                                        <th style="width: 50px;text-align:center">SKPD</th>
+                                        <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_spm as $spm)
+                                    {{-- @foreach ($data_spm as $spm)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $spm->no_spm }}</td>
@@ -43,7 +44,7 @@
                                                     class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

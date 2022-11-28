@@ -10,6 +10,7 @@ use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\PenagihanController;
 use App\Http\Controllers\BankKalbarController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BendaharaUmumDaerahController;
 use App\Http\Controllers\SppLsController;
 use App\Http\Controllers\SppUpController;
 use App\Http\Controllers\SpmController;
@@ -44,6 +45,7 @@ use App\Http\Controllers\Skpd\SetorSisaController;
 use App\Http\Controllers\Skpd\UyhdController;
 use App\Http\Controllers\Skpd\UyhdPajakController;
 use App\Http\Controllers\Skpd\Anggaran\RakController;
+use App\Http\Controllers\Skpd\TransaksiKKPDController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -105,7 +107,6 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('update_detail_penagihan', [PenagihanController::class, 'updateDetailPenagihan'])->name('penagihan.update_detail_penagihan');
             Route::post('simpan_edit_tampungan', [PenagihanController::class, 'simpanEditTampungan'])->name('penagihan.simpan_edit_tampungan');
         });
-
         // SPP LS
         Route::group(['prefix' => 'spp_ls'], function () {
             Route::get('', [SppLsController::class, 'index'])->name('sppls.index');
@@ -140,10 +141,10 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_spp77', [SppLsController::class, 'cetakSpp77Layar'])->name('sppls.cetak_spp77_layar');
             Route::get('cetak_rincian77', [SppLsController::class, 'cetakRincian77Layar'])->name('sppls.cetak_rincian77_layar');
         });
-
         // SPM
         Route::group(['prefix' => 'spm'], function () {
             Route::get('', [SpmController::class, 'index'])->name('spm.index');
+            Route::post('load_data', [SpmController::class, 'loadData'])->name('spm.load_data');
             Route::get('create', [SpmController::class, 'create'])->name('spm.create');
             Route::post('cari_jenis', [SpmController::class, 'cariJenis'])->name('spm.cari_jenis');
             Route::post('cari_bank', [SpmController::class, 'cariBank'])->name('spm.cari_bank');
@@ -175,10 +176,10 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('ringkasan_tu', [SpmController::class, 'cetakRingkasanTu'])->name('spm.ringkasan_tu');
             Route::post('batal_spm', [SpmController::class, 'batalSpmSpp'])->name('spm.batal_spm');
         });
-
         // SP2D
         Route::group(['prefix' => 'sp2d'], function () {
             Route::get('', [Sp2dController::class, 'index'])->name('sp2d.index');
+            Route::post('load_data', [Sp2dController::class, 'loadData'])->name('sp2d.load_data');
             Route::get('tambah', [Sp2dController::class, 'create'])->name('sp2d.create');
             Route::post('cari_spm', [Sp2dController::class, 'cariSpm'])->name('sp2d.cari_spm');
             Route::post('cari_jenis', [Sp2dController::class, 'cariJenis'])->name('sp2d.cari_jenis');
@@ -196,10 +197,10 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_lampiran_lama', [Sp2dController::class, 'cetakLampiranLama'])->name('sp2d.cetak_lampiran_lama');
             Route::get('cetak_kelengkapan', [Sp2dController::class, 'cetakKelengkapan'])->name('sp2d.cetak_kelengkapan');
         });
-
         // Daftar Penguji
         Route::group(['prefix' => 'daftar_penguji'], function () {
             Route::get('', [DaftarPengujiController::class, 'index'])->name('daftar_penguji.index');
+            Route::post('load_data', [DaftarPengujiController::class, 'loadData'])->name('daftar_penguji.load_data');
             Route::get('tambah', [DaftarPengujiController::class, 'create'])->name('daftar_penguji.create');
             Route::post('simpan_penguji', [DaftarPengujiController::class, 'simpanPenguji'])->name('daftar_penguji.simpan_penguji');
             Route::post('simpan_detail_penguji', [DaftarPengujiController::class, 'simpanDetailPenguji'])->name('daftar_penguji.simpan_detail_penguji');
@@ -210,14 +211,15 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('tambah_rincian', [DaftarPengujiController::class, 'tambahRincian'])->name('daftar_penguji.tambah_rincian');
             Route::post('simpan_edit_penguji', [DaftarPengujiController::class, 'simpanEditPenguji'])->name('daftar_penguji.simpan_edit_penguji');
             Route::post('hapus_penguji', [DaftarPengujiController::class, 'hapusPenguji'])->name('daftar_penguji.hapus_penguji');
+            Route::post('status_bank', [DaftarPengujiController::class, 'statusBank'])->name('daftar_penguji.status_bank');
 
             // cetakan
             Route::get('cetak_penguji', [DaftarPengujiController::class, 'cetakPenguji'])->name('daftar_penguji.cetak_penguji');
         });
-
         // Pencairan SP2D
         Route::group(['prefix' => 'pencairan_sp2d'], function () {
             Route::get('', [PencairanSp2dController::class, 'index'])->name('pencairan_sp2d.index');
+            Route::post('load_data', [PencairanSp2dController::class, 'loadData'])->name('pencairan_sp2d.load_data');
             Route::get('tampil/{no_sp2d?}', [PencairanSp2dController::class, 'tampilCair'])->where('no_sp2d', '(.*)')->name('pencairan_sp2d.tampil');
             Route::post('load_rincian_spm', [PencairanSp2dController::class, 'loadRincianSpm'])->name('pencairan_sp2d.load_rincian_spm');
             Route::post('load_rincian_potongan', [PencairanSp2dController::class, 'loadRincianPotongan'])->name('pencairan_sp2d.load_rincian_potongan');
@@ -225,10 +227,10 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('simpan_cair', [PencairanSp2dController::class, 'simpanCair'])->name('pencairan_sp2d.simpan_cair');
             Route::post('batal_cair', [PencairanSp2dController::class, 'batalCair'])->name('pencairan_sp2d.batal_cair');
         });
-
         // SPP UP
         Route::group(['prefix' => 'spp_up'], function () {
             Route::get('', [SppUpController::class, 'index'])->name('sppup.index');
+            Route::post('load_data', [SppUpController::class, 'loadData'])->name('sppup.load_data');
             Route::get('tambah', [SppUpController::class, 'create'])->name('sppup.create');
             Route::get('edit/{no_spp?}', [SppUpController::class, 'edit'])->where('no_spp', '(.*)')->name('sppup.edit');
             Route::post('simpan_spp', [SppUpController::class, 'simpanSpp'])->name('sppup.simpan_spp');
@@ -582,6 +584,51 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
                 Route::get('cetakan_cek_anggaran', [RakController::class, 'cetakCekAnggaran'])->name('skpd.cek_rak.cetakan_cek_anggaran');
             });
         });
+        // Transaksi KKPD
+        Route::group(['prefix' => 'transaksi_kkpd'], function () {
+            // INPUT TRANSAKSI KKPD
+            Route::get('', [TransaksiKKPDController::class, 'index'])->name('skpd.transaksi_kkpd.index');
+            Route::post('load_data', [TransaksiKKPDController::class, 'loadData'])->name('skpd.transaksi_kkpd.load_data');
+            Route::get('tambah', [TransaksiKKPDController::class, 'create'])->name('skpd.transaksi_kkpd.create');
+            Route::post('no_urut', [TransaksiKKPDController::class, 'no_urut'])->name('skpd.transaksi_kkpd.no_urut');
+            Route::post('skpd', [TransaksiKKPDController::class, 'skpd'])->name('skpd.transaksi_kkpd.skpd');
+            Route::post('cariKegiatan', [TransaksiKKPDController::class, 'cariKegiatan'])->name('skpd.transaksi_kkpd.kegiatan');
+            Route::post('cariSp2d', [TransaksiKKPDController::class, 'cariSp2d'])->name('skpd.transaksi_kkpd.nomor_sp2d');
+            Route::post('cariRekening', [TransaksiKKPDController::class, 'cariRekening'])->name('skpd.transaksi_kkpd.rekening');
+            Route::post('cariSumber', [TransaksiKKPDController::class, 'cariSumber'])->name('skpd.transaksi_kkpd.sumber');
+            Route::post('sisaBank', [TransaksiKKPDController::class, 'sisaBank'])->name('skpd.transaksi_kkpd.sisa_bank');
+            Route::post('potonganLs', [TransaksiKKPDController::class, 'potonganLs'])->name('skpd.transaksi_kkpd.potongan_ls');
+            Route::post('loadDana', [TransaksiKKPDController::class, 'loadDana'])->name('skpd.transaksi_kkpd.load_dana');
+            Route::post('statusAng', [TransaksiKKPDController::class, 'statusAng'])->name('skpd.transaksi_kkpd.status_ang');
+            Route::post('loadAngkas', [TransaksiKKPDController::class, 'loadAngkas'])->name('skpd.transaksi_kkpd.load_angkas');
+            Route::post('loadAngkasLalu', [TransaksiKKPDController::class, 'loadAngkasLalu'])->name('skpd.transaksi_kkpd.load_angkas_lalu');
+            Route::post('loadSpd', [TransaksiKKPDController::class, 'loadSpd'])->name('skpd.transaksi_kkpd.load_spd');
+            Route::post('cekSimpan', [TransaksiKKPDController::class, 'cekSimpan'])->name('skpd.transaksi_kkpd.cek_simpan');
+            Route::post('simpanCms', [TransaksiKKPDController::class, 'simpanCms'])->name('skpd.transaksi_kkpd.simpan_cms');
+            Route::post('simpanDetailCms', [TransaksiKKPDController::class, 'simpanDetailCms'])->name('skpd.transaksi_kkpd.simpan_detail_cms');
+            Route::get('edit/{no_voucher?}', [TransaksiKKPDController::class, 'edit'])->where('no_voucher', '(.*)')->name('skpd.transaksi_kkpd.edit');
+            Route::post('hapusCms', [TransaksiKKPDController::class, 'hapusCms'])->name('skpd.transaksi_kkpd.hapus_cms');
+            Route::get('cetak_list', [TransaksiKKPDController::class, 'cetakList'])->name('skpd.transaksi_kkpd.cetak_list');
+
+            // Validasi Transaksi KKPD
+            Route::get('verifikasi', [TransaksiKKPDController::class, 'indexValidasi'])->name('skpd.transaksi_kkpd.index_validasi');
+            Route::post('load_data_validasi', [TransaksiKKPDController::class, 'loadDataValidasi'])->name('skpd.transaksi_kkpd.load_data_validasi');
+            Route::post('draft_validasi', [TransaksiKKPDController::class, 'draftValidasi'])->name('skpd.transaksi_kkpd.draft_validasi');
+            Route::post('data_validasi', [TransaksiKKPDController::class, 'dataValidasi'])->name('skpd.transaksi_kkpd.data_validasi');
+            Route::get('tambah_verifikasi', [TransaksiKKPDController::class, 'createValidasi'])->name('skpd.transaksi_kkpd.create_validasi');
+            Route::post('proses_validasi', [TransaksiKKPDController::class, 'prosesValidasi'])->name('skpd.transaksi_kkpd.proses_validasi');
+            Route::post('batal_validasi', [TransaksiKKPDController::class, 'batalValidasi'])->name('skpd.transaksi_kkpd.batal_validasi');
+
+            // TERIMA POTONGAN PAJAK KKPD
+            Route::get('terima_potongan_kkpd', [TransaksiKKPDController::class, 'indexPotongan'])->name('skpd.transaksi_kkpd.index_potongan');
+            Route::post('load_data_potongan', [TransaksiKKPDController::class, 'loadDataPotongan'])->name('skpd.transaksi_kkpd.load_data_potongan');
+            Route::get('tambah_potongan', [TransaksiKKPDController::class, 'createPotongan'])->name('skpd.transaksi_kkpd.create_potongan');
+            Route::get('edit_potongan/{no_bukti?}', [TransaksiKKPDController::class, 'editPotongan'])->where('no_bukti', '(.*)')->name('skpd.transaksi_kkpd.edit_potongan');
+            Route::post('cari_kegiatan_potongan', [TransaksiKKPDController::class, 'cariKegiatanPotongan'])->name('skpd.transaksi_kkpd.cari_kegiatan_potongan');
+            Route::post('simpan_potongan', [TransaksiKKPDController::class, 'simpanPotongan'])->name('skpd.transaksi_kkpd.simpan_potongan');
+            Route::post('simpan_edit_potongan', [TransaksiKKPDController::class, 'simpanEditPotongan'])->name('skpd.transaksi_kkpd.simpan_edit_potongan');
+            Route::post('hapus_potongan', [TransaksiKKPDController::class, 'hapusPotongan'])->name('skpd.transaksi_kkpd.hapus_potongan');
+        });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {
             Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
@@ -606,14 +653,35 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
         });
     });
+
+    Route::group(['prefix' => 'laporan_bendahara_umum_daerah'], function () {
+        Route::get('laporan_bendahara_umum', [BendaharaUmumDaerahController::class, 'index'])->name('laporan_bendahara_umum.index');
+        // CETAK REALISASI PENDAPATAN
+        Route::get('realisasi_pendapatan', [BendaharaUmumDaerahController::class, 'realisasiPendapatan'])->name('laporan_bendahara_umum.realisasi_pendapatan');
+        // CETAK BUKU KAS PEMBANTU PENERIMAAN
+        Route::get('buku_kas_pembantu_penerimaan', [BendaharaUmumDaerahController::class, 'pembantuPenerimaan'])->name('laporan_bendahara_umum.buku_kas_pembantu_penerimaan');
+        // BKU (B IX)
+        Route::group(['prefix' => 'buku_kas_penerimaan_pengeluaran'], function () {
+            // CETAK BKU (B IX) TANPA TANGGAL
+            Route::get('tanpa_tanggal', [BendaharaUmumDaerahController::class, 'bkuTanpaTanggal'])->name('laporan_bendahara_umum.bku_tanpa_tanggal');
+            // CETAK BKU (B IX) DENGAN TANGGAL
+            Route::get('dengan_tanggal', [BendaharaUmumDaerahController::class, 'bkuDenganTanggal'])->name('laporan_bendahara_umum.bku_dengan_tanggal');
+            // CETAK BKU (B IX) DENGAN TANGGAL (TANPA BLUD DAN JASPEL)
+            Route::get('tanpa_blud', [BendaharaUmumDaerahController::class, 'bkuTanpaBlud'])->name('laporan_bendahara_umum.bku_tanpa_blud');
+            // CETAK BKU (B IX) RINCIAN (SEMENTARA HANYA PERTANGGAL)
+            Route::get('rincian', [BendaharaUmumDaerahController::class, 'bkuRincian'])->name('laporan_bendahara_umum.bku_rincian');
+        });
+        Route::get('penerimaan_pajak_daerah', [BendaharaUmumDaerahController::class, 'pajakDaerah'])->name('laporan_bendahara_umum.penerimaan_pajak_daerah');
+        Route::get('rekap_gaji', [BendaharaUmumDaerahController::class, 'rekapGaji'])->name('laporan_bendahara_umum.rekap_gaji');
+    });
 });
 
-Route::get('/simakda_2023/home', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('/simakda_2023/dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
 Route::get('/simakda_2023/ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
 Route::post('/simakda_2023/ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
 Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
 Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
-Route::get('/simakda_2023/login', [LoginController::class, 'index'])->name('login.index');
+Route::get('/simakda_2023', [LoginController::class, 'index'])->name('login.index');
 Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login'); //->middleware(['throttle:3,1']);
 Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
 

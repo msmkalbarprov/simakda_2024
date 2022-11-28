@@ -11,7 +11,43 @@
             theme: 'bootstrap-5'
         });
 
-        $('#daftar_penguji').DataTable();
+        $('#daftar_penguji').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('daftar_penguji.load_data') }}",
+                "type": "POST",
+            },
+            // createdRow: function(row, data, index) {
+            //     if (data.status == 1) {
+            //         $(row).css("background-color", "#4bbe68");
+            //         $(row).css("color", "white");
+            //     }
+            // },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
+                    data: 'no_uji',
+                    name: 'no_uji',
+                    className: "text-center",
+                },
+                {
+                    data: 'tgl_uji',
+                    name: 'tgl_uji',
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 100,
+                    className: "text-center",
+                },
+            ],
+        });
 
         // cetak penguji
         $('.cetak_penguji').on('click', function() {
@@ -59,5 +95,26 @@
         } else {
             return false;
         }
+    }
+
+    function siapKirim(no_uji, status) {
+        $.ajax({
+            url: "{{ route('daftar_penguji.status_bank') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                no_uji: no_uji,
+                status: status,
+            },
+            success: function(data) {
+                if (data.message == '1') {
+                    alert('Daftar penguji berhasil diperbaharui!');
+                    window.location.reload();
+                } else {
+                    alert('Data gagal diperbaharui!');
+                    return;
+                }
+            }
+        })
     }
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -12,14 +13,21 @@ class PencairanSp2dController extends Controller
 {
     public function index()
     {
-        $data = [
-            'cair_sp2d' => DB::table('trhsp2d as a')->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji')->orderBy('a.no_sp2d')->orderBy('kd_skpd')->get()
-        ];
-        return view('penatausahaan.pengeluaran.pencairan_sp2d.index')->with($data);
+        return view('penatausahaan.pengeluaran.pencairan_sp2d.index');
+    }
+
+    public function loadData()
+    {
+        $data = DB::table('trhsp2d as a')->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji')->orderBy('a.no_sp2d')->orderBy('kd_skpd')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("pencairan_sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function tampilCair($no_sp2d)
     {
+        $no_sp2d = Crypt::decryptString($no_sp2d);
         $sp2d = DB::table('trhsp2d as a')->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji', 'a.nilai', 'a.tgl_terima')->orderBy('a.no_sp2d')->orderBy('kd_skpd')->where(['a.no_sp2d' => $no_sp2d])->first();
 
         $urut1 = DB::table('trhsp2d')->select('no_kas_bud as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')->where(DB::raw("isnumeric(no_kas_bud)"), '1')->where(['status_bud' => '1']);

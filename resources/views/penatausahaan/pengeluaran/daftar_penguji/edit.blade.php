@@ -74,7 +74,7 @@
                                     <td>{{ $penguji->tgl_sp2d }}</td>
                                     <td>{{ $penguji->no_spm }}</td>
                                     <td>{{ $penguji->tgl_spm }}</td>
-                                    <td>{{ $penguji->nilai }}</td>
+                                    <td>{{ rupiah($penguji->nilai) }}</td>
                                     <td>
                                         <button type="button"
                                             onclick="deleteData('{{ $penguji->no_sp2d }}','{{ $penguji->no_spm }}')"

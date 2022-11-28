@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
@@ -14,11 +15,40 @@ class DaftarPengujiController extends Controller
     public function index()
     {
         $data = [
-            'daftar_penguji' => DB::table('trhuji as a')->select('a.no_uji', 'a.tgl_uji')->groupBy('a.no_uji', 'a.tgl_uji')->orderBy('a.tgl_uji')->orderBy('a.no_uji')->get(),
             'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['kode' => 'BUD'])->groupBy('nama', 'nip', 'jabatan')->get()
         ];
 
         return view('penatausahaan.pengeluaran.daftar_penguji.index')->with($data);
+    }
+
+    public function loadData()
+    {
+        $data = DB::table('trhuji as a')->select('a.no_uji', 'a.tgl_uji', 'a.status_bank')->groupBy('a.no_uji', 'a.tgl_uji', 'a.status_bank')->orderBy('a.tgl_uji')->orderBy('a.no_uji')->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            if ($row->status_bank == 0 || $row->status_bank == null) {
+                $btn = '<a href="' . route("daftar_penguji.tampil", Crypt::encryptString($row->no_uji)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            } else {
+                $btn = '';
+            }
+            if ($row->status_bank == 0 || $row->status_bank == null) {
+                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="uil-exclamation-triangle"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            if ($row->status_bank == 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-check-circle"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            if ($row->status_bank > 1 || $row->status_bank != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusData(\'' . $row->no_uji . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_uji . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function loadSp2d()
@@ -105,6 +135,7 @@ class DaftarPengujiController extends Controller
 
     public function editPenguji($no_uji)
     {
+        $no_uji = Crypt::decryptString($no_uji);
         $data = [
             'penguji' => DB::table('trhuji')->where(['no_uji' => $no_uji])->first(),
             'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
@@ -211,6 +242,35 @@ class DaftarPengujiController extends Controller
         try {
             DB::table('trhuji')->where(['no_uji' => $no_uji])->delete();
             DB::table('trduji')->where(['no_uji' => $no_uji])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function statusBank(Request $request)
+    {
+        $no_uji = $request->no_uji;
+        $status = $request->status;
+
+        DB::beginTransaction();
+        try {
+            if ($status == 1) {
+                DB::table('trhuji')->where(['no_uji' => $no_uji])->update([
+                    'status_bank' => '0'
+                ]);
+            }
+            if ($status == 0 || $status == null) {
+                DB::table('trhuji')->where(['no_uji' => $no_uji])->update([
+                    'status_bank' => '1'
+                ]);
+            }
             DB::commit();
             return response()->json([
                 'message' => '1'

@@ -120,6 +120,11 @@
                                     Pemindahbukuan</a></li>
                             <li><a href="{{ route('skpd.potongan_pajak.index') }}">Terima Potongan Pajak</a>
                             <li><a href="{{ route('skpd.setor_potongan.index') }}">Setor Potongan Pajak</a>
+                            <li><a href="{{ route('skpd.transaksi_kkpd.index') }}">Transaksi KKPD</a>
+                            <li><a href="{{ route('skpd.transaksi_kkpd.index_potongan') }}">Terima Potongan Pajak
+                                    (KKPD)</a>
+                            <li><a href="{{ route('skpd.transaksi_kkpd.index_validasi') }}">Verifikasi Transaksi
+                                    KKPD</a>
                             </li>
                         </ul>
                     </li>
@@ -152,6 +157,15 @@
                 <ul class="sub-menu" aria-expanded="true">
                     <li><a href="{{ route('penerima.index') }}">Penerimaan x</a></li>
                     <li><a href="{{ route('skpd.laporan_bendahara.index') }}">pengeluaran</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="uil-window-section"></i>
+                    <span>Bendahara Umum Daerah</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="true">
+                    <li><a href="{{ route('laporan_bendahara_umum.index') }}">Laporan Bendahara Umum Daerah</a></li>
                 </ul>
             </li>
             <li>

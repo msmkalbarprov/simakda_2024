@@ -32,10 +32,10 @@ class SppLsController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sppls.show", Crypt::encryptString($row->no_spp)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
             $btn .= '<a href="' . route("sppls.edit", Crypt::encryptString($row->no_spp)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(' . $row->no_spp . ', \'' . $row->jns_spp . '\',, \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
+            $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
             if ($row->status == 0) {
-                $btn .= '<a href="javascript:void(0);" onclick="deleteData(' . $row->no_spp . ');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="batal_spp(' . $row->no_spp . ', \'' . $row->jns_spp . '\',, \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="batal_spp(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -974,11 +974,13 @@ class SppLsController extends Controller
 
     public function tampilSppLs($no_spp)
     {
+        $no_spp = Crypt::decryptString($no_spp);
         $kd_skpd = Auth::user()->kd_skpd;
         $data_sppls = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
             $join->on('a.no_spp', '=', 'b.no_spp');
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where('a.no_spp', $no_spp)->select('a.*')->first();
+
         $data = [
             'sppls' => $data_sppls,
             'tgl_spd' => DB::table('trhspd')->select('tgl_spd')->where('no_spd', $data_sppls->no_spd)->first(),
@@ -993,6 +995,7 @@ class SppLsController extends Controller
 
     public function editSppLs($no_spp)
     {
+        $no_spp = Crypt::decryptString($no_spp);
         $kd_skpd = Auth::user()->kd_skpd;
         $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
         $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $kd_skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);

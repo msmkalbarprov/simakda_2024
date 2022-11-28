@@ -5,25 +5,71 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#sp2d').DataTable();
+        $('#sp2d').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('sp2d.load_data') }}",
+                "type": "POST",
+            },
+            // createdRow: function(row, data, index) {
+            //     if (data.status == 1) {
+            //         $(row).css("background-color", "#4bbe68");
+            //         $(row).css("color", "white");
+            //     }
+            // },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
+                    data: 'no_sp2d',
+                    name: 'no_sp2d',
+                    className: "text-center",
+                },
+                {
+                    data: 'no_spm',
+                    name: 'no_spm',
+                    // className: "text-center",
+                },
+                {
+                    data: 'tgl_sp2d',
+                    name: 'tgl_sp2d',
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
+                    className: "text-center",
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 200,
+                    className: "text-center",
+                },
+            ],
+        });
 
         $('#ttd_bud').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#ttd1').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#ttd2').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 
         $('#jenis').select2({
-            dropdownParent: $('#modal_cetak'),
+            dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
         });
 

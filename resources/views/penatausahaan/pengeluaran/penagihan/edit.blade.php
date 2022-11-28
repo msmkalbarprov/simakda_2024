@@ -237,7 +237,7 @@
                         <label for="total_nilai" class="col-md-4 col-form-label">Total</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="total_nilai" id="total_nilai" value="{{ $data_tagih->total }}">
+                                name="total_nilai" id="total_nilai" value="{{ rupiah($data_tagih->total) }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -245,7 +245,7 @@
                             Lalu</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_lalu" id="nilai_lalu" value="{{ $data_tagih->total }}">
+                                name="nilai_lalu" id="nilai_lalu" value="{{ rupiah($data_tagih->total) }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -253,7 +253,8 @@
                             Kontrak</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_kontrak" id="nilai_kontrak" value="{{ $kontrak->nilai }}">
+                                name="nilai_kontrak" id="nilai_kontrak"
+                                value="{{ $kontrak ? rupiah($kontrak->nilai) : '' }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -262,7 +263,7 @@
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
                                 name="sisa_kontrak" id="sisa_kontrak"
-                                value="{{ $kontrak->nilai - $data_tagih->total }}">
+                                value="{{ $kontrak ? rupiah($kontrak->nilai - $data_tagih->total) : '' }}">
                         </div>
                     </div>
                 </div>

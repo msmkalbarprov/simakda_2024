@@ -26,12 +26,12 @@ class LoginController extends Controller
 
     use AuthenticatesUsers, ThrottlesLogins;
 
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
 
     public function index()
-    {   
+    {
         $data = [
-        'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first()
+            'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first()
         ];
         return view('auth.login')->with($data);
     }
@@ -58,7 +58,7 @@ class LoginController extends Controller
 
         request()->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login.index');
     }
     /**
      * Create a new controller instance.

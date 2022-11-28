@@ -120,7 +120,7 @@
                                     <td>{{ $data->kd_sub_kegiatan }}</td>
                                     <td>{{ $data->kd_rek6 }}</td>
                                     <td>{{ $data->nm_rek6 }}</td>
-                                    <td>{{ $data->nilai }}</td>
+                                    <td>{{ rupiah($data->nilai) }}</td>
                                     <td>{{ $data->sumber }}</td>
                                 </tr>
                             @endforeach
@@ -137,8 +137,9 @@
                     <div class="mb-3 row">
                         <label for="total_nilai" class="col-md-4 col-form-label">Total</label>
                         <div class="col-md-8">
-                            <input type="text" readonly style="text-align: right" value="{{ $data_tagih->total }}"
-                                class="form-control" name="total_nilai" id="total_nilai">
+                            <input type="text" readonly style="text-align: right"
+                                value="{{ rupiah($data_tagih->total) }}" class="form-control" name="total_nilai"
+                                id="total_nilai">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -146,7 +147,7 @@
                             Lalu</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_lalu" id="nilai_lalu" value="{{ $data_tagih->total }}">
+                                name="nilai_lalu" id="nilai_lalu" value="{{ rupiah($data_tagih->total) }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -154,7 +155,8 @@
                             Kontrak</label>
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
-                                name="nilai_kontrak" value="{{ $kontrak->nilai }}" id="nilai_kontrak">
+                                name="nilai_kontrak" value="{{ $kontrak ? rupiah($kontrak->nilai) : '' }}"
+                                id="nilai_kontrak">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -163,7 +165,7 @@
                         <div class="col-md-8">
                             <input type="text" readonly style="text-align: right" class="form-control"
                                 name="sisa_kontrak" id="sisa_kontrak"
-                                value="{{ $kontrak->nilai - $data_tagih->total }}">
+                                value="{{ $kontrak ? rupiah($kontrak->nilai - $data_tagih->total) : '' }}">
                         </div>
                     </div>
                 </div>

@@ -23,7 +23,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 1;
                                     @endphp
                                     @foreach ($data_sp2d->chunk(5) as $data)
@@ -48,7 +48,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -198,7 +198,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="text-align: right">
                             <button type="button" class="btn btn-md btn-secondary"
                                 data-bs-dismiss="modal">Tutup</button>
                         </div>

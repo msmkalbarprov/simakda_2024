@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -13,19 +14,35 @@ class Sp2dController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $sp2d = DB::table('trhsp2d as a')->join('trhspp as b', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
-            // ->where(['a.kd_skpd' => $kd_skpd])
-            ->orderBy('tgl_sp2d')->orderBy(DB::raw("CAST(LEFT(no_sp2d,LEN(no_sp2d)-8)as int)"))->orderBy('kd_skpd')->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"))->get();
         $data = [
-            'data_sp2d' => $sp2d,
             'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['kode' => 'BUD'])->groupBy('nama', 'nip', 'jabatan')->get(),
             'ttd2' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['kd_skpd' => $kd_skpd])->groupBy('nama', 'nip', 'jabatan')->get()
         ];
 
         return view('penatausahaan.pengeluaran.sp2d.index')->with($data);
+    }
+
+    public function loadData()
+    {
+        // USER BUD JANGAN LUPA
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhsp2d as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
+            // ->where(['a.kd_skpd' => $kd_skpd])
+            ->orderBy('tgl_sp2d')->orderBy(DB::raw("CAST(LEFT(no_sp2d,LEN(no_sp2d)-8)as int)"))->orderBy('kd_skpd')->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"))->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            if ($row->status_bud != 1 || !$row->no_advice) {
+                $btn .= '<a href="javascript:void(0);" onclick="batal_sp2d(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_spm . '\',\'' . $row->no_spp . '\',\'' . $row->status_bud . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -330,6 +347,7 @@ class Sp2dController extends Controller
     // tampil sp2d
     public function tampilSp2d($no_sp2d)
     {
+        $no_sp2d = Crypt::decryptString($no_sp2d);
         $sp2d = DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->first();
         $data = [
             'sp2d' => $sp2d,

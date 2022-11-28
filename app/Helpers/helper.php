@@ -12,6 +12,13 @@ function tahun_anggaran()
     return '2022';
 }
 
+function tanggal_sebelumnya($tanggal)
+{
+    $tanggal1 = strtotime('-1 day', strtotime($tanggal));
+    $tanggal1 = date('Y-m-d', $tanggal1);
+    return tanggal($tanggal1);
+}
+
 function beban($data)
 {
     switch ($data) {
@@ -1678,7 +1685,7 @@ function no_urut($kd_skpd)
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut27)
             ->whereRaw("kd_skpd = '$kd_skpd'")
-            ->groupBy('kd_skpd')
+            // ->groupBy('kd_skpd')
             ->first();
         return $urut->nomor;
     } else {
@@ -1711,7 +1718,7 @@ function no_urut($kd_skpd)
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut21)
             ->whereRaw("kd_skpd = '$kd_skpd'")
-            ->groupBy('kd_skpd')
+            // ->groupBy('kd_skpd')
             ->first();
         return $urut->nomor;
     }

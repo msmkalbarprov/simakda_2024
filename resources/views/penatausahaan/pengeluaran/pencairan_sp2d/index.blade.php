@@ -24,7 +24,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 0;
                                     @endphp
                                     @foreach ($cair_sp2d->chunk(5) as $data)
@@ -59,7 +59,7 @@
                                                 </tr>
                                             @endif
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

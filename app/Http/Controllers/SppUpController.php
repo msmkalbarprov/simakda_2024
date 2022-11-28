@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\Facades\DataTables;
 
 class SppUpController extends Controller
 {
@@ -21,6 +23,20 @@ class SppUpController extends Controller
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
         ];
         return view('penatausahaan.pengeluaran.spp_up.index')->with($data);
+    }
+
+    public function loadData()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhspp')->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '1'])->orderBy('no_spp')->orderBy('kd_skpd')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("sppup.edit", Crypt::encryptString($row->no_spp)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
+            if ($row->status != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -134,6 +150,7 @@ class SppUpController extends Controller
 
     public function edit($no_spp)
     {
+        $no_spp = Crypt::decryptString($no_spp);
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'spp' => DB::table('trhspp')->where(['no_spp' => $no_spp])->first(),

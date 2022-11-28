@@ -15,13 +15,13 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 100px;text-align:center">No Penguji</th>
-                                        <th style="width: 100px;text-align:center">Tanggal</th>
-                                        <th style="width: 200px;text-align:center">Aksi</th>
+                                        <th style="width: 50px;text-align:center">No Penguji</th>
+                                        <th style="width: 50px;text-align:center">Tanggal</th>
+                                        <th style="width: 150px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 1;
                                     @endphp
                                     @foreach ($daftar_penguji->chunk(5) as $data)
@@ -40,7 +40,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

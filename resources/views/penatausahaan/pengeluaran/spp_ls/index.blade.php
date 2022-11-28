@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="spp_ls" class="table">
+                            <table id="spp_ls" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 25px">No.</th>
@@ -319,22 +319,22 @@
             });
 
             $('#bendahara').select2({
-                dropdownParent: $('#modal_cetak'),
+                dropdownParent: $('#modal_cetak .modal-content'),
                 theme: 'bootstrap-5'
             });
 
             $('#pptk').select2({
-                dropdownParent: $('#modal_cetak'),
+                dropdownParent: $('#modal_cetak .modal-content'),
                 theme: 'bootstrap-5'
             });
 
             $('#pa_kpa').select2({
-                dropdownParent: $('#modal_cetak'),
+                dropdownParent: $('#modal_cetak .modal-content'),
                 theme: 'bootstrap-5'
             });
 
             $('#ppkd').select2({
-                dropdownParent: $('#modal_cetak'),
+                dropdownParent: $('#modal_cetak .modal-content'),
                 theme: 'bootstrap-5'
             });
 
