@@ -176,7 +176,7 @@
                 alert('Keterangan Tidak boleh lebih dari 1000 karakter');
                 return;
             }
-
+            $('#simpan_spm').prop('disabled', true);
             $.ajax({
                 url: "{{ route('spm.simpan_spm') }}",
                 type: "POST",
@@ -204,17 +204,18 @@
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Gagal Simpan..!!');
-                        return;
+                        $('#simpan_spm').prop('disabled', false);
                     } else if (data.message == '1') {
                         alert('Nomor SPM Sudah Terpakai...!!!,  Ganti Nomor SPM...!!!');
-                        return;
+                        $('#simpan_spm').prop('disabled', false);
                     } else if (data.message == '3') {
                         alert(
                             'Nomor SPP Sudah Terpakai...!!!,  Pilih Nomor SPP Lainnya...!!!'
                         );
-                        return;
+                        $('#simpan_spm').prop('disabled', false);
                     } else {
                         alert('Nomor bisa dipakai');
+                        $('#simpan_spm').prop('disabled', false);
                         $('#konfirmasi_potongan').modal('show');
                     }
                 }

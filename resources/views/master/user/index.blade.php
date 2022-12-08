@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="tech-companies-1" class="table">
+                            <table id="user" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;">No.</th>
@@ -20,7 +20,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($daftar_pengguna as $user)
+                                    {{-- @foreach ($daftar_pengguna as $user)
                                         <tr>
                                             <td style="text-align: center;">{{ $loop->iteration }}</td>
                                             <td style="text-align: center;">{{ $user->username }}</td>
@@ -34,7 +34,7 @@
                                                     data-id={{ $user->id }}><i class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -54,9 +54,37 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            $('#user').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('user.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center",
+                }, {
+                    data: 'username',
+                    name: 'username',
+                }, {
+                    data: 'aksi',
+                    name: 'aksi',
+                    className: 'text-center'
+                }, ],
+            });
         });
 
-        function deleteData(id) {
+        function deleteData(id, user_id) {
+            if (id == user_id) {
+                alert('Dilarang menghapus data diri sendiri!!!');
+                return;
+            }
             var r = confirm("Hapus?");
             if (r == true) {
                 let url = '{{ route('user.destroy', ':id') }}';

@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Tambah Penerima | SIMAKDA')
+@section('title', 'Tampil Penerima | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="col-12">

@@ -20,6 +20,10 @@
                             <input type="text" class="form-control" id="ketcms" name="ketcms" hidden>
                             <input type="text" class="form-control" id="tahun_anggaran" name="tahun_anggaran"
                                 value="{{ tahun_anggaran() }}" hidden>
+                            <input type="text" class="form-control" id="persen_tunai" value="{{ $persen->persen_tunai }}"
+                                hidden>
+                            <input type="text" class="form-control" id="persen_kkpd" value="{{ $persen->persen_kkpd }}"
+                                hidden>
                         </div>
                         <label for="tgl_voucher" class="col-md-2 col-form-label">Tanggal Transaksi</label>
                         <div class="col-md-4">

@@ -86,7 +86,7 @@
                             "{{ route('skpd.simpanan_bank.setor') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_setor').prop('disabled', true);
+                        $('#simpan_setor').prop('disabled', false);
                         return;
                     }
                 }

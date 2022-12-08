@@ -460,6 +460,7 @@
                 tambah_list_potongan(rekening_transaksi, rekening_potongan, map_pot, nm_rek_pot,
                     id_billing, nilai_pot, no_spm, kd_skpd, total_pot);
             } else {
+                $('#simpan_potongan').prop('disabled', true);
                 $.ajax({
                     type: "POST",
                     url: "{{ route('spm.isi_list_pot') }}",
@@ -478,11 +479,11 @@
                                     kd_skpd, total_pot);
                             } else {
                                 alert(data1.data[0].message);
-                                return;
+                                $('#simpan_potongan').prop('disabled', false);
                             }
                         } else {
                             alert(data1.message);
-                            return;
+                            $('#simpan_potongan').prop('disabled', false);
                         }
                     }
                 })
@@ -736,7 +737,7 @@
                     ' telah ada di rincian pajak' + '!');
                 return;
             }
-
+            $('#create_billing').prop('disabled', true);
             $.ajax({
                 type: "POST",
                 url: "{{ route('spm.create_id_billing') }}",
@@ -794,8 +795,10 @@
                         $('#nama_akun_transaksi').val('');
                         $('#nama_akun_potongan').val('');
                         $('#jumlah_bayar').val('');
+                        $('#create_billing').prop('disabled', false);
                     } else {
                         alert(data1.data[0].message);
+                        $('#create_billing').prop('disabled', false);
                     }
                 }
             })
@@ -947,9 +950,10 @@
                         $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(total_pot));
+                        $('#simpan_potongan').prop('disabled', false);
                     } else {
                         alert('Data gagal ditambahkan!');
-                        return;
+                        $('#simpan_potongan').prop('disabled', false);
                     }
                 }
             })

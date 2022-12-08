@@ -34,21 +34,36 @@
                         </div>
                         {{-- Hak Akses --}}
                         <div class="mb-3 row">
-                            <label for="hak_akses" class="col-md-2 col-form-label">Hak Akses</label>
-                            <div class="col-md-10">
-                                <select class="form-control select2-multiple @error('hak_akses') is-invalid @enderror"
-                                    name="hak_akses[]" multiple="multiple" data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Hak Akses">
-                                        @foreach ($available_daftar_hak_akses as $hak_akses)
-                                            <option value="{{ $hak_akses['id'] }}"
-                                                {{ in_array($hak_akses['id'], $daftar_hak_akses) ? 'selected' : '' }}>
-                                                {{ $hak_akses['display_name'] }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                                @error('hak_akses')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <label for="hak_akses" class="col-md-12 col-form-label" style="text-align: center">Hak
+                                Akses</label>
+                            <div class="col-md-12">
+                                @foreach ($daftar_hak_akses as $daftar)
+                                    <div class="card" style="width: 100%">
+                                        <div class="card-header" style="text-align: center">
+                                            {{ $daftar->display_name }}
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3 row">
+                                                @foreach ($daftar_hak_akses1 as $hak_akses)
+                                                    @if ($daftar->id == $hak_akses->urut_akses)
+                                                        <div class="col-md-4">
+                                                            <div class="form-check form-switch form-switch-lg">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                    id="hak_akses" name="hak_akses[]"
+                                                                    value="{{ $hak_akses->id }}"
+                                                                    {{ collect($hak_akses1)->contains($hak_akses->id) ? 'checked' : '' }}>
+                                                                <label class="form-check-label">
+                                                                    {{ $hak_akses->display_name }}
+                                                                </label>
+                                                            </div>
+                                                            <br>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                         <div style="float: right;">
@@ -64,7 +79,10 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            $('.select2-multiple').select2();
+            $('.select2-multiple').select2({
+                placeholder: "Silahkan Pilih",
+                theme: 'bootstrap-5'
+            });
         });
     </script>
 @endsection

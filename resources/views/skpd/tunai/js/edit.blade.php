@@ -92,7 +92,7 @@
                             "{{ route('skpd.simpanan_bank.tunai') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_tunai').prop('disabled', true);
+                        $('#simpan_tunai').prop('disabled', false);
                         return;
                     }
                 }

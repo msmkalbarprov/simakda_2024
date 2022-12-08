@@ -49,7 +49,7 @@ class HomeController extends Controller
     {
         $id = Crypt::decryptString($id);
         $data = [
-            'user' => DB::table('user')->where(['id' => $id])->first(),
+            'user' => DB::table('pengguna')->where(['id' => $id])->first(),
             'kd_skpd' => DB::table('ms_skpd')->orderBy('kd_skpd')->get()
         ];
 
@@ -62,7 +62,7 @@ class HomeController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('user')->where(['id' => $data['id'], 'username' => $data['username']])->update([
+            DB::table('pengguna')->where(['id' => $data['id'], 'username' => $data['username']])->update([
                 'kd_skpd' => $data['kd_skpd']
             ]);
             DB::commit();

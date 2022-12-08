@@ -3,25 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PeranRequest;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $data = [
-            'daftar_peran' => DB::table('role')->get()
-        ];
+        return view('master.peran.index');
+    }
 
-        return view('master.peran.index')->with($data);
+    public function loadData()
+    {
+        $data = DB::table('peran')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("peran.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="' . route("peran.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->id . '\');" data-id="\'' . $row->id . '\'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
     {
         $data = [
-            'daftar_hak_akses' => DB::table('permission')->get()
+            'daftar_hak_akses' => DB::table('akses')
+                ->where(['urutan_menu' => '1'])
+                ->get(),
+            'daftar_hak_akses1' => DB::table('akses')
+                ->get(),
         ];
 
         return view('master.peran.create')->with($data);
@@ -36,25 +50,35 @@ class RoleController extends Controller
         $input = array_map('htmlentities', $data);
         $input_akses = array_map('htmlentities', $hak_akses);
 
-        $id = DB::table('role')->insertGetId([
-            'role' => $input['role'],
-            'nama_role' => $input['nama_role'],
-        ]);
-        if (isset($input_akses)) {
-            DB::table('permission_role')->insert(array_map(function ($value) use ($id) {
-                return ['id_permission' => $value, 'id_role' => $id, "username_created" => Auth::user()->nama, "created_at" => date('Y-m-d H:i:s')];
-            }, $input_akses));
+        DB::beginTransaction();
+        try {
+            $id = DB::table('peran')
+                ->insertGetId([
+                    'role' => $input['role'],
+                    'nama_role' => $input['nama_role'],
+                ]);
+            if (isset($input_akses)) {
+                DB::table('akses_peran')
+                    ->insert(array_map(function ($value) use ($id) {
+                        return ['id_permission' => $value, 'id_role' => $id, "username_created" => Auth::user()->nama, "created_at" => date('Y-m-d H:i:s')];
+                    }, $input_akses));
+            }
+            DB::commit();
+            return redirect()->route('peran.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput();
         }
-        return redirect()->route('peran.index');
     }
 
     public function show($id)
     {
-        $peran = DB::table('role')->where('id', $id)->first();
+        $id = Crypt::decryptString($id);
+        $peran = DB::table('peran')->where('id', $id)->first();
         $data = [
-            'daftar_hak_akses' => DB::table('permission_role')
-                ->join('permission', 'permission_role.id_permission', '=', 'permission.id')
-                ->where('permission_role.id_role', $peran->id)
+            'daftar_hak_akses' => DB::table('akses_peran')
+                ->join('akses', 'akses_peran.id_permission', '=', 'akses.id')
+                ->where('akses_peran.id_role', $peran->id)
                 ->get()
         ];
 
@@ -63,19 +87,26 @@ class RoleController extends Controller
 
     public function edit($id)
     {
-        $peran = DB::table('role')->where('id', $id)->first();
-        $daftar_hak_akses = DB::table('permission_role')
-            ->select('permission_role.id_permission')
-            ->join('permission', 'permission_role.id_permission', '=', 'permission.id')
+        $id = Crypt::decryptString($id);
+        $peran = DB::table('peran')->where('id', $id)->first();
+        $daftar_hak_akses = DB::table('akses_peran')
+            ->select('akses_peran.id_permission')
+            ->join('akses', 'akses_peran.id_permission', '=', 'akses.id')
             ->where('id_role', $peran->id)
             ->get();
         $array = json_decode(json_encode($daftar_hak_akses), true);
         $array = array_column($array, "id_permission");
         $data = [
-            'available_daftar_hak_akses' => json_decode(json_encode(DB::table('permission')->get()), true),
-            'peran' => DB::table('role')->where('id', $id)->first(),
-            'daftar_hak_akses' => $array,
+            // 'available_daftar_hak_akses' => json_decode(json_encode(DB::table('permission')->get()), true),
+            'peran' => DB::table('peran')->where('id', $id)->first(),
+            'hak_akses1' => $array,
+            'daftar_hak_akses' => DB::table('akses')
+                ->where(['urutan_menu' => '1'])
+                ->get(),
+            'daftar_hak_akses1' => DB::table('akses')
+                ->get(),
         ];
+        // dd($data['hak_akses']);
         return view('master.peran.edit')->with($data);
     }
 
@@ -87,15 +118,18 @@ class RoleController extends Controller
         $hak_akses = $input['hak_akses'];
         $input = array_map('htmlentities', $data);
         $input_akses = array_map('htmlentities', $hak_akses);
-        DB::table('role')->where('id', $id)->update([
-            'role' => $input['role'],
-            'nama_role' => $input['nama_role'],
-        ]);
 
-        $delete = DB::table('permission_role')->where('id_role', $id)->delete();
-        if ($delete) {
+        DB::beginTransaction();
+        try {
+            DB::table('peran')->where('id', $id)->update([
+                'role' => $input['role'],
+                'nama_role' => $input['nama_role'],
+            ]);
+
+            DB::table('akses_peran')->where('id_role', $id)->delete();
+
             if (isset($input_akses)) {
-                DB::table('permission_role')->insert(array_map(function ($value) use ($id) {
+                DB::table('akses_peran')->insert(array_map(function ($value) use ($id) {
                     return [
                         'id_permission' => $value,
                         'id_role' => $id,
@@ -104,19 +138,27 @@ class RoleController extends Controller
                     ];
                 }, $input_akses));
             }
+            DB::commit();
+            return redirect()->route('peran.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput();
         }
-        return redirect()->route('peran.index');
     }
 
     public function destroy($id)
     {
-        $data['role'] = DB::table('role')->where('id', $id)->delete();
-        $data['hak_akses'] = DB::table('permission_role')->where('id_role', $id)->delete();
-        if ($data) {
+        DB::beginTransaction();
+        try {
+            DB::table('peran')->where('id', $id)->delete();
+            DB::table('akses_peran')->where('id_role', $id)->delete();
+
+            DB::commit();
             return response()->json([
                 'message' => '1'
             ]);
-        } else {
+        } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => '0'
             ]);

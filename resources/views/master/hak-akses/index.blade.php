@@ -7,20 +7,14 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="tech-companies-1" class="table">
+                            <table id="hak_akses" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th>No.</th>
+                                        <th style="width: 5px">No.</th>
                                         <th>Nama</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($daftar_hak_akses as $hak_akses)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $hak_akses->display_name }}</td>
-                                        </tr>
-                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -31,4 +25,35 @@
             </div>
         </div> <!-- end col -->
     </div>
+@endsection
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#hak_akses').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('hak_akses.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center",
+                }, {
+                    data: 'display_name',
+                    name: 'display_name',
+                }, ],
+            });
+        });
+    </script>
 @endsection

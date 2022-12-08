@@ -131,7 +131,7 @@
                             "{{ route('skpd.pelimpahan.gu_index') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_pelimpahan').prop('disabled', true);
+                        $('#simpan_pelimpahan').prop('disabled', false);
                         return;
                     }
                 }

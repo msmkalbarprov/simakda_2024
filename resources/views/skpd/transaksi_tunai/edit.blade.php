@@ -19,6 +19,10 @@
                             <input type="text" class="form-control" id="ketcms" name="ketcms" hidden>
                             <input type="text" class="form-control" id="tahun_anggaran" name="tahun_anggaran"
                                 value="{{ tahun_anggaran() }}" hidden>
+                            <input type="text" class="form-control" id="persen_tunai" value="{{ $persen->persen_tunai }}"
+                                hidden>
+                            <input type="text" class="form-control" id="persen_kkpd" value="{{ $persen->persen_kkpd }}"
+                                hidden>
                         </div>
                         <div class="col-md-6">
                             <input type="text" style="border:none;background-color:white;text-align:center"
@@ -57,8 +61,10 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="beban" name="beban">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="1" {{ $transaksi->jns_spp == '1' ? 'selected' : '' }}>UP/GU</option>
-                                <option value='3' {{ $transaksi->jns_spp == '3' ? 'selected' : '' }}>TU</option>
+                                <option value="1" {{ $transaksi->jns_spp == '1' ? 'selected' : '' }}
+                                    {{ $transaksi->jns_spp != '1' ? 'disabled' : '' }}>UP/GU</option>
+                                <option value='3' {{ $transaksi->jns_spp == '3' ? 'selected' : '' }}
+                                    {{ $transaksi->jns_spp != '3' ? 'disabled' : '' }}>TU</option>
                             </select>
                         </div>
                         <label for="pembayaran" class="col-md-2 col-form-label">Pembayaran</label>
@@ -81,7 +87,8 @@
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan_transaksi" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('skpd.transaksi_tunai.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                            <a href="{{ route('skpd.transaksi_tunai.index') }}"
+                                class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
 

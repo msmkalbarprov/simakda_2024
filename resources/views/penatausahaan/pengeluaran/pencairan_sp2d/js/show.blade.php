@@ -124,6 +124,7 @@
             }
 
             // cek simpan
+            $('#pencairan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('pencairan_sp2d.cek_simpan') }}",
                 type: "POST",
@@ -134,7 +135,7 @@
                 success: function(data) {
                     if (data > 0) {
                         alert('Nomor telah dipakai!');
-                        return;
+                        $('#pencairan').prop('disabled', false);
                     } else {
                         alert('Nomor bisa dipakai!');
                         $.ajax({
@@ -154,7 +155,7 @@
                                     window.location.reload();
                                 } else {
                                     alert('SP2D Tidak berhasil dicairkan');
-                                    return;
+                                    $('#pencairan').prop('disabled', false);
                                 }
                             }
                         });
@@ -166,7 +167,7 @@
         function batal_cair() {
             let no_kas = document.getElementById('no_kas').value;
             let no_sp2d = document.getElementById('no_sp2d').value;
-
+            $('#pencairan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('pencairan_sp2d.batal_cair') }}",
                 type: "POST",
@@ -181,7 +182,7 @@
                         window.location.reload();
                     } else {
                         alert('SP2D Tidak berhasil dibatalkan');
-                        return;
+                        $('#pencairan').prop('disabled', false);
                     }
                 }
             });

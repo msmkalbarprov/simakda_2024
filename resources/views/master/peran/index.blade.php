@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="tech-companies-1" class="table">
+                            <table id="peran" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -20,7 +20,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($daftar_peran as $key => $hak_akses)
+                                    {{-- @foreach ($daftar_peran as $key => $hak_akses)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $hak_akses->role }}</td>
@@ -35,7 +35,7 @@
                                                     data-id={{ $hak_akses->id }}><i class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -54,6 +54,33 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#peran').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('peran.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center",
+                }, {
+                    data: 'role',
+                    name: 'role',
+                }, {
+                    data: 'nama_role',
+                    name: 'nama_role',
+                }, {
+                    data: 'aksi',
+                    name: 'aksi',
+                    className: 'text-center'
+                }, ],
             });
         });
 

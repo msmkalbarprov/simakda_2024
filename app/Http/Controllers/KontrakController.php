@@ -5,20 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\KontrakRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class KontrakController extends Controller
 {
     public function index()
     {
+        return view('master.kontrak.index');
+    }
+
+    public function loadData()
+    {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = [
-            'data_kontrak' => DB::table('ms_kontrak AS a')->select('a.*')->leftJoin('ms_rekening_bank_online AS b', function ($join) {
-                $join->on('a.nm_rekening', '=', 'b.nm_rekening');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->where('a.kd_skpd', $kd_skpd)->get()
-        ];
-        return view('master.kontrak.index')->with($data);
+        $data = DB::table('ms_kontrak AS a')->select('a.*')->leftJoin('ms_rekening_bank_online AS b', function ($join) {
+            $join->on('a.nm_rekening', '=', 'b.nm_rekening');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where('a.kd_skpd', $kd_skpd)->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("kontrak.show", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="' . route("kontrak.edit", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_kontrak . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -54,7 +64,10 @@ class KontrakController extends Controller
 
     public function show($id)
     {
-        $data_awal = DB::table('ms_kontrak')->where('id', $id)->first();
+        $id = Crypt::decryptString($id);
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data_awal = DB::table('ms_kontrak')->where(['no_kontrak' => $id, 'kd_skpd' => $kd_skpd])->first();
+
         $data = [
             'data' => $data_awal,
             'skpd' => DB::table('ms_skpd')->where('kd_skpd', $data_awal->kd_skpd)->first(),
@@ -66,9 +79,15 @@ class KontrakController extends Controller
 
     public function edit($id)
     {
-        $data_awal = DB::table('ms_kontrak as a')->where('id', $id)->join('ms_rekening_bank_online as b', function ($join) {
-            $join->on('a.nm_rekening', '=', 'b.nm_rekening');
-        })->select('a.*', 'b.rekening')->first();
+        $id = Crypt::decryptString($id);
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data_awal = DB::table('ms_kontrak as a')
+            ->join('ms_rekening_bank_online as b', function ($join) {
+                $join->on('a.nm_rekening', '=', 'b.nm_rekening');
+            })
+            ->select('a.*', 'b.rekening')
+            ->where(['a.no_kontrak' => $id, 'a.kd_skpd' => $kd_skpd])
+            ->first();
 
         $data = [
             'data_kontrak' => $data_awal,
@@ -82,8 +101,9 @@ class KontrakController extends Controller
 
     public function update(KontrakRequest $request, $id)
     {
+        $id = Crypt::decryptString($id);
         $input = array_map('htmlentities', $request->validated());
-        DB::table('ms_kontrak')->where('id', $id)->update([
+        DB::table('ms_kontrak')->where('no_kontrak', $id)->update([
             'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
             'nilai' => $input['nilai'],
             'kd_skpd' => $input['kd_skpd'],
@@ -99,7 +119,25 @@ class KontrakController extends Controller
 
     public function destroy($id)
     {
-        $data = DB::table('ms_kontrak')->where('id', $id)->delete();
+        $kd_skpd = Auth::user()->kd_skpd;
+        return $id;
+        $data = DB::table('ms_kontrak')->where(['no_kontrak' => $id, 'kd_skpd' => $kd_skpd])->delete();
+        if ($data) {
+            return response()->json([
+                'message' => '1'
+            ]);
+        } else {
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapus(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_kontrak = $request->no_kontrak;
+        $data = DB::table('ms_kontrak')->where(['no_kontrak' => $no_kontrak, 'kd_skpd' => $kd_skpd])->delete();
         if ($data) {
             return response()->json([
                 'message' => '1'

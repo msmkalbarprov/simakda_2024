@@ -5,7 +5,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('penerima.update', $data_penerima->id) }}" method="post">
+                    <form
+                        action="{{ route('penerima.update_penerima', ['rekening' => Crypt::encryptString($data_penerima->rekening), 'kd_skpd' => Crypt::encryptString($data_penerima->kd_skpd)]) }}"
+                        method="post">
                         @method('PUT')
                         @csrf
                         <!-- Bank -->

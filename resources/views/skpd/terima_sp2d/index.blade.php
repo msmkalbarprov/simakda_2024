@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="spm" class="table" style="width: 100%">
+                            <table id="sp2d" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
@@ -23,7 +23,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 0;
                                     @endphp
                                     @foreach ($cair_sp2d->chunk(5) as $data)
@@ -63,7 +63,7 @@
                                                 </tr>
                                             @endif
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

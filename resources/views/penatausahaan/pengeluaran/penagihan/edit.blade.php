@@ -13,30 +13,21 @@
                     <div class="mb-3 row">
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No Tersimpan</label>
                         <div class="col-md-10">
-                            <input type="text" readonly class="form-control @error('no_tersimpan') is-invalid @enderror"
-                                name="no_tersimpan" id="no_tersimpan" value="{{ $data_tagih->no_bukti }}">
-                            @error('no_tersimpan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="no_tersimpan" id="no_tersimpan"
+                                value="{{ $data_tagih->no_bukti }}">
                         </div>
                     </div>
                     <!-- No. Bast / Penagihan Tanggal Penagihan -->
                     <div class="mb-3 row">
                         <label for="no_bukti" class="col-md-2 col-form-label">No.BAST / Penagihan</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('no_bukti') is-invalid @enderror" type="text"
-                                id="no_bukti" name="no_bukti" required value="{{ $data_tagih->no_bukti }}">
-                            @error('no_bukti')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required
+                                value="{{ $data_tagih->no_bukti }}">
                         </div>
                         <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Penagihan</label>
                         <div class="col-md-4">
-                            <input type="date" class="form-control @error('tgl_bukti') is-invalid @enderror"
-                                value="{{ $data_tagih->tgl_bukti }}" id="tgl_bukti" name="tgl_bukti">
-                            @error('tgl_bukti')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="date" class="form-control" value="{{ $data_tagih->tgl_bukti }}" id="tgl_bukti"
+                                name="tgl_bukti">
                         </div>
                     </div>
                     <!-- Kode SKPD Nama SKPD -->
@@ -44,127 +35,92 @@
                         <label for="kd_skpd" class="col-md-2 col-form-label">Kode OPD / Unit</label>
                         <div class="col-md-4">
                             <input type="text" readonly name="kd_skpd" id="kd_skpd" value="{{ $data_tagih->kd_skpd }}"
-                                class="form-control @error('kd_skpd') is-invalid @enderror">
-                            @error('kd_skpd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                class="form-control">
                         </div>
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama OPD / Unit</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('nm_skpd') is-invalid @enderror"
-                                value="{{ $data_tagih->nm_skpd }}" readonly type="text"
+                            <input class="form-control" value="{{ $data_tagih->nm_skpd }}" readonly type="text"
                                 placeholder="Silahkan isi dengan nama pelaksana pekerjaan" id="nm_skpd" name="nm_skpd">
-                            @error('nm_skpd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                     <!-- Keterangan Keterangan BAST -->
                     <div class="mb-3 row">
                         <label for="ket" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-4">
-                            <textarea class="form-control @error('ket') is-invalid @enderror" type="text"
-                                placeholder="Silahkan isi dengan keterangan" id="ket" name="ket">{{ $data_tagih->ket }}</textarea>
-                            @error('ket')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <textarea class="form-control" type="text" placeholder="Silahkan isi dengan keterangan" id="ket"
+                                name="ket">{{ $data_tagih->ket }}</textarea>
                         </div>
                         <label for="ket_bast" class="col-md-2 col-form-label">Keterangan (BA)</label>
                         <div class="col-md-4">
                             <textarea type="text" name="ket_bast" placeholder="Silahkan isi dengan keterangan (BA)" id="ket_bast"
-                                class="form-control @error('ket_bast') is-invalid @enderror">{{ $data_tagih->ket_bast }}</textarea>
-                            @error('ket_bast')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                class="form-control">{{ $data_tagih->ket_bast }}</textarea>
                         </div>
                     </div>
                     <!-- Status Jenis -->
                     <div class="mb-3 row">
                         <label for="status_bayar" class="col-md-2 col-form-label">Status</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('status_bayar') is-invalid @enderror"
-                                style="width: 100%;" id="status_bayar" name="status_bayar"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Status">
-                                    <option value="" disabled selected>Silahkan Pilih Status</option>
-                                    <option value="1" {{ $data_tagih->status == '1' ? 'selected' : '' }}>Selesai
-                                    </option>
-                                    <option value="2" {{ $data_tagih->status == '2' ? 'selected' : '' }}>Belum
-                                        Selesai</option>
-                                </optgroup>
+                            <select class="form-control select2-multiple" style="width: 100%;" id="status_bayar"
+                                name="status_bayar" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Silahkan Pilih Status</option>
+                                <option value="1" {{ $data_tagih->status == '1' ? 'selected' : '' }}>Selesai
+                                </option>
+                                <option value="2" {{ $data_tagih->status == '2' ? 'selected' : '' }}>Belum
+                                    Selesai</option>
                             </select>
-                            @error('status_bayar')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
-                                style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Jenis">
-                                    <option value="" disabled selected>Silahkan Pilih Jenis</option>
-                                    <option value="" {{ $data_tagih->jenis == '' ? 'selected' : '' }}>Tanpa Termin /
-                                        Sekali Pembayaran</option>
-                                    <option value="1" {{ $data_tagih->jenis == '1' ? 'selected' : '' }}>Konstruksi
-                                        Dalam
-                                        Pengerjaan</option>
-                                    <option value="2" {{ $data_tagih->jenis == '2' ? 'selected' : '' }}>Uang Muka
-                                    </option>
-                                    <option value="3" {{ $data_tagih->jenis == '3' ? 'selected' : '' }}>Hutang Tahun
-                                        Lalu</option>
-                                    <option value="4" {{ $data_tagih->jenis == '4' ? 'selected' : '' }}>Perbulan
-                                    </option>
-                                    <option value="5" {{ $data_tagih->jenis == '5' ? 'selected' : '' }}>Bertahap
-                                    </option>
-                                    <option value="6" {{ $data_tagih->jenis == '6' ? 'selected' : '' }}>Berdasarkan
-                                        Progres / Pengajuan Pekerjaan</option>
-                                </optgroup>
+                            <select class="form-control select2-multiple" style="width: 100%;" id="jenis" name="jenis"
+                                data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Silahkan Pilih Jenis</option>
+                                <option value="" {{ $data_tagih->jenis == '' ? 'selected' : '' }}>Tanpa Termin /
+                                    Sekali Pembayaran</option>
+                                <option value="1" {{ $data_tagih->jenis == '1' ? 'selected' : '' }}>Konstruksi
+                                    Dalam
+                                    Pengerjaan</option>
+                                <option value="2" {{ $data_tagih->jenis == '2' ? 'selected' : '' }}>Uang Muka
+                                </option>
+                                <option value="3" {{ $data_tagih->jenis == '3' ? 'selected' : '' }}>Hutang Tahun
+                                    Lalu</option>
+                                <option value="4" {{ $data_tagih->jenis == '4' ? 'selected' : '' }}>Perbulan
+                                </option>
+                                <option value="5" {{ $data_tagih->jenis == '5' ? 'selected' : '' }}>Bertahap
+                                </option>
+                                <option value="6" {{ $data_tagih->jenis == '6' ? 'selected' : '' }}>Berdasarkan
+                                    Progres / Pengajuan Pekerjaan</option>
                             </select>
-                            @error('jenis')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                     <!-- No Kontrak Rekanan -->
                     <div class="mb-3 row">
                         <label for="no_kontrak" class="col-md-2 col-form-label">Nomor Kontrak</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('no_kontrak') is-invalid @enderror"
-                                style=" width: 100%;" id="no_kontrak" name="no_kontrak"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Kontrak">
-                                    <option value="" disabled selected>Kontrak | Nilai Kontrak | Lalu</option>
-                                    @foreach ($daftar_kontrak as $kontrak)
-                                        <option value="{{ $kontrak->no_kontrak }}" data-nilai="{{ $kontrak->nilai }}"
-                                            data-lalu="{{ $kontrak->lalu }}"
-                                            {{ $data_tagih->kontrak == $kontrak->no_kontrak ? 'selected' : '' }}>
-                                            {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
-                                        </option>
-                                    @endforeach
-                                </optgroup>
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="no_kontrak"
+                                name="no_kontrak" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Kontrak | Nilai Kontrak | Lalu</option>
+                                @foreach ($daftar_kontrak as $kontrak)
+                                    <option value="{{ $kontrak->no_kontrak }}" data-nilai="{{ $kontrak->nilai }}"
+                                        data-lalu="{{ $kontrak->lalu }}"
+                                        {{ $data_tagih->kontrak == $kontrak->no_kontrak ? 'selected' : '' }}>
+                                        {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('no_kontrak')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('rekanan') is-invalid @enderror"
-                                style=" width: 100%;" id="rekanan" name="rekanan" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Rekanan">
-                                    <option value="" disabled selected>Nama Rekanan | Rekening | NPWP</option>
-                                    @foreach ($daftar_rekanan as $rekanan)
-                                        <option value="{{ $rekanan->nm_rekening }}"
-                                            {{ $data_tagih->nm_rekanan == $rekanan->nm_rekening ? 'selected' : '' }}>
-                                            {{ $rekanan->nm_rekening }} | {{ $rekanan->rekening }} |
-                                            {{ $rekanan->npwp }}
-                                        </option>
-                                    @endforeach
-                                </optgroup>
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="rekanan"
+                                name="rekanan" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Nama Rekanan | Rekening | NPWP</option>
+                                @foreach ($daftar_rekanan as $rekanan)
+                                    <option value="{{ $rekanan->nm_rekening }}"
+                                        {{ $data_tagih->nm_rekanan == $rekanan->nm_rekening ? 'selected' : '' }}>
+                                        {{ $rekanan->nm_rekening }} | {{ $rekanan->rekening }} |
+                                        {{ $rekanan->npwp }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('rekanan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                     <!-- SIMPAN -->
@@ -283,229 +239,135 @@
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
                         <div class="col-md-6">
-                            <select class="form-control select2-multiple @error('kd_sub_kegiatan') is-invalid @enderror"
-                                style=" width: 100%;" id="kd_sub_kegiatan" name="kd_sub_kegiatan"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Sub Kegiatan">
-                                    <option value="" disabled selected>Kode Sub Kegiatan | Nama Sub Kegiatan</option>
-                                    @foreach ($daftar_sub_kegiatan as $sub_kegiatan)
-                                        <option value="{{ $sub_kegiatan->kd_sub_kegiatan }}"
-                                            data-nama="{{ $sub_kegiatan->nm_sub_kegiatan }}">
-                                            {{ $sub_kegiatan->kd_sub_kegiatan }} | {{ $sub_kegiatan->nm_sub_kegiatan }}
-                                        </option>
-                                    @endforeach
-                                </optgroup>
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="kd_sub_kegiatan"
+                                name="kd_sub_kegiatan" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Kode Sub Kegiatan | Nama Sub Kegiatan</option>
+                                @foreach ($daftar_sub_kegiatan as $sub_kegiatan)
+                                    <option value="{{ $sub_kegiatan->kd_sub_kegiatan }}"
+                                        data-nama="{{ $sub_kegiatan->nm_sub_kegiatan }}">
+                                        {{ $sub_kegiatan->kd_sub_kegiatan }} | {{ $sub_kegiatan->nm_sub_kegiatan }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('kd_sub_kegiatan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('nm_sub_kegiatan') is-invalid @enderror"
-                                value="{{ old('nm_sub_kegiatan') }}" id="nm_sub_kegiatan" readonly
+                            <input type="text" class="form-control" id="nm_sub_kegiatan" readonly
                                 name="nm_sub_kegiatan">
-                            @error('nm_sub_kegiatan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                     <!-- REKENING -->
                     <div class="mb-3 row">
                         <label for="kode_rekening" class="col-md-2 col-form-label">Rekening</label>
                         <div class="col-md-6">
-                            <select class="form-control select2-multiple @error('kode_rekening') is-invalid @enderror"
-                                style=" width: 100%;" id="kode_rekening" name="kode_rekening"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Rekening">
-                                    <option value="" disabled selected>Kode Rekening Ang. | Kode Rekening | Nama
-                                        Rekening | Lalu | SP2D | Anggaran</option>
-                                </optgroup>
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="kode_rekening"
+                                name="kode_rekening" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Kode Rekening Ang. | Kode Rekening | Nama
+                                    Rekening | Lalu | SP2D | Anggaran</option>
                             </select>
-                            @error('kode_rekening')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('nm_rekening') is-invalid @enderror"
-                                value="{{ old('nm_rekening') }}" id="nm_rekening" readonly name="nm_rekening">
-                            @error('nm_rekening')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control" id="nm_rekening" readonly name="nm_rekening">
                         </div>
                     </div>
                     <!-- SUMBER DANA -->
                     <div class="mb-3 row">
                         <label for="sumber_dana" class="col-md-2 col-form-label">Sumber</label>
                         <div class="col-md-6">
-                            <select class="form-control select2-multiple @error('sumber_dana') is-invalid @enderror"
-                                style=" width: 100%;" id="sumber_dana" name="sumber_dana"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Sumber Dana">
-                                    <option value="" disabled selected>Sumber Dana</option>
-                                </optgroup>
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="sumber_dana"
+                                name="sumber_dana" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Sumber Dana</option>
                             </select>
-                            @error('sumber_dana')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('nm_sumber') is-invalid @enderror"
-                                value="{{ old('nm_sumber') }}" id="nm_sumber" readonly name="nm_sumber">
-                            @error('nm_sumber')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control" id="nm_sumber" readonly name="nm_sumber">
                         </div>
                     </div>
                     <!-- TOTAL SPD -->
                     <div class="mb-3 row">
                         <label for="total_spd" class="col-md-2 col-form-label">Total SPD</label>
                         <div class="col-md-2">
-                            <input type="text" readonly class="form-control @error('total_spd') is-invalid @enderror"
-                                name="total_spd" id="total_spd">
-                            @error('total_spd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="total_spd" id="total_spd">
                         </div>
                         <label for="realisasi_spd" class="col-md-1 col-form-label">Realisasi</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('realisasi_spd') is-invalid @enderror" name="realisasi_spd"
-                                id="realisasi_spd">
-                            @error('realisasi_spd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="realisasi_spd" id="realisasi_spd">
                         </div>
                         <label for="sisa_spd" class="col-md-1 col-form-label">Sisa</label>
                         <div class="col-md-3">
-                            <input type="text" readonly class="form-control @error('sisa_spd') is-invalid @enderror"
-                                name="sisa_spd" id="sisa_spd">
-                            @error('sisa_spd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="sisa_spd" id="sisa_spd">
                         </div>
                     </div>
                     <!-- ANGKAS -->
                     <div class="mb-3 row">
                         <label for="total_angkas" class="col-md-2 col-form-label">Angkas</label>
                         <div class="col-md-2">
-                            <input type="text" readonly
-                                class="form-control @error('total_angkas') is-invalid @enderror" name="total_angkas"
-                                id="total_angkas">
-                            @error('total_angkas')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="total_angkas" id="total_angkas">
                         </div>
                         <label for="realisasi_angkas" class="col-md-1 col-form-label">Realisasi</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('realisasi_angkas') is-invalid @enderror"
-                                name="realisasi_angkas" id="realisasi_angkas">
-                            @error('realisasi_angkas')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="realisasi_angkas"
+                                id="realisasi_angkas">
                         </div>
                         <label for="sisa_angkas" class="col-md-1 col-form-label">Sisa</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('sisa_angkas') is-invalid @enderror" name="sisa_angkas"
-                                id="sisa_angkas">
-                            @error('sisa_angkas')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="sisa_angkas" id="sisa_angkas">
                         </div>
                     </div>
                     <!-- PAGU -->
                     <div class="mb-3 row">
                         <label for="total_pagu" class="col-md-2 col-form-label">Pagu</label>
                         <div class="col-md-2">
-                            <input type="text" readonly class="form-control @error('total_pagu') is-invalid @enderror"
-                                name="total_pagu" id="total_pagu">
-                            @error('total_pagu')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="total_pagu" id="total_pagu">
                         </div>
                         <label for="realisasi_pagu" class="col-md-1 col-form-label">Realisasi</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('realisasi_pagu') is-invalid @enderror" name="realisasi_pagu"
+                            <input type="text" readonly class="form-control" name="realisasi_pagu"
                                 id="realisasi_pagu">
-                            @error('realisasi_pagu')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <label for="sisa_pagu" class="col-md-1 col-form-label">Sisa</label>
                         <div class="col-md-3">
-                            <input type="text" readonly class="form-control @error('sisa_pagu') is-invalid @enderror"
-                                name="sisa_pagu" id="sisa_pagu">
-                            @error('sisa_pagu')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="sisa_pagu" id="sisa_pagu">
                         </div>
                     </div>
                     <!-- NILAI SUMBER DANA -->
                     <div class="mb-3 row">
                         <label for="nilai_sumber_dana" class="col-md-2 col-form-label">Nilai Sumber Dana</label>
                         <div class="col-md-2">
-                            <input type="text" readonly
-                                class="form-control @error('nilai_sumber_dana') is-invalid @enderror"
-                                name="nilai_sumber_dana" id="nilai_sumber_dana">
-                            @error('nilai_sumber_dana')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="nilai_sumber_dana"
+                                id="nilai_sumber_dana">
                         </div>
                         <label for="realisasi_sumber_dana" class="col-md-1 col-form-label">Realisasi</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('realisasi_sumber_dana') is-invalid @enderror"
-                                name="realisasi_sumber_dana" id="realisasi_sumber_dana">
-                            @error('realisasi_sumber_dana')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="realisasi_sumber_dana"
+                                id="realisasi_sumber_dana">
                         </div>
                         <label for="sisa_sumber_dana" class="col-md-1 col-form-label">Sisa</label>
                         <div class="col-md-3">
-                            <input type="text" readonly
-                                class="form-control @error('sisa_sumber_dana') is-invalid @enderror"
-                                name="sisa_sumber_dana" id="sisa_sumber_dana">
-                            @error('sisa_sumber_dana')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="sisa_sumber_dana"
+                                id="sisa_sumber_dana">
                         </div>
                     </div>
                     <!-- Status Anggaran -->
                     <div class="mb-3 row">
                         <label for="status_anggaran" class="col-md-2 col-form-label">Status Anggaran</label>
                         <div class="col-md-10">
-                            <input type="text" readonly
-                                class="form-control @error('status_anggaran') is-invalid @enderror"
-                                name="status_anggaran" id="status_anggaran">
-                            @error('status_anggaran')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="status_anggaran"
+                                id="status_anggaran">
                         </div>
                     </div>
                     <!-- Status Angkas -->
                     <div class="mb-3 row">
                         <label for="status_angkas" class="col-md-2 col-form-label">Status Angkas</label>
                         <div class="col-md-10">
-                            <input type="text" readonly
-                                class="form-control @error('status_angkas') is-invalid @enderror" name="status_angkas"
-                                id="status_angkas">
-                            @error('status_angkas')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" readonly class="form-control" name="status_angkas" id="status_angkas">
                         </div>
                     </div>
                     <!-- Nilai -->
                     <div class="mb-3 row">
                         <label for="nilai_penagihan" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control @error('nilai_penagihan') is-invalid @enderror"
-                                name="nilai_penagihan" id="nilai_penagihan" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
-                                data-type="currency">
-                            @error('nilai_penagihan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control" name="nilai_penagihan" id="nilai_penagihan"
+                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">
                         </div>
                     </div>
                     <div class="mb-3 row">

@@ -83,10 +83,8 @@
         });
 
         $('#simpan_penguji').on('click', function() {
-            $('#simpan_penguji').prop("disabled", true);
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
-            // let rincian_penguji = $('#rincian_penguji').DataTable();
             if (!tanggal) {
                 alert('Tanggal Bukti Tidak Boleh Kosong');
                 return;
@@ -108,6 +106,7 @@
                 return data;
             });
             // simpan daftar penguji
+            $('#simpan_penguji').prop("disabled", true);
             $.ajax({
                 url: "{{ route('daftar_penguji.simpan_penguji') }}",
                 type: "POST",

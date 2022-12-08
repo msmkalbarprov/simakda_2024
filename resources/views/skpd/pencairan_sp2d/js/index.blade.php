@@ -5,7 +5,64 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#cair_sp2d').DataTable();
+        $('#cair_sp2d').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('skpd.pencairan_sp2d.load_data') }}",
+                "type": "POST",
+            },
+            createdRow: function(row, data, index) {
+                if (data.status == 1) {
+                    $(row).css("background-color", "#4bbe68");
+                    $(row).css("color", "white");
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
+                    data: 'no_sp2d',
+                    name: 'no_sp2d',
+                    className: "text-center",
+                },
+                {
+                    data: 'no_spm',
+                    name: 'no_spm',
+                },
+                {
+                    data: 'tgl_sp2d',
+                    name: 'tgl_sp2d',
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
+                    className: "text-center",
+                },
+                {
+                    data: null,
+                    name: 'status',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status == 1) {
+                            return 'Sudah Cair';
+                        } else {
+                            return 'Belum Cair';
+                        }
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 200,
+                    className: "text-center",
+                },
+            ],
+        });
 
     });
 

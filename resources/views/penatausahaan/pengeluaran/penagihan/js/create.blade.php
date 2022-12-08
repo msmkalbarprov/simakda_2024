@@ -5,13 +5,19 @@
             theme: 'bootstrap-5'
         });
         $('#kd_sub_kegiatan').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
         $('#kode_rekening').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
         $('#sumber_dana').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
     });
 </script>
@@ -296,13 +302,7 @@
             let dana = parseFloat(selected.data('nilai')) || 0;
             let dana_lalu = parseFloat(selected.data('lalu')) || 0;
             let sisa_dana = parseFloat(dana - dana_lalu) || 0;
-            // $("#nilai_lalu").val(dana_lalu.toLocaleString('id-ID', {
-            //     minimumFractionDigits: 2
-            // }));
             $('#nilai_lalu').val(dana_lalu);
-            // $("#sisa_kontrak").val(sisa_dana.toLocaleString('id-ID', {
-            //     minimumFractionDigits: 2
-            // }));
             $('#sisa_kontrak').val(sisa_dana);
             $.ajax({
                 url: "{{ route('penagihan.cari_total_kontrak') }}",
@@ -314,9 +314,6 @@
                 },
                 success: function(data) {
                     let total_kontrak = parseFloat(data.total_kontrak) || 0;
-                    // $("#nilai_kontrak").val(total_kontrak.toLocaleString('id-ID', {
-                    //     minimumFractionDigits: 2
-                    // }));
                     $('#nilai_kontrak').val(total_kontrak);
                 }
             })
@@ -648,17 +645,18 @@
                 success: function(data) {
                     if (cek > data.nilai) {
                         alert("Nilai Penagihan Melebihi Inputan Master Kontrak.!!");
-                        exit();
+                        return;
                     } else {
                         if (tahun != tahun_anggaran) {
                             alert('Tahun tidak sama dengan tahun Anggaran');
-                            exit();
+                            return;
                         }
                         if (cstatus == false) {
                             cstatus = 0;
                         } else {
                             cstatus = 1;
                         }
+                        $('#simpan_penagihan').prop('disabled', true);
                         $.ajax({
                             url: "{{ route('penagihan.cek_simpan_penagihan') }}",
                             type: "POST",
@@ -670,7 +668,7 @@
                                 if (data.jumlah == '1') {
                                     alert("Nomor Telah Dipakai!");
                                     document.getElementById("no_bukti").focus();
-                                    exit();
+                                    $('#simpan_penagihan').prop('disabled', false);
                                 } else {
                                     alert("Nomor Bisa dipakai");
                                     simpan_penagihan(no_bukti, no_kontrak, ket,
@@ -715,10 +713,10 @@
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Gagal Simpan..!!');
-                        exit();
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else if (data.message == '1') {
                         alert('Data Sudah Ada..!!');
-                        exit();
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else {
                         simpan_detail_penagihan(no_bukti, no_kontrak, ket, ket_bast, total_nilai,
                             sisa_kontrak, tgl_bukti,
@@ -747,6 +745,7 @@
                 success: function(data) {
                     if (data.message == '5') {
                         alert('Data Detail Gagal Tersimpan');
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else {
                         alert('Data Tersimpan..!!');
                         window.location.href = "{{ route('penagihan.index') }}";

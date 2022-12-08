@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use Yajra\DataTables\Facades\DataTables;
 
 use function PHPUnit\Framework\isNull;
 
@@ -15,16 +17,24 @@ class PencairanSp2dController extends Controller
 {
     public function index()
     {
+        return view('skpd.pencairan_sp2d.index');
+    }
+
+    public function loadData()
+    {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = [
-            'cair_sp2d' => DB::table('trhsp2d')->where(['status_terima' => '1', 'kd_skpd' => $kd_skpd])->orderBy('no_sp2d')->orderBy('kd_skpd')->get()
-        ];
-        return view('skpd.pencairan_sp2d.index')->with($data);
+        $data = DB::table('trhsp2d')->where(['status_terima' => '1', 'kd_skpd' => $kd_skpd])->orderBy('no_sp2d')->orderBy('kd_skpd')->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("skpd.pencairan_sp2d.tampil_sp2d", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function tampilSp2d($no_sp2d)
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $no_sp2d = Crypt::decryptString($no_sp2d);
         $sp2d = DB::table('trhsp2d')->where(['status_terima' => '1', 'no_sp2d' => $no_sp2d])->first();
         $data = [
             'sp2d' => $sp2d,

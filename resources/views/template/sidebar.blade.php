@@ -12,7 +12,7 @@
                 </a>
             </li>
             {{-- Kelola Akses --}}
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
                     <span>Kelola Akses</span>
@@ -22,9 +22,9 @@
                     <li><a href="{{ route('peran.index') }}">Peran</a></li>
                     <li><a href="{{ route('hak-akses.index') }}">Hak Akses</a></li>
                 </ul>
-            </li>
+            </li> --}}
             {{-- Master --}}
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
                     <span>Master</span>
@@ -34,9 +34,9 @@
                     <li><a href="{{ route('kontrak.index') }}">Kontrak</a></li>
                     <li><a href="{{ route('skpd.pelimpahan_kegiatan.index') }}">Pelimpahan Sub Kegiatan</a></li>
                 </ul>
-            </li>
+            </li> --}}
             {{-- Anggaran --}}
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
                     <span>Anggaran</span>
@@ -53,9 +53,9 @@
                     </li>
                     <li><a href="{{ route('skpd.cek_rak.cek_anggaran') }}">Cek RAK</a></li>
                 </ul>
-            </li>
+            </li> --}}
             {{-- Pengeluaran --}}
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
                     <span>Penatausahaan</span>
@@ -74,9 +74,9 @@
                         </ul>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             {{-- Transaksi Bendahara --}}
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class="uil-window-section"></i>
                     <span>Transaksi Bendahara</span>
@@ -169,38 +169,83 @@
                 </ul>
             </li>
             <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="uil-window-section"></i>
+                    <span>Jurnal Koreksi Transaksi</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="true">
+                    <li><a href="{{ route('koreksi_rekening.index') }}">Koreksi Atas Kegiatan Atau Rekening</a></li>
+                    <li><a href="{{ route('koreksi_nominal.index') }}">Koreksi Atas Jumlah Nominal</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="{{ route('setting.edit') }}">
                     <i class="uil-cog"></i><span class="badge rounded-pill bg-primary float-end"></span>
                     <span>Setting</span>
                 </a>
-            </li>
-            {{-- @php
-                $daftar_menu = filter_menu();
-                $daftar_menu1 = daftar_menu();
-            @endphp
-            @foreach ($daftar_menu as $menu)
-                @if ($menu->urutan_menu == '1')
-                    <li>
+            </li> --}}
+
+            {{-- <li>
+                    @if ($menu->urutan_menu == '1')
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="uil-window-section"></i>
                             <span>{{ $menu->display_name }}</span>
                         </a>
-                        @foreach ($daftar_menu1 as $sub)
+                    @endif
+                    @foreach ($daftar_menu as $sub)
+                        @php
+                            $menu1 = $sub->name;
+                        @endphp
+                        @if ($sub->parent_id == $menu->id)
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a href="{{ route($menu1) }}">{{ $sub->display_name }}</a>
+                                </li>
+                            </ul>
+                        @endif
+                    @endforeach
+                </li> --}}
+            @php
+                $daftar_menu = filter_menu();
+                $daftar_menu1 = sub_menu();
+                $daftar_menu2 = sub_menu1();
+            @endphp
+            @foreach ($daftar_menu as $menu)
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-window-section"></i>
+                        <span>{{ $menu->display_name }}</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        @foreach ($daftar_menu1 as $submenu)
                             @php
-                                $menu1 = $sub->name;
+                                $menu1 = $submenu->name;
                             @endphp
-                            @if ($sub->parent_id == $menu->id)
-                                <ul class="sub-menu" aria-expanded="true">
+                            @if ($menu->id == $submenu->parent_id)
+                                @if ($submenu->name)
+                                    <li><a href="{{ route($menu1) }}">{{ $submenu->display_name }}</a></li>
+                                @else
                                     <li>
-                                        <a href="{{ route($menu1) }}">{{ $sub->display_name }}</a>
+                                        <a href="javascript: void(0);"
+                                            class="has-arrow">{{ $submenu->display_name }}</a>
+                                        <ul class="sub-menu" aria-expanded="true">
+                                            @foreach ($daftar_menu2 as $submenu1)
+                                                @php
+                                                    $menu2 = $submenu1->name;
+                                                @endphp
+                                                @if ($submenu->id == $submenu1->parent_id)
+                                                    <li><a href="{{ route($menu2) }}">{{ $submenu1->display_name }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
                                     </li>
-                                </ul>
+                                @endif
                             @endif
                         @endforeach
-                    </li>
-                @else
-                @endif
-            @endforeach --}}
+                    </ul>
+                </li>
+            @endforeach
         </ul>
     </div>
     <!-- Sidebar -->

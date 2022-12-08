@@ -270,6 +270,7 @@
             }
 
             // simpan sp2d
+            $('#simpan_sp2d').prop('disabled', true);
             $.ajax({
                 url: "{{ route('sp2d.simpan_sp2d') }}",
                 type: "POST",
@@ -287,7 +288,7 @@
                         window.location.href = "{{ route('spm.index') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        return;
+                        $('#simpan_sp2d').prop('disabled', false);
                     }
                 }
             })

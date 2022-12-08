@@ -5,7 +5,63 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#spm').DataTable();
+        $('#sp2d').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('terima_sp2d.load_data') }}",
+                "type": "POST",
+            },
+            createdRow: function(row, data, index) {
+                if (data.status_bud == 1) {
+                    $(row).css("background-color", "#03d3ff");
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
+                    data: 'no_sp2d',
+                    name: 'no_sp2d',
+                    className: "text-center",
+                },
+                {
+                    data: 'no_spm',
+                    name: 'no_spm',
+                },
+                {
+                    data: 'tgl_sp2d',
+                    name: 'tgl_sp2d',
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd',
+                    className: "text-center",
+                },
+                {
+                    data: null,
+                    name: 'status_terima',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_terima == 1) {
+                            return 'Sudah Diterima';
+                        } else {
+                            return 'Belum Diterima';
+                        }
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: 200,
+                    className: "text-center",
+                },
+            ],
+        });
 
     });
 

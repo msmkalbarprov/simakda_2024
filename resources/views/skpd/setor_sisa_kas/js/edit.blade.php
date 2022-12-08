@@ -186,10 +186,10 @@
                 alert('Silahkan pilih Rekening!');
                 return;
             }
-            // if (jenis_transaksi == '1' && nilai > sisa_kas_tunai) {
-            //     alert('Melebihi Kas Tunai');
-            //     return;
-            // }
+            if (jenis_transaksi == '1' && nilai > sisa_kas_tunai) {
+                alert('Melebihi Kas Tunai');
+                return;
+            }
             if (nilai == 0) {
                 alert('Nilai 0...Cek Lagi!');
                 return;

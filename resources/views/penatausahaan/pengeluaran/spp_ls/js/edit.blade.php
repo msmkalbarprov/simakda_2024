@@ -1242,7 +1242,7 @@
                 bidang,
                 rincian_rekening
             };
-            // proses simpan
+            $('#simpan_penagihan').prop('disabled', true);
             simpan_spp(data);
         });
 
@@ -1257,11 +1257,10 @@
                 success: function(response) {
                     if (response.message == '0') {
                         alert('Gagal Simpan..!!');
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else {
                         alert('Data Berhasil Tersimpan...!!!');
                         window.location.href = "{{ route('sppls.index') }}";
-                        // simpan_detail_spp(data);
                     }
                 }
             })

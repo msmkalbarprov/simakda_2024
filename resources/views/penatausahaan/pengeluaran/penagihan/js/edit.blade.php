@@ -5,13 +5,19 @@
             theme: 'bootstrap-5'
         });
         $('#kd_sub_kegiatan').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
         $('#kode_rekening').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
         $('#sumber_dana').select2({
-            dropdownParent: $('#tambah-penagihan')
+            dropdownParent: $('#tambah-penagihan .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
         });
     });
 </script>
@@ -298,13 +304,7 @@
             let dana = parseFloat(selected.data('nilai')) || 0;
             let dana_lalu = parseFloat(selected.data('lalu')) || 0;
             let sisa_dana = parseFloat(dana - dana_lalu) || 0;
-            // $("#nilai_lalu").val(dana_lalu.toLocaleString('id-ID', {
-            //     minimumFractionDigits: 2
-            // }));
             $('#nilai_lalu').val(dana_lalu);
-            // $("#sisa_kontrak").val(sisa_dana.toLocaleString('id-ID', {
-            //     minimumFractionDigits: 2
-            // }));
             $('#sisa_kontrak').val(sisa_dana);
             $.ajax({
                 url: "{{ route('penagihan.cari_total_kontrak') }}",
@@ -316,9 +316,6 @@
                 },
                 success: function(data) {
                     let total_kontrak = parseFloat(data.total_kontrak) || 0;
-                    // $("#nilai_kontrak").val(total_kontrak.toLocaleString('id-ID', {
-                    //     minimumFractionDigits: 2
-                    // }));
                     $('#nilai_kontrak').val(total_kontrak);
                 }
             })
@@ -661,6 +658,7 @@
                         } else {
                             cstatus = 1;
                         }
+                        $('#simpan_penagihan').prop('disabled', true);
                         $.ajax({
                             url: "{{ route('penagihan.cek_simpan_penagihan') }}",
                             type: "POST",
@@ -671,7 +669,7 @@
                             success: function(data) {
                                 if (data.jumlah == '1' && no_bukti != no_tersimpan) {
                                     alert("Nomor Telah Dipakai!");
-                                    return;
+                                    $('#simpan_penagihan').prop('disabled', false);
                                 } else if (data.jumlah == '0' || no_bukti ==
                                     no_tersimpan) {
                                     alert("Nomor Bisa dipakai");
@@ -718,7 +716,7 @@
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Nomor Bukti Sudah Terpakai...!!!,  Ganti Nomor Bukti...!!!');
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else if (data.message == '2') {
                         simpan_detail_penagihan(no_bukti, no_kontrak, ket, ket_bast, total_nilai,
                             sisa_kontrak, tgl_bukti,
@@ -752,6 +750,7 @@
                         window.location.href = "{{ route('penagihan.index') }}";
                     } else {
                         alert('Data Detail Gagal Tersimpan');
+                        $('#simpan_penagihan').prop('disabled', false);
                     }
                 }
             })
@@ -849,37 +848,6 @@
         let nilai_penagihan = parseFloat(nilai);
         let nilai_sementara_penagihan = angka(document.getElementById('total_input_penagihan').value);
         let nilai_rincian_penagihan = angka(document.getElementById('total_nilai').value);
-        // $.ajax({
-        //     url: "{{ route('penagihan.hapus_detail_edit_penagihan') }}",
-        //     type: "POST",
-        //     dataType: 'json',
-        //     data: {
-        //         no_bukti: no_bukti,
-        //         kd_sub_kegiatan: kd_sub_kegiatan,
-        //         kd_rek: kd_rek,
-        //         sumber: sumber,
-        //         nilai: nilai,
-        //     },
-        //     success: function(data) {
-        //         console.log(data);
-        //         if (data.message == '1') {
-        //             tabel.rows(function(idx, data, node) {
-        //                 return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-        //                     data.kd_rek == kd_rek && data.no_bukti == no_bukti
-        //             }).remove().draw();
-        //             tabel1.rows(function(idx, data, node) {
-        //                 return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-        //                     data.kd_rek == kd_rek && data.no_bukti == no_bukti
-        //             }).remove().draw();
-        //             $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
-        //             $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
-        //             alert('Data berhasil dihapus!');
-        //         } else {
-        //             alert('Data gagal dihapus!');
-        //             return;
-        //         }
-        //     }
-        // })
         let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor Bukti : ' + no_bukti);
         if (tanya == true) {
             tabel.rows(function(idx, data, node) {

@@ -23,7 +23,11 @@ class PotonganPajakCmsController extends Controller
         $data = DB::table('trhtrmpot_cmsbank as a')->select('a.*')->selectRaw("(SELECT status_upload FROM trhtransout_cmsbank WHERE no_voucher=a.no_voucher and kd_skpd=?)  as status_upload", [$kd_skpd])->selectRaw("(SELECT status_validasi FROM trhtransout_cmsbank WHERE no_voucher=a.no_voucher and kd_skpd=?)  as status_validasi", [$kd_skpd])->where(['a.kd_skpd' => $kd_skpd])->orderBy('no_bukti')->orderBy('kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("skpd.potongan_pajak_cms.edit", $row->no_bukti) . '" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="fa fa-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(' . $row->no_bukti . ',\'' . $row->no_voucher . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            if ($row->status != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(' . $row->no_bukti . ',\'' . $row->no_voucher . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            } else {
+                $btn .= '';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('skpd.potongan_pajak_cms.index');

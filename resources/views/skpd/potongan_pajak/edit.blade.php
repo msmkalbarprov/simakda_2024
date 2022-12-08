@@ -219,7 +219,8 @@
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan_potongan" class="btn btn-primary btn-md">Simpan</button>
+                            <button id="simpan_potongan" {{ $data_potongan->status == 1 ? 'disabled' : '' }}
+                                class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('skpd.potongan_pajak.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>

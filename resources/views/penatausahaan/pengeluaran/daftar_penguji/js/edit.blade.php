@@ -115,7 +115,7 @@
         });
 
         $('#simpan_penguji').on('click', function() {
-            $('#simpan_penguji').prop("disabled", true);
+
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
             if (!tanggal) {
@@ -138,6 +138,7 @@
                 return data;
             });
             // simpan daftar penguji
+            $('#simpan_penguji').prop("disabled", true);
             $.ajax({
                 url: "{{ route('daftar_penguji.simpan_edit_penguji') }}",
                 type: "POST",

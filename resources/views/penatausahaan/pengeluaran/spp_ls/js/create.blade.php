@@ -1104,6 +1104,7 @@
                 rincian_rekening
             };
             // proses simpan
+            $('#simpan_penagihan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('sppls.cek_simpan') }}",
                 type: "POST",
@@ -1114,7 +1115,7 @@
                 success: function(response) {
                     if (response == 1) {
                         alert("Nomor Telah Dipakai!");
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else {
                         alert("Nomor Bisa dipakai");
                         simpan_spp(data);
@@ -1134,11 +1135,11 @@
                 success: function(response) {
                     if (response.message == '0') {
                         alert('Gagal Simpan..!!');
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     }
                     if (response.message == '2') {
                         alert('Data Sudah Ada..!!');
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     } else {
                         simpan_detail_spp(data);
                     }
@@ -1160,7 +1161,7 @@
                         window.location.href = "{{ route('sppls.index') }}";
                     } else {
                         alert('Detail Gagal Tersimpan...!!!');
-                        return;
+                        $('#simpan_penagihan').prop('disabled', false);
                     }
                 }
             })

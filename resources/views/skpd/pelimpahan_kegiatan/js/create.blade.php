@@ -6,6 +6,23 @@
             }
         });
 
+        // function toast(tipe, pesan) {
+        //     Swal.fire({
+        //         toast: true,
+        //         icon: tipe,
+        //         title: pesan,
+        //         animation: true,
+        //         position: 'top-right',
+        //         showConfirmButton: true,
+        //         timer: 2000,
+        //         timerProgressBar: true,
+        //         didOpen: (toast) => {
+        //             toast.addEventListener('mouseenter', Swal.stopTimer)
+        //             toast.addEventListener('mouseleave', Swal.resumeTimer)
+        //         }
+        //     })
+        // }
+
         let data_sub_kegiatan = $('#data_sub_kegiatan').DataTable({
             responsive: true,
             ordering: false,
@@ -107,13 +124,33 @@
                     data: data
                 },
                 success: function(response) {
+                    return;
                     if (response.message == '1') {
-                        alert('Data berhasil ditambahkan');
-                        window.location.href =
-                            "{{ route('skpd.pelimpahan_kegiatan.index') }}";
+                        Swal.fire({
+                            position: 'top-end',
+                            title: 'Data berhasil ditambahkan!',
+                            showConfirmButton: true,
+                            width: 500,
+                            toast: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href =
+                                    "{{ route('skpd.pelimpahan_kegiatan.index') }}";
+                            } else {
+                                window.location.href =
+                                    "{{ route('skpd.pelimpahan_kegiatan.index') }}";
+                            }
+                        })
+
                     } else {
-                        alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_pelimpahan').prop('disabled', true);
+                        Swal.fire({
+                            position: 'top-end',
+                            title: 'Data tidak berhasil ditambahkan!',
+                            showConfirmButton: true,
+                            width: 500,
+                            toast: true
+                        })
+                        $('#simpan_pelimpahan').prop('disabled', false);
                         return;
                     }
                 }

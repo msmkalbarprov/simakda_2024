@@ -61,6 +61,7 @@
                 alert("Isi NPWP Terlebih Dahulu...!!!");
                 return;
             }
+            $('#simpan_spp').prop('disabled', true);
             $.ajax({
                 url: "{{ route('sppup.edit_spp') }}",
                 type: "POST",
@@ -84,10 +85,10 @@
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Gagal Simpan..!!');
-                        return;
+                        $('#simpan_spp').prop('disabled', false);
                     } else if (data.message == '2') {
                         alert('Nomor SPP Sudah Terpakai...!!!,  Ganti Nomor SPP...!!!');
-                        return;
+                        $('#simpan_spp').prop('disabled', false);
                     } else if (data.message == '1') {
                         simpan_up();
                     }
@@ -119,7 +120,7 @@
                         window.location.href = "{{ route('sppup.index') }}";
                     } else {
                         alert('Data gagal ditambahkan!');
-                        return;
+                        $('#simpan_spp').prop('disabled', false);
                     }
                 }
             })

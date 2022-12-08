@@ -2221,36 +2221,49 @@ function filter_menu()
 {
     $id = Auth::user()->id;
 
-    $hak_akses = DB::table('user_role as a')->select('c.*')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
+    $hak_akses = DB::table('pengguna as a')
+        ->join('pengguna_peran as b', 'a.id', '=', 'b.id_user')
+        ->join('peran as c', 'b.id_role', '=', 'c.id')
+        ->join('akses_peran as d', 'c.id', '=', 'd.id_role')
+        ->join('akses as e', 'd.id_permission', '=', 'e.id')
+        ->select('e.*')
+        ->where(['a.id' => $id, 'e.urutan_menu' => '1'])
+        ->get();
 
     return $hak_akses;
 }
 
-function daftar_menu()
+function sub_menu()
 {
     $id = Auth::user()->id;
 
-    $hak_akses = DB::table('user_role as a')->select('c.*')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
+    $hak_akses = DB::table('pengguna as a')
+        ->join('pengguna_peran as b', 'a.id', '=', 'b.id_user')
+        ->join('peran as c', 'b.id_role', '=', 'c.id')
+        ->join('akses_peran as d', 'c.id', '=', 'd.id_role')
+        ->join('akses as e', 'd.id_permission', '=', 'e.id')
+        ->select('e.*')
+        ->where(['a.id' => $id, 'e.urutan_menu' => '2'])
+        ->get();
 
     return $hak_akses;
 }
 
-function cek_akses()
+function sub_menu1()
 {
-    $route = Route::currentRouteName();
     $id = Auth::user()->id;
 
-    $hak_akses = DB::table('user_role as a')->select('c.name')->join('permission_role as b', 'a.id_role', '=', 'b.id_role')->join('permission as c', 'b.id_permission', '=', 'c.id')->where(['a.id_role' => $id])->get();
-    $hak = [];
-    foreach ($hak_akses as $akses) {
-        $hak[] = $akses->name;
-    }
-    if (!in_array($route, $hak)) {
-        return '0';
-    }
-    return '1';
-}
+    $hak_akses = DB::table('pengguna as a')
+        ->join('pengguna_peran as b', 'a.id', '=', 'b.id_user')
+        ->join('peran as c', 'b.id_role', '=', 'c.id')
+        ->join('akses_peran as d', 'c.id', '=', 'd.id_role')
+        ->join('akses as e', 'd.id_permission', '=', 'e.id')
+        ->select('e.*')
+        ->where(['a.id' => $id, 'e.urutan_menu' => '3'])
+        ->get();
 
+    return $hak_akses;
+}
 
 function rename_image($newfilename, $filename)
 {
@@ -2399,4 +2412,32 @@ function anggaran_rekening_objek($kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jenis_an
 {
     $data = DB::table('trdrka')->select(DB::raw("SUM(nilai) as anggaran"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'jns_ang' => $jenis_anggaran])->first();
     return $data->anggaran;
+}
+
+function no_urut_tukd()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $urut1 = DB::table('trhsp2d')->select('no_kas as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=? AND status=?", ['1', '1'])->where('kd_skpd', $kd_skpd);
+    $urut2 = DB::table('trhsp2d')->select('no_terima as nomor', DB::raw("'Penerimaan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_terima)=? AND status_terima=?", ['1', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut1);
+    $urut3 = DB::table('trhtransout')->select('no_bukti as nomor', DB::raw("'Pembayaran Transaksi' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where(function ($query) {
+        $query->where('panjar', '!=', '3')->orWhereNull('panjar');
+    })->unionAll($urut2)->where('kd_skpd', $kd_skpd);
+    $urut4 = DB::table('tr_panjar')->select('no_panjar as nomor', DB::raw("'Pemberian Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_panjar)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut3);
+    $urut5 = DB::table('tr_jpanjar')->select('no_kas as nomor', DB::raw("'Pertanggungjawaban Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut4);
+    $urut6 = DB::table('trhtrmpot')->select('no_bukti as nomor', DB::raw("'Penerimaan Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut5);
+    $urut7 = DB::table('trhstrpot')->select('no_bukti as nomor', DB::raw("'Penyetoran Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut6);
+    $urut8 = DB::table('trhkasin_pkd')->select(DB::raw("no_sts as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>?", ['1', '4'])->where('kd_skpd', $kd_skpd)->unionAll($urut7);
+    $urut9 = DB::table('trhkasin_pkd')->select(DB::raw("(no_sts+1) as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>? AND pot_khusus=?", ['1', '4', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut8);
+    $urut10 = DB::table('tr_ambilsimpanan')->select(DB::raw("(no_bukti+1) as nomor"), DB::raw("'Ambil Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut9);
+    $urut11 = DB::table('tr_setorsimpanan')->select('no_kas as nomor', DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut10);
+    $urut12 = DB::table('tr_setorsimpanan')->select(DB::raw("(no_kas+1) as nomor"), DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=? AND jenis=?", ['1', '2'])->where('kd_skpd', $kd_skpd)->unionAll($urut11);
+    $urut13 = DB::table('TRHINLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Terima lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(NO_BUKTI)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut12);
+    $urut14 = DB::table('TRHOUTLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Keluar lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut13);
+
+    $urut = DB::table(DB::raw("({$urut14->toSql()}) AS sub"))
+        ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
+        ->mergeBindings($urut14)
+        ->first();
+    return $urut->nomor;
 }

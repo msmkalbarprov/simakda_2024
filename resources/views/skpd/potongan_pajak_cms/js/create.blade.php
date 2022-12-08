@@ -349,8 +349,6 @@
         });
 
         $('#simpan_potongan').on('click', function() {
-            $('#simpan_potongan').prop('disabled', true);
-
             let no_bukti = document.getElementById('no_bukti').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let npwp = document.getElementById('npwp').value;
@@ -446,6 +444,7 @@
                 total_potongan
             };
             // Simpan Potongan
+            $('#simpan_potongan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('skpd.potongan_pajak_cms.simpan_potongan') }}",
                 type: "POST",

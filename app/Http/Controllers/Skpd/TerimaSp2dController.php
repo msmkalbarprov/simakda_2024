@@ -5,21 +5,31 @@ namespace App\Http\Controllers\Skpd;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TerimaSp2dController extends Controller
 {
     public function index()
     {
+        return view('skpd.terima_sp2d.index');
+    }
+
+    public function loadData()
+    {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = [
-            'cair_sp2d' => DB::table('trhsp2d')->where(['kd_skpd' => $kd_skpd, 'status_bud' => '1'])->orderBy('no_sp2d')->orderBy('kd_skpd')->get()
-        ];
-        return view('skpd.terima_sp2d.index')->with($data);
+        $data = DB::table('trhsp2d')->where(['kd_skpd' => $kd_skpd, 'status_bud' => '1'])->orderBy('no_sp2d')->orderBy('kd_skpd')->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("terima_sp2d.tampil_sp2d", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function tampilSp2d($no_sp2d)
     {
+        $no_sp2d = Crypt::decryptString($no_sp2d);
         $data_sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
         $nilai = DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $data_sp2d->no_spp])->first();
         if (in_array($data_sp2d->jns_spp, ['1', '2', '4', '5'])) {

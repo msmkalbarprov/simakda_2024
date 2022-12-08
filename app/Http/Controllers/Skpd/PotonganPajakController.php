@@ -23,10 +23,13 @@ class PotonganPajakController extends Controller
         $data = DB::table('trhtrmpot')->where(['kd_skpd' => $kd_skpd])->orderBy('no_bukti')->orderBy('kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("skpd.potongan_pajak.edit", $row->no_bukti) . '" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="fa fa-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            if ($row->status != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            } else {
+                $btn .= '';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
-        return view('skpd.potongan_pajak.index');
     }
 
     public function create()

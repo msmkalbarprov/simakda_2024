@@ -7,12 +7,12 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{'Kontrak'}}</h4>
+                        <h4 class="mb-0">{{ 'Kontrak' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                                <li class="breadcrumb-item active">{{'Kontrak'}}</li>
+                                <li class="breadcrumb-item active">{{ 'Kontrak' }}</li>
                             </ol>
                         </div>
 
@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="tech-companies-1" class="table">
+                            <table id="kontrak" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -40,7 +40,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_kontrak as $data)
+                                    {{-- @foreach ($data_kontrak as $data)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $data->no_kontrak }}</td>
@@ -59,7 +59,7 @@
                                                     data-id={{ $data->id }}><i class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -79,28 +79,74 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            $('#kontrak').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('kontrak.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'no_kontrak',
+                        name: 'no_kontrak',
+                    },
+                    {
+                        data: 'nilai',
+                        name: 'nilai',
+                    },
+                    {
+                        data: null,
+                        name: 'nm_kerja',
+                        render: function(data, type, row, meta) {
+                            return data.nm_kerja.substr(0, 10) + '.....';
+                        }
+                    },
+                    {
+                        data: 'nmpel',
+                        name: 'nmpel',
+                    },
+                    {
+                        data: 'tgl_kerja',
+                        name: 'tgl_kerja',
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        className: 'text-center',
+                        width: 150
+                    },
+                ],
+            });
         });
 
-        function deleteData(id) {
-            var r = confirm("Hapus?");
-            if (r == true) {
-                let url = '{{ route('kontrak.destroy', ':id') }}';
-                url = url.replace(':id', id);
+        function deleteData(no_kontrak) {
+            let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor : ' + no_kontrak);
+            if (tanya == true) {
                 $.ajax({
-                    url: url,
-                    type: 'DELETE',
+                    url: "{{ route('kontrak.hapus') }}",
+                    type: "POST",
+                    dataType: 'json',
                     data: {
-                        id: id,
+                        no_kontrak: no_kontrak,
                     },
                     success: function(data) {
                         if (data.message == '1') {
-                            alert('Data berhasil dihapus!');
+                            alert('Proses Hapus Berhasil');
                             window.location.reload();
                         } else {
-                            alert('Data gagal dihapus!');
+                            alert('Proses Hapus Gagal...!!!');
                         }
                     }
-                });
+                })
             } else {
                 return false;
             }

@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="tech-companies-1" class="table">
+                            <table id="penerima" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -23,7 +23,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_penerima as $key => $data)
+                                    {{-- @foreach ($data_penerima as $key => $data)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $data->rekening }}</td>
@@ -41,7 +41,7 @@
                                                         class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -60,6 +60,53 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#penerima').DataTable({
+                responsive: true,
+                ordering: false,
+                serverSide: true,
+                processing: true,
+                lengthMenu: [5, 10],
+                ajax: {
+                    "url": "{{ route('penerima.load_data') }}",
+                    "type": "POST",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'rekening',
+                        name: 'rekening',
+                    },
+                    {
+                        data: 'nm_rekening',
+                        name: 'nm_rekening',
+                    },
+                    {
+                        data: 'nm_bank',
+                        name: 'nm_bank',
+                    },
+                    {
+                        data: 'npwp',
+                        name: 'npwp',
+                    },
+                    {
+                        data: null,
+                        name: 'keterangan',
+                        render: function(data, type, row, meta) {
+                            return data.keterangan.substr(0, 10) + '.....';
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        className: 'text-center',
+                        width: 150
+                    },
+                ],
             });
         });
 

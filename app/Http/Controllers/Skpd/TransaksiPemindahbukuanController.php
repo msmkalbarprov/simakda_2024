@@ -21,7 +21,7 @@ class TransaksiPemindahbukuanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('trhtransout as a')->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("(SELECT COUNT(*) FROM trhtrmpot WHERE no_kas=a.no_bukti AND kd_skpd=a.kd_skpd) as kete"), DB::raw("(SELECT COUNT(*) FROM trlpj z JOIN trhlpj v ON v.no_lpj=z.no_lpj WHERE v.jenis=a.jns_spp AND z.no_bukti=a.no_bukti AND z.kd_skpd=a.kd_skpd) as ketlpj"), DB::raw("'0' as ketspj"))->selectRaw("(SELECT rekening FROM ms_skpd WHERE kd_skpd=?) as rekening_awal", [$kd_skpd])->where(['a.panjar' => '0', 'a.kd_skpd' => $kd_skpd, 'a.pay' => 'BANK'])->orderBy(DB::raw("CAST(a.no_bukti as numeric)"))->orderBy('a.kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("skpd.transaksi_pemindahbukuan.edit", $row->no_bukti) . '" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="fa fa-eye"></i></a>';
+            $btn = '<a href="' . route("skpd.transaksi_pemindahbukuan.edit", $row->no_bukti) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -41,7 +41,8 @@ class TransaksiPemindahbukuanController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd, 'b.status_sub_kegiatan' => '1', 'b.jns_ang' => $jns_ang])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->get(),
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
-            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
         return view('skpd.transaksi_pemindahbukuan.create')->with($data);
     }
@@ -182,7 +183,8 @@ class TransaksiPemindahbukuanController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd, 'b.status_sub_kegiatan' => '1', 'b.jns_ang' => $jns_ang])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->get(),
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
-            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_pemindahbukuan.edit')->with($data);

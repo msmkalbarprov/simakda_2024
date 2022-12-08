@@ -7,13 +7,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{'Edit Kontrak'}}</h4>
+                        <h4 class="mb-0">{{ 'Edit Kontrak' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{'Kontrak'}}</a></li>
-                                <li class="breadcrumb-item active">{{'Edit Kontrak'}}</li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{ 'Kontrak' }}</a></li>
+                                <li class="breadcrumb-item active">{{ 'Edit Kontrak' }}</li>
                             </ol>
                         </div>
 
@@ -23,7 +23,8 @@
             <!-- end page title -->
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('kontrak.update', $data_kontrak->id) }}" method="post">
+                    <form action="{{ route('kontrak.update', Crypt::encryptString($data_kontrak->no_kontrak)) }}"
+                        method="post">
                         @method('PUT')
                         @csrf
                         <!-- Kode SKPD -->

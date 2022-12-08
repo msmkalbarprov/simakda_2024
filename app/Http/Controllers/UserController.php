@@ -7,9 +7,11 @@ use Exception;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -19,11 +21,18 @@ class UserController extends Controller
             abort(401);
         }
 
-        $data = [
-            'daftar_pengguna' => DB::table('user')->get()
-        ];
+        return view('master.user.index');
+    }
 
-        return view('master.user.index')->with($data);
+    public function loadData()
+    {
+        $data = DB::table('pengguna')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("user.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="' . route("user.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->id . '\', \'' . Auth::user()->id . '\');" data-id="\'' . $row->id . '\'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -33,7 +42,7 @@ class UserController extends Controller
         }
 
         $data = [
-            'daftar_role' => DB::table('role')->get(),
+            'daftar_role' => DB::table('peran')->get(),
             'daftar_skpd' => DB::table('ms_skpd')->get()
         ];
 
@@ -43,17 +52,28 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $input = array_map('htmlentities', $request->validated());
-        DB::table('user')->insert([
-            'username' => $input['username'],
-            'password' => Hash::make($input['password']),
-            'nama' => $input['nama'],
-            'kd_skpd' => $input['kd_skpd'],
-            'is_admin' => $input['tipe'],
-            'status' => $input['status'],
-            'role' => $input['peran'],
-        ]);
 
-        return redirect()->route('user.index');
+        DB::beginTransaction();
+        try {
+            $id = DB::table('pengguna')->insertGetId([
+                'username' => $input['username'],
+                'password' => Hash::make($input['password']),
+                'nama' => $input['nama'],
+                'kd_skpd' => $input['kd_skpd'],
+                'is_admin' => $input['tipe'],
+                'status' => $input['status'],
+                'role' => $input['peran'],
+            ]);
+            DB::table('pengguna_peran')->insert([
+                'id_user' => $id,
+                'id_role' => $input['peran'],
+            ]);
+            DB::commit();
+            return redirect()->route('user.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput();
+        }
     }
 
     public function show($id)
@@ -61,11 +81,11 @@ class UserController extends Controller
         if (Gate::denies('akses')) {
             abort(401);
         }
-
-        $user = DB::table('user')->where('id', decrypt($id))->first();
+        $id = Crypt::decryptString($id);
+        $user = DB::table('pengguna')->where('id', $id)->first();
         $data = [
             'user' => $user,
-            'role' => DB::table('role')->where('id', $user->role)->first()
+            'role' => DB::table('peran')->where('id', $user->role)->first()
         ];
 
         return view('master.user.show')->with($data);
@@ -76,13 +96,13 @@ class UserController extends Controller
         if (Gate::denies('akses')) {
             abort(401);
         }
-
-        $user = DB::table('user')->where('id', $id)->first();
+        $id = Crypt::decryptString($id);
+        $user = DB::table('pengguna')->where('id', $id)->first();
         $data = [
             'user' => $user,
-            'daftar_role' => DB::table('role')->get(),
+            'daftar_role' => DB::table('peran')->get(),
             'daftar_skpd' => DB::table('ms_skpd')->get(),
-            'role' => DB::table('role')->where('id', $user->role)->first(),
+            'role' => DB::table('peran')->where('id', $user->role)->first(),
         ];
 
         return view('master.user.edit')->with($data);
@@ -91,14 +111,27 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         $input = array_map('htmlentities', $request->validated());
-        DB::table('user')->where('id', $id)->update([
-            'username' => $input['username'],
-            'nama' => $input['nama'],
-            'kd_skpd' => $input['kd_skpd'],
-            'is_admin' => $input['tipe'],
-            'status' => $input['status'],
-            'role' => $input['peran'],
-        ]);
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengguna')->where('id', $id)->update([
+                'username' => $input['username'],
+                'nama' => $input['nama'],
+                'kd_skpd' => $input['kd_skpd'],
+                'is_admin' => $input['tipe'],
+                'status' => $input['status'],
+                'role' => $input['peran'],
+            ]);
+            DB::table('pengguna_peran')->where(['id_user' => $id])->update([
+                'id_role' => $input['peran'],
+            ]);
+            DB::commit();
+            return redirect()->route('user.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput();
+        }
+
 
         return redirect()->route('user.index');
     }
@@ -113,7 +146,7 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('user')->where('id', $id)->delete();
+            DB::table('pengguna')->where('id', $id)->delete();
             DB::commit();
             return response()->json([
                 'message' => '1'

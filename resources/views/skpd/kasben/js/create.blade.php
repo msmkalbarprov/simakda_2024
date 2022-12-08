@@ -88,7 +88,7 @@
                             "{{ route('skpd.simpanan_bank.kasben') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_kasben').prop('disabled', true);
+                        $('#simpan_kasben').prop('disabled', false);
                         return;
                     }
                 }

@@ -36,7 +36,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 0;
                                     @endphp
                                     @foreach ($data_cms->chunk(5) as $data)
@@ -85,7 +85,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

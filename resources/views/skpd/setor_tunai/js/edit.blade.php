@@ -115,10 +115,10 @@
                 return;
             }
 
-            // if (nilai > sisa_tunai) {
-            //     alert('Nilai Lebih Besar dari Sisa Tunai');
-            //     return;
-            // }
+            if (nilai > sisa_tunai) {
+                alert('Nilai Lebih Besar dari Sisa Tunai');
+                return;
+            }
 
             if (!kd_skpd) {
                 alert('Kode SKPD Tidak Boleh Kosong');

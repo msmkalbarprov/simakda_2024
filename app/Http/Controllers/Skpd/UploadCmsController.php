@@ -32,15 +32,30 @@ class UploadCmsController extends Controller
             $join->on('c.kd_skpd', '=', 'a.kd_skpd');
         })->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'c.bersih')->selectRaw("CASE WHEN a.jns_spp IN('4','6') THEN (SELECT SUM(x.nilai) as tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd=b.kd_skpd AND x.no_spm=b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd=c.kd_skpd AND b.no_sp2d=c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d=a.no_sp2d AND c.jns_spp IN('4','6')) ELSE 0 END as tot_pot", [$kd_skpd])->where(['a.kd_skpd' => $kd_skpd, 'status_upload' => '0'])->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'c.bersih', 'a.jns_spp')->orderBy(DB::raw("CAST(a.no_voucher as int)"))->orderBy('a.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.upload_cms.index');
     }
 
     public function draftUpload()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('trhupload_cmsbank as a')->where(['a.kd_skpd' => $kd_skpd])->orderBy(DB::raw("CAST(a.no_upload as int)"))->orderBy('a.kd_skpd')->get();
-        return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.upload_cms.index');
+        $data = DB::table('trhtransout_cmsbank as a')
+            ->leftJoin('trdtransout_cmsbank as b', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+            })
+            ->leftJoin('trdupload_cmsbank as c', function ($join) {
+                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+                $join->on('a.no_voucher', '=', 'c.no_voucher');
+            })
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_tgl,a.no_voucher,a.tgl_voucher,a.no_sp2d,a.ket,a.total,a.status_upload,a.tgl_upload,a.status_validasi,a.tgl_validasi,a.rekening_awal,a.nm_rekening_tujuan,a.rekening_tujuan,a.bank_tujuan,a.ket_tujuan,b.kd_sub_kegiatan,b.nm_sub_kegiatan,c.no_upload,c.no_upload_tgl")
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'a.status_validasi' => '0'])
+            ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_tgl,a.no_voucher,a.tgl_voucher,a.no_sp2d,a.ket,a.total,a.status_upload,a.tgl_upload,a.status_validasi,a.tgl_validasi,a.rekening_awal,a.nm_rekening_tujuan,a.rekening_tujuan,a.bank_tujuan,a.ket_tujuan,b.kd_sub_kegiatan,b.nm_sub_kegiatan,c.no_upload,c.no_upload_tgl")
+            ->orderByRaw("cast(c.no_upload as int),cast(a.no_voucher as int),a.kd_skpd")
+            ->get();
+        return Datatables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="javascript:void(0);" onclick="lihatDataUpload(\'' . $row->no_upload . '\',\'' . $row->total . '\');" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="batalUpload(\'' . $row->no_upload . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function rekeningTransaksi(Request $request)
@@ -371,6 +386,5 @@ class UploadCmsController extends Controller
             $join->on('c.kd_skpd', '=', 'b.kd_skpd');
         })->select('d.ket', 'b.kd_skpd', 'b.no_voucher', 'b.tgl_voucher', 'a.no_upload', 'a.tgl_upload', 'a.total', 'b.nilai', 'b.status_upload', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.ket_tujuan', 'c.bersih', DB::raw("b.nilai - c.bersih as pot"))->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload])->groupBy('b.kd_skpd', 'b.no_voucher', 'b.tgl_voucher', 'a.no_upload', 'a.tgl_upload', 'a.total', 'b.nilai', 'b.status_upload', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.ket_tujuan', 'c.bersih', 'd.ket')->orderBy(DB::raw("CAST(a.no_upload as int)"))->orderBy('b.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.upload_cms.index');
     }
 }

@@ -35,7 +35,7 @@ class PelimpahanKegiatanController extends Controller
         $kd_bpp = Auth::user()->kd_bpp;
 
         $data = [
-            'daftar_bpp' => DB::table('user')->where(['kd_skpd' => $kd_skpd])->whereNotIn('kd_bpp', [$kd_bpp])->whereRaw("id NOT IN (SELECT id_user FROM pelimpahan_kegiatan WHERE kd_skpd=?)", $kd_skpd)->get(),
+            'daftar_bpp' => DB::table('pengguna')->where(['kd_skpd' => $kd_skpd])->whereNotIn('kd_bpp', [$kd_bpp])->whereRaw("id NOT IN (SELECT id_user FROM pelimpahan_kegiatan WHERE kd_skpd=?)", $kd_skpd)->get(),
             'daftar_kegiatan' => DB::table('trdrka')->select('kd_sub_kegiatan', 'nm_sub_kegiatan', 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->groupBy('kd_sub_kegiatan', 'nm_sub_kegiatan', 'kd_skpd')->get()
         ];
 

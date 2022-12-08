@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,8 +23,10 @@ class TransaksiTunaiController extends Controller
 
         $data = DB::table('trhtransout as a')->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("'' as kete"), DB::raw("(SELECT COUNT(*) FROM trlpj z JOIN trhlpj v ON v.no_lpj=z.no_lpj WHERE v.jenis=a.jns_spp AND z.no_bukti=a.no_bukti AND z.kd_bp_skpd=a.kd_skpd) as ketlpj"), DB::raw("CASE WHEN a.tgl_bukti<'2018-01-01' THEN 1 ELSE 0 END as ketspj"))->where(['a.panjar' => '0', 'a.kd_skpd' => $kd_skpd, 'a.pay' => 'TUNAI'])->orderBy(DB::raw("CAST(a.no_bukti as numeric)"))->orderBy('a.kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("skpd.transaksi_tunai.edit", $row->no_bukti) . '" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="fa fa-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn = '<a href="' . route("skpd.transaksi_tunai.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            if ($row->ketlpj != 1) {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('skpd.transaksi_tunai.index');
@@ -36,6 +39,7 @@ class TransaksiTunaiController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::table('trdrka as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd])->whereRaw("left(a.kd_rek6,1)=?", ['5'])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->orderBy('a.nm_sub_kegiatan')->get(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
         return view('skpd.transaksi_tunai.create')->with($data);
     }
@@ -312,6 +316,7 @@ class TransaksiTunaiController extends Controller
     public function edit($no_bukti)
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $no_bukti = Crypt::decryptString($no_bukti);
 
         $data = [
             'transaksi' => DB::table('trhtransout as a')->join('trdtransout as b', function ($join) {
@@ -324,6 +329,7 @@ class TransaksiTunaiController extends Controller
             })->select('a.*')->where(['a.kd_skpd' => $kd_skpd, 'a.no_bukti' => $no_bukti, 'b.pay' => 'TUNAI'])->get(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::table('trdrka as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd])->whereRaw("left(a.kd_rek6,1)=?", ['5'])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->orderBy('a.nm_sub_kegiatan')->get(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
         return view('skpd.transaksi_tunai.edit')->with($data);
     }

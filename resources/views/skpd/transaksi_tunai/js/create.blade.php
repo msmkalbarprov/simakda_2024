@@ -6,9 +6,6 @@
             }
         });
 
-        $('#volume').prop('disabled', true);
-        $('#satuan').prop('disabled', true);
-
         let rincian_rekening = $('#rincian_rekening').DataTable({
             responsive: true,
             processing: true,
@@ -150,13 +147,14 @@
             let beban = document.getElementById('beban').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
-            if (beban && kd_skpd && tgl_bukti) {
+            let pembayaran = document.getElementById('pembayaran').value;
+            if (beban && kd_skpd && tgl_bukti && pembayaran) {
                 status_anggaran();
                 status_angkas();
                 $('#modal_rekening').modal('show');
             } else {
                 Swal.fire({
-                    title: 'Harap Isi Kode SKPD, Tanggal Transaksi & Jenis Beban SP2D',
+                    title: 'Harap Isi Kode SKPD, Tanggal Transaksi, Pembayaran & Jenis Beban SP2D',
                     confirmButtonColor: '#5b73e8',
                 })
             }
@@ -226,8 +224,8 @@
             $('#total_sisa').val(null);
             cari_rekening(no_sp2d);
             load_sisa_bank();
-            load_sisa_tunai();
-            load_potongan_ls(no_sp2d);
+            load_sisa_tunai(no_sp2d);
+            // load_potongan_ls(no_sp2d);
         });
 
         $('#kd_rekening').on('select2:select', function() {
@@ -410,6 +408,11 @@
                 return;
             }
 
+            if (!pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             if (pembayaran == 'TUNAI' && (nilai > total_sisa)) {
                 alert('Total Transaksi melebihi Sisa Kas Tunai');
                 return;
@@ -500,7 +503,34 @@
             rincian_rekening.clear().draw();
             input_rekening.clear().draw();
             $('#total').val(null);
+            $('#sisa_tunai').val(null);
+            $('#sisa_kas').val(null);
+            $('#potongan_ls').val(null);
+            $('#total_sisa').val(null);
             $('#total_input_rekening').val(null);
+            $('#kd_sub_kegiatan').val(null).change();
+            $('#nm_sub_kegiatan').val(null);
+            $('#no_sp2d').empty();
+            $('#kd_rekening').empty();
+            $('#nm_rekening').val(null);
+            $('#sumber').empty();
+            $('#nm_sumber').val(null);
+
+            $('#total_spd').val(null);
+            $('#realisasi_spd').val(null);
+            $('#sisa_spd').val(null);
+
+            $('#total_angkas').val(null);
+            $('#realisasi_angkas').val(null);
+            $('#sisa_angkas').val(null);
+
+            $('#total_anggaran').val(null);
+            $('#realisasi_anggaran').val(null);
+            $('#sisa_anggaran').val(null);
+
+            $('#total_sumber').val(null);
+            $('#realisasi_sumber').val(null);
+            $('#sisa_sumber').val(null);
         });
 
         $('#simpan_transaksi').on('click', function() {
@@ -562,6 +592,11 @@
                 return;
             }
 
+            if (!pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             if (pembayaran == 'TUNAI' && total > total_sisa) {
                 alert('Nilai Melebihi sisa KAS Tunai');
                 return;
@@ -584,11 +619,6 @@
 
             if (!keterangan) {
                 alert('Keterangan Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!pembayaran) {
-                alert('Jenis Pembayaran Tidak Boleh Kosong');
                 return;
             }
 
@@ -627,7 +657,7 @@
                             "{{ route('skpd.transaksi_tunai.index') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_transaksi').prop('disabled', true);
+                        $('#simpan_transaksi').prop('disabled', false);
                         return;
                     }
                 }
@@ -714,14 +744,23 @@
                 dataType: 'json',
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
+                    let persen_kkpd = document.getElementById('persen_kkpd').value;
+                    let persen_tunai = document.getElementById('persen_tunai').value;
+                    let beban = document.getElementById('beban').value;
+                    let sisa_kas;
+                    if (beban == 1) {
+                        sisa_kas = (persen_kkpd / 100) * nilai;
+                    } else {
+                        sisa_kas = (persen_tunai / 100) * nilai;
+                    }
                     $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(nilai))
+                    }).format(sisa_kas));
                 }
             })
         }
 
-        function load_sisa_tunai() {
+        function load_sisa_tunai(no_sp2d) {
             $.ajax({
                 url: "{{ route('skpd.transaksi_tunai.sisa_tunai') }}",
                 type: "POST",
@@ -730,7 +769,8 @@
                     let nilai = parseFloat(data.terima - data.keluar) || 0;
                     $('#sisa_tunai').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(nilai))
+                    }).format(nilai));
+                    load_potongan_ls(no_sp2d);
                 }
             })
         }
@@ -836,8 +876,6 @@
                     kd_rekening: kd_rekening,
                 },
                 success: function(data) {
-                    console.log(data.total);
-                    console.log(realisasi_spd);
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.total));

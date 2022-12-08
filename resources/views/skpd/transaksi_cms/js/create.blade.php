@@ -592,6 +592,11 @@
                 return;
             }
 
+            if (!pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             if (pembayaran == 'BANK' && (nilai > total_sisa)) {
                 alert('Total Transaksi melebihi Sisa Simpanan Bank');
                 return;
@@ -900,7 +905,7 @@
                 rincian_rekening,
                 rincian_rek_tujuan
             };
-
+            $('#simpan_cms').prop('disabled', true);
             $.ajax({
                 url: "{{ route('skpd.transaksi_cms.cek_simpan') }}",
                 type: "POST",
@@ -911,7 +916,7 @@
                 success: function(data) {
                     if (data == '1') {
                         alert('Nomor Telah Dipakai!');
-                        return;
+                        $('#simpan_cms').prop('disabled', false);
                     } else {
                         alert("Nomor Bisa dipakai");
                         simpan_cms(response);
@@ -931,7 +936,7 @@
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Gagal Simpan...!!');
-                        return;
+                        $('#simpan_cms').prop('disabled', false);
                     } else if (data.message == '1') {
                         simpan_detail_cms(response);
                     }
@@ -950,7 +955,7 @@
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Data Gagal Tersimpan...!!!');
-                        return;
+                        $('#simpan_cms').prop('disabled', false);
                     } else if (data.message == '1') {
                         alert('Data Berhasil Tersimpan...!!!');
                         window.location.href = "{{ route('skpd.transaksi_cms.index') }}";
@@ -1062,9 +1067,18 @@
                 dataType: 'json',
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
+                    let persen_kkpd = document.getElementById('persen_kkpd').value;
+                    let persen_tunai = document.getElementById('persen_tunai').value;
+                    let beban = document.getElementById('beban').value;
+                    let sisa_kas;
+                    if (beban == 1) {
+                        sisa_kas = (persen_kkpd / 100) * nilai;
+                    } else {
+                        sisa_kas = (persen_tunai / 100) * nilai;
+                    }
                     $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(nilai))
+                    }).format(sisa_kas));
                 }
             })
         }

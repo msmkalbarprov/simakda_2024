@@ -16,6 +16,7 @@ use App\Http\Controllers\SppUpController;
 use App\Http\Controllers\SpmController;
 use App\Http\Controllers\Sp2dController;
 use App\Http\Controllers\DaftarPengujiController;
+use App\Http\Controllers\JurnalKoreksiController;
 use App\Http\Controllers\PencairanSp2dController;
 use App\Http\Controllers\Skpd\PencairanSp2dController as CairSp2dController;
 use App\Http\Controllers\Skpd\TerimaSp2dController;
@@ -57,15 +58,24 @@ Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'kelola-akses'], function () {
         Route::resource('hak-akses', PermissionController::class);
+        Route::post('data_hak_akses', [PermissionController::class, 'loadData'])->name('hak_akses.load_data');
         Route::resource('peran', RoleController::class);
+        Route::post('data_peran', [RoleController::class, 'loadData'])->name('peran.load_data');
         Route::resource('user', UserController::class);
+        Route::post('data_pengguna', [UserController::class, 'loadData'])->name('user.load_data');
     });
 
     // index, create, store, update, show, destroy
 
     Route::group(['prefix' => 'master'], function () {
         Route::resource('penerima', PenerimaController::class);
+        Route::get('penerima/show/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'showPenerima'])->name('penerima.show_penerima');
+        Route::get('penerima/edit/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'editPenerima'])->name('penerima.edit_penerima');
+        Route::put('penerima/update/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'updatePenerima'])->name('penerima.update_penerima');
+        Route::post('load_penerima', [PenerimaController::class, 'loadData'])->name('penerima.load_data');
         Route::resource('kontrak', KontrakController::class);
+        Route::post('hapus_kontrak', [KontrakController::class, 'hapus'])->name('kontrak.hapus');
+        Route::post('load_kontrak', [KontrakController::class, 'loadData'])->name('kontrak.load_data');
 
         Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
         Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
@@ -250,11 +260,13 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         // Terima SP2D
         Route::group(['prefix' => 'terima_sp2d'], function () {
             Route::get('', [TerimaSp2dController::class, 'index'])->name('terima_sp2d.index');
+            Route::post('load_data', [TerimaSp2dController::class, 'loadData'])->name('terima_sp2d.load_data');
             Route::get('tampil_sp2d/{no_sp2d?}', [TerimaSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('terima_sp2d.tampil_sp2d');
         });
         // Pencairan SP2D
         Route::group(['prefix' => 'pencairan_sp2d'], function () {
             Route::get('', [CairSp2dController::class, 'index'])->name('skpd.pencairan_sp2d.index');
+            Route::post('load_data', [CairSp2dController::class, 'loadData'])->name('skpd.pencairan_sp2d.load_data');
             Route::get('tampil_sp2d/{no_sp2d?}', [CairSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.tampil_sp2d');
             Route::post('batal_cair', [CairSp2dController::class, 'batalCair'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.batal_cair');
             Route::post('simpan_cair', [CairSp2dController::class, 'simpanCair'])->where('no_sp2d', '(.*)')->name('skpd.pencairan_sp2d.simpan_cair');
@@ -262,6 +274,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
         // Transaksi CMS
         Route::group(['prefix' => 'transaksi_cms'], function () {
             Route::get('', [TransaksiCmsController::class, 'index'])->name('skpd.transaksi_cms.index');
+            Route::post('load_data', [TransaksiCmsController::class, 'loadData'])->name('skpd.transaksi_cms.load_data');
             Route::get('tambah', [TransaksiCmsController::class, 'create'])->name('skpd.transaksi_cms.create');
             Route::post('no_urut', [TransaksiCmsController::class, 'no_urut'])->name('skpd.transaksi_cms.no_urut');
             Route::post('skpd', [TransaksiCmsController::class, 'skpd'])->name('skpd.transaksi_cms.skpd');
@@ -651,6 +664,34 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::get('cetak_bp_pajak5', [BpPajakController::class, 'cetakBpPajak5'])->name('skpd.laporan_bendahara.cetak_bp_pajak5');
             Route::post('cari_jenis', [BpPajakController::class, 'cariJenis'])->name('cetak_bppajak.cari_jenis');
             Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
+        });
+
+        Route::group(['prefix' => 'jurnal_koreksi'], function () {
+            // Koreksi Atas Kegiatan atau Rekening
+            Route::group(['prefix' => 'koreksi_rekening'], function () {
+                Route::get('', [JurnalKoreksiController::class, 'indexRekening'])->name('koreksi_rekening.index');
+                Route::post('load_data_rekening', [JurnalKoreksiController::class, 'loadDataRekening'])->name('koreksi_rekening.load_data');
+                Route::get('tambah', [JurnalKoreksiController::class, 'tambahRekening'])->name('koreksi_rekening.create');
+                Route::post('no_sp2d', [JurnalKoreksiController::class, 'nomorSp2d'])->name('koreksi_rekening.no_sp2d');
+                Route::post('rekening', [JurnalKoreksiController::class, 'rekening'])->name('koreksi_rekening.rekening');
+                Route::post('sumber', [JurnalKoreksiController::class, 'sumber'])->name('koreksi_rekening.sumber');
+                Route::post('rekening_koreksi', [JurnalKoreksiController::class, 'rekeningKoreksi'])->name('koreksi_rekening.rekening_koreksi');
+                Route::post('sumber_koreksi', [JurnalKoreksiController::class, 'sumberKoreksi'])->name('koreksi_rekening.sumber_koreksi');
+                Route::post('simpan_koreksi', [JurnalKoreksiController::class, 'simpanKoreksi'])->name('koreksi_rekening.simpan_koreksi');
+                Route::get('edit_koreksi_rekening/{no_bukti?}', [JurnalKoreksiController::class, 'editRekening'])->where('no_bukti', '(.*)')->name('koreksi_rekening.edit');
+                Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateRekening'])->name('koreksi_rekening.update');
+                Route::post('hapus_rekening', [JurnalKoreksiController::class, 'hapusRekening'])->name('koreksi_rekening.hapus');
+            });
+            // Koreksi Atas Nominal
+            Route::group(['prefix' => 'koreksi_nominal'], function () {
+                Route::get('', [JurnalKoreksiController::class, 'indexNominal'])->name('koreksi_nominal.index');
+                Route::post('load_data_rekening', [JurnalKoreksiController::class, 'loadDataNominal'])->name('koreksi_nominal.load_data');
+                Route::get('tambah', [JurnalKoreksiController::class, 'tambahNominal'])->name('koreksi_nominal.create');
+                Route::post('simpan_koreksi', [JurnalKoreksiController::class, 'simpanNominal'])->name('koreksi_nominal.simpan_koreksi');
+                Route::get('edit_koreksi_nominal/{no_bukti?}', [JurnalKoreksiController::class, 'editNominal'])->where('no_bukti', '(.*)')->name('koreksi_nominal.edit');
+                Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateNominal'])->name('koreksi_nominal.update');
+                Route::post('hapus_rekening', [JurnalKoreksiController::class, 'hapusNominal'])->name('koreksi_nominal.hapus');
+            });
         });
     });
 

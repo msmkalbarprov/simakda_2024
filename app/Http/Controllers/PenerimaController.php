@@ -5,18 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PenerimaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Yajra\DataTables\Facades\DataTables;
 
 class PenerimaController extends Controller
 {
     public function index()
     {
-        $data = [
-            'data_penerima' => DB::table('ms_rekening_bank_online')->get()
-        ];
+        return view('master.penerima.index');
+    }
 
-        return view('master.penerima.index')->with($data);
+    public function loadData()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('ms_rekening_bank_online')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("penerima.show_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="' . route("penerima.edit_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->rekening . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -51,11 +61,13 @@ class PenerimaController extends Controller
         return redirect()->route('penerima.index');
     }
 
-    public function show($id)
+    public function showPenerima($rekening, $kd_skpd)
     {
-        $data_awal = DB::table('ms_rekening_bank_online')->where('id', $id)->first();
+        $rekening = Crypt::decryptString($rekening);
+        $kd_skpd = Crypt::decryptString($kd_skpd);
+        $data_awal = DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->first();
         $data = [
-            'data_penerima' => DB::table('ms_rekening_bank_online')->where('id', $id)->first(),
+            'data_penerima' => DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->first(),
             'bank' => DB::table('ms_bank_online')->where('kd_bank', $data_awal->kd_bank)->first(),
             'billing' => DB::table('ms_map_billing')->where('kd_map', $data_awal->kd_map)->where('kd_setor', $data_awal->kd_setor)->first(),
         ];
@@ -63,11 +75,14 @@ class PenerimaController extends Controller
         return view('master.penerima.show')->with($data);
     }
 
-    public function edit($id)
+    public function editPenerima($rekening, $kd_skpd)
     {
-        $data_awal = DB::table('ms_rekening_bank_online')->where('id', $id)->first();
+        $rekening = Crypt::decryptString($rekening);
+        $kd_skpd = Crypt::decryptString($kd_skpd);
+
+        $data_awal = DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->first();
         $data = [
-            'data_penerima' => DB::table('ms_rekening_bank_online')->where('id', $id)->first(),
+            'data_penerima' => $data_awal,
             'daftar_bank' => DB::table('ms_bank_online')->get(),
             'nama_bank' => DB::table('ms_bank_online')->where('kd_bank', $data_awal->kd_bank)->first(),
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
@@ -76,15 +91,18 @@ class PenerimaController extends Controller
         return view('master.penerima.edit')->with($data);
     }
 
-    public function update(PenerimaRequest $request, $id)
+    public function updatePenerima(PenerimaRequest $request, $rekening, $kd_skpd)
     {
-        DB::table('ms_rekening_bank_online')->where('id', $id)->update([
+        $rekening = Crypt::decryptString($rekening);
+        $kd_skpd = Crypt::decryptString($kd_skpd);
+
+        DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->update([
             'kd_bank' => $request['bank'],
             'rekening' => $request['no_rekening_validasi'],
             'nm_rekening' => $request['nm_rekening_validasi'],
             'bank' => $request['cabang'],
             'nm_bank' => $request['nama_cabang'],
-            'kd_skpd' => session()->get('kd_skpd'),
+            'kd_skpd' => $kd_skpd,
             'jenis' => $request['jenis'],
             'npwp' => $request['npwp_validasi'],
             'nm_wp' => $request['nm_npwp_validasi'],

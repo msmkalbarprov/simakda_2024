@@ -40,7 +40,7 @@ class TransaksiKKPDController extends Controller
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'persen' => DB::table('config_app')->select('persen_kkpd')->first(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_kkpd.create')->with($data);
@@ -511,7 +511,7 @@ class TransaksiKKPDController extends Controller
                 $join->on('a.no_voucher', '=', 'b.no_voucher');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->where(['a.no_voucher' => $no_voucher, 'a.kd_skpd' => $kd_skpd])->select('a.*')->get(),
-            'persen' => DB::table('config_app')->select('persen_kkpd')->first(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_kkpd.edit')->with($data);
@@ -1029,7 +1029,7 @@ class TransaksiKKPDController extends Controller
             })->where(['b.kd_skpd' => $kd_skpd])->select('b.no_sp2d', 'a.jns_spp')->groupBy('b.no_sp2d', 'jns_spp')->orderBy('no_sp2d')->get(),
             'daftar_rekanan' => $rekanan,
             'daftar_rek' => DB::table('ms_pot')->select('kd_rek6', 'nm_rek6')->get(),
-            'tahun_anggaran' => tahun_anggaran()
+            'tahun_anggaran' => tahun_anggaran(),
         ];
 
         return view('skpd.potongan_kkpd.edit')->with($data);

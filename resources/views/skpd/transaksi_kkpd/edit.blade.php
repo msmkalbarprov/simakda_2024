@@ -26,6 +26,8 @@
                             <input type="text" class="form-control" id="ketcms" name="ketcms" hidden>
                             <input type="text" class="form-control" id="persen_kkpd" value="{{ $persen->persen_kkpd }}"
                                 hidden>
+                            <input type="text" class="form-control" id="persen_tunai" value="{{ $persen->persen_tunai }}"
+                                hidden>
                         </div>
                     </div>
                     {{-- No bukti cms dan jenis beban --}}

@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PermissionController extends Controller
 {
     public function index()
     {
-        $data = [
-            'daftar_hak_akses' => DB::table('permission')->get()
-        ];
-        return view('master.hak-akses.index')->with($data);
+        return view('master.hak-akses.index');
+    }
+
+    public function loadData()
+    {
+        $data = DB::table('akses')->get();
+        return DataTables::of($data)->addIndexColumn()->make(true);
     }
 }

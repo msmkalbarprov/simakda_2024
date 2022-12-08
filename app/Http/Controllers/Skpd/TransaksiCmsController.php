@@ -6,19 +6,31 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransaksiCmsController extends Controller
 {
     public function index()
     {
-        $kd_skpd = Auth::user()->kd_skpd;
-        $data = [
-            'data_cms' => DB::table('trhtransout_cmsbank as a')->where(['a.panjar' => '0', 'kd_skpd' => $kd_skpd])->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("'' as kete"))->orderBy('tgl_voucher')->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('kd_skpd')->get()
-        ];
+        return view('skpd.transaksi_cms.index');
+    }
 
-        return view('skpd.transaksi_cms.index')->with($data);
+    public function loadData()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhtransout_cmsbank as a')->where(['a.panjar' => '0', 'kd_skpd' => $kd_skpd])->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("'' as kete"))->orderBy('tgl_voucher')->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('kd_skpd')->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            if ($row->status_upload == '1' || $row->status_trmpot == '1') {
+                $btn = '';
+            } else {
+                $btn = '<a href="' . route("skpd.transaksi_cms.edit", Crypt::encryptString($row->no_voucher)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_voucher . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
     }
 
     public function create()
@@ -27,7 +39,8 @@ class TransaksiCmsController extends Controller
         $data = [
             'data_rek' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
-            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get()
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_cms.create')->with($data);
@@ -504,6 +517,7 @@ class TransaksiCmsController extends Controller
     // EDIT
     public function edit($no_voucher)
     {
+        $no_voucher = Crypt::decryptString($no_voucher);
         $kd_skpd = Auth::user()->kd_skpd;
 
         $rek_tujuan = DB::table('trdtransout_transfercms as a')->join('trhtransout_cmsbank as b', function ($join) {
@@ -524,7 +538,8 @@ class TransaksiCmsController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->where(['a.no_voucher' => $no_voucher, 'a.kd_skpd' => $kd_skpd])->select('a.*')->get(),
             'rincian_rek_tujuan' => $rek_tujuan,
-            'total_transfer' => $total_transfer
+            'total_transfer' => $total_transfer,
+            'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_cms.edit')->with($data);

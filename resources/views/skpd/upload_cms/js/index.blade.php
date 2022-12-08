@@ -152,14 +152,19 @@
                     }
                 },
                 {
-                    data: null,
+                    data: 'aksi',
                     name: 'aksi',
-                    width: '100px',
-                    render: function(data, type, row, meta) {
-                        return `<button type="button" onclick="lihatDataUpload('${data.no_upload}','${data.total}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>
-                        <a href = "javascript:void(0);" onclick = "batalUpload('${data.no_upload}','${data.kd_skpd}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
-                    }
+                    className: 'text-center'
                 },
+                // {
+                //     data: null,
+                //     name: 'aksi',
+                //     width: '100px',
+                //     render: function(data, type, row, meta) {
+                //         return `<button type="button" onclick="lihatDataUpload('${data.no_upload}','${data.total}')" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></button>
+                //         <a href = "javascript:void(0);" onclick = "batalUpload('${data.no_upload}','${data.kd_skpd}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`;
+                //     }
+                // },
             ],
         });
 
