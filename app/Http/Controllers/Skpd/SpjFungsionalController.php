@@ -22,7 +22,7 @@ class SpjFungsionalController extends Controller
         $jns_anggaran   = $request->jns_anggaran ;
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
-        $kd_skpd        = Auth::user()->kd_skpd;
+        $kd_skpd        = $request->kd_skpd;
         $tahun_anggaran = tahun_anggaran();
         // get daerah
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();

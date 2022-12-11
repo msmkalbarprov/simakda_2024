@@ -18,7 +18,8 @@ class LaporanBendaharaController extends Controller
             'bendahara' => DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd,'kode'=>'BK'])->orderBy('nip')->orderBy('nama')->get(),
             'pa_kpa' => DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->whereIn('kode',['PA','KPA'])->orderBy('nip')->orderBy('nama')->get(),
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
-            'jns_anggaran' => jenis_anggaran()
+            'jns_anggaran' => jenis_anggaran(),
+            'jns_anggaran2' => jenis_anggaran()
         ];
 
         return view('skpd.laporan_bendahara.index')->with($data);
@@ -69,6 +70,24 @@ class LaporanBendaharaController extends Controller
             $kd_skpd    = $request->kd_skpd;
         }
         $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->whereIn('kode',['PA','KPA'])->orderBy('nip')->orderBy('nama')->get();
+        return response()->json($data);
+
+    }
+
+    function cariSubkegiatan(Request $request)
+    {
+        $kd_skpd        = $request->kd_skpd;
+        $jns_anggaran   = $request->jns_anggaran;
+        $data           = DB::table('trskpd')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $jns_anggaran])->orderBy('kd_sub_kegiatan')->get();
+        return response()->json($data);
+
+    }
+    function cariAkunBelanja(Request $request)
+    {
+        $kd_skpd        = $request->kd_skpd;
+        $jns_anggaran   = $request->jns_anggaran;
+        $subkegiatan    = $request->subkegiatan;
+        $data           = DB::table('trdrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $jns_anggaran, 'kd_sub_kegiatan' => $subkegiatan])->orderBy('kd_rek6')->get();
         return response()->json($data);
 
     }
