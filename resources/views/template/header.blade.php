@@ -171,10 +171,13 @@
                     <a class="dropdown-item" href="#"><i
                             class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i> <span
                             class="align-middle">Ubah Password</span></a>
+                    @if(Auth::user()->is_admin==2)
                     <a class="dropdown-item"
                         href="{{ route('ubah_skpd', Crypt::encryptString(Auth::user()->id)) }}"><i
                             class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span
                             class="align-middle">Ganti SKPD</span></a>
+                    @endif
+                    
                     <a class="dropdown-item"
                         href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
                             class="uil
