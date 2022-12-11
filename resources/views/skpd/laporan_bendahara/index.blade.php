@@ -393,7 +393,17 @@
                             @enderror
                     </div>
                 </div>
-             
+                <div class="mb-3 row" id="row-hidden4">
+                    <div class="col-md-6">
+                        <label for="pil_sppspmsp2d" class="form-label">Pilih Format</label>
+                        <select class="form-control select2-modal" id="pil_sppspmsp2d" name="pil_sppspmsp2d">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="SPP" >Register SPP</option>
+                                <option value="SPM" >Register SPM</option>
+                                <option value="SP2D" >Register SP2D</option>
+                        </select>
+                    </div>
+                </div>
                
                 <div class="mb-3 row">
                     <div class="col-md-12 text-center">
@@ -623,6 +633,10 @@
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
+        $('#pil_sppspmsp2d').select2({
+            dropdownParent: $('#modal_cetak'),
+            theme: 'bootstrap-5'
+        });
         $('#jns_cetaksubrincianobjek').select2({
             dropdownParent: $('#modal_cetak2'),
             theme: 'bootstrap-5'
@@ -686,6 +700,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
     $('#lapspj').on('click', function() {
@@ -696,6 +711,7 @@
             document.getElementById('row-hidden').hidden        = false; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapspja').on('click', function() {
@@ -706,6 +722,7 @@
             document.getElementById('row-hidden').hidden        = false; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapbpbank').on('click', function() {
@@ -717,6 +734,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -729,6 +747,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -741,6 +760,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = false;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -753,6 +773,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -764,6 +785,7 @@
             document.getElementById('row-hidden').hidden        = false; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapkasab').on('click', function() {
@@ -776,6 +798,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapdth').on('click', function() {
@@ -788,6 +811,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapregpajak').on('click', function() {
@@ -800,6 +824,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = false;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapregcp').on('click', function() {
@@ -812,6 +837,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
     });
 
     $('#lapregsppspm').on('click', function() {
@@ -823,6 +849,7 @@
             document.getElementById('row-hidden').hidden        = true;      // Hide
             document.getElementById('row-hidden2').hidden        = true;      // Hide
             document.getElementById('row-hidden3').hidden        = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = false;      // Hide
             cari_skpd(kd_skpd,'unit');
     });
 
@@ -839,6 +866,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden       = true;      // Hide
             document.getElementById('row-hidden3').hidden       = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             document.getElementById('jenissro').hidden          = false;      // Hide
             document.getElementById('jeniskk').hidden           = true;      // Hide
             document.getElementById('periode1').hidden          = false;      // Hide
@@ -859,6 +887,7 @@
             document.getElementById('row-hidden').hidden        = true; //show
             document.getElementById('row-hidden2').hidden       = true;      // Hide
             document.getElementById('row-hidden3').hidden       = true;      // Hide
+            document.getElementById('row-hidden4').hidden        = true;      // Hide
             document.getElementById('jenissro').hidden          = true;      // Hide
             document.getElementById('jeniskk').hidden           = false;      // show
             document.getElementById('periode1').hidden          = true;      // Hide
@@ -1129,24 +1158,24 @@
 
             // CETAK BKU
             $('.bku_layar').on('click', function() {
-                let spasi       = document.getElementById('spasi').value;
-                let bulan       = document.getElementById('bulan').value;
-                let tgl_ttd     = document.getElementById('tgl_ttd').value;
-                let bendahara   = document.getElementById('bendahara').value;
-                let pa_kpa      = document.getElementById('pa_kpa').value;
-                let kd_skpd     = document.getElementById('kd_skpd').value;
-                let jns_anggaran= document.getElementById('jns_anggaran').value;
-                let jenis_print = $(this).data("jenis");
-                let pajak1      = document.getElementById('pajak1').value;
-                let pajak2      = document.getElementById('pajak2').value;
-                let pajak3      = document.getElementById('pajak3').value;
-                let regpajak1   = document.getElementById('pil_reg_pajak').value;
-                let regpajak2   = document.getElementById('pil_reg_pajak2').value;
-                let jenis_cetak = document.getElementById('labelcetak').textContent
-                let jenis_cetak2= document.getElementById('labelcetak2').textContent
-                
-                let jenis_cetak3= document.getElementById('jns_cetaksubrincianobjek').value
-                let jenis_cetak4= document.getElementById('jns_cetak_kk').value
+                let spasi           = document.getElementById('spasi').value;
+                let bulan           = document.getElementById('bulan').value;
+                let tgl_ttd         = document.getElementById('tgl_ttd').value;
+                let bendahara       = document.getElementById('bendahara').value;
+                let pa_kpa          = document.getElementById('pa_kpa').value;
+                let kd_skpd         = document.getElementById('kd_skpd').value;
+                let jns_anggaran    = document.getElementById('jns_anggaran').value;
+                let jenis_print     = $(this).data("jenis");
+                let pajak1          = document.getElementById('pajak1').value;
+                let pajak2          = document.getElementById('pajak2').value;
+                let pajak3          = document.getElementById('pajak3').value;
+                let regpajak1       = document.getElementById('pil_reg_pajak').value;
+                let regpajak2       = document.getElementById('pil_reg_pajak2').value;
+                let regsppspmsp2d   = document.getElementById('pil_sppspmsp2d').value;
+                let jenis_cetak     = document.getElementById('labelcetak').textContent
+                let jenis_cetak2    = document.getElementById('labelcetak2').textContent
+                let jenis_cetak3    = document.getElementById('jns_cetaksubrincianobjek').value
+                let jenis_cetak4    = document.getElementById('jns_cetak_kk').value
 
 
                 // subrincian objek
@@ -1434,6 +1463,7 @@
                     searchParams.append("bendahara", bendahara);
                     searchParams.append("pa_kpa", pa_kpa);
                     searchParams.append("bulan", bulan);
+                    searchParams.append("jenis_reg", regsppspmsp2d);
                     searchParams.append("jns_anggaran",jns_anggaran);
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);

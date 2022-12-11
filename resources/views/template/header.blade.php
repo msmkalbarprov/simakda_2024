@@ -185,7 +185,12 @@
                     </form>
                 </div>
             </div>
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
+                    <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="50">
 
+                </button>
+            </div>
         </div>
     </div>
 </header>

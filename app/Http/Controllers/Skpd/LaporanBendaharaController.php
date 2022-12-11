@@ -101,13 +101,16 @@ class LaporanBendaharaController extends Controller
             $bendahara      = $request->bendahara ;
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
             $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
+            // rekal 
+            $stmt      = DB::update("exec recall_skpd ?", array($kd_skpd));
+            
             $data_tahun_lalu = DB::table('ms_skpd')
             ->select(DB::raw('isnull(sld_awal,0) AS nilai'),'sld_awalpajak')
             ->where('kd_skpd', $kd_skpd)
@@ -253,40 +256,6 @@ class LaporanBendaharaController extends Controller
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
 
-
-                // $saldo_pajak10 = DB::select("SELECT ISNULL(SUM(terima_lalu),0) as terima_lalu, ISNULL(SUM(terima_ini),0) as terima_ini, ISNULL(SUM(terima),0) as terima, ISNULL(SUM(setor_lalu),0) as setor_lalu, ISNULL(SUM(setor_ini),0) as setor_ini, ISNULL(SUM(setor),0) as setor, ISNULL(SUM(terima)-SUM(setor),0) as sisa
-                //             FROM
-                //             (
-                //             SELECT RTRIM(map_pot) as kd_rek6, nm_rek6 nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210106010001','210105020001 ','210105010001 ','210105030001','210109010001'))a
-                //             LEFT JOIN 
-                //             (SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)<? THEN b.nilai ELSE 0 END) AS terima_lalu,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)=? THEN b.nilai ELSE 0 END) AS terima_ini,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)<=? THEN b.nilai ELSE 0 END) AS terima,
-                //             0 as setor_lalu,
-                //             0 as setor_ini,
-                //             0 as setor
-                //             FROM trhtrmpot a
-                //             INNER JOIN trdtrmpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                //             LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
-                //             WHERE a.kd_skpd=?								
-                //             GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd 
-
-                //             UNION ALL
-
-                //             SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
-                //             0 as terima_lalu,
-                //             0 as terima_ini,
-                //             0 as terima,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)<? THEN b.nilai ELSE 0 END) AS setor_lalu,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)=? THEN b.nilai ELSE 0 END) AS setor_ini,
-                //             SUM(CASE WHEN MONTH(tgl_bukti)<=? THEN b.nilai ELSE 0 END) AS setor
-                //             FROM trhstrpot a
-                //             INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                //             LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
-                //             WHERE a.kd_skpd=?				
-                //             GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd
-                //         )b ON a.kd_rek6=b.kd_rek6", [$bulan,$bulan,$bulan,$kd_skpd,$bulan,$bulan,$bulan,$kd_skpd]);
 
         // KIRIM KE VIEW
             $data = [

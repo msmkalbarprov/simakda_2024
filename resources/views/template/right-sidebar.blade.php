@@ -2,7 +2,7 @@
     <div data-simplebar class="h-100">
         <div class="rightbar-title d-flex align-items-center p-3">
 
-            <h5 class="m-0 me-2">Settings</h5>
+            <h5 class="m-0 me-2">Profile</h5>
 
             <a href="javascript:void(0);" class="right-bar-toggle ms-auto">
                 <i class="mdi mdi-close noti-icon"></i>
@@ -13,7 +13,7 @@
         <hr class="m-0" />
 
         <div class="p-4">
-            <h6 class="mb-3">Layout</h6>
+            {{-- <h6 class="mb-3">Layout</h6>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="layout" id="layout-vertical" value="vertical">
                 <label class="form-check-label" for="layout-vertical">Vertical</label>
@@ -109,6 +109,52 @@
                 <input class="form-check-input" type="radio" name="layout-direction" id="layout-direction-rtl"
                     value="rtl">
                 <label class="form-check-label" for="layout-direction-rtl">RTL</label>
+            </div> --}}
+
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="dropdown float-end">
+                            <a class="text-body dropdown-toggle font-size-18" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                              <i class="uil uil-ellipsis-v"></i>
+                            </a>
+                          
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">Edit</a>
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Remove</a>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div>
+                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="80">
+                        </div>
+                        <h5 class="mt-3 mb-1">{{ Auth::user()->nama }}</h5>
+                        <p class="text-muted">{{ cari_nama(Auth::user()->role,'peran','id','nama_role') }}</p>
+
+                        
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-muted">
+                        
+                        <div class="table-responsive mt-4">
+                            <div>
+                                <p class="mb-1">Nama :</p>
+                                <h5 class="font-size-16">{{ Auth::user()->nama }}</h5>
+                            </div>
+                            <div class="mt-4">
+                                <p class="mb-1">SKPD :</p>
+                                <h5 class="font-size-16">{{ Auth::user()->kd_skpd }}</h5>
+                            </div>
+                            <div class="mt-4">
+                                <p class="mb-1">SKPD :</p>
+                                <h5 class="font-size-16">{{ cari_nama(Auth::user()->kd_skpd,'ms_skpd','kd_skpd','nm_skpd') }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

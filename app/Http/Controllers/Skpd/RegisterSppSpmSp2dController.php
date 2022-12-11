@@ -21,6 +21,7 @@ class RegisterSppSpmSp2dController extends Controller
             $bendahara      = $request->bendahara ;
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
+            $jenis_reg      = $request->jenis_reg;
             $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
             
@@ -30,14 +31,35 @@ class RegisterSppSpmSp2dController extends Controller
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
             $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
 
-            $rincian = DB::select("SELECT 
-                        a.tgl_spp,a.no_spp,a.keperluan,a.jns_spp,SUM(b.nilai) nilai 
+            if($jenis_reg=='SPP'){
+                $rincian = DB::select("SELECT a.tgl_spp as tanggal,a.no_spp as nomor,a.keperluan,a.jns_spp,SUM(b.nilai) nilai 
                         FROM trhspp a 
                         INNER JOIN trdspp b ON a.kd_skpd=b.kd_skpd AND a.no_spp=b.no_spp
                         WHERE (a.sp2d_batal=0 OR a.sp2d_batal is NULL) and  month(a.tgl_spp)<= ?
                         and a.kd_skpd= ?
                         GROUP BY a.tgl_spp,a.no_spp,a.keperluan,a.jns_spp
                         ORDER BY a.tgl_spp,a.no_spp",[$bulan,$kd_skpd]);
+            }else if($jenis_reg=='SPM'){
+                $rincian = DB::select("SELECT a.tgl_spm as tanggal,a.no_spm as nomor,a.keperluan,a.jns_spp,SUM(c.nilai) nilai 
+                                    FROM trhspm a 
+                                    INNER JOIN trhspp b ON a.no_spp=b.no_spp AND a.kd_skpd=b.kd_skpd
+                                    INNER JOIN trdspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
+                                    WHERE (b.sp2d_batal=0 OR b.sp2d_batal is NULL) and month(a.tgl_spm)<= ?
+                                    and a.kd_skpd= ?
+                                    GROUP BY a.tgl_spm,a.no_spm,a.keperluan,a.jns_spp
+                                    ORDER BY a.tgl_spm,a.no_spm",[$bulan,$kd_skpd]);
+            }else{
+                $rincian = DB::select("SELECT a.tgl_sp2d as tanggal,a.no_sp2d as nomor,a.no_spm,a.no_spp,a.keperluan,a.jns_spp,SUM(d.nilai) nilai 
+                                        FROM trhsp2d a 
+                                        INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd=b.kd_skpd
+                                        INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
+                                        INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd=d.kd_skpd
+                                        WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.tgl_sp2d)<= ?
+                                        and a.kd_skpd= ?
+                                        GROUP BY a.tgl_sp2d,a.no_sp2d,a.no_spm,a.no_spp,a.keperluan,a.jns_spp
+                                        ORDER BY a.tgl_sp2d,a.no_sp2d",[$bulan,$kd_skpd]);
+            }
+            
         
 
         // KIRIM KE VIEW
@@ -48,12 +70,17 @@ class RegisterSppSpmSp2dController extends Controller
                 'nm_skpd'           => $nm_skpd,
                 'rincian'           => $rincian,
                 'enter'             => $enter,
+                'jenis_reg'         => $jenis_reg,
                 'daerah'            => $daerah,
                 'tanggal_ttd'       => $tanggal_ttd,
                 'cari_pa_kpa'       => $cari_pakpa,
                 'cari_bendahara'    => $cari_bendahara
             ];
-
-        return view('skpd.laporan_bendahara.cetak.registersppspmsp2d')->with($data);
+            if($jenis_reg=='SP2D'){
+                return view('skpd.laporan_bendahara.cetak.registersp2d')->with($data);
+            }else{
+                return view('skpd.laporan_bendahara.cetak.registersppspm')->with($data);
+            }
+        
     }
 }

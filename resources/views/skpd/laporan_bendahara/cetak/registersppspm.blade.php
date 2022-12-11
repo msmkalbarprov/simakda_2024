@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register SPP</title>
+    <title>Register {{$jenis_reg}}</title>
     <style>
         table {
             border-collapse: collapse
@@ -53,7 +53,7 @@
     <hr>
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="text-align: center"><b>REGISTER SPP</b></td>
+        <td style="text-align: center"><b>REGISTER {{$jenis_reg}}</b></td>
         </tr>
         <tr>
             <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(bulan($bulan)) }}</b></td>
@@ -98,6 +98,12 @@
               
             @php
                 $no                 =0;
+                $jumlahup           = 0;
+                $jumlahgu           = 0;
+                $jumlahtu           = 0;
+                $jumlahgj           = 0;
+                $jumlahbj           = 0;
+                $jumlahpk           = 0;
             @endphp
             @foreach ($rincian as $row)
                  @php
@@ -105,10 +111,13 @@
                  @endphp
                  @switch($row->jns_spp)
                      @case(1)
+                        @php
+                            $jumlahup=$jumlahup+$row->nilai;
+                        @endphp
                         <tr>
                             <td align='center'  style='font-size:10px'>{{{$no}}}</td>
-                            <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
-                            <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                            <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
+                            <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                             <td align='left'  style='font-size:10px'></td>
                             <td align='left'  style='font-size:10px'></td>
                             <td align='left'  style='font-size:10px'></td>
@@ -124,11 +133,14 @@
                         </tr>
                          @break
                      @case(2)
+                        @php
+                            $jumlahgu=$jumlahgu+$row->nilai;
+                        @endphp
                         <tr>
                             <td align='center'  style='font-size:10px'>{{$no}}</td>
-                            <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
+                            <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
                             <td align='left'  style='font-size:10px'></td>
-                            <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                            <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                             <td align='left'  style='font-size:10px'></td>
                             <td align='left'  style='font-size:10px'></td>
                             <td align='left'  style='font-size:10px'></td>
@@ -143,12 +155,15 @@
                         </tr>
                          @break
                          @case(3)
+                            @php
+                                $jumlahtu=$jumlahtu+$row->nilai;
+                            @endphp
                             <tr>
                                 <td align='center'  style='font-size:10px'>{{$no}}</td>
-                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
+                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
-                                <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                                <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
@@ -162,13 +177,16 @@
                             </tr>
                          @break
                          @case(4)
+                            @php
+                                $jumlahgj=$jumlahgj+$row->nilai;
+                            @endphp
                             <tr>
                                 <td align='center'  style='font-size:10px'>{{$no}}</td>
-                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
+                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
-                                <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                                <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'>{{$row->keperluan}}</td>
@@ -181,15 +199,18 @@
                             </tr>
                          @break
                          @case(5)
+                            @php
+                                $jumlahpk=$jumlahpk+$row->nilai;
+                            @endphp
                             <tr>
                                 <td align='center'  style='font-size:10px'>{{$no}}</td>
-                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
+                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
-                                <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                                <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                                 <td align='left'  style='font-size:10px'>{{$row->keperluan}}</td>
                                 <td align='right'  style='font-size:10px'></td>
                                 <td align='right'  style='font-size:10px'></td>
@@ -200,14 +221,17 @@
                             </tr>
                          @break
                          @case(6)
+                            @php
+                                $jumlahbj=$jumlahbj+$row->nilai;
+                            @endphp
                             <tr>
                                 <td align='center'  style='font-size:10px'>{{$no}}</td>
-                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tgl_spp)}}</td>
+                                <td align='left'  style='font-size:10px'>{{tanggal_indonesia($row->tanggal)}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'></td>
-                                <td align='left'  style='font-size:10px'>{{$row->no_spp}}</td>
+                                <td align='left'  style='font-size:10px'>{{$row->nomor}}</td>
                                 <td align='left'  style='font-size:10px'></td>
                                 <td align='left'  style='font-size:10px'>{{$row->keperluan}}</td>
                                 <td align='right'  style='font-size:10px'></td>
@@ -224,15 +248,15 @@
                        
             @endforeach
                    
-                {{-- <tr>
+                tr>
                     <td colspan='9' align='center' width='3%' style='font-size:10px'>J U M L A H</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->up)}}</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->gu)}}</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->tu)}}</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->gj)}}</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->ls)}}</td>
-                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($row->ppkd)}}</td>
-                </tr> --}}
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahup)}}</td>
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahgu)}}</td>
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahtu)}}</td>
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahgj)}}</td>
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahbj)}}</td>
+                    <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahpk)}}</td>
+                </tr> 
                
           
     </table>
