@@ -84,7 +84,11 @@
             });
         });
 
-        function deleteData(id) {
+        function deleteData(id, role) {
+            if (id == role) {
+                alert('Dilarang Hapus Data Sesuai Role Sendiri!!');
+                return;
+            }
             var r = confirm("Hapus?");
             if (r == true) {
                 let url = '{{ route('peran.destroy', ':id') }}';

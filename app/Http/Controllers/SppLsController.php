@@ -33,10 +33,10 @@ class SppLsController extends Controller
             $btn = '<a href="' . route("sppls.show", Crypt::encryptString($row->no_spp)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
             $btn .= '<a href="' . route("sppls.edit", Crypt::encryptString($row->no_spp)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
-            if ($row->status == 0) {
-                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="batal_spp(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
-            }
+            // if ($row->status == 0) {
+            //     $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            //     $btn .= '<a href="javascript:void(0);" onclick="batal_spp(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-ban"></i></a>';
+            // }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }

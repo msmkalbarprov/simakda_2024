@@ -52,7 +52,6 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $input = array_map('htmlentities', $request->validated());
-
         DB::beginTransaction();
         try {
             $id = DB::table('pengguna')->insertGetId([

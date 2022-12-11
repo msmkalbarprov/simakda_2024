@@ -159,7 +159,6 @@
                     tgl_sp2d: tgl_sp2d,
                 },
                 success: function(data) {
-                    console.log(data);
                     if (data.message == '1') {
                         alert('SP2D Telah Dicairkan');
                         window.location.reload();
@@ -188,7 +187,6 @@
                     jenis: jenis,
                 },
                 success: function(data) {
-                    console.log(data);
                     if (data.message == '1') {
                         alert('SP2D telah Dibatalkan');
                         window.location.reload();

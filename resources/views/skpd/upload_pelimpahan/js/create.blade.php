@@ -154,7 +154,6 @@
                         rincian_data: rincian_data,
                     },
                     success: function(data) {
-                        console.log(data);
                         if (data.message == '1') {
                             alert('Data berhasil diupload');
                             window.location.href = "{{ route('skpd.pelimpahan.upload') }}";

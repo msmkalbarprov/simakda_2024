@@ -400,7 +400,6 @@
 
         $('#cetak_cms').on('click', function() {
             let data = JSON.stringify(data_awal.rows().data().toArray());
-            console.log(data);
         });
 
         $('#cetakCsvKalbar').on('click', function() {

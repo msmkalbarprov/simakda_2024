@@ -755,7 +755,6 @@
                     data: response
                 },
                 success: function(data) {
-                    console.log(data);
                     if (data.message == '1') {
                         alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
                             .no_bukti);

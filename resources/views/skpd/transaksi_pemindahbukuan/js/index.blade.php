@@ -469,7 +469,6 @@
                     no_bukti: no_bukti,
                 },
                 success: function(data) {
-                    console.log(data);
                     if (data.message == '1') {
                         alert('Proses Hapus Berhasil');
                         window.location.reload();

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class PelimpahanController extends Controller
 {
@@ -53,6 +54,8 @@ class PelimpahanController extends Controller
     public function simpanUp(Request $request)
     {
         $data = $request->data;
+        // return response()->json($data);
+        // $data = array_map('htmlentities', $request->data);
         $kd_skpd = Auth::user()->kd_skpd;
 
         DB::beginTransaction();
