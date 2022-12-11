@@ -420,7 +420,6 @@
                         },
                         dataType: "json",
                         success: function(data) {
-                            console.log(data);
                             if (data.status) {
                                 $("#no_rekening_validasi").val(data.data[0].data.nomorRekening);
                                 $("#nm_rekening_validasi").val(data.data[0].data

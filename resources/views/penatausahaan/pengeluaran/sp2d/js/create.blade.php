@@ -95,6 +95,58 @@
             theme: 'bootstrap-5'
         });
 
+        $('#cari_nospm').on('click', function() {
+            let beban = document.getElementById('beban').value;
+            if (!beban) {
+                alert('Silahkan Pilih Beban!');
+                return;
+            }
+            $('#no_spp').val(null);
+            $('#no_spm').val(null);
+            tabel_spm.ajax.reload();
+            tabel_potongan.ajax.reload();
+            $('#total_spm').val(null);
+            $('#total_potongan').val(null);
+            $.ajax({
+                url: "{{ route('sp2d.cari_nomor') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    $('#nomor_urut').val(data.nomor);
+                    if (beban == '1') {
+                        $('#no_sp2d').val(data.nomor + '/UP/2022');
+                    } else if (beban == '2') {
+                        $('#no_sp2d').val(data.nomor + '/GU/2022');
+                    } else if (beban == '3') {
+                        $('#no_sp2d').val(data.nomor + '/TU/2022');
+                    } else if (beban == '4') {
+                        $('#no_sp2d').val(data.nomor + '/GJ/2022');
+                    } else if (beban == '5' || beban == '6') {
+                        $('#no_sp2d').val(data.nomor + '/LS/2022');
+                    }
+                }
+            })
+            // cari data spm
+            $.ajax({
+                url: "{{ route('sp2d.cari_spm') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    beban: beban,
+                },
+                success: function(data) {
+                    $('#no_spm').empty();
+                    $('#no_spm').append(
+                        `<option value="0">Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#no_spm').append(
+                            `<option value="${data.no_spm}" data-bank="${data.bank}" data-bulan="${data.bulan}" data-keperluan="${data.keperluan}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nmrekan="${data.nmrekan}" data-no_rek="${data.no_rek}" data-no_spd="${data.no_spd}" data-no_spp="${data.no_spp}" data-npwp="${data.npwp}" data-tgl_spm="${data.tgl_spm}" data-tgl_spp="${data.tgl_spp}" data-jns_spd="${data.jns_spd}" data-jenis_beban="${data.jenis_beban}">${data.no_spm}</option>`
+                        );
+                    })
+                }
+            })
+        });
+
         $('#beban').on('change', function() {
             $('#no_spm').empty();
             $('#no_sp2d').val('');
@@ -155,7 +207,7 @@
                         `<option value="0">Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#no_spm').append(
-                            `<option value="${data.no_spm}" data-bank="${data.bank}" data-bulan="${data.bulan}" data-keperluan="${data.keperluan}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nmrekan="${data.nmrekan}" data-no_rek="${data.no_rek}" data-no_spd="${data.no_spd}" data-no_spp="${data.no_spp}" data-npwp="${data.npwp}" data-tgl_spm="${data.tgl_spm}" data-tgl_spp="${data.tgl_spp}" data-jns_spd="${data.jns_spd}" data-jenis_beban="${data.jenis_beban}">${data.no_spm} | ${data.kd_skpd}</option>`
+                            `<option value="${data.no_spm}" data-bank="${data.bank}" data-bulan="${data.bulan}" data-keperluan="${data.keperluan}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nmrekan="${data.nmrekan}" data-no_rek="${data.no_rek}" data-no_spd="${data.no_spd}" data-no_spp="${data.no_spp}" data-npwp="${data.npwp}" data-tgl_spm="${data.tgl_spm}" data-tgl_spp="${data.tgl_spp}" data-jns_spd="${data.jns_spd}" data-jenis_beban="${data.jenis_beban}">${data.no_spm}</option>`
                         );
                     })
                 }

@@ -1039,7 +1039,6 @@
                     status_angkas: status_angkas,
                 },
                 success: function(data) {
-                    console.log(data);
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.nilai));

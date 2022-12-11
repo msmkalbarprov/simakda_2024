@@ -9,6 +9,7 @@
         let rincian_penguji = $('#rincian_penguji').DataTable({
             processing: true,
             ordering: false,
+            lengthMenu: [5, 10],
             columns: [{
                     data: 'no_sp2d',
                     name: 'no_sp2d',

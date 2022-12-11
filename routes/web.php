@@ -55,6 +55,7 @@ use App\Http\Controllers\Skpd\SetorSisaController;
 use App\Http\Controllers\Skpd\UyhdController;
 use App\Http\Controllers\Skpd\UyhdPajakController;
 use App\Http\Controllers\Skpd\Anggaran\RakController;
+use App\Http\Controllers\Skpd\Pendapatan\PenetapanController;
 use App\Http\Controllers\Skpd\TransaksiKKPDController;
 
 // Route::get('/simakda_2023', function () {
@@ -674,7 +675,7 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
             Route::post('cari_jenis', [BpPajakController::class, 'cariJenis'])->name('cetak_bppajak.cari_jenis');
             Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
         });
-
+        // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
             // Koreksi Atas Kegiatan atau Rekening
             Route::group(['prefix' => 'koreksi_rekening'], function () {
@@ -700,6 +701,22 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
                 Route::get('edit_koreksi_nominal/{no_bukti?}', [JurnalKoreksiController::class, 'editNominal'])->where('no_bukti', '(.*)')->name('koreksi_nominal.edit');
                 Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateNominal'])->name('koreksi_nominal.update');
                 Route::post('hapus_rekening', [JurnalKoreksiController::class, 'hapusNominal'])->name('koreksi_nominal.hapus');
+            });
+        });
+        // Pendapatan
+        Route::group(['prefix' => 'pendapatan'], function () {
+            Route::group(['prefix' => 'penetapan'], function () {
+                Route::get('', [PenetapanController::class, 'indexPenetapanPendapatan'])->name('penetapan_pendapatan.index');
+                Route::post('load_data', [PenetapanController::class, 'loadDataPenetapanPendapatan'])->name('penetapan_pendapatan.load_data');
+                Route::get('tambah', [PenetapanController::class, 'tambahPenetapanPendapatan'])->name('penetapan_pendapatan.tambah');
+                Route::post('simpan', [PenetapanController::class, 'simpanPenetapanPendapatan'])->name('penetapan_pendapatan.simpan');
+                Route::get('edit/{no_tetap?}', [PenetapanController::class, 'editPenetapanPendapatan'])->where('no_tetap', '(.*)')->name('penetapan_pendapatan.edit');
+                Route::post('simpan_edit', [PenetapanController::class, 'simpanEditPenetapanPendapatan'])->name('penetapan_pendapatan.simpan_edit');
+                Route::post('hapus', [PenetapanController::class, 'hapusPenetapanPendapatan'])->name('penetapan_pendapatan.hapus');
+            });
+            Route::group(['prefix' => 'penerimaan'], function () {
+                Route::get('', [PenetapanController::class, 'indexPenetapanPenerimaan'])->name('penetapan_penerimaan.index');
+                Route::post('load_data', [PenetapanController::class, 'loadDataPenetapanPenerimaan'])->name('penetapan_penerimaan.load_data');
             });
         });
     });

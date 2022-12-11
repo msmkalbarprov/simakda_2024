@@ -33,6 +33,7 @@ class LoginController extends Controller
         $data = [
             'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first()
         ];
+
         return view('auth.login')->with($data);
     }
 

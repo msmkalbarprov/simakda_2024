@@ -154,7 +154,6 @@
                     },
                     success: function(data) {
                         let data1 = $.parseJSON(data);
-                        console.log(data1);
                         if (data1.data[0].response_code == '00') {
                             alert(data1.data[0].message);
                             $("#id_billing").val(null);

@@ -11,72 +11,42 @@
             theme: 'bootstrap-5'
         });
 
-        $('#kd_skpd').on('select2:select', function() {
-            let skpd_sumber = $(this).find(':selected').data('skpd_sumber');
-            let skpd_ringkas = $(this).find(':selected').data('skpd_ringkas');
-            let nm_skpd = $(this).find(':selected').data('nm_skpd');
-            $('#nm_skpd').val(nm_skpd);
-            $('#skpd_sumber').val(skpd_sumber);
-            $('#skpd_ringkas').val(skpd_ringkas);
+        $('#kode_akun').on('select2:select', function() {
+            let kd_sub_kegiatan = $(this).find(':selected').data('kd_sub_kegiatan');
+            let nm_rek = $(this).find(':selected').data('nm_rek').toUpperCase();
+            let kd_rek = $(this).find(':selected').data('kd_rek');
+            $('#kd_sub_kegiatan').val(kd_sub_kegiatan);
+            $('#nama_akun').val(nm_rek);
+            $('#kode_rek').val(kd_rek);
         });
 
-        $('#beban').on('select2:select', function() {
-            let beban = this.value;
-            let skpd_ringkas = document.getElementById('skpd_ringkas').value;
-
-            if (!skpd_ringkas) {
-                alert('Pilih Tujuan SKPD Terlebih Dahulu!');
-                $('#beban').val(null).change();
-                return;
-            }
-
-            if (beban == '1') {
-                $('#ketcms').val('DROP.' + 'UP/GU' + '.' + skpd_ringkas);
-            } else if (beban == '3') {
-                $('#ketcms').val('DROP.' + 'TU' + '.' + skpd_ringkas);
-            } else if (beban == '4' || beban == '6' || beban == '5') {
-                $('#ketcms').val('DROP.' + 'LS' + '.' + skpd_ringkas);
-            }
-
-        });
-
-        $('#rekening_tujuan').on('select2:select', function() {
-            let nm_rekening = $(this).find(':selected').data('nm_rekening');
-            let nm_bank = $(this).find(':selected').data('nm_bank');
-            $('#bank_tujuan').val(nm_bank);
-            $('#nama_tujuan').val(nm_rekening);
-        });
-
-        $('#simpan_pelimpahan').on('click', function() {
-            let no_kas = document.getElementById('no_kas').value;
-            let tgl_kas = document.getElementById('tgl_kas').value;
+        $('#simpan').on('click', function() {
+            let no_tetap = document.getElementById('no_tetap').value;
+            let no_simpan = document.getElementById('no_simpan').value;
+            let tgl_tetap = document.getElementById('tgl_tetap').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
-            let skpd_sumber = document.getElementById('skpd_sumber').value;
-            let skpd_ringkas = document.getElementById('skpd_ringkas').value;
-            let keterangan = document.getElementById('keterangan').value;
-            let beban = document.getElementById('beban').value;
-            let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+            let nm_skpd = document.getElementById('nm_skpd').value;
+            let kode_akun = document.getElementById('kode_akun').value;
+            let nama_akun = document.getElementById('nama_akun').value;
+            let kode_rek = document.getElementById('kode_rek').value;
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
-            let ketcms = document.getElementById('ketcms').value;
-            let rekening_bendahara = document.getElementById('rekening_bendahara').value;
-            let rekening_tujuan = document.getElementById('rekening_tujuan').value;
-            let nama_tujuan = document.getElementById('nama_tujuan').value;
-            let bank_tujuan = document.getElementById('bank_tujuan').value;
+            let keterangan = document.getElementById('keterangan').value;
             let nilai = angka(document.getElementById('nilai').value);
-            let tahun_input = tgl_kas.substr(0, 4);
+            let tahun_input = tgl_tetap.substr(0, 4);
 
             if (tahun_input != tahun_anggaran) {
                 alert('Tahun tidak sama dengan tahun Anggaran');
                 return;
             }
 
-            if (nilai > sisa_kas) {
-                alert('Nilai Lebih Besar dari Sisa Bank');
+            if (!no_tetap) {
+                alert('No Penetapan Tidak Boleh Kosong');
                 return;
             }
 
-            if (!tgl_kas) {
-                alert('Tanggal  Tidak Boleh Kosong');
+            if (!tgl_tetap) {
+                alert('Tanggal Tidak Boleh Kosong');
                 return;
             }
 
@@ -85,18 +55,18 @@
                 return;
             }
 
-            if (!beban) {
-                alert('Jenis beban Tidak Boleh Kosong');
+            if (!kode_akun) {
+                alert('Kode Akun Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!nama_akun) {
+                alert('Nama Akun Tidak Boleh Kosong');
                 return;
             }
 
             if (!keterangan) {
                 alert('Keterangan Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!rekening_bendahara || !rekening_tujuan || !nama_tujuan || !bank_tujuan) {
-                alert('Isian Rekening Belum Lengkap!');
                 return;
             }
 
@@ -106,41 +76,38 @@
             }
 
             let data = {
-                no_kas,
-                tgl_kas,
+                no_tetap,
+                no_simpan,
+                tgl_tetap,
                 kd_skpd,
-                skpd_sumber,
-                skpd_ringkas,
+                nm_skpd,
+                kode_akun,
+                nama_akun,
+                kode_rek,
+                kd_sub_kegiatan,
                 keterangan,
-                beban,
-                sisa_kas,
-                ketcms,
-                rekening_bendahara,
-                rekening_tujuan,
-                nama_tujuan,
-                bank_tujuan,
                 nilai,
             };
 
-            $('#simpan_pelimpahan').prop('disabled', true);
+            $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('skpd.pelimpahan.simpan_up') }}",
+                url: "{{ route('penetapan_pendapatan.simpan_edit') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     data: data
-                    // data: encrypt(data)
                 },
                 success: function(response) {
                     if (response.message == '1') {
-                        alert('Data berhasil ditambahkan, dengan Nomor Kas : ' + response
-                            .no_kas);
+                        alert('Data berhasil disimpan!');
                         window.location.href =
-                            "{{ route('skpd.pelimpahan.up_index') }}";
+                            "{{ route('penetapan_pendapatan.index') }}";
+                    } else if (response.message == '2') {
+                        alert('No Penetapan telah digunakan!');
+                        $('#simpan').prop('disabled', false);
                     } else {
-                        alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_pelimpahan').prop('disabled', false);
-                        return;
+                        alert('Data gagal disimpan!');
+                        $('#simpan').prop('disabled', false);
                     }
                 }
             })

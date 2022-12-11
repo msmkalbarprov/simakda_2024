@@ -2441,3 +2441,9 @@ function no_urut_tukd()
         ->first();
     return $urut->nomor;
 }
+
+function nama_rekening($kd_rek6)
+{
+    $data = DB::table('ms_rek6')->selectRaw("UPPER(nm_rek6) as nama")->where(['kd_rek6' => $kd_rek6])->first();
+    return $data->nama;
+}

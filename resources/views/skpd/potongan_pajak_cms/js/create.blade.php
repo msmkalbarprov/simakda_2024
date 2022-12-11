@@ -277,7 +277,6 @@
                         tanggal_validasi: tanggal_validasi,
                     },
                     success: function(data) {
-                        console.log(data);
                         if (data.message == '1') {
                             alert('Data berhasil divalidasi');
                             window.location.href =
