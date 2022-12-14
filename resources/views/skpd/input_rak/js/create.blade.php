@@ -450,7 +450,6 @@
 
             let kd_skpd = document.getElementById('kd_skpd').value;
             let jenis_rak = document.getElementById('jenis_rak').value;
-            alert(jenis_rak);
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let kode_rekening = document.getElementById('kode_rekening').value;
