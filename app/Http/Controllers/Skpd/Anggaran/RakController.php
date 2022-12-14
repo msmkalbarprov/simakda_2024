@@ -18,11 +18,18 @@ class RakController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-
-        $data = [
-            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'jns')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
-            'username' => Auth::user()->username
-        ];
+        if(Auth::user()->is_admin==2){
+            $data = [
+                'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'jns')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
+                'username' => Auth::user()->username
+            ];
+        }else{
+            $data = [
+                'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'jns')->orderBy('kd_skpd')->get(),
+                'username' => Auth::user()->username
+            ];
+        }
+        
 
         return view('skpd.input_rak.create')->with($data);
     }
