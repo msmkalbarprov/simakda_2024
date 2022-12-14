@@ -65,7 +65,7 @@ use App\Http\Controllers\Skpd\TransaksiKKPDController;
 Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
 // Auth::routes();
-Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'kelola-akses'], function () {
         Route::resource('hak-akses', PermissionController::class);
         Route::post('data_hak_akses', [PermissionController::class, 'loadData'])->name('hak_akses.load_data');
@@ -771,14 +771,14 @@ Route::group(['prefix' => 'simakda_2023', 'middleware' => 'auth'], function () {
     });
 });
 
-Route::get('/simakda_2023/dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
-Route::get('/simakda_2023/ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
-Route::post('/simakda_2023/ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
-Route::get('/simakda_2023/setting', [SettingController::class, 'index'])->name('setting');
-Route::get('/simakda_2023/coba', [HomeController::class, 'coba'])->name('coba');
-Route::get('/simakda_2023', [LoginController::class, 'index'])->name('login.index');
-Route::post('/simakda_2023/login', [LoginController::class, 'authenticate'])->name('login'); //->middleware(['throttle:3,1']);
-Route::post('/simakda_2023/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
+Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
+Route::get('setting', [SettingController::class, 'index'])->name('setting');
+Route::get('coba', [HomeController::class, 'coba'])->name('coba');
+Route::get('', [LoginController::class, 'index'])->name('login.index');
+Route::post('login', [LoginController::class, 'authenticate'])->name('login')->middleware(['throttle:3,1']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('403', function () {
     return abort(401);
