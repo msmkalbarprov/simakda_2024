@@ -26,11 +26,11 @@
         });
 
         let user = document.getElementById('username').value;
-        if (user == 'admin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' || user ==
+        if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' || user ==
             'Sugino' || user == 'ROSNAWATI' || user == 'SAMANTO' || user == 'RISNAWATI' ||
             user == 'SYATHIBIE' || user == 'WAWAN' || user == 'willy' || user == 'SUYATNA' || user == 'yana' ||
             user == 'ANDAY68' || user == 'YULI' || user == 'NURMEIDA' || user == 'Sri Hartati' || user ==
-            'SUYATNA22' || user == 'URAY ELPIDA') {
+            'SUYATNA22' || user == 'URAY ELPIDA' || user == 'maorin') {
             alert('Selamat Datang ' + user);
         } else {
             proteksi();
@@ -450,6 +450,7 @@
 
             let kd_skpd = document.getElementById('kd_skpd').value;
             let jenis_rak = document.getElementById('jenis_rak').value;
+            alert(jenis_rak);
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let kode_rekening = document.getElementById('kode_rekening').value;
@@ -809,7 +810,7 @@
                             alert('Data Berhasil Tersimpan...!!!');
                             window.location.reload();
                         } else {
-                            alert('Data Gagal Berhasil Tersimpan...!!!');
+                            alert('Data Gagal Tersimpan...!!!');
                             $('#simpan_detail').prop('disabled', false);
                             return;
                         }
