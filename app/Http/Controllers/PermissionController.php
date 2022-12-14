@@ -15,7 +15,7 @@ class PermissionController extends Controller
 
     public function loadData()
     {
-        $data = DB::table('akses')->get();
+        $data = DB::table('akses')->orderBy('urut_akses')->orderBy('urut_akses2')->get();
         return DataTables::of($data)->addIndexColumn()->make(true);
     }
 }

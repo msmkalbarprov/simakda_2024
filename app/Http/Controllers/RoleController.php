@@ -102,8 +102,11 @@ class RoleController extends Controller
             'hak_akses1' => $array,
             'daftar_hak_akses' => DB::table('akses')
                 ->where(['urutan_menu' => '1'])
+                ->orderBy('id')
                 ->get(),
             'daftar_hak_akses1' => DB::table('akses')
+                ->orderBy('urut_akses')
+                ->orderBy('urut_akses2')
                 ->get(),
         ];
         return view('master.peran.edit')->with($data);

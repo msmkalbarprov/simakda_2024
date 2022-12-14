@@ -2228,6 +2228,7 @@ function filter_menu()
         ->join('akses as e', 'd.id_permission', '=', 'e.id')
         ->select('e.*')
         ->where(['a.id' => $id, 'e.urutan_menu' => '1'])
+        ->orderBy('e.id')
         ->get();
 
     return $hak_akses;
@@ -2244,6 +2245,7 @@ function sub_menu()
         ->join('akses as e', 'd.id_permission', '=', 'e.id')
         ->select('e.*')
         ->where(['a.id' => $id, 'e.urutan_menu' => '2'])
+        ->orderBy('e.urut_akses')
         ->get();
 
     return $hak_akses;
@@ -2260,6 +2262,7 @@ function sub_menu1()
         ->join('akses as e', 'd.id_permission', '=', 'e.id')
         ->select('e.*')
         ->where(['a.id' => $id, 'e.urutan_menu' => '3'])
+        ->orderBy('e.urut_akses2')
         ->get();
 
     return $hak_akses;
