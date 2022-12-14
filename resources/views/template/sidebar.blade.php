@@ -211,13 +211,21 @@
                 $daftar_menu2 = sub_menu1();
             @endphp
             @foreach ($daftar_menu as $menu)
+                @if ($menu->name !='' && $menu->name!= null)
+                    <li>
+                        <a href="{{ route($menu->name) }}">
+                            <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                            <span>{{ $menu->display_name }}</span>
+                        </a>
+                    </li>
+                @else
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uil-window-section"></i>
                         <span>{{ $menu->display_name }}</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
-                        @foreach ($daftar_menu1 as $submenu)
+                        @foreach ($daftar_menu1 as $submenu) {{-- level2 --}}
                             @php
                                 $menu1 = $submenu->name;
                             @endphp
@@ -229,7 +237,7 @@
                                         <a href="javascript: void(0);"
                                             class="has-arrow">{{ $submenu->display_name }}</a>
                                         <ul class="sub-menu" aria-expanded="true">
-                                            @foreach ($daftar_menu2 as $submenu1)
+                                            @foreach ($daftar_menu2 as $submenu1) {{-- level3 --}}
                                                 @php
                                                     $menu2 = $submenu1->name;
                                                 @endphp
@@ -245,6 +253,8 @@
                         @endforeach
                     </ul>
                 </li>
+                @endif
+                
             @endforeach
         </ul>
     </div>

@@ -654,7 +654,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {
-            Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara.index');
+            Route::get('', [LaporanBendaharaController::class, 'index'])->name('skpd.laporan_bendahara_keluar.index');
             Route::post('cari_skpd', [LaporanBendaharaController::class, 'cariSkpd'])->name('skpd.laporan_bendahara.skpd');
             Route::post('cari_bendahara', [LaporanBendaharaController::class, 'cariBendahara'])->name('skpd.laporan_bendahara.bendahara');
             Route::post('cari_pakpa', [LaporanBendaharaController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara.pakpa');
