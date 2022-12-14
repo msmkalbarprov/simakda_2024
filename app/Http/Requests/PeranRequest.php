@@ -15,8 +15,8 @@ class PeranRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'role' => ['required', Rule::unique('role')->ignore(request()->segment(4))],
-            'nama_role' => ['required', Rule::unique('role')->ignore(request()->segment(4))],
+            'role' => ['required', Rule::unique('peran')->ignore(request()->segment(3))],
+            'nama_role' => ['required', Rule::unique('peran')->ignore(request()->segment(3))],
             'hak_akses' => ['required'],
         ];
         if (request()->isMethod('post')) {
