@@ -169,7 +169,7 @@
                                     <td>{{ $data->kd_rek6 }}</td>
                                     <td>{{ $data->kd_rek }}</td>
                                     <td>{{ $data->nm_rek6 }}</td>
-                                    <td>{{ $data->nilai }}</td>
+                                    <td>{{ rupiah($data->nilai) }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -382,52 +382,55 @@
                     <label for="total_input_penagihan" style="text-align: right"
                         class="col-md-9 col-form-label">Total</label>
                     <div class="col-md-3" style="padding-right: 30px">
-                        <input type="text" width="100%" class="form-control" value="{{ $data_tagih->total }}"
-                            readonly name="total_input_penagihan" id="total_input_penagihan">
+                        <input type="text" width="100%" class="form-control"
+                            value="{{ rupiah($data_tagih->total) }}" readonly name="total_input_penagihan"
+                            id="total_input_penagihan">
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered" style="width: 100%" id="input_penagihan">
-                        <thead>
-                            <tr>
-                                <th>No Bukti</th> {{-- hidden --}}
-                                <th>No SP2D</th> {{-- hidden --}}
-                                <th>Kode Sub Kegiatan</th>
-                                <th>Nama Sub Kegiatan</th> {{-- hidden --}}
-                                <th>REK LO</th>
-                                <th>REK 13</th>
-                                <th>Nama Rekening</th>
-                                <th>Rupiah</th>
-                                <th>Lalu</th> {{-- hidden --}}
-                                <th>SP2D</th> {{-- hidden --}}
-                                <th>Anggaran</th>
-                                <th>Sumber</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($detail_tagih as $data)
+                <div class="card" style="margin: 4px">
+                    <div class="table-responsive">
+                        <table class="table table-bordered border-primary mb-0" style="width: 100%" id="input_penagihan">
+                            <thead>
                                 <tr>
-                                    <td>{{ $data->no_bukti }}</td>
-                                    <td>{{ $data->no_sp2d }}</td>
-                                    <td>{{ $data->kd_sub_kegiatan }}</td>
-                                    <td>{{ $data->nm_sub_kegiatan }}</td>
-                                    <td>{{ $data->kd_rek6 }}</td>
-                                    <td>{{ $data->kd_rek }}</td>
-                                    <td>{{ $data->nm_rek6 }}</td>
-                                    <td>{{ $data->nilai }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{{ $data->sumber }}</td>
-                                    <td><a href="javascript:void(0);"
-                                            onclick="deleteData('{{ $data->no_bukti }}', '{{ $data->kd_sub_kegiatan }}', '{{ $data->kd_rek }}','{{ $data->sumber }}','{{ $data->nilai }}');"
-                                            class="btn btn-danger btn-sm" id="delete"><i
-                                                class="fas fa-trash-alt"></i></a></td>
+                                    <th>No Bukti</th> {{-- hidden --}}
+                                    <th>No SP2D</th> {{-- hidden --}}
+                                    <th>Kode Sub Kegiatan</th>
+                                    <th>Nama Sub Kegiatan</th> {{-- hidden --}}
+                                    <th>REK LO</th>
+                                    <th>REK 13</th>
+                                    <th>Nama Rekening</th>
+                                    <th>Rupiah</th>
+                                    <th>Lalu</th> {{-- hidden --}}
+                                    <th>SP2D</th> {{-- hidden --}}
+                                    <th>Anggaran</th>
+                                    <th>Sumber</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($detail_tagih as $data)
+                                    <tr>
+                                        <td>{{ $data->no_bukti }}</td>
+                                        <td>{{ $data->no_sp2d }}</td>
+                                        <td>{{ $data->kd_sub_kegiatan }}</td>
+                                        <td>{{ $data->nm_sub_kegiatan }}</td>
+                                        <td>{{ $data->kd_rek6 }}</td>
+                                        <td>{{ $data->kd_rek }}</td>
+                                        <td>{{ $data->nm_rek6 }}</td>
+                                        <td>{{ rupiah($data->nilai) }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $data->sumber }}</td>
+                                        <td><a href="javascript:void(0);"
+                                                onclick="deleteData('{{ $data->no_bukti }}', '{{ $data->kd_sub_kegiatan }}', '{{ $data->kd_rek }}','{{ $data->sumber }}','{{ $data->nilai }}');"
+                                                class="btn btn-danger btn-sm" id="delete"><i
+                                                    class="fas fa-trash-alt"></i></a></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

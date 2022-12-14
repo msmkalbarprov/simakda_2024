@@ -48,6 +48,12 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-modal').select2({
+            dropdownParent: $('#tambah_rincianspp .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+
         $('#beban').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -408,12 +414,12 @@
             let nama = $(this).find(':selected').data('nama');
             $("#nm_rekening").val(nama);
             // sumber dana
-            $('#total_sumber').val('');
-            $('#realisasi_sumber').val('');
-            $('#sisa_sumber').val('');
+            $('#total_sumber').val(null);
+            $('#realisasi_sumber').val(null);
+            $('#sisa_sumber').val(null);
             // cari sumber dana
             $.ajax({
-                url: "{{ route('sppls.sumber_dana') }}",
+                url: "{{ route('penagihan.cari_sumber_dana') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -425,10 +431,11 @@
                 success: function(data) {
                     $('#sumber_dana').empty();
                     $('#sumber_dana').append(
-                        `<option value="0">Pilih Sumber Dana</option>`);
+                        `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(data, function(index, data) {
                         $('#sumber_dana').append(
-                            `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            // `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
                         );
                     })
                 }
@@ -565,29 +572,59 @@
         $('#sumber_dana').on('change', function() {
             let selected = $(this).find('option:selected');
             let sumber_dana = this.value;
+            if (sumber_dana == 'null') {
+                alert('Sumber dana tidak dapat digunakan!');
+                $('#sumber_dana').val(null).change();
+                return;
+            }
+            let nama = $(this).find(':selected').data('nama');
+            let nilai = $(this).find(':selected').data('nilai');
+            $('#nm_sumber').val(nama);
+            $("#total_sumber").val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(nilai));
             $.ajax({
-                url: "{{ route('penagihan.cari_nama_sumber') }}",
+                url: "{{ route('penagihan.realisasi_sumber_dana') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sumber_dana: sumber_dana,
+                    sumber: sumber_dana,
+                    kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
+                    kd_rek6: document.getElementById('kode_rekening').value,
+                    kd_skpd: document.getElementById('kd_skpd').value,
                 },
                 success: function(data) {
-                    $('#nm_sumber').val(data.nm_sumber_dana1);
+                    $("#realisasi_sumber").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data));
+                    $("#sisa_sumber").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai - data));
                 }
             })
-            let dana = parseInt(selected.data('nilai')) || 0;
-            let dana_lalu = parseInt(selected.data('lalu')) || 0;
-            let sisa_dana = parseInt(dana - dana_lalu) || 0;
-            $("#total_sumber").val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(dana));
-            $("#realisasi_sumber").val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(dana_lalu));
-            $("#sisa_sumber").val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(sisa_dana));
+            // $.ajax({
+            //     url: "{{ route('penagihan.cari_nama_sumber') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         sumber_dana: sumber_dana,
+            //     },
+            //     success: function(data) {
+            //         $('#nm_sumber').val(data.nm_sumber_dana1);
+            //     }
+            // })
+            // let dana = parseInt(selected.data('nilai')) || 0;
+            // let dana_lalu = parseInt(selected.data('lalu')) || 0;
+            // let sisa_dana = parseInt(dana - dana_lalu) || 0;
+            // $("#total_sumber").val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(dana));
+            // $("#realisasi_sumber").val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(dana_lalu));
+            // $("#sisa_sumber").val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(sisa_dana));
         });
 
         $('#no_penagihan').on('select2:select', function() {

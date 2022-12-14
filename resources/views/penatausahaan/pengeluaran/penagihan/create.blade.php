@@ -129,22 +129,22 @@
                 <div class="card-header">
                     Rincian Penagihan
                     <button type="button" style="float: right" id="tambah_rincian"
-                        class="btn btn-primary btn-sm">Tambah Rincian</button>
+                        class="btn btn-primary btn-md">Tambah Rincian</button>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="rincian_penagihan" class="table" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>No Bukti</th> {{-- hidden --}}
-                                <th>No SP2D</th> {{-- hidden --}}
+                                <th>No Bukti</th>
+                                <th>No SP2D</th>
                                 <th>Kode Sub Kegiatan</th>
-                                <th>Nama Sub Kegiatan</th> {{-- hidden --}}
+                                <th>Nama Sub Kegiatan</th>
                                 <th>Kode Rekening</th>
                                 <th>REK 13</th>
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
-                                <th>Lalu</th> {{-- hidden --}}
-                                <th>SP2D</th> {{-- hidden --}}
+                                <th>Lalu</th>
+                                <th>SP2D</th>
                                 <th>Anggaran</th>
                                 <th>Sumber</th>
                                 <th>Aksi</th>
@@ -345,7 +345,7 @@
                         <label for="nilai_penagihan" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control" name="nilai_penagihan" id="nilai_penagihan"
-                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">
+                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -361,31 +361,33 @@
                         class="col-md-9 col-form-label">Total</label>
                     <div class="col-md-3" style="padding-right: 30px">
                         <input type="text" width="100%" class="form-control" readonly name="total_input_penagihan"
-                            id="total_input_penagihan">
+                            id="total_input_penagihan" style="text-align: right;background-color:white;border:none">
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered" style="width: 100%" id="input_penagihan">
-                        <thead>
-                            <tr>
-                                <th>No Bukti</th> {{-- hidden --}}
-                                <th>No SP2D</th> {{-- hidden --}}
-                                <th>Kode Sub Kegiatan</th>
-                                <th>Nama Sub Kegiatan</th> {{-- hidden --}}
-                                <th>REK LO</th>
-                                <th>REK 13</th>
-                                <th>Nama Rekening</th>
-                                <th>Rupiah</th>
-                                <th>Lalu</th> {{-- hidden --}}
-                                <th>SP2D</th> {{-- hidden --}}
-                                <th>Anggaran</th>
-                                <th>Sumber</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="card" style="margin: 4px">
+                    <div class="table-responsive">
+                        <table class="table table-bordered border-primary mb-0" style="width: 100%" id="input_penagihan">
+                            <thead>
+                                <tr>
+                                    <th>No Bukti</th> {{-- hidden --}}
+                                    <th>No SP2D</th> {{-- hidden --}}
+                                    <th>Kode Sub Kegiatan</th>
+                                    <th>Nama Sub Kegiatan</th> {{-- hidden --}}
+                                    <th>REK LO</th>
+                                    <th>REK 13</th>
+                                    <th>Nama Rekening</th>
+                                    <th>Rupiah</th>
+                                    <th>Lalu</th> {{-- hidden --}}
+                                    <th>SP2D</th> {{-- hidden --}}
+                                    <th>Anggaran</th>
+                                    <th>Sumber</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

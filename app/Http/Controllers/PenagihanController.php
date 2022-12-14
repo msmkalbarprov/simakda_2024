@@ -28,7 +28,7 @@ class PenagihanController extends Controller
             if ($row->jumlah_spp > 0) {
                 $btn .= '';
             } else {
-                $btn .= '<a href="javascript:void(0);" onclick="deleteData(' . $row->no_bukti . ', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData( \'' . $row->no_bukti . '\', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -209,331 +209,414 @@ class PenagihanController extends Controller
         $rek                = $request->kdrek;
         $status             = DB::table('trhrka')->where(['kd_skpd' => $kode, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $status_anggaran    = $status->jns_ang;
-        $data = DB::select(DB::raw("SELECT sumber_dana, nilai, isnull( tagihlalu, 0 ) + isnull( tampungan, 0 ) + isnull( spplalu, 0 ) + isnull( upgulalucms, 0 ) + isnull( upgulalu, 0 ) AS lalu
-        FROM
-        (
-        SELECT
-            sumber1 AS sumber_dana,
-            isnull( nsumber1, 0 ) AS nilai,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                trdtagih t
-                INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
-                AND sumber = z.sumber1
-            ) AS tagihlalu,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                tb_transaksi
-            WHERE
-                kd_sub_kegiatan = '$giat'
-                AND kd_skpd = '$kode'
-                AND kd_rek6 = '$rek'
-                AND sumber = z.sumber1
-            ) AS tampungan,
-            (
-            SELECT SUM
-                ( b.nilai )
-            FROM
-                trhspp a
-                INNER JOIN trdspp b ON a.no_spp= b.no_spp
-                AND a.kd_skpd= b.kd_skpd
-            WHERE
-                b.kd_skpd= '$kode'
-                AND b.kd_Sub_kegiatan= '$giat'
-                AND b.kd_rek6= '$rek'
-                AND sumber = sumber1
-                AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
-                AND jns_spp NOT IN ( '1', '2' )
-            ) AS spplalu,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout_cmsbank f
-                INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
-                AND sumber = z.sumber1
-            ) upgulalucms,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout f
-                INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND sumber = z.sumber1
-            ) upgulalu
-        FROM
-            trdrka z
-        WHERE
-            z.kd_skpd= '$kode'
-            AND z.kd_sub_kegiatan= '$giat'
-            AND jns_ang = '$status_anggaran'
-            AND z.kd_rek6= '$rek'
-        UNION ALL
-        SELECT
-            sumber2 AS sumber_dana,
-            isnull( nsumber2, 0 ) AS nilai,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                trdtagih t
-                INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
-                AND sumber = z.sumber2
-            ) AS tagihlalu,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                tb_transaksi
-            WHERE
-                kd_sub_kegiatan = '$giat'
-                AND kd_skpd = '$kode'
-                AND kd_rek6 = '$rek'
-                AND sumber = z.sumber2
-            ) AS tampungan,
-            (
-            SELECT SUM
-                ( u.nilai ) AS nilai
-            FROM
-                trhspp t
-                INNER JOIN trdspp u ON t.no_spp= u.no_spp
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                u.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND u.kd_rek6 = '$rek'
-                AND sumber = z.sumber2
-                AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
-                AND jns_spp NOT IN ( '1', '2' )
-            ) AS spplalu,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout_cmsbank f
-                INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
-                AND sumber = z.sumber2
-            ) upgulalucms,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout f
-                INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND sumber = z.sumber2
-            ) upgulalu
-        FROM
-            trdrka z
-        WHERE
-            z.kd_sub_kegiatan= '$giat'
-            AND z.kd_rek6= '$rek'
-            AND jns_ang = '$status_anggaran'
-            AND z.kd_skpd= '$kode'
-        UNION ALL
-        SELECT
-            sumber3 AS sumber_dana,
-            isnull( nsumber3, 0 ) AS nilai,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                trdtagih t
-                INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
-                AND sumber = sumber3
-            ) AS tagihlalu,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                tb_transaksi
-            WHERE
-                kd_sub_kegiatan = '$giat'
-                AND kd_skpd = '$kode'
-                AND kd_rek6 = '$rek'
-                AND sumber = a.sumber3
-            ) AS tampungan,
-            (
-            SELECT SUM
-                ( t.nilai ) AS nilai
-            FROM
-                trdspp t
-                INNER JOIN trhspp u ON t.no_spp= u.no_spp
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND t.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND sumber = sumber3
-                AND jns_spp NOT IN ( '1', '2' )
-                AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
-            ) AS spplalu,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout_cmsbank f
-                INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
-                AND sumber = sumber3
-            ) upgulalucms,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout f
-                INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND sumber = sumber3
-            ) upgulalu
-        FROM
-            trdrka a
-        WHERE
-            a.kd_sub_kegiatan= '$giat'
-            AND a.kd_rek6= '$rek'
-            AND jns_ang = '$status_anggaran'
-            AND a.kd_skpd= '$kode'
-        UNION ALL
-        SELECT
-            sumber4 AS sumber_dana,
-            isnull( nsumber4, 0 ) AS nilai,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                trdtagih t
-                INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
-                AND sumber = sumber4
-            ) AS lalu,
-            (
-            SELECT SUM
-                ( nilai ) AS nilai
-            FROM
-                tb_transaksi
-            WHERE
-                kd_sub_kegiatan = '$giat'
-                AND kd_skpd = '$kode'
-                AND kd_rek6 = '$rek'
-                AND sumber = a.sumber4
-            ) AS tampungan,
-            (
-            SELECT SUM
-                ( t.nilai ) AS nilai
-            FROM
-                trdspp t
-                INNER JOIN trhspp u ON t.no_spp= u.no_spp
-                AND t.kd_skpd= u.kd_skpd
-            WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND t.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND jns_spp NOT IN ( '1', '2' )
-                AND sumber = sumber4
-                AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
-            ) AS lalu,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout_cmsbank f
-                INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
-                AND sumber = sumber4
-            ) upgulalucms,
-            (
-            SELECT SUM
-                ( g.nilai )
-            FROM
-                trhtransout f
-                INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
-                AND f.kd_skpd= g.kd_skpd
-            WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
-                AND f.jns_spp IN ( '1' )
-                AND sumber = sumber4
-            ) upgulalu
-        FROM
-            trdrka a
-        WHERE
-            a.kd_sub_kegiatan= '$giat'
-            AND a.kd_rek6= '$rek'
-            AND jns_ang = '$status_anggaran'
-            AND a.kd_skpd= '$kode'
-        ) z
-        WHERE z.nilai<>0"));
+        // $data = DB::select(DB::raw("SELECT sumber_dana, nilai, isnull( tagihlalu, 0 ) + isnull( tampungan, 0 ) + isnull( spplalu, 0 ) + isnull( upgulalucms, 0 ) + isnull( upgulalu, 0 ) AS lalu
+        // FROM
+        // (
+        // SELECT
+        //     sumber1 AS sumber_dana,
+        //     isnull( nsumber1, 0 ) AS nilai,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         trdtagih t
+        //         INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND u.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+        //         AND sumber = z.sumber1
+        //     ) AS tagihlalu,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         tb_transaksi
+        //     WHERE
+        //         kd_sub_kegiatan = '$giat'
+        //         AND kd_skpd = '$kode'
+        //         AND kd_rek6 = '$rek'
+        //         AND sumber = z.sumber1
+        //     ) AS tampungan,
+        //     (
+        //     SELECT SUM
+        //         ( b.nilai )
+        //     FROM
+        //         trhspp a
+        //         INNER JOIN trdspp b ON a.no_spp= b.no_spp
+        //         AND a.kd_skpd= b.kd_skpd
+        //     WHERE
+        //         b.kd_skpd= '$kode'
+        //         AND b.kd_Sub_kegiatan= '$giat'
+        //         AND b.kd_rek6= '$rek'
+        //         AND sumber = sumber1
+        //         AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
+        //         AND jns_spp NOT IN ( '1', '2' )
+        //     ) AS spplalu,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout_cmsbank f
+        //         INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
+        //         AND sumber = z.sumber1
+        //     ) upgulalucms,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout f
+        //         INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND sumber = z.sumber1
+        //     ) upgulalu
+        // FROM
+        //     trdrka z
+        // WHERE
+        //     z.kd_skpd= '$kode'
+        //     AND z.kd_sub_kegiatan= '$giat'
+        //     AND jns_ang = '$status_anggaran'
+        //     AND z.kd_rek6= '$rek'
+        // UNION ALL
+        // SELECT
+        //     sumber2 AS sumber_dana,
+        //     isnull( nsumber2, 0 ) AS nilai,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         trdtagih t
+        //         INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND u.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+        //         AND sumber = z.sumber2
+        //     ) AS tagihlalu,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         tb_transaksi
+        //     WHERE
+        //         kd_sub_kegiatan = '$giat'
+        //         AND kd_skpd = '$kode'
+        //         AND kd_rek6 = '$rek'
+        //         AND sumber = z.sumber2
+        //     ) AS tampungan,
+        //     (
+        //     SELECT SUM
+        //         ( u.nilai ) AS nilai
+        //     FROM
+        //         trhspp t
+        //         INNER JOIN trdspp u ON t.no_spp= u.no_spp
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         u.kd_sub_kegiatan = '$giat'
+        //         AND u.kd_skpd = '$kode'
+        //         AND u.kd_rek6 = '$rek'
+        //         AND sumber = z.sumber2
+        //         AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
+        //         AND jns_spp NOT IN ( '1', '2' )
+        //     ) AS spplalu,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout_cmsbank f
+        //         INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
+        //         AND sumber = z.sumber2
+        //     ) upgulalucms,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout f
+        //         INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND sumber = z.sumber2
+        //     ) upgulalu
+        // FROM
+        //     trdrka z
+        // WHERE
+        //     z.kd_sub_kegiatan= '$giat'
+        //     AND z.kd_rek6= '$rek'
+        //     AND jns_ang = '$status_anggaran'
+        //     AND z.kd_skpd= '$kode'
+        // UNION ALL
+        // SELECT
+        //     sumber3 AS sumber_dana,
+        //     isnull( nsumber3, 0 ) AS nilai,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         trdtagih t
+        //         INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND u.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+        //         AND sumber = sumber3
+        //     ) AS tagihlalu,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         tb_transaksi
+        //     WHERE
+        //         kd_sub_kegiatan = '$giat'
+        //         AND kd_skpd = '$kode'
+        //         AND kd_rek6 = '$rek'
+        //         AND sumber = a.sumber3
+        //     ) AS tampungan,
+        //     (
+        //     SELECT SUM
+        //         ( t.nilai ) AS nilai
+        //     FROM
+        //         trdspp t
+        //         INNER JOIN trhspp u ON t.no_spp= u.no_spp
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND t.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND sumber = sumber3
+        //         AND jns_spp NOT IN ( '1', '2' )
+        //         AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
+        //     ) AS spplalu,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout_cmsbank f
+        //         INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
+        //         AND sumber = sumber3
+        //     ) upgulalucms,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout f
+        //         INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND sumber = sumber3
+        //     ) upgulalu
+        // FROM
+        //     trdrka a
+        // WHERE
+        //     a.kd_sub_kegiatan= '$giat'
+        //     AND a.kd_rek6= '$rek'
+        //     AND jns_ang = '$status_anggaran'
+        //     AND a.kd_skpd= '$kode'
+        // UNION ALL
+        // SELECT
+        //     sumber4 AS sumber_dana,
+        //     isnull( nsumber4, 0 ) AS nilai,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         trdtagih t
+        //         INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND u.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+        //         AND sumber = sumber4
+        //     ) AS lalu,
+        //     (
+        //     SELECT SUM
+        //         ( nilai ) AS nilai
+        //     FROM
+        //         tb_transaksi
+        //     WHERE
+        //         kd_sub_kegiatan = '$giat'
+        //         AND kd_skpd = '$kode'
+        //         AND kd_rek6 = '$rek'
+        //         AND sumber = a.sumber4
+        //     ) AS tampungan,
+        //     (
+        //     SELECT SUM
+        //         ( t.nilai ) AS nilai
+        //     FROM
+        //         trdspp t
+        //         INNER JOIN trhspp u ON t.no_spp= u.no_spp
+        //         AND t.kd_skpd= u.kd_skpd
+        //     WHERE
+        //         t.kd_sub_kegiatan = '$giat'
+        //         AND t.kd_skpd = '$kode'
+        //         AND t.kd_rek6 = '$rek'
+        //         AND jns_spp NOT IN ( '1', '2' )
+        //         AND sumber = sumber4
+        //         AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
+        //     ) AS lalu,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout_cmsbank f
+        //         INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
+        //         AND sumber = sumber4
+        //     ) upgulalucms,
+        //     (
+        //     SELECT SUM
+        //         ( g.nilai )
+        //     FROM
+        //         trhtransout f
+        //         INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
+        //         AND f.kd_skpd= g.kd_skpd
+        //     WHERE
+        //         g.kd_skpd = '$kode'
+        //         AND g.kd_sub_kegiatan= '$giat'
+        //         AND g.kd_rek6= '$rek'
+        //         AND f.jns_spp IN ( '1' )
+        //         AND sumber = sumber4
+        //     ) upgulalu
+        // FROM
+        //     trdrka a
+        // WHERE
+        //     a.kd_sub_kegiatan= '$giat'
+        //     AND a.kd_rek6= '$rek'
+        //     AND jns_ang = '$status_anggaran'
+        //     AND a.kd_skpd= '$kode'
+        // ) z
+        // WHERE z.nilai<>0"));
+        $no_trdrka = $kode . '.' . $giat . '.' . $rek;
+
+        $data1 = DB::table('trdpo')
+            ->select('sumber', 'nm_sumber', DB::raw("SUM(total) as nilai"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => 'U'])
+            ->whereNotNull('sumber')
+            ->groupBy('sumber', 'nm_sumber');
+
+        $data2 = DB::table('trdpo')
+            ->select('sumber', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => 'U'])
+            ->where(function ($query) {
+                $query->where('sumber', '')->orWhereNull('sumber');
+            })
+            ->groupBy('sumber', 'nm_sumber')
+            ->union($data1);
+
+        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+            ->mergeBindings($data2)
+            ->get();
         return response()->json($data);
+    }
+
+    public function realisasiSumber(Request $request)
+    {
+        $sumber = $request->sumber;
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_skpd = $request->kd_skpd;
+        $kd_rek6 = $request->kd_rek6;
+
+        $tagih_lalu = DB::table('trdtagih as a')
+            ->join('trhtagih as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( nilai ) AS nilai")
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->whereRaw("b.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd =? )", [$kd_skpd])
+            ->first();
+
+        $tampungan = DB::table('tb_transaksi as a')
+            ->selectRaw("SUM( nilai ) AS nilai")
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'a.sumber' => $sumber])
+            ->first();
+
+        $spplalu = DB::table('trhspp as a')
+            ->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->where(function ($query) {
+                $query->where('sp2d_batal', '<>', '1')->orWhereNull('sp2d_batal');
+            })
+            ->whereNotIn('jns_spp', ['1', '2'])
+            ->first();
+
+        $upgulalucms = DB::table('trhtransout_cmsbank as a')
+            ->join('trdtransout_cmsbank as b', function ($join) {
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->where(function ($query) {
+                $query->where('a.status_validasi', '<>', '1')->orWhereNull('a.status_validasi');
+            })
+            ->whereIn('a.jns_spp', ['1'])
+            ->first();
+
+        $upgulalu = DB::table('trhtransout as a')
+            ->join('trdtransout as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->whereIn('a.jns_spp', ['1'])
+            ->first();
+
+        $realisasi = $tagih_lalu->nilai + $tampungan->nilai + $spplalu->nilai + $upgulalucms->nilai + $upgulalu->nilai;
+        return response()->json($realisasi);
     }
 
     public function cariNamaSumber(Request $request)

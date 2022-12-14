@@ -471,29 +471,19 @@
                     <div class="mb-3 row">
                         <label for="kode_rekening" class="col-md-2 col-form-label">Rekening</label>
                         <div class="col-md-6">
-                            <select class="form-control select2-multiple @error('kode_rekening') is-invalid @enderror"
-                                style=" width: 100%;" id="kode_rekening" name="kode_rekening"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Rekening">
-                                </optgroup>
+                            <select class="form-control select2-modal" style=" width: 100%;" id="kode_rekening"
+                                name="kode_rekening" data-placeholder="Silahkan Pilih">
                             </select>
-                            @error('kode_rekening')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('nm_rekening') is-invalid @enderror"
-                                value="{{ old('nm_rekening') }}" id="nm_rekening" readonly name="nm_rekening">
-                            @error('nm_rekening')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control" id="nm_rekening" readonly name="nm_rekening">
                         </div>
                     </div>
                     <!-- SUMBER DANA -->
                     <div class="mb-3 row">
                         <label for="sumber_dana" class="col-md-2 col-form-label">Sumber</label>
                         <div class="col-md-6">
-                            <select class="form-control select2-multiple @error('sumber_dana') is-invalid @enderror"
+                            <select class="form-control select2-modal @error('sumber_dana') is-invalid @enderror"
                                 style=" width: 100%;" id="sumber_dana" name="sumber_dana"
                                 data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Sumber Dana">

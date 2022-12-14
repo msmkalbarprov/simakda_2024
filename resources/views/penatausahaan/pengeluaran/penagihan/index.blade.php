@@ -112,7 +112,7 @@
             if (r == true) {
                 $.ajax({
                     url: "{{ route('penagihan.hapus_penagihan') }}",
-                    type: "DELETE",
+                    type: "POST",
                     dataType: 'json',
                     data: {
                         no_bukti: no_bukti,

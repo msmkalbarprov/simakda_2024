@@ -28,8 +28,8 @@ class UserController extends Controller
     {
         $data = DB::table('pengguna')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("user.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
-            $btn .= '<a href="' . route("user.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            // $btn = '<a href="' . route("user.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn = '<a href="' . route("user.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->id . '\', \'' . Auth::user()->id . '\');" data-id="\'' . $row->id . '\'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);

@@ -28,6 +28,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
         let tabel = $('#input_penagihan').DataTable({
             responsive: true,
             ordering: false,
@@ -262,38 +263,69 @@
                         `<option value="0">Pilih Sumber Dana</option>`);
                     $.each(data, function(index, data) {
                         $('#sumber_dana').append(
-                            `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            // `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
                         );
                     })
                 }
             })
         });
-        $('#sumber_dana').on('change', function() {
-            let selected = $(this).find('option:selected');
+        $('#sumber_dana').on('select2:select', function() {
+            // let selected = $(this).find('option:selected');
             let sumber_dana = this.value;
+            if (sumber_dana == 'null') {
+                alert('Sumber dana tidak dapat digunakan!');
+                $('#sumber_dana').val(null).change();
+                return;
+            }
+            let nama = $(this).find(':selected').data('nama');
+            let nilai = $(this).find(':selected').data('nilai');
+            $('#nm_sumber').val(nama);
+            $("#nilai_sumber_dana").val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(nilai));
             $.ajax({
-                url: "{{ route('penagihan.cari_nama_sumber') }}",
+                url: "{{ route('penagihan.realisasi_sumber_dana') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sumber_dana: sumber_dana,
+                    sumber: sumber_dana,
+                    kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
+                    kd_rek6: document.getElementById('kode_rekening').value,
+                    kd_skpd: document.getElementById('kd_skpd').value,
                 },
                 success: function(data) {
-                    $('#nm_sumber').val(data.nm_sumber_dana1);
+                    $("#realisasi_sumber_dana").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data));
+                    $("#sisa_sumber_dana").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai - data));
                 }
             })
-            let dana = parseInt(selected.data('nilai')) || 0;
-            let dana_lalu = parseInt(selected.data('lalu')) || 0;
-            let sisa_dana = parseInt(dana - dana_lalu) || 0;
-            $("#nilai_sumber_dana").val(dana.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#realisasi_sumber_dana").val(dana_lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_sumber_dana").val(sisa_dana.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
+            // $.ajax({
+            //     url: "{{ route('penagihan.cari_nama_sumber') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         sumber_dana: sumber_dana,
+            //     },
+            //     success: function(data) {
+            //         $('#nm_sumber').val(data.nm_sumber_dana1);
+            //     }
+            // })
+            // let dana = parseInt(selected.data('nilai')) || 0;
+            // let dana_lalu = parseInt(selected.data('lalu')) || 0;
+            // let sisa_dana = parseInt(dana - dana_lalu) || 0;
+            // $("#nilai_sumber_dana").val(dana.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#realisasi_sumber_dana").val(dana_lalu.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#sisa_sumber_dana").val(sisa_dana.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
         });
         $('#no_kontrak').on('change', function() {
             let selected = $(this).find('option:selected');
@@ -302,8 +334,12 @@
             let dana = parseFloat(selected.data('nilai')) || 0;
             let dana_lalu = parseFloat(selected.data('lalu')) || 0;
             let sisa_dana = parseFloat(dana - dana_lalu) || 0;
-            $('#nilai_lalu').val(dana_lalu);
-            $('#sisa_kontrak').val(sisa_dana);
+            $('#nilai_lalu').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(dana_lalu));
+            $('#sisa_kontrak').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(sisa_dana));
             $.ajax({
                 url: "{{ route('penagihan.cari_total_kontrak') }}",
                 type: "POST",
@@ -314,7 +350,9 @@
                 },
                 success: function(data) {
                     let total_kontrak = parseFloat(data.total_kontrak) || 0;
-                    $('#nilai_kontrak').val(total_kontrak);
+                    $('#nilai_kontrak').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total_kontrak));
                 }
             })
         });
@@ -328,18 +366,23 @@
         });
         $('#simpan-btn').on('click', function() {
             // perhitungan nilai
-            let nilai_penagihan = document.getElementById('nilai_penagihan').value;
-            let nilai_tagih = nilai_penagihan.replace(/,/g, ''); //nilai input rincian penagihan
+            // let nilai_penagihan = document.getElementById('nilai_penagihan').value;
+            let nilai_tagih = angka(document.getElementById('nilai_penagihan')
+                .value); //nilai input rincian penagihan
             let kode_rekening = $('#kode_rekening').find('option:selected');
             let anggaran = kode_rekening.data('anggaran'); //nilai anggaran angkas, spd, pagu
             let lalu = kode_rekening.data('lalu'); // realisasi angkas, spd, pagu
             let sisa_angkas = anggaran - lalu; //sisa angkas
             let sisa_spd = anggaran - lalu; //sisa spd
             let sisa_pagu = anggaran - lalu; //sisa pagu
-            let sumber_dana = $('#sumber_dana').find('option:selected');
-            let nilai_sumber = sumber_dana.data('nilai'); //nilai sumber dana
-            let lalu_sumber = sumber_dana.data('lalu'); //realisasi sumber dana
-            let sisa_sumber = nilai_sumber - lalu_sumber; //sisa nilai sumber dana
+            // let sumber_dana = $('#sumber_dana').find('option:selected');
+            // let nilai_sumber = sumber_dana.data('nilai'); //nilai sumber dana
+            // let lalu_sumber = sumber_dana.data('lalu'); //realisasi sumber dana
+            // let sisa_sumber = nilai_sumber - lalu_sumber; //sisa nilai sumber dana
+            let nilai_sumber = rupiah(document.getElementById('nilai_sumber_dana')
+                .value); //nilai sumber dana
+            let sisa_sumber = rupiah(document.getElementById('sisa_sumber_dana')
+                .value); //sisa nilai sumber dana
             let no_simpan = document.getElementById('no_tersimpan').value; //no tersimpan
             let nomor = document.getElementById('no_bukti').value; //no bast penagihan
             let sisa_spd_rekening = lalu + sisa_spd;
@@ -471,10 +514,14 @@
                             'kd_rek6': map_lo,
                             'kd_rek': kdrek,
                             'nm_rek6': nmrek,
-                            'nilai': nilai_tagih,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai_tagih),
                             'lalu': clalu,
                             'sp2d': csp2d,
-                            'anggaran': nilai_sumber,
+                            'anggaran': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai_sumber),
                             'sumber': sumber,
                             'hapus': `<a href="javascript:void(0);" onclick="deleteData('${nomor}','${kdgiat}','${kdrek}','${sumber}','${nilai_tagih}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
                         }).draw();
@@ -486,7 +533,9 @@
                             'kd_rek6': map_lo,
                             'kd_rek': kdrek,
                             'nm_rek6': nmrek,
-                            'nilai': nilai_tagih,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai_tagih),
                             'lalu': clalu,
                             'sp2d': csp2d,
                             'anggaran': nilai_sumber,
@@ -494,8 +543,12 @@
                             'hapus': `<a href="javascript:void(0);" onclick="deleteData('${nomor}','${kdgiat}','${kdrek}','${sumber}','${nilai_tagih}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
                         }).draw();
                         nilai_total_penagihan += parseFloat(nilai_tagih);
-                        $('#total_input_penagihan').val(nilai_total_penagihan);
-                        $('#total_nilai').val(nilai_total_penagihan);
+                        $('#total_input_penagihan').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_total_penagihan));
+                        $('#total_nilai').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_total_penagihan));
                         $('#nm_sub_kegiatan').val('');
                         $('#nm_rekening').val('');
                         $('#nm_sumber').val('');
@@ -524,8 +577,8 @@
             let no_kontrak = document.getElementById('no_kontrak').value;
             let ket = document.getElementById('ket').value;
             let ket_bast = document.getElementById('ket_bast').value;
-            let total_nilai = parseFloat(document.getElementById('total_nilai').value);
-            let sisa_kontrak = parseFloat(document.getElementById('sisa_kontrak').value);
+            let total_nilai = rupiah(document.getElementById('total_nilai').value);
+            let sisa_kontrak = rupiah(document.getElementById('sisa_kontrak').value);
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let no_tersimpan = document.getElementById('no_tersimpan').value;
             let status_bayar = document.getElementById('status_bayar').value;
@@ -544,12 +597,13 @@
                     kd_rek6: value.kd_rek6,
                     kd_rek: value.kd_rek,
                     nm_rek6: value.nm_rek6,
-                    nilai: value.nilai,
+                    nilai: rupiah(value.nilai),
                     kd_skpd: kd_skpd,
                     sumber: value.sumber,
                 };
                 return data;
             });
+
             let tanggal = new Date(tgl_bukti);
             let tahun_anggaran = new Date().getFullYear();
             let tahun = tanggal.getFullYear();
@@ -829,12 +883,23 @@
         }
     });
 
+    function rupiah(n) {
+        let n1 = n.split('.').join('');
+        let rupiah = n1.split(',').join('.');
+        return parseFloat(rupiah) || 0;
+    }
+
+    function angka(n) {
+        let nilai = n.split(',').join('');
+        return parseFloat(nilai) || 0;
+    }
+
     function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
         let tabel = $('#input_penagihan').DataTable();
         let tabel1 = $('#rincian_penagihan').DataTable();
         let nilai_penagihan = parseFloat(nilai);
-        let nilai_sementara_penagihan = parseFloat(document.getElementById('total_input_penagihan').value);
-        let nilai_rincian_penagihan = parseFloat(document.getElementById('total_nilai').value);
+        let nilai_sementara_penagihan = rupiah(document.getElementById('total_input_penagihan').value);
+        let nilai_rincian_penagihan = rupiah(document.getElementById('total_nilai').value);
         $.ajax({
             url: "{{ route('penagihan.hapus_detail_tampungan_penagihan') }}",
             type: "POST",
@@ -856,8 +921,14 @@
                         return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
                             data.kd_rek == kd_rek
                     }).remove().draw();
-                    $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
-                    $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
+                    // $('#total_input_penagihan').val(nilai_sementara_penagihan - nilai_penagihan);
+                    $('#total_input_penagihan').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_sementara_penagihan - nilai_penagihan));
+                    // $('#total_nilai').val(nilai_rincian_penagihan - nilai_penagihan);
+                    $('#total_nilai').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_rincian_penagihan - nilai_penagihan));
                     alert('Data berhasil dihapus!');
                 } else {
                     alert('Data gagal dihapus!');
