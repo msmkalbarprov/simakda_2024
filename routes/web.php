@@ -57,6 +57,7 @@ use App\Http\Controllers\Skpd\UyhdPajakController;
 use App\Http\Controllers\Skpd\Anggaran\RakController;
 use App\Http\Controllers\Skpd\Pendapatan\PenetapanController;
 use App\Http\Controllers\Skpd\TransaksiKKPDController;
+use App\Http\Controllers\PenandatanganController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -86,6 +87,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('kontrak', KontrakController::class);
         Route::post('hapus_kontrak', [KontrakController::class, 'hapus'])->name('kontrak.hapus');
         Route::post('load_kontrak', [KontrakController::class, 'loadData'])->name('kontrak.load_data');
+        // penandatangan
+        Route::resource('tandatangan', PenandatanganController::class);
+        Route::post('hapus_tandatangan', [PenandatanganController::class, 'hapus'])->name('tandatangan.hapus');
+        Route::post('load_tandatangan', [PenandatanganController::class, 'loadData'])->name('tandatangan.load_data');
+        Route::post('skpd_tandatangan', [PenandatanganController::class, 'cariSkpd'])->name('tandatangan.skpd');
 
         Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
         Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
