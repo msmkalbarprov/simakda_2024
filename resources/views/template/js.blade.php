@@ -24,6 +24,7 @@
 <!-- Datatable init js -->
 <script src="{{ asset('template/assets/js/pages/datatables.init.js') }}"></script>
 <script src="{{ asset('template/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('template/assets/js/pages/toast.js') }}"></script>
 
 <!-- Sweet alert init js-->
 <script src="{{ asset('template/assets/js/pages/sweet-alerts.init.js') }}"></script>

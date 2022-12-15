@@ -166,10 +166,12 @@ File: Sweetalert Js File
         $('#sa-position').click(function () {
             Swal.fire({
                 position: 'top-end',
-                icon: 'success',
-                title: 'Your work has been saved',
+                width: 300,
+                height: 50,
+                background: 'gray',
+                text: 'Sub Kegiatan dan Rekening telah berhasil ditambahkan',
                 showConfirmButton: false,
-                timer: 1500
+                timer: 500
             })
         });
 

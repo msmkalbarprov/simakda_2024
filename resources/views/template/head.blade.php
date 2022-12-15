@@ -31,6 +31,8 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <!-- Or for RTL support -->
+    <!-- CSS -->
+    <link href="{{ asset('template/assets/css/toast.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .select2-container {
             width: auto !important;
