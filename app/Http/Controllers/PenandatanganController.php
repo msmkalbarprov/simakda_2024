@@ -8,11 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Gate;
 
 class PenandatanganController extends Controller
 {
     public function index()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
         return view('master.penandatangan.index');
     }
 
@@ -40,7 +44,10 @@ class PenandatanganController extends Controller
 
     public function create()
     {
-        
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         if(Auth::user()->is_admin==2){
             $kd_skpd = Auth::user()->kd_skpd;
             $data = [
@@ -93,7 +100,11 @@ class PenandatanganController extends Controller
 
 
     public function edit($id)
-    {
+    {   
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $id = Crypt::decryptString($id);
         $data_awal = DB::table('ms_ttd')
             ->where(['id' => $id])
@@ -126,7 +137,11 @@ class PenandatanganController extends Controller
 
 
     public function hapus(Request $request)
-    {
+    {   
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+        
         $id = $request->id;
         $data = DB::table('ms_ttd')->where('id', $id)->delete();
         if ($data) {

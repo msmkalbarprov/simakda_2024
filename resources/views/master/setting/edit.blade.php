@@ -98,7 +98,6 @@
                         <!-- SIMPAN -->
                         <div style="float: right;">
                             <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('kontrak.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </form>
                 </div>

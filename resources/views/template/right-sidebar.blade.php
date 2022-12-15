@@ -120,9 +120,8 @@
                             </a>
                           
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="#">Edit</a>
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Remove</a>
+                                <a class="dropdown-item" href="#">Edit Profile</a>
+                                <a class="dropdown-item" href="#">Ubah Pasword</a>
                             </div>
                         </div>
                         <div class="clearfix"></div>
@@ -131,6 +130,24 @@
                         </div>
                         <h5 class="mt-3 mb-1">{{ Auth::user()->nama }}</h5>
                         <p class="text-muted">{{ cari_nama(Auth::user()->role,'peran','id','nama_role') }}</p>
+                        <p class="text-muted">
+                            @if(Auth::user()->is_admin==2 || Auth::user()->role==1006)
+                                <a class="dropdown-item"
+                                    href="{{ route('ubah_skpd', Crypt::encryptString(Auth::user()->id)) }}"><i
+                                        class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span
+                                        class="align-middle">Ganti SKPD</span></a>
+                                @endif
+                        </p>
+                        <p class="text-muted">
+                            <a  class="dropdown-item"
+                                href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
+                                    class="uil
+                                uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
+                                <span class="align-middle">Logout</span></a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </p>
 
                         
                     </div>
@@ -140,18 +157,15 @@
                     <div class="text-muted">
                         
                         <div class="table-responsive mt-4">
-                            <div>
-                                <p class="mb-1">Nama :</p>
-                                <h5 class="font-size-16">{{ Auth::user()->nama }}</h5>
-                            </div>
                             <div class="mt-4">
-                                <p class="mb-1">SKPD :</p>
+                                <p class="mb-1">KODE SKPD :</p>
                                 <h5 class="font-size-16">{{ Auth::user()->kd_skpd }}</h5>
                             </div>
                             <div class="mt-4">
-                                <p class="mb-1">SKPD :</p>
+                                <p class="mb-1">NAMA SKPD :</p>
                                 <h5 class="font-size-16">{{ cari_nama(Auth::user()->kd_skpd,'ms_skpd','kd_skpd','nm_skpd') }}</h5>
                             </div>
+                            
                         </div>
                     </div>
                 </div>

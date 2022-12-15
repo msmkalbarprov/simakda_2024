@@ -159,8 +159,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="dropdown d-inline-block">
+            {{-- PINDAH KE RIGHT SIDEBAR --}}
+            {{-- <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ Auth::user()->nama }}</span>
@@ -187,7 +187,7 @@
                         @csrf
                     </form>
                 </div>
-            </div>
+            </div> --}}
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
                     <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="50">

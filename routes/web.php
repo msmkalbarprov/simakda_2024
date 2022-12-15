@@ -63,6 +63,7 @@ use App\Http\Controllers\Spd\SPDBelanjaController;
 use App\Http\Controllers\Spd\SPDBelanjaPRController;
 use App\Http\Controllers\Spd\RegisterSPDController;
 use App\Http\Controllers\Spd\KonfigurasiSPDController;
+use App\Http\Controllers\ProfileController;
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -96,9 +97,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('hapus_tandatangan', [PenandatanganController::class, 'hapus'])->name('tandatangan.hapus');
         Route::post('load_tandatangan', [PenandatanganController::class, 'loadData'])->name('tandatangan.load_data');
         Route::post('skpd_tandatangan', [PenandatanganController::class, 'cariSkpd'])->name('tandatangan.skpd');
-
+        // setting
         Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
         Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
+        // profile SKPD
+        Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
         Route::post('cabang', [PenerimaController::class, 'cabang'])->name('penerima.cabang');
         Route::post('kode-setor', [PenerimaController::class, 'kode_setor'])->name('penerima.kodeSetor');

@@ -89,8 +89,7 @@
 {{-- ALERT START--}}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
     <i class="fa fa-info-circle"> Perhatian</i>
-    <p>Bapak/Ibu sekalian mulai tanggal 4 November 2022, Kami akan melakukan rekal data mingguan setiap hari jumat pukul 12.00-13.00 WIB untuk keperluan pengiriman data mingguan ke Kementerian Dalam Negeri RI.
-        Diharapkan untuk tidak melakukan input data di dalam aplikasi SIMAKDA pada jam tersebut, karena akan mengakibatkan hilangnya data.</p>
+    <p>Bapak/Ibu sekalian diharapkan segera menginput RAK (Rencana Anggaran Kas) Gaji dan Tunjangan dikarenakan akan segera dibuatkan SPD GAji Januari 2023.</p>
     <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{-- ALERT END --}}
@@ -107,7 +106,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">{{'Pebiayaan'}}</h4>
+                <h4 class="card-title mb-4">{{'Pembiayaan'}}</h4>
                 
                 <div id="donut_chart" class="apex-charts"  dir="ltr"></div>
             </div>

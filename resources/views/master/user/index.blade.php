@@ -16,26 +16,12 @@
                                     <tr>
                                         <th style="text-align: center;">No.</th>
                                         <th style="text-align: center;">Username</th>
+                                        <th style="text-align: center;">Nama</th>
+                                        <th style="text-align: center;">SKPD</th>
                                         <th style="text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {{-- @foreach ($daftar_pengguna as $user)
-                                        <tr>
-                                            <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                            <td style="text-align: center;">{{ $user->username }}</td>
-                                            <td style="text-align: center;">
-                                                <a href="{{ route('user.show', encrypt($user->id)) }}"
-                                                    class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i></a>
-                                                <a href="{{ route('user.edit', $user->id) }}"
-                                                    class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                                <a href="javascript:void(0);" onclick="deleteData({{ $user->id }});"
-                                                    class="btn btn-danger btn-sm" id="delete"
-                                                    data-id={{ $user->id }}><i class="fas fa-trash-alt"></i></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach --}}
-                                </tbody>
+                                
                             </table>
                         </div>
 
@@ -72,6 +58,12 @@
                 }, {
                     data: 'username',
                     name: 'username',
+                },{
+                    data: 'nama',
+                    name: 'nama',
+                },{
+                    data: 'nm_skpd',
+                    name: 'nm_skpd',
                 }, {
                     data: 'aksi',
                     name: 'aksi',
