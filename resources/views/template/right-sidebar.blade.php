@@ -121,7 +121,7 @@
                           
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="#">Edit Profile</a>
-                                <a class="dropdown-item" href="#">Ubah Pasword</a>
+                                <a class="dropdown-item" href="{{ route('ubah_password', Crypt::encryptString(Auth::user()->id)) }}">Ubah Pasword</a>
                             </div>
                         </div>
                         <div class="clearfix"></div>

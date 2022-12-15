@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 
 class HomeController extends Controller
@@ -94,6 +95,45 @@ class HomeController extends Controller
         try {
             DB::table('pengguna')->where(['id' => $data['id'], 'username' => $data['username']])->update([
                 'kd_skpd' => $data['kd_skpd']
+            ]);
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // Ubah Password
+    public function ubahPassword($id)
+    {
+        $id = Crypt::decryptString($id);
+        $data = [
+            'user' => DB::table('pengguna')->where(['id' => $id])->first(),
+            'kd_skpd' => DB::table('ms_skpd')->orderBy('kd_skpd')->get()
+        ];
+
+        return view('fungsi.ubah_password.index')->with($data);
+    }
+
+    public function simpanUbahPassword(Request $request)
+    {
+        $data = $request->data;
+
+        if($data['password'] != $data['password2']){
+            return response()->json([
+                'message' => '2'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengguna')->where(['id' => $data['id'], 'username' => $data['username']])->update([
+                'password' => Hash::make($data['password'])
             ]);
             DB::commit();
             return response()->json([

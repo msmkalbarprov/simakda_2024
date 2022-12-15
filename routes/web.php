@@ -877,6 +877,8 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
 Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
 Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
+Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');
+Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
 Route::get('setting', [SettingController::class, 'index'])->name('setting');
 Route::get('coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('', [LoginController::class, 'index'])->name('login.index');
