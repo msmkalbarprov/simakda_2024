@@ -58,6 +58,7 @@ use App\Http\Controllers\Skpd\Anggaran\RakController;
 use App\Http\Controllers\Skpd\Pendapatan\PenetapanController;
 use App\Http\Controllers\Skpd\TransaksiKKPDController;
 use App\Http\Controllers\PenandatanganController;
+use App\Http\Controllers\Skpd\Pendapatan\PenerimaanController;
 //spd belanaja
 use App\Http\Controllers\Spd\SPDBelanjaController;
 use App\Http\Controllers\Spd\SPDBelanjaPRController;
@@ -115,7 +116,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('create', [PenagihanController::class, 'create'])->name('penagihan.create');
             Route::get('show/{no_bukti?}', [PenagihanController::class, 'show'])->where('no_bukti', '(.*)')->name('penagihan.show');
             Route::get('edit/{no_bukti?}', [PenagihanController::class, 'edit'])->where('no_bukti', '(.*)')->name('penagihan.edit');
-            Route::delete('hapus_penagihan', [PenagihanController::class, 'hapusPenagihan'])->name('penagihan.hapus_penagihan');
+            Route::post('hapus_penagihan', [PenagihanController::class, 'hapusPenagihan'])->name('penagihan.hapus_penagihan');
+            Route::post('realisasi_sumber_dana', [PenagihanController::class, 'realisasiSumber'])->name('penagihan.realisasi_sumber_dana');
             Route::post('cek_status_ang_new', [PenagihanController::class, 'cekStatusAngNew'])->name('penagihan.cek_status_ang_new');
             Route::post('cek_status_ang', [PenagihanController::class, 'cekStatusAng'])->name('penagihan.cek_status_ang');
             Route::post('cari_rekening', [PenagihanController::class, 'cariRekening'])->name('penagihan.cari_rekening');
@@ -747,7 +749,6 @@ Route::group(['middleware' => 'auth'], function () {
             // cetak Kartu Kendali Sub Kegiatan
             Route::get('cetak_kk_pengajuan', [KartuKendaliSubkegiatanController::class, 'cetakKkpengajuan'])->name('skpd.laporan_bendahara.cetak_kk_pengajuan');
             Route::get('cetak_kk_spj', [KartuKendaliSubkegiatanController::class, 'cetakKkSpj'])->name('skpd.laporan_bendahara.cetak_kk_spj');
-            
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
@@ -779,6 +780,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
         // Pendapatan
         Route::group(['prefix' => 'pendapatan'], function () {
+            // Penetapan Pendapatan
             Route::group(['prefix' => 'penetapan'], function () {
                 Route::get('', [PenetapanController::class, 'indexPenetapanPendapatan'])->name('penetapan_pendapatan.index');
                 Route::post('load_data', [PenetapanController::class, 'loadDataPenetapanPendapatan'])->name('penetapan_pendapatan.load_data');
@@ -788,10 +790,61 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('simpan_edit', [PenetapanController::class, 'simpanEditPenetapanPendapatan'])->name('penetapan_pendapatan.simpan_edit');
                 Route::post('hapus', [PenetapanController::class, 'hapusPenetapanPendapatan'])->name('penetapan_pendapatan.hapus');
             });
+            // Penetapan Penerimaan
             Route::group(['prefix' => 'penerimaan'], function () {
                 Route::get('', [PenetapanController::class, 'indexPenetapanPenerimaan'])->name('penetapan_penerimaan.index');
                 Route::post('load_data', [PenetapanController::class, 'loadDataPenetapanPenerimaan'])->name('penetapan_penerimaan.load_data');
+                Route::get('tambah', [PenetapanController::class, 'tambahPenetapanPenerimaan'])->name('penetapan_penerimaan.tambah');
+                Route::post('simpan', [PenetapanController::class, 'simpanPenetapanPenerimaan'])->name('penetapan_penerimaan.simpan');
+                Route::get('edit/{no_tetap?}', [PenetapanController::class, 'editPenetapanPenerimaan'])->where('no_tetap', '(.*)')->name('penetapan_penerimaan.edit');
+                Route::post('simpan_edit', [PenetapanController::class, 'simpanEditPenetapanPenerimaan'])->name('penetapan_penerimaan.simpan_edit');
+                Route::post('hapus', [PenetapanController::class, 'hapusPenetapanPenerimaan'])->name('penetapan_penerimaan.hapus');
             });
+            // Penerimaan Tahun Lalu
+            Route::group(['prefix' => 'penerimaan_tahun_lalu'], function () {
+                Route::get('', [PenerimaanController::class, 'indexPenerimaanLalu'])->name('penerimaan_lalu.index');
+                Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanLalu'])->name('penerimaan_lalu.load_data');
+                Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanLalu'])->name('penerimaan_lalu.tambah');
+                Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanLalu'])->name('penerimaan_lalu.simpan');
+                Route::get('edit/{no_terima?}', [PenerimaanController::class, 'editPenerimaanLalu'])->where('no_terima', '(.*)')->name('penerimaan_lalu.edit');
+                Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanLalu'])->name('penerimaan_lalu.simpan_edit');
+                Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanLalu'])->name('penerimaan_lalu.hapus');
+            });
+            // Penerimaan Tahun Ini
+            Route::group(['prefix' => 'penerimaan_tahun_ini'], function () {
+                Route::get('', [PenerimaanController::class, 'indexPenerimaanIni'])->name('penerimaan_ini.index');
+                Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanIni'])->name('penerimaan_ini.load_data');
+                Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanIni'])->name('penerimaan_ini.tambah');
+                Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanIni'])->name('penerimaan_ini.simpan');
+                Route::get('edit/{no_terima?}', [PenerimaanController::class, 'editPenerimaanIni'])->where('no_terima', '(.*)')->name('penerimaan_ini.edit');
+                Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanIni'])->name('penerimaan_ini.simpan_edit');
+                Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanIni'])->name('penerimaan_ini.hapus');
+            });
+        });
+    });
+
+    Route::group(['prefix' => 'pendapatan'], function () {
+        // Penerimaan Lain PPKD
+        Route::group(['prefix' => 'penerimaan_lain_ppkd'], function () {
+            Route::get('', [PenerimaanController::class, 'indexPenerimaanPpkd'])->name('penerimaan_ppkd.index');
+            Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanPpkd'])->name('penerimaan_ppkd.load_data');
+            Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanPpkd'])->name('penerimaan_ppkd.tambah');
+            Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanPpkd'])->name('penerimaan_ppkd.simpan');
+            Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanPpkd'])->where('no_kas', '(.*)')->name('penerimaan_ppkd.edit');
+            Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanPpkd'])->name('penerimaan_ppkd.simpan_edit');
+            Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanPpkd'])->name('penerimaan_ppkd.hapus');
+        });
+        // Penerimaan Kas
+        Route::group(['prefix' => 'penerimaan_kas'], function () {
+            Route::get('', [PenerimaanController::class, 'indexPenerimaanKas'])->name('penerimaan_kas.index');
+            Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanKas'])->name('penerimaan_kas.load_data');
+            Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanKas'])->name('penerimaan_kas.tambah');
+            Route::post('cari_no_bukti', [PenerimaanController::class, 'noBuktiPenerimaanKas'])->name('penerimaan_kas.no_bukti');
+            Route::post('detail_sts', [PenerimaanController::class, 'detailPenerimaanKas'])->name('penerimaan_kas.detail_sts');
+            Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanKas'])->name('penerimaan_kas.simpan');
+            Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanKas'])->where('no_kas', '(.*)')->name('penerimaan_kas.edit');
+            Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanKas'])->name('penerimaan_kas.simpan_edit');
+            Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanKas'])->name('penerimaan_kas.hapus');
         });
     });
 

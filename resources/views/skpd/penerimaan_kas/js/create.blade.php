@@ -18,20 +18,12 @@
             serverSide: true,
             processing: true,
             ajax: {
-                "url": "{{ route('skpd.input_rak.rekening_rak') }}",
+                "url": "{{ route('penerimaan_kas.detail_sts') }}",
                 "type": "POST",
                 "data": function(d) {
-                    d.kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+                    d.no_bukti = document.getElementById('no_bukti').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
-                    d.jenis_rak = document.getElementById('jenis_rak').value;
-                    d.jenis_anggaran = document.getElementById('jenis_anggaran').value;
-                }
-            },
-            createdRow: function(row, data, index) {
-                if ((data.nilai - data.nilai_rak) == 0) {
-                    $(row).css("background-color", "#ffffff");
-                } else {
-                    $(row).css("background-color", "#ff471a");
+                    d.jenis = document.getElementById('jenis').value;
                 }
             },
             ordering: false,
@@ -41,8 +33,17 @@
                     className: "text-center",
                 },
                 {
+                    data: 'no_sts',
+                    name: 'no_sts',
+                    visible: false
+                },
+                {
                     data: 'kd_rek6',
                     name: 'kd_rek6',
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6',
                 },
                 {
                     data: 'nm_rek6',
@@ -57,21 +58,6 @@
                             minimumFractionDigits: 2
                         }).format(data.nilai)
                     }
-                },
-                {
-                    data: null,
-                    name: 'nilai_rak',
-                    className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai_rak)
-                    }
-                },
-                {
-                    data: 'aksi',
-                    name: 'aksi',
-                    className: 'text-center'
                 },
             ]
         });

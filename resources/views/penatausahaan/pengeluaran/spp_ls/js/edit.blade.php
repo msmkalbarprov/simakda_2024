@@ -5,17 +5,24 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        $('.select2-multiple').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+        $('#beban').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
         document.getElementById('beban').setAttribute("disabled", "disabled");
         document.getElementById('jenis').setAttribute("disabled", "disabled");
         document.getElementById('nomor_spd').setAttribute("disabled", "disabled");
         document.getElementById('kd_sub_kegiatan').setAttribute("disabled", "disabled");
         let no_tagih_lalu = document.getElementById('no_penagihan').value;
-        if (no_tagih_lalu) {
+        if (no_tagih_lalu != null && no_tagih_lalu != '') {
             document.getElementById('dengan_penagihan').checked = true;
             document.getElementById('dengan_penagihan').setAttribute("disabled", "disabled");
             document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
             $('#card_penagihan').show();
-
         } else {
             document.getElementById('dengan_penagihan').checked = false;
             document.getElementById('dengan_penagihan').setAttribute("disabled", "disabled");
@@ -201,16 +208,6 @@
                 //     data: 'hapus'
                 // }
             ]
-        });
-
-        $('.select2-multiple').select2({
-            placeholder: "Silahkan Pilih",
-            theme: 'bootstrap-5'
-        });
-
-        $('#beban').select2({
-            placeholder: "Silahkan Pilih",
-            theme: 'bootstrap-5'
         });
 
         $('#rekanan').on('change', function() {
@@ -801,6 +798,7 @@
 
         // tambah_rincian
         $('#tambah_rincian').on("click", function() {
+            alert('dsadas');
             // cek sub kegiatan sudah dipilih atau belum
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             if (!kd_sub_kegiatan) {

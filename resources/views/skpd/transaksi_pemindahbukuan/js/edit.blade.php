@@ -364,6 +364,11 @@
 
         $('#sumber').on('select2:select', function() {
             let sumber = this.value;
+            if (sumber == 'null') {
+                alert('Sumber dana tidak dapat digunakan!');
+                $('#sumber').val(null).change();
+                return;
+            }
             let anggaran = $(this).find(':selected').data('anggaran');
             $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2

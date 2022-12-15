@@ -936,6 +936,35 @@ class PenerimaanController extends Controller
         return response()->json($data);
     }
 
+    public function detailPenerimaanKas(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_skpd = $request->kd_skpd;
+        $jenis = $request->jenis;
+
+        $data1 = DB::table('trdkasin_pkd as a')
+            ->join('trhkasin_pkd as b', function ($join) {
+                $join->on('a.no_sts', '=', 'b.no_sts');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+            })
+            ->leftJoin('ms_pengirim as c', function ($join) {
+                $join->on('a.sumber', '=', 'c.sumber');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->leftJoin('ms_rek5 as d', function ($join) {
+                $join->on(DB::raw("LEFT(a.kd_rek6,8)"), '=', 'd.kd_rek5');
+            })
+            ->selectRaw("a.*, (select nm_rek6 from ms_rek6 where kd_rek6 = a.kd_rek6) as nm_rek, c.nm_pengirim, d.nm_rek5")
+            ->where(['a.no_sts' => $no_bukti, 'a.kd_skpd' => $kd_skpd, 'b.jns_trans' => $jenis]);
+
+        $data2 = DB::table('TRHOUTLAIN')
+            ->selectRaw("KD_SKPD, NO_BUKTI no_sts, '' kd_rek6, nilai as rupiah, '' kd_sub_kegiatan, '' no_terima,  (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,''kanal,
+		'' nm_rek, '' nm_pengirim, '' nm_rek5");
+
+        return DataTables::of($data)->addIndexColumn()->make(true);
+    }
+
     public function simpanPenerimaanKas(Request $request)
     {
         $data = $request->data;
