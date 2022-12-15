@@ -12,6 +12,158 @@ function tahun_anggaran()
     return '2022';
 }
 
+// hendra
+function noSPD($bulan)
+{
+    $data = DB::table('trkonfig_spd')->first();
+    $nilai = $data->jenis_spd;
+    if($nilai == '1') {
+        $bulan;
+    } else {
+        $bulan =1;
+    }
+    return $bulan;
+
+}
+
+function getMonths()
+{
+  return [
+    '1' => 'Januari', '2' => 'Februari', '3' => 'Maret', '4' => 'April', '5' => 'Mei', '6' => 'Juni',
+    '7' => 'Juli', '8' => 'Agustus', '9' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+  ];
+}
+
+if (!function_exists('tbStatusAngkas')) {
+    function tbStatusAngkas($status_ang)
+    {  
+        try {
+            $data = DB::table('tb_status_angkas')->select('kode')->where(['status_kunci' => $status_ang])->first();
+            $nilai = $data->kode;
+            $nilai_colum = 'nilai_'.$nilai;
+            return $nilai_colum;
+        } catch (\Throwable $th) {
+            $nilai_colum = 'nilai_default';
+            return $nilai_colum;
+        }
+    }
+}
+
+if (!function_exists('statusAngkas')) {
+    function statusAngkas($kd_skpd, $jns_ang)
+    {
+        if ($jns_ang == 'M') {
+            $murni = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'murni' AS text"), DB::raw("'murni' AS id"), 'murni AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $murnigeser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'murni geser 1' AS text"), DB::raw("'murni_geser1' AS id"), 'murni_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($murni);
+            $murnigeser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'murni geser 2' AS text"), DB::raw("'murni_geser2' AS id"), 'murni_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($murnigeser1);
+            $murnigeser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'murni geser 3' AS text"), DB::raw("'murni_geser3' AS id"), 'murni_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($murnigeser2);
+            $murnigeser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'murni geser 4' AS text"), DB::raw("'murni_geser4' AS id"), 'murni_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($murnigeser3);
+            $murnigeser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'murni geser 5' AS text"), DB::raw("'murni_geser5' AS id"), 'murni_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($murnigeser4);
+            
+            $data = DB::table(DB::raw("({$murnigeser5->toSql()}) AS sub"))
+                ->mergeBindings($murnigeser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+            
+        } else if ($jns_ang == 'P1') {
+            $sempurna1 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'sempurna 1' AS text"), DB::raw("'sempurna1' AS id"), 'sempurna1 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $sempurna1geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'sempurna 1 geser 1' AS text"), DB::raw("'sempurna1_geser1' AS id"), 'sempurna1_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna1);
+            $sempurna1geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'sempurna 1 geser 2' AS text"), DB::raw("'sempurna1_geser2' AS id"), 'sempurna1_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna1geser1);
+            $sempurna1geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'sempurna 1 geser 3' AS text"), DB::raw("'sempurna1_geser3' AS id"), 'sempurna1_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna1geser2);
+            $sempurna1geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'sempurna 1 geser 4' AS text"), DB::raw("'sempurna1_geser4' AS id"), 'sempurna1_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna1geser3);
+            $sempurna1geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'sempurna 1 geser 5' AS text"), DB::raw("'sempurna1_geser5' AS id"), 'sempurna1_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna1geser4);
+            
+            $data = DB::table(DB::raw("({$sempurna1geser5->toSql()}) AS sub"))
+                ->mergeBindings($sempurna1geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+
+        } else if ($jns_ang == 'P2') {
+            $sempurna2 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'sempurna 2' AS text"), DB::raw("'sempurna2' AS id "), 'sempurna2 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $sempurna2geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'sempurna 2 geser 1' AS text"), DB::raw("'sempurna2_geser1' AS id "), 'sempurna2_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna2);
+            $sempurna2geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'sempurna 2 geser 2' AS text"), DB::raw("'sempurna2_geser2' AS id "), 'sempurna2_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna2geser1);
+            $sempurna2geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'sempurna 2 geser 3' AS text"), DB::raw("'sempurna2_geser3' AS id "), 'sempurna2_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna2geser2);
+            $sempurna2geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'sempurna 2 geser 4' AS text"), DB::raw("'sempurna2_geser4' AS id "), 'sempurna2_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna2geser3);
+            $sempurna2geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'sempurna 2 geser 5' AS text"), DB::raw("'sempurna2_geser5' AS id "), 'sempurna2_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna2geser4);
+            
+            $data = DB::table(DB::raw("({$sempurna2geser5->toSql()}) AS sub"))
+                ->mergeBindings($sempurna2geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+
+        } else if ($jns_ang == 'P3') {
+            $sempurna3 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'sempurna 3' AS text"), DB::raw("'sempurna3' AS id"), 'sempurna3 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $sempurna3geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'sempurna 3 geser 1' AS text"), DB::raw("'sempurna3_geser1' AS id"), 'sempurna3_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna3);
+            $sempurna3geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'sempurna 3 geser 2' AS text"), DB::raw("'sempurna3_geser2' AS id"), 'sempurna3_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna3geser1);
+            $sempurna3geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'sempurna 3 geser 3' AS text"), DB::raw("'sempurna3_geser3' AS id"), 'sempurna3_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna3geser2);
+            $sempurna3geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'sempurna 3 geser 4' AS text"), DB::raw("'sempurna3_geser4' AS id"), 'sempurna3_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna3geser3);
+            $sempurna3geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'sempurna 3 geser 5' AS text"), DB::raw("'sempurna3_geser5' AS id"), 'sempurna3_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna3geser4);
+            
+            $data = DB::table(DB::raw("({$sempurna3geser5->toSql()}) AS sub"))
+                ->mergeBindings($sempurna3geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+                
+        } else if ($jns_ang == 'P4') {
+            $sempurna4 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'sempurna 4' AS text"), DB::raw("'sempurna4' AS id"), 'sempurna4 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $sempurna4geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'sempurna 4 geser 1' AS text"), DB::raw("'sempurna4_geser1' AS id"), 'sempurna4_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna4);
+            $sempurna4geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'sempurna 4 geser 2' AS text"), DB::raw("'sempurna4_geser2' AS id"), 'sempurna4_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna4geser1);
+            $sempurna4geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'sempurna 4 geser 3' AS text"), DB::raw("'sempurna4_geser3' AS id"), 'sempurna4_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna4geser2);
+            $sempurna4geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'sempurna 4 geser 4' AS text"), DB::raw("'sempurna4_geser4' AS id"), 'sempurna4_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna4geser3);
+            $sempurna4geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'sempurna 4 geser 5' AS text"), DB::raw("'sempurna4_geser5' AS id"), 'sempurna4_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna4geser4);
+            
+            $data = DB::table(DB::raw("({$sempurna4geser5->toSql()}) AS sub"))
+                ->mergeBindings($sempurna4geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+                
+        } else if ($jns_ang == 'P5') {
+            $sempurna5 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'sempurna 5' AS text"), DB::raw("'sempurna5' AS id"), 'sempurna5 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $sempurna5geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'sempurna 5 geser 1' AS text"), DB::raw("'sempurna5_geser1' AS id"), 'sempurna5_geser1 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna5);
+            $sempurna5geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'sempurna 5 geser 2' AS text"), DB::raw("'sempurna5_geser2' AS id"), 'sempurna5_geser2 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna5geser1);
+            $sempurna5geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'sempurna 5 geser 3' AS text"), DB::raw("'sempurna5_geser3' AS id"), 'sempurna5_geser3 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna5geser2);
+            $sempurna5geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'sempurna 5 geser 4' AS text"), DB::raw("'sempurna5_geser4' AS id"), 'sempurna5_geser4 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna5geser3);
+            $sempurna5geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'sempurna 5 geser 5' AS text"), DB::raw("'sempurna5_geser5' AS id"), 'sempurna5_geser5 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($sempurna5geser4);
+            
+            $data = DB::table(DB::raw("({$sempurna5geser5->toSql()}) AS sub"))
+                ->mergeBindings($sempurna5geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+                
+        } else if ($jns_ang == 'U1') {
+            $ubah1 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'ubah 1' AS text"), DB::raw("'ubah' AS id"), 'ubah AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $ubah1geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'ubah 1 geser 1' AS text"), DB::raw("'ubah11' AS id"), 'ubah11 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah1);
+            $ubah1geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'ubah 1 geser 2' AS text"), DB::raw("'ubah12' AS id"), 'ubah12 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah1geser1);
+            $ubah1geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'ubah 1 geser 3' AS text"), DB::raw("'ubah13' AS id"), 'ubah13 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah1geser2);
+            $ubah1geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'ubah 1 geser 4' AS text"), DB::raw("'ubah14' AS id"), 'ubah14 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah1geser3);
+            $ubah1geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'ubah 1 geser 5' AS text"), DB::raw("'ubah15' AS id"), 'ubah15 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah1geser4);
+            
+            $data = DB::table(DB::raw("({$ubah1geser5->toSql()}) AS sub"))
+                ->mergeBindings($ubah1geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+                
+        } else if ($jns_ang == 'U2') {
+            $ubah2 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'ubah 2' AS text"), DB::raw("'ubah2' AS id"), 'ubah2 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $ubah2geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'ubah 2 geser 1' AS text"), DB::raw("'ubah21' AS id"), 'ubah21 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah2);
+            $ubah2geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'ubah 2 geser 2' AS text"), DB::raw("'ubah22' AS id"), 'ubah22 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah2geser1);
+            $ubah2geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'ubah 2 geser 3' AS text"), DB::raw("'ubah23' AS id"), 'ubah23 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah2geser2);
+            $ubah2geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'ubah 2 geser 4' AS text"), DB::raw("'ubah24' AS id"), 'ubah24 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah2geser3);
+            $ubah2geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'ubah 2 geser 5' AS text"), DB::raw("'ubah25' AS id"), 'ubah25 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah2geser4);
+            
+            $data = DB::table(DB::raw("({$ubah2geser5->toSql()}) AS sub"))
+                ->mergeBindings($ubah2geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+                
+        } else if ($jns_ang == 'U3') {
+            $ubah3 = DB::table('status_angkas')->select(DB::raw("'1' AS urut"), DB::raw("'ubah 3' AS text"), DB::raw("'ubah3' AS id"), 'ubah3 AS nilai')->where(['kd_skpd' => $kd_skpd]);
+            $ubah3geser1 = DB::table('status_angkas')->select(DB::raw("'2' AS urut"), DB::raw("'ubah 3 geser 1' AS text"), DB::raw("'ubah31' AS id"), 'ubah31 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah3);
+            $ubah3geser2 = DB::table('status_angkas')->select(DB::raw("'3' AS urut"), DB::raw("'ubah 3 geser 2' AS text"), DB::raw("'ubah32' AS id"), 'ubah32 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah3geser1);
+            $ubah3geser3 = DB::table('status_angkas')->select(DB::raw("'4' AS urut"), DB::raw("'ubah 3 geser 3' AS text"), DB::raw("'ubah33' AS id"), 'ubah33 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah3geser2);
+            $ubah3geser4 = DB::table('status_angkas')->select(DB::raw("'5' AS urut"), DB::raw("'ubah 3 geser 4' AS text"), DB::raw("'ubah34' AS id"), 'ubah34 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah3geser3);
+            $ubah3geser5 = DB::table('status_angkas')->select(DB::raw("'6' AS urut"), DB::raw("'ubah 3 geser 5' AS text"), DB::raw("'ubah35' AS id"), 'ubah35 AS nilai')->where(['kd_skpd' => $kd_skpd])->unionAll($ubah3geser4);
+            
+            $data = DB::table(DB::raw("({$ubah3geser5->toSql()}) AS sub"))
+                ->mergeBindings($ubah3geser5)
+                ->whereRaw("nilai = '1'")->orderBy('urut')->get();
+        }
+        return $data;
+    }
+}
+
 function tanggal_sebelumnya($tanggal)
 {
     $tanggal1 = strtotime('-1 day', strtotime($tanggal));

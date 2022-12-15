@@ -58,7 +58,11 @@ use App\Http\Controllers\Skpd\Anggaran\RakController;
 use App\Http\Controllers\Skpd\Pendapatan\PenetapanController;
 use App\Http\Controllers\Skpd\TransaksiKKPDController;
 use App\Http\Controllers\PenandatanganController;
-
+//spd belanaja
+use App\Http\Controllers\Spd\SPDBelanjaController;
+use App\Http\Controllers\Spd\SPDBelanjaPRController;
+use App\Http\Controllers\Spd\RegisterSPDController;
+use App\Http\Controllers\Spd\KonfigurasiSPDController;
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -269,6 +273,42 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('pernyataan_up', [SppUpController::class, 'pernyataanUp'])->name('sppup.pernyataan_up');
             Route::get('spp_up', [SppUpController::class, 'sppUp'])->name('sppup.spp_up');
             Route::get('rincian77_up', [SppUpController::class, 'rincian77Up'])->name('sppup.rincian77_up');
+        });
+
+        Route::group(['prefix' => 'spd'], function () {
+            // spd belanja
+            Route::group(['prefix' => 'spd_belanja'], function () {
+                Route::get('', [SPDBelanjaController::class, 'index'])->name('spd_belanja.index');
+                Route::post('load_data', [SPDBelanjaController::class, 'loadData'])->name('spd.spd_belanja.load_data');
+                Route::post('daftar-skpd', [SPDBelanjaController::class, 'getSKPD'])->name('spd.spd_belanja.skpd');
+                Route::post('daftar-nip-skpd', [SPDBelanjaController::class, 'getNipSKPD'])->name('spd.spd_belanja.nip');
+                Route::post('daftar-jenis-anggaran', [SPDBelanjaController::class, 'getJenisAng'])->name('spd.spd_belanja.jns_ang');
+                Route::post('daftar-status-angkas', [SPDBelanjaController::class, 'getStatusAng'])->name('spd.spd_belanja.status_angkas');
+                Route::post('daftar-spd-belanja', [SPDBelanjaController::class, 'getSpdBelanja'])->name('spd.spd_belanja.load_spd_belanja');
+                Route::post('insert-spd-belanja', [SPDBelanjaController::class, 'getInsertSpd'])->name('spd.spd_belanja.insert_spd');
+                Route::post('delete-spd-belanja-temp', [SPDBelanjaController::class, 'getDeleteSpdTemp'])->name('spd.spd_belanja.delete_spd_temp');
+                Route::post('insert-all-spd-belanja', [SPDBelanjaController::class, 'getInsertAllSpdTemp'])->name('spd.spd_belanja.insert_all_spd');
+                Route::post('delete-all-spd-belanja', [SPDBelanjaController::class, 'getDeleteAllSpdTemp'])->name('spd.spd_belanja.delete_all_spd');
+                Route::post('daftar-spd-belanja-temp', [SPDBelanjaController::class, 'getSpdBelanjaTemp'])->name('spd.spd_belanja.load_spd_belanja_temp');
+                Route::get('tambah', [SPDBelanjaController::class, 'create'])->name('spd.spj_belanja.create');
+            });
+
+            // register spd
+            Route::group(['prefix' => 'register_spd'], function () {
+                Route::get('', [RegisterSPDController::class, 'index'])->name('register_spd.index');
+                Route::post('daftar-skpd', [RegisterSPDController::class, 'getSKPD'])->name('spd.register_spd.skpd');
+                Route::post('daftar-nip-skpd', [RegisterSPDController::class, 'getNipSKPD'])->name('spd.register_spd.nip');
+                Route::get('cetak-unit-register-spd', [RegisterSPDController::class, 'CetakURS'])->name('spd.register_spd.cetak_urs');
+                Route::get('cetak-skpd-register-spd', [RegisterSPDController::class, 'CetakSRS'])->name('spd.register_spd.cetak_srs');
+                Route::get('cetak-kseluruhan-register-spd', [RegisterSPDController::class, 'CetakKRS'])->name('spd.register_spd.cetak_krs');
+                Route::get('cetak-kseluruhan-revisi-register-spd', [RegisterSPDController::class, 'CetakKRRS'])->name('spd.register_spd.cetak_krrs');
+            });
+
+            //konfigurasi spd
+            Route::group(['prefix' => 'konfigurasi_spd'], function () {
+                Route::get('', [KonfigurasiSPDController::class, 'index'])->name('konfigurasi_spd.index');
+                Route::patch('update', [KonfigurasiSPDController::class, 'update'])->name('spd.konfigurasi_spd.update');
+            });
         });
     });
 
