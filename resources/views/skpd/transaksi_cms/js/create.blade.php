@@ -426,6 +426,11 @@
 
         $('#sumber').on('select2:select', function() {
             let sumber = this.value;
+            if (sumber == 'null') {
+                alert('Sumber dana tidak dapat digunakan!');
+                $('#sumber').val(null).change();
+                return;
+            }
             let anggaran = $(this).find(':selected').data('anggaran');
             $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
@@ -1053,7 +1058,7 @@
                         `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(data, function(index, data) {
                         $('#sumber').append(
-                            `<option value="${data.sumber_dana}" data-anggaran="${data.nilai}" data-kd_rek6="${data.kd_rek6}" data-kegiatan="${data.kegiatan}">${data.sumber_dana}</option>`
+                            `<option value="${data.sumber_dana}" data-anggaran="${data.nilai}">${data.sumber_dana}</option>`
                         );
                     })
                 }

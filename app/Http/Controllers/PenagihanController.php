@@ -14,7 +14,7 @@ class PenagihanController extends Controller
     public function index()
     {
         $data = [
-            'data_penagihan' => DB::table('trhtagih')->get(),
+            'cek' => selisih_angkas()
         ];
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
     }
@@ -537,13 +537,13 @@ class PenagihanController extends Controller
 
         $data1 = DB::table('trdpo')
             ->select('sumber', 'nm_sumber', DB::raw("SUM(total) as nilai"))
-            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => 'U'])
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
             ->whereNotNull('sumber')
             ->groupBy('sumber', 'nm_sumber');
 
         $data2 = DB::table('trdpo')
             ->select('sumber', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai"))
-            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => 'U'])
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
             ->where(function ($query) {
                 $query->where('sumber', '')->orWhereNull('sumber');
             })

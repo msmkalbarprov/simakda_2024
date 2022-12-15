@@ -5,8 +5,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('sppls.create') }}" id="tambah_spp_ls" class="btn btn-primary"
-                        style="float: right;">Tambah</a>
+                    <a href="{{ route('sppls.create') }}" id="tambah_spp_ls"
+                        class="btn btn-primary {{ $cek > 0 ? 'disabled' : '' }}" style="float: right;">Tambah</a>
+                    <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek }}">
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -280,7 +281,11 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
+            let selisih_angkas = document.getElementById('selisih_angkas').value;
+            if (selisih_angkas > 0) {
+                alert('Masih ada ' + selisih_angkas +
+                    ' Selisih antara Anggaran dan Anggaran Kas, Anda tidak bisa melanjutkan transaksi');
+            }
             $('#spp_ls').DataTable({
                 responsive: true,
                 ordering: false,

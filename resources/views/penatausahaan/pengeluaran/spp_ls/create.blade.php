@@ -670,22 +670,19 @@
                     <!-- Nilai -->
                     <div class="mb-3 row">
                         <label for="nilai_rincian" class="col-md-2 col-form-label">Nilai</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <input type="text" class="form-control @error('nilai_rincian') is-invalid @enderror"
                                 name="nilai_rincian" id="nilai_rincian" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
-                                data-type="currency">
-                            @error('nilai_rincian')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                data-type="currency" style="text-align: right">
                         </div>
-                        <div class="col-md-2">
+                        {{-- <div class="col-md-2">
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" id="minus">
                                 <label class="form-check-label" for="minus">
                                     Minus
                                 </label>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">

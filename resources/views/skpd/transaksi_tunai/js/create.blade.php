@@ -279,6 +279,11 @@
 
         $('#sumber').on('select2:select', function() {
             let sumber = this.value;
+            if (sumber == 'null') {
+                alert('Sumber dana tidak dapat digunakan!');
+                $('#sumber').val(null).change();
+                return;
+            }
             let beban = document.getElementById('beban').value;
             let realisasi_sumber = rupiah(document.getElementById('realisasi_sumber').value);
             let nilai = $(this).find(':selected').data('nilai');
@@ -310,6 +315,7 @@
                     $('#nm_sumber').val(data.nm_sumber_dana1);
                 }
             })
+            // load_dana(sumber);
         })
 
         $('#simpan_rekening').on('click', function() {
@@ -714,23 +720,23 @@
 
         function cari_sumber(kd_rek6) {
             $.ajax({
-                url: "{{ route('skpd.transaksi_tunai.cari_sumber') }}",
+                url: "{{ route('penagihan.cari_sumber_dana') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_rek6: kd_rek6,
-                    kd_skpd: document.getElementById('kd_skpd').value,
-                    kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
-                    no_sp2d: document.getElementById('no_sp2d').value,
-                    beban: document.getElementById('beban').value,
+                    kdrek: kd_rek6,
+                    skpd: document.getElementById('kd_skpd').value,
+                    kdgiat: document.getElementById('kd_sub_kegiatan').value,
                 },
                 success: function(data) {
                     $('#sumber').empty();
                     $('#sumber').append(
                         `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(data, function(index, data) {
+                        console.log(data);
                         $('#sumber').append(
-                            `<option value="${data.sumber_dana}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            // `<option value="${data.sumber_dana}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
+                            `<option value="${data.sumber}" data-nilai="${data.nilai}">${data.sumber}</option>`
                         );
                     })
                 }

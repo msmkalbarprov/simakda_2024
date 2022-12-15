@@ -457,10 +457,10 @@
                 document.getElementById('volume_output').removeAttribute("disabled");
                 document.getElementById('satuan_output').removeAttribute("disabled");
             } else if (kode_rekening == '510101080001' && kode_rekening == '5110105') {
-                document.getElementById('minus').removeAttribute("disabled");
+                // document.getElementById('minus').removeAttribute("disabled");
             } else {
-                document.getElementById('minus').setAttribute("disabled", "disabled");
-                document.getElementById('minus').checked = false;
+                // document.getElementById('minus').setAttribute("disabled", "disabled");
+                // document.getElementById('minus').checked = false;
             }
             // anggaran penyusunan
             $.ajax({
@@ -783,7 +783,7 @@
             let volume_output = document.getElementById('volume_output').value;
             let satuan_output = document.getElementById('satuan_output').value;
             let nm_rekening = document.getElementById('nm_rekening').value;
-            let minus = document.getElementById('minus').checked;
+            // let minus = document.getElementById('minus').checked;
 
             if (!sumber_dana) {
                 alert('Pilih sumber dana terlebih dahulu!');
@@ -796,9 +796,9 @@
                 );
             }
 
-            if (minus == true) {
-                nilai_rincian = (-1 * nilai_rincian);
-            }
+            // if (minus == true) {
+            //     nilai_rincian = (-1 * nilai_rincian);
+            // }
 
             if (kode_rekening.substr(0, 2) == '52' && (volume_output == '' || satuan_output == '')) {
                 alert('Volume atau satuan output harus diisi!');
@@ -1241,25 +1241,26 @@
             $('#nm_rekening').val('');
             $('#sumber_dana').empty();
             $('#nm_sumber').val('');
-            document.getElementById('total_spd').value = null;
-            document.getElementById('realisasi_spd').value = null;
-            document.getElementById('sisa_spd').value = null;
+
+            $('#total_spd').val(null);
+            $('#realisasi_spd').val(null);
+            $('#sisa_spd').val(null);
             // total anggaran kas
-            document.getElementById('total_angkas').value = null;
-            document.getElementById('realisasi_angkas').value = null;
-            document.getElementById('sisa_angkas').value = null;
+            $('#total_angkas').val(null);
+            $('#realisasi_angkas').val(null);
+            $('#sisa_angkas').val(null);
             // anggaran penyusunan
-            document.getElementById('total_penyusunan').value = null;
-            document.getElementById('realisasi_penyusunan').value = null;
-            document.getElementById('sisa_penyusunan').value = null;
+            $('#total_penyusunan').val(null);
+            $('#realisasi_penyusunan').val(null);
+            $('#sisa_penyusunan').val(null);
             // sumber dana penyusunan
-            document.getElementById('total_sumber').value = null;
-            document.getElementById('realisasi_sumber').value = null;
-            document.getElementById('sisa_sumber').value = null;
+            $('#total_sumber').val(null);
+            $('#realisasi_sumber').val(null);
+            $('#sisa_sumber').val(null);
             // volume output, satuan output, nilai
-            document.getElementById('volume_output').value = '';
-            document.getElementById('satuan_output').value = '';
-            document.getElementById('nilai_rincian').value = '';
+            $('#volume_output').val(null);
+            $('#satuan_output').val(null);
+            $('#nilai_rincian').val(null);
         }
 
         function formatNumber(n) {

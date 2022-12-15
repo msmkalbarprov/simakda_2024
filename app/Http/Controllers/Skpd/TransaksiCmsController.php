@@ -152,22 +152,47 @@ class TransaksiCmsController extends Controller
         $jenis_ang = status_anggaran();
 
         if ($beban == '1') {
-            $data1 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->select('sumber1 as sumber_dana', DB::raw("ISNULL(nsumber1,0) as nilai"));
-            $data2 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber2', '<>', '0')->select('sumber2 as sumber_dana', DB::raw("ISNULL(nsumber2,0) as nilai"))->unionAll($data1);
-            $data3 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber3', '<>', '0')->select('sumber3 as sumber_dana', DB::raw("ISNULL(nsumber3,0) as nilai"))->unionAll($data2);
-            $data4 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber4', '<>', '0')->select('sumber4 as sumber_dana', DB::raw("ISNULL(nsumber4,0) as nilai"))->unionAll($data3);
-            $data = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
-                ->mergeBindings($data4)
-                ->whereRaw("sumber_dana <> ''")
+            // $data1 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->select('sumber1 as sumber_dana', DB::raw("ISNULL(nsumber1,0) as nilai"));
+            // $data2 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber2', '<>', '0')->select('sumber2 as sumber_dana', DB::raw("ISNULL(nsumber2,0) as nilai"))->unionAll($data1);
+            // $data3 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber3', '<>', '0')->select('sumber3 as sumber_dana', DB::raw("ISNULL(nsumber3,0) as nilai"))->unionAll($data2);
+            // $data4 = DB::table('trdrka')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_ang])->where('nsumber4', '<>', '0')->select('sumber4 as sumber_dana', DB::raw("ISNULL(nsumber4,0) as nilai"))->unionAll($data3);
+            // $data = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
+            //     ->mergeBindings($data4)
+            //     ->whereRaw("sumber_dana <> ''")
+            //     ->get();
+            $no_trdrka = $kd_skpd . '.' . $kd_sub_kegiatan . '.' . $kd_rek6;
+
+            $data1 = DB::table('trdpo')
+                ->select('sumber as sumber_dana', 'nm_sumber', DB::raw("SUM(total) as nilai"))
+                ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $jenis_ang])
+                ->whereNotNull('sumber')
+                ->groupBy('sumber', 'nm_sumber');
+
+            $data2 = DB::table('trdpo')
+                ->select('sumber as sumber_dana', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai"))
+                ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $jenis_ang])
+                ->where(function ($query) {
+                    $query->where('sumber', '')->orWhereNull('sumber');
+                })
+                ->groupBy('sumber', 'nm_sumber')
+                ->union($data1);
+
+            $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+                ->mergeBindings($data2)
                 ->get();
         } else {
-            $data = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->join('trhsp2d as c', function ($join) {
-                $join->on('a.no_spp', '=', 'c.no_spp');
-                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-            })->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])->groupBy('b.sumber')->select('b.sumber as sumber_dana', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))->get();
+            $data = DB::table('trhspp as a')
+                ->join('trdspp as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })->join('trhsp2d as c', function ($join) {
+                    $join->on('a.no_spp', '=', 'c.no_spp');
+                    $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])
+                ->groupBy('b.sumber')
+                ->select('b.sumber as sumber_dana', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))
+                ->get();
         }
         return response()->json($data);
     }
