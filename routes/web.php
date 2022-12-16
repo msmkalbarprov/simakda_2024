@@ -845,6 +845,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanKas'])->name('penerimaan_kas.tambah');
             Route::post('cari_no_bukti', [PenerimaanController::class, 'noBuktiPenerimaanKas'])->name('penerimaan_kas.no_bukti');
             Route::post('detail_sts', [PenerimaanController::class, 'detailPenerimaanKas'])->name('penerimaan_kas.detail_sts');
+            Route::post('nm_sub_kegiatan', [PenerimaanController::class, 'kegiatanPenerimaanKas'])->name('penerimaan_kas.nm_sub_kegiatan');
             Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanKas'])->name('penerimaan_kas.simpan');
             Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanKas'])->where('no_kas', '(.*)')->name('penerimaan_kas.edit');
             Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanKas'])->name('penerimaan_kas.simpan_edit');

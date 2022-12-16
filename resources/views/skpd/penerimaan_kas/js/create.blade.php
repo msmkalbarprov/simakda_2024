@@ -24,7 +24,11 @@
                     d.no_bukti = document.getElementById('no_bukti').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
                     d.jenis = document.getElementById('jenis').value;
-                }
+                },
+                "dataSrc": function(data) {
+                    recordsTotal = data.data;
+                    return recordsTotal;
+                },
             },
             ordering: false,
             columns: [{
@@ -42,24 +46,48 @@
                     name: 'kd_rek6',
                 },
                 {
-                    data: 'nm_rek6',
-                    name: 'nm_rek6',
+                    data: 'nm_rek',
+                    name: 'nm_rek',
                 },
                 {
-                    data: 'nm_rek6',
-                    name: 'nm_rek6',
+                    data: 'nm_rek5',
+                    name: 'nm_rek5',
                 },
                 {
                     data: null,
-                    name: 'nilai',
+                    name: 'rupiah',
                     className: 'text-right',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.nilai)
+                        }).format(data.rupiah)
                     }
                 },
-            ]
+                {
+                    data: 'sumber',
+                    name: 'sumber',
+                    visible: false
+                },
+            ],
+            drawCallback: function(select) {
+                let total = recordsTotal.reduce((previousValue,
+                    currentValue) => (previousValue += parseFloat(currentValue.rupiah)), 0);
+                $('#total').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(total));
+            }
+        });
+
+        $('#tgl_kas').on('change', function() {
+            $('#kd_skpd').val(null).change();
+            $('#nm_skpd').val(null);
+            $('#no_bukti').empty();
+            $('#tgl_bukti').val(null);
+            $('#kd_sub_kegiatan').val(null);
+            $('#nm_sub_kegiatan').val(null);
+            $('#jenis').val(null).change();
+            $('#keterangan').val(null);
+            detail.ajax.reload();
         });
 
         $('#kd_skpd').on('select2:select', function() {
@@ -72,7 +100,13 @@
             let nama = $(this).find(':selected').data('nama');
             $('#nm_skpd').val(nama);
             let kd_skpd = this.value;
-
+            $('#no_bukti').empty();
+            $('#tgl_bukti').val(null);
+            $('#kd_sub_kegiatan').val(null);
+            $('#nm_sub_kegiatan').val(null);
+            $('#jenis').val(null).change();
+            $('#keterangan').val(null);
+            detail.ajax.reload();
             $.ajax({
                 url: "{{ route('penerimaan_kas.no_bukti') }}",
                 type: "POST",
@@ -86,7 +120,7 @@
                     $('#no_bukti').append(`<option value="">Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#no_bukti').append(
-                            `<option value="${data.no_sts}" data-tanggal="${data.tgl_sts}" data-keterangan="${data.keterangan}" data-kd_sub_kegiatan="${data.kd_sub_kegiatan}" data-jenis="${data.jns_trans}">${data.no_sts} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.total)} | ${data.keterangan}</option>`
+                            `<option value="${data.no_sts}" data-tanggal="${data.tgl_sts}" data-keterangan="${data.keterangan}" data-kd_sub_kegiatan="${data.kd_sub_kegiatan}" data-jenis="${data.jns_trans}" data-jns_cp="${data.jns_cp}" data-sumber="${data.sumber}">${data.no_sts} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.total)} | ${data.keterangan}</option>`
                         );
                     })
                 }
@@ -98,23 +132,61 @@
             let keterangan = $(this).find(':selected').data('keterangan');
             let kd_sub_kegiatan = $(this).find(':selected').data('kd_sub_kegiatan');
             let jenis = $(this).find(':selected').data('jenis');
+            let jns_cp = $(this).find(':selected').data('jns_cp');
+            let sumber = $(this).find(':selected').data('sumber');
             $('#tgl_bukti').val(tanggal);
             $('#keterangan').val(keterangan);
             $('#kd_sub_kegiatan').val(kd_sub_kegiatan);
+            $('#sumber').val(sumber);
+            $('#jns_cp').val(jns_cp);
+            $.ajax({
+                url: "{{ route('penerimaan_kas.nm_sub_kegiatan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_sub_kegiatan: kd_sub_kegiatan,
+                },
+                success: function(data) {
+                    $('#nm_sub_kegiatan').val(data);
+                }
+            })
             $("#jenis").select2("val", jenis);
+            detail.ajax.reload();
         });
 
         $('#simpan').on('click', function() {
             let no_kas = document.getElementById('no_kas').value;
             let tgl_kas = document.getElementById('tgl_kas').value;
-            let jenis = document.getElementById('jenis').value;
-            let nama_jenis = document.getElementById('nama_jenis').value;
-            let pengirim = document.getElementById('pengirim').value;
-            let nama_pengirim = document.getElementById('nama_pengirim').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let nm_skpd = document.getElementById('nm_skpd').value;
+            let no_bukti = document.getElementById('no_bukti').value;
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
+            let jenis = document.getElementById('jenis').value;
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let nm_sub_kegiatan = document.getElementById('nm_sub_kegiatan').value;
             let keterangan = document.getElementById('keterangan').value;
-            let nilai = angka(document.getElementById('nilai').value);
+            let jns_cp = document.getElementById('jns_cp').value;
+            let sumber = document.getElementById('sumber').value;
+            let total = rupiah(document.getElementById('total').value);
             let tahun_input = tgl_kas.substr(0, 4);
+
+            let detail_sts = detail.rows().data().toArray().map((value) => {
+                let data = {
+                    no_sts: value.no_sts,
+                    kd_rek6: value.kd_rek6,
+                    nm_rek: value.nm_rek,
+                    nm_rek5: value.nm_rek5,
+                    rupiah: rupiah(value.rupiah),
+                    sumber: value.sumber,
+                };
+                return data;
+            });
+
+            if (detail_sts.length == 0) {
+                alert('Detail STS tidak boleh kosong!');
+                return;
+            }
 
             if (!tgl_kas) {
                 alert('Tanggal Tidak Boleh Kosong');
@@ -126,38 +198,34 @@
                 return;
             }
 
-            if (!jenis) {
-                alert('Jenis Tidak Boleh Kosong');
+            if (!kd_skpd) {
+                alert('SKPD Tidak Boleh Kosong');
                 return;
             }
 
-            if (!pengirim) {
-                alert('Pengirim Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!keterangan) {
-                alert('Keterangan Tidak Boleh Kosong');
-                return;
-            }
-
-            if (nilai == '0') {
-                alert('Nilai 0!Cek Lagi!!!');
+            if (!no_bukti) {
+                alert('No Bukti Tidak Boleh Kosong');
                 return;
             }
 
             let data = {
                 no_kas,
                 tgl_kas,
-                jenis,
-                pengirim,
+                kd_skpd,
+                no_bukti,
+                tgl_bukti,
                 keterangan,
-                nilai,
+                total,
+                jenis,
+                kd_sub_kegiatan,
+                jns_cp,
+                sumber,
+                detail_sts
             };
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('penerimaan_ppkd.simpan') }}",
+                url: "{{ route('penerimaan_kas.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -168,7 +236,7 @@
                         alert('Data berhasil ditambahkan, Nomor Baru yang tersimpan adalah: ' +
                             response.nomor);
                         window.location.href =
-                            "{{ route('penerimaan_ppkd.index') }}";
+                            "{{ route('penerimaan_kas.index') }}";
                     } else if (response.message == '2') {
                         alert('Nomor telah digunakan!');
                         $('#simpan').prop('disabled', false);

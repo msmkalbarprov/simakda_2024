@@ -7,7 +7,8 @@
                 <div class="card-header">
                     <a href="{{ route('sppls.create') }}" id="tambah_spp_ls"
                         class="btn btn-primary {{ $cek > 0 ? 'disabled' : '' }}" style="float: right;">Tambah</a>
-                    <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek }}">
+                    <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
+                    <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -281,7 +282,11 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            let status_ang = document.getElementById('status_ang').value;
             let selisih_angkas = document.getElementById('selisih_angkas').value;
+            if (status_ang == 0 || status_ang == '0') {
+                alert('DPA Belum Disahkan!');
+            }
             if (selisih_angkas > 0) {
                 alert('Masih ada ' + selisih_angkas +
                     ' Selisih antara Anggaran dan Anggaran Kas, Anda tidak bisa melanjutkan transaksi');
