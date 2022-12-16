@@ -64,7 +64,7 @@ class BpPajakController extends Controller
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -208,7 +208,7 @@ class BpPajakController extends Controller
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -347,7 +347,7 @@ class BpPajakController extends Controller
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
             $pilihan3       = $request->pilihan3;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -525,7 +525,7 @@ class BpPajakController extends Controller
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
             $pilihan2       = $request->pilihan2;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
             
 

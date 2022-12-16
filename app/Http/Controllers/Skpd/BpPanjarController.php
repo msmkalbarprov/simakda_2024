@@ -21,7 +21,7 @@ class BpPanjarController extends Controller
             $bendahara      = $request->bendahara ;
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
-            $kd_skpd        = get_userskpd($request->kd_skpd);
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN

@@ -21,7 +21,7 @@ class BpKasBankController extends Controller
             $bendahara      = $request->bendahara ;
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
