@@ -89,7 +89,7 @@
                 @endphp
                     @foreach ($rincian as $rinci)
                         @php
-                            $nomor   += $nomor;
+                            $nomor   = ++$nomor;
                         @endphp
                        @if ($rinci->jns == 1)
                             @php
