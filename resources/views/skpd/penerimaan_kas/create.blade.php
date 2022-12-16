@@ -56,6 +56,10 @@
                         <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Bukti</label>
                         <div class="col-md-4">
                             <input class="form-control" type="date" id="tgl_bukti" name="tgl_bukti" required readonly>
+                            <input class="form-control" type="text" id="sumber" name="sumber" required readonly
+                                hidden>
+                            <input class="form-control" type="text" id="jns_cp" name="jns_cp" required readonly
+                                hidden>
                         </div>
                     </div>
                     {{-- Kegiatan dan Nama Kegiatan --}}
@@ -120,6 +124,7 @@
                                 <th>Nama Rekening</th>
                                 <th>Jenis</th>
                                 <th>Rupiah</th>
+                                <th>Sumber</th>
                             </tr>
                         </thead>
                     </table>

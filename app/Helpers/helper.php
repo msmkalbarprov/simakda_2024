@@ -2659,16 +2659,24 @@ function selisih_angkas()
         ->where(['status_kunci' => $status_angkas])
         ->first();
     $kolom1 = $kolom->kode;
-
+    if (isNull($status_anggaran)) {
+        $status_ang = '0';
+    } else {
+        $status_ang = $status_anggaran->jns_ang;
+    }
+    // return $status_ang;
     $selisih_angkas1 = DB::table('trdrka as a')
         ->selectRaw("kd_skpd,kd_sub_kegiatan,kd_rek6,nilai as anggaran,(select sum(nilai_$kolom1) from trdskpd_ro where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6)as angkas")
-        ->where(['jns_ang' => $status_anggaran->jns_ang, 'kd_skpd' => $skpd]);
-
+        ->where(['jns_ang' => $status_ang, 'kd_skpd' => $skpd]);
+    // return $selisih_angkas1->get();
     $selisih_angkas = DB::table(DB::raw("({$selisih_angkas1->toSql()}) AS sub"))
         ->mergeBindings($selisih_angkas1)
         ->whereRaw("anggaran-ISNULL(angkas,0) <> 0")
         ->count();
-    return $selisih_angkas;
+    return [
+        'status_ang' => $status_ang,
+        'selisih_angkas' => $selisih_angkas
+    ];
 }
 
 function status_angkas($skpd)
@@ -2751,4 +2759,52 @@ function status_angkas($skpd)
         ->orderByRaw("CAST(urut AS INT) DESC")
         ->first();
     return $result->status;
+}
+
+function nomor_urut_ppkd()
+{
+    $data1 = DB::table('trhkasin_ppkd')
+        ->selectRaw("no_kas nomor,'Terima STS' ket")
+        ->whereRaw("isnumeric(no_kas)=1");
+
+    $data2 = DB::table('trhrestitusi')
+        ->selectRaw("no_kas nomor,'Terima STS' ket")
+        ->whereRaw("isnumeric(no_kas)=1")
+        ->unionAll($data1);
+
+    $data3 = DB::table('penerimaan_non_sp2d')
+        ->selectRaw("nomor,'Terima non SP2D' ket")
+        ->whereRaw("isnumeric(nomor)=1")
+        ->unionAll($data2);
+
+    $data4 = DB::table('pengeluaran_non_sp2d')
+        ->selectRaw("nomor,'keluar non SP2D' ket")
+        ->whereRaw("isnumeric(nomor)=1")
+        ->unionAll($data3);
+
+    $data5 = DB::table('trkasout_ppkd')
+        ->selectRaw("no as nomor,'koreksi' ket")
+        ->whereRaw("isnumeric(no)=1")
+        ->unionAll($data4);
+
+    $data6 = DB::table('trkoreksi_pengeluaran')
+        ->selectRaw("no as nomor,'koreksi pengeluaran' ket")
+        ->whereRaw("isnumeric(no)=1")
+        ->unionAll($data5);
+
+    $data = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
+        ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
+        ->mergeBindings($data6)
+        ->first();
+
+    return $data->nomor;
+}
+
+function nama_kegiatan($kd_sub_kegiatan)
+{
+    $data = DB::table('ms_sub_kegiatan')
+        ->select('nm_sub_kegiatan')
+        ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+        ->first();
+    return $data->nm_sub_kegiatan;
 }
