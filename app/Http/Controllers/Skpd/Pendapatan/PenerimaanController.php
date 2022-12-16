@@ -857,8 +857,9 @@ class PenerimaanController extends Controller
             ->orderBy('a.no_kas')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("penerimaan_kas.edit", Crypt::encrypt($row->no_kas)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("penerimaan_kas.edit", [Crypt::encrypt($row->no_kas), Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\',\'' . $row->tgl_kas . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_kas . '\',\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -978,135 +979,129 @@ class PenerimaanController extends Controller
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
 
-        // DB::beginTransaction();
-        // try {
-        $no_urut = nomor_urut_ppkd();
-        $cek = DB::table('trhkasin_ppkd')->where(['no_kas' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
-        if ($cek > 0) {
-            return response()->json([
-                'message' => '2'
-            ]);
-        }
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+            $cek = DB::table('trhkasin_ppkd')->where(['no_kas' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
 
-        if ($data['jenis'] == 4 && $data['jns_cp'] == 2) {
-            $skpd = '5.02.0.00.0.00.02.0000';
-            $giat = '5.02.00.0.00.04';
-        } else {
-            $skpd = $data['kd_skpd'];
-            $giat = $data['kd_sub_kegiatan'];
-        }
+            if ($data['jenis'] == 4 && $data['jns_cp'] == 2) {
+                $skpd = '5.02.0.00.0.00.02.0000';
+                $giat = '5.02.00.0.00.04';
+            } else {
+                $skpd = $data['kd_skpd'];
+                $giat = $data['kd_sub_kegiatan'];
+            }
 
-        DB::table('trhkasin_ppkd')
-            ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $no_urut])
-            ->delete();
-
-        DB::table('trhkasin_ppkd')
-            ->insert([
-                'no_kas' => $no_urut,
-                'tgl_kas' => $data['tgl_kas'],
-                'no_sts' => $data['no_bukti'],
-                'tgl_sts' => $data['tgl_bukti'],
-                'kd_skpd' => $skpd,
-                'keterangan' => $data['keterangan'],
-                'total' => $data['total'],
-                'kd_sub_kegiatan' => $giat,
-                'jns_trans' => $data['jenis'],
-                'sumber' => $data['sumber'],
-                'kd_bank' => '0',
-                'kd_skpd_sumber' => $data['kd_skpd'],
-            ]);
-
-        DB::table('trhkasin_pkd')
-            ->where(['no_sts' => $data['no_bukti'], 'kd_skpd' => $data['kd_skpd'], 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'], 'jns_trans' => $data['jenis']])
-            ->update([
-                'no_cek' => '1',
-            ]);
-
-        if ($data['sumber'] == 'y') {
             DB::table('trhkasin_ppkd')
-                ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
-                ->update([
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => DB::raw("LEFT('$kd_skpd',4)+'.00.0.00.04'")
-                ]);
-        }
+                ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $no_urut])
+                ->delete();
 
-        DB::table('trdkasin_ppkd')
-            ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $no_urut])
-            ->delete();
-
-        if (isset($data['detail_sts'])) {
-            DB::table('trdkasin_ppkd')->insert(array_map(function ($value) use ($data, $skpd, $no_urut, $giat) {
-                return [
-                    'kd_skpd' => $skpd,
-                    'no_sts' => $value['no_sts'],
-                    'kd_rek6' => $value['kd_rek6'],
-                    'rupiah' => $value['rupiah'],
+            DB::table('trhkasin_ppkd')
+                ->insert([
                     'no_kas' => $no_urut,
-                    'kd_sub_kegiatan' => $giat,
-                    'sumber' => $value['sumber'],
-                ];
-            }, $data['detail_sts']));
-        }
-
-        if ($data['sumber'] == 'n') {
-            DB::table('trdkasin_ppkd')
-                ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
-                ->update([
-                    'kd_rek6' => '1110301',
-                ]);
-        }
-
-        if ($data['sumber'] == 'y') {
-            DB::table('trdkasin_ppkd')
-                ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
-                ->update([
-                    'kd_rek6' => '410409010001',
+                    'tgl_kas' => $data['tgl_kas'],
+                    'no_sts' => $data['no_bukti'],
+                    'tgl_sts' => $data['tgl_bukti'],
                     'kd_skpd' => $skpd,
-                    'kd_sub_kegiatan' => DB::raw("LEFT('$kd_skpd',4)+'.00.0.00.04'"),
+                    'keterangan' => $data['keterangan'],
+                    'total' => $data['total'],
+                    'kd_sub_kegiatan' => $giat,
+                    'jns_trans' => $data['jenis'],
+                    'sumber' => $data['sumber'],
+                    'kd_bank' => '',
+                    'kd_skpd_sumber' => $data['kd_skpd'],
                 ]);
-        }
 
-        DB::commit();
-        return response()->json([
-            'message' => '1',
-            'nomor' => $no_urut
-        ]);
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'message' => '0',
-        //     ]);
-        // }
+            DB::table('trhkasin_pkd')
+                ->where(['no_sts' => $data['no_bukti'], 'kd_skpd' => $data['kd_skpd'], 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'], 'jns_trans' => $data['jenis']])
+                ->update([
+                    'no_cek' => '1',
+                ]);
+
+            if ($data['sumber'] == 'y') {
+                DB::table('trhkasin_ppkd')
+                    ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => DB::raw("LEFT('$kd_skpd',4)+'.00.0.00.04'")
+                    ]);
+            }
+
+            DB::table('trdkasin_ppkd')
+                ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $no_urut])
+                ->delete();
+
+            if (isset($data['detail_sts'])) {
+                DB::table('trdkasin_ppkd')->insert(array_map(function ($value) use ($data, $skpd, $no_urut, $giat) {
+                    return [
+                        'kd_skpd' => $skpd,
+                        'no_sts' => $value['no_sts'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'rupiah' => $value['rupiah'],
+                        'no_kas' => $no_urut,
+                        'kd_sub_kegiatan' => $giat,
+                        'sumber' => $value['sumber'],
+                    ];
+                }, $data['detail_sts']));
+            }
+
+            if ($data['sumber'] == 'n') {
+                DB::table('trdkasin_ppkd')
+                    ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'kd_rek6' => '1110301',
+                    ]);
+            }
+
+            if ($data['sumber'] == 'y') {
+                DB::table('trdkasin_ppkd')
+                    ->where(['no_kas' => $no_urut, 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'kd_rek6' => '410409010001',
+                        'kd_skpd' => $skpd,
+                        'kd_sub_kegiatan' => DB::raw("LEFT('$kd_skpd',4)+'.00.0.00.04'"),
+                    ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0',
+            ]);
+        }
     }
 
-    public function editPenerimaanKas($no_sts)
+    public function editPenerimaanKas($no_kas, $kd_skpd)
     {
-        $no_sts = Crypt::decrypt($no_sts);
+        $no_kas = Crypt::decrypt($no_kas);
+        $skpd = Crypt::decrypt($kd_skpd);
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'terima' => $data = DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->selectRaw("a.*,b.kd_rek6")
-                ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4', 'a.no_sts' => $no_sts])
+            'terima' => $data = DB::table('trhkasin_ppkd as a')
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+                ->where(['no_kas' => $no_kas, 'kd_skpd' => $skpd])
                 ->first(),
-            'daftar_jenis' => DB::table('trdrka_pend as a')
-                ->select('kd_rek6', 'nm_rek6')
-                ->whereRaw("left(kd_rek6,1)=? and kd_skpd=?", ['4', '5.02.0.00.0.00.02.0000'])
-                ->orderBy('kd_rek6')
-                ->distinct()
-                ->get(),
-            'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->where(['kd_skpd' => $kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
-                ->get()
         ];
         // dd($data['terima']);
-        return view('skpd.penerimaan_lain_ppkd.edit')->with($data);
+        return view('skpd.penerimaan_kas.edit')->with($data);
+    }
+
+    public function kunciPenerimaanKas(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $data = DB::table('tr_kunci')->select('tgl_kunci')->where(['kd_skpd' => $kd_skpd])->first();
+        return response()->json($data->tgl_kunci);
     }
 
     public function simpanEditPenerimaanKas(Request $request)
@@ -1169,27 +1164,328 @@ class PenerimaanController extends Controller
     public function hapusPenerimaanKas(Request $request)
     {
         $no_kas = $request->no_kas;
+        $no_sts = $request->no_sts;
         $kd_skpd = $request->kd_skpd;
 
         DB::beginTransaction();
         try {
             DB::table('trhkasin_pkd')
-                ->where(['no_sts' => $no_kas, 'kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
-                ->delete();
-
-            DB::table('trdkasin_pkd')
-                ->where(['no_sts' => $no_kas, 'kd_skpd' => $kd_skpd])
-                ->whereRaw("LEFT(kd_rek6,1)=?", ['4'])
-                ->delete();
+                ->where(['no_sts' => $no_sts, 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'no_cek' => '0'
+                ]);
 
             DB::table('trhkasin_ppkd')
-                ->where(['no_sts' => $no_kas, 'kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
+                ->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])
                 ->delete();
 
             DB::table('trdkasin_ppkd')
-                ->where(['no_sts' => $no_kas, 'kd_skpd' => $kd_skpd])
-                ->whereRaw("LEFT(kd_rek6,1)=?", ['4'])
+                ->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])
                 ->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function cetakPenerimaanKas(Request $request)
+    {
+        $no_sts = $request->no_sts;
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'no_sts' => $no_sts,
+            'data' => DB::table('trhkasin_pkd as a')
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd,
+                (SELECT nama FROM ms_bank WHERE kode = a.kd_bank) AS nm_bank")
+                ->where(['a.no_sts' => $no_sts])
+                ->first(),
+            'detail' => DB::table('trdkasin_pkd as a')
+                ->selectRaw("a.*,(SELECT nm_rek6 FROM ms_rek6 WHERE kd_rek6 = a.kd_rek6) AS nm_rek6")
+                ->where(['no_sts' => $no_sts])
+                ->get()
+        ];
+
+        return view('skpd.penerimaan_kas.cetak')->with($data);
+    }
+
+    // Koreksi Pendapatan
+    public function indexKoreksi()
+    {
+        return view('skpd.koreksi_pendapatan.index');
+    }
+
+    public function loadDataKoreksi()
+    {
+        $data = DB::table('trkasout_ppkd')
+            ->orderByRaw("cast(no as int)")
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("koreksi_pendapatan.edit", Crypt::encrypt($row->no)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahKoreksi()
+    {
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+        ];
+
+        return view('skpd.koreksi_pendapatan.create')->with($data);
+    }
+
+    public function jenisKoreksi(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+
+        if ($kd_skpd == '1.02.0.00.0.00.02.0000') {
+            $data1 = DB::table('trdrka_pend as a')
+                ->selectRaw(" a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6");
+            $data2 = DB::query()
+                ->select(DB::raw("'1.02.0.00.0.00.02.0000' as kd_skpd"), DB::raw("'RUMAH SAKIT UMUM DAERAH DR. SOEDARSO' as nm_skpd"), DB::raw("'210601010009' as kd_rek6"), DB::raw("'Utang Belanja Tunjangan Fungsional UmumASN-Tunjangan Fungsional Umum PNS' as nm_rek6"))
+                ->unionAll($data1);
+            $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+                ->mergeBindings($data2)
+                ->get();
+        } else {
+            $data = DB::table('trdrka_pend as a')
+                ->selectRaw("a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6")
+                ->get();
+        }
+        return response()->json($data);
+    }
+
+    public function simpanKoreksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+
+            $cek_terima = DB::table('trkasout_ppkd')->where(['no' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_terima > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trkasout_ppkd')
+                ->insert([
+                    'no' => $no_urut,
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['total'],
+                    'kd_rek' => $data['jenis'],
+                    'nm_rek' => $data['nama_jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd'],
+                    'status' => $data['ngaruh'],
+                    'kd_sub_kegiatan' => DB::raw("left('$kd_skpd',4)+'.00.0.00.04'")
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editKoreksi($no)
+    {
+        $no = Crypt::decrypt($no);
+
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+            'koreksi' => DB::table('trkasout_ppkd')
+                ->where(['no' => $no])
+                ->first()
+        ];
+
+        return view('skpd.koreksi_pendapatan.edit')->with($data);
+    }
+
+    public function simpanEditKoreksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+
+            DB::table('trkasout_ppkd')
+                ->where(['no' => $data['no_kas']])
+                ->update([
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['total'],
+                    'kd_rek' => $data['jenis'],
+                    'nm_rek' => $data['nama_jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd'],
+                    'status' => $data['ngaruh'],
+                    'kd_sub_kegiatan' => DB::raw("left('$kd_skpd',4)+'.00.0.00.04'")
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusKoreksi(Request $request)
+    {
+        $no = $request->no;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trkasout_ppkd')->where(['no' => $no])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // Penerimaan Non Pendapatan
+    public function indexPenerimaanNonPendapatan()
+    {
+        return view('skpd.penerimaan_non_pendapatan.index');
+    }
+
+    public function loadDataPenerimaanNonPendapatan()
+    {
+        $data = DB::table('penerimaan_non_sp2d')
+            ->orderByRaw("nomor")
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("non_pendapatan.edit", Crypt::encrypt($row->nomor)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->nomor . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahPenerimaanNonPendapatan()
+    {
+        return view('skpd.penerimaan_non_pendapatan.create');
+    }
+
+    public function simpanPenerimaanNonPendapatan(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+
+            DB::table('penerimaan_non_sp2d')
+                ->insert([
+                    'nomor' => $no_urut,
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                    'jenis' => $data['jenis'],
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editPenerimaanNonPendapatan($nomor)
+    {
+        $nomor = Crypt::decrypt($nomor);
+
+        $data = [
+            'terima' => DB::table('penerimaan_non_sp2d')
+                ->where(['nomor' => $nomor])
+                ->first()
+        ];
+
+        return view('skpd.penerimaan_non_pendapatan.edit')->with($data);
+    }
+
+    public function simpanEditPenerimaanNonPendapatan(Request $request)
+    {
+        $data = $request->data;
+
+        DB::beginTransaction();
+        try {
+            DB::table('penerimaan_non_sp2d')
+                ->where(['nomor' => $data['no_kas']])
+                ->update([
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                    'jenis' => $data['jenis'],
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusPenerimaanNonPendapatan(Request $request)
+    {
+        $nomor = $request->nomor;
+
+        DB::beginTransaction();
+        try {
+            DB::table('penerimaan_non_sp2d')->where(['nomor' => $nomor])->delete();
 
             DB::commit();
             return response()->json([

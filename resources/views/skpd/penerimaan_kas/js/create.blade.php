@@ -177,7 +177,7 @@
                     kd_rek6: value.kd_rek6,
                     nm_rek: value.nm_rek,
                     nm_rek5: value.nm_rek5,
-                    rupiah: rupiah(value.rupiah),
+                    rupiah: parseFloat(value.rupiah),
                     sumber: value.sumber,
                 };
                 return data;

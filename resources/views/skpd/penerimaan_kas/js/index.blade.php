@@ -79,28 +79,53 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_kas, kd_skpd) {
+    function hapus(no_kas, no_sts, kd_skpd, tgl_kas) {
         let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Kas : ' + no_kas);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('penerimaan_ppkd.hapus') }}",
+                url: "{{ route('penerimaan_kas.kunci_kasda') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_kas: no_kas,
                     kd_skpd: kd_skpd,
                 },
                 success: function(data) {
-                    if (data.message == '1') {
-                        alert('Proses Hapus Berhasil');
-                        window.location.reload();
+                    if (tgl_kas < data) {
+                        alert('Tanggal kas lebih kecil dari tanggal kuncian!');
+                        return;
                     } else {
-                        alert('Proses Hapus Gagal...!!!');
+                        $.ajax({
+                            url: "{{ route('penerimaan_kas.hapus') }}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {
+                                no_kas: no_kas,
+                                no_sts: no_sts,
+                                kd_skpd: kd_skpd,
+                            },
+                            success: function(data) {
+                                if (data.message == '1') {
+                                    alert('Proses Hapus Berhasil');
+                                    window.location.reload();
+                                } else {
+                                    alert('Proses Hapus Gagal...!!!');
+                                }
+                            }
+                        })
                     }
                 }
             })
         } else {
             return false;
         }
+    }
+
+    function cetak(no_kas, no_sts, kd_skpd) {
+        let url = new URL("{{ route('penerimaan_kas.cetak') }}");
+        let searchParams = url.searchParams;
+        searchParams.append("no_kas", no_kas);
+        searchParams.append("no_sts", no_sts);
+        searchParams.append("kd_skpd", kd_skpd);
+        window.open(url.toString(), "_blank");
     }
 </script>

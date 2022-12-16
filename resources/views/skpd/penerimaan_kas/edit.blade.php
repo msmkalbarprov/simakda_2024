@@ -1,12 +1,12 @@
 @extends('template.app')
-@section('title', 'Ubah Data Penerimaan Lain PPKD | SIMAKDA')
+@section('title', 'Input Data Penerimaan Kas | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input Data Penerimaan Lain PPKD
+                    Input Data Penerimaan Kas
                 </div>
                 <div class="card-body">
                     @csrf
@@ -14,81 +14,128 @@
                     <div class="mb-3 row">
                         <label for="no_kas" class="col-md-2 col-form-label">No. Kas</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_kas" name="no_kas" required readonly
-                                value="{{ $terima->no_sts }}">
+                            <input class="form-control" type="text" id="no_kas" name="no_kas"
+                                value="{{ $terima->no_kas }}" required readonly>
                         </div>
                         <label for="tgl_kas" class="col-md-2 col-form-label">Tanggal</label>
                         <div class="col-md-4">
                             <input class="form-control" type="date" id="tgl_kas" name="tgl_kas" required
-                                value="{{ $terima->tgl_sts }}">
+                                value="{{ $terima->tgl_kas }}" readonly>
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>
                     </div>
-                    {{-- Jenis dan Nama Jenis --}}
+                    {{-- SKPD dan Nama SKPD --}}
                     <div class="mb-3 row">
-                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
+                        <label for="kd_skpd" class="col-md-2 col-form-label">SKPD</label>
                         <div class="col-md-4">
+                            <input class="form-control" type="text" id="kd_skpd" name="kd_skpd" required readonly
+                                value="{{ $terima->kd_skpd }}">
+                        </div>
+                        <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="nm_skpd" name="nm_skpd" required readonly
+                                value="{{ nama_skpd($terima->kd_skpd) }}">
+                        </div>
+                    </div>
+                    {{-- No Bukti dan Tanggal Bukti --}}
+                    <div class="mb-3 row">
+                        <label for="no_bukti" class="col-md-2 col-form-label">No Bukti</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required readonly
+                                value="{{ $terima->no_sts }}">
+                        </div>
+                        <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Bukti</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="date" id="tgl_bukti" name="tgl_bukti" required readonly
+                                value="{{ $terima->tgl_sts }}">
+                            <input class="form-control" type="text" id="sumber" name="sumber" required readonly
+                                hidden value="{{ $terima->sumber }}">
+                            <input class="form-control" type="text" id="jns_cp" name="jns_cp" required readonly
+                                hidden value="{{ $terima->jns_cp }}">
+                        </div>
+                    </div>
+                    {{-- Kegiatan dan Nama Kegiatan --}}
+                    <div class="mb-3 row">
+                        <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Kegiatan</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="kd_sub_kegiatan" name="kd_sub_kegiatan" required
+                                readonly value="{{ $terima->kd_sub_kegiatan }}">
+                        </div>
+                        <label for="nm_sub_kegiatan" class="col-md-2 col-form-label">Nama Kegiatan</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="nm_sub_kegiatan" name="nm_sub_kegiatan" required
+                                readonly value="{{ nama_kegiatan($terima->kd_sub_kegiatan) }}">
+                        </div>
+                    </div>
+                    {{-- Jenis Transaksi --}}
+                    <div class="mb-3 row">
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis Transaksi</label>
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis" name="jenis">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_jenis as $jenis)
-                                    <option value="{{ $jenis->kd_rek6 }}" data-nama="{{ $jenis->nm_rek6 }}"
-                                        {{ Str::of($terima->kd_rek6)->trim() == $jenis->kd_rek6 ? 'selected' : '' }}>
-                                        {{ $jenis->kd_rek6 }} | {{ $jenis->nm_rek6 }}
-                                    </option>
-                                @endforeach
+                                <option value="4" {{ Str::of($terima->jns_trans)->trim() == '4' ? 'selected' : '' }}>
+                                    Pendapatan
+                                </option>
+                                <option value="5" {{ Str::of($terima->jns_trans)->trim() == '5' ? 'selected' : '' }}>
+                                    Belanja</option>
+                                <option value="61" {{ Str::of($terima->jns_trans)->trim() == '61' ? 'selected' : '' }}>
+                                    Penerimaan
+                                    Pembiayaan</option>
+                                <option value="62"
+                                    {{ Str::of($terima->jns_trans)->trim() == '62' ? 'selected' : '' }}>Pengeluaran
+                                    Pembiayaan</option>
+                                <option value="1" {{ Str::of($terima->jns_trans)->trim() == '1' ? 'selected' : '' }}>
+                                    Rekening Kas
+                                </option>
                                 </option>
                             </select>
-                        </div>
-                        <label for="nama_jenis" class="col-md-2 col-form-label">Nama Jenis</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nama_jenis" name="nama_jenis" required readonly
-                                value="{{ nama_rekening($terima->kd_rek6) }}">
-                        </div>
-                    </div>
-                    {{-- Pengirim dan Nama Pengirim --}}
-                    <div class="mb-3 row">
-                        <label for="pengirim" class="col-md-2 col-form-label">Pengirim</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%" id="pengirim"
-                                name="pengirim">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_pengirim as $pengirim)
-                                    <option value="{{ $pengirim->kd_pengirim }}" data-nama="{{ $pengirim->nm_pengirim }}"
-                                        {{ $terima->sumber == $pengirim->kd_pengirim ? 'selected' : '' }}>
-                                        {{ $pengirim->kd_pengirim }} | {{ $pengirim->nm_pengirim }}
-                                    </option>
-                                @endforeach
-                                </option>
-                            </select>
-                        </div>
-                        <label for="nama_pengirim" class="col-md-2 col-form-label">Nama Pengirim</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nama_pengirim" name="nama_pengirim" required
-                                readonly value="{{ nama_sumber($terima->sumber) }}">
-                        </div>
-                    </div>
-                    {{-- Nilai --}}
-                    <div class="mb-3 row">
-                        <label for="nilai" class="col-md-2 col-form-label">Nilai</label>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" name="nilai" id="nilai"
-                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"
-                                value="{{ $terima->total }}">
                         </div>
                     </div>
                     {{-- Keterangan --}}
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-10">
-                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan">{{ $terima->keterangan }}</textarea>
+                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan" readonly>{{ $terima->keterangan }}</textarea>
                         </div>
                     </div>
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('penerimaan_ppkd.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                            {{-- <button id="simpan" class="btn btn-primary btn-md">Simpan</button> --}}
+                            <a href="{{ route('penerimaan_kas.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Detail STS --}}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Detail STS
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="detail_sts" class="table" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>No STS</th>
+                                <th>Nomor Rekening</th>
+                                <th>Nama Rekening</th>
+                                <th>Jenis</th>
+                                <th>Rupiah</th>
+                                <th>Sumber</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div class="mb-2 mt-2 row">
+                        <label for="total" class="col-md-8 col-form-label" style="text-align: right">Jumlah</label>
+                        <div class="col-md-4">
+                            <input type="text" style="text-align: right;background-color:white;border:none;" readonly
+                                class="form-control" id="total" name="total"
+                                value="{{ rupiah($terima->total) }}">
                         </div>
                     </div>
                 </div>
@@ -97,5 +144,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.penerimaan_lain_ppkd.js.edit');
+    @include('skpd.penerimaan_kas.js.edit');
 @endsection

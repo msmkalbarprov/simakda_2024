@@ -2799,3 +2799,12 @@ function nomor_urut_ppkd()
 
     return $data->nomor;
 }
+
+function nama_kegiatan($kd_sub_kegiatan)
+{
+    $data = DB::table('ms_sub_kegiatan')
+        ->select('nm_sub_kegiatan')
+        ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+        ->first();
+    return $data->nm_sub_kegiatan;
+}

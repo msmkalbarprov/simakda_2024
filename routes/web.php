@@ -846,10 +846,34 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('cari_no_bukti', [PenerimaanController::class, 'noBuktiPenerimaanKas'])->name('penerimaan_kas.no_bukti');
             Route::post('detail_sts', [PenerimaanController::class, 'detailPenerimaanKas'])->name('penerimaan_kas.detail_sts');
             Route::post('nm_sub_kegiatan', [PenerimaanController::class, 'kegiatanPenerimaanKas'])->name('penerimaan_kas.nm_sub_kegiatan');
+            Route::post('kunci_kasda', [PenerimaanController::class, 'kunciPenerimaanKas'])->name('penerimaan_kas.kunci_kasda');
             Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanKas'])->name('penerimaan_kas.simpan');
-            Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanKas'])->where('no_kas', '(.*)')->name('penerimaan_kas.edit');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [PenerimaanController::class, 'editPenerimaanKas'])->name('penerimaan_kas.edit');
             Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanKas'])->name('penerimaan_kas.simpan_edit');
             Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanKas'])->name('penerimaan_kas.hapus');
+            Route::get('cetak', [PenerimaanController::class, 'cetakPenerimaanKas'])->name('penerimaan_kas.cetak');
+        });
+        // Koreksi Pendapatan
+        Route::group(['prefix' => 'koreksi_pendapatan'], function () {
+            Route::get('', [PenerimaanController::class, 'indexKoreksi'])->name('koreksi_pendapatan.index');
+            Route::post('load_data', [PenerimaanController::class, 'loadDataKoreksi'])->name('koreksi_pendapatan.load_data');
+            Route::get('tambah', [PenerimaanController::class, 'tambahKoreksi'])->name('koreksi_pendapatan.tambah');
+            Route::post('jenis', [PenerimaanController::class, 'jenisKoreksi'])->name('koreksi_pendapatan.jenis');
+            Route::post('simpan', [PenerimaanController::class, 'simpanKoreksi'])->name('koreksi_pendapatan.simpan');
+            Route::get('edit/{no?}', [PenerimaanController::class, 'editKoreksi'])->name('koreksi_pendapatan.edit');
+            Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditKoreksi'])->name('koreksi_pendapatan.simpan_edit');
+            Route::post('hapus', [PenerimaanController::class, 'hapusKoreksi'])->name('koreksi_pendapatan.hapus');
+        });
+        // Penerimaan Non Pendapatan
+        Route::group(['prefix' => 'non_pendapatan'], function () {
+            Route::get('', [PenerimaanController::class, 'indexPenerimaanNonPendapatan'])->name('non_pendapatan.index');
+            Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanNonPendapatan'])->name('non_pendapatan.load_data');
+            Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanNonPendapatan'])->name('non_pendapatan.tambah');
+            Route::post('jenis', [PenerimaanController::class, 'jenisPenerimaanNonPendapatan'])->name('non_pendapatan.jenis');
+            Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanNonPendapatan'])->name('non_pendapatan.simpan');
+            Route::get('edit/{nomor?}', [PenerimaanController::class, 'editPenerimaanNonPendapatan'])->name('non_pendapatan.edit');
+            Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanNonPendapatan'])->name('non_pendapatan.simpan_edit');
+            Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanNonPendapatan'])->name('non_pendapatan.hapus');
         });
     });
 
