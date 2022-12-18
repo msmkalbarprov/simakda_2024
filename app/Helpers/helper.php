@@ -13,6 +13,73 @@ function tahun_anggaran()
 }
 
 // hendra
+
+function count_ingat()
+{
+    $ingat1 = DB::table('trkonfig_spd')->whereNotNull('ingat1')->count();
+    $ingat2 = DB::table('trkonfig_spd')->whereNotNull('ingat2')->count();
+    $ingat3 = DB::table('trkonfig_spd')->whereNotNull('ingat3')->count();
+    $ingat4 = DB::table('trkonfig_spd')->whereNotNull('ingat4')->count();
+    $ingat5 = DB::table('trkonfig_spd')->whereNotNull('ingat5')->count();
+    $ingat6 = DB::table('trkonfig_spd')->whereNotNull('ingat6')->count();
+    $ingat7 = DB::table('trkonfig_spd')->whereNotNull('ingat7')->count();
+    $ingat8 = DB::table('trkonfig_spd')->whereNotNull('ingat8')->count();
+    $ingat9 = DB::table('trkonfig_spd')->whereNotNull('ingat9')->count();
+    $ingat10 = DB::table('trkonfig_spd')->whereNotNull('ingat10')->count();
+    $ingat11 = DB::table('trkonfig_spd')->whereNotNull('ingat11')->count();
+
+    return $ingat1 + $ingat2 + $ingat3 + $ingat4 + $ingat5 + $ingat6 +
+        $ingat7 + $ingat8 + $ingat9 + $ingat10 + $ingat11;
+}
+
+function kd_Program($program){
+    $kd_program = DB::table('ms_program')->select('kd_program')
+        ->whereRaw("kd_program = left(?, 7)", [$program])
+        ->first();
+
+    return $kd_program->kd_program;
+}
+
+function nm_Program($program){
+    $nm_program = DB::table('ms_program')->select('nm_program')
+        ->whereRaw("kd_program = left(?, 7)", [$program])
+        ->first();
+
+    return $nm_program->nm_program;
+}
+
+function kd_kegiatan($kegiatan){
+    $kd_kegiatan = DB::table('ms_kegiatan')->select('kd_kegiatan')
+        ->whereRaw("kd_kegiatan = left(?, 12)", [$kegiatan])
+        ->first();
+
+    return $kd_kegiatan->kd_kegiatan;
+}
+
+function nm_kegiatan($kegiatan){
+    $nm_kegiatan = DB::table('ms_kegiatan')->select('nm_kegiatan')
+        ->whereRaw("kd_kegiatan = left(?, 12)", [$kegiatan])
+        ->first();
+
+    return $nm_kegiatan->nm_kegiatan;
+}
+
+function kd_sub_kegiatan($sub_kegiatan){
+    $kd_sub_kegiatan = DB::table('ms_sub_kegiatan')->select('nm_sub_kegiatan')
+        ->whereRaw("kd_sub_kegiatan = ?", [$sub_kegiatan])
+        ->first();
+
+    return $kd_sub_kegiatan->nm_sub_kegiatan;
+}
+
+function kd_rek($rek){
+    $kd_rek = DB::table('ms_rek6')->select('nm_rek6')
+        ->whereRaw("kd_rek6 = ?", [$rek])
+        ->first();
+
+    return $kd_rek->nm_rek6;
+}
+
 function noSPD($bulan)
 {
     $data = DB::table('trkonfig_spd')->first();
