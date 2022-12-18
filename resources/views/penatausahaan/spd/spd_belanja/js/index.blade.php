@@ -48,5 +48,78 @@
                 },
             ],
         });
+
+        $('#nip').select2({
+            dropdownParent: $('#modal_cetak .modal-content'),
+            theme: 'bootstrap-5'
+        });
+        $('#jenis').select2({
+            dropdownParent: $('#modal_cetak .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        $('#cetak-lampiran, #cetak-otorisasi').click(function() {
+            var url = new URL($(this).data('url'))
+            let nospd = document.getElementById('no_spd').value;
+            let nip = $("#nip").val();
+            let jenis = $("#jenis").val();
+
+            // if (document.getElementById("tnspd").checked == true) {
+            //     tnspd = '1';
+            // } else {
+            //     tnspd = '0';
+            // }
+
+            if (document.getElementById("tambahan").checked == true) {
+                tambahan = '1';
+            } else {
+                tambahan = '0';
+            }
+
+            if (!nip) {
+                return alert('Bendahara PPKD Belum Dipilih')
+            }
+
+            if (!jenis) {
+                return alert('Jenis Cetakkan Belum Dipilih')
+            }
+
+            let searchParams = url.searchParams;
+            searchParams.append('no_spd', nospd);
+            searchParams.append('nip', nip);
+            // searchParams.append('tnspd', tnspd);
+            searchParams.append('tambahan', tambahan);
+            searchParams.append('jenis', jenis);
+            window.open(url.toString(), "_blank");
+        })
     });
+
+    function cetak(no_spd) {
+        $('#no_spd').val(no_spd);
+        $('#modal_cetak').modal('show');
+    }
+
+    function hapusSPD(no_spd) {
+            let tanya = confirm('Apakah anda yakin untuk menghapus data ini');
+            if (tanya == true) {
+                $.ajax({
+                    url: "{{ route('spd.spd_belanja.hapus_data_spd') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        no_spd: no_spd,
+                    },
+                    success: function(data) {
+                        if (data.message == '1') {
+                            alert('Proses Hapus Berhasil');
+                            window.location.reload();
+                        } else {
+                            alert('Proses Hapus Gagal...!!!');
+                        }
+                    }
+                })
+            } else {
+                return false;
+            }
+        }
 </script>

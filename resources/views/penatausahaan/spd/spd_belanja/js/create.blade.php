@@ -46,32 +46,32 @@
                     name: 'kd_rek6',
                 },
                 {
-                    data: 'nilai',
+                    data: null,
                     name: 'nilai',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.nilai)
                     },
                     "className": "text-right",
                 },
                 {
-                    data: 'lalu',
+                    data: null,
                     name: 'lalu',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.lalu)
                     },
                     "className": "text-right",
                 },
                 {
-                    data: 'anggaran',
+                    data: null,
                     name: 'anggaran',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.anggaran)
                     },
                     "className": "text-right",
                 }
@@ -118,37 +118,38 @@
                     name: 'kd_rek6',
                 },
                 {
-                    data: 'nilai',
+                    data: null,
                     name: 'nilai',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.nilai)
                     },
                     "className": "text-right",
                 },
                 {
-                    data: 'nilai_lalu',
+                    data: null,
                     name: 'nilai_lalu',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.nilai_lalu)
                     },
                     "className": "text-right",
                 },
                 {
-                    data: 'anggaran',
+                    data: null,
                     name: 'anggaran',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data)
+                        }).format(data.anggaran)
                     },
                     "className": "text-right",
                 }
             ],
         })
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -196,12 +197,13 @@
             daftarSpdTempTable.clear().draw();
             var skpd = $(this).select2('data')[0];
             let tahun = "{{ tahun_anggaran() }}";
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             $('#nip').val(null).trigger('change').trigger('select2:select');
             if (skpd) {
                 $('#nm_skpd').val(skpd.nm_skpd)
                 $('#nip').prop('disabled', false)
                 $('#nomor').prop('disabled', false)
-                $("#nomor").val('13.00/01.0//' + skpd.kd_skpd + '/M/1/' + tahun)
+                $("#nomor").val('13.00/01.0//' + skpd.kd_skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
                 $('#jenis_anggaran').prop('disabled', false)
             } else {
                 $('#nm_skpd').val(null)
@@ -209,6 +211,24 @@
                 $('#nomor').prop('disabled', true)
                 $('#jenis_anggaran').prop('disabled', true)
             }
+        }).trigger('select2:select');
+
+        $('#jenis_anggaran').on('select2:select', function() {
+            tabelBelanja.clear().draw();
+            daftarSpdTempTable.clear().draw();
+            let tahun = "{{ tahun_anggaran() }}";
+            let skpd = document.getElementById('kd_skpd').value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
+        }).trigger('select2:select');
+
+        $('#bulan_awal').on('select2:select', function() {
+            tabelBelanja.clear().draw();
+            daftarSpdTempTable.clear().draw();
+            let tahun = "{{ tahun_anggaran() }}";
+            let skpd = document.getElementById('kd_skpd').value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
         }).trigger('select2:select');
 
         //nip
@@ -550,91 +570,81 @@
 
         $('#simpan_spd').on('click', function() {
             let kd_skpd = $('#kd_skpd').select2('data')[0];
+            let skpd = kd_skpd.kd_skpd;
             let nip = $('#nip').select2('data')[0];
+            let nipp = nip.nip;
             let nomor = document.getElementById('nomor').value;
             let tanggal = document.getElementById('tanggal').value;
             let bulan_awal = document.getElementById('bulan_awal').value;
             let bulan_akhir = document.getElementById('bulan_akhir').value;
             let jenis = document.getElementById('jenis').value;
-            let revisi = document.getElementById('revisi').value;
+            if (document.getElementById("revisi").checked == true) {
+                revisi = '1';
+            } else {
+                revisi = '0';
+            }
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             let status_angkas = document.getElementById('status_angkas').value;
             let keterangan = document.getElementById('keterangan').value;
-
+            
             let daftar_spd = daftarSpdTempTable.rows().data().toArray().map((value) => {
                 let data = {
-                    no_bukti: value.no_bukti,
-                    no_sp2d: value.no_sp2d,
-                    kd_sub_kegiatan: value.kd_sub_kegiatan,
-                    nm_sub_kegiatan: value.nm_sub_kegiatan,
-                    kd_rek6: value.kd_rek6,
-                    nm_rek6: value.nm_rek6,
-                    nilai: rupiah(value.nilai),
-                    sumber: value.sumber,
-                    lalu: value.lalu,
-                    sp2d: value.sp2d,
-                    anggaran: value.anggaran,
-                    volume: value.volume,
-                    satuan: value.satuan,
-                };
-                return data;
-            });
-
-            if (rincian_rekening.length == 0) {
-                alert('Rincian Rekening tidak boleh kosong!');
-                return;
-            }
-
-            let no_sp2d = tabel_rekening1.rows().data().toArray().map((value) => {
-                let data = {
-                    no_sp2d: value.no_sp2d,
-                };
-                return data;
-            });
-            let sp2d = no_sp2d[0]['no_sp2d'];
-
-            let rincian_rek_tujuan = tabel_tujuan.rows().data().toArray().map((value) => {
-                let data = {
-                    no_bukti: value.no_bukti,
-                    rekening_awal: value.rekening_awal,
-                    nm_rekening_tujuan: value.nm_rekening_tujuan,
-                    rekening_tujuan: value.rekening_tujuan,
-                    bank_tujuan: value.bank_tujuan,
                     kd_skpd: value.kd_skpd,
-                    nilai: rupiah(value.nilai),
+                    kd_sub_kegiatan: value.kd_sub_kegiatan,
+                    kd_rek6: value.kd_rek6,
+                    nilai: value.nilai,
                 };
                 return data;
             });
+            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai), 0);
 
-            let tahun_input = tgl_voucher.substr(0, 4);
-
-            if (tahun_input != tahun_anggaran) {
-                alert('Tahun tidak sama dengan tahun Anggaran');
-                return;
-            }
-
-            if (pembayaran == 'BANK' && total_belanja > total_sisa) {
-                alert('Nilai Melebihi sisa Simpanan Bank');
-                return;
-            }
-
-            if (!no_bukti) {
-                alert('Nomor Bukti Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!tgl_voucher) {
-                alert('Tanggal Bukti Tidak Boleh Kosong');
+            if (daftar_spd.length == 0) {
+                alert('Daftar Rincian Tidak Boleh Kosong');
                 return;
             }
 
             if (!kd_skpd) {
-                alert('Kode SKPD Tidak Boleh Kosong');
+                alert('SKPD Tidak Boleh Kosong');
                 return;
             }
 
-            if (!beban) {
-                alert('Jenis beban Tidak Boleh Kosong');
+            if (!nip) {
+                alert('NIP Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!nomor) {
+                alert('Nomor SPD Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!tanggal) {
+                alert('tanggal Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!bulan_awal) {
+                alert('Bulan Awal Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!bulan_akhir) {
+                alert('Bulan Akhir Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!jenis) {
+                alert('Beban Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!jenis_anggaran) {
+                alert('jenis Anggaran Tidak Boleh Kosong');
+                return;
+            }
+           
+            if (!status_angkas) {
+                alert('Status Angkas Tidak Boleh Kosong');
                 return;
             }
 
@@ -643,65 +653,64 @@
                 return;
             }
 
-            if (!pembayaran) {
-                alert('Jenis Pembayaran Tidak Boleh Kosong');
-                return;
-            }
-
-            if (total_belanja == 0) {
-                alert('Rincian Tidak ada rekening!');
-                return;
-            }
-
-            if (total_transfer == 0) {
-                alert('Rincian Tidak ada rekening!');
-                return;
-            }
-
-            if (total_transfer > total_belanja) {
-                alert('Total Transfer melebihi Total Belanja!');
-                return;
-            }
-
-            if (!rekening) {
-                alert('Isian Rekening Belum Lengkap!');
-                return;
-            }
-
             let response = {
-                no_bukti,
-                tgl_voucher,
-                kd_skpd,
-                nm_skpd,
-                beban,
+                skpd,
+                nipp,
+                nomor,
+                tanggal,
+                bulan_awal,
+                bulan_akhir,
+                jenis,
+                revisi,
+                jenis_anggaran,
+                status_angkas,
                 keterangan,
-                total_belanja,
-                pembayaran,
-                rekening,
-                ketcms,
-                sp2d,
-                rincian_rekening,
-                rincian_rek_tujuan
+                totalNilai,
+                daftar_spd
             };
 
             $.ajax({
-                url: "{{ route('skpd.transaksi_cms.cek_simpan') }}",
+                url: "{{ route('spd.spd_belanja.simpanSpp') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_bukti: no_bukti
+                    data: response
                 },
                 success: function(data) {
-                    if (data == '1') {
-                        alert('Nomor Telah Dipakai!');
+                    if (data.message == '1') {
+                        alert('Data Berhasil Tersimpan!!!');
+                        // return;
+                        window.location.href = "{{ route('spd_belanja.index') }}"
+                    } else if (data.message == '2') {
+                        alert('Nomor SPD Sudah Digunakan!!!');
                         return;
                     } else {
-                        alert("Nomor Bisa dipakai");
-                        simpan_cms(response);
+                        alert("Data Gagal Tersimpan!!!");
+                        return;
                     }
                 }
             })
         });
 
+        function bulanspd(){
+            let bln = document.getElementById('bulan_awal').value;
+            let jenisbln = document.getElementById('jenisbln').value;
+            if (jenisbln == '1') {
+                return bulan = bln;
+            } else {
+                if (bln == '1' || bln == '2' || bln == '3') {
+                    return bulan = 1;
+                } else if (bln == '4' || bln == '5' || bln == '6') {
+                    return bulan = 2;
+                } else if (bln == '7' || bln == '8' || bln == '9') {
+                    return bulan = 3;
+                } else if (bln == '10' || bln == '11' || bln == '12') {
+                    return bulan = 4;
+                } else {
+                    return bulan = '';
+                }
+            }
+        }
     });
+
 </script>

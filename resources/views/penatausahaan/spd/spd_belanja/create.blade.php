@@ -12,6 +12,7 @@
             <div class="card-body">
                 @csrf
                 <input id="idpage" name="idpage" type="hidden" value="{{ $idpage }}">
+                <input id="jenisbln" name="jenisbln" type="hidden" value="{{ $jenisblnspd->jenis_spd }}">
                 <!-- Kode SKPD dan Nama SKPD -->
                 <div class="row">
                     <div class="col-md-6">
@@ -135,7 +136,7 @@
                 <div class="mb-3 row" style="float: right;">
                     <div class="col-md-12" style="text-align: center">
                         <button id="simpan_spd" class="btn btn-primary btn-md">Simpan</button>
-                        <a href="" class="btn btn-warning btn-md">Kembali</a>
+                        <a href="{{ route('spd_belanja.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
 
@@ -204,6 +205,13 @@
 
                             </tbody>
                         </table>
+                    </div>
+                    <div class="mb-2 mt-2 row">
+                        <label for="total" class="col-md-8 col-form-label" style="text-align: right">Total
+                            SPD</label>
+                        <div class="col-md-4">
+                            <input type="text" style="text-align: right" readonly class="form-control" id="total" name="total">
+                        </div>
                     </div>
                 </div>
             </div>

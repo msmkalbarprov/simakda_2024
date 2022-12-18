@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 use Exception;
+use Knp\Snappy\Pdf as SnappyPdf;
+use PDF;
 
 class SPDBelanjaController extends Controller
 {
     public function index()
     {
-        return view('penatausahaan.spd.spd_belanja.index');
+        $data = [
+            'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kode' => 'PPKD', 'bidang' => '1'])->get(),
+        ];
+        return view('penatausahaan.spd.spd_belanja.index')->with($data);
     }
 
     public function loadData()
@@ -27,7 +33,7 @@ class SPDBelanjaController extends Controller
             DB::raw("case when jns_beban='5' then 'BELANJA' else 'PEMBIAYAAN' end AS nm_beban"),
             DB::raw("(select nama from tb_status_angkas where a.jns_ang=status_kunci) as nm_angkas")
         )
-            ->where('a.jns_beban', '5')->whereRaw('a.kd_skpd IN (SELECT kd_skpd FROM user_bud WHERE user_id= ?)', [$id])
+            ->whereIn('a.jns_beban', [5, 6])->whereRaw('a.kd_skpd IN (SELECT kd_skpd FROM user_bud WHERE user_id= ?)', [$id])
             ->groupBy([
                 'a.no_spd', 'a.tgl_spd', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_beban',
                 'a.no_dpa', 'a.bulan_awal', 'a.bulan_akhir', 'a.kd_bkeluar', 'a.triwulan', 'a.klain',
@@ -36,8 +42,8 @@ class SPDBelanjaController extends Controller
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_spd . ');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_spd . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="hapusSPD(\'' . $row->no_spd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('penatausahaan.spd.spd_belanja.index');
@@ -45,8 +51,11 @@ class SPDBelanjaController extends Controller
 
     public function create()
     {
+        $user = Auth()->user()->nama;
+        DB::table('spd_temp')->where(['username' => $user])->Delete();
         $data = [
             'idpage' => uniqid('spd-page-id#', true),
+            'jenisblnspd' => DB::table('trkonfig_spd')->select('jenis_spd')->first(),
         ];
         return view('penatausahaan.spd.spd_belanja.create')->with($data);
     }
@@ -57,6 +66,7 @@ class SPDBelanjaController extends Controller
 
         $results = DB::table('ms_skpd')
             ->select('kd_skpd as id', 'nm_skpd as text', 'kd_skpd', 'nm_skpd')
+            ->whereRaw("right(kd_skpd, 5) = '.0000'")
             ->when($term, function ($query, $term) {
                 $query->where(function ($query) use ($term) {
                     $query->orWhere('kd_skpd', 'like', '%' . $term . '%')
@@ -219,21 +229,21 @@ class SPDBelanjaController extends Controller
                             left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND spd_temp.nilai_lalu = lalu
                             AND spd_temp.anggaran = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
                             AND a.kd_rek6 = spd_temp.kd_rek6  
-                            AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ?
+                            AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                             AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
                         )
                     ORDER BY a.kd_unit, a.kd_sub_kegiatan",
                     [
                         $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,
-                        $bulanAwal, $bulanAkhir, $nomor, $tgl, $kd_skpd, $bulanAwal, $bulanAkhir, $status_angkas, $jenis, $page
+                        $bulanAwal, $bulanAkhir, $nomor, $tgl, $kd_skpd, $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
                     ]
                 );                
             }
             return DataTables::of($data)->addIndexColumn()->make(true);
         } else {
             $data = DB::select(
-                "SELECT a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, a.kd_rek6, a.nm_rek6,
-                        a.total_ubah AS anggaran, (nilai - isnull(lalu_tw, 0)) AS nilai, lalu 
+                "SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, a.kd_rek6, a.nm_rek6,
+                        a.total_ubah AS anggaran, (nilai - isnull(lalu_tw, 0)) AS nilai, isnull(lalu, 0) as lalu 
                     FROM
                     (
                         SELECT b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6,
@@ -268,10 +278,20 @@ class SPDBelanjaController extends Controller
                         (
                             SELECT a.kd_sub_kegiatan FROM trskpd a
                             INNER JOIN ms_sub_kegiatan b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan 
-                            WHERE a.kd_skpd = ? AND b.jns_sub_kegiatan = '62' 
-                        ) ORDER BY a.kd_sub_kegiatan",
-                [$jns_ang, $skpd, $bulanAwal, $bulanAkhir, $skpd, $skpd, $nomor, $tgl, $skpd, $bulanAwal, $bulanAkhir, $nomor, $tgl, $skpd]
+                            WHERE a.kd_skpd = ? AND b.jns_sub_kegiatan = '5' 
+                        ) AND NOT EXISTS (
+                            SELECT * FROM spd_temp where 
+                            left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17)  AND spd_temp.nilai_lalu = lalu
+                            AND isnull(spd_temp.anggaran,0) = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                            AND a.kd_rek6 = spd_temp.kd_rek6  
+                            AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                            AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                        )
+                        ORDER BY a.kd_sub_kegiatan",
+                [$jns_ang, $skpd, $bulanAwal, $bulanAkhir, $skpd, $skpd, $nomor, $tgl, $skpd, $bulanAwal, $bulanAkhir, $nomor, $tgl, $skpd,
+                $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page]
             );
+
             return DataTables::of($data)->addIndexColumn()->make(true);
         }
 
@@ -300,6 +320,7 @@ class SPDBelanjaController extends Controller
                     'jns_beban' => $data['jenis'],
                     'revisi' => $data['revisi'],
                     'created_at' => date('Y-m-d H:i:s'),
+                    'username' => Auth::user()->nama
                 ]);
             DB::commit();
             return response()->json([
@@ -357,6 +378,7 @@ class SPDBelanjaController extends Controller
                     'jns_angkas' => $data['status_ang'],
                     'jns_beban' => $data['jenis'],
                     'revisi' => $data['revisi'],
+                    'username' => Auth::user()->nama,
                 ])->delete();
             DB::commit();
             return response()->json([
@@ -374,6 +396,7 @@ class SPDBelanjaController extends Controller
     {
         $data = $request->data;
         $kd_skpd = left($data['kd_skpd'], 17);
+        $skpd = $data['kd_skpd'];
         $jns_ang = $data['jns_ang'];
         $tgl = $data['tanggal'];
         $bulanAwal = $data['bln_awal'];
@@ -387,115 +410,174 @@ class SPDBelanjaController extends Controller
         DB::beginTransaction();
 
         try {
-            if ($revisi == 1) {
-                $data =  DB::statement(
-                    "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
-                    created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi)
-                    SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai AS nilai,
+            if ($jenis == 5) {
+                if ($revisi == 1) {
+                    $data =  DB::statement(
+                        "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
+                        created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
+                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai AS nilai,
+                            ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?, ?
+                            FROM
+                            (
+                                SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6 , b.nm_rek6 , SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
+                                    FROM trskpd a
+                                    INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd
+                                    INNER JOIN ms_sub_kegiatan c ON a.kd_sub_kegiatan= c.kd_sub_kegiatan 
+                                WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '5' AND b.jns_ang= ? 
+                                GROUP BY LEFT(a.kd_skpd, 17), a.kd_skpd, a.kd_program, a.nm_program, b.kd_sub_kegiatan, a.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6 
+                            ) a LEFT JOIN 
+                            (
+                                SELECT kd_sub_kegiatan, b.kd_rek6, LEFT(kd_skpd, 17) kd_skpd, kd_skpd AS kd_unit, SUM($sts_ang) AS nilai 
+                                    FROM trdskpd_ro b 
+                                WHERE (b.bulan BETWEEN ? AND ?) AND LEFT(kd_skpd, 17) = ? 
+                                GROUP BY LEFT(kd_skpd, 17), kd_skpd, kd_sub_kegiatan, kd_rek6 
+                            ) b ON a.kd_unit= b.kd_unit AND a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_rek6= b.kd_rek6 LEFT JOIN 
+                            (
+                                SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu 
+                                    FROM trdspd a
+                                    LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
+                                WHERE LEFT(b.kd_skpd, 17) = ?  AND a.no_spd != ? AND b.tgl_spd < ? 
+                                GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
+                            ) c ON a.kd_unit= c.kd_skpd AND a.kd_sub_kegiatan= c.kd_sub_kegiatan AND a.kd_rek6= c.kd_rek6 
+                        WHERE a.kd_sub_kegiatan NOT IN(SELECT TOP 0 x.kd_sub_kegiatan FROM trskpd x INNER JOIN ms_sub_kegiatan y ON x.kd_sub_kegiatan= y.kd_sub_kegiatan 
+                                WHERE LEFT (x.kd_skpd, 17) = ? AND y.jns_sub_kegiatan IN ('61', '62', '4'))
+                            AND NOT EXISTS (
+                                SELECT 1 FROM spd_temp where 
+                                left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
+                                AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
+                                AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                                AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                            ) 
+                        ORDER BY a.kd_unit, a.kd_sub_kegiatan",
+                        [
+                            $bulanAwal, $bulanAkhir, date('Y-m-d H:i:s'), $jns_ang, $status_angkas,
+                            $jenis, $page, $revisi, Auth()->user()->nama,
+                            $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,
+                            $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
+                        ]
+                    );
+                } else {
+                    $data = DB::statement(
+                        "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
+                        created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
+                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai - isnull(lalu_tw, 0) AS nilai, 
                         ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?
-                        FROM
-                        (
-                            SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6 , b.nm_rek6 , SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
+                            FROM
+                            (
+                                SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
+                                        b.kd_rek6, b.nm_rek6, SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
+                                    FROM trskpd a
+                                    INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd
+                                    INNER JOIN ms_sub_kegiatan c ON a.kd_sub_kegiatan= c.kd_sub_kegiatan 
+                                WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '5' AND b.jns_ang = ? 
+                                GROUP BY LEFT(a.kd_skpd, 17), a.kd_skpd, a.kd_program, a.nm_program, b.kd_sub_kegiatan,
+                                        a.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6 
+                            ) a LEFT JOIN 
+                            (
+                                SELECT kd_sub_kegiatan, b.kd_rek6, LEFT(kd_skpd, 17) kd_skpd, kd_skpd AS kd_unit, SUM($sts_ang) AS nilai 
+                                    FROM trdskpd_ro b 
+                                WHERE b.bulan >= ? AND b.bulan <= ? AND LEFT(kd_skpd, 17) = ? 
+                                GROUP BY LEFT(kd_skpd, 17), kd_skpd, kd_sub_kegiatan, kd_rek6 
+                            ) b ON a.kd_unit= b.kd_unit AND a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_rek6= b.kd_rek6 LEFT JOIN 
+                            (
+                                SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu 
+                                    FROM trdspd a
+                                    LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
+                                WHERE LEFT(b.kd_skpd, 17) = ? AND a.no_spd != ? AND b.tgl_spd < ? 
+                                GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
+                            ) c ON a.kd_unit= c.kd_skpd AND a.kd_sub_kegiatan= c.kd_sub_kegiatan AND a.kd_rek6= c.kd_rek6 LEFT JOIN 
+                            (
+                                SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu_tw 
+                                    FROM trdspd a
+                                    LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
+                                WHERE LEFT(b.kd_skpd, 17) = ? AND b.bulan_awal= ? AND b.bulan_akhir= ? AND a.no_spd != ? AND b.tgl_spd < ? 
+                                GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
+                            ) d ON a.kd_unit= d.kd_skpd AND a.kd_sub_kegiatan= d.kd_sub_kegiatan AND a.kd_rek6= d.kd_rek6 
+                        WHERE a.kd_unit + a.kd_sub_kegiatan + a.kd_rek6 NOT IN
+                            (SELECT b.kd_skpd + b.kd_sub_kegiatan + b.kd_rek6 
                                 FROM trskpd a
                                 INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd
                                 INNER JOIN ms_sub_kegiatan c ON a.kd_sub_kegiatan= c.kd_sub_kegiatan 
-                            WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '5' AND b.jns_ang= ? 
-                            GROUP BY LEFT(a.kd_skpd, 17), a.kd_skpd, a.kd_program, a.nm_program, b.kd_sub_kegiatan, a.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6 
-                        ) a LEFT JOIN 
-                        (
-                            SELECT kd_sub_kegiatan, b.kd_rek6, LEFT(kd_skpd, 17) kd_skpd, kd_skpd AS kd_unit, SUM($sts_ang) AS nilai 
-                                FROM trdskpd_ro b 
-                            WHERE (b.bulan BETWEEN ? AND ?) AND LEFT(kd_skpd, 17) = ? 
-                            GROUP BY LEFT(kd_skpd, 17), kd_skpd, kd_sub_kegiatan, kd_rek6 
-                        ) b ON a.kd_unit= b.kd_unit AND a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_rek6= b.kd_rek6 LEFT JOIN 
-                        (
-                            SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu 
-                                FROM trdspd a
-                                LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
-                            WHERE LEFT(b.kd_skpd, 17) = ?  AND a.no_spd != ? AND b.tgl_spd < ? 
-                            GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
-                        ) c ON a.kd_unit= c.kd_skpd AND a.kd_sub_kegiatan= c.kd_sub_kegiatan AND a.kd_rek6= c.kd_rek6 
-                    WHERE a.kd_sub_kegiatan NOT IN(SELECT TOP 0 x.kd_sub_kegiatan FROM trskpd x INNER JOIN ms_sub_kegiatan y ON x.kd_sub_kegiatan= y.kd_sub_kegiatan 
-                            WHERE LEFT (x.kd_skpd, 17) = ? AND y.jns_sub_kegiatan IN ('61', '62', '4'))
-                        AND NOT EXISTS (
-                            SELECT 1 FROM spd_temp where 
-                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
-                            AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
-                            AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
-                            AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
-                            AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
-                        ) 
-                    ORDER BY a.kd_unit, a.kd_sub_kegiatan",
-                    [
-                        $bulanAwal, $bulanAkhir, date('Y-m-d H:i:s'), $jns_ang, $status_angkas,
-                        $jenis, $page, $revisi, 
-                        $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,
-                        $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
-                    ]
-                );
+                                WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '6' 
+                                GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 
+                            ) 
+                            AND NOT EXISTS (
+                                SELECT 1 FROM spd_temp where 
+                                left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
+                                AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
+                                AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                                AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                            )
+                        ORDER BY a.kd_unit, a.kd_sub_kegiatan",
+                        [
+                            $bulanAwal, $bulanAkhir, date('Y-m-d H:i:s'), $jns_ang, $status_angkas,
+                            $jenis, $page, $revisi, Auth()->user()->nama,
+                            $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,
+                            $bulanAwal, $bulanAkhir, $nomor, $tgl, $kd_skpd, $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
+                        ]
+                    );     
+                
+                }   
             } else {
                 $data = DB::statement(
                     "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
-                    created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi)
-                    SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai - isnull(lalu_tw, 0) AS nilai, 
-                    ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?
+                    created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
+                    SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, (nilai - isnull(lalu_tw, 0)) AS nilai,
+                            ?, ?, ?, ?, isnull(lalu, 0) as lalu, a.total_ubah AS anggaran, ?, ?
                         FROM
                         (
-                            SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
-                                    b.kd_rek6, b.nm_rek6, SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
+                            SELECT b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6,
+                                b.nm_rek6, SUM(nilai) AS total_ubah, b.kd_skpd 
                                 FROM trskpd a
-                                INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd
-                                INNER JOIN ms_sub_kegiatan c ON a.kd_sub_kegiatan= c.kd_sub_kegiatan 
-                            WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '5' AND b.jns_ang = ? 
-                            GROUP BY LEFT(a.kd_skpd, 17), a.kd_skpd, a.kd_program, a.nm_program, b.kd_sub_kegiatan,
-                                    a.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6 
+                                INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan  AND a.kd_skpd= b.kd_skpd
+                                INNER JOIN ms_sub_kegiatan c ON b.kd_sub_kegiatan= c.kd_sub_kegiatan AND b.jns_ang = ? 
+                            WHERE b.kd_skpd = ? AND c.jns_sub_kegiatan = '62' 
+                            GROUP BY b.kd_rek6, b.nm_rek6, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_skpd 
                         ) a LEFT JOIN 
                         (
-                            SELECT kd_sub_kegiatan, b.kd_rek6, LEFT(kd_skpd, 17) kd_skpd, kd_skpd AS kd_unit, SUM($sts_ang) AS nilai 
+                            SELECT kd_rek6, kd_sub_kegiatan, kd_skpd, SUM($sts_ang) AS nilai 
                                 FROM trdskpd_ro b 
-                            WHERE b.bulan >= ? AND b.bulan <= ? AND LEFT(kd_skpd, 17) = ? 
-                            GROUP BY LEFT(kd_skpd, 17), kd_skpd, kd_sub_kegiatan, kd_rek6 
-                        ) b ON a.kd_unit= b.kd_unit AND a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_rek6= b.kd_rek6 LEFT JOIN 
+                            WHERE b.bulan >= ? AND b.bulan <= ? AND kd_skpd = ? 
+                            GROUP BY kd_rek6, kd_sub_kegiatan, kd_skpd 
+                        ) b ON a.kd_rek6= b.kd_rek6 AND a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd LEFT JOIN 
                         (
-                            SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu 
+                            SELECT a.kd_rek6, kd_sub_kegiatan, SUM(a.nilai) AS lalu 
                                 FROM trdspd a
                                 LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
-                            WHERE LEFT(b.kd_skpd, 17) = ? AND a.no_spd != ? AND b.tgl_spd < ? 
-                            GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
-                        ) c ON a.kd_unit= c.kd_skpd AND a.kd_sub_kegiatan= c.kd_sub_kegiatan AND a.kd_rek6= c.kd_rek6 LEFT JOIN 
+                            WHERE b.kd_skpd = ? AND a.no_spd != ? AND b.tgl_spd < ? 
+                            GROUP BY a.kd_rek6, kd_sub_kegiatan 
+                        ) c ON a.kd_rek6= c.kd_rek6 AND a.kd_sub_kegiatan= c.kd_sub_kegiatan LEFT JOIN 
                         (
                             SELECT kd_unit AS kd_skpd, kd_sub_kegiatan, kd_rek6, isnull(SUM(a.nilai), 0) AS lalu_tw 
                                 FROM trdspd a
                                 LEFT JOIN trhspd b ON a.no_spd= b.no_spd 
-                            WHERE LEFT(b.kd_skpd, 17) = ? AND b.bulan_awal= ? AND b.bulan_akhir= ? AND a.no_spd != ? AND b.tgl_spd < ? 
+                            WHERE b.kd_skpd = ? AND b.bulan_awal= ? AND b.bulan_akhir= ? AND a.no_spd != ? AND b.tgl_spd< ? 
                             GROUP BY kd_unit, kd_sub_kegiatan, kd_rek6 
-                        ) d ON a.kd_unit= d.kd_skpd AND a.kd_sub_kegiatan= d.kd_sub_kegiatan AND a.kd_rek6= d.kd_rek6 
-                    WHERE a.kd_unit + a.kd_sub_kegiatan + a.kd_rek6 NOT IN
-                        (SELECT b.kd_skpd + b.kd_sub_kegiatan + b.kd_rek6 
-                            FROM trskpd a
-                            INNER JOIN trdrka b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan AND a.kd_skpd= b.kd_skpd
-                            INNER JOIN ms_sub_kegiatan c ON a.kd_sub_kegiatan= c.kd_sub_kegiatan 
-                            WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '6' 
-                            GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 
-                        ) 
-                        AND NOT EXISTS (
-                            SELECT 1 FROM spd_temp where 
-                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
-                            AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
-                            AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
-                            AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
-                            AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
-                        )
-                    ORDER BY a.kd_unit, a.kd_sub_kegiatan",
+                        ) d ON a.kd_rek6= d.kd_rek6 AND a.kd_sub_kegiatan= d.kd_sub_kegiatan 
+                        WHERE a.kd_sub_kegiatan NOT IN
+                            (
+                                SELECT a.kd_sub_kegiatan FROM trskpd a
+                                INNER JOIN ms_sub_kegiatan b ON a.kd_sub_kegiatan= b.kd_sub_kegiatan 
+                                WHERE a.kd_skpd = ? AND b.jns_sub_kegiatan = '5' 
+                            ) AND NOT EXISTS (
+                                SELECT * FROM spd_temp where 
+                                left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17)  AND spd_temp.nilai_lalu = lalu
+                                AND isnull(spd_temp.anggaran,0) = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                                AND a.kd_rek6 = spd_temp.kd_rek6  
+                                AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                                AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                            )
+                            ORDER BY a.kd_sub_kegiatan",
                     [
                         $bulanAwal, $bulanAkhir, date('Y-m-d H:i:s'), $jns_ang, $status_angkas,
-                        $jenis, $page, $revisi, 
-                        $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,
-                        $bulanAwal, $bulanAkhir, $nomor, $tgl, $kd_skpd, $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
+                        $jenis, $page, $revisi, Auth()->user()->nama,
+                        $jns_ang, $skpd, $bulanAwal, $bulanAkhir, $skpd, $skpd, $nomor, $tgl, $skpd, $bulanAwal, $bulanAkhir, $nomor, $tgl, $skpd,
+                        $bulanAwal, $bulanAkhir, $jns_ang, $status_angkas, $jenis, $page
                     ]
-                );     
-               
-            }   
+                );
+            }
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -536,4 +618,227 @@ class SPDBelanjaController extends Controller
         }
     }  
 
+    public function simpanSPP(Request $request)
+    {
+        $data = $request->data;
+        $user = Auth::user()->nama;
+
+        DB::beginTransaction();
+        try {
+            $nospdexplode = explode("/", $data['nomor']);
+            $nospd = $nospdexplode[2];
+            
+            $nomorspd = DB::table('trhspd')->whereRaw("substring(no_spd, 12, 6) = '$nospd'")->count();
+            if ($nomorspd > 0) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => '2'
+                ]);
+            } else {
+                if($data['revisi'] == '1'){
+                    $revisi = DB::table('trhspd')->selectRaw('max(revisi_ke)+1 as revisi')
+                                ->where(['kd_skpd' => $data['skpd'], 'bulan_awal' => $data['bulan_awal'], 'bulan_akhir' => $data['bulan_akhir']])
+                                ->first();
+                    
+                    $nmskpd = DB::table('ms_skpd')->select('nm_skpd')
+                                ->where(['kd_skpd' => $data['skpd']])->first();
+    
+                    DB::table('trhspd')->insert([
+                        'no_spd' => $data['nomor'],
+                        'tgl_spd' => $data['tanggal'],
+                        'kd_skpd' => $data['skpd'],
+                        'nm_skpd' => Str::of($nmskpd->nm_skpd)->trim(),
+                        'jns_beban' => $data['jenis'],
+                        'bulan_awal' => $data['bulan_awal'],
+                        'bulan_akhir' => $data['bulan_akhir'],
+                        'kd_bkeluar' => $data['nipp'],
+                        'klain' => Str::of($data['keterangan'])->trim(),
+                        'username' => $user,
+                        'tglupdate' => date('Y-m-d H:i:s'),
+                        'total' => $data['totalNilai'],
+                        'status' => '0',
+                        'revisi_ke' => $revisi,
+                        'jns_ang' => $data['jenis_anggaran'],
+                    ]);
+                    
+                    if (isset($data['daftar_spd'])) {
+                        DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                            return [
+                                'no_spd' => $value['nomor'],
+                                'kd_program' => kd_Program($value['kd_sub_kegiatan'])->kd_program,
+                                'nm_program' => kd_Program($value['kd_sub_kegiatan'])->nm_program,
+                                'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->kd_kegiatan,
+                                'nm_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_kegiatan,
+                                'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                                'nm_sub_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_sub_kegiatan,
+                                'kd_rek6' => $value['kd_rek6'],
+                                'nm_rek6' => kd_kegiatan($value['kd_rek6'])->nm_kegiatan,
+                                'nilai' => $value['nilai'],
+                                'kd_unit' => $value['kd_skpd'],
+                            ];
+                        }, $data['daftar_spd']));
+                    }
+                } else {
+                    $nmskpd = DB::table('ms_skpd')->select('nm_skpd')
+                                ->where(['kd_skpd' => $data['skpd']])->first();
+    
+                    DB::table('trhspd')->insert([
+                        'no_spd' => $data['nomor'],
+                        'tgl_spd' => $data['tanggal'],
+                        'kd_skpd' => $data['skpd'],
+                        'nm_skpd' => Str::of($nmskpd->nm_skpd)->trim(),
+                        'jns_beban' => $data['jenis'],
+                        'bulan_awal' => $data['bulan_awal'],
+                        'bulan_akhir' => $data['bulan_akhir'],
+                        'kd_bkeluar' => $data['nipp'],
+                        'klain' => Str::of($data['keterangan'])->trim(),
+                        'username' => $user,
+                        'tglupdate' => date('Y-m-d H:i:s'),
+                        'total' => $data['totalNilai'],
+                        'status' => '0',
+                        'revisi_ke' => '0',
+                        'jns_ang' => $data['jenis_anggaran'],
+                    ]);
+                    
+                    if (isset($data['daftar_spd'])) {
+                        DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                            return [
+                                'no_spd' => $data['nomor'],
+                                'kd_program' => kd_Program($value['kd_sub_kegiatan']),
+                                'nm_program' => nm_Program($value['kd_sub_kegiatan']),
+                                'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan']),
+                                'nm_kegiatan' => nm_kegiatan($value['kd_sub_kegiatan']),
+                                'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                                'nm_sub_kegiatan' => kd_sub_kegiatan($value['kd_sub_kegiatan']),
+                                'kd_rek6' => $value['kd_rek6'],
+                                'nm_rek6' => kd_rek($value['kd_rek6']),
+                                'nilai' => $value['nilai'],
+                                'kd_unit' => $value['kd_skpd'],
+                            ];
+                        }, $data['daftar_spd']));
+                    }
+                }
+
+                $user = Auth()->user()->nama; 
+                DB::table('spd_temp')->where(['username' => $user])->Delete();
+                
+                DB::commit();
+                return response()->json([
+                    'message' => '1'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        $nospd = $request->no_spd;
+        try {
+            DB::beginTransaction();
+            DB::table('trhspd')->where(['no_spd' => $nospd])->delete();
+            DB::table('trdspd')->where(['no_spd' => $nospd])->delete();
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function cetakOto(Request $request)
+    {
+        $nospd = $request->no_spd;
+        $nip = $request->nip;
+        $tnspd = $request->tnspd;
+        $tambahan = $request->tambahan;
+        $jenis = $request->jenis;
+        $total_ingat = count_ingat();
+
+        $tambahanbln = $tambahan ? "Tambahan" : ""; 
+        $konfig = DB::table('trkonfig_spd')->first();
+        $jenis = DB::table('trhspd')->where(['no_spd' => $nospd])->first();
+        $no_dpa = DB::table('trhrka')->where(['kd_skpd' => $jenis->kd_skpd])->first();
+        $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
+        $total_anggaran = DB::table('trdrka')
+			->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
+            ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+        
+        $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
+        
+        $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-otori', array(
+            'jenis' => $jenis,
+            'nospd' => $nospd,
+            'total_ingat' => $total_ingat,
+            'konfig' => $konfig,
+            'no_dpa' => $no_dpa,
+            'data' => $jenis,
+            'ttd' => $ttd,
+            'tambahanbln' => $tambahanbln,
+            'total_anggaran' => $total_anggaran,
+            'kepala_skpd' => $kepala_skpd,
+            'jenis' => $jenis->jns_beban == 5 ? 'Belanja' : 'Pembiayaan',
+		));
+        if ($jenis == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setPaper('a4');
+            return $pdf->stream('laporan.pdf');
+        }else if ($request->jenis == 'excel') {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=laporan.xls");
+			return $view;
+        } else {
+            return $view;
+        }
+    }
+
+    public function cetakLamp(Request $request)
+    {
+        $nospd = $request->no_spd;
+        $nip = $request->nip;
+        $tnspd = $request->tnspd;
+        $tambahan = $request->tambahan;
+        $jenis = $request->jenis;
+
+        $konfig = DB::table('trkonfig_spd')->first();
+        $jenis = DB::table('trhspd')->where(['no_spd' => $nospd])->first();
+        $no_dpa = DB::table('trhrka')->where(['kd_skpd' => $jenis->kd_skpd])->first();
+        $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
+        $total_anggaran = DB::table('trdrka')
+			->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
+            ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+        
+        $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
+        
+        $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-lampiran', array(
+            'jenis' => $jenis,
+            'nospd' => $nospd,
+            'konfig' => $konfig,
+            'no_dpa' => $no_dpa,
+            'data' => $jenis,
+            'ttd' => $ttd,
+            'total_anggaran' => $total_anggaran,
+            'kepala_skpd' => $kepala_skpd,
+            'jenis' => $jenis->jns_beban == 5 ? 'Belanja' : 'Pembiayaan',
+		));
+        if ($jenis == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setPaper('a4');
+            return $pdf->stream('laporan.pdf');
+        }else if ($request->jenis == 'excel') {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=laporan.xls");
+			return $view;
+        } else {
+            return $view;
+        }
+    }
 }
