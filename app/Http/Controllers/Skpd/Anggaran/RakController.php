@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
 
@@ -17,19 +18,23 @@ class RakController extends Controller
 {
     public function index()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $kd_skpd = Auth::user()->kd_skpd;
-        if(Auth::user()->is_admin==2){
+        if (Auth::user()->is_admin == 2) {
             $data = [
                 'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'jns')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
                 'username' => Auth::user()->username
             ];
-        }else{
+        } else {
             $data = [
                 'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'jns')->orderBy('kd_skpd')->get(),
                 'username' => Auth::user()->username
             ];
         }
-        
+
 
         return view('skpd.input_rak.create')->with($data);
     }
@@ -69,7 +74,11 @@ class RakController extends Controller
         $jenis_rak = isNull($request->jenis_rak) ? 'nilai' : $request->jenis_rak;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
 
-        $data = DB::table('trdrka as a')->select('a.kd_rek6', 'a.nm_rek6', DB::raw("SUM(a.nilai) as nilai"))->selectRaw("(SELECT sum($jenis_rak) FROM trdskpd_ro WHERE kd_sub_kegiatan=a.kd_sub_kegiatan AND kd_rek6=a.kd_rek6 AND kd_skpd=a.kd_skpd) as nilai_rak")->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran, 'status_aktif' => '1'])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')->get();
+        $data = DB::table('trdrka as a')
+            ->select('a.kd_rek6', 'a.nm_rek6', DB::raw("SUM(a.nilai) as nilai"))
+            ->selectRaw("(SELECT sum($jenis_rak) FROM trdskpd_ro WHERE kd_sub_kegiatan=a.kd_sub_kegiatan AND kd_rek6=a.kd_rek6 AND kd_skpd=a.kd_skpd) as nilai_rak")
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran, 'status_aktif' => '1'])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')
+            ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="javascript:void(0);" onclick="detail(' . $row->kd_rek6 . ', \'' . $row->nm_rek6 . '\', \'' . $row->nilai . '\');" class="btn btn-primary btn-sm"><i class="fa fa-list-ul"></i></a>';
             return $btn;
@@ -698,13 +707,17 @@ class RakController extends Controller
     // SIMPAN RAK
     public function simpanRak(Request $request)
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         $data = $request->data;
         $status = "nilai_" . $data['jenis_rak'];
 
         DB::beginTransaction();
         try {
             $jumlah = DB::table('trdskpd_ro')->where(['kd_sub_kegiatan' => $data['kd_sub_kegiatan'], 'kd_skpd' => $data['kd_skpd'], 'kd_rek6' => $data['kode_rekening']])->count();
-            
+
             if ($jumlah > 0) {
                 $kd_gabungan = $data['kd_skpd'] . '.' . $data['kd_sub_kegiatan'] . '.' . $data['kode_rekening'];
 
@@ -795,8 +808,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_susun11':
+                            break;
+                        case 'nilai_susun11':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_susun1' => $data[$bulan],
                                 'nilai_susun2' => $data[$bulan],
@@ -877,8 +890,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna':
+                            break;
+                        case 'nilai_sempurna':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna' => $data[$bulan],
                                 'nilai_sempurna11' => $data[$bulan],
@@ -953,8 +966,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna11':
+                            break;
+                        case 'nilai_sempurna11':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna11' => $data[$bulan],
                                 'nilai_sempurna12' => $data[$bulan],
@@ -1028,8 +1041,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna12':
+                            break;
+                        case 'nilai_sempurna12':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna12' => $data[$bulan],
                                 'nilai_sempurna13' => $data[$bulan],
@@ -1102,8 +1115,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna2':
+                            break;
+                        case 'nilai_sempurna2':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna2' => $data[$bulan],
                                 'nilai_sempurna21' => $data[$bulan],
@@ -1171,8 +1184,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna21':
+                            break;
+                        case 'nilai_sempurna21':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna21' => $data[$bulan],
                                 'nilai_sempurna22' => $data[$bulan],
@@ -1239,8 +1252,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna3':
+                            break;
+                        case 'nilai_sempurna3':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna3' => $data[$bulan],
                                 'nilai_sempurna31' => $data[$bulan],
@@ -1301,8 +1314,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna31':
+                            break;
+                        case 'nilai_sempurna31':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna31' => $data[$bulan],
                                 'nilai_sempurna32' => $data[$bulan],
@@ -1362,8 +1375,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna32':
+                            break;
+                        case 'nilai_sempurna32':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna32' => $data[$bulan],
                                 'nilai_sempurna33' => $data[$bulan],
@@ -1422,8 +1435,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna4':
+                            break;
+                        case 'nilai_sempurna4':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna4' => $data[$bulan],
                                 'nilai_sempurna41' => $data[$bulan],
@@ -1477,8 +1490,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna41':
+                            break;
+                        case 'nilai_sempurna41':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna41' => $data[$bulan],
                                 'nilai_sempurna42' => $data[$bulan],
@@ -1531,8 +1544,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_sempurna42':
+                            break;
+                        case 'nilai_sempurna42':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_sempurna42' => $data[$bulan],
                                 'nilai_sempurna43' => $data[$bulan],
@@ -1584,8 +1597,8 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
-                        break;
-                            case 'nilai_ubah':
+                            break;
+                        case 'nilai_ubah':
                             DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
                                 'nilai_ubah' => $data[$bulan],
                                 'nilai_ubah11' => $data[$bulan],
@@ -1630,7 +1643,7 @@ class RakController extends Controller
             } else {
                 DB::table('trdskpd_ro')->where(['kd_sub_kegiatan' => $data['kd_sub_kegiatan'], 'kd_skpd' => $data['kd_skpd'], 'kd_rek6' => $data['kode_rekening']])->delete();
                 $kd_gabungan = $data['kd_skpd'] . '.' . $data['kd_sub_kegiatan'] . '.' . $data['kode_rekening'];
-                
+
                 for ($i = 1; $i <= 12; $i++) {
                     $bulan = "bln$i";
                     switch ($status) {
@@ -1726,7 +1739,7 @@ class RakController extends Controller
                             ]);
                             break;
                         case 'nilai_susun1':
-                            
+
                             DB::table('trdskpd_ro')->insert([
                                 'kd_gabungan' => $kd_gabungan,
                                 'kd_skpd' => $data['kd_skpd'],

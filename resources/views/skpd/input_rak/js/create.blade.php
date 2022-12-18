@@ -26,7 +26,8 @@
         });
 
         let user = document.getElementById('username').value;
-        if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' || user ==
+        if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' ||
+            user ==
             'Sugino' || user == 'ROSNAWATI' || user == 'SAMANTO' || user == 'RISNAWATI' ||
             user == 'SYATHIBIE' || user == 'WAWAN' || user == 'willy' || user == 'SUYATNA' || user == 'yana' ||
             user == 'ANDAY68' || user == 'YULI' || user == 'NURMEIDA' || user == 'Sri Hartati' || user ==
@@ -196,24 +197,7 @@
                 }
             })
             // CEK STATUS KUNCI
-            $.ajax({
-                url: "{{ route('skpd.input_rak.status_kunci') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    jenis_rak: jenis_rak,
-                    kd_skpd: kd_skpd
-                },
-                success: function(data) {
-                    if (data.status == '1') {
-                        $('#simpan_detail').prop('disabled', true);
-                        document.getElementById('informasi').removeAttribute('hidden');
-                    } else {
-                        document.getElementById('informasi').setAttribute('hidden', true);
-                        $('#simpan_detail').prop('disabled', false);
-                    }
-                }
-            })
+            status_kunci();
         });
 
         $('#kd_sub_kegiatan').on('select2:select', function() {
@@ -230,96 +214,6 @@
                 minimumFractionDigits: 2
             }).format(total));
             rekening.ajax.reload();
-        });
-
-        $('#simpan_uyhd').on('click', function() {
-            let nomor = document.getElementById('nomor').value;
-            let tanggal = document.getElementById('tanggal').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let nm_skpd = document.getElementById('nm_skpd').value;
-            let beban = document.getElementById('beban').value;
-            let pembayaran = document.getElementById('pembayaran').value;
-            let keterangan = document.getElementById('keterangan').value;
-            let tahun_anggaran = document.getElementById('tahun_anggaran').value;
-            let tahun_lalu = document.getElementById('tahun_lalu').checked;
-            let nilai = angka(document.getElementById('nilai').value);
-            let tahun_input = tanggal.substr(0, 4);
-            let lalu = '';
-
-            if (tahun_lalu == true) {
-                if (beban == '4' || beban == '6') {
-                    alert('Penyetoran tahun lalu harus memakai jenis beban UP/Pajak');
-                    return;
-                }
-                lalu = 1;
-            } else {
-                lalu = 0;
-            }
-
-            if (!tanggal) {
-                alert('Tanggal  Tidak Boleh Kosong');
-                return;
-            }
-
-            if (tahun_input != tahun_anggaran) {
-                alert('Tahun tidak sama dengan tahun Anggaran');
-                return;
-            }
-
-            if (!kd_skpd) {
-                alert('Kode SKPD Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!beban) {
-                alert('Jenis beban Tidak Boleh Kosong');
-                return;
-            }
-
-            if (!keterangan) {
-                alert('Keterangan Tidak Boleh Kosong');
-                return;
-            }
-
-            if (nilai == '0') {
-                alert('Nilai 0.....!Cek Lagi!!!');
-                return;
-            }
-
-            let data = {
-                nomor,
-                tanggal,
-                kd_skpd,
-                nm_skpd,
-                beban,
-                pembayaran,
-                beban,
-                keterangan,
-                lalu,
-                nilai,
-            };
-
-            $('#simpan_uyhd').prop('disabled', true);
-            $.ajax({
-                url: "{{ route('skpd.uyhd.simpan') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    data: data
-                },
-                success: function(response) {
-                    if (response.message == '1') {
-                        alert('Data berhasil ditambahkan, dengan Nomor : ' + response
-                            .nomor);
-                        window.location.href =
-                            "{{ route('skpd.uyhd.index') }}";
-                    } else {
-                        alert('Data tidak berhasil ditambahkan!');
-                        $('#simpan_uyhd').prop('disabled', false);
-                        return;
-                    }
-                }
-            })
         });
 
         $("input[data-type='currency']").on({
@@ -806,8 +700,10 @@
                     },
                     success: function(response) {
                         if (response.message == '1') {
-                            alert('Data Berhasil Tersimpan...!!!');
-                            window.location.reload();
+                            // alert('Data Berhasil Tersimpan...!!!');
+                            // window.location.reload();
+                            $('#detail_rak').modal('hide');
+                            rekening.ajax.reload();
                         } else {
                             alert('Data Gagal Tersimpan...!!!');
                             $('#simpan_detail').prop('disabled', false);
@@ -1006,6 +902,27 @@
         return parseFloat(rupiah) || 0;
     }
 
+    function status_kunci() {
+        $.ajax({
+            url: "{{ route('skpd.input_rak.status_kunci') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                jenis_rak: document.getElementById('jenis_rak').value,
+                kd_skpd: document.getElementById('kd_skpd').value
+            },
+            success: function(data) {
+                if (data.status == '1') {
+                    $('#simpan_detail').prop('disabled', true);
+                    document.getElementById('informasi').removeAttribute('hidden');
+                } else {
+                    document.getElementById('informasi').setAttribute('hidden', true);
+                    $('#simpan_detail').prop('disabled', false);
+                }
+            }
+        })
+    }
+
     function detail(kd_rek6, nm_rek6, nilai) {
         let kd_skpd = document.getElementById('kd_skpd').value;
         let jenis_rak = document.getElementById('jenis_rak').value;
@@ -1026,7 +943,6 @@
                 nilai_rak_bulan(data);
             }
         })
-
         // Isi Nilai Realisasi Triwulan 1 - 4
         $.ajax({
             url: "{{ route('skpd.input_rak.nilai_realisasi') }}",
@@ -1052,7 +968,6 @@
                 }).format(data.tw4.nilai));
             }
         })
-
         // Isi Nilai Realisai Masing-Masing Bulan
         $.ajax({
             url: "{{ route('skpd.input_rak.nilai_realisasi_bulan') }}",
@@ -1067,8 +982,7 @@
                 nilai_realisasi_bulan(data);
             }
         })
-
-
+        status_kunci();
         $('#kode_rekening').val(kd_rek6);
         $('#nama_rekening').val(nm_rek6);
         $('#anggaran_rekening').val(new Intl.NumberFormat('id-ID', {

@@ -2389,6 +2389,7 @@ function sub_menu()
         ->select('e.*')
         ->where(['a.id' => $id, 'e.urutan_menu' => '2'])
         ->orderBy('e.urut_akses')
+        ->orderBy('e.urut_akses2')
         ->get();
 
     return $hak_akses;
