@@ -304,7 +304,6 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('delete-all-spd-belanja', [SPDBelanjaController::class, 'getDeleteAllSpdTemp'])->name('spd.spd_belanja.delete_all_spd');
                 Route::post('daftar-spd-belanja-temp', [SPDBelanjaController::class, 'getSpdBelanjaTemp'])->name('spd.spd_belanja.load_spd_belanja_temp');
                 Route::get('tambah', [SPDBelanjaController::class, 'create'])->name('spd.spj_belanja.create');
-                Route::get('tambah', [SPDBelanjaController::class, 'create'])->name('spd.spd_belanja.create');
                 Route::post('simpan-spp', [SPDBelanjaController::class, 'simpanSPP'])->name('spd.spd_belanja.simpanSpp');
                 Route::get('cetak-otorisasi', [SPDBelanjaController::class, 'cetakOto'])->name('spd.spd_belanja.cetak_otorisasi');
                 Route::get('cetak-lampiran', [SPDBelanjaController::class, 'cetakLamp'])->name('spd.spd_belanja.cetak_lampiran');

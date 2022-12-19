@@ -37,7 +37,7 @@ class SPDBelanjaController extends Controller
             ->groupBy([
                 'a.no_spd', 'a.tgl_spd', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_beban',
                 'a.no_dpa', 'a.bulan_awal', 'a.bulan_akhir', 'a.kd_bkeluar', 'a.triwulan', 'a.klain',
-                'a.username', 'a.tglupdate', 'a.st', 'a.status', 'a.total', 'revisi_ke', 'jns_ang'
+                'a.username', 'a.tglupdate', 'a.st', 'a.status', 'a.total', 'revisi_ke', 'jns_ang', 'jns_angkas'
             ])
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
@@ -621,6 +621,8 @@ class SPDBelanjaController extends Controller
     public function simpanSPP(Request $request)
     {
         $data = $request->data;
+        $status_angkas = $data['status_angkas'];
+        $sts_ang = tbStatusAngkas($status_angkas);
         $user = Auth::user()->nama;
 
         DB::beginTransaction();
@@ -659,6 +661,7 @@ class SPDBelanjaController extends Controller
                         'status' => '0',
                         'revisi_ke' => $revisi,
                         'jns_ang' => $data['jenis_anggaran'],
+                        'jns_angkas' => $sts_ang,
                     ]);
                     
                     if (isset($data['daftar_spd'])) {
@@ -770,7 +773,19 @@ class SPDBelanjaController extends Controller
         $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
         $total_anggaran = DB::table('trdrka')
 			->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
-            ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+            ->where(['jns_ang' => 'P2'])->sum('nilai');
+
+        $spd_lalu = DB::select(
+                "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC) AS ranking
+			        FROM trhspd
+			        WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= 'P2' and revisi_ke ='2'
+			        ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC)",
+			        [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
+                );
+            return $spd_lalu;
+        if (count($spd_lalu) == 0) $spd_lalu = [null];
+
+		$total_spd_lalu = DB::table('trhspd')->wherein('no_spd', $spd_lalu)->sum('total');
         
         $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
         
@@ -782,6 +797,7 @@ class SPDBelanjaController extends Controller
             'no_dpa' => $no_dpa,
             'data' => $jenis,
             'ttd' => $ttd,
+            'total_spd_lalu' => $total_spd_lalu,
             'tambahanbln' => $tambahanbln,
             'total_anggaran' => $total_anggaran,
             'kepala_skpd' => $kepala_skpd,
@@ -817,6 +833,100 @@ class SPDBelanjaController extends Controller
             ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
         
         $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
+
+        $spd_lalu = DB::select(
+            "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC) AS ranking
+                FROM trhspd
+                WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= ?
+                ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC)",
+                [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
+            );
+        if (count($spd_lalu) == 0) $spd_lalu = [null];
+
+        $datalamp = DB::select(
+			"SELECT * FROM (
+				SELECT spd.kd_program as urutan, spd.kd_program AS kode, spd.nm_program AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'program' AS jenis
+				FROM (
+					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+					FROM trhspd
+					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+					WHERE trhspd.no_spd = ?
+				) spd
+				LEFT JOIN (
+					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+					JOIN trdspd d ON h.no_spd = d.no_spd
+					WHERE h.no_spd IN ?
+					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+				) spd_lalu
+				ON spd.kd_skpd = spd_lalu.kd_skpd AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+				JOIN trdrka ON trdrka.kd_skpd = spd.kd_skpd AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+				GROUP BY spd.kd_program, spd.nm_program, spd.kd_skpd
+
+				UNION ALL
+
+				SELECT spd.kd_program+'.'+spd.kd_kegiatan as urutan,  spd.kd_kegiatan AS kode, spd.nm_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'kegiatan' AS jenis
+				FROM (
+					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+					FROM trhspd
+					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+					WHERE trhspd.no_spd = ?
+				) spd
+				LEFT JOIN (
+					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+					JOIN trdspd d ON h.no_spd = d.no_spd
+					WHERE h.no_spd IN ?
+					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+				) spd_lalu
+				ON spd.kd_skpd = spd_lalu.kd_skpd AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+				JOIN trdrka ON trdrka.kd_skpd = spd.kd_skpd AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+				GROUP BY spd.kd_kegiatan, spd.nm_kegiatan, spd.kd_skpd, spd.kd_program
+
+				UNION ALL
+
+				SELECT spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'sub_kegiatan' AS jenis
+				FROM (
+					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+					FROM trhspd
+					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+					WHERE trhspd.no_spd = ?
+				) spd
+				LEFT JOIN (
+					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+					JOIN trdspd d ON h.no_spd = d.no_spd
+					WHERE h.no_spd IN ?
+					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+				) spd_lalu
+				ON spd.kd_skpd = spd_lalu.kd_skpd AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+				JOIN trdrka ON trdrka.kd_skpd = spd.kd_skpd AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+				GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_program, spd.kd_kegiatan
+
+				UNION ALL
+
+				SELECT  spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan+'.'+spd.kd_rek6 as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, spd.kd_rek6 AS kd_rek, spd.nm_rek6 AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'rekening' AS jenis
+				FROM (
+					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+					FROM trhspd
+					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+					WHERE trhspd.no_spd = ?
+				) spd
+				LEFT JOIN (
+					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+					JOIN trdspd d ON h.no_spd = d.no_spd
+					WHERE h.no_spd IN ?
+					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+				) spd_lalu
+				ON spd.kd_skpd = spd_lalu.kd_skpd AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+				JOIN trdrka ON trdrka.kd_skpd = spd.kd_skpd AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+				GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_rek6, spd.nm_rek6, spd.kd_program, spd.kd_kegiatan
+			) spd ORDER BY urutan",
+			[
+				$jenis->no_spd, $spd_lalu,
+				$jenis->no_spd, $spd_lalu,
+				$jenis->no_spd, $spd_lalu,
+				$jenis->no_spd, $spd_lalu,
+			]
+		);
+        dd($datalamp);
         
         $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-lampiran', array(
             'jenis' => $jenis,
@@ -825,6 +935,7 @@ class SPDBelanjaController extends Controller
             'no_dpa' => $no_dpa,
             'data' => $jenis,
             'ttd' => $ttd,
+            // 'datalamp' => $datalamp,
             'total_anggaran' => $total_anggaran,
             'kepala_skpd' => $kepala_skpd,
             'jenis' => $jenis->jns_beban == 5 ? 'Belanja' : 'Pembiayaan',

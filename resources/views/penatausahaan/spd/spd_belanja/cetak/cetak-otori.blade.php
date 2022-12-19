@@ -115,11 +115,13 @@
                     <td></td>
                     <td>b. Akumulasi SPD sebelumnya</td>
                     <td>:</td>
+                    <td>Rp{{ number_format($total_spd_lalu, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td><i>({{ terbilang($total_spd_lalu) }})</i></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -143,7 +145,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><i>({{ terbilang($total_anggaran - $data->total, 2, ',', '.'    ) }})</i></td>
+                    <td><i>({{ terbilang($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.'    ) }})</i></td>
                 </tr>
                 <tr>
                     <td>7.</td>
