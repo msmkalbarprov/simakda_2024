@@ -144,7 +144,7 @@ class SPDBelanjaController extends Controller
             if ($revisi == 1) {
                 $data =  DB::select(
                     "SELECT a.kd_unit, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, 
-                            a.kd_rek6 , a.nm_rek6, a.total_ubah AS anggaran, nilai AS nilai, lalu 
+                            a.kd_rek6 , a.nm_rek6, isnull(a.total_ubah, 0) AS anggaran, isnull(nilai,0) AS nilai, isnull(lalu, 0) as lalu 
                         FROM
                         (
                             SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6 , b.nm_rek6 , SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
@@ -170,10 +170,10 @@ class SPDBelanjaController extends Controller
                     WHERE a.kd_sub_kegiatan NOT IN(SELECT TOP 0 x.kd_sub_kegiatan FROM trskpd x INNER JOIN ms_sub_kegiatan y ON x.kd_sub_kegiatan= y.kd_sub_kegiatan 
                             WHERE LEFT (x.kd_skpd, 17) = ? AND y.jns_sub_kegiatan IN ('61', '62', '4')) 
                         AND NOT EXISTS (
-                            SELECT 1 FROM spd_temp where 
-                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
-                            AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
-                            AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
+                            SELECT * FROM spd_temp where 
+                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) 
+                            AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                            AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.bulan_awal = ? 
                             AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                             AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
                         )
@@ -184,7 +184,7 @@ class SPDBelanjaController extends Controller
             } else {
                 $data = DB::select(
                     "SELECT a.kd_unit, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
-                            a.kd_rek6 , a.nm_rek6, a.total_ubah AS anggaran, nilai - isnull(lalu_tw, 0) AS nilai, lalu 
+                            a.kd_rek6 , a.nm_rek6, isnull(a.total_ubah, 0) AS anggaran, nilai - isnull(lalu_tw, 0) AS nilai, isnull(lalu, 0) as lalu 
                         FROM
                         (
                             SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
@@ -225,9 +225,9 @@ class SPDBelanjaController extends Controller
                             GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 
                         ) 
                         AND NOT EXISTS (
-                            SELECT 1 FROM spd_temp where 
-                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND spd_temp.nilai_lalu = lalu
-                            AND spd_temp.anggaran = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                            SELECT * FROM spd_temp where 
+                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) 
+                            AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
                             AND a.kd_rek6 = spd_temp.kd_rek6  
                             AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                             AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
@@ -281,8 +281,8 @@ class SPDBelanjaController extends Controller
                             WHERE a.kd_skpd = ? AND b.jns_sub_kegiatan = '5' 
                         ) AND NOT EXISTS (
                             SELECT * FROM spd_temp where 
-                            left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17)  AND spd_temp.nilai_lalu = lalu
-                            AND isnull(spd_temp.anggaran,0) = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                            left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17) 
+                            AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
                             AND a.kd_rek6 = spd_temp.kd_rek6  
                             AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                             AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
@@ -415,8 +415,8 @@ class SPDBelanjaController extends Controller
                     $data =  DB::statement(
                         "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                         created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
-                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai AS nilai,
-                            ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?, ?
+                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, isnull(nilai, 0) AS nilai,
+                            ?, ?, ?, ?, isnull(lalu,0) as lalu, isnull(a.total_ubah,0) AS anggaran, ?, ?, ?
                             FROM
                             (
                                 SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6 , b.nm_rek6 , SUM(b.nilai) AS total_ubah, LEFT(a.kd_skpd, 17) kd_skpd 
@@ -444,8 +444,7 @@ class SPDBelanjaController extends Controller
                             AND NOT EXISTS (
                                 SELECT 1 FROM spd_temp where 
                                 left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
-                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
-                                AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
+                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.bulan_awal = ? 
                                 AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                                 AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
                             ) 
@@ -462,7 +461,7 @@ class SPDBelanjaController extends Controller
                         "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                         created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
                         SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai - isnull(lalu_tw, 0) AS nilai, 
-                        ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?, ?
+                        ?, ?, ?, ?, isnull(lalu,0) as lalu, isnull(a.total_ubah,0) AS anggaran, ?, ?, ?
                             FROM
                             (
                                 SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
@@ -505,8 +504,7 @@ class SPDBelanjaController extends Controller
                             AND NOT EXISTS (
                                 SELECT 1 FROM spd_temp where 
                                 left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17) AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
-                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.nilai_lalu = lalu
-                                AND spd_temp.anggaran = anggaran AND spd_temp.bulan_awal = ? 
+                                AND a.kd_rek6 = spd_temp.kd_rek6 AND spd_temp.bulan_awal = ? 
                                 AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                                 AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
                             )
@@ -525,7 +523,7 @@ class SPDBelanjaController extends Controller
                     "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                     created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
                     SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, (nilai - isnull(lalu_tw, 0)) AS nilai,
-                            ?, ?, ?, ?, isnull(lalu, 0) as lalu, a.total_ubah AS anggaran, ?, ?, ?
+                            ?, ?, ?, ?, isnull(lalu, 0) as lalu, isnull(a.total_ubah,0) AS anggaran, ?, ?, ?
                         FROM
                         (
                             SELECT b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6,
@@ -563,8 +561,8 @@ class SPDBelanjaController extends Controller
                                 WHERE a.kd_skpd = ? AND b.jns_sub_kegiatan = '5' 
                             ) AND NOT EXISTS (
                                 SELECT * FROM spd_temp where 
-                                left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17)  AND spd_temp.nilai_lalu = lalu
-                                AND isnull(spd_temp.anggaran,0) = anggaran AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
+                                left(a.kd_skpd, 17) = left(spd_temp.kd_skpd, 17) 
+                                AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan  
                                 AND a.kd_rek6 = spd_temp.kd_rek6  
                                 AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                                 AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
