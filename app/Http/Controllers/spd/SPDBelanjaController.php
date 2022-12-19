@@ -18,7 +18,7 @@ class SPDBelanjaController extends Controller
     public function index()
     {
         $data = [
-            'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kode' => 'PPKD', 'bidang' => '1'])->get(),
+            'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kode' => 'PPKD'])->get(),
         ];
         return view('penatausahaan.spd.spd_belanja.index')->with($data);
     }
