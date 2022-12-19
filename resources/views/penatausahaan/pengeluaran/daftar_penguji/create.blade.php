@@ -39,7 +39,8 @@
                                 @foreach ($daftar_sp2d as $sp2d)
                                     <option value="{{ $sp2d->no_sp2d }}" data-tgl_sp2d="{{ $sp2d->tgl_sp2d }}"
                                         data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
-                                        data-nilai="{{ $sp2d->nilai }}">{{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }}
+                                        data-nilai="{{ $sp2d->nilai }}">{{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }} |
+                                        {{ nama_bank($sp2d->bank) }}
                                     </option>
                                 @endforeach
                             </select>

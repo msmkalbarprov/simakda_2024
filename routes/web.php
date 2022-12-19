@@ -66,6 +66,8 @@ use App\Http\Controllers\Spd\SPDBelanjaPRController;
 use App\Http\Controllers\Spd\RegisterSPDController;
 use App\Http\Controllers\Spd\KonfigurasiSPDController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Skpd\Pendapatan\PenyetoranController;
+
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -838,23 +840,23 @@ Route::group(['middleware' => 'auth'], function () {
             });
             // Penyetoran Atas Penerimaan Tahun Lalu
             Route::group(['prefix' => 'penyetoran_tahun_lalu'], function () {
-                Route::get('', [PenerimaanController::class, 'indexPenyetoranLalu'])->name('penyetoran_lalu.index');
-                Route::post('load_data', [PenerimaanController::class, 'loadDataPenyetoranLalu'])->name('penyetoran_lalu.load_data');
-                Route::get('tambah', [PenerimaanController::class, 'tambahPenyetoranLalu'])->name('penyetoran_lalu.tambah');
-                Route::post('simpan', [PenerimaanController::class, 'simpanPenyetoranLalu'])->name('penyetoran_lalu.simpan');
-                Route::get('edit/{no_terima?}', [PenerimaanController::class, 'editPenyetoranLalu'])->where('no_terima', '(.*)')->name('penyetoran_lalu.edit');
-                Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenyetoranLalu'])->name('penyetoran_lalu.simpan_edit');
-                Route::post('hapus', [PenerimaanController::class, 'hapusPenyetoranLalu'])->name('penyetoran_lalu.hapus');
+                Route::get('', [PenyetoranController::class, 'indexPenyetoranLalu'])->name('penyetoran_lalu.index');
+                Route::post('load_data', [PenyetoranController::class, 'loadDataPenyetoranLalu'])->name('penyetoran_lalu.load_data');
+                Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranLalu'])->name('penyetoran_lalu.tambah');
+                Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranLalu'])->name('penyetoran_lalu.simpan');
+                Route::get('edit/{no_terima?}', [PenyetoranController::class, 'editPenyetoranLalu'])->where('no_terima', '(.*)')->name('penyetoran_lalu.edit');
+                Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranLalu'])->name('penyetoran_lalu.simpan_edit');
+                Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranLalu'])->name('penyetoran_lalu.hapus');
             });
             // Penyetoran Atas Penerimaan Tahun Ini
             Route::group(['prefix' => 'penyetoran_tahun_ini'], function () {
-                Route::get('', [PenerimaanController::class, 'indexPenyetoranIni'])->name('penyetoran_ini.index');
-                Route::post('load_data', [PenerimaanController::class, 'loadDataPenyetoranIni'])->name('penyetoran_ini.load_data');
-                Route::get('tambah', [PenerimaanController::class, 'tambahPenyetoranIni'])->name('penyetoran_ini.tambah');
-                Route::post('simpan', [PenerimaanController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
-                Route::get('edit/{no_terima?}', [PenerimaanController::class, 'editPenyetoranIni'])->where('no_terima', '(.*)')->name('penyetoran_ini.edit');
-                Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
-                Route::post('hapus', [PenerimaanController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
+                Route::get('', [PenyetoranController::class, 'indexPenyetoranIni'])->name('penyetoran_ini.index');
+                Route::post('load_data', [PenyetoranController::class, 'loadDataPenyetoranIni'])->name('penyetoran_ini.load_data');
+                Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranIni'])->name('penyetoran_ini.tambah');
+                Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
+                Route::get('edit/{no_terima?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_terima', '(.*)')->name('penyetoran_ini.edit');
+                Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
+                Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
             });
         });
     });
