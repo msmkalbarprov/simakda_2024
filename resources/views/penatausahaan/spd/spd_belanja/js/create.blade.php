@@ -587,6 +587,8 @@
             let bulan_awal = document.getElementById('bulan_awal').value;
             let bulan_akhir = document.getElementById('bulan_akhir').value;
             let jenis = document.getElementById('jenis').value;
+            let tahun = "{{ tahun_anggaran() }}";
+            let tahun_input = tanggal.substr(0, 4);
             if (document.getElementById("revisi").checked == true) {
                 revisi = '1';
             } else {
@@ -595,6 +597,11 @@
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             let status_angkas = document.getElementById('status_angkas').value;
             let keterangan = document.getElementById('keterangan').value;
+
+            if (tahun_input != tahun) {
+                alert('Tahun tidak sama dengan tahun Anggaran');
+                return;
+            }
 
             let daftar_spd = daftarSpdTempTable.rows().data().toArray().map((value) => {
                 let data = {
