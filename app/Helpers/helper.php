@@ -9,7 +9,7 @@ use function PHPUnit\Framework\isNull;
 
 function tahun_anggaran()
 {
-    return '2022';
+    return '2023';
 }
 
 // hendra
