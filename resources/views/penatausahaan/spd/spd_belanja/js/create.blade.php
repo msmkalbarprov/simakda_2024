@@ -80,34 +80,38 @@
 
         let daftarSpdTempTable = $('#spd_belanja_temp').DataTable({
             responsive: true,
-            processing: true,
+            // processing: true,
             serverSide: true,
             ordering: false,
-            searchDelay: 1000,
-            deferLoading: 0,
+            // searchDelay: 1000,
+            // deferLoading: 0,
             lengthMenu: [
                 [-1],
                 ["All"]
             ],
             ajax: {
-                url: "{{ route('spd.spd_belanja.load_spd_belanja_temp') }}",
+                "url": "{{ route('spd.spd_belanja.load_spd_belanja_temp') }}",
                 "type": "POST",
-                data: function(data) {
-                    data.kd_skpd = document.getElementById('kd_skpd').value;
-                    data.jns_ang = document.getElementById('jenis_anggaran').value;
-                    data.nomor = document.getElementById('nomor').value;
-                    data.tanggal = document.getElementById('tanggal').value;
-                    data.bln_awal = document.getElementById('bulan_awal').value;
-                    data.bln_akhir = document.getElementById('bulan_akhir').value;
-                    data.jenis = document.getElementById('jenis').value;
-                    data.status_ang = document.getElementById('status_angkas').value;
-                    data.page = document.getElementById('idpage').value;
+                "data": function(d) {
+                    d.kd_skpd = document.getElementById('kd_skpd').value;
+                    d.jns_ang = document.getElementById('jenis_anggaran').value;
+                    d.nomor = document.getElementById('nomor').value;
+                    d.tanggal = document.getElementById('tanggal').value;
+                    d.bln_awal = document.getElementById('bulan_awal').value;
+                    d.bln_akhir = document.getElementById('bulan_akhir').value;
+                    d.jenis = document.getElementById('jenis').value;
+                    d.status_ang = document.getElementById('status_angkas').value;
+                    d.page = document.getElementById('idpage').value;
                     if (document.getElementById("revisi").checked == true) {
-                        data.revisi = '1';
+                        d.revisi = '1';
                     } else {
-                        data.revisi = '0';
+                        d.revisi = '0';
                     }
                 },
+                "dataSrc": function(data) {
+                    record = data.data;
+                    return record;
+                }
             },
             columns: [{
                     data: 'kd_skpd',
@@ -152,6 +156,13 @@
                     "className": "text-right",
                 }
             ],
+            "drawCallback": function(settings) {
+                let total = record.reduce((previousValue,
+                    currentValue) => (previousValue += parseFloat(currentValue.nilai)), 0);
+                $('#total').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(total));
+            },
         })
 
         $('.select2-multiple').select2({
