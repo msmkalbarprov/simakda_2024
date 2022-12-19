@@ -64,7 +64,7 @@ class DaftarPengujiController extends Controller
         $data = [
             'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
-            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai')->get()
+            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')->get()
         ];
 
         return view('penatausahaan.pengeluaran.daftar_penguji.create')->with($data);

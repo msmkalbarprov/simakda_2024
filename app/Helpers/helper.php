@@ -32,7 +32,8 @@ function count_ingat()
         $ingat7 + $ingat8 + $ingat9 + $ingat10 + $ingat11;
 }
 
-function kd_Program($program){
+function kd_Program($program)
+{
     $kd_program = DB::table('ms_program')->select('kd_program')
         ->whereRaw("kd_program = left(?, 7)", [$program])
         ->first();
@@ -40,7 +41,8 @@ function kd_Program($program){
     return $kd_program->kd_program;
 }
 
-function nm_Program($program){
+function nm_Program($program)
+{
     $nm_program = DB::table('ms_program')->select('nm_program')
         ->whereRaw("kd_program = left(?, 7)", [$program])
         ->first();
@@ -48,7 +50,8 @@ function nm_Program($program){
     return $nm_program->nm_program;
 }
 
-function kd_kegiatan($kegiatan){
+function kd_kegiatan($kegiatan)
+{
     $kd_kegiatan = DB::table('ms_kegiatan')->select('kd_kegiatan')
         ->whereRaw("kd_kegiatan = left(?, 12)", [$kegiatan])
         ->first();
@@ -56,7 +59,8 @@ function kd_kegiatan($kegiatan){
     return $kd_kegiatan->kd_kegiatan;
 }
 
-function nm_kegiatan($kegiatan){
+function nm_kegiatan($kegiatan)
+{
     $nm_kegiatan = DB::table('ms_kegiatan')->select('nm_kegiatan')
         ->whereRaw("kd_kegiatan = left(?, 12)", [$kegiatan])
         ->first();
@@ -64,7 +68,8 @@ function nm_kegiatan($kegiatan){
     return $nm_kegiatan->nm_kegiatan;
 }
 
-function kd_sub_kegiatan($sub_kegiatan){
+function kd_sub_kegiatan($sub_kegiatan)
+{
     $kd_sub_kegiatan = DB::table('ms_sub_kegiatan')->select('nm_sub_kegiatan')
         ->whereRaw("kd_sub_kegiatan = ?", [$sub_kegiatan])
         ->first();
@@ -72,7 +77,8 @@ function kd_sub_kegiatan($sub_kegiatan){
     return $kd_sub_kegiatan->nm_sub_kegiatan;
 }
 
-function kd_rek($rek){
+function kd_rek($rek)
+{
     $kd_rek = DB::table('ms_rek6')->select('nm_rek6')
         ->whereRaw("kd_rek6 = ?", [$rek])
         ->first();
@@ -2875,4 +2881,13 @@ function nama_kegiatan($kd_sub_kegiatan)
         ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
         ->first();
     return $data->nm_sub_kegiatan;
+}
+
+function nama_bank($kode)
+{
+    $data = DB::table('ms_bank')
+        ->select('nama')
+        ->where(['kode' => $kode])
+        ->first();
+    return $data->nama;
 }
