@@ -178,6 +178,10 @@
                         $('#detail_angkas').modal('hide');
                         $('#simpan').prop('disabled', false);
                         tabel_angkas.ajax.reload();
+                    } else if (response.message == '3') {
+                        alert('Anda tidak mempunyai akses...!!!');
+                        $('#simpan').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data Gagal Tersimpan...!!!');
                         $('#simpan').prop('disabled', false);

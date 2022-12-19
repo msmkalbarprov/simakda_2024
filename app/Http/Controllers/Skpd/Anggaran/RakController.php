@@ -708,7 +708,9 @@ class RakController extends Controller
     public function simpanRak(Request $request)
     {
         if (Gate::denies('akses')) {
-            abort(401);
+            return response()->json([
+                'message' => '3'
+            ]);
         }
 
         $data = $request->data;

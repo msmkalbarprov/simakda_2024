@@ -16,7 +16,7 @@ class PengesahanAngkasController extends Controller
     public function index()
     {
         if (Gate::denies('akses')) {
-            abort(401);
+            return abort(401);
         }
         return view('penatausahaan.pengesahan_angkas.index');
     }
@@ -43,7 +43,9 @@ class PengesahanAngkasController extends Controller
     public function simpan(Request $request)
     {
         if (Gate::denies('akses')) {
-            abort(401);
+            return response()->json([
+                'message' => '3'
+            ]);
         }
 
         $data = $request->data;

@@ -704,6 +704,10 @@
                             // window.location.reload();
                             $('#detail_rak').modal('hide');
                             rekening.ajax.reload();
+                        } else if (response.message == '3') {
+                            alert('Anda tidak mempunyai akses...!!!');
+                            $('#simpan_detail').prop('disabled', false);
+                            return;
                         } else {
                             alert('Data Gagal Tersimpan...!!!');
                             $('#simpan_detail').prop('disabled', false);
