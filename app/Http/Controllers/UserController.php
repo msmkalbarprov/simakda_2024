@@ -27,9 +27,9 @@ class UserController extends Controller
     public function loadData()
     {
         $data = DB::table('pengguna as a')
-        ->select('a.*')
-        ->selectRaw("(select nm_skpd from ms_skpd as b where a.kd_skpd=b.kd_skpd) as nm_skpd")
-        ->get();
+            ->select('a.*')
+            ->selectRaw("(select nm_skpd from ms_skpd as b where a.kd_skpd=b.kd_skpd) as nm_skpd")
+            ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             // $btn = '<a href="' . route("user.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn = '<a href="' . route("user.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
@@ -133,9 +133,7 @@ class UserController extends Controller
             DB::rollBack();
             return redirect()->back()->withInput();
         }
-
-
-        return redirect()->route('user.index');
+        // return redirect()->route('user.index');
     }
 
     public function destroy($id)

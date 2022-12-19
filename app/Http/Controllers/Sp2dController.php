@@ -31,6 +31,11 @@ class Sp2dController extends Controller
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
             // ->where(['a.kd_skpd' => $kd_skpd])
+            ->where(function ($query) use ($kd_skpd) {
+                if (Auth::user()->is_admin == 2) {
+                    $query->where(['a.kd_skpd' => $kd_skpd]);
+                }
+            })
             ->orderBy('tgl_sp2d')->orderBy(DB::raw("CAST(LEFT(no_sp2d,LEN(no_sp2d)-8)as int)"))->orderBy('kd_skpd')->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"))->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {

@@ -22,8 +22,8 @@ class UserRequest extends FormRequest
             $confirmationPasswordRule = 'sometimes';
         }
         return [
-            'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(4))],
-            'nama' => ['required', Rule::unique('pengguna')->ignore(request()->segment(4))],
+            'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
+            'nama' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
             'password' => [$passwordRule],
             'confirmation_password' => [$confirmationPasswordRule, 'same:password'],
             'kd_skpd' => ['required'],

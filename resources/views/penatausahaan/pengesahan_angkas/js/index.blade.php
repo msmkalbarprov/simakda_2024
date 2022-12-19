@@ -180,6 +180,7 @@
                         tabel_angkas.ajax.reload();
                     } else if (response.message == '3') {
                         alert('Anda tidak mempunyai akses...!!!');
+                        window.location.href = "{{ route('403') }}";
                         $('#simpan').prop('disabled', false);
                         return;
                     } else {

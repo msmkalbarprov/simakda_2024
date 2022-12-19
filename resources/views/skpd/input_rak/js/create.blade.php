@@ -705,7 +705,8 @@
                             $('#detail_rak').modal('hide');
                             rekening.ajax.reload();
                         } else if (response.message == '3') {
-                            alert('Anda tidak mempunyai akses...!!!');
+                            // alert('Anda tidak mempunyai akses...!!!');
+                            window.location.href = "{{ route('403') }}";
                             $('#simpan_detail').prop('disabled', false);
                             return;
                         } else {
