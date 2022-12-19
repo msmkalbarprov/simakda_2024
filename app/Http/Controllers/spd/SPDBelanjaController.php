@@ -462,7 +462,7 @@ class SPDBelanjaController extends Controller
                         "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                         created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
                         SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai - isnull(lalu_tw, 0) AS nilai, 
-                        ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?
+                        ?, ?, ?, ?, lalu, a.total_ubah AS anggaran, ?, ?, ?
                             FROM
                             (
                                 SELECT a.kd_skpd AS kd_unit, b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program,
@@ -525,7 +525,7 @@ class SPDBelanjaController extends Controller
                     "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                     created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
                     SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, (nilai - isnull(lalu_tw, 0)) AS nilai,
-                            ?, ?, ?, ?, isnull(lalu, 0) as lalu, a.total_ubah AS anggaran, ?, ?
+                            ?, ?, ?, ?, isnull(lalu, 0) as lalu, a.total_ubah AS anggaran, ?, ?, ?
                         FROM
                         (
                             SELECT b.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_program, a.nm_program, b.kd_rek6,
@@ -778,7 +778,7 @@ class SPDBelanjaController extends Controller
         $spd_lalu = DB::select(
                 "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC) AS ranking
 			        FROM trhspd
-			        WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= 'P2' and revisi_ke ='2'
+			        WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= 'P2'
 			        ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang DESC)",
 			        [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
                 );
