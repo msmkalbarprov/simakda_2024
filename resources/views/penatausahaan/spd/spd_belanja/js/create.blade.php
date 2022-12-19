@@ -75,8 +75,8 @@
                     },
                     "className": "text-right",
                 }
-            ]}
-        );
+            ]
+        });
 
         let daftarSpdTempTable = $('#spd_belanja_temp').DataTable({
             responsive: true,
@@ -85,6 +85,10 @@
             ordering: false,
             searchDelay: 1000,
             deferLoading: 0,
+            lengthMenu: [
+                [-1],
+                ["All"]
+            ],
             ajax: {
                 url: "{{ route('spd.spd_belanja.load_spd_belanja_temp') }}",
                 "type": "POST",
@@ -203,7 +207,8 @@
                 $('#nm_skpd').val(skpd.nm_skpd)
                 $('#nip').prop('disabled', false)
                 $('#nomor').prop('disabled', false)
-                $("#nomor").val('13.00/01.0//' + skpd.kd_skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
+                $("#nomor").val('13.00/01.0//' + skpd.kd_skpd + '/' + jenis_anggaran + '/' +
+                    bulanspd() + '/' + tahun)
                 $('#jenis_anggaran').prop('disabled', false)
             } else {
                 $('#nm_skpd').val(null)
@@ -219,7 +224,8 @@
             let tahun = "{{ tahun_anggaran() }}";
             let skpd = document.getElementById('kd_skpd').value;
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
-            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
+            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd() + '/' +
+                tahun)
         }).trigger('select2:select');
 
         $('#bulan_awal').on('select2:select', function() {
@@ -228,7 +234,8 @@
             let tahun = "{{ tahun_anggaran() }}";
             let skpd = document.getElementById('kd_skpd').value;
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
-            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd()  + '/' + tahun)
+            $("#nomor").val('13.00/01.0//' + skpd + '/' + jenis_anggaran + '/' + bulanspd() + '/' +
+                tahun)
         }).trigger('select2:select');
 
         //nip
@@ -304,7 +311,7 @@
             }
         }).trigger('select2:select');
 
-        //status angkas 
+        //status angkas
         $('#status_angkas').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5',
@@ -409,7 +416,8 @@
 
                 success: function(data) {
                     if (data.message == '1') {
-                        toastr.success('Sub Kegiatan dan Rekening telah berhasil ditambahkan');
+                        toastr.success(
+                            'Sub Kegiatan dan Rekening telah berhasil ditambahkan');
                         tabelBelanja.clear().draw();
                         daftarSpdTempTable.clear().draw();
                     } else {
@@ -474,7 +482,7 @@
             })
         })
 
-        $('#insert-all').click(function () {
+        $('#insert-all').click(function() {
             let kd_skpd = document.getElementById('kd_skpd').value;
             let jns_ang = document.getElementById('jenis_anggaran').value;
             let nomor = document.getElementById('nomor').value;
@@ -512,7 +520,8 @@
                 },
                 success: function(data) {
                     if (data.message == '1') {
-                        toastr.success('Sub Kegiatan dan Rekening telah berhasil ditambahkan');
+                        toastr.success(
+                            'Sub Kegiatan dan Rekening telah berhasil ditambahkan');
                         tabelBelanja.clear().draw();
                         daftarSpdTempTable.clear().draw();
                     } else {
@@ -520,10 +529,10 @@
                         tabelBelanja.clear().draw();
                     }
                 }
-            })   
+            })
         })
 
-        $('#delete-all').click(function () {
+        $('#delete-all').click(function() {
             let kd_skpd = document.getElementById('kd_skpd').value;
             let jns_ang = document.getElementById('jenis_anggaran').value;
             let bln_awal = document.getElementById('bulan_awal').value;
@@ -565,7 +574,7 @@
                         tabelBelanja.clear().draw();
                     }
                 }
-            })   
+            })
         })
 
         $('#simpan_spd').on('click', function() {
@@ -586,7 +595,7 @@
             let jenis_anggaran = document.getElementById('jenis_anggaran').value;
             let status_angkas = document.getElementById('status_angkas').value;
             let keterangan = document.getElementById('keterangan').value;
-            
+
             let daftar_spd = daftarSpdTempTable.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
@@ -596,7 +605,8 @@
                 };
                 return data;
             });
-            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai), 0);
+            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai),
+                0);
 
             if (daftar_spd.length == 0) {
                 alert('Daftar Rincian Tidak Boleh Kosong');
@@ -642,7 +652,7 @@
                 alert('jenis Anggaran Tidak Boleh Kosong');
                 return;
             }
-           
+
             if (!status_angkas) {
                 alert('Status Angkas Tidak Boleh Kosong');
                 return;
@@ -669,6 +679,7 @@
                 daftar_spd
             };
 
+            $('#simpan_spd').prop('disabled', true);
             $.ajax({
                 url: "{{ route('spd.spd_belanja.simpanSpp') }}",
                 type: "POST",
@@ -683,16 +694,18 @@
                         window.location.href = "{{ route('spd_belanja.index') }}"
                     } else if (data.message == '2') {
                         alert('Nomor SPD Sudah Digunakan!!!');
+                        $('#simpan_spd').prop('disabled', false);
                         return;
                     } else {
                         alert("Data Gagal Tersimpan!!!");
+                        $('#simpan_spd').prop('disabled', false);
                         return;
                     }
                 }
             })
         });
 
-        function bulanspd(){
+        function bulanspd() {
             let bln = document.getElementById('bulan_awal').value;
             let jenisbln = document.getElementById('jenisbln').value;
             if (jenisbln == '1') {
@@ -712,5 +725,4 @@
             }
         }
     });
-
 </script>
