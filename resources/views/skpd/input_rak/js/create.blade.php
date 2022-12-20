@@ -26,16 +26,19 @@
         });
 
         let user = document.getElementById('username').value;
-        if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' ||
-            user ==
-            'Sugino' || user == 'ROSNAWATI' || user == 'SAMANTO' || user == 'RISNAWATI' ||
-            user == 'SYATHIBIE' || user == 'WAWAN' || user == 'willy' || user == 'SUYATNA' || user == 'yana' ||
-            user == 'ANDAY68' || user == 'YULI' || user == 'NURMEIDA' || user == 'Sri Hartati' || user ==
-            'SUYATNA22' || user == 'URAY ELPIDA' || user == 'maorin') {
-            alert('Selamat Datang ' + user);
-        } else {
-            proteksi();
-        }
+
+        // nanti dihidupkan awal tahun ya
+        
+        // if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' ||
+        //     user ==
+        //     'Sugino' || user == 'ROSNAWATI' || user == 'SAMANTO' || user == 'RISNAWATI' ||
+        //     user == 'SYATHIBIE' || user == 'WAWAN' || user == 'willy' || user == 'SUYATNA' || user == 'yana' ||
+        //     user == 'ANDAY68' || user == 'YULI' || user == 'NURMEIDA' || user == 'Sri Hartati' || user ==
+        //     'SUYATNA22' || user == 'URAY ELPIDA' || user == 'maorin') {
+        //     alert('Selamat Datang ' + user);
+        // } else {
+        //     proteksi();
+        // }
 
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
