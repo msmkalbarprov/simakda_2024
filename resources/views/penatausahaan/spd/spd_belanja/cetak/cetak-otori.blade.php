@@ -139,7 +139,7 @@
                     <td></td>
                     <td>d. Sisa jumlah dana DPA-SKPD yang belum di-SPD-kan</td>
                     <td>:</td>
-                    <td>Rp{{ number_format($total_anggaran - $data->total, 2, ',', '.') }}</td>
+                    <td>Rp{{ number_format($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td></td>

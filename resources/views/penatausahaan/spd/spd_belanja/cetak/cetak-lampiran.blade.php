@@ -57,6 +57,7 @@
 
         #ttd {
             width: 100%;
+            font-size: 14px;
         }
 
         #ttd td {
@@ -142,35 +143,57 @@
             </tr>
         </thead>
         <tbody>
+            @php
+            $total_anggaran = 0;
+            $total_spd = 0;
+            $total_spd_lalu = 0;
+            @endphp
             @foreach($datalamp as $key => $value)
             <tr>
                 <td>{{ $key+1 }}</td>
-                @if ($value['jenis'] == 'rekening')
-                    <td>{{ $value['kd_rek'] }}</td>
-                    <td>{{ $value['nm_rek'] }}</td>
+                @if ($value->jenis == 'rekening')
+                <td>{{ $value->kd_rek }}</td>
+                <td>{{ $value->nm_rek }}</td>
+                @php
+                $total_anggaran += $value->anggaran;
+                $total_spd += $value->nilai;
+                $total_spd_lalu += $value->nilai_lalu
+                @endphp
                 @else
-                    <td class="text-bold">{{ $value['kode'] }}</td>
-                    <td class="text-bold">{{ $value['nama'] }}</td>
+                <td class="text-bold">{{ $value->kode }}</td>
+                <td class="text-bold">{{ $value->nama }}</td>
                 @endif
-                <td class="number{{ $value['jenis'] == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value['anggaran'], 2, ',', '.') }}</td>
-                <td class="number{{ $value['jenis'] == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value['nilai_lalu'], 2, ',', '.') }}</td>
-                <td class="number{{ $value['jenis'] == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value['nilai'], 2, ',', '.') }}</td>
-                <td class="number{{ $value['jenis'] == 'rekening' ? '' : ' text-bold' ?>">{{ number_format($value['anggaran'] - $value['nilai'] - $value['nilai_lalu'], 2, ',', '.') }}</td>
+                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->anggaran, 2, ',', '.') }}</td>
+                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->nilai_lalu, 2, ',', '.') }}</td>
+                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->nilai, 2, ',', '.') }}</td>
+                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->anggaran - $value->nilai - $value->nilai_lalu, 2, ',', '.') }}</td>
             </tr>
             @endforeach
+            <tr>
+                <td class="text-bold" colspan="3">Jumlah</td>
+                <td class="number text-bold">{{ number_format($total_anggaran, 2, ',', '.') }}</td>
+                <td class="number text-bold">{{ number_format($total_spd_lalu, 2, ',', '.') }}</td>
+                <td class="number text-bold">{{ number_format($total_spd, 2, ',', '.') }}</td>
+                <td class="number text-bold">{{ number_format($total_anggaran - $total_spd - $total_spd_lalu, 2, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
     <br /><br />
-    <div class="content-text">Jumlah Penyediaan Dana Rp</div>
-    <div class="content-text"><i>()</i></div>
+    <div class="content-text">Jumlah Penyediaan Dana Rp{{ number_format($total_spd, 2, ',', '.') }}</div>
+    <div class="content-text"><i>({{ terbilang($total_spd, 2, ',', '.') }})</i></div>
     <br /><br /><br />
     <table id="ttd">
         <tbody>
             <tr>
                 <td></td>
                 <td>
-                    <div>Ditetapkan di Sungai Raya</div>
-
+                    <div>Ditetapkan di Pontianak</div>
+                    <div>Pada tanggal {{ tanggal($data->tgl_spd) }}</div>
+                    <br />
+                    <div>PPKD SELAKU BUD</div>
+                    <br /><br /><br /><br />
+                    <div><u>{{ $ttd->nama }}</u></div>
+                    <div>NIP. {{ $ttd->nip }}</div>
                 </td>
             </tr>
         </tbody>

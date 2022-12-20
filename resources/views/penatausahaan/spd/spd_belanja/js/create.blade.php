@@ -338,7 +338,7 @@
                     var skpd = $('#kd_skpd').select2('data')[0];
                     var jenis_anggaran = $('#jenis_anggaran').select2('data')[0]
                     if (skpd && jenis_anggaran) query.kd_skpd = skpd.kd_skpd;
-                    query.kode = jenis_anggaran.kode
+                    query.kode = jenis_anggaran.kode;
                     return query
                 },
             },

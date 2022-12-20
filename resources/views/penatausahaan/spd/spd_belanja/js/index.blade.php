@@ -16,11 +16,13 @@
                 "url": "{{ route('spd.spd_belanja.load_data') }}",
                 "type": "POST",
             },
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    className: "text-center",
-                }, {
+            columns: [
+                // {
+                //     data: 'DT_RowIndex',
+                //     name: 'DT_RowIndex',
+                //     className: "text-center",
+                // }, 
+                {
                     data: 'no_spd',
                     name: 'no_spd',
                     className: "text-center",
@@ -38,6 +40,16 @@
                 {
                     data: 'nm_beban',
                     name: 'nm_beban',
+                    className: "text-center",
+                },
+                {
+                    data: 'jns_ang',
+                    name: 'jns_ang',
+                    className: "text-center",
+                },
+                {
+                    data: 'revisi_ke',
+                    name: 'revisi_ke',
                     className: "text-center",
                 },
                 {
@@ -64,12 +76,6 @@
             let nip = $("#nip").val();
             let jenis = $("#jenis").val();
 
-            // if (document.getElementById("tnspd").checked == true) {
-            //     tnspd = '1';
-            // } else {
-            //     tnspd = '0';
-            // }
-
             if (document.getElementById("tambahan").checked == true) {
                 tambahan = '1';
             } else {
@@ -87,7 +93,6 @@
             let searchParams = url.searchParams;
             searchParams.append('no_spd', nospd);
             searchParams.append('nip', nip);
-            // searchParams.append('tnspd', tnspd);
             searchParams.append('tambahan', tambahan);
             searchParams.append('jenis', jenis);
             window.open(url.toString(), "_blank");
