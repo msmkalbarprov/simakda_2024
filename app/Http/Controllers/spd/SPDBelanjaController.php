@@ -35,12 +35,12 @@ class SPDBelanjaController extends Controller
             DB::raw("(select nama from tb_status_angkas where a.jns_ang=status_kunci) as nm_angkas")
         )
             ->whereIn('a.jns_beban', [5, 6])
-            ->whereRaw('a.kd_skpd IN (SELECT kd_skpd FROM user_bud WHERE user_id= ?)', [$id])
-            // ->where(function ($query) use ($skpd) {
-            //     if (Auth::user()->is_admin == 2) {
-            //         $query->where(['a.kd_skpd' => $skpd]);
-            //     }
-            // })
+            // ->whereRaw('a.kd_skpd IN (SELECT kd_skpd FROM user_bud WHERE user_id= ?)', [$id])
+            ->where(function ($query) use ($skpd) {
+                if (Auth::user()->is_admin == 2) {
+                    $query->where(['a.kd_skpd' => $skpd]);
+                }
+            })
             ->groupBy([
                 'a.no_spd', 'a.tgl_spd', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_beban',
                 'a.no_dpa', 'a.bulan_awal', 'a.bulan_akhir', 'a.kd_bkeluar', 'a.triwulan', 'a.klain',
