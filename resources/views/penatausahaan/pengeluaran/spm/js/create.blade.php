@@ -52,7 +52,7 @@
             let npwp = $(this).find(':selected').data('npwp');
             let rekening = $(this).find(':selected').data('rekening');
             let no_spm = document.getElementById('no_spm').value;
-            let tahun_anggaran = "2022";
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let nm_bulan = cari_bulan(bulan);
             let nm_beban = cari_beban(beban);
             let nm_jenis = cari_jenis(beban, jenis);
@@ -121,7 +121,7 @@
             let no_spp = document.getElementById('no_spp').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
-            let tahun_anggaran = '2022';
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let no_spm = document.getElementById('no_spm').value;
             get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm);
         });
@@ -146,7 +146,7 @@
             let no_spd = document.getElementById("no_spd").value;
             let jenis = document.getElementById("jenis").value;
             let total = rupiah(document.getElementById("total").value);
-            let tahun_anggaran = "2022";
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let tahun_input = tgl_spm.substring(0, 4);
             if (!tgl_spm) {
                 alert('Silahkan pilih tanggal SPM!');

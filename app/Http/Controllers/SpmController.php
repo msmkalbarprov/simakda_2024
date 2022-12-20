@@ -129,7 +129,11 @@ class SpmController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = $request->no_spm;
-        $data = DB::table('trhspm')->select(DB::raw("MAX(urut) + 1 as nilai"))->where(['kd_skpd' => $kd_skpd])->where('no_spm', '!=', $no_spm)->first();
+        $data = DB::table('trhspm')
+            ->selectRaw("ISNULL(MAX(urut),0)+1 as nilai")
+            // ->select(DB::raw("MAX(urut) + 1 as nilai"))
+            ->where(['kd_skpd' => $kd_skpd])->where('no_spm', '!=', $no_spm)
+            ->first();
         return response()->json($data);
     }
 
@@ -333,7 +337,7 @@ class SpmController extends Controller
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'kd_skpd', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
             'skpd' => DB::table('trhspp')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'ms_skpd' => DB::table('ms_skpd')->select('alamat', 'email', 'kodepos')->where(['kd_skpd' => $kd_skpd])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'beban' => $beban,
             'jenis' => $jenis_ls,
             'beban5' => [
@@ -392,7 +396,7 @@ class SpmController extends Controller
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
             'data_spm' => $data_spm,
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'bank' => DB::table('ms_skpd as a')->select('bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'rekening', 'npwp')->where(['a.kd_skpd' => $kd_skpd])->first(),
             'beban1' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->first(),
             'beban' => $beban,
@@ -447,7 +451,7 @@ class SpmController extends Controller
             'data_spp' => $data_spp,
             'tgl_spd' => $tgl_spd,
             'sub_giat' => $sub_giat,
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'beban' => $beban,
             'status_anggaran' => DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first(),
             'kd_skpd' => $kd_skpd,
@@ -501,7 +505,7 @@ class SpmController extends Controller
             'data_spm' => $data_spm,
             'data_spp' => DB::table('trhspp')->select('kd_kegiatan', 'nm_kegiatan', 'kd_program', 'nm_program')->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->first(),
             'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'data_beban' => $data_beban,
             'beban' => $beban,
             'no_spm' => $no_spm,
@@ -541,7 +545,7 @@ class SpmController extends Controller
             'nama_skpd' => DB::table('trhspp')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first(),
             'tgl_spm' => DB::table('trhspm')->select('tgl_spm')->where(['kd_skpd' => $kd_skpd, 'no_spm' => $no_spm])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'tanpa' => $tanpa,
             'beban' => $beban,
             'no_spm' => $no_spm,
@@ -582,7 +586,7 @@ class SpmController extends Controller
             'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),
             'data_spm' => DB::table('trhspm')->select('no_spp', 'tgl_spp', 'jenis_beban')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->first(),
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'tanpa' => $tanpa,
             'beban' => $beban,
             'no_spm' => $no_spm,
@@ -621,7 +625,7 @@ class SpmController extends Controller
             'data_beban' => DB::table('trhspm as a')->select('a.no_spm', 'a.jenis_beban', 'a.tgl_spm', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.no_spd', 'a.nilai')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->where(['a.no_spm' => $no_spm])->first(),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'no_spm' => $no_spm,
             'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first(),
             'tanpa' => $tanpa
@@ -669,7 +673,7 @@ class SpmController extends Controller
         // return $status_anggaran->jns_ang;
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'tahun_anggaran' => '2022',
+            'tahun_anggaran' => tahun_anggaran(),
             'no_spm' => $no_spm,
             'nilai_ang' => nilai_anggaran_ringkasan($beban, $kd_skpd, $status_anggaran->jns_ang, $kd_sub_kegiatan, $no_spp->no_spp),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),

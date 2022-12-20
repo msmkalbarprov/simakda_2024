@@ -228,7 +228,7 @@
             let beban = this.value;
             let jenis = document.getElementById('jenis').value;
             let tgl_spp = document.getElementById('tgl_spp').value;
-            let tahun_anggaran = new Date().getFullYear();
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let kd_skpd = document.getElementById('kd_skpd').value;
             kosong();
             if (!tgl_spp) {
@@ -1019,7 +1019,7 @@
 
         $('#cari_nospp').on('click', function() {
             let beban = document.getElementById('beban').value;
-            let tahun_anggaran = new Date().getFullYear();
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let kd_skpd = document.getElementById('kd_skpd').value;
             let jenis_beban;
             let jenis_beban2;
@@ -1062,7 +1062,7 @@
         $('#simpan_penagihan').on('click', function() {
             let beban = document.getElementById('beban').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
-            let tahun_anggaran = new Date().getFullYear();
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let no_urut = document.getElementById('no_urut').value;
             let no_spp = document.getElementById('no_spp').value;
             let no_tersimpan = document.getElementById('no_tersimpan').value;
