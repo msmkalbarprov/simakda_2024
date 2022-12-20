@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div style="text-align: left;margin-top:20px">
+    {{-- <div style="text-align: left;margin-top:20px">
         <h5 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h5>
         @if ($beban == '4')
             <h5 style="margin: 2px 0px">{{ $data->nm_skpd }}</h5>
@@ -24,6 +24,40 @@
         <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h5>
         <div style="clear: both"></div>
     </div>
+    <hr> --}}
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+        border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td rowspan="5" align="left" width="7%">
+                <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
+                    height="100" />
+            </td>
+            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+                    {{ strtoupper($header->nm_pemda) }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px">
+                <strong>
+                    @if ($beban == '4')
+                        {{ $skpd->nm_skpd }}
+                    @elseif($beban == '5')
+                        {{ $skpd->nm_skpd }}
+                    @elseif ($beban == '6')
+                        SKPD {{ $skpd->nm_skpd }}
+                    @endif
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+        </tr>
+    </table>
     <hr>
     <div style="text-align: center">
         @if ($beban == '4')

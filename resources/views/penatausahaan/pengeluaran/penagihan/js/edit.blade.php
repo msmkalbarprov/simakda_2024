@@ -611,7 +611,7 @@
                 return data;
             });
             let tanggal = new Date(tgl_bukti);
-            let tahun_anggaran = new Date().getFullYear();
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let tahun = tanggal.getFullYear();
             let ctagih = '';
             let ctgltagih = '2016-12-1';
