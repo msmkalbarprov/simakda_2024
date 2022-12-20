@@ -6,7 +6,8 @@
             <div class="card">
                 <div class="card-header">
                     <a href="{{ route('penagihan.create') }}" id="tambah_penagihan"
-                        class="btn btn-primary {{ $cek > 0 ? 'disabled' : '' }}" style="float: right;">Tambah</a>
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }}"
+                        style="float: right;">Tambah</a>
                     <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
                     <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
                 </div>
