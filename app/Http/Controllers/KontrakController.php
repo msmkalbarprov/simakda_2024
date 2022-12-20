@@ -19,10 +19,13 @@ class KontrakController extends Controller
     public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('ms_kontrak AS a')->select('a.*')->leftJoin('ms_rekening_bank_online AS b', function ($join) {
-            $join->on('a.nm_rekening', '=', 'b.nm_rekening');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where('a.kd_skpd', $kd_skpd)->get();
+        $data = DB::table('ms_kontrak AS a')->select('a.*')
+            ->leftJoin('ms_rekening_bank_online AS b', function ($join) {
+                $join->on('a.nm_rekening', '=', 'b.nm_rekening');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->where('a.kd_skpd', $kd_skpd)
+            ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("kontrak.show", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="' . route("kontrak.edit", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
@@ -48,16 +51,18 @@ class KontrakController extends Controller
     public function store(KontrakRequest $request)
     {
         $input = array_map('htmlentities', $request->validated());
-        DB::table('ms_kontrak')->insert([
-            'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
-            'nilai' => $input['nilai'],
-            'kd_skpd' => $input['kd_skpd'],
-            'nm_kerja' => $input['nm_kerja'],
-            'tgl_kerja' => $input['tgl_kerja'],
-            'nmpel' => $input['nmpel'],
-            'nm_rekening' => $input['nm_rekening'],
-            'pimpinan' => $input['pimpinan'],
-        ]);
+        DB::table('ms_kontrak')
+            ->insert([
+                'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
+                'nilai' => $input['nilai'],
+                'kd_skpd' => $input['kd_skpd'],
+                'nm_kerja' => $input['nm_kerja'],
+                'tgl_kerja' => $input['tgl_kerja'],
+                'nmpel' => $input['nmpel'],
+                'nm_rekening' => $input['nm_rekening'],
+                'no_rekening' => $input['no_rekening'],
+                'pimpinan' => $input['pimpinan'],
+            ]);
 
         return redirect()->route('kontrak.index');
     }
@@ -111,6 +116,7 @@ class KontrakController extends Controller
             'tgl_kerja' => $input['tgl_kerja'],
             'nmpel' => $input['nmpel'],
             'nm_rekening' => $input['nm_rekening'],
+            'no_rekening' => $input['no_rekening'],
             'pimpinan' => $input['pimpinan'],
         ]);
 

@@ -125,7 +125,6 @@
             let no_spm = document.getElementById('no_spm').value;
             get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm);
         });
-
         // simpan spm
         $('#simpan_spm').on('click', function() {
             let no_spm = document.getElementById("no_spm").value;
@@ -216,6 +215,7 @@
                     } else {
                         alert('Nomor bisa dipakai');
                         $('#simpan_spm').prop('disabled', false);
+                        document.getElementById('potongan_spm').href = data.url;
                         $('#konfirmasi_potongan').modal('show');
                     }
                 }

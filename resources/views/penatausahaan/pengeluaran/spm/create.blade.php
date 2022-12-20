@@ -245,7 +245,7 @@
                 <div class="modal-body">
                     <p style="text-align: center">Apakah Anda ingin menambahkan potongan?</p>
                     <div class="mt-2" style="text-align: center">
-                        <a href="{{ route('spm.tambah_potongan') }}" class="btn btn-primary btn-md">Ya</a>
+                        <a href="#" id="potongan_spm" class="btn btn-primary btn-md">Ya</a>
                         <a href="{{ route('spm.index') }}" class="btn btn-danger btn-md">Tidak</a>
                     </div>
                 </div>

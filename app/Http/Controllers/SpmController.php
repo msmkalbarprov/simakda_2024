@@ -215,7 +215,8 @@ class SpmController extends Controller
 
                     DB::commit();
                     return response()->json([
-                        'message' => '2'
+                        'message' => '2',
+                        'url' => route('spm.tambah_potongan', Crypt::encryptString($no_spm))
                     ]);
                 }
             }
@@ -232,6 +233,7 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = Crypt::decryptString($no_spm);
         $cari_spm = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm])->first();
+        // return [$no_spm, $cari_spm];
         $data = [
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
             'no_spm' => $no_spm,
