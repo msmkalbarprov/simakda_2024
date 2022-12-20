@@ -16,6 +16,7 @@ class PenagihanController extends Controller
         $data = [
             'cek' => selisih_angkas()
         ];
+
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
     }
 

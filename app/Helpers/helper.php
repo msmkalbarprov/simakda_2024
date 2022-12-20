@@ -2723,22 +2723,25 @@ function selisih_angkas()
     $skpd = Auth::user()->kd_skpd;
 
     $status_angkas = status_angkas($skpd);
+
     $status_anggaran = DB::table('trhrka')
         ->select('jns_ang')
         ->where(['kd_skpd' => $skpd, 'status' => '1'])
         ->orderByDesc('tgl_dpa')
         ->first();
+
     $kolom = DB::table('tb_status_angkas')
         ->select('kode')
         ->where(['status_kunci' => $status_angkas])
         ->first();
     $kolom1 = $kolom->kode;
-    if (isNull($status_anggaran)) {
+
+    if (empty($status_anggaran)) {
         $status_ang = '0';
     } else {
         $status_ang = $status_anggaran->jns_ang;
     }
-    // return $status_ang;
+
     $selisih_angkas1 = DB::table('trdrka as a')
         ->selectRaw("kd_skpd,kd_sub_kegiatan,kd_rek6,nilai as anggaran,(select sum(nilai_$kolom1) from trdskpd_ro where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6)as angkas")
         ->where(['jns_ang' => $status_ang, 'kd_skpd' => $skpd]);
