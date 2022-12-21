@@ -109,22 +109,50 @@ class PenyetoranController extends Controller
                     ]);
                 }
             }
+            $nomor = nomor_tukd();
 
-            DB::table('trhkasin_pkd')->insert([
-                'no_sts' => $data['no_sts'],
-                'tgl_sts' => $data['tgl_sts'],
-                'kd_skpd' => $data['kd_skpd'],
-                'keterangan' => $data['keterangan'],
-                'total' => $data['total'],
-                'kd_bank' => '',
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'jns_trans' => '2',
-                'rek_bank' => '',
-                'sumber' => $data['pengirim'],
-                'pot_khusus' => '0',
-                'no_sp2d' => '',
-                'jns_cp' => '',
-            ]);
+            DB::table('trhkasin_pkd')
+                ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_sts']])
+                ->delete();
+
+            DB::table('trhkasin_pkd')
+                ->insert([
+                    'no_sts' => $data['no_sts'],
+                    'tgl_sts' => $data['tgl_sts'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'keterangan' => $data['keterangan'],
+                    'total' => $data['total'],
+                    'kd_bank' => '',
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'jns_trans' => '2',
+                    'rek_bank' => '',
+                    'sumber' => $data['pengirim'],
+                    'pot_khusus' => '0',
+                    'no_sp2d' => '',
+                    'jns_cp' => '',
+                ]);
+
+            $jumlah = DB::table('ms_skpd')->where(['jns' => '2', 'kd_skpd' => $data['kd_skpd']])->count();
+            if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
+                DB::table('trhkasin_pkd')
+                    ->insert([
+                        'no_kas' => $nomor,
+                        'tgl_kas' => $data['tgl_sts'],
+                        'no_sts' => $data['no_sts'],
+                        'tgl_sts' => $data['tgl_sts'],
+                        'kd_skpd' => $data['kd_skpd'],
+                        'keterangan' => $data['keterangan'],
+                        'total' => $data['total'],
+                        'kd_bank' => '',
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'jns_trans' => '2',
+                        'rek_bank' => '',
+                        'sumber' => $data['pengirim'],
+                        'pot_khusus' => '0',
+                        'no_sp2d' => '',
+                        'jns_cp' => '',
+                    ]);
+            }
 
             DB::commit();
             return response()->json([

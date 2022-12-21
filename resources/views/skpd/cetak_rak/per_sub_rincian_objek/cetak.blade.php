@@ -63,7 +63,7 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="ttd1">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_ttd1 as $ttd1)
-                                    <option value="{{ $ttd1->id_ttd }}" data-nama="{{ $ttd1->nama }}">{{ $ttd1->nip }}
+                                    <option value="{{ $ttd1->id }}" data-nama="{{ $ttd1->nama }}">{{ $ttd1->nip }}
                                         | {{ $ttd1->nama }}</option>
                                 @endforeach
                             </select>
@@ -79,7 +79,7 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="ttd2">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_ttd2 as $ttd2)
-                                    <option value="{{ $ttd2->id_ttd }}" data-nama="{{ $ttd2->nama }}">{{ $ttd2->nip }}
+                                    <option value="{{ $ttd2->id }}" data-nama="{{ $ttd2->nama }}">{{ $ttd2->nip }}
                                         | {{ $ttd2->nama }}</option>
                                 @endforeach
                             </select>
