@@ -71,6 +71,40 @@
             searchParams.append("tgl_akhir", tgl_akhir);
             window.open(url.toString(), "_blank");
         });
+
+        $('#cek').on('click', function() {
+            let tgl_awal = document.getElementById('tgl_awal').value;
+            let tgl_akhir = document.getElementById('tgl_akhir').value;
+
+            if (!tgl_awal || !tgl_akhir) {
+                alert('Silahkan Pilih Tanggal');
+                return;
+            }
+
+            if (tgl_akhir < tgl_awal) {
+                alert('Tanggal akhir tidak boleh kecil dari tanggal awal!');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('skpd.upload_cms.proses_upload') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    total_transaksi: total_transaksi,
+                    rincian_data: rincian_data,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil diupload');
+                        window.location.href = "{{ route('skpd.upload_cms.index') }}";
+                    } else {
+                        alert('Data tidak berhasil diupload!');
+                        $('#proses_upload').prop("disabled", false);
+                    }
+                }
+            })
+        });
     });
 
     function angka(n) {
