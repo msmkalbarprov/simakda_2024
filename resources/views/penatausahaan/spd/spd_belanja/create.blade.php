@@ -105,7 +105,6 @@
                                 <label class="form-check-label" for="revisi">Revisi</label>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </div>
 
