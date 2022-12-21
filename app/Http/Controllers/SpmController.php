@@ -425,7 +425,7 @@ class SpmController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.berkas')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape');
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
