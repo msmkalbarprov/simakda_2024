@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+
 use Exception;
 use Knp\Snappy\Pdf as SnappyPdf;
 use PDF;
@@ -49,7 +50,10 @@ class SPDBelanjaController extends Controller
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="hapusSPD(\'' . $row->no_spd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            $btn = '<a href="' . route("spdBP.show", Crypt::encryptString($row->no_spd)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
+            if ($row->status != '1') {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusSPD(\'' . $row->no_spd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            } 
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -942,5 +946,24 @@ class SPDBelanjaController extends Controller
         } else {
             return $view;
         }
+    }
+
+    public function tampilspdBP($no_spd)
+    {
+        $no_spd = Crypt::decryptString($no_spd);
+        $data_spd = DB::table('trhspd')->where(['no_spd' => $no_spd])->first();
+        $data = [
+            'dataspd' => $data_spd,
+            'nm_bend' => DB::table('ms_ttd')->select('nama')->where(['nip' => $data_spd->kd_bkeluar])->first(),
+        ];
+        return view('penatausahaan.spd.spd_belanja.show')->with($data);
+    }
+
+    public function ShowloadData(Request $request) 
+    {
+        $noSpd = $request->no_spd;
+        $data = DB::table('trdspd')->where(['no_spd' => $noSpd])->get();
+        return DataTables::of($data)->addIndexColumn()->make(true);
+        return view('penatausahaan.spd.spd_belanja.show');
     }
 }
