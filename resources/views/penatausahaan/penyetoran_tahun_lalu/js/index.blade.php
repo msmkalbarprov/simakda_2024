@@ -50,6 +50,27 @@
                 },
             ],
         });
+
+        $('#cek').on('click', function() {
+            let tgl_awal = document.getElementById('tgl_awal').value;
+            let tgl_akhir = document.getElementById('tgl_akhir').value;
+
+            if (!tgl_awal || !tgl_akhir) {
+                alert('Silahkan Pilih Tanggal');
+                return;
+            }
+
+            if (tgl_akhir < tgl_awal) {
+                alert('Tanggal akhir tidak boleh kecil dari tanggal awal!');
+                return;
+            }
+
+            let url = new URL("{{ route('penyetoran_lalu.cek') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("tgl_awal", tgl_awal);
+            searchParams.append("tgl_akhir", tgl_akhir);
+            window.open(url.toString(), "_blank");
+        });
     });
 
     function angka(n) {
@@ -63,15 +84,15 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_terima, kd_skpd) {
-        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Terima : ' + no_terima);
+    function hapus(no_sts, kd_skpd) {
+        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Penyetoran : ' + no_sts);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('penerimaan_lalu.hapus') }}",
+                url: "{{ route('penyetoran_lalu.hapus') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_terima: no_terima,
+                    no_sts: no_sts,
                     kd_skpd: kd_skpd,
                 },
                 success: function(data) {

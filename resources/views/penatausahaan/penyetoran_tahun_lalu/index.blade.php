@@ -9,6 +9,21 @@
                     <a href="{{ route('penyetoran_lalu.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" id="tgl_awal">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" id="tgl_akhir">
+                        </div>
+                        <div class="col-md-8">
+                            <a href="#" class="btn btn-success" id="cek"><i class="uil-search-alt"></i> Cek</a>
+                            <a href="#" class="btn btn-dark" id="validasi"><i class="uil-check-circle"></i>
+                                Validasi</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="penyetoran_lalu" class="table" style="width: 100%">

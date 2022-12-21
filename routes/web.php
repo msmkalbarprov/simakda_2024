@@ -848,6 +848,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('edit/{no_sts?}', [PenyetoranController::class, 'editPenyetoranLalu'])->where('no_sts', '(.*)')->name('penyetoran_lalu.edit');
                 Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranLalu'])->name('penyetoran_lalu.simpan_edit');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranLalu'])->name('penyetoran_lalu.hapus');
+                Route::get('cek', [PenyetoranController::class, 'cekPenyetoranLalu'])->name('penyetoran_lalu.cek');
             });
             // Penyetoran Atas Penerimaan Tahun Ini
             Route::group(['prefix' => 'penyetoran_tahun_ini'], function () {

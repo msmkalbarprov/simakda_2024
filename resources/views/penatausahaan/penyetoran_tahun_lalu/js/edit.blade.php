@@ -45,11 +45,33 @@
 
         $('#tambah_rekening').on("click", function() {
             let no_sts = document.getElementById('no_sts').value;
-            if (no_sts != '') {
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+
+            if (no_sts != '' || kd_sub_kegiatan != '') {
+                $.ajax({
+                    url: "{{ route('penyetoran_lalu.rekening') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        kd_skpd: document.getElementById('kd_skpd').value,
+                        kd_sub_kegiatan: kd_sub_kegiatan
+                    },
+                    success: function(data) {
+                        $('#rekening').empty();
+                        $('#rekening').append(
+                            `<option value="" disabled selected>Silahkan Pilih</option>`
+                        );
+                        $.each(data, function(index, data) {
+                            $('#rekening').append(
+                                `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                            );
+                        })
+                    }
+                })
                 $('#modal_rekening').modal('show');
             } else {
                 Swal.fire({
-                    title: 'Nomor Sts Tidak Boleh kosong',
+                    title: 'Nomor Sts dan Kegiatan Tidak Boleh kosong',
                     confirmButtonColor: '#5b73e8',
                 })
             }
@@ -68,26 +90,6 @@
         $('#kd_sub_kegiatan').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
             $('#nm_sub_kegiatan').val(nama);
-
-            $.ajax({
-                url: "{{ route('penyetoran_lalu.rekening') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    kd_skpd: document.getElementById('kd_skpd').value,
-                    kd_sub_kegiatan: this.value
-                },
-                success: function(data) {
-                    $('#rekening').empty();
-                    $('#rekening').append(
-                        `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
-                        $('#rekening').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
-                        );
-                    })
-                }
-            })
         });
 
         $('#simpan_detail').on('click', function() {
@@ -134,6 +136,7 @@
 
         $('#simpan').on('click', function() {
             let no_sts = document.getElementById('no_sts').value;
+            let no_simpan = document.getElementById('no_simpan').value;
             let tgl_sts = document.getElementById('tgl_sts').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
@@ -187,6 +190,7 @@
 
             let data = {
                 no_sts,
+                no_simpan,
                 tgl_sts,
                 kd_skpd,
                 nm_skpd,
@@ -199,7 +203,7 @@
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('penyetoran_lalu.simpan') }}",
+                url: "{{ route('penyetoran_lalu.simpan_edit') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
