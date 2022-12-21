@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class LaporanRegPajakController extends Controller
 {
     
@@ -23,6 +24,7 @@ class LaporanRegPajakController extends Controller
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
             $jenis          = $request->jenis;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -112,7 +114,20 @@ class LaporanRegPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.regpajak')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.regpajak')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('REGISTER PAJAK.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="REGISTER PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak Reg Potongan Lainnya
@@ -124,6 +139,7 @@ class LaporanRegPajakController extends Controller
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -215,7 +231,20 @@ class LaporanRegPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.regpotlain')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.regpotlain')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('REGISTER PAJAK.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="REGISTER PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // cetak_reg_pajak_rekap
@@ -227,6 +256,7 @@ class LaporanRegPajakController extends Controller
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -380,7 +410,20 @@ class LaporanRegPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.regrekap_pajak_potlain')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.regrekap_pajak_potlain')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('REGISTER PAJAK.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="REGISTER PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
     
 }

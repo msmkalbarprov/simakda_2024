@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class SpjFungsionalController extends Controller
 {
     
@@ -23,6 +24,7 @@ class SpjFungsionalController extends Controller
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $kd_skpd        = $request->kd_skpd;
+        $cetak          = $request->cetak;
         $tahun_anggaran = tahun_anggaran();
         // get daerah
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
@@ -641,7 +643,7 @@ class SpjFungsionalController extends Controller
             $tahun_lalu_uyhd_pjk_ini    = $thn_lalu->tahun_lalu_uyhd_pjk_ini;
             
         }
-        
+        $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -875,6 +877,19 @@ class SpjFungsionalController extends Controller
             'cari_bendahara'    => $cari_bendahara,
             'terima_sp2d'       => $terima_sp2d
         ];
-        return view('skpd.laporan_bendahara.cetak.spj_fungsional')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.spj_fungsional')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('SPJ '.$judul.'.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="SPJ '.$judul.' - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 }

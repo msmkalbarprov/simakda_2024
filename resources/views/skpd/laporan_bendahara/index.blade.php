@@ -411,6 +411,8 @@
                             name="bku_pdf"> PDF</button>
                         <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
                             name="bku_layar">Layar</button>
+                            <button type="button" class="btn btn-success btn-md bku_excel" data-jenis="excel"
+                            name="bku_excel">Excel</button>
                         <button type="button" class="btn btn-md btn-secondary"
                             data-bs-dismiss="modal">Tutup</button>
                     </div>
@@ -575,6 +577,8 @@
                             name="bku_pdf"> PDF</button>
                         <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
                             name="bku_layar">Layar</button>
+                            <button type="button" class="btn btn-dark btn-md bku_excel" data-jenis="excel"
+                            name="bku_excel">excel</button>
                         <button type="button" class="btn btn-md btn-secondary"
                             data-bs-dismiss="modal">Tutup</button>
                     </div>
@@ -1156,9 +1160,19 @@
         }
     });
 
-            // CETAK BKU
-            $('.bku_layar').on('click', function() {
-                let spasi           = document.getElementById('spasi').value;
+    $('.bku_layar').on('click', function() {
+        Cetak(1)
+    }); 
+    $('.bku_pdf').on('click', function() {
+        Cetak(2)
+    }); 
+    $('.bku_excel').on('click', function() {
+        Cetak(3)
+    });        
+
+    function Cetak(jns_cetak) {
+        
+        let spasi           = document.getElementById('spasi').value;
                 let bulan           = document.getElementById('bulan').value;
                 let tgl_ttd         = document.getElementById('tgl_ttd').value;
                 let bendahara       = document.getElementById('bendahara').value;
@@ -1274,6 +1288,8 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("cetak", jns_cetak);
+                    
                     
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak SPJ Fungsional'){
@@ -1288,6 +1304,7 @@
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
                     searchParams.append("judul", 'Fungsional');
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak SPJ Administratif'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_spj_fungsional') }}");
@@ -1301,6 +1318,7 @@
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
                     searchParams.append("judul", 'Administratif');
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Kas Bank'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kasbank') }}");
@@ -1313,7 +1331,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Kas Tunai'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kastunai') }}");
@@ -1326,7 +1344,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Pajak'){
                     let url
@@ -1356,7 +1374,7 @@
                     searchParams.append("pilihan1", pajak1);
                     searchParams.append("pilihan2", pajak2);
                     searchParams.append("pilihan3", pajak3);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Panjar'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_panjar') }}");
@@ -1368,7 +1386,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Realisasi Fisik'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_realisasi_fisik') }}");
@@ -1381,6 +1399,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Laporan Penutupan Kas Bulanan'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_laporan_penutupan_kas_bulanan') }}");
@@ -1392,6 +1411,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak DTH'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_dth') }}");
@@ -1403,6 +1423,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Register Pajak'){
                     let url
@@ -1431,6 +1452,7 @@
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
                     searchParams.append("jenis", regpajak1);
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Register CP'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_register_cp') }}");
@@ -1442,6 +1464,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Buku Pembantu Kas Bank'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kasbank') }}");
@@ -1454,7 +1477,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else if(jenis_cetak =='Cetak Register SPP/SPM/SP2D'){
                     let url = new URL("{{ route('skpd.laporan_bendahara.cetak_regsppspm') }}");
@@ -1468,7 +1491,7 @@
                     searchParams.append("kd_skpd", kd_skpd);
                     searchParams.append("tgl_ttd", tgl_ttd);
                     searchParams.append("jenis_print", jenis_print);
-                    
+                    searchParams.append("cetak", jns_cetak);
                     window.open(url.toString(), "_blank");
                 }else{
                     if(jenis_cetak2 =='Cetak Buku Sub Rincian Objek'){
@@ -1498,6 +1521,7 @@
                         searchParams.append("kd_skpd", kd_skpd2);
                         searchParams.append("tgl_ttd", tgl_ttd2);
                         searchParams.append("jenis_print", jenis_print);
+                        searchParams.append("cetak", jns_cetak);
                         window.open(url.toString(), "_blank");
                     }else if(jenis_cetak2 =='Cetak Kartu Kendali Sub Kegiatan'){
                         let url;
@@ -1518,17 +1542,15 @@
                         searchParams.append("kd_skpd", kd_skpd2);
                         searchParams.append("tgl_ttd", tgl_ttd2);
                         searchParams.append("jenis_print", jenis_print);
+                        searchParams.append("cetak", jns_cetak);
                         window.open(url.toString(), "_blank");
                     }else{
                         alert('-'+jenis_cetak+'- Tidak ada url');
                     }
                     
                 }
-                
-                
+    }
 
-                
-            });        
 
 </script>
 @endsection

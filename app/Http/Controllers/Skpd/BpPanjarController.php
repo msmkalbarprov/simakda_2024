@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class BpPanjarController extends Controller
 {
     
@@ -21,6 +22,7 @@ class BpPanjarController extends Controller
             $bendahara      = $request->bendahara ;
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
+            $kd_skpd        = $request->kd_skpd;
             $kd_skpd        = $request->kd_skpd;
             $tahun_anggaran = tahun_anggaran();
 
@@ -46,7 +48,7 @@ class BpPanjarController extends Controller
             
             
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-
+            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
         // KIRIM KE VIEW
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
@@ -61,7 +63,20 @@ class BpPanjarController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.bp_panjar')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.bp_panjar')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('BP PANJAR.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BP PANJAR - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     

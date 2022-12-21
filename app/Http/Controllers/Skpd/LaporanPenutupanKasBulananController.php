@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class LaporanPenutupanKasBulananController extends Controller
 {
     
@@ -22,6 +23,7 @@ class LaporanPenutupanKasBulananController extends Controller
             $bulan          = $request->bulan;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -569,7 +571,20 @@ class LaporanPenutupanKasBulananController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.laporan_penutupan_kas_bulanan')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.laporan_penutupan_kas_bulanan')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('LAORAN PENUTUPAN KAS BULANAN.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LAORAN PENUTUPAN KAS BULANAN - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     

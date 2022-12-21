@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class SubRincianObjekController extends Controller
 {
     
@@ -26,6 +27,7 @@ class SubRincianObjekController extends Controller
             $jns_anggaran   = $request->jns_anggaran;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -108,7 +110,20 @@ class SubRincianObjekController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.Subrincianobjek_77')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_77')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('Sub Rincian Objek.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Sub Rincian Objek - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak cetakSubRincianObjekRekening
@@ -124,6 +139,7 @@ class SubRincianObjekController extends Controller
             $jns_anggaran   = $request->jns_anggaran;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')
@@ -223,7 +239,20 @@ class SubRincianObjekController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.Subrincianobjek_akunbelanja')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_akunbelanja')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('Sub Rincian Objek.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Sub Rincian Objek - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak cetakSubRincianObjekSubkegiatan
@@ -239,6 +268,7 @@ class SubRincianObjekController extends Controller
             $jns_anggaran   = $request->jns_anggaran;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')
@@ -347,7 +377,20 @@ class SubRincianObjekController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.Subrincianobjek_subkegiatan')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_subkegiatan')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('Sub Rincian Objek.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Sub Rincian Objek - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak cetakSubRincianObjekSkpd
@@ -363,6 +406,7 @@ class SubRincianObjekController extends Controller
             $jns_anggaran   = $request->jns_anggaran;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')
@@ -475,7 +519,20 @@ class SubRincianObjekController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.Subrincianobjek_skpd')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_skpd')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('Sub Rincian Objek.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Sub Rincian Objek - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
 
@@ -492,6 +549,7 @@ class SubRincianObjekController extends Controller
             $jns_anggaran   = $request->jns_anggaran;
             $enter          = $request->spasi;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')
@@ -554,6 +612,19 @@ class SubRincianObjekController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.Subrincianobjek_pemakaian')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_pemakaian')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('Sub Rincian Objek.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Sub Rincian Objek - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 }

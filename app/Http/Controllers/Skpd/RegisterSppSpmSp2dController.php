@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class RegisterSppSpmSp2dController extends Controller
 {
     
@@ -23,6 +24,7 @@ class RegisterSppSpmSp2dController extends Controller
             $enter          = $request->spasi;
             $jenis_reg      = $request->jenis_reg;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
             // TANDA TANGAN
@@ -77,9 +79,37 @@ class RegisterSppSpmSp2dController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
             if($jenis_reg=='SP2D'){
-                return view('skpd.laporan_bendahara.cetak.registersp2d')->with($data);
+                $view =  view('skpd.laporan_bendahara.cetak.registersp2d')->with($data);
+                if($cetak=='1'){
+                    return $view;
+                }else if($cetak=='2'){
+                    $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+                    return $pdf->stream('REGISTER SP2D.pdf');
+                }else{
+                    
+                    header("Cache-Control: no-cache, no-store, must_revalidate");
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachement; filename="REGISTER SP2D - ' . $nm_skpd . '.xls"');
+                    return $view;
+        
+                }
+
             }else{
-                return view('skpd.laporan_bendahara.cetak.registersppspm')->with($data);
+                $view2 =  view('skpd.laporan_bendahara.cetak.registersppspm')->with($data);
+
+                if($cetak=='1'){
+                    return $view2;
+                }else if($cetak=='2'){
+                    $pdf = PDF::loadHtml($view2)->setOrientation('landscape')->setPaper('a4');
+                    return $pdf->stream('REGISTER '.$jenis_reg.'.pdf');
+                }else{
+                    
+                    header("Cache-Control: no-cache, no-store, must_revalidate");
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachement; filename="REGISTER '.$jenis_reg.' - ' . $nm_skpd . '.xls"');
+                    return $view2;
+        
+                }
             }
         
     }

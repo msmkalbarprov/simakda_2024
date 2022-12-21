@@ -8,7 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
-
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 class BpPajakController extends Controller
 {
     
@@ -65,6 +66,7 @@ class BpPajakController extends Controller
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -182,7 +184,7 @@ class BpPajakController extends Controller
 
 
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-
+            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
                 'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -196,7 +198,20 @@ class BpPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.bp_pajak1')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.bp_pajak1')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('BP PAJAK.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak bppajak2
@@ -209,6 +224,7 @@ class BpPajakController extends Controller
             $enter          = $request->spasi;
             $pilihan1       = $request->pilihan1;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -321,7 +337,7 @@ class BpPajakController extends Controller
   
 
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-
+            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
                 'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -334,7 +350,20 @@ class BpPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.bp_pajak2')->with($data);
+        $view = view('skpd.laporan_bendahara.cetak.bp_pajak2')->with($data);
+        if($cetak=='1'){
+            return $view;
+        }else if($cetak=='2'){
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('BP PAJAK.pdf');
+        }else{
+            
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+
+        }
     }
 
     // Cetak bppajak3
@@ -348,6 +377,7 @@ class BpPajakController extends Controller
             $pilihan1       = $request->pilihan1;
             $pilihan3       = $request->pilihan3;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
 
             // TANDA TANGAN
@@ -493,7 +523,7 @@ class BpPajakController extends Controller
             $namapilihan3 = cari_nama($pilihan3,'ms_pot','kd_rek6','nm_rek6');
             // dd($namapilihan3);
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-
+            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
                 'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -511,7 +541,20 @@ class BpPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.bp_pajak3')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.bp_pajak3')->with($data);
+                if($cetak=='1'){
+                    return $view;
+                }else if($cetak=='2'){
+                    $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+                    return $pdf->stream('BP PAJAK.pdf');
+                }else{
+                    
+                    header("Cache-Control: no-cache, no-store, must_revalidate");
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+                    return $view;
+        
+                }	
     }
 
 
@@ -526,6 +569,7 @@ class BpPajakController extends Controller
             $pilihan1       = $request->pilihan1;
             $pilihan2       = $request->pilihan2;
             $kd_skpd        = $request->kd_skpd;
+            $cetak          = $request->cetak;
             $tahun_anggaran = tahun_anggaran();
             
 
@@ -835,7 +879,7 @@ class BpPajakController extends Controller
                         $saldopjk   = $sawal->saldo;
                     }
             }
-
+            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
 
             $data = [
@@ -866,7 +910,20 @@ class BpPajakController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        return view('skpd.laporan_bendahara.cetak.bp_pajak4')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.bp_pajak4')->with($data);
+                if($cetak=='1'){
+                    return $view;
+                }else if($cetak=='2'){
+                    $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+                    return $pdf->stream('BP PAJAK.pdf');
+                }else{
+                    
+                    header("Cache-Control: no-cache, no-store, must_revalidate");
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+                    return $view;
+        
+                }	
     }
 
     
