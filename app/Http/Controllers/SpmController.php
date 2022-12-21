@@ -346,6 +346,9 @@ class SpmController extends Controller
             'tahun_anggaran' => tahun_anggaran(),
             'beban' => $beban,
             'jenis' => $jenis_ls,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
             'beban5' => [
                 '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '98', '99'
             ]
@@ -414,7 +417,10 @@ class SpmController extends Controller
             'data_potongan1' => $data_potongan1,
             'total_potongan' => $total_potongan,
             'total_potongan1' => $total_potongan1,
-            'tanpa' => $tanpa
+            'tanpa' => $tanpa,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.berkas')->with($data);
@@ -425,9 +431,7 @@ class SpmController extends Controller
             return $view;
         }
     }
-
     // cetak ringkasan
-
     // cetak pengantar
     public function cetakPengantar(Request $request)
     {
@@ -466,7 +470,10 @@ class SpmController extends Controller
             'tanpa' => $tanpa,
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
-            'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first()
+            'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first(),
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
         $view = view('penatausahaan.pengeluaran.spm.cetak.pengantar')->with($data);
         if ($jenis_print == 'pdf') {
@@ -517,6 +524,9 @@ class SpmController extends Controller
             'no_spm' => $no_spm,
             'total' => $total,
             'tanpa' => $tanpa,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.lampiran')->with($data);
@@ -555,7 +565,10 @@ class SpmController extends Controller
             'tanpa' => $tanpa,
             'beban' => $beban,
             'no_spm' => $no_spm,
-            'kd_skpd' => $kd_skpd
+            'kd_skpd' => $kd_skpd,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.tanggung_jawab')->with($data);
@@ -597,7 +610,10 @@ class SpmController extends Controller
             'beban' => $beban,
             'no_spm' => $no_spm,
             'kd_skpd' => $kd_skpd,
-            'data_beban' => $data_beban
+            'data_beban' => $data_beban,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.pernyataan')->with($data);
@@ -634,7 +650,10 @@ class SpmController extends Controller
             'tahun_anggaran' => tahun_anggaran(),
             'no_spm' => $no_spm,
             'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first(),
-            'tanpa' => $tanpa
+            'tanpa' => $tanpa,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.ringkasan_up')->with($data);
@@ -696,7 +715,10 @@ class SpmController extends Controller
             'jenis' => $no_spp->jenis_beban,
             'kd_sub_kegiatan' => $kd_sub_kegiatan,
             'beban6' => DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->select('a.*', 'b.*', DB::raw("(SELECT nama as nama_bank FROM ms_bank WHERE kode=a.bank) as nama_bank"))->where(['a.no_spm' => $no_spm])->first(),
-            'dpa' => DB::table('trhrka')->select('tgl_dpa', 'no_dpa')->where(['jns_ang' => $status_anggaran->jns_ang, 'kd_skpd' => $kd_skpd])->first()
+            'dpa' => DB::table('trhrka')->select('tgl_dpa', 'no_dpa')->where(['jns_ang' => $status_anggaran->jns_ang, 'kd_skpd' => $kd_skpd])->first(),
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
         ];
         $view = view('penatausahaan.pengeluaran.spm.cetak.ringkasan_gu')->with($data);
         if ($jenis_print == 'pdf') {
