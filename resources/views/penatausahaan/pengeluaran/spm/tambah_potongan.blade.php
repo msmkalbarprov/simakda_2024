@@ -92,7 +92,8 @@
                         <label for="nilai_pot" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control @error('nilai_pot') is-invalid @enderror"
-                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">
+                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"
+                                style="text-align: right">
                             @error('nilai')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -457,7 +458,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rincian_spm as $spm)
+                            {{-- @foreach ($rincian_spm as $spm)
                                 <tr>
                                     <td>{{ $spm->kd_trans }}</td>
                                     <td>{{ $spm->kd_rek6 }}</td>
@@ -473,7 +474,7 @@
                                             class="btn btn-success btn-sm"><i class="uil-print"></i></button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">
@@ -507,7 +508,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rincian_spm as $spm)
+                            {{-- @foreach ($rincian_spm as $spm)
                                 <tr>
                                     <td>{{ $spm->no_spm }}</td>
                                     <td>{{ $spm->kd_rek6 }}</td>
@@ -523,7 +524,7 @@
                                             class="btn btn-success btn-sm"><i class="uil-print"></i></button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">

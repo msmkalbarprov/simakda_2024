@@ -43,15 +43,15 @@
         let tabel_pot = $('#tabel_pot').DataTable({
             responsive: true,
             ordering: false,
-            // serverSide: true,
+            serverSide: true,
             processing: true,
-            // ajax: {
-            //     "url": "{{ route('spm.load_rincian') }}",
-            //     "type": "POST",
-            //     "data": {
-            //         "no_spm": document.getElementById('no_spm_pajak').value
-            //     }
-            // },
+            ajax: {
+                "url": "{{ route('spm.load_rincian') }}",
+                "type": "POST",
+                "data": {
+                    "no_spm": document.getElementById('no_spm_pajak').value
+                }
+            },
             columns: [{
                     data: 'kd_trans',
                     name: 'kd_trans'
@@ -74,27 +74,32 @@
                     name: 'idBilling'
                 },
                 {
-                    data: 'nilai',
+                    data: null,
                     name: 'nilai',
                     className: 'text-right',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
                 },
                 {
-                    data: 'hapus',
-                    name: 'hapus',
+                    data: 'aksi',
+                    name: 'aksi',
                 }
             ]
         });
         let tabel_pajak = $('#tabel_pajak').DataTable({
             responsive: true,
-            // serverSide: true,
+            serverSide: true,
             processing: true,
-            // ajax: {
-            //     "url": "{{ route('spm.load_rincian') }}",
-            //     "type": "POST",
-            //     "data": {
-            //         "no_spm": document.getElementById('no_spm_pajak').value
-            //     }
-            // },
+            ajax: {
+                "url": "{{ route('spm.load_rincian') }}",
+                "type": "POST",
+                "data": {
+                    "no_spm": document.getElementById('no_spm_pajak').value
+                }
+            },
             ordering: false,
             columns: [{
                     data: 'no_spm',
@@ -117,13 +122,18 @@
                     className: 'idBilling'
                 },
                 {
-                    data: 'nilai',
+                    data: null,
                     name: 'nilai',
                     className: 'text-right',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
                 },
                 {
-                    data: 'hapus',
-                    name: 'hapus',
+                    data: 'aksi',
+                    name: 'aksi',
                 }
             ]
         });
@@ -939,10 +949,10 @@
                         tabel_pot.ajax.reload();
                         tabel_pajak.ajax.reload();
                         $("#rekening_potongan").val(null).change();
-                        $("#nm_rek_pot").val('');
-                        $("#map_pot").val('');
-                        $("#id_billing").val('');
-                        $("#nilai_pot").val('');
+                        $("#nm_rek_pot").val(null);
+                        $("#map_pot").val(null);
+                        $("#id_billing").val(null);
+                        $("#nilai_pot").val(null);
                         total_pot += nilai_pot;
                         $('#total_pot').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
@@ -1010,43 +1020,43 @@
         let tabel_pot = $('#tabel_pot').DataTable();
         let tabel_pajak = $('#tabel_pajak').DataTable();
         if (hapus == true) {
-            // $.ajax({
-            //     type: "POST",
-            //     url: "{{ route('spm.hapus_rincian_pajak') }}",
-            //     dataType: 'json',
-            //     data: {
-            //         no_spm: no_spm,
-            //         kd_rek6: rekening_potongan,
-            //     },
-            //     dataType: "json",
-            //     success: function(data) {
-            //         if (data.message == '1') {
-            //             alert('Data berhasil dihapus!');
-            //             tabel_pot.ajax.reload();
-            //             tabel_pajak.ajax.reload();
-            //             $('#total_pot').val(new Intl.NumberFormat('id-ID', {
-            //                 minimumFractionDigits: 2
-            //             }).format(total - nilai_pot));
-            //             $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
-            //                 minimumFractionDigits: 2
-            //             }).format(total - nilai_pot));
-            //         } else {
-            //             alert('Data gagal dihapus!');
-            //         }
-            //     }
-            // })
-            tabel_pot.rows(function(idx, data, node) {
-                return data.kd_trans == rekening_transaksi && data.kd_rek6 == rekening_potongan
-            }).remove().draw();
-            tabel_pajak.rows(function(idx, data, node) {
-                return data.kd_rek6 == rekening_potongan
-            }).remove().draw();
-            $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total - nilai_pot));
-            $('#total_pot').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total - nilai_pot));
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.hapus_rincian_pajak') }}",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                    kd_rek6: rekening_potongan,
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil dihapus!');
+                        tabel_pot.ajax.reload();
+                        tabel_pajak.ajax.reload();
+                        $('#total_pot').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total - nilai_pot));
+                        $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total - nilai_pot));
+                    } else {
+                        alert('Data gagal dihapus!');
+                    }
+                }
+            })
+            // tabel_pot.rows(function(idx, data, node) {
+            //     return data.kd_trans == rekening_transaksi && data.kd_rek6 == rekening_potongan
+            // }).remove().draw();
+            // tabel_pajak.rows(function(idx, data, node) {
+            //     return data.kd_rek6 == rekening_potongan
+            // }).remove().draw();
+            // $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(total - nilai_pot));
+            // $('#total_pot').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(total - nilai_pot));
         } else {
             return;
         }
@@ -1059,43 +1069,43 @@
         let tabel_pajak = $('#tabel_pajak').DataTable();
         let tabel_pot = $('#tabel_pot').DataTable();
         if (hapus == true) {
-            // $.ajax({
-            //     type: "POST",
-            //     url: "{{ route('spm.hapus_rincian_pajak') }}",
-            //     dataType: 'json',
-            //     data: {
-            //         no_spm: no_spm,
-            //         kd_rek6: kd_rek6,
-            //     },
-            //     dataType: "json",
-            //     success: function(data) {
-            //         if (data.message == '1') {
-            //             alert('Data berhasil dihapus!');
-            //             tabel_pajak.ajax.reload();
-            //             tabel_pot.ajax.reload();
-            //             $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
-            //                 minimumFractionDigits: 2
-            //             }).format(total - nilai));
-            //             $('#total_pot').val(new Intl.NumberFormat('id-ID', {
-            //                 minimumFractionDigits: 2
-            //             }).format(total - nilai));
-            //         } else {
-            //             alert('Data gagal dihapus!');
-            //         }
-            //     }
-            // })
-            tabel_pot.rows(function(idx, data, node) {
-                return data.kd_rek6 == rekening_potongan
-            }).remove().draw();
-            tabel_pajak.rows(function(idx, data, node) {
-                return data.no_spm == no_spm && data.kd_rek6 == kd_rek6
-            }).remove().draw();
-            $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total - nilai));
-            $('#total_pot').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total - nilai));
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.hapus_rincian_pajak') }}",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                    kd_rek6: kd_rek6,
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil dihapus!');
+                        tabel_pajak.ajax.reload();
+                        tabel_pot.ajax.reload();
+                        $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total - nilai));
+                        $('#total_pot').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total - nilai));
+                    } else {
+                        alert('Data gagal dihapus!');
+                    }
+                }
+            })
+            // tabel_pot.rows(function(idx, data, node) {
+            //     return data.kd_rek6 == rekening_potongan
+            // }).remove().draw();
+            // tabel_pajak.rows(function(idx, data, node) {
+            //     return data.no_spm == no_spm && data.kd_rek6 == kd_rek6
+            // }).remove().draw();
+            // $('#total_pajak').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(total - nilai));
+            // $('#total_pot').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(total - nilai));
         } else {
             return;
         }

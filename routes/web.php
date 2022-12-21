@@ -844,7 +844,8 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('load_data', [PenyetoranController::class, 'loadDataPenyetoranLalu'])->name('penyetoran_lalu.load_data');
                 Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranLalu'])->name('penyetoran_lalu.tambah');
                 Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranLalu'])->name('penyetoran_lalu.simpan');
-                Route::get('edit/{no_terima?}', [PenyetoranController::class, 'editPenyetoranLalu'])->where('no_terima', '(.*)')->name('penyetoran_lalu.edit');
+                Route::post('rekening', [PenyetoranController::class, 'rekeningPenyetoranLalu'])->name('penyetoran_lalu.rekening');
+                Route::get('edit/{no_sts?}', [PenyetoranController::class, 'editPenyetoranLalu'])->where('no_sts', '(.*)')->name('penyetoran_lalu.edit');
                 Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranLalu'])->name('penyetoran_lalu.simpan_edit');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranLalu'])->name('penyetoran_lalu.hapus');
             });

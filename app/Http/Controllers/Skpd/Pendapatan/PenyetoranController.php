@@ -15,25 +15,21 @@ class PenyetoranController extends Controller
     // Penyetoran Atas Penerimaan Tahun Lalu
     public function indexPenyetoranLalu()
     {
-        return view('penatausahaan.penyetoran_tahun_lalu.js.index');
+        return view('penatausahaan.penyetoran_tahun_lalu.index');
     }
 
     public function loadDataPenyetoranLalu()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_terima as a')
-            ->selectRaw("a.*")
-            ->where(['a.kd_skpd' => $kd_skpd, 'a.jenis' => '2'])
-            ->orderBy('tgl_terima')
-            ->orderBy('no_terima')
+        $data = DB::table('trhkasin_pkd as a')
+            ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '2'])
+            ->orderBy('a.tgl_sts')
+            ->orderBy('a.no_sts')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->kunci != '1') {
-                $btn = '<a href="' . route("penerimaan_lalu.edit", Crypt::encrypt($row->no_terima)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_terima . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
-            } else {
-                $btn = '';
-            }
+            $btn = '<a href="' . route("penyetoran_lalu.edit", Crypt::encrypt($row->no_sts)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -41,25 +37,34 @@ class PenyetoranController extends Controller
     public function tambahPenyetoranLalu()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
-            ->select('jns_ang')
-            ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
-            ->orderByDesc('tgl_dpa')
-            ->first();
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::table('trdrka_pend as a')
-                ->leftJoin('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')
-                ->leftJoin('ms_rek5 as c', DB::raw("left(a.kd_rek6,8)"), '=', 'c.kd_rek5')
-                ->selectRaw("a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan")
-                ->where(['a.kd_skpd' => $kd_skpd])
-                ->whereRaw("left(a.kd_rek6,1)=? and a.jns_ang=?", ['4', $status_ang_pend->jns_ang])
-                ->orderBy('kd_rek6')
-                ->distinct()
+            'daftar_pengirim' => DB::table('ms_pengirim as a')
+                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                ->orderByRaw("cast(kd_pengirim as int)")
+                ->get(),
+            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+                ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
+                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get()
         ];
 
-        return view('skpd.penerimaan_tahun_lalu.create')->with($data);
+        return view('penatausahaan.penyetoran_tahun_lalu.create')->with($data);
+    }
+
+    public function rekeningPenyetoranLalu(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+
+        $data = DB::table('trdrka as a')
+            ->selectRaw("a.kd_rek6,(SELECT nm_rek6 FROM ms_rek6 WHERE kd_rek6=a.kd_rek6) AS nm_rek6")
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])
+            ->distinct()
+            ->get();
+
+        return response()->json($data);
     }
 
     public function simpanPenyetoranLalu(Request $request)
@@ -90,34 +95,35 @@ class PenyetoranController extends Controller
 
             if ($cek->status_kasda == '1') {
                 return response()->json([
-                    'message' => '3'
+                    'message' => '2'
                 ]);
             } elseif ($cek->status_spj == '1') {
                 return response()->json([
                     'message' => '3'
                 ]);
             } else {
-                $cek_terima = DB::table('tr_terima')->where(['no_terima' => $data['no_terima'], 'kd_skpd' => $kd_skpd])->count();
+                $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_sts'], 'kd_skpd' => $kd_skpd])->count();
                 if ($cek_terima > 0) {
                     return response()->json([
-                        'message' => '2'
+                        'message' => '4'
                     ]);
                 }
             }
 
-            DB::table('tr_terima')->insert([
-                'no_terima' => $data['no_terima'],
-                'tgl_terima' => $data['tgl_terima'],
-                'no_tetap' => '',
-                'tgl_tetap' => '',
-                'sts_tetap' => '',
+            DB::table('trhkasin_pkd')->insert([
+                'no_sts' => $data['no_sts'],
+                'tgl_sts' => $data['tgl_sts'],
                 'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['rekening'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
-                'jenis' => '2',
+                'total' => $data['total'],
+                'kd_bank' => '',
+                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                'jns_trans' => '2',
+                'rek_bank' => '',
+                'sumber' => $data['pengirim'],
+                'pot_khusus' => '0',
+                'no_sp2d' => '',
+                'jns_cp' => '',
             ]);
 
             DB::commit();
