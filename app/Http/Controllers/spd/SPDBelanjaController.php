@@ -630,8 +630,6 @@ class SPDBelanjaController extends Controller
     public function simpanSPP(Request $request)
     {
         $data = $request->data;
-        $status_angkas = $data['status_angkas'];
-        $sts_ang = tbStatusAngkas($status_angkas);
         $user = Auth::user()->nama;
 
         DB::beginTransaction();
@@ -670,7 +668,7 @@ class SPDBelanjaController extends Controller
                         'status' => '0',
                         'revisi_ke' => $revisi,
                         'jns_ang' => $data['jenis_anggaran'],
-                        'jns_angkas' => $sts_ang,
+                        'jns_angkas' => $data['status_angkas'],
                     ]);
                     
                     if (isset($data['daftar_spd'])) {
@@ -710,6 +708,7 @@ class SPDBelanjaController extends Controller
                         'status' => '0',
                         'revisi_ke' => '0',
                         'jns_ang' => $data['jenis_anggaran'],
+                        'jns_angkas' => $data['status_angkas'],
                     ]);
                     
                     if (isset($data['daftar_spd'])) {
