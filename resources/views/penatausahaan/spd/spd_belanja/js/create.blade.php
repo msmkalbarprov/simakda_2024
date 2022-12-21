@@ -681,6 +681,11 @@
                 return;
             }
 
+            if (nomor.length != 49) {
+                alert('Format Nomor SPD Belum Lengkap');
+                return;
+            }
+
             let response = {
                 skpd,
                 nipp,
