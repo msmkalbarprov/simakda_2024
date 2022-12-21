@@ -61,11 +61,32 @@
 </head>
 
 <body>
-    <div style="text-align: center; font-size: 15px;">
+    {{-- <div style="text-align: center; font-size: 15px;">
         <div><strong>{{ strtoupper($daerah->kab_kota) }}</strong></div>
         <div><strong>SURAT PERINTAH MEMBAYAR</strong></div>
         <div><strong>Langsung (LS)</strong></div>
-    </div>
+    </div> --}}
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+        border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="font-size:14px;text-align:center" width="93%"><strong>PEMERINTAH
+                    {{ strtoupper($header->nm_pemda) }}</strong></td>
+        </tr>
+        <tr>
+            <td style="font-size:14px;text-align:center">
+                <strong>
+                    {{ $skpd->nm_skpd }}
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:14px;text-align:center"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+        </tr>
+        <tr>
+            <td style="font-size:14px;text-align:center"><strong>&nbsp;</strong></td>
+        </tr>
+    </table>
+    <hr>
     <table class="bordered" style="font-size: 12px;">
         <tbody>
             <tr>
@@ -299,7 +320,8 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;" colspan="2"><i>SPM ini sah apabila telah ditandatangani dan distempel
+                <td style="text-align: center;" colspan="2"><i>SPM ini sah apabila telah ditandatangani dan
+                        distempel
                         oleh Kepala SKPD</i></td>
             </tr>
         </tbody>

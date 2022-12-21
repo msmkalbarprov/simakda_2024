@@ -6,14 +6,14 @@
             }
         });
 
-        $('#penerimaan_lalu').DataTable({
+        $('#penyetoran_lalu').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('penerimaan_lalu.load_data') }}",
+                "url": "{{ route('penyetoran_lalu.load_data') }}",
                 "type": "POST",
             },
             columns: [{
@@ -21,13 +21,13 @@
                     name: 'DT_RowIndex',
                     className: "text-center",
                 }, {
-                    data: 'no_terima',
-                    name: 'no_terima',
+                    data: 'no_sts',
+                    name: 'no_sts',
                     className: "text-center",
                 },
                 {
-                    data: 'tgl_terima',
-                    name: 'tgl_terima',
+                    data: 'tgl_sts',
+                    name: 'tgl_sts',
                     className: "text-center",
                 },
                 {
@@ -36,18 +36,10 @@
                     className: "text-center",
                 },
                 {
-                    data: 'kd_rek6',
-                    name: 'kd_rek6',
-                    className: "text-center",
-                },
-                {
                     data: null,
-                    name: 'nilai',
-                    className: 'text-right',
+                    name: 'keterangan',
                     render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)
+                        return data.keterangan.substr(0, 10) + '.....';
                     }
                 },
                 {
