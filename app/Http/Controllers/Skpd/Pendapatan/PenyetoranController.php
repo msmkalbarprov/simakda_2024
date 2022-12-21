@@ -400,6 +400,11 @@ class PenyetoranController extends Controller
 
     public function cekPenyetoranLalu(Request $request)
     {
-        # code...
+        $tgl_awal = $request->tgl_awal;
+        $tgl_akhir = $request->tgl_akhir;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [];
+        return view('penatausahaan.pengeluaran.spm.cetak.ringkasan_gu')->with($data);
     }
 }

@@ -59,7 +59,8 @@
                                 <optgroup label="Daftar Rekening Potongan">
                                     <option value="" disabled selected>Silahkan Pilih Rekening Potongan</option>
                                     @foreach ($daftar_potongan as $potongan)
-                                        <option value="{{ $potongan->kd_rek6 }}" data-nama="{{ $potongan->nm_rek6 }}">
+                                        <option value="{{ $potongan->kd_rek6 }}" data-nama="{{ $potongan->nm_rek6 }}"
+                                            data-map_pot="{{ $potongan->map_pot }}">
                                             {{ $potongan->kd_rek6 }} | {{ $potongan->nm_rek6 }}</option>
                                     @endforeach
                                 </optgroup>

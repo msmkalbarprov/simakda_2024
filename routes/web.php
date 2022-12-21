@@ -62,7 +62,7 @@ use App\Http\Controllers\PenandatanganController;
 use App\Http\Controllers\Skpd\Pendapatan\PenerimaanController;
 //spd belanaja
 use App\Http\Controllers\Spd\SPDBelanjaController;
-use App\Http\Controllers\Spd\SPDBelanjaPRController;
+use App\Http\Controllers\Spd\PembatalanSPDController;
 use App\Http\Controllers\Spd\RegisterSPDController;
 use App\Http\Controllers\Spd\KonfigurasiSPDController;
 use App\Http\Controllers\ProfileController;
@@ -305,12 +305,13 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('insert-all-spd-belanja', [SPDBelanjaController::class, 'getInsertAllSpdTemp'])->name('spd.spd_belanja.insert_all_spd');
                 Route::post('delete-all-spd-belanja', [SPDBelanjaController::class, 'getDeleteAllSpdTemp'])->name('spd.spd_belanja.delete_all_spd');
                 Route::post('daftar-spd-belanja-temp', [SPDBelanjaController::class, 'getSpdBelanjaTemp'])->name('spd.spd_belanja.load_spd_belanja_temp');
-                Route::get('tambah', [SPDBelanjaController::class, 'create'])->name('spd.spj_belanja.create');
                 Route::get('tambah', [SPDBelanjaController::class, 'create'])->name('spd.spd_belanja.create');
                 Route::post('simpan-spp', [SPDBelanjaController::class, 'simpanSPP'])->name('spd.spd_belanja.simpanSpp');
                 Route::get('cetak-otorisasi', [SPDBelanjaController::class, 'cetakOto'])->name('spd.spd_belanja.cetak_otorisasi');
                 Route::get('cetak-lampiran', [SPDBelanjaController::class, 'cetakLamp'])->name('spd.spd_belanja.cetak_lampiran');
                 Route::post('/hapus_data_spd', [SPDBelanjaController::class, 'destroy'])->name('spd.spd_belanja.hapus_data_spd');
+                Route::get('tampil/{no_spd}', [SPDBelanjaController::class, 'tampilspdBP'])->where('no_spd', '(.*)')->name('spdBP.show');
+                Route::post('show_load_data', [SPDBelanjaController::class, 'ShowloadData'])->name('spd.spd_belanja.show_load_data');
             });
 
             // register spd
@@ -328,6 +329,12 @@ Route::group(['middleware' => 'auth'], function () {
             Route::group(['prefix' => 'konfigurasi_spd'], function () {
                 Route::get('', [KonfigurasiSPDController::class, 'index'])->name('konfigurasi_spd.index');
                 Route::patch('update', [KonfigurasiSPDController::class, 'update'])->name('spd.konfigurasi_spd.update');
+            });
+            //pembatalan spd
+            Route::group(['prefix' => 'pembatalan_spd'], function () {
+                Route::get('', [PembatalanSPDController::class, 'index'])->name('pembatalan_spd.index');
+                Route::get('load_data', [PembatalanSPDController::class, 'loadData'])->name('spd.pembatalan_spd.load_data');
+                Route::patch('update-status', [PembatalanSPDController::class, 'updateStatus'])->name('spd.spd_belanja.update_status');
             });
         });
     });

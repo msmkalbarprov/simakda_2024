@@ -27,13 +27,12 @@
                             <thead>
                                 <tr>
                                     <!-- <th style="width: 25px;text-align:center">No.</th> -->
-                                    <th style="width: 100px;text-align:center">Nomor SPM</th>
-                                    <th style="width: 50px;text-align:center">Tanggal</th>
-                                    <th style="width: 150px;text-align:center">Nama SKPD</th>
-                                    <th style="width: 150px;text-align:center">Jenis Beban</th>
-                                    <th style="width: 150px;text-align:center">Jenis Anggaran</th>
-                                    <th style="width: 150px;text-align:center">Revisi</th>
-                                    <th style="width: 150px;text-align:center">Aksi</th>
+                                    <th style="text-align:center">Nomor SPM</th>
+                                    <th style="text-align:center">Tanggal</th>
+                                    <th style="text-align:center">Jenis Beban</th>
+                                    <th style="text-align:center">Jenis Anggaran</th>
+                                    <th style="text-align:center">Revisi</th>
+                                    <th style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>

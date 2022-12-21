@@ -25,17 +25,10 @@
                 {
                     data: 'no_spd',
                     name: 'no_spd',
-                    className: "text-center",
                 },
                 {
                     data: 'tgl_spd',
                     name: 'tgl_spd',
-                    className: "text-center",
-                },
-                {
-                    data: 'nm_skpd',
-                    name: 'nm_skpd',
-                    visible: false
                 },
                 {
                     data: 'nm_beban',
