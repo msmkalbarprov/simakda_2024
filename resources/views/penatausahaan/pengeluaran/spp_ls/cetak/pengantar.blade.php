@@ -223,7 +223,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:600px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center;padding-left:600px"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:600px">{{ $cari_bendahara->pangkat }}</td>
@@ -249,7 +249,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -278,8 +279,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center">{{ $cari_pptk->nama }}</td>
-                        <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center"><u><b>{{ $cari_pptk->nama }}</b></u></td>
+                        <td style="text-align: center"><u><b>{{ $cari_bendahara->nama }}</b></u></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
@@ -308,7 +309,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -334,7 +336,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                            <td style="text-align: center;padding-left:300px"><u><b>{{ $cari_bendahara->nama }}</b></u>
+                            </td>
                         </tr>
                         <tr>
                             <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>

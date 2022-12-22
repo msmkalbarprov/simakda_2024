@@ -42,19 +42,7 @@
             <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
-        <tr>
-            <td align="left" style="font-size:14px">
-                <strong>
-                    @if ($beban == '4')
-                        {{ $skpd->nm_skpd }}
-                    @elseif($beban == '5')
-                        {{ $skpd->nm_skpd }}
-                    @elseif ($beban == '6')
-                        SKPD {{ $skpd->nm_skpd }}
-                    @endif
-                </strong>
-            </td>
-        </tr>
+
         <tr>
             <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
@@ -186,7 +174,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center;padding-left:500px"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->pangkat }}</td>
@@ -212,7 +200,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -241,8 +230,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center">{{ $cari_pptk->nama }}</td>
-                        <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center"><b><u>{{ $cari_pptk->nama }}</u></b></td>
+                        <td style="text-align: center"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
@@ -271,7 +260,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -297,7 +287,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                            <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                            </td>
                         </tr>
                         <tr>
                             <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -326,8 +317,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align: center">{{ $cari_pptk->nama }}</td>
-                            <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
+                            <td style="text-align: center"><b><u>{{ $cari_pptk->nama }}</u></b></td>
+                            <td style="text-align: center"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                         </tr>
                         <tr>
                             <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>

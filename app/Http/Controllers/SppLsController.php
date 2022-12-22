@@ -2389,9 +2389,9 @@ class SppLsController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first();
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
-        $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd, 'kode' => 'PPTK'])->first();
-        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
+        $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd, 'kode' => 'PPTK'])->first();
+        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
         if ($beban == 1) {
@@ -2457,8 +2457,8 @@ class SppLsController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         $spp = DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp])->first();
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first();
-        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first();
+        $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
 

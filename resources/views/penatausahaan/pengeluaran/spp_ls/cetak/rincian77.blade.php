@@ -81,6 +81,9 @@
                     <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
                 </tr>
                 <tr>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
+                </tr>
+                <tr>
                     <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
                 </tr>
             @else
@@ -107,6 +110,12 @@
                     <td style="text-align: center;padding-left:100px;text-decoration:underline">
                         {{ $cari_bendahara->nama }}</td>
                     <td style="text-align: center;padding-left:300px;text-decoration:underline">{{ $cari_pa->nama }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;padding-left:100px">
+                        {{ $cari_bendahara->pangkat }}</td>
+                    <td style="text-align: center;padding-left:300px">{{ $cari_pa->pangkat }}
                     </td>
                 </tr>
                 <tr>

@@ -218,7 +218,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center;padding-left:500px"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->pangkat }}</td>
@@ -243,7 +243,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                    <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -269,7 +269,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        </td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
@@ -298,8 +299,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center">{{ $cari_pptk->nama }}</td>
-                        <td style="text-align: center">{{ $cari_bendahara->nama }}</td>
+                        <td style="text-align: center"><b><u>{{ $cari_pptk->nama }}</u></b></td>
+                        <td style="text-align: center"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>

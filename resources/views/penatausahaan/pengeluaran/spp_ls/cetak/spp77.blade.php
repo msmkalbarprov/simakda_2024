@@ -160,6 +160,10 @@
                     <td colspan="4" style="text-align: center;padding-left:700px">{{ $cari_bendahara->nama }}</td>
                 </tr>
                 <tr>
+                    <td colspan="4" style="text-align: center;padding-left:700px">{{ $cari_bendahara->pangkat }}
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="4" style="text-align: center;padding-left:700px">NIP. {{ $cari_bendahara->nip }}
                     </td>
                 </tr>
@@ -186,8 +190,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: center;padding-left:100px">{{ $cari_pptk->nama }}</td>
-                    <td colspan="2" style="text-align: center;padding-left:300px">{{ $cari_bendahara->nama }}</td>
+                    <td colspan="2" style="text-align: center;padding-left:100px"><u>{{ $cari_pptk->nama }}</u></td>
+                    <td colspan="2" style="text-align: center;padding-left:300px"><u>{{ $cari_bendahara->nama }}</u>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;padding-left:100px">{{ $cari_pptk->pangkat }}</td>
+                    <td colspan="2" style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;padding-left:100px">{{ $cari_pptk->nip }}</td>

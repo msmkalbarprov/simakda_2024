@@ -2796,7 +2796,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px;font-weight:bold">{{ $pptk->nama }}</td>
+                <td style="text-align: center;padding-left:600px;font-weight:bold"><u>{{ $pptk->nama }}</u></td>
             </tr>
             <tr>
                 <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>

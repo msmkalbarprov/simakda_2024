@@ -319,7 +319,8 @@
                         <div>{{ $pa_kpa->jabatan }}</div>
                         <div style="height: 50px;"></div>
                         <div><b><u></u></b></div>
-                        <div><u>{{ $pa_kpa->nama }}</u></div>
+                        <div><u><b>{{ $pa_kpa->nama }}</b></u></div>
+                        <div>{{ $pa_kpa->pangkat }}</div>
                         <div>NIP. {{ $pa_kpa->nip }}</div>
                     </div>
                 </td>
