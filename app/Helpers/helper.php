@@ -9,7 +9,8 @@ use function PHPUnit\Framework\isNull;
 
 function tahun_anggaran()
 {
-    return '2023';
+    $data = DB::table('config_app')->select('thn_ang')->first();
+    return $data->thn_ang;
 }
 
 // hendra

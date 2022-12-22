@@ -72,7 +72,7 @@
             window.open(url.toString(), "_blank");
         });
 
-        $('#cek').on('click', function() {
+        $('#validasi').on('click', function() {
             let tgl_awal = document.getElementById('tgl_awal').value;
             let tgl_akhir = document.getElementById('tgl_akhir').value;
 
@@ -85,25 +85,31 @@
                 alert('Tanggal akhir tidak boleh kecil dari tanggal awal!');
                 return;
             }
-
-            $.ajax({
-                url: "{{ route('skpd.upload_cms.proses_upload') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    total_transaksi: total_transaksi,
-                    rincian_data: rincian_data,
-                },
-                success: function(data) {
-                    if (data.message == '1') {
-                        alert('Data berhasil diupload');
-                        window.location.href = "{{ route('skpd.upload_cms.index') }}";
-                    } else {
-                        alert('Data tidak berhasil diupload!');
-                        $('#proses_upload').prop("disabled", false);
+            let tny = confirm('Tgl STS ' + tgl_awal + ' s/d ' + tgl_akhir +
+                ' akan dikirim ke Kasda, Apakah Anda yakin ?');
+            if (tny == true) {
+                $.ajax({
+                    url: "{{ route('penyetoran_lalu.validasi') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        tgl_awal: tgl_awal,
+                        tgl_akhir: tgl_akhir,
+                    },
+                    success: function(data) {
+                        if (data.message == '1') {
+                            alert('Data berhasil divalidasi');
+                            window.location.href = "{{ route('penyetoran_lalu.index') }}";
+                        } else if (data.message == '2 ') {
+                            alert('Hanya Untuk UPPD BPKPD!');
+                            return;
+                        } else {
+                            alert('Data gagal divalidasi!');
+                            return;
+                        }
                     }
-                }
-            })
+                })
+            }
         });
     });
 

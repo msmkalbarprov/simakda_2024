@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>BERKAS SPM</title>
     {{-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -150,22 +150,27 @@
                         </tbody>
                     </table>
                     <div><strong>Pembebanan pada kode rekening:</strong></div>
-                    <table style="font-size: 9px">
+                    <table style="font-size: 12px">
                         <thead>
                             <tr>
-                                <th style="border-top: 1px solid black;border-right:1px solid black;width:10%">Kode
+                                <th
+                                    style="border-top: 1px solid black;border-bottom: 1px solid black;border-right:1px solid black;width:10%">
+                                    Kode
                                     Kegiatan</th>
-                                <th style="border-top: 1px solid black;border-right:1px solid black;width:30%">Uraian
+                                <th
+                                    style="border-top: 1px solid black;border-bottom: 1px solid black;border-right:1px solid black;width:30%">
+                                    Uraian
                                 </th>
-                                <th style="border-top: 1px solid black;width:20%" colspan="2">Nilai</th>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;width:20%"
+                                    colspan="2">Nilai</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if (in_array($beban, ['1', '2']))
                                 <tr>
-                                    <td style="border-top: 1px solid black;border-right:1px solid black">
+                                    <td>
                                         {{ $kd_skpd }}</td>
-                                    <td style="border-top: 1px solid black;border-right:1px solid black">
+                                    <td>
                                         {{ $data_spm->nm_skpd }}</td>
                                     <td style="border-top: 1px solid black">Rp</td>
                                     <td style="border-top: 1px solid black;text-align:right">
@@ -175,12 +180,12 @@
                                 @if ($total_beban <= $baris)
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td style="border-top: 1px solid black;border-right:1px solid black">
+                                            <td>
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td style="border-top: 1px solid black;border-right:1px solid black">
+                                            <td>
                                                 {{ ucwords($rincian_beban->nama) }}</td>
-                                            <td style="border-top: 1px solid black">Rp</td>
-                                            <td style="border-top: 1px solid black;text-align:right">
+                                            <td style="">Rp</td>
+                                            <td style="text-align:right">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
@@ -188,12 +193,12 @@
                                 @else
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td style="border-top: 1px solid black;border-right:1px solid black">
+                                            <td>
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td style="border-top: 1px solid black;border-right:1px solid black">
+                                            <td>
                                                 {{ ucwords($rincian_beban->nama) }}</td>
-                                            <td style="border-top: 1px solid black">Rp</td>
-                                            <td style="border-top: 1px solid black;text-align:right">
+                                            <td style="">Rp</td>
+                                            <td style="text-align:right">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
