@@ -28,7 +28,6 @@
                 {
                     data: 'nm_skpd',
                     name: 'nm_skpd',
-                    className: "text-center",
                 },
                 {
                     data: 'aksi',
