@@ -49,14 +49,63 @@
         </tr>
     </table>
     <hr>
-    <div style="text-align: center">
+    <table style="width: 100%;text-align:center">
+        <tr>
+            <td><strong><u>SURAT PENGANTAR</u></strong></td>
+        </tr>
+        @if (in_array($beban, ['2', '3', '4', '5', '6']))
+            <tr>
+                <td><strong>Nomor : {{ $no_spm }}</strong></td>
+            </tr>
+        @endif
+    </table>
+    {{-- <div style="text-align: center">
         <h5 style="margin: 2px 0px"><strong><u>SURAT PENGANTAR</u></strong></h5>
         @if (in_array($beban, ['2', '3', '4', '5', '6']))
             <h5 style="margin: 2px 0px"><strong>Nomor : {{ $no_spm }}</strong></h5>
         @endif
-    </div>
+    </div> --}}
     <div>
-        <h5 style="margin: 2px 0px">Kepada Yth.</h5>
+        <table style="width: 100%">
+            <tr>
+                <td>Kepada Yth.</td>
+            </tr>
+            <tr>
+                <td>Kuasa Bendahara Umum Daerah Provinsi Kalimantan Barat</td>
+            </tr>
+            @if (in_array($beban, ['1', '2', '3', '4']))
+                <tr>
+                    <td>OPD : </td>
+                </tr>
+            @endif
+            <tr>
+                <td>Di <strong><u>Pontianak</u></strong></td>
+            </tr>
+            <tr>
+                <td>Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                    {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun
+                    {{ $tahun_anggaran }},
+                    bersama ini kami mengajukan Surat Perintah Membayar
+                    @if ($beban == '1')
+                        (SPM-UP)
+                    @elseif ($beban == '2')
+                        (SPM-GU)
+                    @elseif ($beban == '3')
+                        (SPM-TU)
+                    @elseif (in_array($beban, ['4', '5', '6']))
+                        (SPM-LS)
+                    @endif
+                    Nomor {{ $no_spm }} tanggal
+                    @if ($tanpa == 1)
+                        ______________{{ $tahun_anggaran }}
+                    @else
+                        {{ tanggal($data_beban->tgl_spm) }}
+                    @endif
+                    untuk diterbitkan SP2D sebagai berikut:
+                </td>
+            </tr>
+        </table>
+        {{-- <h5 style="margin: 2px 0px">Kepada Yth.</h5>
         <h5 style="margin: 2px 0px">Kuasa Bendahara Umum Daerah Provinsi Kalimantan Barat</h5>
         @if (in_array($beban, ['1', '2', '3', '4']))
             <h5 style="margin: 2px 0px">OPD : </h5>
@@ -81,7 +130,7 @@
                 {{ tanggal($data_beban->tgl_spm) }}
             @endif
             untuk diterbitkan SP2D sebagai berikut:
-        </h5>
+        </h5> --}}
     </div>
     <div>
         <table style="width: 100%">

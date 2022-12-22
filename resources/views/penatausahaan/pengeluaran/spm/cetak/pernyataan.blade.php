@@ -50,47 +50,74 @@
     </table>
     <hr>
     <div style="text-align: center">
-        <h5 style="margin: 2px 0px"><strong><u>SURAT PERNYATAAN
-                    {{ Str::upper(nama_beban($beban, $data_beban->jenis_beban)) }}</u></strong></h5>
-        <h5 style="margin: 2px 0px"><strong>Nomor: {{ $no_spm }}</strong></h5>
+        <table style="width:100%">
+            <tr>
+                <td><strong><u>SURAT PERNYATAAN
+                            {{ Str::upper(nama_beban($beban, $data_beban->jenis_beban)) }}</u></strong></td>
+            </tr>
+            <tr>
+                <td><strong>Nomor: {{ $no_spm }}</strong></td>
+            </tr>
+        </table>
+        {{-- <h5 style="margin: 2px 0px"><strong><u>SURAT PERNYATAAN
+                    {{ Str::upper(nama_beban($beban, $data_beban->jenis_beban)) }}</u></strong></h5> --}}
+        {{-- <h5 style="margin: 2px 0px"><strong>Nomor: {{ $no_spm }}</strong></h5> --}}
     </div>
     <div>
-        <h5 style="margin: 2px 0px;text-align:justify">Sehubungan dengan Surat Perintah Membayar
+        <table style="width: 100%;text-align:justify">
+            <tr>
+                <td>Sehubungan dengan Surat Perintah Membayar
+                    {{ nama_spm($beban, $data_beban->jenis_beban) }}
+                    Nomor {{ $no_spm }} Tanggal {{ tanggal($data_beban->tgl_spm) }} yang kami ajukan sebesar
+                    {{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})</td>
+            </tr>
+            <tr>
+                <td>Untuk Keperluan OPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
+                    {{ $tahun_anggaran }}</td>
+            </tr>
+            <tr>
+                <td>Dengan ini menyatakan sebenarnya bahwa :</td>
+            </tr>
+        </table>
+        {{-- <h5 style="margin: 2px 0px;text-align:justify">Sehubungan dengan Surat Perintah Membayar
             {{ nama_spm($beban, $data_beban->jenis_beban) }}
             Nomor {{ $no_spm }} Tanggal {{ tanggal($data_beban->tgl_spm) }} yang kami ajukan sebesar
             {{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})
-        </h5>
-        <h5 style="margin: 2px 0px;text-align:justify">Untuk Keperluan OPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
-            {{ $tahun_anggaran }}</h5>
-        <h5 style="margin: 2px 0px;text-align:justify">Dengan ini menyatakan sebenarnya bahwa :</h5>
+        </h5> --}}
+        {{-- <h5 style="margin: 2px 0px;text-align:justify">Untuk Keperluan OPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
+            {{ $tahun_anggaran }}</h5> --}}
+        {{-- <h5 style="margin: 2px 0px;text-align:justify">Dengan ini menyatakan sebenarnya bahwa :</h5> --}}
     </div>
     <div>
         <table style="width: 100%">
-            <tbody>
-                <tr>
-                    <td style="padding-left:10px;width: 5%">1.</td>
-                    <td style="text-align:justify">
-                        <h5 style="margin: 2px 0px">Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
-                            tersebut di atas akan dipergunakan untuk keperluan guna membiayai kegiatan yang akan kami
-                            laksanan sesuai DPA-OPD</h5>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-left:10px">2.</td>
-                    <td style="text-align: justify">
-                        <h5 style="margin: 2px 0px">Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
-                            tersebut tidak akan
-                            dipergunakan untuk membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
-                            harus dilaksanakan dengan Pembayaran Langsung
-                            {{ nama_beban1($beban, $data_beban->jenis_beban) }}</h5>
-                    </td>
-                </tr>
-            </tbody>
+            <tr>
+                <td style="padding-left:10px;width:5%">1.</td>
+                <td style="text-align:justify">
+                    Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
+                    tersebut di atas akan dipergunakan untuk keperluan guna membiayai kegiatan yang akan kami
+                    laksanan sesuai DPA-OPD
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-left:10px">2.</td>
+                <td style="text-align: justify">
+                    Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
+                    tersebut tidak akan
+                    dipergunakan untuk membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
+                    harus dilaksanakan dengan Pembayaran Langsung
+                    {{ nama_beban1($beban, $data_beban->jenis_beban) }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
+                    SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
+                    OPD kami</td>
+            </tr>
         </table>
-        <h5 style="margin: 2px 0px">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
+        {{-- <h5 style="margin: 2px 0px">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
             SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
             OPD kami
-        </h5>
+        </h5> --}}
     </div>
 
     <div style="padding-top:20px">

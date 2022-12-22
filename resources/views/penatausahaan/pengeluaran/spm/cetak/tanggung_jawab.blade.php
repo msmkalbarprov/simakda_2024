@@ -50,11 +50,21 @@
     </table>
     <hr>
     <div style="text-align: center">
-        <h5 style="margin: 2px 0px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></h5>
+        <table style="width: 100%">
+            <tr>
+                <td><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></td>
+            </tr>
+        </table>
+        {{-- <h5 style="margin: 2px 0px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></h5> --}}
     </div>
     <div>
-        <h5 style="margin: 2px 0px">Yang bertanda tangan di bawah ini:</h5>
-        <table style="width: 100%;font-family: Open Sans; font-size:12px">
+        <table style="100%">
+            <tr>
+                <td>Yang bertanda tangan di bawah ini:</td>
+            </tr>
+        </table>
+        {{-- <h5 style="margin: 2px 0px">Yang bertanda tangan di bawah ini:</h5> --}}
+        <table style="width: 100%;font-family: Open Sans">
             <tbody>
                 <tr>
                     <td>Nama</td>
@@ -75,9 +85,12 @@
         </table>
     </div>
     <div>
-        <h5 style="margin: 2px 0px">Menyatakan dengan sesungguhnya bahwa:</h5>
-        <table style="width: 100%;font-family: Open Sans; font-size:12px">
+        <table style="width: 100%;font-family: Open Sans">
             <tbody>
+                <tr>
+                    <td colspan="2">Menyatakan dengan sesungguhnya bahwa:</td>
+                </tr>
+                {{-- <h5 style="margin: 2px 0px">Menyatakan dengan sesungguhnya bahwa:</h5> --}}
                 <tr>
                     <td style="padding-left:10px;width: 5%">1.</td>
                     <td style="text-align:justify">
@@ -98,11 +111,18 @@
                         </p>
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="2">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen
+                        yang
+                        dipersyaratkan tersebut terdapat kekeliruan, kekurangan dan tidak sah sesuai ketentuan yang
+                        berlaku akan
+                        menjadi tanggungjawab kami sepenuhnya selaku {{ $pa_kpa->jabatan }}</td>
+                </tr>
             </tbody>
         </table>
-        <h5 style="margin: 2px 0px">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen yang
+        {{-- <h5 style="margin: 2px 0px">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen yang
             dipersyaratkan tersebut terdapat kekeliruan, kekurangan dan tidak sah sesuai ketentuan yang berlaku akan
-            menjadi tanggungjawab kami sepenuhnya selaku {{ $pa_kpa->jabatan }}</h5>
+            menjadi tanggungjawab kami sepenuhnya selaku {{ $pa_kpa->jabatan }}</h5> --}}
     </div>
 
     <div style="padding-top:20px">
