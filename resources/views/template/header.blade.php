@@ -85,12 +85,12 @@
                                 $pengumuman = pengumuman();
                             @endphp
                             @foreach ($pengumuman as $item)
-                                <a href="javascript:void(0);" class="text-reset notification-item">
+                                <a href="{{ route('pengumuman', Crypt::encryptString($item->id)) }}" class="text-reset notification-item">
                                     <div class="d-flex align-items-start">
                                         <div class="flex-shrink-0 me-3">
                                             <div class="avatar-xs">
                                                 <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                    <i class="uil-shopping-basket"></i>
+                                                    <i class="uil-comment-notes"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -107,7 +107,7 @@
                     </div>
                     <div class="p-2 border-top">
                         <div class="d-grid">
-                            <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
+                            <a class="btn btn-sm btn-link font-size-14 text-center" href="{{ route('notification') }}">
                                 <i class="uil-arrow-circle-right me-1"></i> View More..
                             </a>
                         </div>

@@ -944,6 +944,8 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
+Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
+Route::get('pengumuman/{id?}', [HomeController::class, 'pengumumanid'])->where('id', '(.*)')->name('pengumuman');
 Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
 Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
 Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');

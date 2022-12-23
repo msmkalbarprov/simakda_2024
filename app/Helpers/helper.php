@@ -2969,6 +2969,7 @@ function pengumuman()
 {
     $data = DB::table('ms_pengumuman')
         ->where('aktif', 1)
+        ->orderByDesc('id')
         ->get();
     return $data;
 }

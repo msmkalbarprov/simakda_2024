@@ -70,6 +70,29 @@ class HomeController extends Controller
         // dd($data);
         return view('home')->with($data);;
     }
+
+    public function pengumuman()
+    {
+            $data = [
+                'data_pengumuman' => DB::table('ms_pengumuman')
+                ->where('aktif',1)
+                ->get()
+            ];
+        
+        return view('pengumuman.pengumuman')->with($data);;
+    }
+
+    public function pengumumanid($id)
+    {
+        $id = Crypt::decryptString($id);
+        $data = [
+            'pengumuman_by_id' => DB::table('ms_pengumuman')->where('id', $id)->first()
+        ];
+
+        // dd($data['pengumuman_by_id']);
+        return view('pengumuman.pengumuman_by_id')->with($data);
+    }
+
     public function coba()
     {
         return view('coba');
