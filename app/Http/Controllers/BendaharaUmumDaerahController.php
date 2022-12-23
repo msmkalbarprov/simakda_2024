@@ -20,6 +20,7 @@ class BendaharaUmumDaerahController extends Controller
             'daftar_pengirim' => DB::table('ms_pengirim')->selectRaw("kd_pengirim,nm_pengirim,kd_skpd")->orderByRaw("cast(kd_pengirim as int)")->get(),
             'daftar_wilayah' => DB::table('ms_wilayah')->selectRaw("kd_wilayah,nm_wilayah")->orderByRaw("cast(kd_wilayah as int)")->get(),
             'bud' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kd_skpd' => $kd_skpd])->whereIn('kode', ['BUD', 'PA'])->get(),
+            'daftar_rekening' => DB::table('trdrka')->select('kd_rek6', 'nm_rek6')->groupBy('kd_rek6', 'nm_rek6')->get(),
         ];
 
         return view('bud.laporan_bendahara.index')->with($data);
@@ -2040,5 +2041,46 @@ class BendaharaUmumDaerahController extends Controller
         ];
 
         return view('bud.laporan_bendahara.cetak.rekap_gaji')->with($data);
+    }
+    public function rekapBBKasda(Request $request)
+    {
+        $req = $request->all();
+        $kd_skpd  = $request->kd_skpd;
+        $kd_rek  = $request->kd_rek6;
+
+        $buku_besar_kasda = DB::select("select tgl_kas, no_kas,keterangan,0 as debet, kredit from (
+					select a.kd_skpd, a.tgl_kas, a.no_kas, b.kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts AND a.no_kas=b.no_kas
+					where pot_khusus<>3 AND jns_trans NOT IN ('2') AND b.kd_rek6 = ?
+					union all 
+					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '410415030001' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts and a.no_kas=b.no_kas
+					where jns_trans IN ('5') AND jns_cp='1' AND pot_khusus='3' 
+					union all 
+					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '4141009' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts and a.no_kas=b.no_kas
+					where jns_trans IN ('2')
+					) a 
+					where kd_skpd= ? and kd_rek6= ? and tgl_kas between ? AND ?
+					order by tgl_kas, no_kas", [$req['kd_rek6'], $req['kd_skpd'], $req['kd_rek6'], $req['periode1'], $req['periode2']]);
+        //dd($buku_besar_kasda);
+        //return;
+
+        $periode1  = $request->periode1;
+        $periode2  = $request->periode2;
+        $periode1 = tanggal($periode1);
+        $periode2 = tanggal($periode2);
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'   => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'rekening'   => DB::table('ms_rek6')->select('kd_rek6', 'nm_rek6')->where(['kd_rek6' => $kd_rek])->first(),
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_awal' => $req,
+            'buku_besar_kasda' => $buku_besar_kasda
+        ];
+
+        return view('bud.laporan_bendahara.cetak.buku_besar_kasda')->with($data);
     }
 }

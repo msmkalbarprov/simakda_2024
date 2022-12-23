@@ -75,7 +75,7 @@ use App\Http\Controllers\Skpd\Pendapatan\PenyetoranController;
 Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
 // Auth::routes();
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth', 'auth.session'], function () {
     Route::group(['prefix' => 'kelola-akses'], function () {
         Route::resource('hak-akses', PermissionController::class);
         Route::post('data_hak_akses', [PermissionController::class, 'loadData'])->name('hak_akses.load_data');
@@ -863,10 +863,13 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('', [PenyetoranController::class, 'indexPenyetoranIni'])->name('penyetoran_ini.index');
                 Route::post('load_data', [PenyetoranController::class, 'loadDataPenyetoranIni'])->name('penyetoran_ini.load_data');
                 Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranIni'])->name('penyetoran_ini.tambah');
+                Route::post('no_terima', [PenyetoranController::class, 'nomorPenyetoranIni'])->name('penyetoran_ini.no_terima');
                 Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
-                Route::get('edit/{no_terima?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_terima', '(.*)')->name('penyetoran_ini.edit');
+                Route::get('edit/{no_sts?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_sts', '(.*)')->name('penyetoran_ini.edit');
                 Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
+                Route::get('cek', [PenyetoranController::class, 'cekPenyetoranIni'])->name('penyetoran_ini.cek');
+                Route::post('validasi', [PenyetoranController::class, 'validasiPenyetoranIni'])->name('penyetoran_ini.validasi');
             });
         });
     });
@@ -940,6 +943,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
         Route::get('penerimaan_pajak_daerah', [BendaharaUmumDaerahController::class, 'pajakDaerah'])->name('laporan_bendahara_umum.penerimaan_pajak_daerah');
         Route::get('rekap_gaji', [BendaharaUmumDaerahController::class, 'rekapGaji'])->name('laporan_bendahara_umum.rekap_gaji');
+        Route::get('buku_besar_kasda', [BendaharaUmumDaerahController::class, 'rekapBBKasda'])->name('laporan_bendahara_umum.buku_besar_kasda');
     });
 });
 
