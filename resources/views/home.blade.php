@@ -88,8 +88,12 @@
 
 {{-- ALERT START--}}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <i class="fa fa-info-circle"> Perhatian</i>
-    <p>Bapak/Ibu sekalian diharapkan segera menginput RAK (Rencana Anggaran Kas) Gaji dan Tunjangan dikarenakan akan segera dibuatkan SPD GAji Januari 2023.</p>
+    @php
+        $pengumuman1 = pengumuman_top1();
+    @endphp
+    <i class="fa fa-info-circle"> {{$pengumuman1->judul}}</i>
+    
+    <p>{!!strip_tags($pengumuman1->isi,'<ul><ul/><li></li>')!!}</p>
     <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{-- ALERT END --}}

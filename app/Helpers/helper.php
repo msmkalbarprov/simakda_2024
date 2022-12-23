@@ -2955,3 +2955,28 @@ function nama_bank($kode)
         ->first();
     return $data->nama;
 }
+
+
+function count_pengumuman()
+{
+    $data = DB::table('ms_pengumuman')
+        ->where('aktif', 1)
+        ->count();
+    return $data;
+}
+
+function pengumuman()
+{
+    $data = DB::table('ms_pengumuman')
+        ->where('aktif', 1)
+        ->get();
+    return $data;
+}
+
+function pengumuman_top1()
+{
+    $data = DB::table('ms_pengumuman')
+        ->where('aktif', 1)
+        ->first();
+    return $data;
+}
