@@ -31,6 +31,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-buku_besar_kasda').select2({
+            dropdownParent: $('#modal_buku_besar_kasda .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // CETAKAN REALISASI PENDAPATAN
         $('#pilih_skpd_realisasi_pendapatan').hide();
         $('#pilih_unit_realisasi_pendapatan').hide();
@@ -819,6 +824,42 @@
             window.open(url.toString(), "_blank");
         });
         // CETAKAN REKAP GAJI
+
+
+        // CETAKAN BUKU BESAR KASDA
+
+        $('#kd_skpd_buku_besar_kasda').on('select2:select', function() {
+            let nama = $(this).find(':selected').data('nama');
+            $('#nm_skpd_buku_besar_kasda').val(nama);
+        });
+
+        $('#buku_besar_kasda').on('click', function() {
+            $('#modal_buku_besar_kasda').modal('show');
+        });
+
+        $('.cetak_buku_besar_kasda').on('click', function() {
+            let skpd = document.getElementById('kd_skpd_buku_besar_kasda').value;
+            let rekening = document.getElementById('kd_rek6_buku_besar_kasda').value;
+            let ttd = document.getElementById('ttd_buku_besar_kasda').value;
+            let periode1 = document.getElementById('periode1_buku_besar_kasda')
+                .value;
+            let periode2 = document.getElementById('periode2_buku_besar_kasda')
+                .value;
+            let jenis_print = $(this).data("jenis");
+
+
+
+            let url = new URL("{{ route('laporan_bendahara_umum.buku_besar_kasda') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("kd_skpd", skpd);
+            searchParams.append("kd_rek6", rekening);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+        // CETAKAN BUKU BESAR KASDA
 
     });
 </script>
