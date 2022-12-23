@@ -863,10 +863,13 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('', [PenyetoranController::class, 'indexPenyetoranIni'])->name('penyetoran_ini.index');
                 Route::post('load_data', [PenyetoranController::class, 'loadDataPenyetoranIni'])->name('penyetoran_ini.load_data');
                 Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranIni'])->name('penyetoran_ini.tambah');
+                Route::post('no_terima', [PenyetoranController::class, 'nomorPenyetoranIni'])->name('penyetoran_ini.no_terima');
                 Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
-                Route::get('edit/{no_terima?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_terima', '(.*)')->name('penyetoran_ini.edit');
+                Route::get('edit/{no_sts?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_sts', '(.*)')->name('penyetoran_ini.edit');
                 Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
+                Route::get('cek', [PenyetoranController::class, 'cekPenyetoranIni'])->name('penyetoran_ini.cek');
+                Route::post('validasi', [PenyetoranController::class, 'validasiPenyetoranIni'])->name('penyetoran_ini.validasi');
             });
         });
     });

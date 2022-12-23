@@ -488,7 +488,6 @@
                     }).format(sisa_dana));
                 }
             })
-
             // total spd
             $.ajax({
                 url: "{{ route('sppls.total_spd') }}",
@@ -508,65 +507,64 @@
                     $("#total_spd").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_spd));
+                    total_angkas();
                 }
             })
-
             // total angkas
-            $.ajax({
-                url: "{{ route('sppls.total_angkas') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    skpd: skpd,
-                    kdgiat: kd_sub_kegiatan,
-                    kdrek: kode_rekening,
-                    no_spp: no_spp,
-                    nomor_spd: nomor_spd,
-                    tgl_spd: tgl_spd,
-                    tgl_spp: tgl_spp,
-                    beban: beban,
-                    status_ang: status_ang,
-                    status_angkas: status_angkas,
-                },
-                success: function(data) {
-                    let total_angkas = parseFloat(data.nilai) || 0;
-                    $("#total_angkas").val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(total_angkas));
-                }
-            })
-
+            // $.ajax({
+            //     url: "{{ route('sppls.total_angkas') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         skpd: skpd,
+            //         kdgiat: kd_sub_kegiatan,
+            //         kdrek: kode_rekening,
+            //         no_spp: no_spp,
+            //         nomor_spd: nomor_spd,
+            //         tgl_spd: tgl_spd,
+            //         tgl_spp: tgl_spp,
+            //         beban: beban,
+            //         status_ang: status_ang,
+            //         status_angkas: status_angkas,
+            //     },
+            //     success: function(data) {
+            //         let total_angkas = parseFloat(data.nilai) || 0;
+            //         $("#total_angkas").val(new Intl.NumberFormat('id-ID', {
+            //             minimumFractionDigits: 2
+            //         }).format(total_angkas));
+            //     }
+            // })
             // realisasi spd
-            $.ajax({
-                url: "{{ route('sppls.realisasi_spd') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    skpd: skpd,
-                    kdgiat: kd_sub_kegiatan,
-                    kdrek: kode_rekening,
-                },
-                success: function(data) {
-                    let realisasi_spd = parseFloat(data.total) || 0;
-                    let total_spd = document.getElementById('total_spd').value;
-                    let total = total_spd.split(".").join("");
-                    let total1 = total.split(",").join(".");
-                    let total2 = parseFloat(total1) || 0;
-                    let sisa_spd = total2 - realisasi_spd;
-                    $("#realisasi_spd").val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(realisasi_spd));
-                    $("#realisasi_angkas").val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(realisasi_spd));
-                    $("#sisa_spd").val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(sisa_spd));
-                    $("#sisa_angkas").val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(sisa_spd));
-                }
-            })
+            // $.ajax({
+            //     url: "{{ route('sppls.realisasi_spd') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         skpd: skpd,
+            //         kdgiat: kd_sub_kegiatan,
+            //         kdrek: kode_rekening,
+            //     },
+            //     success: function(data) {
+            //         let realisasi_spd = parseFloat(data.total) || 0;
+            //         let total_spd = document.getElementById('total_spd').value;
+            //         let total = total_spd.split(".").join("");
+            //         let total1 = total.split(",").join(".");
+            //         let total2 = parseFloat(total1) || 0;
+            //         let sisa_spd = total2 - realisasi_spd;
+            //         $("#realisasi_spd").val(new Intl.NumberFormat('id-ID', {
+            //             minimumFractionDigits: 2
+            //         }).format(realisasi_spd));
+            //         $("#realisasi_angkas").val(new Intl.NumberFormat('id-ID', {
+            //             minimumFractionDigits: 2
+            //         }).format(realisasi_spd));
+            //         $("#sisa_spd").val(new Intl.NumberFormat('id-ID', {
+            //             minimumFractionDigits: 2
+            //         }).format(sisa_spd));
+            //         $("#sisa_angkas").val(new Intl.NumberFormat('id-ID', {
+            //             minimumFractionDigits: 2
+            //         }).format(sisa_spd));
+            //     }
+            // })
         });
 
         $('#sumber_dana').on('change', function() {
@@ -772,9 +770,15 @@
             let sumber_dana = document.getElementById('sumber_dana').value;
             let nm_sumber = document.getElementById('nm_sumber').value;
             let nilai_rincian = nilai(document.getElementById('nilai_rincian').value);
-            let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
-            let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
-            let sisa_penyusunan = rupiah(document.getElementById('sisa_penyusunan').value);
+            // let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
+            let sisa_spd = rupiah(document.getElementById('total_spd').value) - rupiah(document
+                .getElementById('realisasi_spd').value);
+            // let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
+            let sisa_angkas = rupiah(document.getElementById('total_angkas').value) - rupiah(document
+                .getElementById('realisasi_angkas').value);
+            // let sisa_penyusunan = rupiah(document.getElementById('sisa_penyusunan').value);
+            let sisa_penyusunan = rupiah(document.getElementById('total_penyusunan').value) - rupiah(
+                document.getElementById('realisasi_penyusunan').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let status_anggaran = document.getElementById('status_anggaran').value;
             let beban = document.getElementById('beban').value;
@@ -1346,6 +1350,63 @@
             let n1 = n.split('.').join('');
             let rupiah = n1.split(',').join('.');
             return parseFloat(rupiah) || 0;
+        }
+
+        function total_angkas() {
+            $.ajax({
+                url: "{{ route('sppls.total_angkas') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    skpd: document.getElementById('opd_unit').value,
+                    kdgiat: document.getElementById('kd_sub_kegiatan').value,
+                    kdrek: document.getElementById('kode_rekening').value,
+                    no_spp: document.getElementById('no_spp').value,
+                    nomor_spd: document.getElementById('nomor_spd').value,
+                    tgl_spd: document.getElementById('tgl_spd').value,
+                    tgl_spp: document.getElementById('tgl_spp').value,
+                    beban: document.getElementById('beban').value,
+                    status_ang: document.getElementById('status_anggaran').value,
+                    status_angkas: document.getElementById('status_angkas').value,
+                },
+                success: function(data) {
+                    let total_angkas = parseFloat(data.nilai) || 0;
+                    $("#total_angkas").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total_angkas));
+                    total_realisasi();
+                }
+            })
+        }
+
+        function total_realisasi() {
+            $.ajax({
+                url: "{{ route('sppls.realisasi_spd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    skpd: document.getElementById('opd_unit').value,
+                    kdgiat: document.getElementById('kd_sub_kegiatan').value,
+                    kdrek: document.getElementById('kode_rekening').value,
+                },
+                success: function(data) {
+                    let realisasi_spd = parseFloat(data.total) || 0;
+                    let total_spd = rupiah(document.getElementById('total_spd').value);
+                    let total_angkas = rupiah(document.getElementById('total_angkas').value);
+                    $("#realisasi_spd").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(realisasi_spd));
+                    $("#realisasi_angkas").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(realisasi_spd));
+                    $("#sisa_spd").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total_spd - realisasi_spd));
+                    $("#sisa_angkas").val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total_angkas - realisasi_spd));
+                }
+            })
         }
     });
 
