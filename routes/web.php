@@ -956,8 +956,8 @@ Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->wher
 Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
 Route::get('setting', [SettingController::class, 'index'])->name('setting');
 Route::get('coba', [HomeController::class, 'coba'])->name('coba');
-Route::get('', [LoginController::class, 'index'])->name('login.index');
-Route::post('login', [LoginController::class, 'authenticate'])->name('login')->middleware(['throttle:3,1']);
+Route::get('', [LoginController::class, 'index'])->name('login');
+Route::post('login', [LoginController::class, 'authenticate'])->name('login.index')->middleware(['throttle:3,1']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('403', function () {

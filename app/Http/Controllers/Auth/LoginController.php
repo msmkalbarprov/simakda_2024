@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -46,9 +47,10 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            Auth::logoutOtherDevices($request->password);
             return redirect()->route('home');
         } else {
-            return redirect()->back()->with('error', 'Error');
+            return Redirect::back()->withErrors(['msg' => 'Username atau Password Anda Salah!']);
         }
     }
 
@@ -60,7 +62,7 @@ class LoginController extends Controller
 
         request()->session()->regenerateToken();
 
-        return redirect()->route('login.index');
+        return redirect()->route('login');
     }
     /**
      * Create a new controller instance.
