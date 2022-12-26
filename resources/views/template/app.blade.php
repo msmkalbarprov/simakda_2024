@@ -3,7 +3,12 @@
 
 @include('template.head')
 
-<body>
+@if (Auth::user()->is_admin==1)
+    <body  data-sidebar='light'>    
+@else
+    <body data-sidebar="dark" >
+@endif
+
 
     <!-- <body data-layout="horizontal" data-topbar="colored"> -->
 
