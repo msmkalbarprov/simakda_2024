@@ -131,7 +131,7 @@
                         <h5 class="mt-3 mb-1">{{ Auth::user()->nama }}</h5>
                         <p class="text-muted">{{ cari_nama(Auth::user()->role,'peran','id','nama_role') }}</p>
                         <p class="text-muted">
-                            @if(Auth::user()->is_admin==2 || Auth::user()->role==1006)
+                            @if((Auth::user()->is_admin==2 && Auth::user()->role==1016) || (Auth::user()->is_admin==1))
                                 <a class="dropdown-item"
                                     href="{{ route('ubah_skpd', Crypt::encryptString(Auth::user()->id)) }}"><i
                                         class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span
