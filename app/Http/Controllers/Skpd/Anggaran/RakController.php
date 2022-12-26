@@ -3402,10 +3402,16 @@ class RakController extends Controller
     public function cekAnggaranIndex()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-
-        $data = [
-            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
-        ];
+        if (Auth::user()->is_admin == 2) {
+            $data = [
+                'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
+            ];
+        }else{
+            $data = [
+                'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get(),
+            ];
+        }
+        
 
         return view('skpd.cek_rak.cetak')->with($data);
     }
