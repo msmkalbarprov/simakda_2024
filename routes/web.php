@@ -665,6 +665,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             });
             // Cetak RAK
             Route::group(['prefix' => 'cetak_rak'], function () {
+                Route::post('cari_ttd_skpd', [RakController::class, 'cariTtdSkpd'])->name('skpd.cetak_rak.ttdskpd');
                 Route::group(['prefix' => 'per_sub_kegiatan'], function () {
                     Route::get('cetak_anggaran_per_sub_kegiatan', [RakController::class, 'cetakPerSubKegiatanIndex'])->name('skpd.cetak_rak.per_sub_kegiatan');
                     Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerKegiatan'])->name('skpd.cetak_rak.cetak');

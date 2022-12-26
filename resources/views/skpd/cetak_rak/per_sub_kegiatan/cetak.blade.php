@@ -13,7 +13,7 @@
                     {{-- SKPD dan Nama SKPD --}}
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">SKPD/UNIT</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="kd_skpd">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($skpd as $kode)
@@ -22,14 +22,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nm_skpd" required readonly>
-                        </div>
                     </div>
                     {{-- Jenis Anggaran --}}
                     <div class="mb-3 row">
                         <label for="jenis_anggaran" class="col-md-2 col-form-label">Jenis Anggaran</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis_anggaran">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
@@ -38,7 +35,7 @@
                     {{-- Jenis Anggaran Kas --}}
                     <div class="mb-3 row">
                         <label for="jenis_rak" class="col-md-2 col-form-label">Jenis Anggaran Kas</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis_rak">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
@@ -46,24 +43,17 @@
                     </div>
                     {{-- Penandatangan --}}
                     <div class="mb-3 row">
-                        <label for="ttd1" class="col-md-2 col-form-label">Penandatangan</label>
-                        <div class="col-md-6">
-                            <select class="form-control select2-multiple" style="width: 100%" id="ttd1">
+                        <label for="ttd1" class="col-md-2 col-form-label">Penandatangan SKPD</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="ttd1" name="ttd1">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_ttd1 as $ttd1)
-                                    <option value="{{ $ttd1->id }}" data-nama="{{ $ttd1->nama }}">{{ $ttd1->nip }}
-                                        | {{ $ttd1->nama }}</option>
-                                @endforeach
                             </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nm_ttd1" required readonly>
                         </div>
                     </div>
                     {{-- Penandatangan 2 --}}
                     <div class="mb-3 row">
-                        <label for="ttd2" class="col-md-2 col-form-label">Penandatangan 2</label>
-                        <div class="col-md-6">
+                        <label for="ttd2" class="col-md-2 col-form-label">Penandatangan BUD</label>
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="ttd2">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_ttd2 as $ttd2)
@@ -72,14 +62,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nm_ttd2" required readonly>
-                        </div>
                     </div>
                     {{-- Penandatangan 2 --}}
                     <div class="mb-3 row">
                         <label for="tanggal_ttd" class="col-md-2 col-form-label">Tanggal TTD</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <input class="form-control" type="date" id="tanggal_ttd" required>
                         </div>
                     </div>

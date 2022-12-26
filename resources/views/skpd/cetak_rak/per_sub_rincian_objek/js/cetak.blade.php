@@ -5,7 +5,10 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        $('#ttd1').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -14,8 +17,7 @@
         $('#kd_skpd').on('select2:select', function() {
             let kd_skpd = this.value;
             let nama = $(this).find(':selected').data('nama');
-            $('#nm_skpd').val(nama);
-
+            cari_ttd_skpd(kd_skpd);
             // Cari Jenis Anggaran
             $.ajax({
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
@@ -33,7 +35,26 @@
                 }
             })
         });
-
+    function cari_ttd_skpd(kd_skpd) {
+        $.ajax({
+            url: "{{ route('skpd.cetak_rak.ttdskpd') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                kd_skpd: kd_skpd
+            },
+            success: function(data) {
+                $('#ttd1').empty();
+                $('#ttd1').append(
+                    `<option value="" disabled selected>Pilih penandatangan</option>`);
+                $.each(data, function(index, data) {
+                    $('#ttd1').append(
+                        `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                    );
+                })
+            }
+        })
+    }
         $('#jenis_anggaran').on('select2:select', function() {
             let jns_ang = this.value;
 

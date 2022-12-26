@@ -2981,3 +2981,31 @@ function pengumuman_top1()
         ->first();
     return $data;
 }
+
+function get_skpd($kd_skpd)
+{   
+    $id     = Auth::user()->id;
+    $role   = Auth::user()->role;
+    $app    = Auth::user()->is_admin;
+    
+    if($app==1){ // 1 simakda
+        if($role=='1012' || $role=='1017'){
+            // array kpd dari pengguna skpd
+            $skpd               = DB::table('pengguna_skpd')->select('kd_skpd')->where('id', $id)->orderBy('kd_skpd')->get();
+            $pengguna_skpd      = Array();   
+            foreach ($skpd as $list) {
+                $pengguna_skpd[] =  $list->kd_skpd;
+            }
+            // get skpd dari master skpd
+            $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereIn('kd_skpd', $pengguna_skpd)->orderBy('kd_skpd')->get();
+        }else{
+            // get skpd dari master skpd
+            $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
+        }
+    }else{ // 2 simakda skpd
+        // get skpd dari master skpd
+        $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get();
+    }
+    
+    return $data;
+}

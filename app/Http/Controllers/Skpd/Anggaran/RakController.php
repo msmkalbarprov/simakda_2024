@@ -3212,14 +3212,22 @@ class RakController extends Controller
         }
     }
 
+    // Cari TTD SKPD
+    function cariTtdSkpd(Request $request)
+    {
+        $kd_skpd    = $request->kd_skpd;
+        $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->orderBy('nip')->orderBy('nama')->get();
+        return response()->json($data);
+
+    }
+
     // CETAK RAK PER SUB KEGIATAN
     public function cetakPerSubKegiatanIndex()
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
-            'daftar_ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kd_skpd' => $kd_skpd])->get(),
+            'skpd' => get_skpd($kd_skpd),
             'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
         ];
 
@@ -3291,12 +3299,12 @@ class RakController extends Controller
             ->get();
 
         $data = [
-            'nama_angkas' => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
-            'nama_skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'data_giat' => $angkas,
-            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['id' => $ttd1])->first(),
-            'tanggal' => $tanggal_ttd,
-            'hidden' => $hidden,
+            'nama_angkas'   => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
+            'nama_skpd'     => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'data_giat'     => $angkas,
+            'ttd1'          => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'tanggal'       => $tanggal_ttd,
+            'hidden'        => $hidden,
         ];
 
         $view = view('skpd.cetak_rak.per_sub_kegiatan.cetakan')->with($data);
@@ -3320,8 +3328,7 @@ class RakController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
-            'daftar_ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kd_skpd' => $kd_skpd])->get(),
+            'skpd' => get_skpd($kd_skpd),
             'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
         ];
 
@@ -3375,7 +3382,7 @@ class RakController extends Controller
             'kd_sub_kegiatan' => $kd_sub_kegiatan,
             'jenis_anggaran' => $jenis_anggaran,
             'kd_skpd' => $kd_skpd,
-            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['id' => $ttd1])->first(),
+            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
             'tanggal' => $tanggal_ttd,
             'sub_header' => DB::table('ms_skpd as a')->select(DB::raw("left(kd_skpd,1) as urusan"), DB::raw("(SELECT nm_urusan FROM ms_urusan WHERE kd_urusan=left(a.kd_skpd,1)) as nmurusan"), DB::raw("left(kd_skpd,4) as bidang"), DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=left(a.kd_skpd,4)) as nmbidang"), DB::raw("left(kd_skpd,17) as org"), DB::raw("(SELECT nm_skpd FROM ms_skpd WHERE left(kd_skpd,17)=left(a.kd_skpd,17) AND right(kd_skpd,4)='0000') as nmorg"), 'kd_skpd as unit', 'nm_skpd as nmunit')->where(['kd_skpd' => $kd_skpd])->first(),
 

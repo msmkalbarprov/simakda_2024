@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ANGKAS RO</title>
+    <title>ANGKAS SUB KEGIATAN</title>
     <style>
         #header tr>td {
             font-weight: bold;
@@ -27,7 +27,7 @@
 <body>
     <table style="width: 100%" id="header">
         <tr>
-            <td>ANGGARAN KAS KEGIATAN MURNI</td>
+            <td>ANGGARAN KAS SUB KEGIATAN</td>
         </tr>
         <tr>
             <td>{{ Str::upper($nama_angkas->nama) }}</td>
