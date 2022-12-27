@@ -313,7 +313,6 @@ class SPDBelanjaController extends Controller
     {
         $data = $request->data;
         DB::beginTransaction();
-
         try {
             DB::table('spd_temp')
                 ->insert([
@@ -322,7 +321,7 @@ class SPDBelanjaController extends Controller
                     'kd_rek6' => $data['kd_rek6'],
                     'bulan_awal' => $data['bln_awal'],
                     'bulan_akhir' => $data['bln_akhir'],
-                    'nilai' => $data['nilai'],
+                    'nilai' => is_null($data['nilai']) ? '0' : $data['nilai'],
                     'nilai_lalu' => $data['lalu'],
                     'page_id' => $data['page'],
                     'anggaran' => $data['anggaran'],
