@@ -626,39 +626,25 @@ class PenyetoranController extends Controller
         DB::beginTransaction();
         try {
             $cek1 = DB::table('tr_kunci')
-                ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_sts']])
+                ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
                 ->where(['kd_skpd' => $kd_skpd]);
 
-            $cek2 = DB::table($cek1, 'a')
-                ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            $cek3 = DB::table('trhspj_terima_ppkd')
-                ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_sts']])
-                ->where(['kd_skpd' => $kd_skpd]);
-
-            $cek4 = DB::table($cek3, 'a')
-                ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-                ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-                ->mergeBindings($cek4)
+            $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
+                ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
+                ->mergeBindings($cek1)
                 ->first();
 
-            if ($cek->status_kasda == '1') {
+            if ($cek->status == '1') {
                 return response()->json([
                     'message' => '2'
                 ]);
-            } elseif ($cek->status_spj == '1') {
+            }
+
+            $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_sts'], 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_terima > 0) {
                 return response()->json([
-                    'message' => '3'
+                    'message' => '4'
                 ]);
-            } else {
-                $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_sts'], 'kd_skpd' => $kd_skpd])->count();
-                if ($cek_terima > 0) {
-                    return response()->json([
-                        'message' => '4'
-                    ]);
-                }
             }
             $nomor = nomor_tukd();
 
@@ -675,19 +661,18 @@ class PenyetoranController extends Controller
                     'total' => $data['total'],
                     'kd_bank' => '',
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'jns_trans' => '2',
+                    'jns_trans' => '4',
                     'rek_bank' => '',
-                    'sumber' => $data['pengirim'],
+                    'sumber' => '',
                     'pot_khusus' => '0',
                     'no_sp2d' => '',
                     'jns_cp' => '',
+                    'no_terima' => '',
                 ]);
 
             $jumlah = DB::table('ms_skpd')->where(['jns' => '2', 'kd_skpd' => $data['kd_skpd']])->count();
 
-            if (
-                $jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000'
-            ) {
+            if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
                 DB::table('trhkasin_ppkd')
                     ->insert([
                         'no_kas' => $nomor,
@@ -699,12 +684,13 @@ class PenyetoranController extends Controller
                         'total' => $data['total'],
                         'kd_bank' => '',
                         'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                        'jns_trans' => '2',
+                        'jns_trans' => '4',
                         'rek_bank' => '',
-                        'sumber' => $data['pengirim'],
+                        'sumber' => '',
                         'pot_khusus' => '0',
                         'no_sp2d' => '',
                         'jns_cp' => '',
+                        'no_terima' => '',
                     ]);
 
                 DB::table('trhkasin_pkd')
@@ -729,8 +715,9 @@ class PenyetoranController extends Controller
                                 'kd_rek6' => $value['kd_rek6'],
                                 'rupiah' => $value['nilai'],
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                                'no_terima' => '',
-                                'sumber' => $data['pengirim'],
+                                'no_terima' => $value['no_sts'],
+                                'sumber' => $value['sumber'],
+                                'kanal' => $value['kanal'],
                             ];
                         },
                         $data['detail_sts']
@@ -740,11 +727,7 @@ class PenyetoranController extends Controller
             DB::table('tr_terima as a')
                 ->join('trdkasin_pkd as b', function ($join) {
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on(
-                        'a.no_terima',
-                        '=',
-                        'b.no_terima'
-                    );
+                    $join->on('a.no_terima', '=', 'b.no_terima');
                     $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
                 })
                 ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
@@ -752,9 +735,7 @@ class PenyetoranController extends Controller
                     'a.kunci' => '1'
                 ]);
 
-            if (
-                $jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000'
-            ) {
+            if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
                 if (isset($data['detail_sts'])) {
                     DB::table('trdkasin_ppkd')
                         ->insert(array_map(function ($value) use ($data) {
@@ -764,8 +745,9 @@ class PenyetoranController extends Controller
                                 'kd_rek6' => $value['kd_rek6'],
                                 'rupiah' => $value['nilai'],
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                                'no_kas' => '',
-                                'sumber' => $data['pengirim'],
+                                'no_kas' => $value['no_sts'],
+                                'sumber' => $value['sumber'],
+                                'kanal' => $value['kanal'],
                             ];
                         }, $data['detail_sts']));
                 }

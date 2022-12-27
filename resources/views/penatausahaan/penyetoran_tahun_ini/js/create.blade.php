@@ -91,9 +91,29 @@
             let kanal = $(this).find(':selected').data('kanal');
             let nama_kanal = $(this).find(':selected').data('nama_kanal');
             let nm_pengirim = $(this).find(':selected').data('nm_pengirim');
+            let no_terima = this.value;
+
+            let total = rupiah(document.getElementById('total').value);
+
+            let tampungan = detail.rows().data().toArray().map((value) => {
+                let result = {
+                    no_sts: value.no_sts,
+                };
+                return result;
+            });
+            let kondisi = tampungan.map(function(data) {
+                if (data.no_sts == no_terima) {
+                    return '2';
+                }
+            });
+            if (kondisi.includes("2")) {
+                alert('No terima telah ada di list!');
+                $('#no_terima').val(null).change();
+                return;
+            }
 
             detail.row.add({
-                'no_sts': this.value,
+                'no_sts': no_terima,
                 'kd_rek6': kd_rek6,
                 'nm_rek6': nm_rek6,
                 'nilai': new Intl.NumberFormat('id-ID', {
@@ -103,8 +123,12 @@
                 'kanal': kanal,
                 'nama_kanal': nama_kanal,
                 'nama_pengirim': nm_pengirim,
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${this.value}','${kd_rek6}','${nm_rek6}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_terima}','${kd_rek6}','${nm_rek6}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
+            $('#total').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total + nilai));
+            $('#no_terima').val(null).change();
         });
 
         $('#kd_sub_kegiatan').on('select2:select', function() {
@@ -117,8 +141,6 @@
             let tgl_sts = document.getElementById('tgl_sts').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
-            let pengirim = document.getElementById('pengirim').value;
-            let nm_pengirim = document.getElementById('nm_pengirim').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
@@ -145,16 +167,12 @@
                 return;
             }
 
-            if (!pengirim) {
-                alert('Pengirim Tidak Boleh Kosong');
-                return;
-            }
-
             let detail_sts = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
                     kd_rek6: value.kd_rek6,
-                    nm_rek6: value.nm_rek6,
+                    sumber: value.sumber,
+                    kanal: value.kanal,
                     nilai: rupiah(value.nilai),
                 };
                 return data;
@@ -170,7 +188,6 @@
                 tgl_sts,
                 kd_skpd,
                 nm_skpd,
-                pengirim,
                 kd_sub_kegiatan,
                 keterangan,
                 total,
@@ -179,7 +196,7 @@
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('penyetoran_lalu.simpan') }}",
+                url: "{{ route('penyetoran_ini.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -189,15 +206,10 @@
                     if (response.message == '1') {
                         alert('Data berhasil disimpan!');
                         window.location.href =
-                            "{{ route('penyetoran_lalu.index') }}";
+                            "{{ route('penyetoran_ini.index') }}";
                     } else if (response.message == '2') {
                         alert(
                             "Tanggal sudah dikunci KASDA. Silahkan Hubungi operator/staff di bagian KASDA."
-                        );
-                        $('#simpan').prop('disabled', false);
-                    } else if (response.message == '3') {
-                        alert(
-                            "Tanggal sudah dikunci Akuntansi. Silahkan Hubungi operator/staff di bagian Akuntansi."
                         );
                         $('#simpan').prop('disabled', false);
                     } else if (response.message == '4') {
@@ -304,5 +316,22 @@
         let n1 = n.split('.').join('');
         let rupiah = n1.split(',').join('.');
         return parseFloat(rupiah) || 0;
+    }
+
+    function deleteData(no_sts, kd_rek6, nm_rek6, nilai) {
+        let tabel = $('#detail_sts').DataTable();
+        let total = rupiah(document.getElementById('total').value);
+        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai :  ' + nilai +
+            ' ?');
+        if (hapus == true) {
+            tabel.rows(function(idx, data, node) {
+                return data.kd_rek6 == kd_rek6
+            }).remove().draw();
+            $('#total').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total - nilai));
+        } else {
+            return false;
+        }
     }
 </script>
