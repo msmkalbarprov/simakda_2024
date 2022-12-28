@@ -2795,7 +2795,6 @@ function selisih_angkas()
         ->select('kode')
         ->where(['status_kunci' => $status_angkas])
         ->first();
-    $kolom1 = $kolom->kode;
 
     if (empty($status_anggaran)) {
         $status_ang = '0';
@@ -2803,18 +2802,26 @@ function selisih_angkas()
         $status_ang = $status_anggaran->jns_ang;
     }
 
-    $selisih_angkas1 = DB::table('trdrka as a')
-        ->selectRaw("kd_skpd,kd_sub_kegiatan,kd_rek6,nilai as anggaran,(select sum(nilai_$kolom1) from trdskpd_ro where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6)as angkas")
-        ->where(['jns_ang' => $status_ang, 'kd_skpd' => $skpd]);
-    // return $selisih_angkas1->get();
-    $selisih_angkas = DB::table(DB::raw("({$selisih_angkas1->toSql()}) AS sub"))
-        ->mergeBindings($selisih_angkas1)
-        ->whereRaw("anggaran-ISNULL(angkas,0) <> 0")
-        ->count();
-    return [
-        'status_ang' => $status_ang,
-        'selisih_angkas' => $selisih_angkas
-    ];
+    if (empty($kolom)) {
+        return [
+            'status_ang' => '0',
+            'selisih_angkas' => '0'
+        ];
+    } else {
+        $kolom1 = $kolom->kode;
+        $selisih_angkas1 = DB::table('trdrka as a')
+            ->selectRaw("kd_skpd,kd_sub_kegiatan,kd_rek6,nilai as anggaran,(select sum(nilai_$kolom1) from trdskpd_ro where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6)as angkas")
+            ->where(['jns_ang' => $status_ang, 'kd_skpd' => $skpd]);
+        // return $selisih_angkas1->get();
+        $selisih_angkas = DB::table(DB::raw("({$selisih_angkas1->toSql()}) AS sub"))
+            ->mergeBindings($selisih_angkas1)
+            ->whereRaw("anggaran-ISNULL(angkas,0) <> 0")
+            ->count();
+        return [
+            'status_ang' => $status_ang,
+            'selisih_angkas' => $selisih_angkas
+        ];
+    }
 }
 
 function status_angkas($skpd)
@@ -2896,7 +2903,7 @@ function status_angkas($skpd)
         ->mergeBindings($urut48)
         ->orderByRaw("CAST(urut AS INT) DESC")
         ->first();
-    return $result->status;
+    return empty($result) ? '' : $result->status;
 }
 
 function nomor_urut_ppkd()
@@ -2983,29 +2990,29 @@ function pengumuman_top1()
 }
 
 function get_skpd($kd_skpd)
-{   
+{
     $id     = Auth::user()->id;
     $role   = Auth::user()->role;
     $app    = Auth::user()->is_admin;
-    
-    if($app==1){ // 1 simakda
-        if($role=='1012' || $role=='1017'){
+
+    if ($app == 1) { // 1 simakda
+        if ($role == '1012' || $role == '1017') {
             // array kpd dari pengguna skpd
             $skpd               = DB::table('pengguna_skpd')->select('kd_skpd')->where('id', $id)->orderBy('kd_skpd')->get();
-            $pengguna_skpd      = Array();   
+            $pengguna_skpd      = array();
             foreach ($skpd as $list) {
                 $pengguna_skpd[] =  $list->kd_skpd;
             }
             // get skpd dari master skpd
             $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereIn('kd_skpd', $pengguna_skpd)->orderBy('kd_skpd')->get();
-        }else{
+        } else {
             // get skpd dari master skpd
             $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
         }
-    }else{ // 2 simakda skpd
+    } else { // 2 simakda skpd
         // get skpd dari master skpd
         $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get();
     }
-    
+
     return $data;
 }

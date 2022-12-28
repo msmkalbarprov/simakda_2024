@@ -23,7 +23,7 @@ class SppLsController extends Controller
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
             'cek' => selisih_angkas()
         ];
-        // dd($data['cek']);
+
         return view('penatausahaan.pengeluaran.spp_ls.index')->with($data);
     }
 
