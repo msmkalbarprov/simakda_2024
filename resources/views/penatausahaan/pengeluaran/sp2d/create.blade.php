@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input SPM
+                    Input SP2D
                 </div>
                 <div class="card-body">
                     @csrf

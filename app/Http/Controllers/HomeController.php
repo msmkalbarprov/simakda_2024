@@ -18,50 +18,93 @@ class HomeController extends Controller
         if(Auth::user()->is_admin==1){
             $data = [
                 'data_pendapatan' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as pendapatan"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 4)
                     ->first(),
                 'data_belanja' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as belanja"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as belanja"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 5)
                     ->first(),
                 'data_pem_terima' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai)as pem_terima"))
+                    ->select(DB::raw("isnull(sum(nilai),0)as pem_terima"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 61)
                     ->first(),
                 'data_pem_keluar' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as pem_keluar"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as pem_keluar"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
+                    ->first(),
+                'data_penagihan' => DB::table('trhtagih')
+                    ->select(DB::raw("isnull(sum(total),0) as penagihan"))
+                    ->first(),
+                'data_spp' => DB::table('trhspp')
+                    ->select(DB::raw("isnull(sum(nilai),0) as spp"))
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    ->first(),
+                'data_spm' => DB::table('trhspm as a')
+                    ->select(DB::raw("isnull(sum(b.nilai),0) as spm"))
+                    ->join('trhspp as b', function ($join) {
+                        $join->on('a.no_spp', '=', 'b.no_spp');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                        })
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    ->first(),
+                'data_sp2d' => DB::table('trhsp2d')
+                    ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first()
             ];
         }else{
             $data = [
                 'data_pendapatan' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as pendapatan"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 4)
                     ->where('kd_skpd',$kd_skpd)
                     ->first(),
                 'data_belanja' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as belanja"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as belanja"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 5)
                     ->where('kd_skpd',$kd_skpd)
                     ->first(),
                 'data_pem_terima' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai)as pem_terima"))
+                    ->select(DB::raw("isnull(sum(nilai),0)as pem_terima"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 61)
                     ->where('kd_skpd',$kd_skpd)
                     ->first(),
                 'data_pem_keluar' => DB::table('trdrka')
-                    ->select(DB::raw("sum(nilai) as pem_keluar"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as pem_keluar"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
+                    ->where('kd_skpd',$kd_skpd)
+                    ->first(),
+                    
+                'data_penagihan' => DB::table('trhtagih')
+                    ->select(DB::raw("isnull(sum(total),0) as penagihan"))
+                    ->where('kd_skpd',$kd_skpd)
+                    ->first(),
+                'data_spp' => DB::table('trhspp')
+                    ->select(DB::raw("isnull(sum(nilai),0) as spp"))
+                    ->where('kd_skpd',$kd_skpd)
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    ->first(),
+                'data_spm' => DB::table('trhspm as a')
+                    ->select(DB::raw("isnull(sum(b.nilai),0) as spm"))
+                    ->join('trhspp as b', function ($join) {
+                        $join->on('a.no_spp', '=', 'b.no_spp');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                        })
+                    ->whereRaw("(sp2d_batal is null OR sp2d_batal <> 1)")
+                    ->where('a.kd_skpd',$kd_skpd)
+                    ->first(),
+                'data_sp2d' => DB::table('trhsp2d')
+                    ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->where('kd_skpd',$kd_skpd)
                     ->first()
             ];

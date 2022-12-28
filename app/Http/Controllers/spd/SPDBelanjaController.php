@@ -633,7 +633,7 @@ class SPDBelanjaController extends Controller
         $user = Auth::user()->nama;
 
         DB::beginTransaction();
-        try {
+        // try {
             $nospdexplode = explode("/", $data['nomor']);
             $nospd = $nospdexplode[2];
             
@@ -738,12 +738,12 @@ class SPDBelanjaController extends Controller
                     'message' => '1'
                 ]);
             }
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => '0'
-            ]);
-        }
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     return response()->json([
+        //         'message' => '0'
+        //     ]);
+        // }
     }
 
     public function destroy(Request $request)

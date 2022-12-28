@@ -173,6 +173,7 @@
             let beban = this.value;
             tabel_spm.clear().draw();
             tabel_potongan.clear().draw();
+            let thn_anggaran = "{{ tahun_anggaran() }}";
             // cari no sp2d
             $.ajax({
                 url: "{{ route('sp2d.cari_nomor') }}",
@@ -181,15 +182,15 @@
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
-                        $('#no_sp2d').val(data.nomor + '/UP/2022');
+                        $('#no_sp2d').val(data.nomor + '/UP/'+thn_anggaran);
                     } else if (beban == '2') {
-                        $('#no_sp2d').val(data.nomor + '/GU/2022');
+                        $('#no_sp2d').val(data.nomor + '/GU/'+thn_anggaran);
                     } else if (beban == '3') {
-                        $('#no_sp2d').val(data.nomor + '/TU/2022');
+                        $('#no_sp2d').val(data.nomor + '/TU/'+thn_anggaran);
                     } else if (beban == '4') {
-                        $('#no_sp2d').val(data.nomor + '/GJ/2022');
+                        $('#no_sp2d').val(data.nomor + '/GJ/'+thn_anggaran);
                     } else if (beban == '5' || beban == '6') {
-                        $('#no_sp2d').val(data.nomor + '/LS/2022');
+                        $('#no_sp2d').val(data.nomor + '/LS/'+thn_anggaran);
                     }
                 }
             })
@@ -207,7 +208,7 @@
                         `<option value="0">Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#no_spm').append(
-                            `<option value="${data.no_spm}" data-bank="${data.bank}" data-bulan="${data.bulan}" data-keperluan="${data.keperluan}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nmrekan="${data.nmrekan}" data-no_rek="${data.no_rek}" data-no_spd="${data.no_spd}" data-no_spp="${data.no_spp}" data-npwp="${data.npwp}" data-tgl_spm="${data.tgl_spm}" data-tgl_spp="${data.tgl_spp}" data-jns_spd="${data.jns_spd}" data-jenis_beban="${data.jenis_beban}">${data.no_spm}</option>`
+                            `<option value="${data.no_spm}" data-bank="${data.bank}" data-bulan="${data.bulan}" data-keperluan="${data.keperluan}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nmrekan="${data.nmrekan}" data-no_rek="${data.no_rek}" data-no_spd="${data.no_spd}" data-no_spp="${data.no_spp}" data-npwp="${data.npwp}" data-tgl_spm="${data.tgl_spm}" data-tgl_spp="${data.tgl_spp}" data-jns_spd="${data.jns_spd}" data-jenis_beban="${data.jenis_beban}">${data.no_spm} | ${data.nm_skpd}</option>`
                         );
                     })
                 }
