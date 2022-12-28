@@ -313,7 +313,6 @@ class SPDBelanjaController extends Controller
     {
         $data = $request->data;
         DB::beginTransaction();
-
         try {
             DB::table('spd_temp')
                 ->insert([
@@ -322,7 +321,7 @@ class SPDBelanjaController extends Controller
                     'kd_rek6' => $data['kd_rek6'],
                     'bulan_awal' => $data['bln_awal'],
                     'bulan_akhir' => $data['bln_akhir'],
-                    'nilai' => $data['nilai'],
+                    'nilai' => is_null($data['nilai']) ? '0' : $data['nilai'],
                     'nilai_lalu' => $data['lalu'],
                     'page_id' => $data['page'],
                     'anggaran' => $data['anggaran'],
@@ -471,7 +470,7 @@ class SPDBelanjaController extends Controller
                     $data = DB::statement(
                         "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                         created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
-                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, nilai - isnull(lalu_tw, 0) AS nilai, 
+                        SELECT a.kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, isnull((nilai - isnull(lalu_tw, 0)),0) AS nilai, 
                         ?, ?, ?, ?, isnull(lalu,0) as lalu, isnull(a.total_ubah,0) AS anggaran, ?, ?, ?
                             FROM
                             (
@@ -533,7 +532,7 @@ class SPDBelanjaController extends Controller
                 $data = DB::statement(
                     "INSERT spd_temp (kd_skpd, kd_sub_kegiatan, kd_rek6, bulan_awal, bulan_akhir, nilai, 
                     created_at, jns_ang, jns_angkas, jns_beban, nilai_lalu, anggaran, page_id, revisi, username)
-                    SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, (nilai - isnull(lalu_tw, 0)) AS nilai,
+                    SELECT a.kd_skpd as kd_unit, a.kd_sub_kegiatan, a.kd_rek6, ?, ?, isnull((nilai - isnull(lalu_tw, 0)), 0) AS nilai,
                             ?, ?, ?, ?, isnull(lalu, 0) as lalu, isnull(a.total_ubah,0) AS anggaran, ?, ?, ?
                         FROM
                         (
