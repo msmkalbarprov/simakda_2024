@@ -67,6 +67,7 @@ use App\Http\Controllers\Spd\RegisterSPDController;
 use App\Http\Controllers\Spd\KonfigurasiSPDController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Skpd\Pendapatan\PenyetoranController;
+use App\Http\Controllers\Skpd\Transaksi\LPJController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -880,14 +881,57 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::group(['prefix' => 'up_gu'], function () {
                 // LPJ UP/GU (SKPD TANPA UNIT)
                 Route::group(['prefix' => 'skpd_tanpa_unit'], function () {
-                    Route::get('', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.index');
-                    Route::post('load_data', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.load_data');
-                    Route::get('tambah', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.tambah');
-                    Route::post('simpan', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.simpan');
-                    Route::get('edit/{no_bukti?}', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->where('no_bukti', '(.*)')->name('skpd.skpd_tanpa_unit.edit');
-                    Route::post('update', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.update');
-                    Route::post('hapus', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.hapus');
+                    Route::get('', [LPJController::class, 'indexSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.index');
+                    Route::post('load_data', [LPJController::class, 'loadSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.load_data');
+                    Route::get('tambah', [LPJController::class, 'tambahSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.tambah');
+                    Route::post('detail', [LPJController::class, 'detailSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.detail');
+                    Route::post('total_spd', [LPJController::class, 'totalspdSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.total_spd');
+                    Route::post('simpan', [LPJController::class, 'simpanSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.simpan');
+                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdTanpaUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_tanpa_unit.edit');
+                    Route::post('update', [LPJController::class, 'updateSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.update');
+                    Route::post('hapus', [LPJController::class, 'hapusSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.hapus');
                 });
+                // LPJ UP/GU (SKPD + UNIT)
+                Route::group(['prefix' => 'skpd_dan_unit'], function () {
+                    Route::get('', [LPJController::class, 'indexSkpdDanUnit'])->name('lpj.skpd_dan_unit.index');
+                    Route::post('load_data', [LPJController::class, 'loadSkpdDanUnit'])->name('lpj.skpd_dan_unit.load_data');
+                    Route::get('tambah', [LPJController::class, 'tambahSkpdDanUnit'])->name('lpj.skpd_dan_unit.tambah');
+                    Route::post('simpan', [LPJController::class, 'simpanSkpdDanUnit'])->name('lpj.skpd_dan_unit.simpan');
+                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdDanUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_dan_unit.edit');
+                    Route::post('update', [LPJController::class, 'updateSkpdDanUnit'])->name('lpj.skpd_dan_unit.update');
+                    Route::post('hapus', [LPJController::class, 'hapusSkpdDanUnit'])->name('lpj.skpd_dan_unit.hapus');
+                });
+                // LPJ UP/GU (SKPD/UNIT)
+                Route::group(['prefix' => 'skpd_atau_unit'], function () {
+                    Route::get('', [LPJController::class, 'indexSkpdAtauUnit'])->name('lpj.skpd_atau_unit.index');
+                    Route::post('load_data', [LPJController::class, 'loadSkpdAtauUnit'])->name('lpj.skpd_atau_unit.load_data');
+                    Route::get('tambah', [LPJController::class, 'tambahSkpdAtauUnit'])->name('lpj.skpd_atau_unit.tambah');
+                    Route::post('simpan', [LPJController::class, 'simpanSkpdAtauUnit'])->name('lpj.skpd_atau_unit.simpan');
+                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdAtauUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_atau_unit.edit');
+                    Route::post('update', [LPJController::class, 'updateSkpdAtauUnit'])->name('lpj.skpd_atau_unit.update');
+                    Route::post('hapus', [LPJController::class, 'hapusSkpdAtauUnit'])->name('lpj.skpd_atau_unit.hapus');
+                });
+                // Validasi LPJ UP/GU UNIT
+                Route::group(['prefix' => 'validasi'], function () {
+                    Route::get('', [LPJController::class, 'indexValidasiLpj'])->name('lpj.validasi.index');
+                    Route::post('load_data', [LPJController::class, 'loadValidasiLpj'])->name('lpj.validasi.load_data');
+                    Route::get('tambah', [LPJController::class, 'tambahValidasiLpj'])->name('lpj.validasi.tambah');
+                    Route::post('simpan', [LPJController::class, 'simpanValidasiLpj'])->name('lpj.validasi.simpan');
+                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editValidasiLpj'])->where('no_bukti', '(.*)')->name('lpj.validasi.edit');
+                    Route::post('update', [LPJController::class, 'updateValidasiLpj'])->name('lpj.validasi.update');
+                    Route::post('hapus', [LPJController::class, 'hapusValidasiLpj'])->name('lpj.validasi.hapus');
+                });
+            });
+            // Input LPJ TU
+            Route::group(['prefix' => 'tu'], function () {
+                // LPJ TU
+                Route::get('', [LPJController::class, 'indexLpjTu'])->name('lpj.tu.index');
+                Route::post('load_data', [LPJController::class, 'loadLpjTu'])->name('lpj.tu.load_data');
+                Route::get('tambah', [LPJController::class, 'tambahLpjTu'])->name('lpj.tu.tambah');
+                Route::post('simpan', [LPJController::class, 'simpanLpjTu'])->name('lpj.tu.simpan');
+                Route::get('edit/{no_bukti?}', [LPJController::class, 'editLpjTu'])->where('no_bukti', '(.*)')->name('lpj.tu.edit');
+                Route::post('update', [LPJController::class, 'updateLpjTu'])->name('lpj.tu.update');
+                Route::post('hapus', [LPJController::class, 'hapusLpjTu'])->name('lpj.tu.hapus');
             });
         });
     });
