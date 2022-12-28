@@ -1179,24 +1179,40 @@ class SppLsController extends Controller
                     $lcbeban = "LS";
             }
             $jumlah_spp = '';
-            $cari_rek = DB::table('trdspp')->select('kd_rek6')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->first();
+            $cari_rek = DB::table('trdspp')
+                ->select('kd_rek6')
+                ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
+                ->orderBy('kd_rek6')
+                ->first();
             $rek = substr($cari_rek->kd_rek6, 0, 6);
             if ($rek == '510101') {
                 $rek = '510101';
             } else {
                 $rek = $cari_rek->kd_rek6;
             }
+
             if ($rek == '510101' || $rek == '510105') {
-                $cari_data = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
-                    $join->on('a.no_spp', '=', 'b.no_spp');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })->join('ms_bidang_urusan as c', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'c.kd_bidang_urusan')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'no_rek as no_rek', 'a.npwp', 'a.no_spd', DB::raw("SUM(b.nilai) as nilai"), DB::raw("(SELECT SUM(trdspd.nilai) FROM trdspd INNER JOIN trhspd ON trdspd.no_spd = trhspd.no_spd WHERE trhspd.kd_skpd = '$kd_skpd' AND trhspd.tgl_spd <= '$cari_spd->tgl_spd') as spd"), DB::raw("(SELECT SUM(trdspp.nilai) FROM trdspp INNER JOIN trhspp ON trdspp.no_spp = trhspp.no_spp AND trdspp.kd_skpd = trhspp.kd_skpd INNER JOIN trhsp2d ON trhspp.no_spp = trhsp2d.no_spp WHERE trhspp.kd_skpd = '$kd_skpd' AND trhspp.jns_spp = '4' AND trhspp.no_spp != '$no_spp' AND trhsp2d.tgl_sp2d <= '$cari_spp->tgl_spp') as spp"))->groupBy('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'a.no_spd')->first();
+                $cari_data = DB::table('trhspp as a')
+                    ->join('trdspp as b', function ($join) {
+                        $join->on('a.no_spp', '=', 'b.no_spp');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->join('ms_bidang_urusan as c', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'c.kd_bidang_urusan')
+                    ->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])
+                    ->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'no_rek as no_rek', 'a.npwp', 'a.no_spd', DB::raw("SUM(b.nilai) as nilai"), DB::raw("(SELECT SUM(trdspd.nilai) FROM trdspd INNER JOIN trhspd ON trdspd.no_spd = trhspd.no_spd WHERE trhspd.kd_skpd = '$kd_skpd' AND trhspd.tgl_spd <= '$cari_spd->tgl_spd') as spd"), DB::raw("(SELECT SUM(trdspp.nilai) FROM trdspp INNER JOIN trhspp ON trdspp.no_spp = trhspp.no_spp AND trdspp.kd_skpd = trhspp.kd_skpd INNER JOIN trhsp2d ON trhspp.no_spp = trhsp2d.no_spp WHERE trhspp.kd_skpd = '$kd_skpd' AND trhspp.jns_spp = '4' AND trhspp.no_spp != '$no_spp' AND trhsp2d.tgl_sp2d <= '$cari_spp->tgl_spp') as spp"))->groupBy('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'a.no_spd')->first();
             } else {
-                $cari_data = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
-                    $join->on('a.no_spp', '=', 'b.no_spp');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })->join('ms_bidang_urusan as c', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'c.kd_bidang_urusan')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $rek])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'no_rek as no_rek', 'a.npwp', 'a.no_spd', DB::raw("SUM(b.nilai) as nilai"), DB::raw("(SELECT SUM(trdspd.nilai) FROM trdspd INNER JOIN trhspd ON trdspd.no_spd = trhspd.no_spd WHERE trhspd.kd_skpd = '$kd_skpd' AND trhspd.tgl_spd <= '$cari_spd->tgl_spd' AND trdspd.kd_rek6 = '$rek') as spd"), DB::raw("(SELECT SUM(trdspp.nilai) FROM trdspp INNER JOIN trhspp ON trdspp.no_spp = trhspp.no_spp AND trdspp.kd_skpd = trhspp.kd_skpd INNER JOIN trhsp2d ON trhspp.no_spp = trhsp2d.no_spp WHERE trhspp.kd_skpd = '$kd_skpd' AND trhspp.jns_spp = '4' AND trhspp.no_spp != '$no_spp' AND trhsp2d.tgl_sp2d <= '$cari_spp->tgl_spp' AND trdspp.kd_rek6 = '$rek') as spp"))->groupBy('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'a.no_spd')->first();
+                $cari_data = DB::table('trhspp as a')
+                    ->join('trdspp as b', function ($join) {
+                        $join->on('a.no_spp', '=', 'b.no_spp');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->join('ms_bidang_urusan as c', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'c.kd_bidang_urusan')
+                    ->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])
+                    ->whereRaw("b.kd_rek6 IN (SELECT kd_rek6 FROM trdspp WHERE b.kd_rek6=kd_rek6)")
+                    ->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'no_rek as no_rek', 'a.npwp', 'a.no_spd', DB::raw("SUM(b.nilai) as nilai"), DB::raw("(SELECT SUM(trdspd.nilai) FROM trdspd INNER JOIN trhspd ON trdspd.no_spd = trhspd.no_spd WHERE trhspd.kd_skpd = '$kd_skpd' AND trhspd.tgl_spd <= '$cari_spd->tgl_spd' AND trdspd.kd_rek6 = '$rek') as spd"), DB::raw("(SELECT SUM(trdspp.nilai) FROM trdspp INNER JOIN trhspp ON trdspp.no_spp = trhspp.no_spp AND trdspp.kd_skpd = trhspp.kd_skpd INNER JOIN trhsp2d ON trhspp.no_spp = trhsp2d.no_spp WHERE trhspp.kd_skpd = '$kd_skpd' AND trhspp.jns_spp = '4' AND trhspp.no_spp != '$no_spp' AND trhsp2d.tgl_sp2d <= '$cari_spp->tgl_spp' AND trdspp.kd_rek6 = '$rek') as spp"))
+                    ->groupBy('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'a.no_spd')->first();
             }
+
             $jenis = $cari_data->jns_beban;
             $bank = DB::table('ms_bank')->select('nama')->where('kode', $cari_data->bank)->first();
 

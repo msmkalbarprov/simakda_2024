@@ -736,7 +736,7 @@ class SpmController extends Controller
         $no_spp = $request->no_spp;
         $keterangan = $request->keterangan;
         $beban = $request->beban;
-        $batal_spm = $request->batal_spm;
+        // $batal_spm = $request->batal_spm;
         $user = Auth::user()->nama;
         $kd_skpd = Auth::user()->kd_skpd;
         $lpj = DB::table('trhspp')->select('no_lpj')->where(['no_spp' => $no_spp])->first();
@@ -744,53 +744,53 @@ class SpmController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($batal_spm == "false") {
-                DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
-                    'sp2d_batal' => '1',
-                    'ket_batal' => $keterangan,
-                    'user_batal' => $user,
-                    'tgl_batal' => date('d-m-y H:i:s')
-                ]);
-            } else {
-                DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
-                    'sp2d_batal' => '1',
-                    'ket_batal' => $keterangan,
-                    'user_batal' => $user,
-                    'tgl_batal' => date('d-m-y H:i:s')
-                ]);
+            // if ($batal_spm == "false") {
+            //     DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
+            //         'sp2d_batal' => '1',
+            //         'ket_batal' => $keterangan,
+            //         'user_batal' => $user,
+            //         'tgl_batal' => date('d-m-y H:i:s')
+            //     ]);
+            // } else {
+            DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
+                'sp2d_batal' => '1',
+                'ket_batal' => $keterangan,
+                'user_batal' => $user,
+                'tgl_batal' => date('d-m-y H:i:s')
+            ]);
 
-                DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
-                    'sp2d_batal' => '1',
-                    'ket_batal' => $keterangan,
-                    'user_batal' => $user,
-                    'tgl_batal' => date('d-m-y H:i:s')
-                ]);
+            DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
+                'sp2d_batal' => '1',
+                'ket_batal' => $keterangan,
+                'user_batal' => $user,
+                'tgl_batal' => date('d-m-y H:i:s')
+            ]);
 
-                if ($beban == '6') {
-                    $no_tagih = DB::table('trhspp')->select('no_tagih')->where(['no_spp' => $no_spp])->first();
-                    if ($no_tagih->no_tagih) {
-                        DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
-                            'no_tagih' => '',
-                            'kontrak' => '',
-                            'sts_tagih' => '0',
-                            'nmrekan' => '',
-                            'pimpinan' => '',
-                        ]);
-                        DB::table('trhtagih')->where(['no_bukti' => $no_tagih->no_tagih])->update([
-                            'sts_tagih' => '0',
-                        ]);
-                    }
-                }
-
-                if ($beban == '1' || $beban == '2' || $beban == '3') {
-                    DB::table('trhlpj_unit as a')->join('trlpj_unit_temp as b', 'a.no_lpj', '=', 'b.no_lpj')->where(['b.no_lpj_global' => $no_lpj, 'kd_bp_skpd' => $kd_skpd])->update([
-                        'a.status' => '1',
+            if ($beban == '6') {
+                $no_tagih = DB::table('trhspp')->select('no_tagih')->where(['no_spp' => $no_spp])->first();
+                if ($no_tagih->no_tagih) {
+                    DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
+                        'no_tagih' => '',
+                        'kontrak' => '',
+                        'sts_tagih' => '0',
+                        'nmrekan' => '',
+                        'pimpinan' => '',
                     ]);
-                    DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->update([
-                        'status' => '2',
+                    DB::table('trhtagih')->where(['no_bukti' => $no_tagih->no_tagih])->update([
+                        'sts_tagih' => '0',
                     ]);
                 }
             }
+
+            if ($beban == '1' || $beban == '2' || $beban == '3') {
+                DB::table('trhlpj_unit as a')->join('trlpj_unit_temp as b', 'a.no_lpj', '=', 'b.no_lpj')->where(['b.no_lpj_global' => $no_lpj, 'kd_bp_skpd' => $kd_skpd])->update([
+                    'a.status' => '1',
+                ]);
+                DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->update([
+                    'status' => '2',
+                ]);
+            }
+            // }
             DB::commit();
             return response()->json([
                 'message' => '1'

@@ -77,7 +77,7 @@
             let beban = this.value;
             let jenis = document.getElementById('jenis').value;
             let tgl_spp = document.getElementById('tgl_spp').value;
-            let tahun_anggaran = new Date().getFullYear();
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
             let kd_skpd = document.getElementById('kd_skpd').value;
             kosong();
             if (!tgl_spp) {

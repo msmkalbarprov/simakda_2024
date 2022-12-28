@@ -77,7 +77,7 @@
                             <input type="text" readonly class="form-control" id="no_spp_batal" name="no_spp_batal">
                         </div>
                     </div>
-                    <div class="mb-3 row">
+                    {{-- <div class="mb-3 row">
                         <label for="batal_spm" class="col-md-12 col-form-label">BATAL SPM-SPP</label>
                         <div class="col-md-2">
                             <div class="form-check form-switch form-switch-lg">
@@ -88,7 +88,7 @@
                             <h5 style="font-size: 12px">(Jika Ya, Batal SPM - SPP)</h5>
                             <h5 style="font-size: 12px">(Jika Tidak, Batal SPM Saja)</h5>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="mb-3 row">
                         <label for="keterangan_batal" class="col-md-12 col-form-label">KETERANGAN PEMBATALAN SPM</label>
                         <div class="col-md-12">
