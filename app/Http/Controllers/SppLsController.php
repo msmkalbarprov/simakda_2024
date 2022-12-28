@@ -1208,6 +1208,7 @@ class SppLsController extends Controller
                     })
                     ->join('ms_bidang_urusan as c', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'c.kd_bidang_urusan')
                     ->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])
+                    ->whereRaw("b.kd_rek6 IN (SELECT kd_rek6 FROM trdspp WHERE b.kd_rek6=kd_rek6)")
                     ->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'no_rek as no_rek', 'a.npwp', 'a.no_spd', DB::raw("SUM(b.nilai) as nilai"), DB::raw("(SELECT SUM(trdspd.nilai) FROM trdspd INNER JOIN trhspd ON trdspd.no_spd = trhspd.no_spd WHERE trhspd.kd_skpd = '$kd_skpd' AND trhspd.tgl_spd <= '$cari_spd->tgl_spd' AND trdspd.kd_rek6 = '$rek') as spd"), DB::raw("(SELECT SUM(trdspp.nilai) FROM trdspp INNER JOIN trhspp ON trdspp.no_spp = trhspp.no_spp AND trdspp.kd_skpd = trhspp.kd_skpd INNER JOIN trhsp2d ON trhspp.no_spp = trhsp2d.no_spp WHERE trhspp.kd_skpd = '$kd_skpd' AND trhspp.jns_spp = '4' AND trhspp.no_spp != '$no_spp' AND trhsp2d.tgl_sp2d <= '$cari_spp->tgl_spp' AND trdspp.kd_rek6 = '$rek') as spp"))
                     ->groupBy('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.jns_beban', 'c.kd_bidang_urusan', 'c.nm_bidang_urusan', 'a.bank', 'a.no_spd')->first();
             }
