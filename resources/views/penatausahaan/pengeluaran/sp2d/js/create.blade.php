@@ -1,5 +1,6 @@
 <script>
     $(document).ready(function() {
+        let thn_anggaran = "{{ tahun_anggaran() }}";
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -114,15 +115,15 @@
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
-                        $('#no_sp2d').val(data.nomor + '/UP/2022');
+                        $('#no_sp2d').val(data.nomor + '/UP/'+thn_anggaran);
                     } else if (beban == '2') {
-                        $('#no_sp2d').val(data.nomor + '/GU/2022');
+                        $('#no_sp2d').val(data.nomor + '/GU/'+thn_anggaran);
                     } else if (beban == '3') {
-                        $('#no_sp2d').val(data.nomor + '/TU/2022');
+                        $('#no_sp2d').val(data.nomor + '/TU/'+thn_anggaran);
                     } else if (beban == '4') {
-                        $('#no_sp2d').val(data.nomor + '/GJ/2022');
+                        $('#no_sp2d').val(data.nomor + '/GJ/'+thn_anggaran);
                     } else if (beban == '5' || beban == '6') {
-                        $('#no_sp2d').val(data.nomor + '/LS/2022');
+                        $('#no_sp2d').val(data.nomor + '/LS/'+thn_anggaran);
                     }
                 }
             })
@@ -173,7 +174,6 @@
             let beban = this.value;
             tabel_spm.clear().draw();
             tabel_potongan.clear().draw();
-            let thn_anggaran = "{{ tahun_anggaran() }}";
             // cari no sp2d
             $.ajax({
                 url: "{{ route('sp2d.cari_nomor') }}",
