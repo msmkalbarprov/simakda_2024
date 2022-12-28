@@ -27,7 +27,7 @@
                             <thead>
                                 <tr>
                                     <!-- <th style="width: 25px;text-align:center">No.</th> -->
-                                    <th style="text-align:center">Nomor SPM</th>
+                                    <th style="text-align:center">Nomor</th>
                                     <th style="text-align:center">Tanggal</th>
                                     <th style="text-align:center">Jenis Beban</th>
                                     <th style="text-align:center">Jenis Anggaran</th>
