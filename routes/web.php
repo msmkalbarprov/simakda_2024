@@ -873,6 +873,23 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('validasi', [PenyetoranController::class, 'validasiPenyetoranIni'])->name('penyetoran_ini.validasi');
             });
         });
+
+        // LPJ
+        Route::group(['prefix' => 'lpj'], function () {
+            // Input LPJ UP/GU
+            Route::group(['prefix' => 'up_gu'], function () {
+                // LPJ UP/GU (SKPD TANPA UNIT)
+                Route::group(['prefix' => 'skpd_tanpa_unit'], function () {
+                    Route::get('', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.index');
+                    Route::post('load_data', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.load_data');
+                    Route::get('tambah', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.tambah');
+                    Route::post('simpan', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.simpan');
+                    Route::get('edit/{no_bukti?}', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->where('no_bukti', '(.*)')->name('skpd.skpd_tanpa_unit.edit');
+                    Route::post('update', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.update');
+                    Route::post('hapus', [SimpananBankController::class, 'indexSkpdTanpaUnit'])->name('skpd.skpd_tanpa_unit.hapus');
+                });
+            });
+        });
     });
 
     Route::group(['prefix' => 'pendapatan'], function () {

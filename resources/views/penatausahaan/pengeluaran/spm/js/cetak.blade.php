@@ -491,7 +491,7 @@
             let beban = document.getElementById('beban_batal').value;
             let keterangan = document.getElementById('keterangan_batal').value;
             let tanya = confirm('Anda yakin akan Membatalkan SPM: ' + no_spm + '  ?');
-            let batal_spm = document.getElementById('batal_spm').checked;
+            // let batal_spm = document.getElementById('batal_spm').checked;
             if (tanya == true) {
                 if (!keterangan) {
                     alert('Keterangan pembatalan SPM diisi terlebih dahulu!');
@@ -506,7 +506,7 @@
                         no_spp: no_spp,
                         keterangan: keterangan,
                         beban: beban,
-                        batal_spm: batal_spm,
+                        // batal_spm: batal_spm,
                     },
                     success: function(data) {
                         if (data.message == '1') {
