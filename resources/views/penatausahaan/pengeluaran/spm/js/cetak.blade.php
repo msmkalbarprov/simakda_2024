@@ -1,5 +1,6 @@
 <script>
     $(document).ready(function() {
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -55,6 +56,10 @@
                     className: "text-center",
                 },
             ],
+            drawCallback: function (settings) {
+                console.log('drawCallback');
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                }
         });
 
         $('#bendahara').select2({

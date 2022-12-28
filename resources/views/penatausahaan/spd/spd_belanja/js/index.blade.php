@@ -52,6 +52,10 @@
                     className: "text-center",
                 },
             ],
+            drawCallback: function (settings) {
+                console.log('drawCallback');
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                }
         });
 
         $('#nip').select2({

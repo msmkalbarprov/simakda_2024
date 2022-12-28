@@ -27,26 +27,26 @@ class DaftarPengujiController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->status_bank == 0 || $row->status_bank == null) {
-                $btn = '<a href="' . route("daftar_penguji.tampil", Crypt::encryptString($row->no_uji)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+                $btn = '<a href="' . route("daftar_penguji.tampil", Crypt::encryptString($row->no_uji)) . '" class="btn btn-warning btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Daftar Penguji"><i class="uil-edit"></i></a>';
             } else {
                 $btn = '';
             }
             if ($row->status_bank == 0 || $row->status_bank == null) {
-                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="uil-exclamation-triangle"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-primary btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Belum Siap Kirim"><i class="uil-exclamation-triangle"></i></a>';
             } else {
                 $btn .= '';
             }
             if ($row->status_bank == 1) {
-                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-check-circle"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-success btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Siap Kirim"><i class="uil-check-circle"></i></a>';
             } else {
                 $btn .= '';
             }
             if ($row->status_bank > 1 || $row->status_bank != 1) {
-                $btn .= '<a href="javascript:void(0);" onclick="hapusData(\'' . $row->no_uji . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapusData(\'' . $row->no_uji . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Sudah Dikirim"><i class="uil-trash"></i></a>';
             } else {
                 $btn .= '';
             }
-            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_uji . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_uji . '\');" class="btn btn-dark btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak Daftar Penguji"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }

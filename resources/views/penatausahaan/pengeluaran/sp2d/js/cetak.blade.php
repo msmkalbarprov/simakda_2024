@@ -51,6 +51,10 @@
                     className: "text-center",
                 },
             ],
+            drawCallback: function (settings) {
+                console.log('drawCallback');
+                $('[data-bs-toggle="tooltip"]').tooltip();
+                }
         });
 
         $('#ttd_bud').select2({

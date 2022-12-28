@@ -50,11 +50,11 @@ class SPDBelanjaController extends Controller
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("spdBP.show", Crypt::encryptString($row->no_spd)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
+            $btn = '<a href="' . route("spdBP.show", Crypt::encryptString($row->no_spd)) . '" class="btn btn-info btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat SPD"><i class="fas fa-info-circle"></i></a>';
             if ($row->status != '1') {
-                $btn .= '<a href="javascript:void(0);" onclick="hapusSPD(\'' . $row->no_spd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapusSPD(\'' . $row->no_spd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus SPD"><i class="fas fa-trash-alt"></i></a>';
             } 
-            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak SPD"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('penatausahaan.spd.spd_belanja.index');
