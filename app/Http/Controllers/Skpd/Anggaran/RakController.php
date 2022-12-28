@@ -3425,28 +3425,20 @@ class RakController extends Controller
 
     public function cetakCekAnggaran(Request $request)
     {
-        $kd_skpd = $request->kd_skpd;
+        $kd_skpd        = $request->kd_skpd;
         $jenis_anggaran = $request->jenis_anggaran;
-        $jenis_rak = $request->jenis_rak;
-        $jenis_print = $request->jenis_print;
-
+        $jenis_rak      = $request->jenis_rak;
+        $jenis_print    = $request->jenis_print;
+        
         $jenis = "nilai_" . $jenis_rak;
 
-        $join1 = DB::table('trdskpd_ro')->select('kd_sub_kegiatan as giat', 'kd_rek6', DB::raw("SUM($jenis) as nilai_kas"))->where(['kd_skpd' => $kd_skpd])->groupBy('kd_sub_kegiatan', 'kd_rek6');
-
-        $cek_rak1 = DB::table('trdrka')->select('kd_sub_kegiatan as giat', 'nm_sub_kegiatan as nama', 'kd_rek6', 'nm_rek6', DB::raw("sum(nilai) as nilai_ang"))->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_anggaran])->groupBy('kd_sub_kegiatan', 'nm_sub_kegiatan', 'kd_rek6', 'nm_rek6');
-
-        $cek_rak = DB::table(DB::raw("({$cek_rak1->toSql()}) as a"))
-            ->select('a.giat as kd_kegiatan', 'a.nama as nm_kegiatan', 'a.kd_rek6', 'a.nm_rek6', 'a.nilai_ang', DB::raw("isnull(b.nilai_kas,0) as nilai_kas"), DB::raw("CASE WHEN isnull(b.nilai_kas,0)=a.nilai_ang THEN 'SAMA' ELSE 'SELISIH' END AS hasil"))
-            ->leftJoinSub($join1, 'b', function ($join) {
-                $join->on('a.giat', '=', 'b.giat');
-                $join->on('a.kd_rek6', '=', 'b.kd_rek6');
-            })
-            ->mergeBindings($cek_rak1)
-            ->whereRaw("ISNULL(b.nilai_kas,0) <> a.nilai_ang")
-            ->orderBy('hasil')
-            ->orderBy('a.giat')
-            ->get();
+        $cek_rak = DB::select("SELECT [a].[giat] as [kd_kegiatan], [a].[nama] as [nm_kegiatan], [a].[kd_rek6], [a].[nm_rek6], 
+                            [a].[nilai_ang], isnull(b.nilai_kas,0) as nilai_kas, CASE WHEN isnull(b.nilai_kas,0)=a.nilai_ang THEN 'SAMA' ELSE 'SELISIH' END AS hasil from (
+                                    select [kd_sub_kegiatan] as [giat], [nm_sub_kegiatan] as [nama], [kd_skpd], [kd_rek6], [nm_rek6], sum(nilai) as nilai_ang from [trdrka] where [jns_ang] = ? and [kd_skpd] = ? group by [kd_skpd], [kd_sub_kegiatan], [nm_sub_kegiatan], [kd_rek6], [nm_rek6]
+                                ) as a 
+                                
+                                    left join (select [kd_sub_kegiatan] as [giat], [kd_skpd], [kd_rek6], SUM($jenis) as nilai_kas from [trdskpd_ro] where [kd_skpd] = ? group by [kd_skpd], [kd_sub_kegiatan], [kd_rek6]
+                                ) as [b] on [a].[giat] = [b].[giat] and [a].[kd_skpd] = [b].[kd_skpd] and [a].[kd_rek6] = [b].[kd_rek6] where ISNULL(b.nilai_kas,0) <> a.nilai_ang order by [hasil] asc, [a].[giat] asc",[$jenis_anggaran, $kd_skpd,$kd_skpd]);
 
         $data = [
             'nama_angkas' => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
