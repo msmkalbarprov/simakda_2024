@@ -6,6 +6,26 @@
             }
         });
 
+        var format = function(num){
+                var str = num.toString().replace("", ""), parts = false, output = [], i = 1, formatted = null;
+                if(str.indexOf(".") > 0) {
+                    parts = str.split(".");
+                    str = parts[0];
+                }
+                str = str.split("").reverse();
+                for(var j = 0, len = str.length; j < len; j++) {
+                    if(str[j] != ",") {
+                    output.push(str[j]);
+                    if(i%3 == 0 && j < (len - 1)) {
+                        output.push(",");
+                    }
+                    i++;
+                    }
+                }
+                formatted = output.reverse().join("");
+                return("" + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+                };
+
         let data_awal = $('#spd_belanja').DataTable({
             responsive: true,
             ordering: false,
@@ -25,20 +45,39 @@
                 {
                     data: 'no_spd',
                     name: 'no_spd',
+                    render: function ( data, type, row ) {
+                        return '<font size="2px">' +row.no_spd +'</font>';
+                    },
                 },
                 {
                     data: 'tgl_spd',
                     name: 'tgl_spd',
+                    render: function ( data, type, row ) {
+                        return '<font size="2px">' +row.tgl_spd +'</font>';
+                    },
+                },
+                {
+                    data: 'nm_skpd',
+                    name: 'nm_skpd',
+                    render: function ( data, type, row ) {
+                        return '<font size="2px">' +row.nm_skpd +'</font>';
+                    },
+                },
+                
+                {
+                    data: 'total',
+                    name: 'total',
+                    render: function ( data, type, row ) {
+                        return '<font size="2px" align="right">' +format(row.total) +'</font>';
+                    }
                 },
                 {
                     data: 'nm_beban',
                     name: 'nm_beban',
                     className: "text-center",
-                },
-                {
-                    data: 'jns_ang',
-                    name: 'jns_ang',
-                    className: "text-center",
+                    render: function ( data, type, row ) {
+                        return '<font size="2px">' +row.nm_beban +'</font>';
+                    },
                 },
                 {
                     data: 'revisi_ke',
@@ -52,6 +91,7 @@
                     className: "text-center",
                 },
             ],
+            
             drawCallback: function (settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();

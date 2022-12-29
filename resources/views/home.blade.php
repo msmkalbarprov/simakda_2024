@@ -112,16 +112,16 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">{{'Pengeluaran'}}</h4>
                 <div id="chartdiv2"></div>
-                {{-- <div id="donut_chart" class="apex-charts"  dir="ltr"></div> --}}
+                <div id="donut_chart" class="apex-charts"  dir="ltr"></div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- apexcharts -->
-{{-- <script src="{{asset('template/assets/libs/apexcharts/apexcharts.min.js')}}"></script> --}}
+<script src="{{asset('template/assets/libs/apexcharts/apexcharts.min.js')}}"></script>
 
-{{-- <script src="{{asset('template/assets/js/pages/dashboard.init.js')}}"></script> --}}
+<script src="{{asset('template/assets/js/pages/dashboard.init.js')}}"></script>
         <!-- apexcharts init -->
 
 {{-- AMCHART --}}

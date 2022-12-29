@@ -5,6 +5,7 @@
 <script src="{{ asset('template/assets/libs/node-waves/waves.min.js') }}"></script>
 <script src="{{ asset('template/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
 <script src="{{ asset('template/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- apexcharts -->
 {{-- <script src="{{ asset('template/assets/js/pages/dashboard.init.js') }}"></script> --}}
 <!-- App js -->
@@ -30,7 +31,5 @@
 <script src="{{ asset('template/assets/js/pages/sweet-alerts.init.js') }}"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    $('[data-bs-toggle="tooltip"]').tooltip();
-</script>
+
 @yield('js')

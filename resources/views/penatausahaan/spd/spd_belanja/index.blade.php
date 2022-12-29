@@ -29,8 +29,9 @@
                                     <!-- <th style="width: 25px;text-align:center">No.</th> -->
                                     <th style="text-align:center">Nomor</th>
                                     <th style="text-align:center">Tanggal</th>
-                                    <th style="text-align:center">Jenis Beban</th>
-                                    <th style="text-align:center">Jenis Anggaran</th>
+                                    <th style="text-align:center">SKPD</th>
+                                    <th style="text-align:center">Nilai</th>
+                                    <th style="text-align:center">Beban</th>
                                     <th style="text-align:center">Revisi</th>
                                     <th style="text-align:center">Aksi</th>
                                 </tr>

@@ -1,4 +1,7 @@
 <script>
+    $('[data-bs-toggle="tooltip"]').tooltip();
+</script>
+<script>
     $(document).ready(function() {
         
         $.ajaxSetup({
