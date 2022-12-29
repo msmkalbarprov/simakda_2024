@@ -31,7 +31,7 @@
             ordering: false,
             serverSide: true,
             processing: true,
-            lengthMenu: [5, 10],
+            lengthMenu: [10, 10, 20, 50],
             ajax: {
                 "url": "{{ route('spd.spd_belanja.load_data') }}",
                 "type": "POST",
