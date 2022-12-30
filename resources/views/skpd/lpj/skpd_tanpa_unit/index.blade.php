@@ -17,7 +17,7 @@
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
                                         <th style="width: 50px;text-align:center">No LPJ</th>
-                                        <th style="width: 50px;text-align:center">Tanggal LPJ</th>
+                                        <th style="width: 100px;text-align:center">Tanggal LPJ</th>
                                         <th style="width: 50px;text-align:center">SKPD</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>

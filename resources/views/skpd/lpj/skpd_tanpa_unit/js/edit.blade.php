@@ -11,6 +11,25 @@
             theme: 'bootstrap-5'
         });
 
+        $.ajax({
+            url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                tgl_awal: document.getElementById('tgl_awal').value,
+                tgl_akhir: document.getElementById('tgl_akhir').value,
+                kd_skpd: document.getElementById('kd_skpd').value
+            },
+            success: function(data) {
+                $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data.spd));
+                $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data.keluarspp));
+            }
+        });
+
         let detail = $('#detail_lpj').DataTable({
             responsive: true,
             ordering: false,
@@ -176,6 +195,7 @@
 
             let data = {
                 no_lpj,
+                no_lpj_simpan,
                 tgl_lpj,
                 tgl_awal,
                 tgl_akhir,
@@ -187,7 +207,7 @@
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.simpan') }}",
+                url: "{{ route('lpj.skpd_tanpa_unit.update') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -198,6 +218,10 @@
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
                             "{{ route('lpj.skpd_tanpa_unit.index') }}";
+                    } else if (response.message == '2') {
+                        alert('Nomor telah dipakai!');
+                        $('#simpan').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan').prop('disabled', false);

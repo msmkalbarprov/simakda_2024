@@ -887,7 +887,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::post('detail', [LPJController::class, 'detailSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.detail');
                     Route::post('total_spd', [LPJController::class, 'totalspdSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.total_spd');
                     Route::post('simpan', [LPJController::class, 'simpanSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.simpan');
-                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdTanpaUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_tanpa_unit.edit');
+                    Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdTanpaUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_tanpa_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.update');
                     Route::post('hapus', [LPJController::class, 'hapusSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.hapus');
                 });

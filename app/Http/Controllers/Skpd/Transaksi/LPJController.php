@@ -28,8 +28,12 @@ class LPJController extends Controller
             ->orderBy('a.no_lpj')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            if ($row->status == '1' || $row->status == '2') {
+                $btn = "";
+            } else {
+                $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -120,7 +124,9 @@ class LPJController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek_lpj = DB::table('trhlpj')->where(['no_lpj' => $data['no_lpj'], 'kd_skpd' => $kd_skpd])->count();
+            $no_lpj = $data['no_lpj'] . "/LPJ/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
+
+            $cek_lpj = DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->count();
             if ($cek_lpj > 0) {
                 return response()->json([
                     'message' => '2'
@@ -129,7 +135,7 @@ class LPJController extends Controller
 
             DB::table('trhlpj')
                 ->insert([
-                    'no_lpj' => $data['no_lpj'],
+                    'no_lpj' => $no_lpj,
                     'tgl_lpj' => $data['tgl_lpj'],
                     'kd_skpd' => $data['kd_skpd'],
                     'keterangan' => $data['keterangan'],
@@ -139,17 +145,23 @@ class LPJController extends Controller
                     'jenis' => '1',
                 ]);
 
-            DB::table('trhlpj_unit')
-                ->insert([
-                    'no_lpj' => $data['no_lpj'],
-                    'tgl_lpj' => $data['tgl_lpj'],
-                    'kd_skpd' => $data['kd_skpd'],
-                    'keterangan' => $data['keterangan'],
-                    'tgl_awal' => $data['tgl_awal'],
-                    'tgl_akhir' => $data['tgl_akhir'],
-                    'status' => '0',
-                    'jenis' => '1',
-                ]);
+            if (isset($data['detail_lpj'])) {
+                DB::table('trlpj')
+                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
+                        return [
+                            'no_lpj' => $no_lpj,
+                            'kd_skpd' => $value['kd_skpd'],
+                            'no_bukti' => $value['no_bukti'],
+                            'tgl_lpj' => $data['tgl_lpj'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'kd_rek6' => $value['kdrek6'],
+                            'nm_rek6' => $value['nmrek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_bp_skpd' => $data['kd_skpd'],
+                            'no_lpj_unit' => $no_lpj,
+                        ];
+                    }, $data['detail_lpj']));
+            }
 
             DB::commit();
             return response()->json([
@@ -163,42 +175,49 @@ class LPJController extends Controller
         }
     }
 
-    public function editSkpdTanpaUnit($no_sts)
+    public function editSkpdTanpaUnit($no_lpj)
     {
-        $no_sts = Crypt::decrypt($no_sts);
         $kd_skpd = Auth::user()->kd_skpd;
+        $no_lpj = Crypt::decrypt($no_lpj);
+        $arr = explode("/", $no_lpj);
 
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
-                ->get(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
-                ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
-                ->get(),
-            'setor' => DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                })
-                ->select('a.*')
-                ->where(['a.kd_skpd' => $kd_skpd, 'b.no_sts' => $no_sts])
+            'nomor' => $arr[0],
+            'lpj' => DB::table('trhlpj as a')
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.jenis' => '1', 'a.no_lpj' => $no_lpj])
+                ->orderBy('a.tgl_lpj')
+                ->orderBy('a.no_lpj')
                 ->first(),
-            'detail_setor' => DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
+            'detail_lpj' => DB::table('trhlpj as a')
+                ->join('trlpj as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
                 })
                 ->select('b.*')
-                ->where(['a.kd_skpd' => $kd_skpd, 'b.no_sts' => $no_sts])
-                ->get()
+                ->where(['a.no_lpj' => $no_lpj, 'a.kd_skpd' => $kd_skpd, 'a.jenis' => '1'])
+                ->get(),
+            'total_detail' => DB::table('trhlpj as a')
+                ->join('trlpj as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("SUM(b.nilai) as nilai")
+                ->where(['a.no_lpj' => $no_lpj, 'a.kd_skpd' => $kd_skpd, 'a.jenis' => '1'])
+                ->first(),
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+            'nilai_up' => DB::table('ms_up')
+                ->selectRaw("SUM(nilai_up) as nilai")
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+            'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
+                select 1 as nomor, SUM(nilai) as nilai_spd from trhspd a INNER JOIN trdspd b ON a.no_spd=b.no_spd WHERE kd_skpd = ? AND (RIGHT(kd_sub_kegiatan,10) !='01.1.02.01' OR kd_sub_kegiatan !='4.01.01.1.11.01') AND status='1') a LEFT JOIN (SELECT 1 as nomor, SUM(b.nilai) as transaksi FROM trhspp a INNER JOIN trdspp b ON a.kd_skpd=b.kd_skpd AND a.no_spp=b.no_spp WHERE a.kd_skpd = ? AND (RIGHT(b.kd_sub_kegiatan,10) !='01.1.02.01' OR b.kd_sub_kegiatan !='4.01.01.1.11.01') and (sp2d_batal is null or sp2d_batal<>'1')) b ON a.nomor=b.nomor", [$kd_skpd, $kd_skpd]))->first(),
         ];
-        // dd($data['setor']);
-        return view('penatausahaan.penyetoran_tahun_lalu.edit')->with($data);
+
+        return view('skpd.lpj.skpd_tanpa_unit.edit')->with($data);
     }
 
     public function updateSkpdTanpaUnit(Request $request)
@@ -208,141 +227,47 @@ class LPJController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek1 = DB::table('tr_kunci')
-                ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_sts']])
-                ->where(['kd_skpd' => $kd_skpd]);
+            $no_lpj = $data['no_lpj'] . "/LPJ/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
 
-            $cek2 = DB::table($cek1, 'a')
-                ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            $cek3 = DB::table('trhspj_terima_ppkd')
-                ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_sts']])
-                ->where(['kd_skpd' => $kd_skpd]);
-
-            $cek4 = DB::table($cek3, 'a')
-                ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-                ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-                ->mergeBindings($cek4)
-                ->first();
-
-            if ($cek->status_kasda == '1') {
+            $cek_terima = DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $data['kd_skpd']])->count();
+            if ($cek_terima > 0 && $no_lpj != $data['no_lpj_simpan']) {
                 return response()->json([
                     'message' => '2'
                 ]);
-            } elseif ($cek->status_spj == '1') {
-                return response()->json([
-                    'message' => '3'
-                ]);
-            } else {
-                $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_sts'], 'kd_skpd' => $kd_skpd])->count();
-                if ($cek_terima > 0 && $data['no_sts'] != $data['no_simpan']) {
-                    return response()->json([
-                        'message' => '4'
-                    ]);
-                }
             }
 
+            DB::table('trhlpj')->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])->delete();
 
-            DB::table('trhkasin_pkd')->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_simpan']])->delete();
-
-            DB::table('trhkasin_pkd')
+            DB::table('trhlpj')
                 ->insert([
-                    'no_sts' => $data['no_sts'],
-                    'tgl_sts' => $data['tgl_sts'],
+                    'no_lpj' => $no_lpj,
+                    'tgl_lpj' => $data['tgl_lpj'],
                     'kd_skpd' => $data['kd_skpd'],
                     'keterangan' => $data['keterangan'],
-                    'total' => $data['total'],
-                    'kd_bank' => '',
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'jns_trans' => '2',
-                    'rek_bank' => '',
-                    'sumber' => $data['pengirim'],
-                    'pot_khusus' => '0',
-                    'no_sp2d' => '',
-                    'jns_cp' => '',
+                    'tgl_awal' => $data['tgl_awal'],
+                    'tgl_akhir' => $data['tgl_akhir'],
+                    'status' => '0',
+                    'jenis' => '1',
                 ]);
 
-            DB::table('trdkasin_pkd')->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_simpan']])->delete();
+            DB::table('trlpj')->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])->delete();
 
-            if (isset($data['detail_sts'])) {
-                DB::table('trdkasin_pkd')
-                    ->insert(array_map(function ($value) use ($data) {
+            if (isset($data['detail_lpj'])) {
+                DB::table('trlpj')
+                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
                         return [
-                            'no_sts' => $data['no_sts'],
-                            'kd_skpd' => $data['kd_skpd'],
-                            'kd_rek6' => $value['kd_rek6'],
-                            'rupiah' => $value['nilai'],
-                            'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                            'sumber' => $data['pengirim'],
+                            'no_lpj' => $no_lpj,
+                            'kd_skpd' => $value['kd_skpd'],
+                            'no_bukti' => $value['no_bukti'],
+                            'tgl_lpj' => $data['tgl_lpj'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'kd_rek6' => $value['kdrek6'],
+                            'nm_rek6' => $value['nmrek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_bp_skpd' => $data['kd_skpd'],
+                            'no_lpj_unit' => $no_lpj,
                         ];
-                    }, $data['detail_sts']));
-            }
-
-            $jumlah = DB::table('ms_skpd')->where(['jns' => '2', 'kd_skpd' => $data['kd_skpd']])->count();
-
-
-            DB::table('trhkasin_ppkd')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_simpan']])->delete();
-
-            DB::table('trdkasin_ppkd')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_simpan']])->delete();
-
-            $nomor = nomor_tukd();
-
-            if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
-                DB::table('trhkasin_ppkd')
-                    ->insert([
-                        'no_kas' => $nomor,
-                        'tgl_kas' => $data['tgl_sts'],
-                        'no_sts' => $data['no_sts'],
-                        'tgl_sts' => $data['tgl_sts'],
-                        'kd_skpd' => $data['kd_skpd'],
-                        'keterangan' => $data['keterangan'],
-                        'total' => $data['total'],
-                        'kd_bank' => '',
-                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                        'jns_trans' => '2',
-                        'rek_bank' => '',
-                        'sumber' => $data['pengirim'],
-                        'pot_khusus' => '0',
-                        'no_sp2d' => '',
-                        'jns_cp' => '',
-                    ]);
-
-                DB::table('trhkasin_pkd')
-                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_sts']])
-                    ->update([
-                        'no_cek' => '1',
-                        'status' => '1'
-                    ]);
-
-                if (isset($data['detail_sts'])) {
-                    DB::table('trdkasin_ppkd')
-                        ->insert(array_map(function ($value) use ($data) {
-                            return [
-                                'no_sts' => $data['no_sts'],
-                                'kd_skpd' => $data['kd_skpd'],
-                                'kd_rek6' => $value['kd_rek6'],
-                                'rupiah' => $value['nilai'],
-                                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                                'no_kas' => '',
-                                'sumber' => $data['pengirim'],
-                            ];
-                        }, $data['detail_sts']));
-                }
-
-                DB::table('trdkasin_ppkd as a')
-                    ->join('trhkasin_ppkd as b', function ($join) {
-                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                        $join->on('a.no_sts', '=', 'b.no_sts');
-                        $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                    })
-                    ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
-                    ->update([
-                        'a.no_kas' => $nomor
-                    ]);
+                    }, $data['detail_lpj']));
             }
 
             DB::commit();

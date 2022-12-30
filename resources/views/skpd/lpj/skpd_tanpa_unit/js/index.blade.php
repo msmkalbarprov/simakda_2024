@@ -34,6 +34,7 @@
                 {
                     data: 'tgl_lpj',
                     name: 'tgl_lpj',
+                    width: '150px',
                     className: "text-center",
                 },
                 {
@@ -51,7 +52,7 @@
                 {
                     data: 'aksi',
                     name: 'aksi',
-                    width: 100,
+                    width: '100px',
                     className: "text-center",
                 },
             ],

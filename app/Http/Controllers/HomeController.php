@@ -15,7 +15,7 @@ class HomeController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        if(Auth::user()->is_admin==1){
+        if (Auth::user()->is_admin == 1) {
             $data = [
                 'data_pendapatan' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
@@ -49,48 +49,48 @@ class HomeController extends Controller
                     ->join('trhspp as b', function ($join) {
                         $join->on('a.no_spp', '=', 'b.no_spp');
                         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                        })
-                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    })
+                    ->whereRaw("a.sp2d_batal is null OR a.sp2d_batal <> 1")
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
                     ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
                     ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first()
             ];
-        }else{
+        } else {
             $data = [
                 'data_pendapatan' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 4)
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_belanja' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as belanja"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,1)'), 5)
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_pem_terima' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0)as pem_terima"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 61)
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_pem_keluar' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pem_keluar"))
                     ->where(['jns_ang' => 'M'])
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first(),
-                    
+
                 'data_penagihan' => DB::table('trhtagih')
                     ->select(DB::raw("isnull(sum(total),0) as penagihan"))
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_spp' => DB::table('trhspp')
                     ->select(DB::raw("isnull(sum(nilai),0) as spp"))
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first(),
                 'data_spm' => DB::table('trhspm as a')
@@ -98,30 +98,30 @@ class HomeController extends Controller
                     ->join('trhspp as b', function ($join) {
                         $join->on('a.no_spp', '=', 'b.no_spp');
                         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                        })
+                    })
                     ->whereRaw("(sp2d_batal is null OR sp2d_batal <> 1)")
-                    ->where('a.kd_skpd',$kd_skpd)
+                    ->where('a.kd_skpd', $kd_skpd)
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
                     ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
                     ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
-                    ->where('kd_skpd',$kd_skpd)
+                    ->where('kd_skpd', $kd_skpd)
                     ->first()
             ];
         }
-        
+
         // dd($data);
         return view('home')->with($data);;
     }
 
     public function pengumuman()
     {
-            $data = [
-                'data_pengumuman' => DB::table('ms_pengumuman')
-                ->where('aktif',1)
+        $data = [
+            'data_pengumuman' => DB::table('ms_pengumuman')
+                ->where('aktif', 1)
                 ->get()
-            ];
-        
+        ];
+
         return view('pengumuman.pengumuman')->with($data);;
     }
 
@@ -190,7 +190,7 @@ class HomeController extends Controller
     {
         $data = $request->data;
 
-        if($data['password'] != $data['password2']){
+        if ($data['password'] != $data['password2']) {
             return response()->json([
                 'message' => '2'
             ]);

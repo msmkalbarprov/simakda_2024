@@ -97,6 +97,27 @@
                             <input type="text" value="{{ $data_penerima->keterangan }}" readonly class="form-control">
                         </div>
                     </div>
+                    <!-- Rekanan -->
+                    <div class="mb-3 row">
+                        <label for="keterangan" class="col-md-2 col-form-label">Rekanan</label>
+                        <div class="col-md-10">
+                            <input type="text" value="{{ $data_penerima->nmrekan }}" readonly class="form-control">
+                        </div>
+                    </div>
+                    <!-- Pimpinan -->
+                    <div class="mb-3 row">
+                        <label for="keterangan" class="col-md-2 col-form-label">Pimpinan</label>
+                        <div class="col-md-10">
+                            <input type="text" value="{{ $data_penerima->pimpinan }}" readonly class="form-control">
+                        </div>
+                    </div>
+                    <!-- Alamat -->
+                    <div class="mb-3 row">
+                        <label for="keterangan" class="col-md-2 col-form-label">Alamat</label>
+                        <div class="col-md-10">
+                            <input type="text" value="{{ $data_penerima->alamat }}" readonly class="form-control">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> <!-- end col -->
