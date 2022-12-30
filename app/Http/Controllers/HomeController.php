@@ -50,7 +50,7 @@ class HomeController extends Controller
                         $join->on('a.no_spp', '=', 'b.no_spp');
                         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                     })
-                    ->whereRaw("a.sp2d_batal is null OR a.sp2d_batal <> 1")
+                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
                     ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
