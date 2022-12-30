@@ -874,7 +874,6 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('validasi', [PenyetoranController::class, 'validasiPenyetoranIni'])->name('penyetoran_ini.validasi');
             });
         });
-
         // LPJ
         Route::group(['prefix' => 'lpj'], function () {
             // Input LPJ UP/GU
@@ -896,8 +895,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('', [LPJController::class, 'indexSkpdDanUnit'])->name('lpj.skpd_dan_unit.index');
                     Route::post('load_data', [LPJController::class, 'loadSkpdDanUnit'])->name('lpj.skpd_dan_unit.load_data');
                     Route::get('tambah', [LPJController::class, 'tambahSkpdDanUnit'])->name('lpj.skpd_dan_unit.tambah');
+                    Route::post('simpan_temp', [LPJController::class, 'simpanTempSkpdDanUnit'])->name('lpj.skpd_dan_unit.simpan_temp');
                     Route::post('simpan', [LPJController::class, 'simpanSkpdDanUnit'])->name('lpj.skpd_dan_unit.simpan');
-                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdDanUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_dan_unit.edit');
+                    Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdDanUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_dan_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdDanUnit'])->name('lpj.skpd_dan_unit.update');
                     Route::post('hapus', [LPJController::class, 'hapusSkpdDanUnit'])->name('lpj.skpd_dan_unit.hapus');
                 });

@@ -190,7 +190,7 @@
                         <div class="mb-3 row">
                             <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
                             <div class="col-md-10">
-                                <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
+                                {{-- <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
                                     name="rekanan" data-placeholder="Silahkan Pilih">
                                     <option value="" disabled selected>Silahkan Pilih Rekanan</option>
                                     @foreach ($daftar_rekanan as $rekanan)
@@ -199,7 +199,9 @@
                                             {{ $data_penerima->nmrekan == $rekanan->nmrekan ? 'selected' : '' }}>
                                             {{ $rekanan->nmrekan }}</option>
                                     @endforeach
-                                </select>
+                                </select> --}}
+                                <input type="text" class="form-control" id="rekanan" name="rekanan"
+                                    value="{{ $data_penerima->nmrekan }}">
                             </div>
                         </div>
                         {{-- pimpinan --}}
@@ -207,16 +209,14 @@
                             <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control" id="pimpinan" name="pimpinan"
-                                    value="{{ $data_penerima->pimpinan }}" readonly>
-                                <input type="text" class="form-control" id="nama_rekan" name="nama_rekan" readonly
-                                    hidden value="{{ $data_penerima->nmrekan }}">
+                                    value="{{ $data_penerima->pimpinan }}">
                             </div>
                         </div>
                         {{-- alamat --}}
                         <div class="mb-3 row">
                             <label for="alamat" class="col-md-2 col-form-label">Alamat</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control" id="alamat" name="alamat" readonly
+                                <input type="text" class="form-control" id="alamat" name="alamat"
                                     value="{{ $data_penerima->alamat }}">
                             </div>
                         </div>
@@ -303,32 +303,45 @@
                 }
             });
 
+            if (document.getElementById('jenis').value == '2') {
+
+                $('#rekanan').prop('readonly', false);
+                $('#pimpinan').prop('readonly', false);
+                $('#alamat').prop('readonly', false);
+            } else {
+                $('#rekanan').prop('readonly', true);
+                $('#pimpinan').prop('readonly', true);
+                $('#alamat').prop('readonly', true);
+            }
+
             $('#jenis').on('select2:select', function() {
                 let jenis = this.value;
 
                 if (jenis == '2') {
-                    $('#rekanan').prop('disabled', false);
-                    $('#rekanan').val(null).change();
-                    $('#nama_rekan').val(null);
+                    $('#rekanan').prop('readonly', false);
+                    $('#pimpinan').prop('readonly', false);
+                    $('#alamat').prop('readonly', false);
+                    $('#rekanan').val(null);
                     $('#pimpinan').val(null);
                     $('#alamat').val(null);
                 } else {
-                    $('#rekanan').prop('disabled', true);
-                    $('#rekanan').val(null).change();
-                    $('#nama_rekan').val(null);
+                    $('#rekanan').prop('readonly', true);
+                    $('#pimpinan').prop('readonly', true);
+                    $('#alamat').prop('readonly', true);
+                    $('#rekanan').val(null);
                     $('#pimpinan').val(null);
                     $('#alamat').val(null);
                 }
             });
 
-            $('#rekanan').on('change', function() {
-                let rekanan = this.value;
-                let pimpinan = $(this).find(':selected').data('pimpinan');
-                let alamat = $(this).find(':selected').data('alamat');
-                $("#nama_rekan").val(rekanan);
-                $("#pimpinan").val(pimpinan);
-                $("#alamat").val(alamat);
-            });
+            // $('#rekanan').on('change', function() {
+            //     let rekanan = this.value;
+            //     let pimpinan = $(this).find(':selected').data('pimpinan');
+            //     let alamat = $(this).find(':selected').data('alamat');
+            //     $("#nama_rekan").val(rekanan);
+            //     $("#pimpinan").val(pimpinan);
+            //     $("#alamat").val(alamat);
+            // });
 
             let bank = document.getElementById('cabang_sementara').value;
             let bic = document.getElementById('bic').value;

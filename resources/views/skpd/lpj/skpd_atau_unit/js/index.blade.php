@@ -11,14 +11,14 @@
             theme: 'bootstrap-5'
         });
 
-        $('#skpd_tanpa_unit').DataTable({
+        $('#skpd_atau_unit').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('lpj.skpd_tanpa_unit.load_data') }}",
+                "url": "{{ route('lpj.skpd_atau_unit.load_data') }}",
                 "type": "POST",
             },
             createdRow: function(row, data, index) {

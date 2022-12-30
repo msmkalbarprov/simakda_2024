@@ -76,7 +76,7 @@ class PenerimaController extends Controller
             'kd_setor' => $input['kode_setor'],
             'keterangan' => $input['keterangan'],
             'bic' => $input['bic'],
-            'nmrekan' => $input['nama_rekan'],
+            'nmrekan' => $input['rekanan'],
             'pimpinan' => $input['pimpinan'],
             'alamat' => $input['alamat'],
         ]);
@@ -138,24 +138,26 @@ class PenerimaController extends Controller
         $rekening = Crypt::decryptString($rekening);
         $kd_skpd = Crypt::decryptString($kd_skpd);
 
-        DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->update([
-            'kd_bank' => $request['bank'],
-            'rekening' => $request['no_rekening_validasi'],
-            'nm_rekening' => $request['nm_rekening_validasi'],
-            'bank' => $request['cabang'],
-            'nm_bank' => $request['nama_cabang'],
-            'kd_skpd' => $kd_skpd,
-            'jenis' => $request['jenis'],
-            'npwp' => $request['npwp_validasi'],
-            'nm_wp' => $request['nm_npwp_validasi'],
-            'kd_map' => $request['kode_akun'],
-            'kd_setor' => $request['kode_setor'],
-            'keterangan' => $request['keterangan'],
-            'bic' => $request['bic'],
-            'nmrekan' => $request['nama_rekan'],
-            'pimpinan' => $request['pimpinan'],
-            'alamat' => $request['alamat'],
-        ]);
+        DB::table('ms_rekening_bank_online')
+            ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
+            ->update([
+                'kd_bank' => $request['bank'],
+                'rekening' => $request['no_rekening_validasi'],
+                'nm_rekening' => $request['nm_rekening_validasi'],
+                'bank' => $request['cabang'],
+                'nm_bank' => $request['nama_cabang'],
+                'kd_skpd' => $kd_skpd,
+                'jenis' => $request['jenis'],
+                'npwp' => $request['npwp_validasi'],
+                'nm_wp' => $request['nm_npwp_validasi'],
+                'kd_map' => $request['kode_akun'],
+                'kd_setor' => $request['kode_setor'],
+                'keterangan' => $request['keterangan'],
+                'bic' => $request['bic'],
+                'nmrekan' => $request['rekanan'],
+                'pimpinan' => $request['pimpinan'],
+                'alamat' => $request['alamat'],
+            ]);
 
         return redirect()->route('penerima.index');
     }

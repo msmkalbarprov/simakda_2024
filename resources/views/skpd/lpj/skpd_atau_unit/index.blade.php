@@ -1,18 +1,17 @@
 @extends('template.app')
-@section('title', 'Input LPJ UP/GU (SKPD Tanpa Unit) | SIMAKDA')
+@section('title', 'Input LPJ UP/GU (SKPD / Unit) | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     List LPJ UP/GU
-                    <a href="{{ route('lpj.skpd_tanpa_unit.tambah') }}" class="btn btn-primary"
-                        style="float: right;">Tambah</a>
+                    <a href="{{ route('lpj.skpd_atau_unit.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="skpd_tanpa_unit" class="table" style="width: 100%">
+                            <table id="skpd_atau_unit" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
@@ -136,5 +135,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.lpj.skpd_tanpa_unit.js.index')
+    @include('skpd.lpj.skpd_atau_unit.js.index')
 @endsection
