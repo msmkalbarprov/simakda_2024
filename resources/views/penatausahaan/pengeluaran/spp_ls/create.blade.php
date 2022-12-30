@@ -145,7 +145,7 @@
                             </select>
                         </div>
                     </div>
-                    {{-- Beban dan Rekanan --}}
+                    {{-- Beban dan Penerima --}}
                     <div class="mb-3 row">
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
                         <div class="col-md-4">
@@ -158,8 +158,64 @@
                                 </optgroup>
                             </select>
                         </div>
-                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
                         <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%;" id="nm_penerima"
+                                name="nm_penerima" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Penerima">
+                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
+                                    @foreach ($daftar_penerima as $penerima)
+                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
+                                            data-rekening="{{ $penerima->rekening }}"
+                                            data-nmrekan="{{ $penerima->nmrekan }}"
+                                            data-pimpinan="{{ $penerima->pimpinan }}"
+                                            data-alamat="{{ $penerima->alamat }}"
+                                            {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
+                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
+                                            {{ $penerima->npwp }}</option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    {{-- Jenis dan Rekening --}}
+                    <div class="mb-3 row">
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="jenis"
+                                name="jenis" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Jenis">
+                                </optgroup>
+                            </select>
+                        </div>
+                        <label for="rekening" class="col-md-2 col-form-label">Rekening</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="rekening" name="rekening" readonly>
+                        </div>
+                    </div>
+                    {{-- Nomor SPD dan NPWP --}}
+                    <div class="mb-3 row">
+                        <label for="nomor_spd" class="col-md-2 col-form-label">Nomor SPD</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="nomor_spd"
+                                name="nomor_spd" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Nomor SPD">
+                                </optgroup>
+                            </select>
+                        </div>
+                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="npwp" name="npwp" readonly>
+                        </div>
+                    </div>
+                    {{-- Tanggal SPD dan Rekanan --}}
+                    <div class="mb-3 row">
+                        <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="date" id="tgl_spd" name="tgl_spd" required readonly>
+                        </div>
+                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        {{-- <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
                                 name="rekanan" data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Rekanan">
@@ -172,62 +228,12 @@
                                     @endforeach
                                 </optgroup>
                             </select>
+                        </div> --}}
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="rekanan" name="rekanan" readonly>
                         </div>
                     </div>
-                    {{-- Jenis dan Pimpinan --}}
-                    <div class="mb-3 row">
-                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style=" width: 100%;" id="jenis"
-                                name="jenis" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Jenis">
-                                </optgroup>
-                            </select>
-                        </div>
-                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="pimpinan" name="pimpinan" readonly>
-                        </div>
-                    </div>
-                    {{-- Nomor SPD dan Alamat Perusahaan --}}
-                    <div class="mb-3 row">
-                        <label for="nomor_spd" class="col-md-2 col-form-label">Nomor SPD</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style=" width: 100%;" id="nomor_spd"
-                                name="nomor_spd" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Nomor SPD">
-                                </optgroup>
-                            </select>
-                        </div>
-                        <label for="alamat" class="col-md-2 col-form-label">Alamat Perusahaan</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="alamat" name="alamat" readonly>
-                        </div>
-                    </div>
-                    {{-- Tanggal SPD dan Nama Penerima --}}
-                    <div class="mb-3 row">
-                        <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="date" id="tgl_spd" name="tgl_spd" required readonly>
-                        </div>
-                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="nm_penerima"
-                                name="nm_penerima" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Penerima">
-                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
-                                    @foreach ($daftar_penerima as $penerima)
-                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
-                                            data-rekening="{{ $penerima->rekening }}"
-                                            {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
-                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
-                                            {{ $penerima->npwp }}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
-                        </div>
-                    </div>
-                    {{-- Kode Sub Kegiatan dan Rekening --}}
+                    {{-- Kode Sub Kegiatan dan Pimpinan --}}
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Kode Sub Kegiatan</label>
                         <div class="col-md-4">
@@ -240,21 +246,21 @@
                             <input type="hidden" name="nm_program" id="nm_program">
                             <input type="hidden" name="bidang" id="bidang">
                         </div>
-                        <label for="rekening" class="col-md-2 col-form-label">Rekening</label>
+                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="rekening" name="rekening" readonly>
+                            <input type="text" class="form-control" id="pimpinan" name="pimpinan" readonly>
                         </div>
                     </div>
-                    {{-- Nama Sub Kegiatan dan NPWP --}}
+                    {{-- Nama Sub Kegiatan dan Alamat --}}
                     <div class="mb-3 row">
                         <label for="nm_sub_kegiatan" class="col-md-2 col-form-label">Nama Sub Kegiatan</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nm_sub_kegiatan" name="nm_sub_kegiatan"
                                 required readonly>
                         </div>
-                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                        <label for="alamat" class="col-md-2 col-form-label">Alamat Perusahaan</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="npwp" name="npwp" readonly>
+                            <input type="text" class="form-control" id="alamat" name="alamat" readonly>
                         </div>
                     </div>
                     {{-- Tanggal Mulai dan Tanggal Akhir --}}

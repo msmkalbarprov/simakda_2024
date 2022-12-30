@@ -220,8 +220,27 @@
         $('#nm_penerima').on('change', function() {
             let rekening = $(this).find(':selected').data('rekening');
             let npwp = $(this).find(':selected').data('npwp');
+
             $("#rekening").val(rekening);
             $("#npwp").val(npwp);
+
+            let nmrekan = $(this).find(':selected').data('nmrekan');
+            let pimpinan = $(this).find(':selected').data('pimpinan');
+            let alamat = $(this).find(':selected').data('alamat');
+            let beban = document.getElementById('beban').value;
+            let jenis = document.getElementById('jenis').value;
+
+            if (beban == '6' || beban == '5') {
+                $('#rekanan').val(nmrekan);
+                $('#pimpinan').val(pimpinan);
+                $('#alamat').val(alamat);
+            } else {
+                if (beban == '4' && jenis == '9') {
+                    $('#rekanan').val(nmrekan);
+                    $('#pimpinan').val(pimpinan);
+                    $('#alamat').val(alamat);
+                }
+            }
         });
 
         $('#beban').on('select2:select', function() {

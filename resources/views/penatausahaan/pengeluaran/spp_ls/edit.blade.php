@@ -60,23 +60,17 @@
                     <div class="mb-3 row">
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No. Tersimpan</label>
                         <div class="col-md-4">
-                            <input class="form-control @error('no_tersimpan') is-invalid @enderror" type="text"
-                                id="no_tersimpan" name="no_tersimpan" required readonly value="{{ $sppls->no_spp }}">
-                            <input class="form-control @error('no_urut') is-invalid @enderror" type="text" id="no_urut"
-                                name="no_urut" required readonly hidden value="{{ $sppls->urut }}">
-                            @error('no_tersimpan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input class="form-control" type="text" id="no_tersimpan" name="no_tersimpan" required
+                                readonly value="{{ $sppls->no_spp }}">
+                            <input class="form-control" type="text" id="no_urut" name="no_urut" required readonly
+                                hidden value="{{ $sppls->urut }}">
                         </div>
                         <label for="tgl_spp" class="col-md-2 col-form-label">Tanggal SPP</label>
                         <div class="col-md-4">
-                            <input type="date" class="form-control @error('tgl_spp') is-invalid @enderror"
-                                value="{{ $sppls->tgl_spp }}" id="tgl_spp" name="tgl_spp">
-                            @error('tgl_spp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <input type="date" class="form-control @error('tgl_spp_lalu') is-invalid @enderror"
-                                id="tgl_spp_lalu" name="tgl_spp_lalu" hidden value="{{ $data_tgl->tgl_spp }}">
+                            <input type="date" class="form-control" value="{{ $sppls->tgl_spp }}" id="tgl_spp"
+                                name="tgl_spp">
+                            <input type="date" class="form-control" id="tgl_spp_lalu" name="tgl_spp_lalu" hidden
+                                value="{{ $data_tgl->tgl_spp }}">
                         </div>
                     </div>
                     {{-- No SPP dan Bulan --}}
@@ -90,9 +84,6 @@
                                     <button type="button" id="cari_nospp" disabled class="btn btn-primary"><i
                                             class="uil-refresh"></i></button>
                                 </span>
-                                @error('no_spp')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <label for="bulan" class="col-md-2 col-form-label">Bulan</label>
@@ -167,7 +158,7 @@
                             @enderror
                         </div>
                     </div>
-                    {{-- Beban dan Rekanan --}}
+                    {{-- Beban dan Penerima --}}
                     <div class="mb-3 row">
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
                         <div class="col-md-4">
@@ -186,8 +177,86 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
                         <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('nm_penerima') is-invalid @enderror"
+                                style="width: 100%;" id="nm_penerima" name="nm_penerima"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Penerima">
+                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
+                                    @foreach ($daftar_penerima as $penerima)
+                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
+                                            data-rekening="{{ $penerima->rekening }}"
+                                            data-nmrekan="{{ $penerima->nmrekan }}"
+                                            data-pimpinan="{{ $penerima->pimpinan }}"
+                                            data-alamat="{{ $penerima->alamat }}"
+                                            {{ $sppls->penerima == $penerima->nm_rekening ? 'selected' : '' }}>
+                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
+                                            {{ $penerima->npwp }}</option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            @error('nm_penerima')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Jenis dan Rekening --}}
+                    <div class="mb-3 row">
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
+                                style=" width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Jenis">
+                                </optgroup>
+                            </select>
+                            @error('jenis')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="rekening" class="col-md-2 col-form-label">Rekening</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('rekening') is-invalid @enderror"
+                                value="{{ $sppls->no_rek }}" id="rekening" name="rekening" readonly>
+                            @error('rekening')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Nomor SPD dan NPWP --}}
+                    <div class="mb-3 row">
+                        <label for="nomor_spd" class="col-md-2 col-form-label">Nomor SPD</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('nomor_spd') is-invalid @enderror"
+                                style=" width: 100%;" id="nomor_spd" name="nomor_spd" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Nomor SPD">
+                                </optgroup>
+                            </select>
+                            @error('nomor_spd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control @error('npwp') is-invalid @enderror"
+                                value="{{ $sppls->npwp }}" id="npwp" name="npwp" readonly>
+                            @error('npwp')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Tanggal SPD dan Rekanan --}}
+                    <div class="mb-3 row">
+                        <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
+                        <div class="col-md-4">
+                            <input class="form-control @error('tgl_spd') is-invalid @enderror" type="date"
+                                id="tgl_spd" name="tgl_spd" required readonly>
+                            @error('tgl_spd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        {{-- <div class="col-md-4">
                             <select class="form-control select2-multiple @error('rekanan') is-invalid @enderror"
                                 style="width: 100%;" id="rekanan" name="rekanan" data-placeholder="Silahkan Pilih">
                                 <optgroup label="Daftar Rekanan">
@@ -203,84 +272,13 @@
                             @error('rekanan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div> --}}
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="rekanan" name="rekanan" readonly
+                                value="{{ $sppls->nmrekan }}">
                         </div>
                     </div>
-                    {{-- Jenis dan Pimpinan --}}
-                    <div class="mb-3 row">
-                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
-                                style=" width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Jenis">
-                                </optgroup>
-                            </select>
-                            @error('jenis')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control @error('pimpinan') is-invalid @enderror"
-                                value="{{ $sppls->pimpinan }}" id="pimpinan" name="pimpinan" readonly>
-                            @error('pimpinan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    {{-- Nomor SPD dan Alamat Perusahaan --}}
-                    <div class="mb-3 row">
-                        <label for="nomor_spd" class="col-md-2 col-form-label">Nomor SPD</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('nomor_spd') is-invalid @enderror"
-                                style=" width: 100%;" id="nomor_spd" name="nomor_spd" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Nomor SPD">
-                                </optgroup>
-                            </select>
-                            @error('nomor_spd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <label for="alamat" class="col-md-2 col-form-label">Alamat Perusahaan</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control @error('alamat') is-invalid @enderror"
-                                value="{{ $sppls->alamat }}" id="alamat" name="alamat" readonly>
-                            @error('alamat')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    {{-- Tanggal SPD dan Nama Penerima --}}
-                    <div class="mb-3 row">
-                        <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
-                        <div class="col-md-4">
-                            <input class="form-control @error('tgl_spd') is-invalid @enderror" type="date"
-                                id="tgl_spd" name="tgl_spd" required readonly>
-                            @error('tgl_spd')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple @error('nm_penerima') is-invalid @enderror"
-                                style="width: 100%;" id="nm_penerima" name="nm_penerima"
-                                data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Penerima">
-                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
-                                    @foreach ($daftar_penerima as $penerima)
-                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
-                                            data-rekening="{{ $penerima->rekening }}"
-                                            {{ $sppls->penerima == $penerima->nm_rekening ? 'selected' : '' }}>
-                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
-                                            {{ $penerima->npwp }}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
-                            @error('nm_penerima')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    {{-- Kode Sub Kegiatan dan Rekening --}}
+                    {{-- Kode Sub Kegiatan dan Pimpinan --}}
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Kode Sub Kegiatan</label>
                         <div class="col-md-4">
@@ -297,16 +295,16 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <label for="rekening" class="col-md-2 col-form-label">Rekening</label>
+                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('rekening') is-invalid @enderror"
-                                value="{{ $sppls->no_rek }}" id="rekening" name="rekening" readonly>
-                            @error('rekening')
+                            <input type="text" class="form-control @error('pimpinan') is-invalid @enderror"
+                                value="{{ $sppls->pimpinan }}" id="pimpinan" name="pimpinan" readonly>
+                            @error('pimpinan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    {{-- Nama Sub Kegiatan dan NPWP --}}
+                    {{-- Nama Sub Kegiatan dan Alamat --}}
                     <div class="mb-3 row">
                         <label for="nm_sub_kegiatan" class="col-md-2 col-form-label">Nama Sub Kegiatan</label>
                         <div class="col-md-4">
@@ -317,11 +315,11 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                        <label for="alamat" class="col-md-2 col-form-label">Alamat Perusahaan</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control @error('npwp') is-invalid @enderror"
-                                value="{{ $sppls->npwp }}" id="npwp" name="npwp" readonly>
-                            @error('npwp')
+                            <input type="text" class="form-control @error('alamat') is-invalid @enderror"
+                                value="{{ $sppls->alamat }}" id="alamat" name="alamat" readonly>
+                            @error('alamat')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
