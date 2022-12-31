@@ -28,27 +28,27 @@
         }
 
         #atas {
-            font-size: 12px;
+            font-size: 14px;
             font-family: Tahoma
         }
 
         #rincian {
-            font-size: 12px;
+            font-size: 14px;
             font-family: Tahoma
         }
 
         #potongan {
-            font-size: 12px;
+            font-size: 14px;
             font-family: Tahoma
         }
 
         #bawah {
-            font-size: 12px;
+            font-size: 14px;
             font-family: Tahoma
         }
 
         #ttd {
-            font-size: 12px;
+            font-size: 14px;
             font-family: Tahoma
         }
 
@@ -282,6 +282,19 @@
                         @endif
                     @endforeach
                 @endif
+                @if ($jumlah <= $baris)
+                    @for ($i = $jumlah; $i <= $baris; $i++)
+                        <tr>
+                            <td
+                                style="text-align: center;border-left:1px solid black;border-right:1px solid black;height:{{ $i }}px">
+                            </td>
+                            <td style="border-right:1px solid black"></td>
+                            <td style="border-right:1px solid black"></td>
+                            <td style="text-align: right;border-right:1px solid black">
+                            </td>
+                        </tr>
+                    @endfor
+                @endif
                 <tr>
                     <td colspan="3"
                         style="text-align: right;border-bottom:1px solid black;border-left:1px solid black;border-top:1px solid black">
@@ -418,7 +431,7 @@
                     <td>:</td>
                     <td>Arsip Kuasa BUD</td>
                     <td></td>
-                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->jabatan }}</b></td>
+                    <td style="text-align: center" class="kanan"><b></b></td>
                 </tr>
                 <tr>
                     <td class="kiri">Lembar 4</td>
@@ -436,6 +449,13 @@
                     <td></td>
                     <td></td>
                     <td style="text-align: center" class="kanan"><b><u>{{ $ttd1->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td class="kiri"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->pangkat }}</b></td>
                 </tr>
                 <tr>
                     <td class="kiri bottom"></td>
