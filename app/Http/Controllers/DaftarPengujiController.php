@@ -326,7 +326,7 @@ class DaftarPengujiController extends Controller
 
         $view = view('penatausahaan.pengeluaran.daftar_penguji.cetak')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape');
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
