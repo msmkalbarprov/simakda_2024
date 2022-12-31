@@ -121,7 +121,7 @@
         </table>
         <hr style="border: 1px solid black">
     @else
-        <br><br><br><br><br><br>
+        <br><br><br><br>
     @endif
     <div>
         <table style="width: 100%" style="border:1px solid black" id="atas">
@@ -429,7 +429,7 @@
                 <tr>
                     <td class="kiri">Lembar 3</td>
                     <td>:</td>
-                    <td>Arsip Kuasa BUD</td>
+                    <td>BUD/Kuasa BUD</td>
                     <td></td>
                     <td style="text-align: center" class="kanan"><b></b></td>
                 </tr>
@@ -441,7 +441,14 @@
                     <td style="text-align: center" class="kanan"></td>
                 </tr>
                 <tr>
-                    <td colspan="6" class="kanan kiri" style="height: 50px"></td>
+                    <td class="kiri">Lembar 5</td>
+                    <td>:</td>
+                    <td>Arsip</td>
+                    <td></td>
+                    <td style="text-align: center" class="kanan"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="kanan kiri" style="height: 40px"></td>
                 </tr>
                 <tr>
                     <td class="kiri"></td>
