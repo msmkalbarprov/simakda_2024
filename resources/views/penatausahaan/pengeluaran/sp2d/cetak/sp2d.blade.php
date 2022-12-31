@@ -127,32 +127,33 @@
         <table style="width: 100%" style="border:1px solid black" id="atas">
             <tbody>
                 <tr>
-                    <td colspan="3" class="center" style="font-size: 14px"><b>PROVINSI KALIMANTAN BARAT</b></td>
-                    <td colspan="3" class="center" style="font-size: 14px"><b>SURAT PERINTAH PENCAIRAN DANA
+                    <td colspan="3" class="center" style="font-size: 14px;width:50%"><b>PROVINSI KALIMANTAN BARAT</b>
+                    </td>
+                    <td colspan="3" class="center" style="font-size: 14px;width:50%"><b>SURAT PERINTAH PENCAIRAN DANA
                             (SP2D)<br>Nomor :
                             {{ $no_sp2d }}</b></td>
                 </tr>
                 <tr>
-                    <td class="border">Nomor SPM</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom">{{ $sp2d->no_spm }}</td>
+                    <td style="border-left: 1px solid black">Nomor SPM</td>
+                    <td>:</td>
+                    <td>{{ $sp2d->no_spm }}</td>
 
-                    <td class="border">Dari</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1">Kuasa BUD</td>
+                    <td style="border-left: 1px solid black">Dari</td>
+                    <td>:</td>
+                    <td style="border-right: 1px solid black">Kuasa BUD</td>
                 </tr>
                 <tr>
-                    <td class="border">Tanggal</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom">{{ tanggal($sp2d->tgl_spm) }}</td>
+                    <td style="border-left: 1px solid black">Tanggal</td>
+                    <td>:</td>
+                    <td>{{ tanggal($sp2d->tgl_spm) }}</td>
 
-                    <td class="border">NPWP</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1"></td>
+                    <td style="border-left: 1px solid black">NPWP</td>
+                    <td>:</td>
+                    <td style="border-right: 1px solid black"></td>
                 </tr>
                 <tr>
                     <td class="border">Nama SKPD</td>
-                    <td class="bottom">:</td>
+                    <td>:</td>
                     <td class="bottom">{{ $sp2d->kd_skpd }} {{ $sp2d->nm_skpd }}</td>
 
                     <td class="border">Tahun Anggaran</td>
@@ -259,8 +260,7 @@
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td
-                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     {{ $loop->iteration }}</td>
                                 <td style="border-right:1px solid black">{{ dotrek($item->kd_rek) }}</td>
                                 <td style="border-right:1px solid black">{{ $item->nm_rek }}</td>
@@ -269,8 +269,7 @@
                             </tr>
                         @else
                             <tr>
-                                <td
-                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     <b>{{ $loop->iteration }}</b>
                                 </td>
                                 <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
