@@ -127,9 +127,10 @@
         <table style="width: 100%" style="border:1px solid black" id="atas">
             <tbody>
                 <tr>
-                    <td colspan="3" class="center">PROVINSI KALIMANTAN BARAT</td>
-                    <td colspan="3" class="center">SURAT PERINTAH PENCAIRAN DANA (SP2D)<br>Nomor :
-                        {{ $no_sp2d }}</td>
+                    <td colspan="3" class="center" style="font-size: 14px"><b>PROVINSI KALIMANTAN BARAT</b></td>
+                    <td colspan="3" class="center" style="font-size: 14px"><b>SURAT PERINTAH PENCAIRAN DANA
+                            (SP2D)<br>Nomor :
+                            {{ $no_sp2d }}</b></td>
                 </tr>
                 <tr>
                     <td class="border">Nomor SPM</td>
@@ -173,7 +174,6 @@
                     <td colspan="4" class="bottom1">: Rp. {{ rupiah($nilai_sp2d->nilai) }}
                         ({{ terbilang($nilai_sp2d->nilai) }})</td>
                 </tr>
-
                 <tr>
                     <td class="kiri">Kepada</td>
                     <td>:</td>
@@ -198,7 +198,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="kiri">No. Rekening Bank</td>
+                    <td class="kiri" style="width: 15%">No. Rekening Bank</td>
                     <td>:</td>
                     <td colspan="4" class="kanan">
                         @if (($sp2d->jns_spp == '6' && $sp2d->jenis_beban == '6') || $sp2d->jns_spp == '5')
@@ -220,8 +220,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="kiri">Keperluan Untuk</td>
-                    <td>:</td>
+                    <td class="kiri" style="vertical-align: top">Keperluan Untuk</td>
+                    <td style="vertical-align: top">:</td>
                     <td colspan="4" class="kanan">{{ $sp2d->keperluan }}</td>
                 </tr>
                 <tr>
@@ -259,7 +259,8 @@
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td
+                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     {{ $loop->iteration }}</td>
                                 <td style="border-right:1px solid black">{{ dotrek($item->kd_rek) }}</td>
                                 <td style="border-right:1px solid black">{{ $item->nm_rek }}</td>
@@ -268,7 +269,8 @@
                             </tr>
                         @else
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td
+                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     <b>{{ $loop->iteration }}</b>
                                 </td>
                                 <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
