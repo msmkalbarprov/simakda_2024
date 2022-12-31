@@ -237,7 +237,7 @@ class Sp2dController extends Controller
             } elseif ($beban == '3') {
                 $no_sp2d = $nomor->nomor . '/TU' . '/' . tahun_anggaran();
             } elseif ($beban == '4') {
-                $no_sp2d = $nomor->nomor . '/GJ' .  '/' . tahun_anggaran();
+                $no_sp2d = $nomor->nomor . '/GJ' . '/' . tahun_anggaran();
             } elseif ($beban == '5' || $beban == '6') {
                 $no_sp2d = $nomor->nomor . '/LS' . '/' . tahun_anggaran();
             }

@@ -88,7 +88,6 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('data_pengguna', [UserController::class, 'loadData'])->name('user.load_data');
         Route::resource('skpd_pengguna', SkpdPenggunaController::class);
         Route::post('data_skpd_pengguna', [SkpdPenggunaController::class, 'loadData'])->name('skpd_pengguna.load_data');
-        
     });
 
     // index, create, store, update, show, destroy
@@ -248,6 +247,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load_data', [DaftarPengujiController::class, 'loadData'])->name('daftar_penguji.load_data');
             Route::get('tambah', [DaftarPengujiController::class, 'create'])->name('daftar_penguji.create');
             Route::post('simpan_penguji', [DaftarPengujiController::class, 'simpanPenguji'])->name('daftar_penguji.simpan_penguji');
+            Route::post('hapus_detail_penguji', [DaftarPengujiController::class, 'hapusDetailPenguji'])->name('daftar_penguji.hapus_detail_penguji');
+            Route::post('load_detail', [DaftarPengujiController::class, 'detailPenguji'])->name('daftar_penguji.load_detail');
             Route::post('simpan_detail_penguji', [DaftarPengujiController::class, 'simpanDetailPenguji'])->name('daftar_penguji.simpan_detail_penguji');
             Route::get('tampil/{no_uji?}', [DaftarPengujiController::class, 'editPenguji'])->where('no_uji', '(.*)')->name('daftar_penguji.tampil');
             Route::post('load_rincian_penguji', [DaftarPengujiController::class, 'loadRincianPenguji'])->name('daftar_penguji.load_rincian_penguji');

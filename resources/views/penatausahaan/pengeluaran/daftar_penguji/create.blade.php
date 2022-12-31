@@ -40,7 +40,7 @@
                                     <option value="{{ $sp2d->no_sp2d }}" data-tgl_sp2d="{{ $sp2d->tgl_sp2d }}"
                                         data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
                                         data-nilai="{{ $sp2d->nilai }}">{{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }} |
-                                        {{ nama_bank($sp2d->bank) }}
+                                        {{ nama_bank($sp2d->bank) }} | {{ $sp2d->nm_skpd }}
                                     </option>
                                 @endforeach
                             </select>
