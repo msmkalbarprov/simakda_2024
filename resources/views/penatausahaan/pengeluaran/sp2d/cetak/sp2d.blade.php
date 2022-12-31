@@ -121,7 +121,7 @@
         </table>
         <hr style="border: 1px solid black">
     @else
-        <br><br><br><br><br>
+        <br><br><br><br><br><br>
     @endif
     <div>
         <table style="width: 100%" style="border:1px solid black" id="atas">
