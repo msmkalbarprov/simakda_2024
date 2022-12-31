@@ -250,28 +250,29 @@
                 </tr>
                 @if (in_array($sp2d->jns_spp, ['1', '2']))
                     <tr>
-                        <td style="text-align: center;border-left:1px solid black">1</td>
-                        <td>{{ $sp2d->kd_skpd }}</td>
-                        <td>{{ $sp2d->nm_skpd }}</td>
+                        <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">1</td>
+                        <td style="border-right:1px solid black">{{ $sp2d->kd_skpd }}</td>
+                        <td style="border-right:1px solid black">{{ $sp2d->nm_skpd }}</td>
                         <td style="text-align: right;border-right:1px solid black">{{ rupiah($total->nilai) }}</td>
                     </tr>
                 @else
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black">{{ $loop->iteration }}</td>
-                                <td>{{ dotrek($item->kd_rek) }}</td>
-                                <td>{{ $item->nm_rek }}</td>
+                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                    {{ $loop->iteration }}</td>
+                                <td style="border-right:1px solid black">{{ dotrek($item->kd_rek) }}</td>
+                                <td style="border-right:1px solid black">{{ $item->nm_rek }}</td>
                                 <td style="text-align: right;border-right:1px solid black">{{ rupiah($item->nilai) }}
                                 </td>
                             </tr>
                         @else
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black">
+                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     <b>{{ $loop->iteration }}</b>
                                 </td>
-                                <td><b>{{ $item->kd_rek }}</b></td>
-                                <td><b>{{ $item->nm_rek }}</b></td>
+                                <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
+                                <td style="border-right:1px solid black"><b>{{ $item->nm_rek }}</b></td>
                                 <td style="text-align: right;border-right:1px solid black">
                                     <b>{{ rupiah($item->nilai) }}</b>
                                 </td>
