@@ -11,6 +11,13 @@
             border-collapse: collapse
         }
 
+        #judul,
+        #rincian,
+        #tanda {
+            font-size: 14px;
+            font-family: Tahoma;
+        }
+
         table,
         tr,
         td,
@@ -26,7 +33,7 @@
         <h3 style="margin: 2px 0px"><strong>SURAT PERINTAH PENCAIRAN DANA</strong></h3>
         <div style="clear: both"></div>
     </div>
-    <table style="width: 100%">
+    <table style="width: 100%" id="judul">
         <tbody>
             <tr>
                 <td><b>Tanggal</b></td>
@@ -93,7 +100,7 @@
             </tr>
         </tbody>
     </table>
-    <table style="width: 100%;margin-top:20px">
+    <table style="width: 100%;margin-top:20px" id="tanda">
         <tbody>
             <tr>
                 <td style="width: 10%"><b>Diterima oleh</b></td>
