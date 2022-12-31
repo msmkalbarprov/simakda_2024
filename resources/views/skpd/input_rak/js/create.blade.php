@@ -28,7 +28,7 @@
         let user = document.getElementById('username').value;
 
         // nanti dihidupkan awal tahun ya
-        
+
         // if (user == 'superadmin' || user == 'pemprov' || user == 'HARDIMANSYAH' || user == 'srilestari' ||
         //     user ==
         //     'Sugino' || user == 'ROSNAWATI' || user == 'SAMANTO' || user == 'RISNAWATI' ||
@@ -727,38 +727,38 @@
 
         function proteksi() {
             let bulan = new Date().getMonth();
-            let tahun = new Date().getFullYear();
+            let tahun = "{{ tahun_anggaran() }}";
 
-            if (bulan == '0' && tahun == '2022') {
+            if (bulan == '0' && tahun == '2023') {
 
-            } else if (bulan == '1' && tahun == '2022') {
+            } else if (bulan == '1' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
-            } else if (bulan == '2' && tahun == '2022') {
+            } else if (bulan == '2' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
-            } else if (bulan == '3' && tahun == '2022') {
+            } else if (bulan == '3' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
-            } else if (bulan == '4' && tahun == '2022') {
+            } else if (bulan == '4' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
                 $('#rak_april').prop('disabled', true);
-            } else if (bulan == '5' && tahun == '2022') {
+            } else if (bulan == '5' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
                 $('#rak_april').prop('disabled', true);
                 $('#rak_mei').prop('disabled', true);
-            } else if (bulan == '6' && tahun == '2022') {
+            } else if (bulan == '6' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
                 $('#rak_april').prop('disabled', true);
                 $('#rak_mei').prop('disabled', true);
                 $('#rak_juni').prop('disabled', true);
-            } else if (bulan == '7' && tahun == '2022') {
+            } else if (bulan == '7' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
@@ -766,7 +766,7 @@
                 $('#rak_mei').prop('disabled', true);
                 $('#rak_juni').prop('disabled', true);
                 $('#rak_juli').prop('disabled', true);
-            } else if (bulan == '8' && tahun == '2022') {
+            } else if (bulan == '8' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
@@ -775,7 +775,7 @@
                 $('#rak_juni').prop('disabled', true);
                 $('#rak_juli').prop('disabled', true);
                 $('#rak_agustus').prop('disabled', true);
-            } else if (bulan == '9' && tahun == '2022') {
+            } else if (bulan == '9' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
@@ -785,7 +785,7 @@
                 $('#rak_juli').prop('disabled', true);
                 $('#rak_agustus').prop('disabled', true);
                 $('#rak_september').prop('disabled', true);
-            } else if (bulan == '10' && tahun == '2022') {
+            } else if (bulan == '10' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);
@@ -796,7 +796,7 @@
                 $('#rak_agustus').prop('disabled', true);
                 $('#rak_september').prop('disabled', true);
                 $('#rak_oktober').prop('disabled', true);
-            } else if (bulan == '11' && tahun == '2022') {
+            } else if (bulan == '11' && tahun == '2023') {
                 $('#rak_januari').prop('disabled', true);
                 $('#rak_februari').prop('disabled', true);
                 $('#rak_maret').prop('disabled', true);

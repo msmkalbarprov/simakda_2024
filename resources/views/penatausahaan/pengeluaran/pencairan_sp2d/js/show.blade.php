@@ -111,7 +111,7 @@
             let nilai = rupiah(document.getElementById('nilai').value);
             let no_sp2d = document.getElementById('no_sp2d').value;
             let no_advice = document.getElementById('no_advice').value;
-            let tahun_anggaran = '2022';
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
 
             let tahun_input = tgl_cair.substring(0, 4);
             if (!tgl_cair) {

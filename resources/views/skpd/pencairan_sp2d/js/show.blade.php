@@ -119,7 +119,7 @@
             let npwp = document.getElementById('npwp').value;
             let total_potongan = rupiah(document.getElementById('total_potongan').value);
             let tgl_sp2d = document.getElementById('tgl_sp2d').value;
-            let tahun_anggaran = '2022';
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
 
             let tahun_input = tgl_cair.substring(0, 4);
             if (!tgl_cair) {

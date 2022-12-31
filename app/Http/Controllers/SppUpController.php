@@ -386,7 +386,7 @@ class SppUpController extends Controller
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
         $jenis_print = $request->jenis_print;
-        $tahun_anggaran = '2022';
+        $tahun_anggaran = tahun_anggaran();
 
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan;
@@ -461,7 +461,7 @@ class SppUpController extends Controller
         $tanpa = $request->tanpa;
         $kd_skpd = $request->kd_skpd;
         $jenis_print = $request->jenis_print;
-        $tahun_anggaran = '2022';
+        $tahun_anggaran = tahun_anggaran();
 
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();
 
