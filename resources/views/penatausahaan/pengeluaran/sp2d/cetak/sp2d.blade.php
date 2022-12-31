@@ -63,6 +63,43 @@
 </head>
 
 <body>
+    @if ($kop == '1')
+        <table style="border-collapse:collapse;font-family: Tahoma; font-size:12px" width="100%" align="center"
+            border="0">
+            <tr>
+                <td rowspan="6" align="left" width="7%">
+                    <img src="{{ asset('template/assets/images/' . $header->logo_pemda_warna) }}" width="75"
+                        height="100" />
+                </td>
+                <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="center" style="font-size:14px" width="93%"><strong>PEMERINTAH PROVINSI KALIMANTAN
+                        BARAT</strong></td>
+            </tr>
+            <tr>
+                <td align="center" style="font-size:14px;margin-top:2px" width="93%"><strong>BADAN KEUANGAN DAN ASET
+                        DAERAH</strong>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" style="font-size:14px">
+                    Jalan Ahmad Yani Telepon (0561) 736541 Fax. (0561) 738428
+                </td>
+            </tr>
+            <tr>
+                <td align="center" style="font-size:14px">P O N T I A N A K</td>
+            </tr>
+            <tr>
+                <td align="right" style="font-size:14px">Kode Pos: 78124</td>
+            </tr>
+            <tr>
+                <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            </tr>
+        </table>
+    @else
+        <br><br><br><br><br>
+    @endif
     <div>
         <table style="width: 100%" style="border:1px solid black">
             <tbody>

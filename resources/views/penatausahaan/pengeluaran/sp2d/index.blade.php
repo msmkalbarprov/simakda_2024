@@ -176,6 +176,17 @@
                             </select>
                         </div>
                     </div>
+                    {{-- KOP --}}
+                    <div class="mb-3 row">
+                        <label for="kop" class="col-md-4 col-form-label">KOP</label>
+                        <div class="col-md-8">
+                            <select name="kop" class="form-control" id="kop">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                <option value="0">Tanpa KOP</option>
+                                <option value="1">Dengan KOP</option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- Baris --}}
                     <div class="mb-3 row">
                         <label for="baris" class="col-md-4 col-form-label">Baris</label>

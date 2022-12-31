@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class Sp2dController extends Controller
 {
@@ -61,10 +62,10 @@ class Sp2dController extends Controller
         // pakai kd_skpd bud nanti
         $id_pengguna    = Auth::user()->id;
         $role           = Auth::user()->role;
-        if($role=='1012' || $role=='1017'){
+        if ($role == '1012' || $role == '1017') {
             // get_skpd_pengguna
             $skpd               = DB::table('pengguna_skpd')->select('kd_skpd')->where('id', $id_pengguna)->orderBy('kd_skpd')->get();
-            $list_skpd      = Array();   
+            $list_skpd      = array();
             foreach ($skpd as $list) {
                 $list_skpd[] =  $list->kd_skpd;
             }
@@ -73,88 +74,88 @@ class Sp2dController extends Controller
             // get skpd dari master skpd
             // $list_skpd = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereIn('kd_skpd', $list_skpd)->orderBy('kd_skpd')->get();
 
-                if (in_array($beban, ['1', '2', '3'])) {
-                    $data = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->get();
-                } elseif ($beban == '4') {
-                    $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
-                    // dd($data1);
-                    $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '3.10.01.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where('a.keperluan', 'not like', '%anggota dprd%')->where('a.keperluan', 'not like', '%BPOP%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
-        
-                    $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '1.20.02.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
-        
-                    $data = $data3->get();
-                } elseif (in_array($beban, ['5', '6'])) {
-                    $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0'])->whereIn('a.jns_spp', ['5', '6'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
-        
-                    $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
-        
-                    $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->where(function ($query) {
-                        $query->where('a.keperluan', 'not like', '%anggota dprd%')->orWhere('a.keperluan', 'not like', '%BPOP%');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
-        
-                    $data4 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->whereIn('a.kd_skpd', $list_skpd)->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data3);
-        
-                    $data = $data4->get();
-                }
-        }else{
-                if (in_array($beban, ['1', '2', '3'])) {
-                    $data = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->get();
-                } elseif ($beban == '4') {
-                    $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
-        
-                    $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '3.10.01.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where('a.keperluan', 'not like', '%anggota dprd%')->where('a.keperluan', 'not like', '%BPOP%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
-        
-                    $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '1.20.02.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
-        
-                    $data = $data3->get();
-                } elseif (in_array($beban, ['5', '6'])) {
-                    $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0'])->whereIn('a.jns_spp', ['5', '6'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
-        
-                    $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
-        
-                    $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where(function ($query) {
-                        $query->where('a.keperluan', 'not like', '%anggota dprd%')->orWhere('a.keperluan', 'not like', '%BPOP%');
-                    })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
-        
-                    $data4 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
-                        $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
-                    })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data3);
-        
-                    $data = $data4->get();
-                }
+            if (in_array($beban, ['1', '2', '3'])) {
+                $data = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->get();
+            } elseif ($beban == '4') {
+                $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
+                // dd($data1);
+                $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '3.10.01.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where('a.keperluan', 'not like', '%anggota dprd%')->where('a.keperluan', 'not like', '%BPOP%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
+
+                $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '1.20.02.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
+
+                $data = $data3->get();
+            } elseif (in_array($beban, ['5', '6'])) {
+                $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0'])->whereIn('a.jns_spp', ['5', '6'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
+
+                $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
+
+                $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->where(function ($query) {
+                    $query->where('a.keperluan', 'not like', '%anggota dprd%')->orWhere('a.keperluan', 'not like', '%BPOP%');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
+
+                $data4 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->whereIn('a.kd_skpd', $list_skpd)->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data3);
+
+                $data = $data4->get();
+            }
+        } else {
+            if (in_array($beban, ['1', '2', '3'])) {
+                $data = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->get();
+            } elseif ($beban == '4') {
+                $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
+
+                $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '3.10.01.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where('a.keperluan', 'not like', '%anggota dprd%')->where('a.keperluan', 'not like', '%BPOP%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
+
+                $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => $beban, 'a.kd_skpd' => '1.20.02.01'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
+
+                $data = $data3->get();
+            } elseif (in_array($beban, ['5', '6'])) {
+                $data1 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0'])->whereIn('a.jns_spp', ['5', '6'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
+
+                $data2 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '9', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data1);
+
+                $data3 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where(function ($query) {
+                    $query->where('a.keperluan', 'not like', '%anggota dprd%')->orWhere('a.keperluan', 'not like', '%BPOP%');
+                })->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data2);
+
+                $data4 = DB::table('trhspm as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')->where(['a.status' => '0', 'a.kd_skpd' => '4.02.0.00.0.00.01.0000', 'a.jns_spp' => '4'])->whereIn('a.jenis_beban', ['1', '7', '10'])->where(function ($query) {
+                    $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                })->where('a.no_spm', 'not like', '%BTL%')->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->unionAll($data3);
+
+                $data = $data4->get();
+            }
         }
 
-        
+
 
 
         return response()->json($data);
@@ -276,12 +277,14 @@ class Sp2dController extends Controller
         $kd_skpd = $request->kd_skpd;
         $beban = $request->beban;
         $baris = $request->baris;
+        $kop = $request->kop;
 
         $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
         $data_sp2d = cari_sp2d($sp2d, $baris);
         $data = [
             'no_sp2d' => $no_sp2d,
             'sp2d' => $sp2d,
+            'kop' => $kop,
             'nilai_sp2d' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp])->first(),
             'bank' => DB::table('trhsp2d')->select('bank', 'no_rek', 'npwp')->where(['no_sp2d' => $no_sp2d])->first(),
             'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd1, 'kode' => 'BUD'])->first(),
@@ -294,9 +297,15 @@ class Sp2dController extends Controller
             'jumlah_potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $sp2d->kd_skpd])->count(),
             'potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->get(),
             'total_potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->select(DB::raw("SUM(nilai) as nilai"))->first(),
-            'jumlah_potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->count()
+            'jumlah_potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->count(),
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_warna')
+                ->first()
         ];
-        return view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
+        // return view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
+        $view = view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
+        $pdf = PDF::loadHtml($view);
+        return $pdf->stream('laporan.pdf');
     }
 
     // cetak lampiran

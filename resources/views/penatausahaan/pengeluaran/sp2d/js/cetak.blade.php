@@ -51,10 +51,10 @@
                     className: "text-center",
                 },
             ],
-            drawCallback: function (settings) {
+            drawCallback: function(settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+            }
         });
 
         $('#ttd_bud').select2({
@@ -77,6 +77,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('#kop').select2({
+            dropdownParent: $('#modal_cetak .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // cetak sp2d
         $('.sp2d').on('click', function() {
             let no_sp2d = document.getElementById('no_sp2d').value;
@@ -87,6 +92,7 @@
             let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
+            let kop = document.getElementById('kop').value;
             if (!ttd_bud) {
                 alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
@@ -103,6 +109,10 @@
                 alert("Pilih Jenis Terlebih Dahulu!");
                 return;
             }
+            if (!kop) {
+                alert("Pilih KOP Terlebih Dahulu!");
+                return;
+            }
             let url = new URL("{{ route('sp2d.cetak_sp2d') }}");
             let searchParams = url.searchParams;
             searchParams.append("jenis", jenis);
@@ -113,6 +123,7 @@
             searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
+            searchParams.append("kop", kop);
             window.open(url.toString(), "_blank");
         });
 
