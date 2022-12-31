@@ -31,17 +31,37 @@ class PenerimaController extends Controller
 
     public function create()
     {
+        $skpd = Auth::user()->kd_skpd;
+        $kd_skpd = substr($skpd, 0, 17);
+
+        $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
+        $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);
+        $perusahaan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan2);
+        $perusahaan4 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan3);
+        $result = DB::table(DB::raw("({$perusahaan4->toSql()}) AS sub"))
+            ->select("nmrekan", "pimpinan", "npwp", "alamat")
+            ->mergeBindings($perusahaan4)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->orderBy('nmrekan', 'ASC')
+            ->orderBy('pimpinan', 'ASC')
+            ->orderBy('npwp', 'ASC')
+            ->orderBy('alamat', 'ASC')
+            ->get();
+
         $data = [
             'daftar_bank' => DB::table('ms_bank_online')->get(),
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
+            'daftar_rekanan' => $result,
         ];
 
         return view('master.penerima.create')->with($data);
     }
 
-    public function store(PenerimaRequest $request)
+    public function store(Request $request)
     {
-        $input = array_map('htmlentities', $request->validated());
+        // $input = array_map('htmlentities', $request->validated());
+        $input = $request->all();
+
         DB::table('ms_rekening_bank_online')->insert([
             'kd_bank' => $input['bank'],
             'rekening' => $input['no_rekening_validasi'],
@@ -56,6 +76,9 @@ class PenerimaController extends Controller
             'kd_setor' => $input['kode_setor'],
             'keterangan' => $input['keterangan'],
             'bic' => $input['bic'],
+            'nmrekan' => $input['rekanan'],
+            'pimpinan' => $input['pimpinan'],
+            'alamat' => $input['alamat'],
         ]);
 
         return redirect()->route('penerima.index');
@@ -81,8 +104,27 @@ class PenerimaController extends Controller
         $kd_skpd = Crypt::decryptString($kd_skpd);
 
         $data_awal = DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->first();
+
+        $skpd = Auth::user()->kd_skpd;
+        $kd_skpd = substr($skpd, 0, 17);
+
+        $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
+        $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);
+        $perusahaan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan2);
+        $perusahaan4 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan3);
+        $result = DB::table(DB::raw("({$perusahaan4->toSql()}) AS sub"))
+            ->select("nmrekan", "pimpinan", "npwp", "alamat")
+            ->mergeBindings($perusahaan4)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->orderBy('nmrekan', 'ASC')
+            ->orderBy('pimpinan', 'ASC')
+            ->orderBy('npwp', 'ASC')
+            ->orderBy('alamat', 'ASC')
+            ->get();
+
         $data = [
             'data_penerima' => $data_awal,
+            'daftar_rekanan' => $result,
             'daftar_bank' => DB::table('ms_bank_online')->get(),
             'nama_bank' => DB::table('ms_bank_online')->where('kd_bank', $data_awal->kd_bank)->first(),
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
@@ -91,26 +133,31 @@ class PenerimaController extends Controller
         return view('master.penerima.edit')->with($data);
     }
 
-    public function updatePenerima(PenerimaRequest $request, $rekening, $kd_skpd)
+    public function updatePenerima(Request $request, $rekening, $kd_skpd)
     {
         $rekening = Crypt::decryptString($rekening);
         $kd_skpd = Crypt::decryptString($kd_skpd);
 
-        DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->update([
-            'kd_bank' => $request['bank'],
-            'rekening' => $request['no_rekening_validasi'],
-            'nm_rekening' => $request['nm_rekening_validasi'],
-            'bank' => $request['cabang'],
-            'nm_bank' => $request['nama_cabang'],
-            'kd_skpd' => $kd_skpd,
-            'jenis' => $request['jenis'],
-            'npwp' => $request['npwp_validasi'],
-            'nm_wp' => $request['nm_npwp_validasi'],
-            'kd_map' => $request['kode_akun'],
-            'kd_setor' => $request['kode_setor'],
-            'keterangan' => $request['keterangan'],
-            'bic' => $request['bic'],
-        ]);
+        DB::table('ms_rekening_bank_online')
+            ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
+            ->update([
+                'kd_bank' => $request['bank'],
+                'rekening' => $request['no_rekening_validasi'],
+                'nm_rekening' => $request['nm_rekening_validasi'],
+                'bank' => $request['cabang'],
+                'nm_bank' => $request['nama_cabang'],
+                'kd_skpd' => $kd_skpd,
+                'jenis' => $request['jenis'],
+                'npwp' => $request['npwp_validasi'],
+                'nm_wp' => $request['nm_npwp_validasi'],
+                'kd_map' => $request['kode_akun'],
+                'kd_setor' => $request['kode_setor'],
+                'keterangan' => $request['keterangan'],
+                'bic' => $request['bic'],
+                'nmrekan' => $request['rekanan'],
+                'pimpinan' => $request['pimpinan'],
+                'alamat' => $request['alamat'],
+            ]);
 
         return redirect()->route('penerima.index');
     }

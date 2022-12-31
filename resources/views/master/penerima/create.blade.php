@@ -175,6 +175,37 @@
                                 @enderror
                             </div>
                         </div>
+                        {{-- Rekanan --}}
+                        <div class="mb-3 row">
+                            <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                            <div class="col-md-10">
+                                {{-- <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
+                                    name="rekanan" data-placeholder="Silahkan Pilih">
+                                    <option value="" disabled selected>Silahkan Pilih Rekanan</option>
+                                    @foreach ($daftar_rekanan as $rekanan)
+                                        <option value="{{ $rekanan->nmrekan }}" data-pimpinan="{{ $rekanan->pimpinan }}"
+                                            data-alamat="{{ $rekanan->alamat }}"
+                                            {{ old('rekanan') == $rekanan->nmrekan ? 'selected' : '' }}>
+                                            {{ $rekanan->nmrekan }}</option>
+                                    @endforeach
+                                </select> --}}
+                                <input type="text" class="form-control" id="rekanan" name="rekanan">
+                            </div>
+                        </div>
+                        {{-- pimpinan --}}
+                        <div class="mb-3 row">
+                            <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="pimpinan" name="pimpinan">
+                            </div>
+                        </div>
+                        {{-- alamat --}}
+                        <div class="mb-3 row">
+                            <label for="alamat" class="col-md-2 col-form-label">Alamat</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="alamat" name="alamat">
+                            </div>
+                        </div>
                         <!-- Hasil Validasi Bank -->
                         <div class="mb-3 row">
                             <label for="hasil_validasi" class="col-md-12 col-form-label"
@@ -256,6 +287,35 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            $('#jenis').on('select2:select', function() {
+                let jenis = this.value;
+
+                if (jenis == '2') {
+                    $('#rekanan').prop('readonly', false);
+                    $('#pimpinan').prop('readonly', false);
+                    $('#alamat').prop('readonly', false);
+                    $('#rekanan').val(null);
+                    $('#pimpinan').val(null);
+                    $('#alamat').val(null);
+                } else {
+                    $('#rekanan').prop('readonly', true);
+                    $('#pimpinan').prop('readonly', true);
+                    $('#alamat').prop('readonly', true);
+                    $('#rekanan').val(null);
+                    $('#pimpinan').val(null);
+                    $('#alamat').val(null);
+                }
+            });
+
+            // $('#rekanan').on('change', function() {
+            //     let rekanan = this.value;
+            //     let pimpinan = $(this).find(':selected').data('pimpinan');
+            //     let alamat = $(this).find(':selected').data('alamat');
+            //     $("#nama_rekan").val(rekanan);
+            //     $("#pimpinan").val(pimpinan);
+            //     $("#alamat").val(alamat);
+            // });
+
             let bank1 = document.getElementById('bank').value;
             if (bank1) {
                 let bic = document.getElementById('bic').value;

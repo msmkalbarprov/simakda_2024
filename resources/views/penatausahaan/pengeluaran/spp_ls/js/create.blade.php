@@ -66,11 +66,28 @@
             $("#alamat").val(alamat);
         });
 
-        $('#nm_penerima').on('change', function() {
+        $('#nm_penerima').on('select2:select', function() {
             let rekening = $(this).find(':selected').data('rekening');
             let npwp = $(this).find(':selected').data('npwp');
+            let nmrekan = $(this).find(':selected').data('nmrekan');
+            let pimpinan = $(this).find(':selected').data('pimpinan');
+            let alamat = $(this).find(':selected').data('alamat');
             $("#rekening").val(rekening);
             $("#npwp").val(npwp);
+            let beban = document.getElementById('beban').value;
+            let jenis = document.getElementById('jenis').value;
+
+            if (beban == '6' || beban == '5') {
+                $('#rekanan').val(nmrekan);
+                $('#pimpinan').val(pimpinan);
+                $('#alamat').val(alamat);
+            } else {
+                if (beban == '4' && jenis == '9') {
+                    $('#rekanan').val(nmrekan);
+                    $('#pimpinan').val(pimpinan);
+                    $('#alamat').val(alamat);
+                }
+            }
         });
 
         $('#beban').on('select2:select', function() {
@@ -1209,6 +1226,13 @@
         }
         // kosongin data ketika ganti beban
         function kosong() {
+            $('#nm_penerima').val(null).change();
+            $('#rekening').val(null);
+            $('#npwp').val(null);
+            $('#rekanan').val(null);
+            $('#pimpinan').val(null);
+            $('#alamat').val(null);
+
             document.getElementById('tgl_spd').value = '';
             $('#kd_sub_kegiatan').empty();
             document.getElementById('nm_sub_kegiatan').value = '';

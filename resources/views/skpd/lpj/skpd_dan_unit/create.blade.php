@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Input LPJ UP/GU (SKPD Tanpa Unit) | SIMAKDA')
+@section('title', 'Input LPJ UP/GU (SKPD + Unit) | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -50,10 +50,8 @@
                                 </div>
                             </div>
                         </div>
-                        <label for="nilai_lpj" class="col-md-2 col-form-label">Nilai LPJ</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nilai_lpj" name="nilai_lpj" required readonly
-                                value="{{ rupiah(0) }}" style="text-align: right">
+                        <div class="col-md-6">
+                            <p style="font-size: 20px;color:red">Perhatian!!!</p>
                         </div>
                     </div>
                     {{-- NO LPJ Tersimpan dan Persentase --}}
@@ -63,11 +61,8 @@
                             <input class="form-control" type="text" id="no_lpj_simpan" name="no_lpj_simpan" required
                                 readonly>
                         </div>
-                        <label for="persentase" class="col-md-2 col-form-label">Persentase</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="persentase" name="persentase" required readonly
-                                style="text-align: right" value="0%">
-                            <small>(minimal GU yang diajukan adalah 50% dari nilai UP)</small>
+                        <div class="col-md-6">
+                            <p style="font-size: 20px;color:red">Nilai minimal GU yang diajukan adalah 50% dari nilai UP</p>
                         </div>
                     </div>
                     {{-- Tanggal LPJ dan SPD --}}
@@ -119,33 +114,17 @@
             <div class="card">
                 <div class="card-header">
                     Input Detail LPJ
-                </div>
-                <div class="card-body">
-                    <div class="mb-3 row">
-                        <label for="tgl_transaksi" class="col-md-12 col-form-label">Tanggal Transaksi</label>
-                        <div class="col-md-2">
-                            <input type="date" class="form-control" id="tgl_awal">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="date" class="form-control" id="tgl_akhir">
-                        </div>
-                        <div class="col-md-8">
-                            <button class="btn btn-success" id="tampilkan"><i class="uil-eye"></i>
-                                Tampilkan</button>
-                            <button href="#" class="btn btn-success" id="kosongkan"><i class="uil-trash"></i>
-                                Kosongkan</button>
-                        </div>
-                    </div>
+                    <button type="button" style="float: right" id="tambah_rincian"
+                        class="btn btn-success btn-md">Tambah LPJ Unit</button>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="detail_lpj" class="table" style="width: 100%">
                         <thead>
                             <tr>
+                                <th>LPJ Global</th>
                                 <th>Unit</th>
-                                <th>No Bukti</th>
-                                <th>Sub Kegiatan</th>
-                                <th>Rekening</th>
-                                <th>Nama Rekening</th>
+                                <th>Nama Unit</th>
+                                <th>LPJ Unit</th>
                                 <th>Nilai</th>
                                 <th>Aksi</th>
                             </tr>
@@ -174,7 +153,60 @@
             </div>
         </div>
     </div>
+
+    {{-- modul tambah lpj unit --}}
+    <div id="modal_tambah" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Input Data LPJ Unit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- No. LPJ --}}
+                    <div class="mb-3 row">
+                        <label for="pilih_no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
+                        <div class="col-md-10">
+                            <select name="pilih_no_lpj" class="form-control select-modal" id="pilih_no_lpj">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($daftar_lpj as $daftar)
+                                    <option value="{{ $daftar->no_lpj }}" data-nilai="{{ $daftar->nilai }}"
+                                        data-kd_skpd="{{ $daftar->kd_skpd }}" data-nm_skpd="{{ $daftar->nm_skpd }}">
+                                        {{ $daftar->no_lpj }} | {{ rupiah($daftar->nilai) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    {{-- Unit --}}
+                    <div class="mb-3 row">
+                        <label for="unit" class="col-md-2 col-form-label">Unit</label>
+                        <div class="col-md-6">
+                            <input type="text" name="unit" id="unit" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nm_unit" id="nm_unit" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- Nilai --}}
+                    <div class="mb-3 row">
+                        <label for="nilai" class="col-md-2 col-form-label">Nilai</label>
+                        <div class="col-md-10">
+                            <input type="text" name="nilai" id="nilai" style="text-align: right"
+                                class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" id="pilih" class="btn btn-md btn-success">Pilih</button>
+                            <button type="button" class="btn btn-md btn-warning"
+                                data-bs-dismiss="modal">Kembali</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
-    @include('skpd.lpj.skpd_tanpa_unit.js.create');
+    @include('skpd.lpj.skpd_dan_unit.js.create');
 @endsection

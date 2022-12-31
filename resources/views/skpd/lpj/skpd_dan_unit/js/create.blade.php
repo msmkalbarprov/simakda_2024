@@ -6,6 +6,11 @@
             }
         });
 
+        $('.select-modal').select2({
+            dropdownParent: $('#modal_tambah .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -15,24 +20,20 @@
             responsive: true,
             ordering: false,
             columns: [{
+                    data: 'no_lpj',
+                    name: 'no_lpj'
+                },
+                {
                     data: 'kd_skpd',
                     name: 'kd_skpd'
                 },
                 {
-                    data: 'no_bukti',
-                    name: 'no_bukti'
+                    data: 'nm_skpd',
+                    name: 'nm_skpd'
                 },
                 {
-                    data: 'kd_sub_kegiatan',
-                    name: 'kd_sub_kegiatan'
-                },
-                {
-                    data: 'kdrek6',
-                    name: 'kdrek6'
-                },
-                {
-                    data: 'nmrek6',
-                    name: 'nmrek6',
+                    data: 'no_lpj_unit',
+                    name: 'no_lpj_unit'
                 },
                 {
                     data: 'nilai',
@@ -45,70 +46,51 @@
             ]
         });
 
-        $('#tampilkan').on('click', function() {
-            let tgl_awal = document.getElementById('tgl_awal').value;
-            let tgl_akhir = document.getElementById('tgl_akhir').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
+        $('#pilih_no_lpj').on('select2:select', function() {
+            let kd_skpd = $(this).find(':selected').data('kd_skpd');
+            let nm_skpd = $(this).find(':selected').data('nm_skpd');
+            let nilai = $(this).find(':selected').data('nilai');
 
-            if (!tgl_awal || !tgl_akhir) {
-                alert('Silahkan pilih tanggal!');
+            $("#unit").val(kd_skpd);
+            $("#nm_unit").val(nm_skpd);
+            $("#nilai").val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(nilai));
+        });
+
+        $('#tambah_rincian').on('click', function() {
+            $('#modal_tambah').modal('show');
+        });
+
+        $('#pilih').on('click', function() {
+            let pilih_no_lpj = document.getElementById('pilih_no_lpj').value;
+            let no_lpj = document.getElementById('no_lpj').value;
+            let unit = document.getElementById('unit').value;
+            let nm_unit = document.getElementById('nm_unit').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let nilai = rupiah(document.getElementById('nilai').value);
+            let total = rupiah(document.getElementById('total').value);
+
+            if (!pilih_no_lpj) {
+                alert('Pilih Nomor LPJ Dahulu...!!!');
                 return;
             }
 
-            $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.detail') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    tgl_awal: tgl_awal,
-                    tgl_akhir: tgl_akhir,
-                    kd_skpd: kd_skpd
-                },
-                success: function(data) {
-                    let total = rupiah(document.getElementById('total').value);
-                    $.each(data, function(index, data) {
-                        detail.row.add({
-                            'kd_skpd': data.kd_skpd,
-                            'no_bukti': data.no_bukti,
-                            'kd_sub_kegiatan': data.kd_sub_kegiatan,
-                            'kdrek6': data.kd_rek6,
-                            'nmrek6': data.nm_rek6,
-                            'nilai': new Intl.NumberFormat('id-ID', {
-                                minimumFractionDigits: 2
-                            }).format(data.nilai),
-                            'aksi': `<a href="javascript:void(0);" onclick="hapus('${data.no_bukti}','${data.kd_rek6}','${data.nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
-                        }).draw();
-                        total += parseFloat(data.nilai);
-                    })
-                    $('#total').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(total));
-                }
-            });
+            if (!no_lpj) {
+                alert('Isi Nomor LPJ Global Dahulu...!!!');
+                return;
+            }
 
-            $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    tgl_awal: tgl_awal,
-                    tgl_akhir: tgl_akhir,
-                    kd_skpd: kd_skpd
-                },
-                success: function(data) {
-                    $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(data.spd));
-                    $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(data.keluarspp));
-                }
-            });
-        });
-
-        $('#kosongkan').on('click', function() {
-            $('#total').val(null);
-            detail.clear().draw();
+            detail.row.add({
+                'no_lpj': no_lpj,
+                'kd_skpd': unit,
+                'nm_skpd': nm_unit,
+                'no_lpj_unit': pilih_no_lpj,
+                'nilai': new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(nilai),
+                'aksi': `<a href="javascript:void(0);" onclick="hapus('${pilih_no_lpj}','${unit}','${nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
+            }).draw();
         });
 
         $('#simpan').on('click', function() {
@@ -215,6 +197,26 @@
                 formatCurrency($(this), "blur");
             }
         });
+
+        function load_nomor() {
+            // $.ajax({
+            //     url: "{{ route('sppls.cari_rekening') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         kd_sub_kegiatan: kd_sub_kegiatan,
+            //     },
+            //     success: function(data) {
+            //         $('#kode_rekening').empty();
+            //         $('#kode_rekening').append(`<option value="0">Silahkan Pilih</option>`);
+            //         $.each(data, function(index, data) {
+            //             $('#kode_rekening').append(
+            //                 `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+            //             );
+            //         })
+            //     }
+            // })
+        }
     });
 
     function formatNumber(n) {

@@ -450,12 +450,12 @@
             }
             let tampungan = tabel_pot.rows().data().toArray().map((value) => {
                 let result = {
-                    kd_rek6: value.kd_rek6,
+                    map_pot: value.map_pot,
                 };
                 return result;
             });
             let kondisi = tampungan.map(function(data) {
-                if (data.kd_rek6 == rekening_potongan) {
+                if (data.map_pot == map_pot) {
                     return '2';
                 } else {
                     return '1';
