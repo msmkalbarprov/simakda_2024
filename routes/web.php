@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SkpdPenggunaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PenerimaController;
 use App\Http\Controllers\KontrakController;
@@ -69,6 +70,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Skpd\Pendapatan\PenyetoranController;
 use App\Http\Controllers\Skpd\Transaksi\LPJController;
 
+
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
@@ -84,6 +86,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('data_peran', [RoleController::class, 'loadData'])->name('peran.load_data');
         Route::resource('user', UserController::class);
         Route::post('data_pengguna', [UserController::class, 'loadData'])->name('user.load_data');
+        Route::resource('skpd_pengguna', SkpdPenggunaController::class);
+        Route::post('data_skpd_pengguna', [SkpdPenggunaController::class, 'loadData'])->name('skpd_pengguna.load_data');
+        
     });
 
     // index, create, store, update, show, destroy
@@ -1008,6 +1013,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('buku_besar_kasda', [BendaharaUmumDaerahController::class, 'rekapBBKasda'])->name('laporan_bendahara_umum.buku_besar_kasda');
     });
 });
+
+
 
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
 Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
