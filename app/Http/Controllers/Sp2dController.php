@@ -231,15 +231,15 @@ class Sp2dController extends Controller
             // DB::raw("LOCK TABLES nomor WRITE");
             $nomor = DB::table('nomor')->select(DB::raw("(nosp2d+1) as nomor"))->first();
             if ($beban == '1') {
-                $no_sp2d = $nomor->nomor . '/UP/2022';
+                $no_sp2d = $nomor->nomor . '/UP' . '/' . tahun_anggaran();
             } elseif ($beban == '2') {
-                $no_sp2d = $nomor->nomor . '/GU/2022';
+                $no_sp2d = $nomor->nomor . '/GU' . '/' . tahun_anggaran();
             } elseif ($beban == '3') {
-                $no_sp2d = $nomor->nomor . '/TU/2022';
+                $no_sp2d = $nomor->nomor . '/TU' . '/' . tahun_anggaran();
             } elseif ($beban == '4') {
-                $no_sp2d = $nomor->nomor . '/GJ/2022';
+                $no_sp2d = $nomor->nomor . '/GJ/' . tahun_anggaran();
             } elseif ($beban == '5' || $beban == '6') {
-                $no_sp2d = $nomor->nomor . '/LS/2022';
+                $no_sp2d = $nomor->nomor . '/LS' . '/' . tahun_anggaran();
             }
 
             $data_spm = DB::table('trhspm')->where(['no_spm' => $no_spm])->select('no_spm', 'tgl_spm', 'no_spp', 'kd_skpd', 'nm_skpd', 'tgl_spp', 'bulan', 'no_spd', 'keperluan', 'username', 'last_update', 'jns_spp', 'bank', 'nmrekan', 'no_rek', 'npwp', 'nilai', 'jenis_beban', DB::raw("'$tgl_sp2d' as tgl_sp2d"), DB::raw("'$no_sp2d' as no_sp2d"), DB::raw("'0' as status"), DB::raw("'0' as status_terima"));
