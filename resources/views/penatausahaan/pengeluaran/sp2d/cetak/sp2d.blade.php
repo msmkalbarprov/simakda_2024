@@ -152,13 +152,13 @@
                     <td style="border-right: 1px solid black"></td>
                 </tr>
                 <tr>
-                    <td class="border">Nama SKPD</td>
-                    <td>:</td>
+                    <td class="border" style="vertical-align:top">Nama SKPD</td>
+                    <td style="vertical-align: top">:</td>
                     <td class="bottom">{{ $sp2d->kd_skpd }} {{ $sp2d->nm_skpd }}</td>
 
-                    <td class="border">Tahun Anggaran</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1">{{ tahun_anggaran() }}</td>
+                    <td class="border" style="vertical-align: top">Tahun Anggaran</td>
+                    <td class="bottom" style="vertical-align: top">:</td>
+                    <td class="bottom1" style="vertical-align: top">{{ tahun_anggaran() }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-left: 1px solid black">Bank Pengirim
@@ -269,7 +269,8 @@
                             </tr>
                         @else
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td
+                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     <b>{{ $loop->iteration }}</b>
                                 </td>
                                 <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
