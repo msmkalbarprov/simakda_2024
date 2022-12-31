@@ -107,7 +107,7 @@
             </tr>
             <tr>
                 <td colspan="3"><b>Petugas Bank / POS</b></td>
-                <td style="text-align: center;padding-bottom:100px"><b>{{ $ttd->jabatan }}</b></td>
+                <td style="text-align: center;padding-bottom:100px"></td>
             </tr>
             <tr>
                 <td colspan="3"></td>
