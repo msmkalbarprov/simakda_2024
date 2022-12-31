@@ -111,7 +111,7 @@
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td style="text-align: center"><b>{{ $ttd->nama }}</b></td>
+                <td style="text-align: center"><b><u>{{ $ttd->nama }}</u></b></td>
             </tr>
             <tr>
                 <td colspan="3"></td>
