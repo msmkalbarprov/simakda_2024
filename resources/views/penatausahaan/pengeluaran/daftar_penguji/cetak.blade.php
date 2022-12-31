@@ -71,11 +71,11 @@
                     <td style="text-align: center">{{ $loop->iteration }}</td>
                     <td style="text-align: center">{{ $penguji->no_sp2d }}<br>{{ $penguji->tgl_sp2d }}</td>
                     @if ($penguji->jns_spp == '6' && $penguji->jenis_beban == '6')
-                        <td>{{ $penguji->nmrekan }}, {{ $penguji->pimpinan }}<br>{{ $penguji->alamat }}</td>
+                        <td>{{ Str::upper($penguji->nmrekan) }}, {{ $penguji->pimpinan }}<br>{{ $penguji->alamat }}</td>
                     @elseif ($penguji->jns_spp == '5')
-                        <td>{{ $penguji->nmrekan }}<br>{{ $penguji->nm_skpd }}</td>
+                        <td>{{ Str::upper($penguji->nmrekan) }}<br>{{ $penguji->nm_skpd }}</td>
                     @else
-                        <td>{{ cetak_penguji($penguji->kd_skpd) }}<br>{{ $penguji->nm_skpd }}</td>
+                        <td>{{ Str::upper(cetak_penguji($penguji->kd_skpd)) }}<br>{{ $penguji->nm_skpd }}</td>
                     @endif
                     <td>{{ $penguji->kd_skpd }}<br>{{ $penguji->nm_skpd }}</td>
                     <td style="text-align: right">{{ rupiah($penguji->kotor) }}</td>
