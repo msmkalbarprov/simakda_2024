@@ -97,14 +97,14 @@
                 alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
             }
-            if (!ttd1) {
-                alert("Pilih Penandatangan I Terlebih Dahulu!");
-                return;
-            }
-            if (!ttd2) {
-                alert("Pilih Penandatangan II Terlebih Dahulu!");
-                return;
-            }
+            // if (!ttd1) {
+            //     alert("Pilih Penandatangan I Terlebih Dahulu!");
+            //     return;
+            // }
+            // if (!ttd2) {
+            //     alert("Pilih Penandatangan II Terlebih Dahulu!");
+            //     return;
+            // }
             if (!jenis) {
                 alert("Pilih Jenis Terlebih Dahulu!");
                 return;

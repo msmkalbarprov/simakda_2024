@@ -27,6 +27,26 @@
             border-bottom: 1px solid black;
         }
 
+        #atas {
+            font-size: 12px;
+        }
+
+        #rincian {
+            font-size: 12px;
+        }
+
+        #potongan {
+            font-size: 12px;
+        }
+
+        #bawah {
+            font-size: 12px;
+        }
+
+        #ttd {
+            font-size: 12px;
+        }
+
         .bottom1 {
             border-bottom: 1px solid black;
             border-right: 1px solid black;
@@ -45,9 +65,9 @@
             text-align: center
         }
 
-        #rincian>tbody>tr>td {
+        /* #rincian>tbody>tr>td {
             border: 1px solid black;
-        }
+        } */
 
         #potongan>thead>tr>th {
             /* border: 1px solid black; */
@@ -67,31 +87,31 @@
         <table style="border-collapse:collapse;font-family: Tahoma; font-size:12px" width="100%" align="center"
             border="0">
             <tr>
-                <td rowspan="6" align="left" width="7%">
+                <td rowspan="6" align="left" width="10%">
                     <img src="{{ asset('template/assets/images/' . $header->logo_pemda_warna) }}" width="75"
                         height="100" />
                 </td>
                 <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px" width="93%"><strong>PEMERINTAH PROVINSI KALIMANTAN
+                <td align="center" style="font-size:16px" width="93%"><strong>PEMERINTAH PROVINSI KALIMANTAN
                         BARAT</strong></td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px;margin-top:2px" width="93%"><strong>BADAN KEUANGAN DAN ASET
+                <td align="center" style="font-size:16px;margin-top:2px" width="93%"><strong>BADAN KEUANGAN DAN ASET
                         DAERAH</strong>
                 </td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px">
+                <td align="center" style="font-size:16px">
                     Jalan Ahmad Yani Telepon (0561) 736541 Fax. (0561) 738428
                 </td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px">P O N T I A N A K</td>
+                <td align="center" style="font-size:16px">P O N T I A N A K</td>
             </tr>
             <tr>
-                <td align="right" style="font-size:14px">Kode Pos: 78124</td>
+                <td align="right" style="font-size:16px">Kode Pos: 78124</td>
             </tr>
         </table>
         <hr style="border: 1px solid black">
@@ -99,7 +119,7 @@
         <br><br><br><br><br>
     @endif
     <div>
-        <table style="width: 100%" style="border:1px solid black">
+        <table style="width: 100%" style="border:1px solid black;font-family:Open Sans" id="atas">
             <tbody>
                 <tr>
                     <td colspan="3" class="center">PROVINSI KALIMANTAN BARAT</td>
@@ -207,7 +227,7 @@
                 </tr>
             </tbody>
         </table>
-        <table id="rincian" style="width: 100%" style="border: 1px solid black">
+        <table id="rincian" style="width: 100%" style="font-family:Open Sans">
             <thead>
                 <tr>
                     <th><strong>NO</strong></th>
@@ -225,36 +245,46 @@
                 </tr>
                 @if (in_array($sp2d->jns_spp, ['1', '2']))
                     <tr>
-                        <td class="center">1</td>
+                        <td style="text-align: center;border-left:1px solid black">1</td>
                         <td>{{ $sp2d->kd_skpd }}</td>
                         <td>{{ $sp2d->nm_skpd }}</td>
-                        <td style="text-align: right">{{ rupiah($total->nilai) }}</td>
+                        <td style="text-align: right;border-right:1px solid black">{{ rupiah($total->nilai) }}</td>
                     </tr>
                 @else
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td class="center">{{ $loop->iteration }}</td>
+                                <td style="text-align: center;border-left:1px solid black">{{ $loop->iteration }}</td>
                                 <td>{{ dotrek($item->kd_rek) }}</td>
                                 <td>{{ $item->nm_rek }}</td>
-                                <td style="text-align: right">{{ rupiah($item->nilai) }}</td>
+                                <td style="text-align: right;border-right:1px solid black">{{ rupiah($item->nilai) }}
+                                </td>
                             </tr>
                         @else
                             <tr>
-                                <td class="center"><b>{{ $loop->iteration }}</b></td>
+                                <td style="text-align: center;border-left:1px solid black">
+                                    <b>{{ $loop->iteration }}</b>
+                                </td>
                                 <td><b>{{ $item->kd_rek }}</b></td>
                                 <td><b>{{ $item->nm_rek }}</b></td>
-                                <td style="text-align: right"><b>{{ rupiah($item->nilai) }}</b></td>
+                                <td style="text-align: right;border-right:1px solid black">
+                                    <b>{{ rupiah($item->nilai) }}</b>
+                                </td>
                             </tr>
                         @endif
                     @endforeach
                 @endif
                 <tr>
-                    <td colspan="3" style="text-align: right"><strong>JUMLAH</strong></td>
-                    <td style="text-align: right">{{ rupiah($total->nilai) }}</td>
+                    <td colspan="3"
+                        style="text-align: right;border-bottom:1px solid black;border-left:1px solid black;border-top:1px solid black">
+                        <strong>JUMLAH</strong>
+                    </td>
+                    <td
+                        style="text-align: right;border-right:1px solid black;border-left:1px solid black;border-top:1px solid black">
+                        {{ rupiah($total->nilai) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="4">Potongan-potongan</td>
+                    <td colspan="4" style="border:1px solid black">Potongan-potongan</td>
                 </tr>
             </tbody>
         </table>
@@ -331,7 +361,7 @@
                     <td colspan="4"><strong>SP2D yang Dibayarkan</strong></td>
                 </tr>
             </tbody>
-            <table style="width: 100%" style="border: 1px solid black">
+            <table style="width: 100%" style="border: 1px solid black" id="bawah">
                 <tr>
                     <td colspan="2" class="border">Jumlah yang Diminta</td>
                     <td class="bottom">Rp</td>
