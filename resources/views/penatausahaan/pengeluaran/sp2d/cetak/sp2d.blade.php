@@ -93,10 +93,8 @@
             <tr>
                 <td align="right" style="font-size:14px">Kode Pos: 78124</td>
             </tr>
-            <tr>
-                <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
-            </tr>
         </table>
+        <hr style="border: 1px solid black">
     @else
         <br><br><br><br><br>
     @endif
