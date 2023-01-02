@@ -9,6 +9,11 @@
                 </div>
                 <div class="card-body">
                     @csrf
+                    @if ($sppls->sp2d_batal == '1')
+                        <div class="alert alert-danger" role="alert">
+                            SPP - SPM DALAM STATUS BATAL
+                        </div>
+                    @endif
                     {{-- No Tersimpan dan Tanggal SPP --}}
                     <div class="mb-3 row">
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No. Tersimpan</label>

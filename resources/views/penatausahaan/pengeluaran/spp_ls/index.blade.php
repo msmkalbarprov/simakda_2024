@@ -302,6 +302,12 @@
                     "url": "{{ route('sppls.load_data') }}",
                     "type": "POST",
                 },
+                createdRow: function(row, data, index) {
+                    if (data.sp2d_batal == "1") {
+                        $(row).css("background-color", "#ff0000");
+                        $(row).css("color", "white");
+                    }
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'

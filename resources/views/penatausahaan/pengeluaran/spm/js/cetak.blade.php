@@ -3,7 +3,7 @@
 </script>
 <script>
     $(document).ready(function() {
-        
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -23,6 +23,9 @@
             createdRow: function(row, data, index) {
                 if (data.status == 1) {
                     $(row).css("background-color", "#4bbe68");
+                    $(row).css("color", "white");
+                } else if (data.sp2d_batal == '1') {
+                    $(row).css("background-color", "#ff0000");
                     $(row).css("color", "white");
                 }
             },
@@ -59,10 +62,10 @@
                     className: "text-center",
                 },
             ],
-            drawCallback: function (settings) {
+            drawCallback: function(settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+            }
         });
 
         $('#bendahara').select2({
