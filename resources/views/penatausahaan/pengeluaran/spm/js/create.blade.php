@@ -39,6 +39,8 @@
 
         $('#no_spp').on('select2:select', function() {
             let no_spp = this.value;
+            let str = no_spp.split('/');
+
             let tgl_spp = $(this).find(':selected').data('tgl_spp');
             let no_spd = $(this).find(':selected').data('no_spd');
             let bulan = $(this).find(':selected').data('bulan');
@@ -114,7 +116,7 @@
                 }
             });
 
-            get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm);
+            get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm, str);
         });
 
         $('#cari_nospm').on('click', function() {
@@ -319,7 +321,7 @@
             })
         }
 
-        function get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm) {
+        function get_spm(no_spp, kd_skpd, beban, tahun_anggaran, no_spm, str) {
             if (!no_spp) {
                 alert('Pilih terlebih dahulu No SPP');
                 return;
@@ -356,6 +358,10 @@
                     no_spm: no_spm
                 },
                 success: function(data) {
+                    if (str != data.nilai) {
+                        alert('Nomor SPM tidak sama dengan Nomor SPP!');
+                        return;
+                    }
                     let nomor = data.nilai + "/SPM/" + jns + "/" + kd_skpd + "/" + tahun_anggaran
                     $('#no_spm').val(nomor);
                     $('#urut').val(data.nilai);
