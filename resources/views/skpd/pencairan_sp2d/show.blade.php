@@ -37,7 +37,7 @@
                         <label for="tgl_cair" class="col-md-1 col-form-label">Tgl Cair</label>
                         <div class="col-md-3">
                             <input type="date" class="form-control" id="tgl_cair" name="tgl_cair"
-                                value="{{ $sp2d->tgl_kas }}">
+                                value="{{ isset($sp2d->tgl_kas) ? $sp2d->tgl_kas : date('Y-m-d') }}">
                         </div>
                         <label for="no_kontrak" class="col-md-1 col-form-label">No Kontrak</label>
                         <div class="col-md-3">
