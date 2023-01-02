@@ -352,6 +352,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [TerimaSp2dController::class, 'index'])->name('terima_sp2d.index');
             Route::post('load_data', [TerimaSp2dController::class, 'loadData'])->name('terima_sp2d.load_data');
             Route::get('tampil_sp2d/{no_sp2d?}', [TerimaSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('terima_sp2d.tampil_sp2d');
+            Route::post('terima_sp2d', [TerimaSp2dController::class, 'terimaSp2d'])->name('terima_sp2d.terima_sp2d');
+            Route::post('batal_terima', [TerimaSp2dController::class, 'batalTerima'])->name('terima_sp2d.batal_terima');
         });
         // Pencairan SP2D
         Route::group(['prefix' => 'pencairan_sp2d'], function () {
