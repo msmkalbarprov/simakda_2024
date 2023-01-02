@@ -992,6 +992,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
     });
 
+    Route::group(['prefix' => 'kartu_kendali'], function () {
+        Route::get('', [BendaharaUmumDaerahController::class, 'kartuKendali'])->name('kartu_kendali.index');
+        Route::post('kegiatan', [BendaharaUmumDaerahController::class, 'kegiatanKartuKendali'])->name('kartu_kendali.kegiatan');
+        Route::post('rekening', [BendaharaUmumDaerahController::class, 'rekeningKartuKendali'])->name('kartu_kendali.rekening');
+        Route::get('cetak_per_sub_kegiatan', [BendaharaUmumDaerahController::class, 'cetakKegiatanKartuKendali'])->name('kartu_kendali.cetak_kegiatan');
+        Route::get('cetak_per_rekening', [BendaharaUmumDaerahController::class, 'cetakRekeningKartuKendali'])->name('kartu_kendali.cetak_rekening');
+    });
+
+
     Route::group(['prefix' => 'laporan_bendahara_umum_daerah'], function () {
         Route::get('laporan_bendahara_umum', [BendaharaUmumDaerahController::class, 'index'])->name('laporan_bendahara_umum.index');
         // CETAK REALISASI PENDAPATAN
