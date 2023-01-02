@@ -752,12 +752,12 @@ class SpmController extends Controller
             //         'tgl_batal' => date('d-m-y H:i:s')
             //     ]);
             // } else {
-            DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
-                'sp2d_batal' => '1',
-                'ket_batal' => $keterangan,
-                'user_batal' => $user,
-                'tgl_batal' => date('d-m-y H:i:s')
-            ]);
+            // DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
+            //     'sp2d_batal' => '1',
+            //     'ket_batal' => $keterangan,
+            //     'user_batal' => $user,
+            //     'tgl_batal' => date('d-m-y H:i:s')
+            // ]);
 
             DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
                 'sp2d_batal' => '1',
