@@ -119,7 +119,7 @@
         <br><br><br><br><br>
     @endif
     <div>
-        <table style="width: 100%" style="border:1px solid black;font-family:Open Sans" id="atas">
+        <table style="width: 100%" style="border:1px solid black;font-family:Tahoma" id="atas">
             <tbody>
                 <tr>
                     <td colspan="3" class="center">PROVINSI KALIMANTAN BARAT</td>
@@ -227,7 +227,7 @@
                 </tr>
             </tbody>
         </table>
-        <table id="rincian" style="width: 100%" style="font-family:Open Sans">
+        <table id="rincian" style="width: 100%" style="font-family:Tahoma">
             <thead>
                 <tr>
                     <th><strong>NO</strong></th>
