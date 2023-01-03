@@ -41,7 +41,7 @@
                         </div>
                         <label for="tgl_terima" class="col-md-2 col-form-label">Tanggal Terima</label>
                         <div class="col-md-4">
-                            <input type="date" class="form-control" id="tgl_terima" value="{{ $sp2d->tgl_kas }}"
+                            <input type="date" class="form-control" id="tgl_terima" value="{{ $sp2d->tgl_kas_bud }}"
                                 name="tgl_terima">
                         </div>
                     </div>
