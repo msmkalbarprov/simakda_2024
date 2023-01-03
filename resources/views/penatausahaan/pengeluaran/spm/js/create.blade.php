@@ -358,7 +358,7 @@
                     no_spm: no_spm
                 },
                 success: function(data) {
-                    if (str != data.nilai) {
+                    if (str[0] != data.nilai) {
                         alert('Nomor SPM tidak sama dengan Nomor SPP!');
                         return;
                     }
