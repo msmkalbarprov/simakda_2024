@@ -20,7 +20,15 @@ class PenerimaController extends Controller
     public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('ms_rekening_bank_online')->get();
+        $admin = Auth::user()->is_admin;
+
+        $data = DB::table('ms_rekening_bank_online')
+            ->where(function ($query) use ($admin, $kd_skpd) {
+                if ($admin == '2') {
+                    $query->where(['kd_skpd' => $kd_skpd]);
+                }
+            })
+            ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penerima.show_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="' . route("penerima.edit_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';

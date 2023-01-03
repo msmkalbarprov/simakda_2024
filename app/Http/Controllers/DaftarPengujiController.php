@@ -51,11 +51,60 @@ class DaftarPengujiController extends Controller
         })->rawColumns(['aksi'])->make(true);
     }
 
+    public function detailPenguji(Request $request)
+    {
+        $no_advice = $request->no_advice;
+
+        $data = DB::table('trduji as a')
+            ->join('trhuji as c', function ($join) {
+                $join->on('a.no_uji', '=', 'c.no_uji');
+            })
+            ->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')
+            ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')
+            ->where(['a.no_uji' => $no_advice])
+            ->orderBy('a.no_sp2d')
+            ->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<button type="button" onclick="deleteData(\'' . $row->no_sp2d . '\',\'' . $row->no_spm . '\')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function hapusDetailPenguji(Request $request)
+    {
+        $no_advice = $request->no_advice;
+        $no_sp2d = $request->no_sp2d;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trduji')
+                ->where(['no_uji' => $no_advice, 'no_sp2d' => $no_sp2d])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
     public function loadSp2d()
     {
-        $data = DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
-            $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
-        })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai')->get();
+        $data = DB::table('trhsp2d')
+            ->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
+            ->where(function ($query) {
+                $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
+            })
+            ->where('is_verified', '1')
+            ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd')
+            ->selectRaw("(SELECT nama from ms_bank a where bank=a.kode) as nama_bank")
+            ->get();
         return response()->json($data);
     }
 
@@ -64,7 +113,7 @@ class DaftarPengujiController extends Controller
         $data = [
             'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
-            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')->get()
+            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd')->get()
         ];
 
         return view('penatausahaan.pengeluaran.daftar_penguji.create')->with($data);
@@ -141,7 +190,7 @@ class DaftarPengujiController extends Controller
             'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
             })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai')->get(),
-            'rincian_penguji' => DB::table('trduji as a')->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('no_uji', 'tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai')->where(['no_uji' => $no_uji])->get()
+            'rincian_penguji' => DB::table('trduji as a')->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('no_uji', 'tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')->where(['no_uji' => $no_uji])->get()
         ];
         return view('penatausahaan.pengeluaran.daftar_penguji.edit')->with($data);
     }
@@ -212,16 +261,16 @@ class DaftarPengujiController extends Controller
                 'username' => Auth::user()->nama,
                 'tgl_update' => date("Y-m-d H:i:s")
             ]);
-            DB::table('trduji')->where(['no_uji' => $no_advice])->delete();
-            if (isset($detail_penguji)) {
-                DB::table('trduji')->insert(array_map(function ($value) use ($no_advice, $tanggal) {
-                    return [
-                        'no_uji' => $no_advice,
-                        'tgl_uji' => $tanggal,
-                        'no_sp2d' => $value['no_sp2d'],
-                    ];
-                }, $detail_penguji));
-            }
+            // DB::table('trduji')->where(['no_uji' => $no_advice])->delete();
+            // if (isset($detail_penguji)) {
+            //     DB::table('trduji')->insert(array_map(function ($value) use ($no_advice, $tanggal) {
+            //         return [
+            //             'no_uji' => $no_advice,
+            //             'tgl_uji' => $tanggal,
+            //             'no_sp2d' => $value['no_sp2d'],
+            //         ];
+            //     }, $detail_penguji));
+            // }
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -326,7 +375,7 @@ class DaftarPengujiController extends Controller
 
         $view = view('penatausahaan.pengeluaran.daftar_penguji.cetak')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape');
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;

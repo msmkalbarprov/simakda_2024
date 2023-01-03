@@ -11,6 +11,13 @@
             border-collapse: collapse
         }
 
+        #judul,
+        #rincian,
+        #tanda {
+            font-size: 14px;
+            font-family: Tahoma;
+        }
+
         table,
         tr,
         td,
@@ -26,7 +33,7 @@
         <h3 style="margin: 2px 0px"><strong>SURAT PERINTAH PENCAIRAN DANA</strong></h3>
         <div style="clear: both"></div>
     </div>
-    <table style="width: 100%">
+    <table style="width: 100%" id="judul">
         <tbody>
             <tr>
                 <td><b>Tanggal</b></td>
@@ -71,11 +78,11 @@
                     <td style="text-align: center">{{ $loop->iteration }}</td>
                     <td style="text-align: center">{{ $penguji->no_sp2d }}<br>{{ $penguji->tgl_sp2d }}</td>
                     @if ($penguji->jns_spp == '6' && $penguji->jenis_beban == '6')
-                        <td>{{ $penguji->nmrekan }}, {{ $penguji->pimpinan }}<br>{{ $penguji->alamat }}</td>
+                        <td>{{ Str::upper($penguji->nmrekan) }}, {{ $penguji->pimpinan }}<br>{{ $penguji->alamat }}</td>
                     @elseif ($penguji->jns_spp == '5')
-                        <td>{{ $penguji->nmrekan }}<br>{{ $penguji->nm_skpd }}</td>
+                        <td>{{ Str::upper($penguji->nmrekan) }}<br>{{ $penguji->nm_skpd }}</td>
                     @else
-                        <td>{{ cetak_penguji($penguji->kd_skpd) }}<br>{{ $penguji->nm_skpd }}</td>
+                        <td>{{ Str::upper(cetak_penguji($penguji->kd_skpd)) }}<br>{{ $penguji->nm_skpd }}</td>
                     @endif
                     <td>{{ $penguji->kd_skpd }}<br>{{ $penguji->nm_skpd }}</td>
                     <td style="text-align: right">{{ rupiah($penguji->kotor) }}</td>
@@ -93,7 +100,7 @@
             </tr>
         </tbody>
     </table>
-    <table style="width: 100%;margin-top:20px">
+    <table style="width: 100%;margin-top:20px" id="tanda">
         <tbody>
             <tr>
                 <td style="width: 10%"><b>Diterima oleh</b></td>
@@ -107,11 +114,11 @@
             </tr>
             <tr>
                 <td colspan="3"><b>Petugas Bank / POS</b></td>
-                <td style="text-align: center;padding-bottom:100px"><b>{{ $ttd->jabatan }}</b></td>
+                <td style="text-align: center;padding-bottom:100px"></td>
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td style="text-align: center"><b>{{ $ttd->nama }}</b></td>
+                <td style="text-align: center"><b><u>{{ $ttd->nama }}</u></b></td>
             </tr>
             <tr>
                 <td colspan="3"></td>

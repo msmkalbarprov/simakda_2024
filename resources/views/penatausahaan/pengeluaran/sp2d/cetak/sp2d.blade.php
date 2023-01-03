@@ -28,23 +28,28 @@
         }
 
         #atas {
-            font-size: 12px;
+            font-size: 14px;
+            font-family: Tahoma;
         }
 
         #rincian {
-            font-size: 12px;
+            font-size: 14px;
+            font-family: Tahoma
         }
 
         #potongan {
-            font-size: 12px;
+            font-size: 14px;
+            font-family: Tahoma
         }
 
         #bawah {
-            font-size: 12px;
+            font-size: 14px;
+            font-family: Tahoma
         }
 
         #ttd {
-            font-size: 12px;
+            font-size: 14px;
+            font-family: Tahoma
         }
 
         .bottom1 {
@@ -116,42 +121,44 @@
         </table>
         <hr style="border: 1px solid black">
     @else
-        <br><br><br><br><br>
+        <br><br><br><br><br><br>
     @endif
     <div>
-        <table style="width: 100%" style="border:1px solid black;font-family:Tahoma" id="atas">
+        <table style="width: 100%" style="border:1px solid black" id="atas">
             <tbody>
                 <tr>
-                    <td colspan="3" class="center">PROVINSI KALIMANTAN BARAT</td>
-                    <td colspan="3" class="center">SURAT PERINTAH PENCAIRAN DANA (SP2D)<br>Nomor :
-                        {{ $no_sp2d }}</td>
+                    <td colspan="3" class="center" style="font-size: 14px;width:50%"><b>PROVINSI KALIMANTAN BARAT</b>
+                    </td>
+                    <td colspan="3" class="center" style="font-size: 14px;width:50%"><b>SURAT PERINTAH PENCAIRAN DANA
+                            (SP2D)<br>Nomor :
+                            {{ $no_sp2d }}</b></td>
                 </tr>
                 <tr>
-                    <td class="border">Nomor SPM</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom">{{ $sp2d->no_spm }}</td>
+                    <td style="border-left: 1px solid black">Nomor SPM</td>
+                    <td>:</td>
+                    <td>{{ $sp2d->no_spm }}</td>
 
-                    <td class="border">Dari</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1">Kuasa BUD</td>
+                    <td style="border-left: 1px solid black">Dari</td>
+                    <td>:</td>
+                    <td style="border-right: 1px solid black">Kuasa BUD</td>
                 </tr>
                 <tr>
-                    <td class="border">Tanggal</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom">{{ tanggal($sp2d->tgl_spm) }}</td>
+                    <td style="border-left: 1px solid black">Tanggal</td>
+                    <td>:</td>
+                    <td>{{ tanggal($sp2d->tgl_spm) }}</td>
 
-                    <td class="border">NPWP</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1"></td>
+                    <td style="border-left: 1px solid black">NPWP</td>
+                    <td>:</td>
+                    <td style="border-right: 1px solid black"></td>
                 </tr>
                 <tr>
-                    <td class="border">Nama SKPD</td>
-                    <td class="bottom">:</td>
+                    <td class="border" style="vertical-align:top">Nama SKPD</td>
+                    <td style="vertical-align: top">:</td>
                     <td class="bottom">{{ $sp2d->kd_skpd }} {{ $sp2d->nm_skpd }}</td>
 
-                    <td class="border">Tahun Anggaran</td>
-                    <td class="bottom">:</td>
-                    <td class="bottom1">{{ tahun_anggaran() }}</td>
+                    <td class="border" style="vertical-align: top">Tahun Anggaran</td>
+                    <td class="bottom" style="vertical-align: top">:</td>
+                    <td class="bottom1" style="vertical-align: top">{{ tahun_anggaran() }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-left: 1px solid black">Bank Pengirim
@@ -168,7 +175,6 @@
                     <td colspan="4" class="bottom1">: Rp. {{ rupiah($nilai_sp2d->nilai) }}
                         ({{ terbilang($nilai_sp2d->nilai) }})</td>
                 </tr>
-
                 <tr>
                     <td class="kiri">Kepada</td>
                     <td>:</td>
@@ -193,7 +199,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="kiri">No. Rekening Bank</td>
+                    <td class="kiri" style="width: 15%">No. Rekening Bank</td>
                     <td>:</td>
                     <td colspan="4" class="kanan">
                         @if (($sp2d->jns_spp == '6' && $sp2d->jenis_beban == '6') || $sp2d->jns_spp == '5')
@@ -215,8 +221,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="kiri">Keperluan Untuk</td>
-                    <td>:</td>
+                    <td class="kiri" style="vertical-align: top">Keperluan Untuk</td>
+                    <td style="vertical-align: top">:</td>
                     <td colspan="4" class="kanan">{{ $sp2d->keperluan }}</td>
                 </tr>
                 <tr>
@@ -227,7 +233,7 @@
                 </tr>
             </tbody>
         </table>
-        <table id="rincian" style="width: 100%" style="font-family:Tahoma">
+        <table id="rincian" style="width: 100%">
             <thead>
                 <tr>
                     <th><strong>NO</strong></th>
@@ -245,34 +251,49 @@
                 </tr>
                 @if (in_array($sp2d->jns_spp, ['1', '2']))
                     <tr>
-                        <td style="text-align: center;border-left:1px solid black">1</td>
-                        <td>{{ $sp2d->kd_skpd }}</td>
-                        <td>{{ $sp2d->nm_skpd }}</td>
+                        <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">1</td>
+                        <td style="border-right:1px solid black">{{ $sp2d->kd_skpd }}</td>
+                        <td style="border-right:1px solid black">{{ $sp2d->nm_skpd }}</td>
                         <td style="text-align: right;border-right:1px solid black">{{ rupiah($total->nilai) }}</td>
                     </tr>
                 @else
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black">{{ $loop->iteration }}</td>
-                                <td>{{ dotrek($item->kd_rek) }}</td>
-                                <td>{{ $item->nm_rek }}</td>
+                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                    {{ $loop->iteration }}</td>
+                                <td style="border-right:1px solid black">{{ dotrek($item->kd_rek) }}</td>
+                                <td style="border-right:1px solid black">{{ $item->nm_rek }}</td>
                                 <td style="text-align: right;border-right:1px solid black">{{ rupiah($item->nilai) }}
                                 </td>
                             </tr>
                         @else
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black">
+                                <td
+                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     <b>{{ $loop->iteration }}</b>
                                 </td>
-                                <td><b>{{ $item->kd_rek }}</b></td>
-                                <td><b>{{ $item->nm_rek }}</b></td>
+                                <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
+                                <td style="border-right:1px solid black"><b>{{ $item->nm_rek }}</b></td>
                                 <td style="text-align: right;border-right:1px solid black">
                                     <b>{{ rupiah($item->nilai) }}</b>
                                 </td>
                             </tr>
                         @endif
                     @endforeach
+                @endif
+                @if ($jumlah <= $baris)
+                    @for ($i = $jumlah; $i <= $baris; $i++)
+                        <tr>
+                            <td
+                                style="text-align: center;border-left:1px solid black;border-right:1px solid black;height:{{ $i }}px">
+                            </td>
+                            <td style="border-right:1px solid black"></td>
+                            <td style="border-right:1px solid black"></td>
+                            <td style="text-align: right;border-right:1px solid black">
+                            </td>
+                        </tr>
+                    @endfor
                 @endif
                 <tr>
                     <td colspan="3"
@@ -408,9 +429,9 @@
                 <tr>
                     <td class="kiri">Lembar 3</td>
                     <td>:</td>
-                    <td>Arsip Kuasa BUD</td>
+                    <td>BUD/Kuasa BUD</td>
                     <td></td>
-                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->jabatan }}</b></td>
+                    <td style="text-align: center" class="kanan"><b></b></td>
                 </tr>
                 <tr>
                     <td class="kiri">Lembar 4</td>
@@ -420,7 +441,14 @@
                     <td style="text-align: center" class="kanan"></td>
                 </tr>
                 <tr>
-                    <td colspan="6" class="kanan kiri" style="height: 50px"></td>
+                    <td class="kiri">Lembar 5</td>
+                    <td>:</td>
+                    <td>Arsip</td>
+                    <td></td>
+                    <td style="text-align: center" class="kanan"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="kanan kiri" style="height: 40px"></td>
                 </tr>
                 <tr>
                     <td class="kiri"></td>
@@ -428,6 +456,13 @@
                     <td></td>
                     <td></td>
                     <td style="text-align: center" class="kanan"><b><u>{{ $ttd1->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td class="kiri"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->pangkat }}</b></td>
                 </tr>
                 <tr>
                     <td class="kiri bottom"></td>

@@ -88,7 +88,6 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('data_pengguna', [UserController::class, 'loadData'])->name('user.load_data');
         Route::resource('skpd_pengguna', SkpdPenggunaController::class);
         Route::post('data_skpd_pengguna', [SkpdPenggunaController::class, 'loadData'])->name('skpd_pengguna.load_data');
-        
     });
 
     // index, create, store, update, show, destroy
@@ -248,6 +247,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load_data', [DaftarPengujiController::class, 'loadData'])->name('daftar_penguji.load_data');
             Route::get('tambah', [DaftarPengujiController::class, 'create'])->name('daftar_penguji.create');
             Route::post('simpan_penguji', [DaftarPengujiController::class, 'simpanPenguji'])->name('daftar_penguji.simpan_penguji');
+            Route::post('hapus_detail_penguji', [DaftarPengujiController::class, 'hapusDetailPenguji'])->name('daftar_penguji.hapus_detail_penguji');
+            Route::post('load_detail', [DaftarPengujiController::class, 'detailPenguji'])->name('daftar_penguji.load_detail');
             Route::post('simpan_detail_penguji', [DaftarPengujiController::class, 'simpanDetailPenguji'])->name('daftar_penguji.simpan_detail_penguji');
             Route::get('tampil/{no_uji?}', [DaftarPengujiController::class, 'editPenguji'])->where('no_uji', '(.*)')->name('daftar_penguji.tampil');
             Route::post('load_rincian_penguji', [DaftarPengujiController::class, 'loadRincianPenguji'])->name('daftar_penguji.load_rincian_penguji');
@@ -351,6 +352,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [TerimaSp2dController::class, 'index'])->name('terima_sp2d.index');
             Route::post('load_data', [TerimaSp2dController::class, 'loadData'])->name('terima_sp2d.load_data');
             Route::get('tampil_sp2d/{no_sp2d?}', [TerimaSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('terima_sp2d.tampil_sp2d');
+            Route::post('terima_sp2d', [TerimaSp2dController::class, 'terimaSp2d'])->name('terima_sp2d.terima_sp2d');
+            Route::post('batal_terima', [TerimaSp2dController::class, 'batalTerima'])->name('terima_sp2d.batal_terima');
         });
         // Pencairan SP2D
         Route::group(['prefix' => 'pencairan_sp2d'], function () {
@@ -990,6 +993,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanNonPendapatan'])->name('non_pendapatan.hapus');
         });
     });
+
+    Route::group(['prefix' => 'kartu_kendali'], function () {
+        Route::get('', [BendaharaUmumDaerahController::class, 'kartuKendali'])->name('kartu_kendali.index');
+        Route::post('kegiatan', [BendaharaUmumDaerahController::class, 'kegiatanKartuKendali'])->name('kartu_kendali.kegiatan');
+        Route::post('rekening', [BendaharaUmumDaerahController::class, 'rekeningKartuKendali'])->name('kartu_kendali.rekening');
+        Route::get('cetak_per_sub_kegiatan', [BendaharaUmumDaerahController::class, 'cetakKegiatanKartuKendali'])->name('kartu_kendali.cetak_kegiatan');
+        Route::get('cetak_per_rekening', [BendaharaUmumDaerahController::class, 'cetakRekeningKartuKendali'])->name('kartu_kendali.cetak_rekening');
+    });
+
 
     Route::group(['prefix' => 'laporan_bendahara_umum_daerah'], function () {
         Route::get('laporan_bendahara_umum', [BendaharaUmumDaerahController::class, 'index'])->name('laporan_bendahara_umum.index');

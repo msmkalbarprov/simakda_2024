@@ -10,7 +10,18 @@
             processing: true,
             ordering: false,
             lengthMenu: [5, 10],
+            ajax: {
+                "url": "{{ route('daftar_penguji.load_detail') }}",
+                "type": "POST",
+                "data": function(d) {
+                    d.no_advice = document.getElementById('no_advice').value
+                }
+            },
             columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    className: "text-center"
+                }, {
                     data: 'no_sp2d',
                     name: 'no_sp2d',
                 },
@@ -39,21 +50,7 @@
         });
 
         // Load SP2D
-        $.ajax({
-            url: "{{ route('daftar_penguji.load_sp2d') }}",
-            type: "POST",
-            dataType: 'json',
-            success: function(data) {
-                $('#no_sp2d').empty();
-                $('#no_sp2d').append(
-                    `<option value="0" disabled selected>Silahkan Pilih</option>`);
-                $.each(data, function(index, data) {
-                    $('#no_sp2d').append(
-                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}">${data.no_sp2d} | ${data.tgl_sp2d}</option>`
-                    );
-                })
-            }
-        })
+        load_sp2d();
 
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
@@ -105,6 +102,7 @@
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Data berhasil ditambahkan!');
+                        load_sp2d();
                         rincian_penguji.ajax.reload();
                     } else {
                         alert('Data gagal ditambahkan!');
@@ -170,13 +168,50 @@
 
     });
 
+    function load_sp2d() {
+        $.ajax({
+            url: "{{ route('daftar_penguji.load_sp2d') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                $('#no_sp2d').empty();
+                $('#no_sp2d').append(
+                    `<option value="0" disabled selected>Silahkan Pilih</option>`);
+                $.each(data, function(index, data) {
+                    $('#no_sp2d').append(
+                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
+                    );
+                })
+            }
+        })
+    }
+
     function deleteData(no_sp2d, no_spm) {
         let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor SP2D : ' + no_sp2d);
         let tabel = $('#rincian_penguji').DataTable();
         if (tanya == true) {
-            tabel.rows(function(idx, data, node) {
-                return data.no_sp2d == no_sp2d && data.no_spm == no_spm
-            }).remove().draw();
+            $.ajax({
+                url: "{{ route('daftar_penguji.hapus_detail_penguji') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_sp2d: no_sp2d,
+                    no_advice: document.getElementById('no_advice').value,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil dihapus!');
+                        load_sp2d();
+                        tabel.ajax.reload();
+                    } else {
+                        alert('Data gagal dihapus!');
+                        return;
+                    }
+                }
+            })
+            // tabel.rows(function(idx, data, node) {
+            //     return data.no_sp2d == no_sp2d && data.no_spm == no_spm
+            // }).remove().draw();
         } else {
             return false;
         }

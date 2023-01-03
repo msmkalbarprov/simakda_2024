@@ -9,6 +9,11 @@
                     Input SPM
                 </div>
                 <div class="card-body">
+                    @if ($data_spm->sp2d_batal == '1')
+                        <div class="alert alert-danger" role="alert">
+                            SPP - SPM DALAM STATUS BATAL
+                        </div>
+                    @endif
                     @csrf
                     {{-- No SPP dan Tanggal SPP --}}
                     <div class="mb-3 row">

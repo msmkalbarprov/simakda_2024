@@ -2042,6 +2042,7 @@ class BendaharaUmumDaerahController extends Controller
 
         return view('bud.laporan_bendahara.cetak.rekap_gaji')->with($data);
     }
+
     public function rekapBBKasda(Request $request)
     {
         $req = $request->all();
@@ -2049,18 +2050,18 @@ class BendaharaUmumDaerahController extends Controller
         $kd_rek  = $request->kd_rek6;
 
         $buku_besar_kasda = DB::select("select tgl_kas, no_kas,keterangan,0 as debet, kredit from (
-					select a.kd_skpd, a.tgl_kas, a.no_kas, b.kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					select a.kd_skpd, a.tgl_kas, a.no_kas, b.kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit
 					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts AND a.no_kas=b.no_kas
 					where pot_khusus<>3 AND jns_trans NOT IN ('2') AND b.kd_rek6 = ?
-					union all 
-					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '410415030001' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					union all
+					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '410415030001' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit
 					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts and a.no_kas=b.no_kas
-					where jns_trans IN ('5') AND jns_cp='1' AND pot_khusus='3' 
-					union all 
-					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '4141009' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit 
+					where jns_trans IN ('5') AND jns_cp='1' AND pot_khusus='3'
+					union all
+					select '5.02.0.00.0.00.02.0000' kd_skpd, a.tgl_kas, a.no_kas, '4141009' kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit
 					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts and a.no_kas=b.no_kas
 					where jns_trans IN ('2')
-					) a 
+					) a
 					where kd_skpd= ? and kd_rek6= ? and tgl_kas between ? AND ?
 					order by tgl_kas, no_kas", [$req['kd_rek6'], $req['kd_skpd'], $req['kd_rek6'], $req['periode1'], $req['periode2']]);
         //dd($buku_besar_kasda);
@@ -2082,5 +2083,160 @@ class BendaharaUmumDaerahController extends Controller
         ];
 
         return view('bud.laporan_bendahara.cetak.buku_besar_kasda')->with($data);
+    }
+
+    public function kartuKendali(Request $request)
+    {
+        $data = [
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->orderBy('kd_skpd')
+                ->get(),
+            'jenis_anggaran' => DB::table('tb_status_anggaran')
+                ->select('kode', 'nama')
+                ->where(['status_aktif' => '1'])
+                ->get(),
+            'daftar_ttd' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'kd_skpd')
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->orderBy('nama')
+                ->get(),
+        ];
+
+        return view('bud.kartu_kendali.index')->with($data);
+    }
+
+    public function kegiatanKartuKendali(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+
+        $jenis_anggaran = DB::table('trhrka')
+            ->select('jns_ang')
+            ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
+            ->orderByDesc('tgl_dpa')
+            ->first();
+
+        $data = DB::table('trskpd as a')
+            ->join('ms_sub_kegiatan as b', function ($join) {
+                $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+            })
+            ->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')
+            ->where(['a.kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_anggaran->jns_ang])
+            ->orderBy('a.kd_sub_kegiatan')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function rekeningKartuKendali(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+
+        $jenis_anggaran = DB::table('trhrka')
+            ->select('jns_ang')
+            ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
+            ->orderByDesc('tgl_dpa')
+            ->first();
+
+        $data = DB::table('trdrka as a')
+            ->join('ms_rek6 as b', function ($join) {
+                $join->on('a.kd_rek6', '=', 'b.kd_rek6');
+            })
+            ->select('a.kd_rek6', 'b.nm_rek6')
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'jns_ang' => $jenis_anggaran->jns_ang])
+            ->orderBy('a.kd_rek6')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function cetakKegiatanKartuKendali(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_rek = $request->kd_rek;
+        $jns_ang = $request->jns_ang;
+        $periode_awal = $request->periode_awal;
+        $periode_akhir = $request->periode_akhir;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $program = substr($kd_sub_kegiatan, 0, 7);
+        $kegiatan = substr($kd_sub_kegiatan, 0, 12);
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+            'program' => DB::table('trskpd')
+                ->select('nm_program', DB::raw("'$program' as kd_program"))
+                ->where(['kd_program' => $program])
+                ->first(),
+            'kegiatan' => DB::table('trskpd')
+                ->select('nm_kegiatan', DB::raw("'$kegiatan' as kd_kegiatan"))
+                ->where(['kd_kegiatan' => $kegiatan])
+                ->first(),
+            'sub_kegiatan' => DB::table('trskpd')
+                ->select('nm_sub_kegiatan', DB::raw("'$kd_sub_kegiatan' as kd_sub_kegiatan"))
+                ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+                ->first(),
+            'periode_awal' => $periode_awal,
+            'periode_akhir' => $periode_akhir,
+            'rincian' =>  DB::select("exec kartu_kendali ?,?,?,?,?", array($jns_ang, $kd_skpd, $kd_sub_kegiatan, $periode_awal, $periode_akhir)),
+            'jns_ang' => $jns_ang
+        ];
+        return view('bud.kartu_kendali.cetak_per_sub_kegiatan')->with($data);
+    }
+
+    public function cetakRekeningKartuKendali(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_rek = $request->kd_rek;
+        $jns_ang = $request->jns_ang;
+        $periode_awal = $request->periode_awal;
+        $periode_akhir = $request->periode_akhir;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $kegiatan = substr($kd_sub_kegiatan, 0, 12);
+
+        $data = [
+            'nilai_ang' => DB::table('trdrka as a')
+                ->selectRaw("sum(nilai)nilai, (select sum(nilai) from trdrka where no_trdrka=a.no_trdrka and jns_ang=?) as nilai_ubah", [$jns_ang])
+                ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek])
+                ->groupBy('no_trdrka')
+                ->first(),
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+            'kegiatan' => DB::table('trskpd')
+                ->select('nm_kegiatan', DB::raw("'$kegiatan' as kd_kegiatan"))
+                ->where(['kd_kegiatan' => $kegiatan])
+                ->first(),
+            'sub_kegiatan' => DB::table('trskpd')
+                ->select('nm_sub_kegiatan', DB::raw("'$kd_sub_kegiatan' as kd_sub_kegiatan"))
+                ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+                ->first(),
+            'rekening' => DB::table('ms_rek6')
+                ->select('nm_rek6', DB::raw("'$kd_sub_kegiatan' as kd_rek6"))
+                ->where(['kd_rek6' => $kd_rek])
+                ->first(),
+            'periode_awal' => $periode_awal,
+            'periode_akhir' => $periode_akhir,
+            'rincian' =>  DB::select("exec kartu_kendali_rek ?,?,?,?,?", array($kd_rek, $kd_skpd, $kd_sub_kegiatan, $periode_awal, $periode_akhir)),
+            'jns_ang' => $jns_ang
+        ];
+        // return $data['nilai_ang'];
+        return view('bud.kartu_kendali.cetak_per_rekening')->with($data);
     }
 }

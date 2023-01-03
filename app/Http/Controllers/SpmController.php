@@ -752,12 +752,12 @@ class SpmController extends Controller
             //         'tgl_batal' => date('d-m-y H:i:s')
             //     ]);
             // } else {
-            DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
-                'sp2d_batal' => '1',
-                'ket_batal' => $keterangan,
-                'user_batal' => $user,
-                'tgl_batal' => date('d-m-y H:i:s')
-            ]);
+            // DB::table('trhspm')->where(['no_spm' => $no_spm, 'no_spp' => $no_spp])->update([
+            //     'sp2d_batal' => '1',
+            //     'ket_batal' => $keterangan,
+            //     'user_batal' => $user,
+            //     'tgl_batal' => date('d-m-y H:i:s')
+            // ]);
 
             DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
                 'sp2d_batal' => '1',
@@ -809,8 +809,15 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = Crypt::decryptString($no_spm);
         $data = [
-            'data_spm' => DB::table('trhspm')->where(['kd_skpd' => $kd_skpd, 'no_spm' => $no_spm])->first(),
+            'data_spm' => DB::table('trhspm as a')
+                ->join('trhspp as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.*', 'b.sp2d_batal')
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.no_spm' => $no_spm])->first(),
         ];
+
         return view('penatausahaan.pengeluaran.spm.show')->with($data);
     }
 

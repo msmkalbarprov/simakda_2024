@@ -14,19 +14,35 @@
                     <div class="mb-3 row">
                         <div class="col-md-12">
                             <a href="{{ route('terima_sp2d.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                            @if ($sp2d->status == '1')
+                            @elseif ($sp2d->status_terima == '1')
+                                <button class="btn btn-md btn-primary" id="batal_terima"
+                                    style="border: 1px solid black">BATAL
+                                    TERIMA</button>
+                            @else
+                                <button class="btn btn-md btn-primary" id="terima_sp2d"
+                                    style="border: 1px solid black">TERIMA SP2D</button>
+                            @endif
                         </div>
                     </div>
                     {{-- Nomor terima dan tanggal terima --}}
                     <div class="mb-3 row">
                         <label for="no_terima" class="col-md-2 col-form-label">Nomor Terima</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="no_terima" value="{{ $sp2d->no_terima }}"
-                                name="no_terima" readonly>
+                            @if ($sp2d->status_terima == '1')
+                                <input type="text" class="form-control" id="no_terima"
+                                    value="{{ !empty($sp2d->no_terima) ? $sp2d->no_terima : no_urut($kd_skpd) }}"
+                                    name="no_terima" readonly>
+                            @else
+                                <input type="text" class="form-control" id="no_terima"
+                                    value="{{ !empty($sp2d->no_terima) ? $sp2d->no_terima : no_urut($kd_skpd) }}"
+                                    name="no_terima">
+                            @endif
                         </div>
                         <label for="tgl_terima" class="col-md-2 col-form-label">Tanggal Terima</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="tgl_terima" value="{{ tanggal($sp2d->tgl_kas) }}"
-                                name="tgl_terima" readonly>
+                            <input type="date" class="form-control" id="tgl_terima" value="{{ $sp2d->tgl_kas_bud }}"
+                                name="tgl_terima">
                         </div>
                     </div>
                     {{-- No SP2D --}}
@@ -35,6 +51,10 @@
                         <div class="col-md-10">
                             <input type="text" class="form-control" id="no_sp2d" name="no_sp2d"
                                 value="{{ $sp2d->no_sp2d }}" readonly>
+                            <input type="text" class="form-control" id="nocek" name="nocek"
+                                value="{{ $sp2d->nocek }}" readonly hidden>
+                            <input type="text" class="form-control" id="kd_skpd" name="kd_skpd"
+                                value="{{ $sp2d->kd_skpd }}" readonly hidden>
                         </div>
                     </div>
                 </div>
@@ -389,5 +409,96 @@
             border-bottom: 1px solid black;
         }
     </style>
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#terima_sp2d').on('click', function() {
+                let no_terima = document.getElementById('no_terima').value;
+                let tgl_terima = document.getElementById('tgl_terima').value;
+                let no_sp2d = document.getElementById('no_sp2d').value;
+                let nocek = document.getElementById('nocek').value;
+                let kd_skpd = document.getElementById('kd_skpd').value;
+                let tahun_anggaran = "{{ tahun_anggaran() }}";
+
+                let tahun_input = tgl_terima.substring(0, 4);
+
+                if (!tgl_terima) {
+                    alert("Tanggal tidak boleh kosong");
+                    exit();
+                }
+
+                if (tahun_input != tahun_anggaran) {
+                    alert('Tahun tidak sama dengan tahun Anggaran');
+                    return;
+                }
+
+                $('#terima_sp2d').prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('terima_sp2d.terima_sp2d') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        no_terima: no_terima,
+                        tgl_terima: tgl_terima,
+                        no_sp2d: no_sp2d,
+                        nocek: nocek,
+                        kd_skpd: kd_skpd,
+                    },
+                    success: function(response) {
+                        if (response.message == '1') {
+                            alert('SP2D Telah Diterima');
+                            window.location.reload();
+                        } else if (response.message == '2') {
+                            alert('Ada Sp2D yang belum dicairkan di SKPD');
+                            $('#terima_sp2d').prop('disabled', false);
+                        } else {
+                            alert('Sp2D Gagal diterima!');
+                            $('#terima_sp2d').prop('disabled', false);
+                        }
+                    }
+                })
+
+            });
+
+            $('#batal_terima').on('click', function() {
+                let no_terima = document.getElementById('no_terima').value;
+                let tgl_terima = document.getElementById('tgl_terima').value;
+                let no_sp2d = document.getElementById('no_sp2d').value;
+                let nocek = document.getElementById('nocek').value;
+                let kd_skpd = document.getElementById('kd_skpd').value;
+                let tahun_anggaran = "{{ tahun_anggaran() }}";
+
+                $('#batal_terima').prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('terima_sp2d.batal_terima') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        no_terima: no_terima,
+                        tgl_terima: tgl_terima,
+                        no_sp2d: no_sp2d,
+                        nocek: nocek,
+                        kd_skpd: kd_skpd,
+                    },
+                    success: function(response) {
+                        if (response.message == '1') {
+                            alert('Penerimaan Dibatalkan');
+                            window.location.reload();
+                        } else {
+                            alert('SP2D Gagal dibatalkan!');
+                            $('#batal_terima').prop('disabled', false);
+                        }
+                    }
+                })
+
+            });
+        });
+    </script>
     {{-- @include('penatausahaan.pengeluaran.pencairan_sp2d.js.show'); --}}
 @endsection

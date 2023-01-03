@@ -5,6 +5,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
         $('#sp2d').DataTable({
             responsive: true,
             ordering: false,
@@ -16,7 +17,7 @@
                 "type": "POST",
             },
             createdRow: function(row, data, index) {
-                if (data.status_bud == 1) {
+                if (data.status_terima == 1) {
                     $(row).css("background-color", "#03d3ff");
                 }
             },
@@ -62,7 +63,6 @@
                 },
             ],
         });
-
     });
 
     function cetak(no_sp2d, beban, kd_skpd) {

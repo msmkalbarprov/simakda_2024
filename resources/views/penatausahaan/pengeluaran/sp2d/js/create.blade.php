@@ -115,15 +115,15 @@
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
-                        $('#no_sp2d').val(data.nomor + '/UP/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/UP/' + thn_anggaran);
                     } else if (beban == '2') {
-                        $('#no_sp2d').val(data.nomor + '/GU/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/GU/' + thn_anggaran);
                     } else if (beban == '3') {
-                        $('#no_sp2d').val(data.nomor + '/TU/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/TU/' + thn_anggaran);
                     } else if (beban == '4') {
-                        $('#no_sp2d').val(data.nomor + '/GJ/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/GJ/' + thn_anggaran);
                     } else if (beban == '5' || beban == '6') {
-                        $('#no_sp2d').val(data.nomor + '/LS/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/LS/' + thn_anggaran);
                     }
                 }
             })
@@ -182,15 +182,15 @@
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
-                        $('#no_sp2d').val(data.nomor + '/UP/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/UP/' + thn_anggaran);
                     } else if (beban == '2') {
-                        $('#no_sp2d').val(data.nomor + '/GU/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/GU/' + thn_anggaran);
                     } else if (beban == '3') {
-                        $('#no_sp2d').val(data.nomor + '/TU/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/TU/' + thn_anggaran);
                     } else if (beban == '4') {
-                        $('#no_sp2d').val(data.nomor + '/GJ/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/GJ/' + thn_anggaran);
                     } else if (beban == '5' || beban == '6') {
-                        $('#no_sp2d').val(data.nomor + '/LS/'+thn_anggaran);
+                        $('#no_sp2d').val(data.nomor + '/LS/' + thn_anggaran);
                     }
                 }
             })
@@ -338,7 +338,7 @@
                     if (data.message == '1') {
                         alert('Data berhasil ditambahkan, No SP2D yang tersimpan adalah: ' +
                             data.no_sp2d);
-                        window.location.href = "{{ route('spm.index') }}";
+                        window.location.href = "{{ route('sp2d.index') }}";
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan_sp2d').prop('disabled', false);

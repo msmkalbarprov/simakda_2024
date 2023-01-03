@@ -420,6 +420,10 @@
             let map_pot = $(this).find(':selected').data('map_pot');
             $('#nm_rek_pot').val(nama);
             $('#map_pot').val(map_pot);
+            let kode_rek = this.value;
+            if (kode_rek.substr(0, 6) == '210601') {
+                peringatan();
+            }
         });
 
         $('#simpan_potongan').on('click', function() {
@@ -965,6 +969,46 @@
                         alert('Data gagal ditambahkan!');
                         $('#simpan_potongan').prop('disabled', false);
                     }
+                }
+            })
+        }
+
+        function peringatan() {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Apakah anda melampirkan STS untuk utang belanja ?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire(
+                        'Pastikan sekali lagi anda melampirkan STS',
+                        'Anda bisa melanjutkan ke tahap selanjutnya',
+                        'success'
+                    )
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Tidak Melampirkan STS',
+                        'Info lebih lanjut silahkan hubungi bidang perbendaharaan',
+                        'error'
+                    )
+                    $('#rekening_potongan').val(null).change();
+                    $('#nm_rek_pot').val(null);
+                    $('#map_pot').val(null);
                 }
             })
         }

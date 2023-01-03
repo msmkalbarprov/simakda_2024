@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Skpd;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -86,7 +87,169 @@ class TerimaSp2dController extends Controller
             'sub_kegiatan' => $sp2d,
             'potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),
             'potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),
+            'kd_skpd' => $kd_skpd
         ];
         return view('skpd.terima_sp2d.show')->with($data);
+    }
+
+    public function terimaSp2d(Request $request)
+    {
+        $no_terima = $request->no_terima;
+        $tgl_terima = $request->tgl_terima;
+        $no_sp2d = $request->no_sp2d;
+        $nocek = $request->nocek;
+        $kd_skpd = $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $cek = DB::table('trhsp2d')
+                ->where(['status_bud' => '1', 'status_terima' => '1', 'kd_skpd' => $kd_skpd])
+                ->where('status', '<>', '1')
+                ->count();
+
+            if ($cek > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trhsp2d')
+                ->where(['no_sp2d' => $no_sp2d])
+                ->update([
+                    'status_terima' => '1',
+                    'no_terima' => $no_terima,
+                    'tgl_terima' => $tgl_terima,
+                ]);
+
+            $bukti_terima = $no_terima + 1;
+            $no_bukti_terima = "$bukti_terima";
+
+            $cek_potongan =  DB::table('trspmpot as a')
+                ->join('trhsp2d as b', function ($join) {
+                    $join->on('a.no_spm', '=', 'b.no_spm');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->where(['b.no_sp2d' => $no_sp2d])
+                ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
+                ->count();
+
+            if ($cek_potongan > 0) {
+                $data_potongan = DB::table('trspmpot as a')
+                    ->join('trhsp2d as b', function ($join) {
+                        $join->on('a.no_spm', '=', 'b.no_spm');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->selectRaw("a.*,b.jns_spp")
+                    ->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])
+                    ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
+                    ->get();
+                $data_potongan = json_decode(json_encode($data_potongan), true);
+
+                if (isset($data_potongan)) {
+                    DB::table('trdtrmpot')->insert(array_map(function ($value) use ($no_bukti_terima, $kd_skpd, $no_sp2d) {
+                        return [
+                            'no_bukti' => $no_bukti_terima,
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_skpd' => $kd_skpd,
+                            'kd_rek_trans' => $value['kd_trans'],
+                            'map_pot' => $value['map_pot'],
+                        ];
+                    }, $data_potongan));
+                }
+
+                $data_potongan2 = DB::table('trspmpot as a')
+                    ->join('trhsp2d as b', function ($join) {
+                        $join->on('a.no_spm', '=', 'b.no_spm');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->join('trhspp as c', function ($join) {
+                        $join->on('b.no_spp', '=', 'c.no_spp');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->selectRaw("SUM(a.nilai) as nilai_pot,b.keperluan, b.npwp,b.jns_spp, b.nm_skpd, c.kd_sub_kegiatan, c.nm_sub_kegiatan,c.nmrekan,c.pimpinan,c.alamat")
+                    ->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])
+                    ->groupByRaw("no_sp2d,b.keperluan, b.npwp,b.jns_spp,b.nm_skpd,c.kd_sub_kegiatan, c.nm_sub_kegiatan,c.nmrekan,c.pimpinan,c.alamat")
+                    ->get();;
+
+                $data_potongan2 = json_decode(json_encode($data_potongan2), true);
+
+                if (isset($data_potongan2)) {
+                    DB::table('trhtrmpot')->insert(array_map(function ($value) use ($no_bukti_terima, $tgl_terima, $kd_skpd, $no_sp2d) {
+                        return [
+                            'no_bukti' => $no_bukti_terima,
+                            'tgl_bukti' => $tgl_terima,
+                            'ket' => 'Terima pajak nomor SP2D  ' . $no_sp2d,
+                            'username' => Auth::user()->nama,
+                            'tgl_update' => '',
+                            'kd_skpd' => $kd_skpd,
+                            'nm_skpd' => $value['nm_skpd'],
+                            'no_sp2d' => $no_sp2d,
+                            'nilai' => $value['nilai_pot'],
+                            'npwp' => $value['npwp'],
+                            'jns_spp' => $value['jns_spp'],
+                            'status' => '1',
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                            'nmrekan' => $value['nmrekan'],
+                            'pimpinan' => $value['pimpinan'],
+                            'alamat' => $value['alamat'],
+                        ];
+                    }, $data_potongan2));
+                }
+
+                DB::commit();
+                return response()->json([
+                    'message' => '1'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function batalTerima(Request $request)
+    {
+        $no_terima = $request->no_terima;
+        $tgl_terima = $request->tgl_terima;
+        $no_sp2d = $request->no_sp2d;
+        $nocek = $request->nocek;
+        $kd_skpd = $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trhsp2d')
+                ->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'status_terima' => '0',
+                    'no_terima' => '',
+                    'tgl_terima' => '',
+                ]);
+
+            $bukti_terima = $no_terima + 1;
+            $no_bukti_terima = "$bukti_terima";
+
+            DB::table('trdtrmpot')
+                ->where(['no_bukti' => $no_bukti_terima, 'kd_skpd' => $kd_skpd])
+                ->delete();
+
+            DB::table('trhtrmpot')
+                ->where(['no_bukti' => $no_bukti_terima, 'kd_skpd' => $kd_skpd])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 }

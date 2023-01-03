@@ -57,7 +57,7 @@
                     <table id="rincian_penguji" class="table" style="width: 100%">
                         <thead>
                             <tr>
-                                {{-- <th>No</th> --}}
+                                <th>No</th>
                                 <th>No SP2D</th>
                                 <th>Tanggal SP2D</th>
                                 <th>No SPM</th>
@@ -67,9 +67,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rincian_penguji as $penguji)
+                            {{-- @foreach ($rincian_penguji as $penguji)
                                 <tr>
-                                    {{-- <td>{{ $loop->iteration }}</td> --}}
                                     <td>{{ $penguji->no_sp2d }}</td>
                                     <td>{{ $penguji->tgl_sp2d }}</td>
                                     <td>{{ $penguji->no_spm }}</td>
@@ -81,7 +80,7 @@
                                             class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

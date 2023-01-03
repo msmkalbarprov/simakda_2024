@@ -237,7 +237,7 @@ class Sp2dController extends Controller
             } elseif ($beban == '3') {
                 $no_sp2d = $nomor->nomor . '/TU' . '/' . tahun_anggaran();
             } elseif ($beban == '4') {
-                $no_sp2d = $nomor->nomor . '/GJ/' . tahun_anggaran();
+                $no_sp2d = $nomor->nomor . '/GJ' . '/' . tahun_anggaran();
             } elseif ($beban == '5' || $beban == '6') {
                 $no_sp2d = $nomor->nomor . '/LS' . '/' . tahun_anggaran();
             }
@@ -281,10 +281,13 @@ class Sp2dController extends Controller
 
         $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
         $data_sp2d = cari_sp2d($sp2d, $baris);
+
         $data = [
             'no_sp2d' => $no_sp2d,
             'sp2d' => $sp2d,
             'kop' => $kop,
+            'baris' => $baris,
+            'jumlah' => count($data_sp2d),
             'nilai_sp2d' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp])->first(),
             'bank' => DB::table('trhsp2d')->select('bank', 'no_rek', 'npwp')->where(['no_sp2d' => $no_sp2d])->first(),
             'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd_bud, 'kode' => 'BUD'])->first(),
@@ -300,11 +303,13 @@ class Sp2dController extends Controller
             'jumlah_potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->count(),
             'header' => DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_warna')
-                ->first()
+                ->first(),
         ];
         // return view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
         $view = view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
-        $pdf = PDF::loadHtml($view);
+        $pdf = PDF::loadHtml($view)
+            ->setOption('page-width', 215.9)
+            ->setOption('page-height', 330.2);
         return $pdf->stream('laporan.pdf');
     }
 
