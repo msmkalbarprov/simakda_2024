@@ -28,7 +28,6 @@
                             <b>{!!$pengumuman_by_id->judul!!}</b><br />
                             {!!$pengumuman_by_id->isi!!}
                             @if ($pengumuman_by_id->file!='')
-                            <br />
                             <br /><a href="{{asset('template/assets/download/'.$pengumuman_by_id->file)}}">Download</a>
                             @endif
                         </div>

@@ -33,7 +33,6 @@
                             {!!$pemgumuman->isi!!}
                             @if ($pemgumuman->file!='')
                             <br />
-                            <br />
                             <a href="{{asset('template/assets/download/'.$pengumuman_by_id->file)}}">Download</a>
                             @endif
                         </div>
