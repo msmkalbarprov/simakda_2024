@@ -54,7 +54,7 @@ class HomeController extends Controller
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
                     ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
-                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    ->whereRaw("(sp2d_batal is null OR sp2d_batal <> 1)")
                     ->first()
             ];
         } else {
@@ -104,7 +104,7 @@ class HomeController extends Controller
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
                     ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
-                    ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
+                    ->whereRaw("(sp2d_batal is null OR sp2d_batal <> 1)")
                     ->where('kd_skpd', $kd_skpd)
                     ->first()
             ];
