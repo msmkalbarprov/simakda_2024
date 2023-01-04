@@ -374,7 +374,7 @@ class PencairanSp2dController extends Controller
                 }
             }
 
-            if (($beban == '4') && ($jenis == '1' && $jenis == '10')) {
+            if (($beban == '4') && ($jenis == '1' || $jenis == '10')) {
                 DB::table('trdtransout')->insert([
                     'no_bukti' => $no_trans,
                     'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,
