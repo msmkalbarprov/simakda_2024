@@ -211,14 +211,14 @@ class PencairanSp2dController extends Controller
                 }
             }
 
-            $setor = $no_kas + 1;
+            $setor = $sts + 1;
             $no_setor = "$setor";
 
             $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
             if ($total_data1 > 0) {
-                $sts = $no_kas + 1;
+                $sts = $sts + 1;
                 $no_sts = "$sts";
-                $setor = $sts + 2;
+                $setor = $setor + 2;
                 $no_setor = "$setor";
 
                 $data_potongan = DB::table('trspmpot as a')->leftJoin('trhsp2d as b', function ($join) {
@@ -309,7 +309,7 @@ class PencairanSp2dController extends Controller
                     'tgl_bukti' => $tgl_cair,
                     'kd_skpd' => $opd,
                     'nilai' => $nilai - $total_potongan,
-                    'keterangan' => 'PU BANK atas SP2D' . $no_sp2d,
+                    'keterangan' => 'PU BANK atas SP2D ' . $no_sp2d,
                     'jenis' => '1',
                     'no_sp2d' => $no_sp2d,
                 ]);
