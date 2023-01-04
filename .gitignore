@@ -28,6 +28,7 @@ Homestead.json
 /node_modules
 /public/hot
 /public/storage
+/public/template/assets/download
 /storage/*.key
 /vendor
 .env

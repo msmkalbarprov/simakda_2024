@@ -32,7 +32,8 @@
                             <b>{!!$pemgumuman->judul!!}</b><br />
                             {!!$pemgumuman->isi!!}
                             @if ($pemgumuman->file!='')
-                            <br /><a href="{{$pemgumuman->file}}">Download</a>
+                            <br />
+                            <a href="{{asset('template/assets/download/'.$pemgumuman->file)}}">Download</a>
                             @endif
                         </div>
                     </div>
