@@ -241,62 +241,76 @@ class LaporanBendaharaController extends Controller
             ->first();
 
         // SALDO PAJAK
-        $saldo_pajak_1 = DB::table('trhtrmpot as a')
-            ->select(
-                'b.kd_rek6',
-                'b.nm_rek6',
-                'a.kd_skpd',
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)< $bulan THEN b.nilai ELSE 0 END) AS terima_lalu"),
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)= $bulan THEN b.nilai ELSE 0 END) AS terima_ini"),
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)<= $bulan THEN b.nilai ELSE 0 END) AS terima"),
-                DB::raw("0 AS setor_lalu"),
-                DB::raw("0 AS setor_ini"),
-                DB::raw("0 AS setor")
-            )
-            ->join('trdtrmpot as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->where('a.kd_skpd', $kd_skpd)
-            ->groupBy('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd');
+        // $saldo_pajak_1 = DB::table('trhtrmpot as a')
+        //     ->select('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd', DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)< $bulan THEN b.nilai ELSE 0 END) AS terima_lalu"), DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)= $bulan THEN b.nilai ELSE 0 END) AS terima_ini"), DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)<= $bulan THEN b.nilai ELSE 0 END) AS terima"), DB::raw("0 AS setor_lalu"), DB::raw("0 AS setor_ini"), DB::raw("0 AS setor"))
+        //     ->join('trdtrmpot as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->where('a.kd_skpd', $kd_skpd)
+        //     ->groupBy('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd');
 
-        $saldo_pajak_2 = DB::table('trhstrpot as a')
-            ->select(
-                'b.kd_rek6',
-                'b.nm_rek6',
-                'a.kd_skpd',
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)< $bulan THEN b.nilai ELSE 0 END) AS terima_lalu"),
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)= $bulan THEN b.nilai ELSE 0 END) AS terima_ini"),
-                DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)<= $bulan THEN b.nilai ELSE 0 END) AS terima"),
-                DB::raw("0 AS setor_lalu"),
-                DB::raw("0 AS setor_ini"),
-                DB::raw("0 AS setor")
-            )
-            ->join('trdstrpot as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->leftJoin('trhsp2d as c', function ($join) {
-                $join->on('a.no_bukti', '=', 'c.no_sp2d');
-                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-            })
-            ->where('a.kd_skpd', $kd_skpd)
-            ->groupBy('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd')
-            ->unionAll($saldo_pajak_1);
+        // $saldo_pajak_2 = DB::table('trhstrpot as a')
+        //     ->select('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd', DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)< $bulan THEN b.nilai ELSE 0 END) AS terima_lalu"), DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)= $bulan THEN b.nilai ELSE 0 END) AS terima_ini"), DB::raw("SUM(CASE WHEN MONTH(tgl_bukti)<= $bulan THEN b.nilai ELSE 0 END) AS terima"), DB::raw("0 AS setor_lalu"), DB::raw("0 AS setor_ini"), DB::raw("0 AS setor"))
+        //     ->join('trdstrpot as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->leftJoin('trhsp2d as c', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'c.no_sp2d');
+        //         $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+        //     })
+        //     ->where('a.kd_skpd', $kd_skpd)
+        //     ->groupBy('b.kd_rek6', 'b.nm_rek6', 'a.kd_skpd')
+        //     ->unionAll($saldo_pajak_1);
 
-        $saldo_pajak_3 = DB::table('ms_pot as a')
-            ->select(DB::raw('RTRIM(a.map_pot) as kd_rek6'), 'a.nm_rek6')
-            ->whereIn('a.kd_rek6', ['210106010001', '210105020001', '210105010001', '210105030001', '210109010001']);
+        // $saldo_pajak_3 = DB::table('ms_pot as a')
+        //     ->select(DB::raw('RTRIM(a.map_pot) as kd_rek6'), 'a.nm_rek6')
+        //     ->whereIn('a.kd_rek6', ['210106010001', '210105020001', '210105010001', '210105030001', '210109010001']);
 
-        $saldo_pajak1 = DB::table($saldo_pajak_3, 'a')
-            ->leftJoinSub($saldo_pajak_2, 'b', function ($join) {
-                $join->on('a.kd_rek6', '=', 'b.kd_rek6');
-            })->distinct()->get();
+        // $saldo_pajak1 = DB::table($saldo_pajak_3, 'a')
+        //     ->leftJoinSub($saldo_pajak_2, 'b', function ($join) {
+        //         $join->on('a.kd_rek6', '=', 'b.kd_rek6');
+        //     })->distinct()->get();
 
-        $sisa_pajak             = 0;
-        foreach ($saldo_pajak1 as $pajak1) {
-            $sisa_pajak             += $pajak1->terima_ini + $pajak1->terima_lalu - $pajak1->setor_lalu - $pajak1->setor_ini;
-        }
+        // $sisa_pajak             = 0;
+        // foreach ($saldo_pajak1 as $pajak1) {
+        //     $sisa_pajak             += $pajak1->terima_ini + $pajak1->terima_lalu - $pajak1->setor_lalu - $pajak1->setor_ini;
+        // }
+
+        $sisa_pajak = collect(DB::select("SELECT ISNULL(SUM(terima_lalu),0) as terima_lalu, ISNULL(SUM(terima_ini),0) as terima_ini, ISNULL(SUM(terima),0) as terima,
+            ISNULL(SUM(setor_lalu),0) as setor_lalu, ISNULL(SUM(setor_ini),0) as setor_ini, ISNULL(SUM(setor),0) as setor,
+            ISNULL(SUM(terima)-SUM(setor),0) as sisa
+            FROM
+            (SELECT RTRIM(map_pot) as kd_rek6, nm_rek6 nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210106010001','210105020001 ','210105010001 ','210105030001','210109010001'))a
+            LEFT JOIN
+            (SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
+            SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS terima_lalu,
+            SUM(CASE WHEN MONTH(tgl_bukti)= ? THEN b.nilai ELSE 0 END) AS terima_ini,
+            SUM(CASE WHEN MONTH(tgl_bukti)<= ? THEN b.nilai ELSE 0 END) AS terima,
+            0 as setor_lalu,
+            0 as setor_ini,
+            0 as setor
+            FROM trhtrmpot a
+            INNER JOIN trdtrmpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
+            WHERE a.kd_skpd= ?
+            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd
+
+            UNION ALL
+
+            SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
+            0 as terima_lalu,
+            0 as terima_ini,
+            0 as terima,
+            SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS setor_lalu,
+            SUM(CASE WHEN MONTH(tgl_bukti)= ? THEN b.nilai ELSE 0 END) AS setor_ini,
+            SUM(CASE WHEN MONTH(tgl_bukti)<= ? THEN b.nilai ELSE 0 END) AS setor
+            FROM trhstrpot a
+            INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
+            WHERE a.kd_skpd= ?
+            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd)b ON a.kd_rek6=b.kd_rek6", [$bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd]))->first();
 
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
@@ -318,7 +332,7 @@ class LaporanBendaharaController extends Controller
             'keluar'            => $keluar,
             'saldo_bank'        => $kas_bank,
             'surat_berharga'    => $surat_berharga,
-            'pajak'             => $sisa_pajak,
+            'pajak'             => $sisa_pajak->sisa,
             'enter'             => $enter,
             'daerah'            => $daerah,
             'tanggal_ttd'       => $tanggal_ttd,
