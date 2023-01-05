@@ -86,7 +86,7 @@
         let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor LPJ : ' + no_lpj);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.hapus') }}",
+                url: "{{ route('lpj.skpd_dan_unit.hapus') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {

@@ -102,7 +102,7 @@
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('lpj.skpd_tanpa_unit.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                            <a href="{{ route('lpj.skpd_dan_unit.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
                 </div>
@@ -169,11 +169,6 @@
                         <div class="col-md-10">
                             <select name="pilih_no_lpj" class="form-control select-modal" id="pilih_no_lpj">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                @foreach ($daftar_lpj as $daftar)
-                                    <option value="{{ $daftar->no_lpj }}" data-nilai="{{ $daftar->nilai }}"
-                                        data-kd_skpd="{{ $daftar->kd_skpd }}" data-nm_skpd="{{ $daftar->nm_skpd }}">
-                                        {{ $daftar->no_lpj }} | {{ rupiah($daftar->nilai) }}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>

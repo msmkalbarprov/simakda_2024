@@ -903,7 +903,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('', [LPJController::class, 'indexSkpdDanUnit'])->name('lpj.skpd_dan_unit.index');
                     Route::post('load_data', [LPJController::class, 'loadSkpdDanUnit'])->name('lpj.skpd_dan_unit.load_data');
                     Route::get('tambah', [LPJController::class, 'tambahSkpdDanUnit'])->name('lpj.skpd_dan_unit.tambah');
-                    Route::post('simpan_temp', [LPJController::class, 'simpanTempSkpdDanUnit'])->name('lpj.skpd_dan_unit.simpan_temp');
+                    Route::post('load_lpj', [LPJController::class, 'loadLpjSkpdDanUnit'])->name('lpj.skpd_dan_unit.load_lpj');
                     Route::post('simpan', [LPJController::class, 'simpanSkpdDanUnit'])->name('lpj.skpd_dan_unit.simpan');
                     Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdDanUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_dan_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdDanUnit'])->name('lpj.skpd_dan_unit.update');
@@ -914,20 +914,19 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('', [LPJController::class, 'indexSkpdAtauUnit'])->name('lpj.skpd_atau_unit.index');
                     Route::post('load_data', [LPJController::class, 'loadSkpdAtauUnit'])->name('lpj.skpd_atau_unit.load_data');
                     Route::get('tambah', [LPJController::class, 'tambahSkpdAtauUnit'])->name('lpj.skpd_atau_unit.tambah');
+                    Route::post('detail', [LPJController::class, 'detailSkpdAtauUnit'])->name('lpj.skpd_atau_unit.detail');
                     Route::post('simpan', [LPJController::class, 'simpanSkpdAtauUnit'])->name('lpj.skpd_atau_unit.simpan');
-                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editSkpdAtauUnit'])->where('no_bukti', '(.*)')->name('lpj.skpd_atau_unit.edit');
+                    Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdAtauUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_atau_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdAtauUnit'])->name('lpj.skpd_atau_unit.update');
                     Route::post('hapus', [LPJController::class, 'hapusSkpdAtauUnit'])->name('lpj.skpd_atau_unit.hapus');
                 });
                 // Validasi LPJ UP/GU UNIT
-                Route::group(['prefix' => 'validasi'], function () {
+                Route::group(['prefix' => 'validasi_lpj_unit'], function () {
                     Route::get('', [LPJController::class, 'indexValidasiLpj'])->name('lpj.validasi.index');
                     Route::post('load_data', [LPJController::class, 'loadValidasiLpj'])->name('lpj.validasi.load_data');
-                    Route::get('tambah', [LPJController::class, 'tambahValidasiLpj'])->name('lpj.validasi.tambah');
-                    Route::post('simpan', [LPJController::class, 'simpanValidasiLpj'])->name('lpj.validasi.simpan');
-                    Route::get('edit/{no_bukti?}', [LPJController::class, 'editValidasiLpj'])->where('no_bukti', '(.*)')->name('lpj.validasi.edit');
-                    Route::post('update', [LPJController::class, 'updateValidasiLpj'])->name('lpj.validasi.update');
-                    Route::post('hapus', [LPJController::class, 'hapusValidasiLpj'])->name('lpj.validasi.hapus');
+                    Route::get('edit/{no_lpj?}/{kd_skpd?}', [LPJController::class, 'editValidasiLpj'])->name('lpj.validasi.edit');
+                    Route::post('setuju', [LPJController::class, 'setujuValidasiLpj'])->name('lpj.validasi.setuju');
+                    Route::post('batal_setuju', [LPJController::class, 'batalSetujuValidasiLpj'])->name('lpj.validasi.batal_setuju');
                 });
             });
             // Input LPJ TU
@@ -1001,7 +1000,6 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_per_sub_kegiatan', [BendaharaUmumDaerahController::class, 'cetakKegiatanKartuKendali'])->name('kartu_kendali.cetak_kegiatan');
         Route::get('cetak_per_rekening', [BendaharaUmumDaerahController::class, 'cetakRekeningKartuKendali'])->name('kartu_kendali.cetak_rekening');
     });
-
 
     Route::group(['prefix' => 'laporan_bendahara_umum_daerah'], function () {
         Route::get('laporan_bendahara_umum', [BendaharaUmumDaerahController::class, 'index'])->name('laporan_bendahara_umum.index');
