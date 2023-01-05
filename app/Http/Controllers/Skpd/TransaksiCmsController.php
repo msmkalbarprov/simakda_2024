@@ -49,13 +49,21 @@ class TransaksiCmsController extends Controller
     public function no_urut(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $urut1 = DB::table('trhtransout_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd');
-        $urut2 = DB::table('trhtrmpot_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')->unionAll($urut1);
-        $urut3 = DB::table('tr_panjar_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')->unionAll($urut2);
+        $urut1 = DB::table('trhtransout_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd');
+        $urut2 = DB::table('trhtrmpot_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')
+            ->unionAll($urut1);
+        $urut3 = DB::table('tr_panjar_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')
+            ->unionAll($urut2);
+
         $urut = DB::table(DB::raw("({$urut3->toSql()}) AS sub"))
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut3)
-            ->groupBy('kd_skpd')
             ->first();
         return response()->json($urut->nomor);
     }
