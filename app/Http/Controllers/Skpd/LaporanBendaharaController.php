@@ -230,12 +230,13 @@ class LaporanBendaharaController extends Controller
         $kas_bank = sisa_bank_by_bulan($bulan);
 
         // KAS SALDO BERHARGA
+
         $surat_berharga = DB::table('trhsp2d')
             ->select(DB::raw('isnull(sum(nilai),0) AS nilai'))
             ->where(DB::raw("month(tgl_terima)"), '=', $bulan)
             ->where(['kd_skpd' => $kd_skpd, 'status_terima' => '1'])
             ->where(function ($query) use ($bulan) {
-                $query->where(DB::raw('month(tgl_kas)'), '=', $bulan)->orWhereNull('no_kas')->orWhere('no_kas', '');
+                $query->where(DB::raw('month(tgl_kas)'), '>', $bulan)->orWhereNull('no_kas')->orWhere('no_kas', '');
             })
             ->first();
 
