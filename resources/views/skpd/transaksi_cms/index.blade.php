@@ -6,7 +6,11 @@
             <div class="card">
                 <div class="card-header">
                     List Daftar Transaksi Non Tunai (CMS)
-                    <a href="{{ route('skpd.transaksi_cms.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('skpd.transaksi_cms.create') }}"
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }} {{ $cek['status_ang'] == '0' ? 'disabled' : '' }}"
+                        style="float: right;">Tambah</a>
+                    <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
+                    <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
                 </div>
                 <div class="card-body">
                     <div class="mb-3 row">

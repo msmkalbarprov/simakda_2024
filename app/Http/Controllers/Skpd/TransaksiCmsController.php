@@ -15,7 +15,10 @@ class TransaksiCmsController extends Controller
 {
     public function index()
     {
-        return view('skpd.transaksi_cms.index');
+        $data = [
+            'cek' => selisih_angkas()
+        ];
+        return view('skpd.transaksi_cms.index')->with($data);
     }
 
     public function loadData()
