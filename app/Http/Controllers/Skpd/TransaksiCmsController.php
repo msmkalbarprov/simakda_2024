@@ -15,7 +15,10 @@ class TransaksiCmsController extends Controller
 {
     public function index()
     {
-        return view('skpd.transaksi_cms.index');
+        $data = [
+            'cek' => selisih_angkas()
+        ];
+        return view('skpd.transaksi_cms.index')->with($data);
     }
 
     public function loadData()
@@ -49,13 +52,21 @@ class TransaksiCmsController extends Controller
     public function no_urut(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $urut1 = DB::table('trhtransout_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd');
-        $urut2 = DB::table('trhtrmpot_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')->unionAll($urut1);
-        $urut3 = DB::table('tr_panjar_cmsbank')->where(['kd_skpd' => $kd_skpd])->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')->unionAll($urut2);
+        $urut1 = DB::table('trhtransout_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd');
+        $urut2 = DB::table('trhtrmpot_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')
+            ->unionAll($urut1);
+        $urut3 = DB::table('tr_panjar_cmsbank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')
+            ->unionAll($urut2);
+
         $urut = DB::table(DB::raw("({$urut3->toSql()}) AS sub"))
             ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
             ->mergeBindings($urut3)
-            ->groupBy('kd_skpd')
             ->first();
         return response()->json($urut->nomor);
     }
@@ -73,7 +84,11 @@ class TransaksiCmsController extends Controller
         $kd_skpd = $request->kd_skpd;
         $anggaran = status_anggaran();
 
-        $data = DB::table('trskpd as a')->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.kd_skpd' => $kd_skpd, 'a.status_sub_kegiatan' => '1', 'b.jns_sub_kegiatan' => '5', 'a.jns_ang' => $anggaran])->select('a.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=a.kd_program) as nm_program"), 'a.total')->get();
+        $data = DB::table('trskpd as a')
+            ->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_sub_kegiatan' => '1', 'b.jns_sub_kegiatan' => '5', 'a.jns_ang' => $anggaran])
+            ->select('a.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=a.kd_program) as nm_program"), 'a.total')
+            ->get();
 
         return response()->json($data);
     }

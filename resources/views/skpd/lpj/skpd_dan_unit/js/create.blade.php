@@ -46,6 +46,20 @@
             ]
         });
 
+        $.ajax({
+            url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data.spd));
+                $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data.keluarspp));
+            }
+        });
+
         $('#pilih_no_lpj').on('select2:select', function() {
             let kd_skpd = $(this).find(':selected').data('kd_skpd');
             let nm_skpd = $(this).find(':selected').data('nm_skpd');
@@ -59,6 +73,11 @@
         });
 
         $('#tambah_rincian').on('click', function() {
+            $('#pilih_no_lpj').empty();
+            $('#unit').val(null);
+            $('#nm_unit').val(null);
+            $('#nilai').val(null);
+            load_lpj();
             $('#modal_tambah').modal('show');
         });
 
@@ -68,6 +87,7 @@
             let unit = document.getElementById('unit').value;
             let nm_unit = document.getElementById('nm_unit').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
+            let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let nilai = rupiah(document.getElementById('nilai').value);
             let total = rupiah(document.getElementById('total').value);
 
@@ -81,8 +101,12 @@
                 return;
             }
 
+            let lpj = no_lpj +
+                "/LPJ/UPGU/" + kd_skpd +
+                "/" + tahun_anggaran;
+
             detail.row.add({
-                'no_lpj': no_lpj,
+                'no_lpj': lpj,
                 'kd_skpd': unit,
                 'nm_skpd': nm_unit,
                 'no_lpj_unit': pilih_no_lpj,
@@ -91,16 +115,24 @@
                 }).format(nilai),
                 'aksi': `<a href="javascript:void(0);" onclick="hapus('${pilih_no_lpj}','${unit}','${nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
             }).draw();
+            $('#total').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total + nilai));
+            $('#modal_tambah').modal('hide');
         });
 
         $('#simpan').on('click', function() {
-            let jumlah_spd = rupiah(document.getElementById('jumlah_spd').value);
-            let realisasi_spd_spp = rupiah(document.getElementById('realisasi_spd_spp').value);
             let total = rupiah(document.getElementById('total').value);
-            if (jumlah_spd < realisasi_spd_spp + total) {
-                alert('Total SPD tidak mencukupi...!!!');
+            let spd = rupiah(document.getElementById('jumlah_spd').value);
+            let keluarspp = rupiah(document.getElementById('realisasi_spd_spp').value);
+
+            if (spd < total + keluarspp) {
+                alert("Total SPD tidak mencukupi...!!!");
+                $('#simpan').prop('disabled', true);
                 return;
             }
+
+            let kd_skpd = document.getElementById('kd_skpd').value;
 
             let no_lpj = document.getElementById('no_lpj').value;
             if (no_lpj < 0) {
@@ -109,9 +141,6 @@
             }
             let no_lpj_simpan = document.getElementById('no_lpj_simpan').value;
             let tgl_lpj = document.getElementById('tgl_lpj').value;
-            let tgl_awal = document.getElementById('tgl_awal').value;
-            let tgl_akhir = document.getElementById('tgl_akhir').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
             let nilai_up = rupiah(document.getElementById('nilai_up').value);
@@ -121,12 +150,7 @@
 
             let detail_lpj = detail.rows().data().toArray().map((value) => {
                 let data = {
-                    kd_skpd: value.kd_skpd,
-                    no_bukti: value.no_bukti,
-                    kd_sub_kegiatan: value.kd_sub_kegiatan,
-                    kdrek6: value.kdrek6,
-                    nmrek6: value.nmrek6,
-                    nilai: rupiah(value.nilai),
+                    no_lpj_unit: value.no_lpj_unit
                 };
                 return data;
             });
@@ -159,17 +183,14 @@
             let data = {
                 no_lpj,
                 tgl_lpj,
-                tgl_awal,
-                tgl_akhir,
                 kd_skpd,
                 keterangan,
-                total,
                 detail_lpj
             };
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.simpan') }}",
+                url: "{{ route('lpj.skpd_dan_unit.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -179,7 +200,11 @@
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
-                            "{{ route('lpj.skpd_tanpa_unit.index') }}";
+                            "{{ route('lpj.skpd_dan_unit.index') }}";
+                    } else if (response.message == '2') {
+                        alert('Nomor Telah Dipakai!');
+                        $('#simpan').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan').prop('disabled', false);
@@ -198,24 +223,33 @@
             }
         });
 
-        function load_nomor() {
-            // $.ajax({
-            //     url: "{{ route('sppls.cari_rekening') }}",
-            //     type: "POST",
-            //     dataType: 'json',
-            //     data: {
-            //         kd_sub_kegiatan: kd_sub_kegiatan,
-            //     },
-            //     success: function(data) {
-            //         $('#kode_rekening').empty();
-            //         $('#kode_rekening').append(`<option value="0">Silahkan Pilih</option>`);
-            //         $.each(data, function(index, data) {
-            //             $('#kode_rekening').append(
-            //                 `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
-            //             );
-            //         })
-            //     }
-            // })
+        function load_lpj() {
+            let detail_lpj = detail.rows().data().toArray().map((value) => {
+                let data = {
+                    no_lpj_unit: value.no_lpj_unit,
+                };
+                return data;
+            });
+
+            $.ajax({
+                url: "{{ route('lpj.skpd_dan_unit.load_lpj') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    no_lpj_unit: detail_lpj.length == 0 ? '0' : detail_lpj
+                },
+                success: function(data) {
+                    $('#pilih_no_lpj').empty();
+                    $('#pilih_no_lpj').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pilih_no_lpj').append(
+                            `<option value="${data.no_lpj}" data-kd_skpd="${data.kd_skpd}" data-nm_skpd="${data.nm_skpd}" data-nilai="${data.nilai}">${data.no_lpj} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.nilai)}</option>`
+                        );
+                    })
+                }
+            })
         }
     });
 
@@ -304,15 +338,14 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_bukti, kd_rek6, nilai) {
-        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai :  ' + nilai +
-            ' ?');
+    function hapus(no_lpj_unit, unit, nilai) {
+        let hapus = confirm('Yakin Ingin Menghapus Data, No LPJ Unit : ' + no_lpj_unit + ' ?');
         let total = rupiah(document.getElementById('total').value);
         let tabel = $('#detail_lpj').DataTable();
 
         if (hapus == true) {
             tabel.rows(function(idx, data, node) {
-                return data.no_bukti == no_bukti && data.kdrek6 == kd_rek6
+                return data.no_lpj_unit == no_lpj_unit && data.kd_skpd == unit
             }).remove().draw();
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2

@@ -11,20 +11,23 @@
             theme: 'bootstrap-5'
         });
 
-        $('#skpd_atau_unit').DataTable({
+        $('#validasi_lpj').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('lpj.skpd_atau_unit.load_data') }}",
+                "url": "{{ route('lpj.validasi.load_data') }}",
                 "type": "POST",
             },
             createdRow: function(row, data, index) {
-                if (data.status == "1" || data.status == "2") {
+                if (data.status == "1") {
                     $(row).css("background-color", "#e4b4bb");
                     $(row).css("color", "black");
+                } else if (data.status == "2") {
+                    $(row).css("background-color", "#4caf50");
+                    $(row).css("color", "white");
                 }
             },
             columns: [{

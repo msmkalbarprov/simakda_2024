@@ -11,25 +11,6 @@
             theme: 'bootstrap-5'
         });
 
-        $.ajax({
-            url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                tgl_awal: document.getElementById('tgl_awal').value,
-                tgl_akhir: document.getElementById('tgl_akhir').value,
-                kd_skpd: document.getElementById('kd_skpd').value
-            },
-            success: function(data) {
-                $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(data.spd));
-                $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(data.keluarspp));
-            }
-        });
-
         let detail = $('#detail_lpj').DataTable({
             responsive: true,
             ordering: false,
@@ -75,7 +56,7 @@
             }
 
             $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.detail') }}",
+                url: "{{ route('lpj.skpd_atau_unit.detail') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -105,39 +86,19 @@
                 }
             });
 
-            $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    tgl_awal: tgl_awal,
-                    tgl_akhir: tgl_akhir,
-                    kd_skpd: kd_skpd
-                },
-                success: function(data) {
-                    $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(data.spd));
-                    $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(data.keluarspp));
-                }
-            });
+            $('#tampilkan').prop('disabled', true);
+            $('#kosongkan').prop('disabled', false);
         });
 
         $('#kosongkan').on('click', function() {
             $('#total').val(null);
             detail.clear().draw();
+            $('#tampilkan').prop('disabled', false);
+            $('#kosongkan').prop('disabled', true);
         });
 
         $('#simpan').on('click', function() {
-            let jumlah_spd = rupiah(document.getElementById('jumlah_spd').value);
-            let realisasi_spd_spp = rupiah(document.getElementById('realisasi_spd_spp').value);
             let total = rupiah(document.getElementById('total').value);
-            if (jumlah_spd < realisasi_spd_spp + total) {
-                alert('Total SPD tidak mencukupi...!!!');
-                return;
-            }
 
             let no_lpj = document.getElementById('no_lpj').value;
             if (no_lpj < 0) {
@@ -151,9 +112,6 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
-            let nilai_up = rupiah(document.getElementById('nilai_up').value);
-            let nilai_min_gu = rupiah(document.getElementById('nilai_min_gu').value);
-            let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let tahun_input = tgl_lpj.substr(0, 4);
 
             let detail_lpj = detail.rows().data().toArray().map((value) => {
@@ -207,7 +165,7 @@
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('lpj.skpd_tanpa_unit.update') }}",
+                url: "{{ route('lpj.skpd_atau_unit.update') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -217,9 +175,9 @@
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
-                            "{{ route('lpj.skpd_tanpa_unit.index') }}";
+                            "{{ route('lpj.skpd_atau_unit.index') }}";
                     } else if (response.message == '2') {
-                        alert('Nomor telah dipakai!');
+                        alert('Nomor Telah Dipakai!');
                         $('#simpan').prop('disabled', false);
                         return;
                     } else {

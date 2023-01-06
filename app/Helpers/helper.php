@@ -2055,7 +2055,11 @@ function daerah($kd_skpd)
 function status_anggaran()
 {
     $kd_skpd = Auth::user()->kd_skpd;
-    $data = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+    $data = DB::table('trhrka')
+        ->select('jns_ang')
+        ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
+        ->orderByDesc('tgl_dpa')
+        ->first();
     return $data->jns_ang;
 }
 
@@ -3028,4 +3032,16 @@ function get_skpd($kd_skpd)
     }
 
     return $data;
+}
+
+function tambah_tanggal_unit()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = DB::table('trhlpj_unit')
+        ->selectRaw("DATEADD(DAY,1,MAX(tgl_akhir)) as tanggal_awal")
+        ->where(['jenis' => '1', 'kd_skpd' => $kd_skpd])
+        ->first();
+
+    return $data->tanggal_awal;
 }

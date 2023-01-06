@@ -5,6 +5,17 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        let status_ang = document.getElementById('status_ang').value;
+        let selisih_angkas = document.getElementById('selisih_angkas').value;
+        if (status_ang == 0 || status_ang == '0') {
+            alert('DPA Belum Disahkan!');
+        }
+        if (selisih_angkas > 0) {
+            alert('Masih ada ' + selisih_angkas +
+                ' Selisih antara Anggaran dan Anggaran Kas, Anda tidak bisa melanjutkan transaksi');
+        }
+
         $('#transaksi_cms').DataTable({
             responsive: true,
             ordering: false,
