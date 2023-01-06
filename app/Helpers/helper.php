@@ -2059,6 +2059,18 @@ function status_anggaran()
     return $data->jns_ang;
 }
 
+function status_anggaran_dashboard()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+    $data = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+    if($data==''){
+        return 'S';
+    }else{
+        return $data->jns_ang;
+    }
+    
+}
+
 function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti, $no_sp2d)
 {
     if ($beban == '1') {

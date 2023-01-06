@@ -67,6 +67,7 @@
                                     id="logo_pemda_warna_old" name="logo_pemda_warna_old">
                             </div>
                         </div>
+                        
                         <!-- Logo hitam Putih -->
                         <div class="mb-3 row">
                             <label for="logo_pemda_hp" class="col-md-2 col-form-label">Logo Pemda <small>(Hitam
@@ -80,6 +81,7 @@
                                     id="logo_pemda_hp_old" name="logo_pemda_hp_old">
                             </div>
                         </div>
+                        
                         {{-- Persen Tunai dan Persen KKPD --}}
                         <div class="mb-3 row">
                             <label for="persen_tunai" class="col-md-2 col-form-label">Persen Tunai</label>
@@ -93,6 +95,14 @@
                                 <input type="number" min="1" max="100"
                                     value="{{ $data_setting->persen_kkpd }}" class="form-control" name="persen_kkpd"
                                     required>
+                            </div>
+                        </div>
+                        <!-- backup -->
+                        <div class="mb-3 row">
+                            <label for="last_backup" class="col-md-2 col-form-label">Backup database terakhir</label>
+                            <div class="col-md-10">
+                                <input class="form-control" placeholder="Isi dengan nama pemerintah" type="text"
+                                    id="last_backup" name="last_backup" required value="{{ $data_setting->last_db_backup }}" readonly>
                             </div>
                         </div>
                         <!-- SIMPAN -->

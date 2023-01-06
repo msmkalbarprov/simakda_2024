@@ -15,26 +15,34 @@ class HomeController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        // dd(status_anggaran_dashboard());
+        if(status_anggaran_dashboard() == 0){
+            $status_anggaran='S';
+        }else{
+            $status_anggaran=status_anggaran_dashboard();
+        }
+        // dd($status_anggaran);
         if (Auth::user()->is_admin == 1) {
             $data = [
+
                 'data_pendapatan' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,1)'), 4)
                     ->first(),
                 'data_belanja' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as belanja"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,1)'), 5)
                     ->first(),
                 'data_pem_terima' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0)as pem_terima"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,2)'), 61)
                     ->first(),
                 'data_pem_keluar' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pem_keluar"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
                     ->first(),
                 'data_penagihan' => DB::table('trhtagih')
@@ -59,27 +67,28 @@ class HomeController extends Controller
             ];
         } else {
             $data = [
+
                 'data_pendapatan' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,1)'), 4)
                     ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_belanja' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as belanja"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,1)'), 5)
                     ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_pem_terima' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0)as pem_terima"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,2)'), 61)
                     ->where('kd_skpd', $kd_skpd)
                     ->first(),
                 'data_pem_keluar' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pem_keluar"))
-                    ->where(['jns_ang' => 'S'])
+                    ->where(['jns_ang' => $status_anggaran])
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
                     ->where('kd_skpd', $kd_skpd)
                     ->first(),

@@ -154,20 +154,24 @@
 
                     <hr class="my-4">
 
-                    <div class="text-muted">
+                    {{-- <div class="text-muted"> --}}
                         
                         <div class="table-responsive mt-4">
                             <div class="mt-4">
-                                <p class="mb-1">KODE SKPD :</p>
+                                <p class="mb-1">Kode SKPD :</p>
                                 <h5 class="font-size-16">{{ Auth::user()->kd_skpd }}</h5>
                             </div>
                             <div class="mt-4">
-                                <p class="mb-1">NAMA SKPD :</p>
+                                <p class="mb-1">Nama SKPD :</p>
                                 <h5 class="font-size-16">{{ cari_nama(Auth::user()->kd_skpd,'ms_skpd','kd_skpd','nm_skpd') }}</h5>
+                            </div>
+                            <div class="mt-4">
+                                <p class="mb-1">Jenis Anggaran :</p>
+                                <h5 class="font-size-16">{{cari_nama(status_anggaran_dashboard(), 'tb_status_anggaran', 'kode', 'nama')}}</h5>
                             </div>
                             
                         </div>
-                    </div>
+                    {{-- </div> --}}
                 </div>
             </div>
 
