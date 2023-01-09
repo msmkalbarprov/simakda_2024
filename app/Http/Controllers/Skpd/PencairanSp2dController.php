@@ -355,52 +355,84 @@ class PencairanSp2dController extends Controller
                 ]);
             }
 
-            $data_spp = DB::table('trdspp as a')->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->leftJoin('trhspm as c', 'b.no_spp', '=', 'c.no_spp')->leftJoin('trhsp2d as d', 'c.no_spm', '=', 'd.no_spm')->where(['d.no_sp2d' => $no_sp2d])->select('a.no_spp', 'a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nilai', 'b.bulan', 'c.no_spm', 'd.no_sp2d', 'b.sts_tagih', 'a.sumber')->first();
+            $data_spp = DB::table('trdspp as a')->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->leftJoin('trhspm as c', 'b.no_spp', '=', 'c.no_spp')->leftJoin('trhsp2d as d', 'c.no_spm', '=', 'd.no_spm')->where(['d.no_sp2d' => $no_sp2d])->select('a.no_spp', 'a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nilai', 'b.bulan', 'c.no_spm', 'd.no_sp2d', 'b.sts_tagih', 'a.sumber')->get();
 
-            if (isset($data_spp)) {
-                $giat = DB::table('trskpd')->select('nm_sub_kegiatan')->where(['kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->first();
-                $nm_giat = $giat->nm_sub_kegiatan;
-            } else {
-                $nm_giat = '';
-            }
-            if ($beban == '1') {
-                $nmrek6 = "Uang Persediaan";
-            } else {
-                if (isset($data_spp)) {
-                    $rek6 = DB::table('ms_rek6')->select('nm_rek6')->where(['kd_rek6' => $data_spp->kd_rek6])->first();
-                    $nmrek6 = $rek6->nm_rek6;
-                } else {
-                    $nmrek6 = '';
-                }
-            }
-
+            // if (isset($data_spp)) {
+            //     $giat = DB::table('trskpd')->select('nm_sub_kegiatan')->where(['kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->first();
+            //     $nm_giat = $giat->nm_sub_kegiatan;
+            // } else {
+            //     $nm_giat = '';
+            // }
+            // if ($beban == '1') {
+            //     $nmrek6 = "Uang Persediaan";
+            // } else {
+            //     if (isset($data_spp)) {
+            //         $rek6 = DB::table('ms_rek6')->select('nm_rek6')->where(['kd_rek6' => $data_spp->kd_rek6])->first();
+            //         $nmrek6 = $rek6->nm_rek6;
+            //     } else {
+            //         $nmrek6 = '';
+            //     }
+            // }
+            $data_spp = json_decode(json_encode($data_spp), true);
             if (($beban == '4') && ($jenis == '1' || $jenis == '10')) {
-                DB::table('trdtransout')->insert([
-                    'no_bukti' => $no_trans,
-                    'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,
-                    'nm_sub_kegiatan' => $nm_giat,
-                    'kd_rek6' => $data_spp->kd_rek6,
-                    'nm_rek6' => $nmrek6,
-                    'nilai' => $data_spp->nilai,
-                    'no_sp2d' => $no_sp2d,
-                    'kd_skpd' => $data_spp->kd_skpd,
-                    'sumber' => $data_spp->sumber,
-                ]);
+                if (isset($data_spp)) {
+                    DB::table('trdtransout')->insert(array_map(function ($value) use ($no_trans, $no_sp2d, $beban) {
+                        return [
+                            'no_bukti' => $no_trans,
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'nm_sub_kegiatan' => empty($value['kd_sub_kegiatan']) ? '' : nama_kegiatan_cair($value['kd_sub_kegiatan']),
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => empty($value['kd_rek6']) ? '' : nama_rekening_cair($beban, $value['kd_rek6']),
+                            'nilai' => $value['nilai'],
+                            'no_sp2d' => $no_sp2d,
+                            'kd_skpd' => $value['kd_skpd'],
+                            'sumber' => $value['sumber'],
+                        ];
+                    }, $data_spp));
+                }
+
+                // DB::table('trdtransout')->insert([
+                //     'no_bukti' => $no_trans,
+                //     'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,
+                //     'nm_sub_kegiatan' => $nm_giat,
+                //     'kd_rek6' => $data_spp->kd_rek6,
+                //     'nm_rek6' => $nmrek6,
+                //     'nilai' => $data_spp->nilai,
+                //     'no_sp2d' => $no_sp2d,
+                //     'kd_skpd' => $data_spp->kd_skpd,
+                //     'sumber' => $data_spp->sumber,
+                // ]);
             }
 
             // berhasil
             if (($beban == '6' && isset($kontrak)) || $beban == '5') {
-                DB::table('trdtransout')->insert([
-                    'no_bukti' => $no_kas,
-                    'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,
-                    'nm_sub_kegiatan' => $nm_giat,
-                    'kd_rek6' => $data_spp->kd_rek6,
-                    'nm_rek6' => $nmrek6,
-                    'nilai' => $data_spp->nilai,
-                    'no_sp2d' => $no_sp2d,
-                    'kd_skpd' => $data_spp->kd_skpd,
-                    'sumber' => $data_spp->sumber,
-                ]);
+                if (isset($data_spp)) {
+                    DB::table('trdtransout')->insert(array_map(function ($value) use ($no_kas, $no_sp2d, $beban) {
+                        return [
+                            'no_bukti' => $no_kas,
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'nm_sub_kegiatan' => empty($value['kd_sub_kegiatan']) ? '' : nama_kegiatan_cair($value['kd_sub_kegiatan']),
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => empty($value['kd_rek6']) ? '' : nama_rekening_cair($beban, $value['kd_rek6']),
+                            'nilai' => $value['nilai'],
+                            'no_sp2d' => $no_sp2d,
+                            'kd_skpd' => $value['kd_skpd'],
+                            'sumber' => $value['sumber'],
+                        ];
+                    }, $data_spp));
+                }
+
+                // DB::table('trdtransout')->insert([
+                //     'no_bukti' => $no_kas,
+                //     'kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan,
+                //     'nm_sub_kegiatan' => $nm_giat,
+                //     'kd_rek6' => $data_spp->kd_rek6,
+                //     'nm_rek6' => $nmrek6,
+                //     'nilai' => $data_spp->nilai,
+                //     'no_sp2d' => $no_sp2d,
+                //     'kd_skpd' => $data_spp->kd_skpd,
+                //     'sumber' => $data_spp->sumber,
+                // ]);
             }
 
             // berhasil

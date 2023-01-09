@@ -2067,12 +2067,11 @@ function status_anggaran_dashboard()
 {
     $kd_skpd = Auth::user()->kd_skpd;
     $data = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
-    if($data==''){
+    if ($data == '') {
         return 'S';
-    }else{
+    } else {
         return $data->jns_ang;
     }
-    
 }
 
 function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti, $no_sp2d)
@@ -3044,4 +3043,29 @@ function tambah_tanggal_unit()
         ->first();
 
     return $data->tanggal_awal;
+}
+
+
+function nama_kegiatan_cair($kd_sub_kegiatan)
+{
+    $data = DB::table('trskpd')
+        ->select('nm_sub_kegiatan')
+        ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+        ->first();
+
+    return $data->nm_sub_kegiatan;
+}
+
+function nama_rekening_cair($beban, $kd_rek6)
+{
+    if ($beban == '1') {
+        return 'Uang Persediaan';
+    } else {
+        $data = DB::table('ms_rek6')
+            ->select('nm_rek6')
+            ->where(['kd_rek6' => $kd_rek6])
+            ->first();
+
+        return $data->nm_rek6;
+    }
 }

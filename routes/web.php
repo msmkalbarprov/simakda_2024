@@ -676,13 +676,20 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // Cetak RAK
             Route::group(['prefix' => 'cetak_rak'], function () {
                 Route::post('cari_ttd_skpd', [RakController::class, 'cariTtdSkpd'])->name('skpd.cetak_rak.ttdskpd');
+                // PER SUB KEGIATAN
                 Route::group(['prefix' => 'per_sub_kegiatan'], function () {
                     Route::get('cetak_anggaran_per_sub_kegiatan', [RakController::class, 'cetakPerSubKegiatanIndex'])->name('skpd.cetak_rak.per_sub_kegiatan');
                     Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerKegiatan'])->name('skpd.cetak_rak.cetak');
                 });
+                // PER SUB RINCIAN OBJEK
                 Route::group(['prefix' => 'per_sub_rincian_objek'], function () {
                     Route::get('cetak_anggaran_per_sub_rincian_objek', [RakController::class, 'rincianObjekIndex'])->name('skpd.cetak_rak.per_sub_rincian_objek');
                     Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerObjek'])->name('skpd.cetak_rak.cetak_objek');
+                });
+                // PER SKPD
+                Route::group(['prefix' => 'per_skpd'], function () {
+                    Route::get('per_skpd', [RakController::class, 'rincianPerSkpd'])->name('skpd.cetak_rak.per_skpd');
+                    Route::get('per_skpd_preview', [RakController::class, 'cetakPerSkpd'])->name('skpd.cetak_rak.per_skpd_preview');
                 });
             });
             // CEK RAK
@@ -795,9 +802,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cari_pakpa', [LaporanBendaharaPenerimaanController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara_penerimaan.pakpa');
             Route::post('cari_subkegiatan', [LaporanBendaharaPenerimaanController::class, 'cariSubkegiatan'])->name('skpd.laporan_bendahara_penerimaan.subkegiatan');
             Route::post('cari_akunbelanja', [LaporanBendaharaPenerimaanController::class, 'cariAkunBelanja'])->name('skpd.laporan_bendahara_penerimaan.akunbelanja');
-            
+
             // // Cetak Buku penerimaan Pengeluaran
-            Route::get('cetak_buku_penerimaan_pengeluaran', [LaporanBendaharaPenerimaanController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
+            // Route::get('cetak_buku_penerimaan_pengeluaran', [LaporanBendaharaPenerimaanController::class, 'cetakbku'])->name('skpd.laporan_bendahara.cetak_bku');
             // // Cetak SPJ Fungsional
             // Route::get('cetak_spj_fungsional', [SpjFungsionalController::class, 'cetakSpjFungsional'])->name('skpd.laporan_bendahara.cetak_spj_fungsional');
             // // BP Kas Bank
@@ -813,7 +820,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // Route::post('cari_jenis', [BpPajakController::class, 'cariJenis'])->name('cetak_bppajak.cari_jenis');
             // Route::post('cari_pasal', [BpPajakController::class, 'cariPasal'])->name('cetak_bppajak.cari_pasal');
             // BP Panjar
-           
+
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
@@ -927,6 +934,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdTanpaUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_tanpa_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.update');
                     Route::post('hapus', [LPJController::class, 'hapusSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.hapus');
+
+                    // CETAKAN
+                    Route::post('sub_kegiatan', [LPJController::class, 'subKegiatanSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.sub_kegiatan');
+                    Route::get('cetak_sptb', [LPJController::class, 'sptbSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.cetak_sptb');
                 });
                 // LPJ UP/GU (SKPD + UNIT)
                 Route::group(['prefix' => 'skpd_dan_unit'], function () {
