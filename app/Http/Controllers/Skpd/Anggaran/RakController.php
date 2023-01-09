@@ -63,7 +63,11 @@ class RakController extends Controller
         $kd_skpd = $request->kd_skpd;
         $jns_ang = $request->jns_ang;
 
-        $data = DB::table('trskpd as a')->select('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', DB::raw("(SELECT sum(nilai) FROM trdrka WHERE kd_sub_kegiatan=a.kd_sub_kegiatan) as total"))->where(['a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jns_ang])->orderBy('a.kd_sub_kegiatan')->get();
+        $data = DB::table('trskpd as a')
+            ->select('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', DB::raw("(SELECT sum(nilai) FROM trdrka WHERE kd_sub_kegiatan=a.kd_sub_kegiatan and a.kd_skpd=kd_skpd and jns_ang=a.jns_ang) as total"))
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jns_ang])
+            ->orderBy('a.kd_sub_kegiatan')
+            ->get();
         return response()->json($data);
     }
 
@@ -3218,7 +3222,6 @@ class RakController extends Controller
         $kd_skpd    = $request->kd_skpd;
         $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->orderBy('nip')->orderBy('nama')->get();
         return response()->json($data);
-
     }
 
     // CETAK RAK PER SUB KEGIATAN
@@ -3413,12 +3416,11 @@ class RakController extends Controller
             $data = [
                 'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
             ];
-        }else{
+        } else {
             $data = [
                 'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get(),
             ];
         }
-        
 
         return view('skpd.cek_rak.cetak')->with($data);
     }
@@ -3429,16 +3431,16 @@ class RakController extends Controller
         $jenis_anggaran = $request->jenis_anggaran;
         $jenis_rak      = $request->jenis_rak;
         $jenis_print    = $request->jenis_print;
-        
+
         $jenis = "nilai_" . $jenis_rak;
 
-        $cek_rak = DB::select("SELECT [a].[giat] as [kd_kegiatan], [a].[nama] as [nm_kegiatan], [a].[kd_rek6], [a].[nm_rek6], 
+        $cek_rak = DB::select("SELECT [a].[giat] as [kd_kegiatan], [a].[nama] as [nm_kegiatan], [a].[kd_rek6], [a].[nm_rek6],
                             [a].[nilai_ang], isnull(b.nilai_kas,0) as nilai_kas, CASE WHEN isnull(b.nilai_kas,0)=a.nilai_ang THEN 'SAMA' ELSE 'SELISIH' END AS hasil from (
                                     select [kd_sub_kegiatan] as [giat], [nm_sub_kegiatan] as [nama], [kd_skpd], [kd_rek6], [nm_rek6], sum(nilai) as nilai_ang from [trdrka] where [jns_ang] = ? and [kd_skpd] = ? group by [kd_skpd], [kd_sub_kegiatan], [nm_sub_kegiatan], [kd_rek6], [nm_rek6]
-                                ) as a 
-                                
+                                ) as a
+
                                     left join (select [kd_sub_kegiatan] as [giat], [kd_skpd], [kd_rek6], SUM($jenis) as nilai_kas from [trdskpd_ro] where [kd_skpd] = ? group by [kd_skpd], [kd_sub_kegiatan], [kd_rek6]
-                                ) as [b] on [a].[giat] = [b].[giat] and [a].[kd_skpd] = [b].[kd_skpd] and [a].[kd_rek6] = [b].[kd_rek6] where ISNULL(b.nilai_kas,0) <> a.nilai_ang order by [hasil] asc, [a].[giat] asc",[$jenis_anggaran, $kd_skpd,$kd_skpd]);
+                                ) as [b] on [a].[giat] = [b].[giat] and [a].[kd_skpd] = [b].[kd_skpd] and [a].[kd_rek6] = [b].[kd_rek6] where ISNULL(b.nilai_kas,0) <> a.nilai_ang order by [hasil] asc, [a].[giat] asc", [$jenis_anggaran, $kd_skpd, $kd_skpd]);
 
         $data = [
             'nama_angkas' => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
@@ -3447,6 +3449,142 @@ class RakController extends Controller
         ];
 
         $view = view('skpd.cek_rak.cetakan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'excel') {
+            header("Cache-Control:no-cache,no-store,must-revalidate");
+            header("Content-Type:application/vnd.ms-excel");
+            header("Content-Disposition:attachment;filename=laporan.xls");
+            return $view;
+        } else {
+            return $view;
+        }
+    }
+
+    // CETAK RAK PER SKPD
+    public function rincianPerSkpd()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'skpd' => get_skpd($kd_skpd),
+            'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
+        ];
+
+        return view('skpd.cetak_rak.per_skpd.cetak')->with($data);
+    }
+
+    public function cetakPerSkpd(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $jenis_anggaran = $request->jenis_anggaran;
+        $jenis_rak = $request->jenis_rak;
+        $ttd1 = $request->ttd1;
+        $tanggal_ttd = $request->tanggal_ttd;
+        $jenis_print = $request->jenis_print;
+        $hidden = $request->hidden;
+
+        $jenis = "nilai_" . $jenis_rak;
+
+        $angkas3 = DB::table('trdskpd_ro as a')
+            ->selectRaw("left(a.kd_sub_kegiatan,12) as kd_sub_kegiatan,
+            case when bulan=1 then sum($jenis) else 0 end as jan,
+            case when bulan=2 then sum($jenis) else 0 end as feb,
+            case when bulan=3 then sum($jenis) else 0 end as mar,
+            case when bulan=4 then sum($jenis) else 0 end as apr,
+            case when bulan=5 then sum($jenis) else 0 end as mei,
+            case when bulan=6 then sum($jenis) else 0 end as jun,
+            case when bulan=7 then sum($jenis) else 0 end as jul,
+            case when bulan=8 then sum($jenis) else 0 end as ags,
+            case when bulan=9 then sum($jenis) else 0 end as sep,
+            case when bulan=10 then sum($jenis) else 0 end as okt,
+            case when bulan=11 then sum($jenis) else 0 end as nov,
+            case when bulan=12 then sum($jenis) else 0 end as des")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->whereRaw("left(a.kd_sub_kegiatan,12) NOT IN ('1.01.00.0.00')")
+            ->groupBy(DB::raw("LEFT(kd_sub_kegiatan,12)"), 'a.bulan');
+
+        $angkas4 = DB::table(DB::raw("({$angkas3->toSql()}) as sub"))
+            ->select('kd_sub_kegiatan as giat', DB::raw("(SELECT DISTINCT nm_kegiatan FROM ms_kegiatan WHERE left(kd_kegiatan,12)=left(sub.kd_sub_kegiatan,12)) as nm_giat"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
+            ->selectRaw("(SELECT sum(nilai) from trdrka where left(kd_sub_kegiatan,12)=left(sub.kd_sub_kegiatan,12) and kd_skpd=? and jns_ang=?) as ang", [$kd_skpd, $jenis_anggaran])
+            ->mergeBindings($angkas3)
+            ->groupBy('kd_sub_kegiatan');
+
+        $angkas = DB::table(DB::raw("({$angkas4->toSql()}) as sub"))
+            ->mergeBindings($angkas4)
+            ->orderBy('giat')
+            ->get();
+
+        $angkas_rek1 = DB::table('trdskpd_ro as a')
+            ->selectRaw("left(a.kd_rek6,2) as kode,
+            case when bulan=1 then sum($jenis) else 0 end as jan,
+            case when bulan=2 then sum($jenis) else 0 end as feb,
+            case when bulan=3 then sum($jenis) else 0 end as mar,
+            case when bulan=4 then sum($jenis) else 0 end as apr,
+            case when bulan=5 then sum($jenis) else 0 end as mei,
+            case when bulan=6 then sum($jenis) else 0 end as jun,
+            case when bulan=7 then sum($jenis) else 0 end as jul,
+            case when bulan=8 then sum($jenis) else 0 end as ags,
+            case when bulan=9 then sum($jenis) else 0 end as sep,
+            case when bulan=10 then sum($jenis) else 0 end as okt,
+            case when bulan=11 then sum($jenis) else 0 end as nov,
+            case when bulan=12 then sum($jenis) else 0 end as des")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->whereRaw("left(a.kd_rek6,1)='4'")
+            ->groupByRaw('left(a.kd_rek6,2), a.bulan');
+
+        $angkas_rek2 = DB::table(DB::raw("({$angkas_rek1->toSql()}) as sub"))
+            ->select('kode as rek', DB::raw("(SELECT nm_rek2 FROM ms_rek2 WHERE kd_rek2=sub.kode) as nama_rek"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
+            ->selectRaw("(SELECT sum(nilai) from trdrka where left(kd_rek6,2)=sub.kode and kd_skpd=? and jns_ang=?) as ang", [$kd_skpd, $jenis_anggaran])
+            ->mergeBindings($angkas_rek1)
+            ->groupBy('kode');
+
+        $angkas_rek3 = DB::table('trdskpd_ro as a')
+            ->selectRaw("left(a.kd_rek6,4) as kode,
+            case when bulan=1 then sum($jenis) else 0 end as jan,
+            case when bulan=2 then sum($jenis) else 0 end as feb,
+            case when bulan=3 then sum($jenis) else 0 end as mar,
+            case when bulan=4 then sum($jenis) else 0 end as apr,
+            case when bulan=5 then sum($jenis) else 0 end as mei,
+            case when bulan=6 then sum($jenis) else 0 end as jun,
+            case when bulan=7 then sum($jenis) else 0 end as jul,
+            case when bulan=8 then sum($jenis) else 0 end as ags,
+            case when bulan=9 then sum($jenis) else 0 end as sep,
+            case when bulan=10 then sum($jenis) else 0 end as okt,
+            case when bulan=11 then sum($jenis) else 0 end as nov,
+            case when bulan=12 then sum($jenis) else 0 end as des")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->whereRaw("left(a.kd_rek6,1)='4'")
+            ->groupByRaw('left(a.kd_rek6,4), a.bulan');
+
+        $angkas_rek4 = DB::table(DB::raw("({$angkas_rek3->toSql()}) as sub"))
+            ->select('kode as rek', DB::raw("(SELECT nm_rek3 FROM ms_rek3 WHERE kd_rek3=sub.kode) as nama_rek"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
+            ->selectRaw("(SELECT sum(nilai) from trdrka where left(kd_rek6,4)=sub.kode and kd_skpd=? and jns_ang=?) as ang", [$kd_skpd, $jenis_anggaran])
+            ->mergeBindings($angkas_rek3)
+            ->groupBy('kode')
+            ->unionAll($angkas_rek2);
+
+        $angkas_rek = DB::table(DB::raw("({$angkas_rek4->toSql()}) as sub"))
+            ->mergeBindings($angkas_rek4)
+            ->orderBy('rek')
+            ->get();
+
+        $data = [
+            'nama_angkas'   => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
+            'nama_skpd'     => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'data_giat'     => $angkas,
+            'data_rek'      => $angkas_rek,
+            'ttd1'          => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'tanggal'       => $tanggal_ttd,
+            'hidden'        => $hidden,
+            'header'        => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first()
+        ];
+
+        $view = view('skpd.cetak_rak.per_skpd.cetakan')->with($data);
 
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
