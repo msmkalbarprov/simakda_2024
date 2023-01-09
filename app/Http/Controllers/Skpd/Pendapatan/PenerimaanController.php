@@ -626,7 +626,11 @@ class PenerimaanController extends Controller
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->where(['kd_skpd' => $kd_skpd])
                 ->orderByRaw("cast(kd_pengirim as int)")
-                ->get()
+                ->get(),
+            'no_urut' => DB::table('trhkasin_pkd')
+                ->selectRaw("count(no_sts)+1 as nomor")
+                ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
+                ->first()
         ];
 
         return view('skpd.penerimaan_lain_ppkd.create')->with($data);
@@ -639,12 +643,12 @@ class PenerimaanController extends Controller
 
         DB::beginTransaction();
         try {
-            $no_urut = DB::table('trhkasin_pkd')
-                ->selectRaw("count(no_sts)+1 as nomor")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
-                ->first();
-            $nomor = $no_urut->nomor;
-            $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $nomor . '/BP', 'kd_skpd' => '5.02.0.00.0.00.02.0000'])->count();
+            // $no_urut = DB::table('trhkasin_pkd')
+            //     ->selectRaw("count(no_sts)+1 as nomor")
+            //     ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
+            //     ->first();
+            // $nomor = $no_urut->nomor;
+            $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_kas'] . '/BP', 'kd_skpd' => '5.02.0.00.0.00.02.0000'])->count();
             if ($cek_terima > 0) {
                 return response()->json([
                     'message' => '2'
@@ -654,7 +658,7 @@ class PenerimaanController extends Controller
             $no_kas = nomor_tukd();
 
             DB::table('trhkasin_pkd')->insert([
-                'no_sts' => $nomor . '/BP',
+                'no_sts' => $data['no_kas'] . '/BP',
                 'tgl_sts' => $data['tgl_kas'],
                 'kd_skpd' => $kd_skpd,
                 'keterangan' => $data['keterangan'],
@@ -670,7 +674,7 @@ class PenerimaanController extends Controller
             ]);
 
             DB::table('trdkasin_pkd')->insert([
-                'no_sts' => $nomor . '/BP',
+                'no_sts' => $data['no_kas'] . '/BP',
                 'kd_skpd' => $kd_skpd,
                 'kd_rek6' => $data['jenis'],
                 'rupiah' => $data['nilai'],
@@ -680,7 +684,7 @@ class PenerimaanController extends Controller
 
             DB::table('trhkasin_ppkd')->insert([
                 'no_kas' => $no_kas,
-                'no_sts' => $nomor . '/BP',
+                'no_sts' => $data['no_kas'] . '/BP',
                 'kd_skpd' => $kd_skpd,
                 'tgl_sts' => $data['tgl_kas'],
                 'tgl_kas' => $data['tgl_kas'],
@@ -699,7 +703,7 @@ class PenerimaanController extends Controller
             DB::table('trdkasin_ppkd')->insert([
                 'no_kas' => $no_kas,
                 'kd_skpd' => $kd_skpd,
-                'no_sts' => $nomor . '/BP',
+                'no_sts' => $data['no_kas'] . '/BP',
                 'kd_rek6' => $data['jenis'],
                 'rupiah' => $data['nilai'],
                 'kd_sub_kegiatan' => '5.02.00.0.00.04',
@@ -709,7 +713,7 @@ class PenerimaanController extends Controller
             DB::commit();
             return response()->json([
                 'message' => '1',
-                'nomor' => $nomor . '/BP'
+                'nomor' => $data['no_kas'] . '/BP'
             ]);
         } catch (Exception $e) {
             DB::rollBack();
