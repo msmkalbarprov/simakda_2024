@@ -1842,9 +1842,9 @@ function nilai_pagu($kd_skpd, $no_spp, $beban)
     return rupiah($nilai_pagu->total);
 }
 
-function cari_sp2d($sp2d, $baris)
+function cari_sp2d($sp2d, $baris, $kd_skpd)
 {
-    $kd_skpd = Auth::user()->kd_skpd;
+    // $kd_skpd = Auth::user()->kd_skpd;
     $status_ang = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->where(['a.kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->select('a.jns_ang')->first();
 
     $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $sp2d->no_spp, 'a.kd_skpd' => $sp2d->kd_skpd, 'b.jns_ang' => $status_ang->jns_ang])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
