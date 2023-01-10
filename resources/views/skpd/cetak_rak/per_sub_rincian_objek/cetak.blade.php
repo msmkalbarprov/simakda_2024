@@ -54,7 +54,8 @@
                     <div class="mb-3 row">
                         <label for="ttd1" class="col-md-2 col-form-label">Penandatangan SKPD</label>
                         <div class="col-md-10">
-                            <select class="form-control select2-multiple" style=" width: 100%;" id="ttd1" name="ttd1">
+                            <select class="form-control select2-multiple" style=" width: 100%;" id="ttd1"
+                                name="ttd1">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
                         </div>

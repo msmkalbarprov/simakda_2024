@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Input LPJ UP/GU (SKPD + Unit) | SIMAKDA')
+@section('title', 'Ubah LPJ UP/GU (SKPD + Unit) | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -15,7 +15,7 @@
                         <label for="kd_skpd" class="col-md-2 col-form-label">SKPD</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="kd_skpd" name="kd_skpd" required readonly
-                                value="{{ $skpd->kd_skpd }}">
+                                value="{{ $lpj->kd_skpd }}">
                         </div>
                         <label for="nilai_up" class="col-md-2 col-form-label">Nilai UP</label>
                         <div class="col-md-4">
@@ -28,7 +28,7 @@
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nm_skpd" name="nm_skpd" required readonly
-                                value="{{ $skpd->nm_skpd }}">
+                                value="{{ nama_skpd($lpj->kd_skpd) }}">
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>
@@ -43,7 +43,8 @@
                         <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
-                                <input type="number" id="no_lpj" class="form-control" min="0">
+                                <input type="number" id="no_lpj" class="form-control" min="0"
+                                    value="{{ $nomor }}">
                                 <div class="input-group-prepend">
                                     <input type="text" value="/LPJ/UPGU/{{ $skpd->kd_skpd }}/{{ tahun_anggaran() }}"
                                         class="form-control" readonly>
@@ -59,7 +60,7 @@
                         <label for="no_lpj_simpan" class="col-md-2 col-form-label">No. LPJ Tersimpan</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="no_lpj_simpan" name="no_lpj_simpan" required
-                                readonly>
+                                readonly value="{{ $lpj->no_lpj }}">
                         </div>
                         <div class="col-md-6">
                             <p style="font-size: 20px;color:red">Nilai minimal GU yang diajukan adalah 50% dari nilai UP</p>
@@ -69,7 +70,8 @@
                     <div class="mb-3 row">
                         <label for="tgl_lpj" class="col-md-2 col-form-label">Tanggal LPJ</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="date" id="tgl_lpj" name="tgl_lpj" required>
+                            <input class="form-control" type="date" id="tgl_lpj" name="tgl_lpj" required
+                                value="{{ $lpj->tgl_lpj }}">
                         </div>
                         <label for="total_spd" class="col-md-2 col-form-label">SPD</label>
                         <div class="col-md-4">
@@ -81,7 +83,7 @@
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-4">
-                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan"></textarea>
+                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan">{{ $lpj->keterangan }}</textarea>
                         </div>
                         <label for="realisasi_spd" class="col-md-2 col-form-label">Realisasi SPD</label>
                         <div class="col-md-4">
@@ -129,6 +131,28 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @php
+                                $total = 0;
+                            @endphp
+                            @foreach ($detail_lpj as $detail)
+                                @php
+                                    $total += $detail->nilai;
+                                @endphp
+                                <tr>
+                                    <td>{{ $detail->lpj_global }}</td>
+                                    <td>{{ $detail->kd_skpd }}</td>
+                                    <td>{{ nama_skpd($detail->kd_skpd) }}</td>
+                                    <td>{{ $detail->no_lpj }}</td>
+                                    <td>{{ rupiah($detail->nilai) }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);"
+                                            onclick="hapus('{{ $detail->no_lpj }}','{{ $detail->kd_skpd }}','{{ $detail->kd_skpd }}')"
+                                            class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">
                         <label for="jumlah_spd" class="col-md-8 col-form-label" style="text-align: right">Total
@@ -146,7 +170,7 @@
                         <label for="total" class="col-md-8 col-form-label" style="text-align: right">Total</label>
                         <div class="col-md-4">
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
-                                class="form-control" id="total" name="total">
+                                class="form-control" id="total" name="total" value="{{ rupiah($total) }}">
                         </div>
                     </div>
                 </div>
@@ -203,5 +227,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.lpj.skpd_dan_unit.js.create');
+    @include('skpd.lpj.skpd_dan_unit.js.edit');
 @endsection

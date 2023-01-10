@@ -84,8 +84,6 @@
                     kd_skpd: kd_skpd,
                 },
                 success: function(data) {
-                    console.log(data.total);
-                    return;
                     if (data.message == '1') {
                         alert('LPJ telah dibatalkan');
                         window.location.reload();

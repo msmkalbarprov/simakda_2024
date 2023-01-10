@@ -13,6 +13,7 @@ use App\Http\Controllers\PenagihanController;
 use App\Http\Controllers\BankKalbarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BendaharaUmumDaerahController;
+use App\Http\Controllers\BUD\PengesahanController;
 use App\Http\Controllers\SppLsController;
 use App\Http\Controllers\SppUpController;
 use App\Http\Controllers\SpmController;
@@ -1062,6 +1063,36 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('penerimaan_pajak_daerah', [BendaharaUmumDaerahController::class, 'pajakDaerah'])->name('laporan_bendahara_umum.penerimaan_pajak_daerah');
         Route::get('rekap_gaji', [BendaharaUmumDaerahController::class, 'rekapGaji'])->name('laporan_bendahara_umum.rekap_gaji');
         Route::get('buku_besar_kasda', [BendaharaUmumDaerahController::class, 'rekapBBKasda'])->name('laporan_bendahara_umum.buku_besar_kasda');
+    });
+
+    Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
+        // Pengesahan LPJ UP/GU
+        Route::group(['prefix' => 'pengesahan_lpj_upgu'], function () {
+            Route::get('', [PengesahanController::class, 'indexPengesahanLpjUp'])->name('pengesahan_lpj_upgu.index');
+            Route::post('load', [PengesahanController::class, 'loadPengesahanLpjUp'])->name('pengesahan_lpj_upgu.load');
+            Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanLpjUp'])->name('pengesahan_lpj_upgu.edit');
+            Route::post('detail', [PengesahanController::class, 'detailPengesahanLpjUp'])->name('pengesahan_lpj_upgu.detail');
+            Route::post('setuju', [PengesahanController::class, 'setujuPengesahanLpjUp'])->name('pengesahan_lpj_upgu.setuju');
+            Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanLpjUp'])->name('pengesahan_lpj_upgu.batal_setuju');
+        });
+        // Pengesahan LPJ TU
+        Route::group(['prefix' => 'pengesahan_lpj_tu'], function () {
+            Route::get('', [PengesahanController::class, 'indexPengesahanLpjTu'])->name('pengesahan_lpj_tu.index');
+            Route::post('load', [PengesahanController::class, 'loadPengesahanLpjTu'])->name('pengesahan_lpj_tu.load');
+            Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanLpjTu'])->name('pengesahan_lpj_tu.edit');
+            Route::post('detail', [PengesahanController::class, 'detailPengesahanLpjTu'])->name('pengesahan_lpj_tu.detail');
+            Route::post('setuju', [PengesahanController::class, 'setujuPengesahanLpjTu'])->name('pengesahan_lpj_tu.setuju');
+            Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanLpjTu'])->name('pengesahan_lpj_tu.batal_setuju');
+        });
+        // Pengesahan SPM TU
+        Route::group(['prefix' => 'pengesahan_spm_tu'], function () {
+            Route::get('', [PengesahanController::class, 'indexPengesahanSpmTu'])->name('pengesahan_spm_tu.index');
+            Route::post('load', [PengesahanController::class, 'loadPengesahanSpmTu'])->name('pengesahan_spm_tu.load');
+            Route::get('edit/{no_spp?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanSpmTu'])->name('pengesahan_spm_tu.edit');
+            Route::post('detail', [PengesahanController::class, 'detailPengesahanSpmTu'])->name('pengesahan_spm_tu.detail');
+            Route::post('setuju', [PengesahanController::class, 'setujuPengesahanSpmTu'])->name('pengesahan_spm_tu.setuju');
+            Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanSpmTu'])->name('pengesahan_spm_tu.batal_setuju');
+        });
     });
 });
 
