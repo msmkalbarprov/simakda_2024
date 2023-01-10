@@ -65,10 +65,22 @@ class PenerimaController extends Controller
         return view('master.penerima.create')->with($data);
     }
 
-    public function store(Request $request)
+    public function store(PenerimaRequest $request)
     {
-        // $input = array_map('htmlentities', $request->validated());
-        $input = $request->all();
+        $input = array_map('htmlentities', $request->validated());
+        // $input = $request->all();
+        $cek = DB::table('ms_rekening_bank_online')
+            ->where([
+                'rekening' => $input['no_rekening_validasi'],
+                'nm_rekening' => $input['nm_rekening_validasi'],
+                'kd_skpd' => Auth::user()->kd_skpd
+            ])
+            ->count();
+
+        if ($cek > 0) {
+            return redirect()->back()->withInput()
+                ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+        }
 
         DB::table('ms_rekening_bank_online')->insert([
             'kd_bank' => $input['bank'],

@@ -37,10 +37,9 @@ class PenerimaRequest extends FormRequest
             'nm_rekening_validasi' => 'required',
             'npwp_validasi' => 'required',
             'nm_npwp_validasi' => 'required',
-            'rekanan' => 'nullable',
-            'nama_rekan' => 'sometimes|required',
-            'pimpinan' => 'sometimes|required',
-            'alamat' => 'sometimes|required',
+            'rekanan' => 'sometimes',
+            'pimpinan' => 'sometimes',
+            'alamat' => 'sometimes',
         ];
         if (request()->isMethod('post')) {
             $rule = $rules;
