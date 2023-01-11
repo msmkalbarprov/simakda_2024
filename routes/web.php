@@ -802,10 +802,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cari_skpd', [LaporanBendaharaPenerimaanController::class, 'cariSkpd'])->name('skpd.laporan_bendahara_penerimaan.skpd');
             Route::post('cari_bendahara', [LaporanBendaharaPenerimaanController::class, 'cariBendahara'])->name('skpd.laporan_bendahara_penerimaan.bendahara');
             Route::post('cari_pakpa', [LaporanBendaharaPenerimaanController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara_penerimaan.pakpa');
-            Route::post('cari_subkegiatan', [LaporanBendaharaPenerimaanController::class, 'cariSubkegiatan'])->name('skpd.laporan_bendahara_penerimaan.subkegiatan');
-            Route::post('cari_akunbelanja', [LaporanBendaharaPenerimaanController::class, 'cariAkunBelanja'])->name('skpd.laporan_bendahara_penerimaan.akunbelanja');
-
             
+            // buku terima setor 
+            Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
 
 
         });

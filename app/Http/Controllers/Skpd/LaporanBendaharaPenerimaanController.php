@@ -74,23 +74,5 @@ class LaporanBendaharaPenerimaanController extends Controller
 
     }
 
-    function cariSubkegiatan(Request $request)
-    {
-        $kd_skpd        = $request->kd_skpd;
-        $jns_anggaran   = $request->jns_anggaran;
-        $data           = DB::table('trskpd')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $jns_anggaran])->orderBy('kd_sub_kegiatan')->get();
-        return response()->json($data);
-
-    }
-    function cariAkunBelanja(Request $request)
-    {
-        $kd_skpd        = $request->kd_skpd;
-        $jns_anggaran   = $request->jns_anggaran;
-        $subkegiatan    = $request->subkegiatan;
-        $data           = DB::table('trdrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $jns_anggaran, 'kd_sub_kegiatan' => $subkegiatan])->orderBy('kd_rek6')->get();
-        return response()->json($data);
-
-    }
-
     
 }
