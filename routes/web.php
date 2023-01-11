@@ -802,11 +802,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cari_skpd', [LaporanBendaharaPenerimaanController::class, 'cariSkpd'])->name('skpd.laporan_bendahara_penerimaan.skpd');
             Route::post('cari_bendahara', [LaporanBendaharaPenerimaanController::class, 'cariBendahara'])->name('skpd.laporan_bendahara_penerimaan.bendahara');
             Route::post('cari_pakpa', [LaporanBendaharaPenerimaanController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara_penerimaan.pakpa');
-            
-            // buku terima setor 
+
+            // buku terima setor
             Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
-
-
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
@@ -959,13 +957,14 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // Input LPJ TU
             Route::group(['prefix' => 'tu'], function () {
                 // LPJ TU
-                Route::get('', [LPJController::class, 'indexLpjTu'])->name('lpj.tu.index');
-                Route::post('load_data', [LPJController::class, 'loadLpjTu'])->name('lpj.tu.load_data');
-                Route::get('tambah', [LPJController::class, 'tambahLpjTu'])->name('lpj.tu.tambah');
-                Route::post('simpan', [LPJController::class, 'simpanLpjTu'])->name('lpj.tu.simpan');
-                Route::get('edit/{no_bukti?}', [LPJController::class, 'editLpjTu'])->where('no_bukti', '(.*)')->name('lpj.tu.edit');
-                Route::post('update', [LPJController::class, 'updateLpjTu'])->name('lpj.tu.update');
-                Route::post('hapus', [LPJController::class, 'hapusLpjTu'])->name('lpj.tu.hapus');
+                Route::get('', [LPJController::class, 'indexLpjTu'])->name('lpj_tu.index');
+                Route::post('load', [LPJController::class, 'loadLpjTu'])->name('lpj_tu.load');
+                Route::get('tambah', [LPJController::class, 'tambahLpjTu'])->name('lpj_tu.tambah');
+                Route::post('detail', [LPJController::class, 'detailLpjTu'])->name('lpj_tu.detail');
+                Route::post('simpan', [LPJController::class, 'simpanLpjTu'])->name('lpj_tu.simpan');
+                Route::get('edit/{no_lpj?}/{kd_skpd?}', [LPJController::class, 'editLpjTu'])->name('lpj_tu.edit');
+                Route::post('update', [LPJController::class, 'updateLpjTu'])->name('lpj_tu.update');
+                Route::post('hapus', [LPJController::class, 'hapusLpjTu'])->name('lpj_tu.hapus');
             });
         });
     });
@@ -1077,6 +1076,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('detail', [PengesahanController::class, 'detailPengesahanSpmTu'])->name('pengesahan_spm_tu.detail');
             Route::post('setuju', [PengesahanController::class, 'setujuPengesahanSpmTu'])->name('pengesahan_spm_tu.setuju');
             Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanSpmTu'])->name('pengesahan_spm_tu.batal_setuju');
+        });
+        // Kendali Proteksi LPJ
+        Route::group(['prefix' => 'kendali_proteksi_lpj'], function () {
+            Route::get('', [PengesahanController::class, 'indexKendaliProteksi'])->name('kendali_proteksi_lpj.index');
+            Route::post('load', [PengesahanController::class, 'loadKendaliProteksi'])->name('kendali_proteksi_lpj.load');
+            Route::post('simpan', [PengesahanController::class, 'simpanKendaliProteksi'])->name('kendali_proteksi_lpj.simpan');
         });
     });
 });
