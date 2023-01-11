@@ -936,6 +936,18 @@
         let jenis_rak = document.getElementById('jenis_rak').value;
         let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
 
+        $("#rak_januari").val(null);
+        $("#rak_februari").val(null);
+        $("#rak_maret").val(null);
+        $("#rak_april").val(null);
+        $("#rak_mei").val(null);
+        $("#rak_juni").val(null);
+        $("#rak_juli").val(null);
+        $("#rak_agustus").val(null);
+        $("#rak_september").val(null);
+        $("#rak_oktober").val(null);
+        $("#rak_november").val(null);
+        $("#rak_desember").val(null);
         // Isi Nilai RAK Triwulan 1 - 4
         $.ajax({
             url: "{{ route('skpd.input_rak.nilai_triwulan') }}",
