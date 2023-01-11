@@ -1,3 +1,8 @@
+<style>
+    table.dataTable tbody tr td {
+        font-size: 11px
+    }
+</style>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -7,7 +12,8 @@
         });
 
         $('#penerimaan_tahun_ini').DataTable({
-            responsive: true,
+            // responsive: true,
+            scrollX: true,
             ordering: false,
             serverSide: true,
             processing: true,
@@ -23,7 +29,8 @@
                 }, {
                     data: 'no_terima',
                     name: 'no_terima',
-                    className: "text-center",
+                    width: '10px'
+                    // className: "text-center",
                 },
                 {
                     data: 'tgl_terima',
@@ -65,7 +72,7 @@
                 {
                     data: 'aksi',
                     name: 'aksi',
-                    width: 100,
+                    width: '200px',
                     className: "text-center",
                 },
             ],

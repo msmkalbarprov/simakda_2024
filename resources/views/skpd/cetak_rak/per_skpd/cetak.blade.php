@@ -1,12 +1,12 @@
 @extends('template.app')
-@section('title', 'Cetak Angkas Murni RO | SIMAKDA')
+@section('title', 'Cetak Angkas Per SKPD | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    CETAK ANGGARAN KAS SUB RINCIAN OBJEK
+                    CETAK ANGGARAN KAS PER SKPD
                 </div>
                 <div class="card-body">
                     @csrf
@@ -37,15 +37,6 @@
                         <label for="jenis_rak" class="col-md-2 col-form-label">Jenis Anggaran Kas</label>
                         <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis_rak">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                            </select>
-                        </div>
-                    </div>
-                    {{-- Sub Kegiatan --}}
-                    <div class="mb-3 row">
-                        <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
-                        <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%" id="kd_sub_kegiatan">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
                         </div>
@@ -101,5 +92,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.cetak_rak.per_sub_rincian_objek.js.cetak');
+    @include('skpd.cetak_rak.per_skpd.js.cetak');
 @endsection

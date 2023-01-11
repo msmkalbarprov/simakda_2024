@@ -1842,9 +1842,9 @@ function nilai_pagu($kd_skpd, $no_spp, $beban)
     return rupiah($nilai_pagu->total);
 }
 
-function cari_sp2d($sp2d, $baris)
+function cari_sp2d($sp2d, $baris, $kd_skpd)
 {
-    $kd_skpd = Auth::user()->kd_skpd;
+    // $kd_skpd = Auth::user()->kd_skpd;
     $status_ang = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->where(['a.kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->select('a.jns_ang')->first();
 
     $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $sp2d->no_spp, 'a.kd_skpd' => $sp2d->kd_skpd, 'b.jns_ang' => $status_ang->jns_ang])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
@@ -2067,12 +2067,11 @@ function status_anggaran_dashboard()
 {
     $kd_skpd = Auth::user()->kd_skpd;
     $data = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
-    if($data==''){
+    if ($data == '') {
         return 'S';
-    }else{
+    } else {
         return $data->jns_ang;
     }
-    
 }
 
 function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti, $no_sp2d)
@@ -3044,4 +3043,29 @@ function tambah_tanggal_unit()
         ->first();
 
     return $data->tanggal_awal;
+}
+
+
+function nama_kegiatan_cair($kd_sub_kegiatan)
+{
+    $data = DB::table('trskpd')
+        ->select('nm_sub_kegiatan')
+        ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
+        ->first();
+
+    return $data->nm_sub_kegiatan;
+}
+
+function nama_rekening_cair($beban, $kd_rek6)
+{
+    if ($beban == '1') {
+        return 'Uang Persediaan';
+    } else {
+        $data = DB::table('ms_rek6')
+            ->select('nm_rek6')
+            ->where(['kd_rek6' => $kd_rek6])
+            ->first();
+
+        return $data->nm_rek6;
+    }
 }

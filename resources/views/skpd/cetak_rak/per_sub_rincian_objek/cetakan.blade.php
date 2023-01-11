@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    <table style="width: 100%" id="header">
+    <table style="width: 100%;font-size:20px" id="header">
         <tr>
             <td>RENCANA ANGGARAN KAS</td>
         </tr>
@@ -83,9 +83,9 @@
             <td>{{ Str::upper($sub_header1->nmsubkegiatan) }}</td>
         </tr>
         <tr>
-            <td>Nilai Anggaran</td>
-            <td>: {{ rupiah($sub_header1->ang) }}</td>
-            <td>{{ Str::upper(terbilang($sub_header1->ang)) }}</td>
+            <td style="vertical-align:top">Nilai Anggaran</td>
+            <td style="vertical-align:top">: {{ rupiah($sub_header1->ang) }}</td>
+            <td style="vertical-align:top">{{ Str::upper(terbilang($sub_header1->ang)) }}</td>
         </tr>
     </table>
 
@@ -188,7 +188,7 @@
                 <td class="angka"><b>{{ rupiah($total_des) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_okt + $total_nov + $total_des) }}</b></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td colspan="14" style="border-left:hidden;border-bottom:hidden;border-right:hidden"></td>
                 <td colspan="4" style="border-left:hidden;border-bottom:hidden;border-right:hidden">
                     @if ($hidden != 'hidden')
@@ -216,9 +216,36 @@
                         @endif
                     @endif
                 </td>
-            </tr>
+            </tr> --}}
         </tbody>
     </table>
+
+    @if ($hidden != 'hidden')
+        <div style="padding-top:20px">
+            <table class="table" style="width:100%">
+                <tr>
+                    <td style="width: 60%"></td>
+                    <td style="margin: 2px 0px;text-align: center">
+                        Pontianak, {{ tanggal($tanggal) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 60%"></td>
+                    <td style="padding-bottom: 50px;text-align: center">
+                        {{ $ttd1->jabatan }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 60%"></td>
+                    <td style="text-align: center"><b><u>{{ $ttd1->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%"></td>
+                    <td style="text-align: center">NIP. {{ $ttd1->nip }}</td>
+                </tr>
+            </table>
+        </div>
+    @endif
 </body>
 
 </html>

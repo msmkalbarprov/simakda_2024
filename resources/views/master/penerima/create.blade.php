@@ -3,6 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (session()->has('message'))
+                <div class="alert {{ session('alert') ?? 'alert-info' }}">
+                    {{ session('message') }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <form action="{{ route('penerima.store') }}" method="post">
@@ -344,6 +349,7 @@
                     }
                 })
             }
+
             let kd_map = document.getElementById('kode_akun').value;
             if (kd_map) {
                 let kode_setor = "{{ old('kode_setor') }}";
@@ -372,6 +378,7 @@
                     }
                 })
             }
+
             $('#bank').on("change", function() {
                 $("#nama_cabang").val("");
                 let bic = $(this).find(':selected').data('bic');
@@ -396,11 +403,13 @@
                     }
                 })
             });
+
             $('#cabang').on('change', function() {
                 let selected = $(this).find('option:selected');
                 let nama_cabang = selected.data('nama');
                 $("#nama_cabang").val(nama_cabang);
             });
+
             $('#kode_akun').on("change", function() {
                 let kd_map = this.value;
                 $.ajax({
@@ -422,6 +431,7 @@
                     }
                 })
             });
+
             $('#cek_rekening').on("click", function() {
                 let kode_bank = document.getElementById('bank').value;
                 let no_rek = document.getElementById('rekening').value;
@@ -489,6 +499,7 @@
                 }
 
             });
+
             $('#cek_npwp').on("click", function() {
                 let npwp = document.getElementById('npwp').value;
                 let kode_akun = document.getElementById('kode_akun').value;

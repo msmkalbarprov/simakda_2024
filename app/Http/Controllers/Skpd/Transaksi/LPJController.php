@@ -17,7 +17,20 @@ class LPJController extends Controller
     // INPUT LPJ UP/GU SKPD TANPA UNIT
     public function indexSkpdTanpaUnit()
     {
-        return view('skpd.lpj.skpd_tanpa_unit.index');
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'ttd1' => DB::table('ms_ttd')
+                ->select('nip', 'nama')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK'])
+                ->get(),
+            'ttd2' => DB::table('ms_ttd')
+                ->select('nip', 'nama')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->get(),
+        ];
+        return view('skpd.lpj.skpd_tanpa_unit.index')->with($data);
     }
 
     public function loadSkpdTanpaUnit()
@@ -312,6 +325,58 @@ class LPJController extends Controller
         }
     }
 
+    public function subKegiatanSkpdTanpaUnit(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = DB::table('trlpj as a')
+            ->join('trhlpj as b', function ($join) {
+                $join->on('a.no_lpj', '=', 'b.no_lpj');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->leftJoin('trskpd as c', function ($join) {
+                $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
+            })
+            ->select('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
+            ->whereRaw("a.no_lpj = ? AND left(a.kd_skpd,17)=left(?,17)", [$no_lpj, $kd_skpd])
+            ->groupBy('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
+            ->orderBy('a.kd_sub_kegiatan')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function sptbSkpdTanpaUnit(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $kd_skpd = $request->kd_skpd;
+        $pa_kpa = $request->pa_kpa;
+        $jenis_print = $request->jenis_print;
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'dpa' => DB::table('trhrka')
+                ->select('no_dpa', 'tgl_dpa')
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => status_anggaran()])
+                ->first(),
+            'jumlah_belanja' => DB::table('trlpj as a')
+                ->join('trhlpj as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("sum(nilai) as nilai,b.tgl_lpj")
+                ->whereRaw("a.no_lpj=? and b.jenis=? and left(a.kd_bp_skpd,17)=left(?,17)", [$no_lpj, '1', $kd_skpd])
+                ->groupBy('b.tgl_lpj')
+                ->first(),
+        ];
+
+        return view('skpd.lpj.skpd_tanpa_unit.cetak.sptb')->with($data);
+    }
+
 
     // INPUT LPJ UP/GU SKPD + UNIT
     public function indexSkpdDanUnit()
@@ -377,6 +442,7 @@ class LPJController extends Controller
         $data = DB::table('trhlpj_unit as a')
             ->selectRaw("a.*,(SELECT SUM(nilai) FROM trlpj WHERE no_lpj_unit=a.no_lpj) AS nilai,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd=a.kd_skpd) AS nm_skpd")
             ->where(['a.status' => '1', 'a.jenis' => '1', 'a.status_validasi' => '1'])
+            ->whereRaw("a.no_lpj NOT IN (SELECT no_lpj_unit FROM trlpj WHERE a.no_lpj=no_lpj_unit AND a.kd_skpd=kd_skpd AND (no_lpj <> '' OR kd_bp_skpd <> ''))")
             ->whereRaw("LEFT(a.kd_skpd,17)=LEFT(?,17)", [$kd_skpd])
             ->whereNotIn('no_lpj', $no_lpj)
             ->get();
@@ -454,25 +520,21 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj as a')
                 ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
                 ->where(['a.kd_skpd' => $kd_skpd, 'a.jenis' => '1', 'a.no_lpj' => $no_lpj])
-                ->orderBy('a.tgl_lpj')
-                ->orderBy('a.no_lpj')
                 ->first(),
             'detail_lpj' => DB::table('trhlpj as a')
                 ->join('trlpj as b', function ($join) {
                     $join->on('a.no_lpj', '=', 'b.no_lpj');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.kd_skpd', '=', 'b.kd_bp_skpd');
                 })
-                ->select('b.*')
+                ->join('trhlpj_unit as c', function ($join) {
+                    $join->on('b.no_lpj_unit', '=', 'c.no_lpj');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->select('a.no_lpj as lpj_global', 'c.*')
+                ->selectRaw("(SELECT SUM(nilai) FROM trlpj WHERE no_lpj_unit=c.no_lpj) AS nilai")
                 ->where(['a.no_lpj' => $no_lpj, 'a.kd_skpd' => $kd_skpd, 'a.jenis' => '1'])
+                ->distinct()
                 ->get(),
-            'total_detail' => DB::table('trhlpj as a')
-                ->join('trlpj as b', function ($join) {
-                    $join->on('a.no_lpj', '=', 'b.no_lpj');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->selectRaw("SUM(b.nilai) as nilai")
-                ->where(['a.no_lpj' => $no_lpj, 'a.kd_skpd' => $kd_skpd, 'a.jenis' => '1'])
-                ->first(),
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
                 ->where(['kd_skpd' => $kd_skpd])
@@ -484,7 +546,7 @@ class LPJController extends Controller
             'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
                 select 1 as nomor, SUM(nilai) as nilai_spd from trhspd a INNER JOIN trdspd b ON a.no_spd=b.no_spd WHERE kd_skpd = ? AND (RIGHT(kd_sub_kegiatan,10) !='01.1.02.01' OR kd_sub_kegiatan !='4.01.01.1.11.01') AND status='1') a LEFT JOIN (SELECT 1 as nomor, SUM(b.nilai) as transaksi FROM trhspp a INNER JOIN trdspp b ON a.kd_skpd=b.kd_skpd AND a.no_spp=b.no_spp WHERE a.kd_skpd = ? AND (RIGHT(b.kd_sub_kegiatan,10) !='01.1.02.01' OR b.kd_sub_kegiatan !='4.01.01.1.11.01') and (sp2d_batal is null or sp2d_batal<>'1')) b ON a.nomor=b.nomor", [$kd_skpd, $kd_skpd]))->first(),
         ];
-
+        // dd($data['detail_lpj']);
         return view('skpd.lpj.skpd_dan_unit.edit')->with($data);
     }
 
@@ -504,7 +566,18 @@ class LPJController extends Controller
                 ]);
             }
 
-            DB::table('trhlpj')->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])->delete();
+            $list_lpj = array();
+            if (!empty($data['detail_lpj'])) {
+                foreach ($data['detail_lpj'] as $lpj) {
+                    $list_lpj[] = $lpj['no_lpj_unit'];
+                }
+            } else {
+                $list_lpj[] = '';
+            }
+
+            DB::table('trhlpj')
+                ->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])
+                ->delete();
 
             DB::table('trhlpj')
                 ->insert([
@@ -512,31 +585,25 @@ class LPJController extends Controller
                     'tgl_lpj' => $data['tgl_lpj'],
                     'kd_skpd' => $data['kd_skpd'],
                     'keterangan' => $data['keterangan'],
-                    'tgl_awal' => $data['tgl_awal'],
-                    'tgl_akhir' => $data['tgl_akhir'],
+                    'tgl_awal' => '',
+                    'tgl_akhir' => '',
                     'status' => '0',
                     'jenis' => '1',
                 ]);
 
-            DB::table('trlpj')->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])->delete();
+            DB::table('trlpj')
+                ->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_bp_skpd' => $data['kd_skpd']])
+                ->update([
+                    'no_lpj' => '',
+                    'kd_bp_skpd' => ''
+                ]);
 
-            if (isset($data['detail_lpj'])) {
-                DB::table('trlpj')
-                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
-                        return [
-                            'no_lpj' => $no_lpj,
-                            'kd_skpd' => $value['kd_skpd'],
-                            'no_bukti' => $value['no_bukti'],
-                            'tgl_lpj' => $data['tgl_lpj'],
-                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                            'kd_rek6' => $value['kdrek6'],
-                            'nm_rek6' => $value['nmrek6'],
-                            'nilai' => $value['nilai'],
-                            'kd_bp_skpd' => $data['kd_skpd'],
-                            'no_lpj_unit' => $no_lpj,
-                        ];
-                    }, $data['detail_lpj']));
-            }
+            DB::table('trlpj')
+                ->whereIn('no_lpj_unit', $list_lpj)
+                ->update([
+                    'no_lpj' => $no_lpj,
+                    'kd_bp_skpd' => $data['kd_skpd']
+                ]);
 
             DB::commit();
             return response()->json([
@@ -944,17 +1011,16 @@ class LPJController extends Controller
             $cek_global = DB::table('trlpj')
                 ->where(['no_lpj_unit' => $no_lpj, 'kd_skpd' => $kd_skpd])
                 ->where(function ($query) {
-                    $query->whereNull('no_lpj')->whereNull('kd_bp_skpd');
+                    $query->where('no_lpj', '<>', '')->orWhere('kd_bp_skpd', '<>', '');
                 })
                 ->count();
 
-            // if ($cek_global > 0) {
-            DB::rollBack();
-            return response()->json([
-                'message' => '2',
-                'total' => $cek_global
-            ]);
-            // }
+            if ($cek_global > 0) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
             DB::table('trhlpj_unit')
                 ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
                 ->update([

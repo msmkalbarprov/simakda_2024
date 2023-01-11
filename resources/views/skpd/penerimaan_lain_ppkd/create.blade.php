@@ -14,8 +14,8 @@
                     <div class="mb-3 row">
                         <label for="no_kas" class="col-md-2 col-form-label">No. Kas</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_kas" name="no_kas"
-                                placeholder="Tidak Perlu Diisi" required readonly>
+                            <input class="form-control" type="text" id="no_kas" name="no_kas" required
+                                value="{{ $no_urut->nomor }}">
                         </div>
                         <label for="tgl_kas" class="col-md-2 col-form-label">Tanggal</label>
                         <div class="col-md-4">

@@ -240,10 +240,10 @@
                                         :</strong></td>
                             </tr>
                             <tr>
-                                <th>No.</th>
+                                <th style="width: 1%">No.</th>
                                 <th>Uraian (No. Rekening)</th>
                                 <th>Jumlah</th>
-                                <th>Keterangan</th>
+                                <th style="10%">Keterangan</th>
                             </tr>
                             @foreach ($data_potongan as $potongan)
                                 <tr>

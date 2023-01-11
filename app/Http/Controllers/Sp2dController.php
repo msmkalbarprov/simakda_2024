@@ -280,7 +280,7 @@ class Sp2dController extends Controller
         $kop = $request->kop;
 
         $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
-        $data_sp2d = cari_sp2d($sp2d, $baris);
+        $data_sp2d = cari_sp2d($sp2d, $baris, $kd_skpd);
 
         $data = [
             'no_sp2d' => $no_sp2d,
