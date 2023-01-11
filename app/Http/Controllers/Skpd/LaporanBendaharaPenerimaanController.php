@@ -57,7 +57,7 @@ class LaporanBendaharaPenerimaanController extends Controller
         }else{
             $kd_skpd    = $request->kd_skpd;
         }
-        $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd,'kode'=>'BK'])->orderBy('nip')->orderBy('nama')->get();
+        $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd,'kode'=>'BP'])->orderBy('nip')->orderBy('nama')->get();
         return response()->json($data);
 
     }
