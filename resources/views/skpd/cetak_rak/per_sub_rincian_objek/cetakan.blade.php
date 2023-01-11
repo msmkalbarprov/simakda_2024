@@ -84,7 +84,7 @@
         </tr>
         <tr>
             <td style="vertical-align:top">Nilai Anggaran</td>
-            <td>: {{ rupiah($sub_header1->ang) }}</td>
+            <td style="vertical-align:top">: {{ rupiah($sub_header1->ang) }}</td>
             <td style="vertical-align:top">{{ Str::upper(terbilang($sub_header1->ang)) }}</td>
         </tr>
     </table>
@@ -224,20 +224,24 @@
         <div style="padding-top:20px">
             <table class="table" style="width:100%">
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:800px">
+                    <td style="width: 60%"></td>
+                    <td style="margin: 2px 0px;text-align: center">
                         Pontianak, {{ tanggal($tanggal) }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:800px">
+                    <td style="width: 60%"></td>
+                    <td style="padding-bottom: 50px;text-align: center">
                         {{ $ttd1->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:800px"><b><u>{{ $ttd1->nama }}</u></b></td>
+                    <td style="width: 60%"></td>
+                    <td style="text-align: center"><b><u>{{ $ttd1->nama }}</u></b></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:800px">NIP. {{ $ttd1->nip }}</td>
+                    <td style="width: 60%"></td>
+                    <td style="text-align: center">NIP. {{ $ttd1->nip }}</td>
                 </tr>
             </table>
         </div>
