@@ -3362,7 +3362,11 @@ class RakController extends Controller
         $jenis_print = $request->jenis_print;
         $margin = $request->margin;
         $hidden = $request->hidden;
-
+        if ($margin == '') {
+            $margin = 10;
+        } else {
+            $margin = $margin;
+        }
         $jenis = "nilai_" . $jenis_rak;
 
         $join1 = DB::table('trdrka')->select('kd_sub_kegiatan', 'kd_skpd', 'kd_rek6')->where(['jns_ang' => $jenis_anggaran])->groupBy('kd_sub_kegiatan', 'kd_skpd', 'kd_rek6');
