@@ -64,9 +64,16 @@ class RakController extends Controller
         $jns_ang = $request->jns_ang;
 
         $data = DB::table('trskpd as a')
-            ->select('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', DB::raw("(SELECT sum(nilai) FROM trdrka WHERE kd_sub_kegiatan=a.kd_sub_kegiatan and a.kd_skpd=kd_skpd and jns_ang=a.jns_ang) as total"))
-            ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jns_ang])
-            ->orderBy('a.kd_sub_kegiatan')
+            ->join('trdrka as b', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+                $join->on('a.jns_ang', '=', 'b.jns_ang');
+            })
+            ->select('b.kd_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program')
+            ->selectRaw("sum(b.nilai) as total")
+            ->where(['b.kd_skpd' => $kd_skpd, 'b.jns_ang' => $jns_ang])
+            ->groupBy('b.kd_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program')
+            ->orderBy('b.kd_sub_kegiatan')
             ->get();
         return response()->json($data);
     }
@@ -3255,7 +3262,8 @@ class RakController extends Controller
 
         $jenis = "nilai_" . $jenis_rak;
 
-        $angkas1 = DB::table('trdskpd_ro as a')->selectRaw("a.kd_sub_kegiatan,
+        $angkas1 = DB::table('trdskpd_ro as a')
+            ->selectRaw("a.kd_sub_kegiatan,
             case when bulan=1 then sum($jenis) else 0 end as jan,
             case when bulan=2 then sum($jenis) else 0 end as feb,
             case when bulan=3 then sum($jenis) else 0 end as mar,
@@ -3267,7 +3275,9 @@ class RakController extends Controller
             case when bulan=9 then sum($jenis) else 0 end as sep,
             case when bulan=10 then sum($jenis) else 0 end as okt,
             case when bulan=11 then sum($jenis) else 0 end as nov,
-            case when bulan=12 then sum($jenis) else 0 end as des")->where(['a.kd_skpd' => $kd_skpd])->groupBy('a.kd_sub_kegiatan', 'a.bulan');
+            case when bulan=12 then sum($jenis) else 0 end as des")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->groupBy('a.kd_sub_kegiatan', 'a.bulan');
 
         $angkas2 = DB::table(DB::raw("({$angkas1->toSql()}) as sub"))
             ->select('kd_sub_kegiatan as giat', DB::raw("(SELECT nm_sub_kegiatan FROM ms_sub_kegiatan WHERE kd_sub_kegiatan=sub.kd_sub_kegiatan) as nm_giat"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
@@ -3275,7 +3285,8 @@ class RakController extends Controller
             ->mergeBindings($angkas1)
             ->groupBy('kd_sub_kegiatan');
 
-        $angkas3 = DB::table('trdskpd_ro as a')->selectRaw("left(a.kd_sub_kegiatan,12) as kd_sub_kegiatan,
+        $angkas3 = DB::table('trdskpd_ro as a')
+            ->selectRaw("left(a.kd_sub_kegiatan,12) as kd_sub_kegiatan,
             case when bulan=1 then sum($jenis) else 0 end as jan,
             case when bulan=2 then sum($jenis) else 0 end as feb,
             case when bulan=3 then sum($jenis) else 0 end as mar,
@@ -3287,7 +3298,9 @@ class RakController extends Controller
             case when bulan=9 then sum($jenis) else 0 end as sep,
             case when bulan=10 then sum($jenis) else 0 end as okt,
             case when bulan=11 then sum($jenis) else 0 end as nov,
-            case when bulan=12 then sum($jenis) else 0 end as des")->where(['a.kd_skpd' => $kd_skpd])->groupBy(DB::raw("LEFT(kd_sub_kegiatan,12)"), 'a.bulan');
+            case when bulan=12 then sum($jenis) else 0 end as des")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->groupBy(DB::raw("LEFT(kd_sub_kegiatan,12)"), 'a.bulan');
 
         $angkas4 = DB::table(DB::raw("({$angkas3->toSql()}) as sub"))
             ->select('kd_sub_kegiatan as giat', DB::raw("(SELECT DISTINCT nm_kegiatan FROM ms_kegiatan WHERE left(kd_kegiatan,12)=left(sub.kd_sub_kegiatan,12)) as nm_giat"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
