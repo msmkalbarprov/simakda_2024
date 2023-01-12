@@ -139,6 +139,7 @@
                 return;
             }
 
+            $('#pencairan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('skpd.pencairan_sp2d.simpan_cair') }}",
                 type: "POST",
@@ -164,6 +165,7 @@
                         window.location.reload();
                     } else {
                         alert('SP2D Tidak berhasil dicairkan');
+                        $('#pencairan').prop('disabled', false);
                         return;
                     }
                 }
@@ -176,6 +178,7 @@
             let beban = document.getElementById('beban').value;
             let jenis = document.getElementById('jenis').value;
 
+            $('#pencairan').prop('disabled', true);
             $.ajax({
                 url: "{{ route('skpd.pencairan_sp2d.batal_cair') }}",
                 type: "POST",
@@ -192,6 +195,7 @@
                         window.location.reload();
                     } else {
                         alert('SP2D Tidak berhasil dibatalkan');
+                        $('#pencairan').prop('disabled', false);
                         return;
                     }
                 }

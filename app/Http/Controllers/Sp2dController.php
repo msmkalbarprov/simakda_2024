@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
+use Illuminate\Support\Facades\Gate;
 
 class Sp2dController extends Controller
 {
@@ -53,6 +54,10 @@ class Sp2dController extends Controller
 
     public function create()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         return view('penatausahaan.pengeluaran.sp2d.create');
     }
 
