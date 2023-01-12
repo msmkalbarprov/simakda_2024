@@ -35,26 +35,27 @@
                 }
             })
         });
-    function cari_ttd_skpd(kd_skpd) {
-        $.ajax({
-            url: "{{ route('skpd.cetak_rak.ttdskpd') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                kd_skpd: kd_skpd
-            },
-            success: function(data) {
-                $('#ttd1').empty();
-                $('#ttd1').append(
-                    `<option value="" disabled selected>Pilih penandatangan</option>`);
-                $.each(data, function(index, data) {
+
+        function cari_ttd_skpd(kd_skpd) {
+            $.ajax({
+                url: "{{ route('skpd.cetak_rak.ttdskpd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd
+                },
+                success: function(data) {
+                    $('#ttd1').empty();
                     $('#ttd1').append(
-                        `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
-                    );
-                })
-            }
-        })
-    }
+                        `<option value="" disabled selected>Pilih penandatangan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#ttd1').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
         $('#jenis_anggaran').on('select2:select', function() {
             let jns_ang = this.value;
 
@@ -161,6 +162,7 @@
             let ttd2 = document.getElementById('ttd2').value;
             let tanggal_ttd = document.getElementById('tanggal_ttd').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let margin = document.getElementById('margin').value;
             let jenis_print = $(this).data("jenis");
 
             if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd) {
@@ -178,6 +180,7 @@
             searchParams.append("ttd2", ttd2);
             searchParams.append("tanggal_ttd", tanggal_ttd);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin", margin);
             window.open(url.toString(), "_blank");
         });
     });

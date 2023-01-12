@@ -73,11 +73,18 @@
                             </select>
                         </div>
                     </div>
-                    {{-- Penandatangan 2 --}}
+                    {{-- Tanggal TTD --}}
                     <div class="mb-3 row">
                         <label for="tanggal_ttd" class="col-md-2 col-form-label">Tanggal TTD</label>
                         <div class="col-md-10">
                             <input class="form-control" type="date" id="tanggal_ttd" required>
+                        </div>
+                    </div>
+                    {{-- Margin Atas --}}
+                    <div class="mb-3 row">
+                        <label for="margin_atas" class="col-md-2 col-form-label">Margin Atas</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="number" id="margin" required value="10">
                         </div>
                     </div>
                     <!-- SIMPAN -->

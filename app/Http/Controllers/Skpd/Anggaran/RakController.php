@@ -3360,6 +3360,7 @@ class RakController extends Controller
         $tanggal_ttd = $request->tanggal_ttd;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
         $jenis_print = $request->jenis_print;
+        $margin = $request->margin;
         $hidden = $request->hidden;
 
         $jenis = "nilai_" . $jenis_rak;
@@ -3409,7 +3410,7 @@ class RakController extends Controller
         $view = view('skpd.cetak_rak.per_sub_rincian_objek.cetakan')->with($data);
 
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4')->setOption('margin-top', $margin);
             return $pdf->stream('laporan.pdf');
         } elseif ($jenis_print == 'excel') {
             header("Cache-Control:no-cache,no-store,must-revalidate");
