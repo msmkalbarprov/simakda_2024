@@ -19,7 +19,7 @@ class SkpdPenggunaController extends Controller
 
     public function loadData()
     {
-        $data = DB::table('pengguna')->whereIn('role',['1012','1017'])->get();
+        $data = DB::table('pengguna')->whereIn('role', ['1012', '1017'])->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("skpd_pengguna.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             return $btn;
@@ -97,24 +97,23 @@ class SkpdPenggunaController extends Controller
             'pengguna'      => DB::table('pengguna')->where('id', $id)->first(),
             'list_skpd'     => $array,
             'daftar_skpd'   => DB::table('ms_skpd')
-                ->select('kd_skpd','nm_skpd')
+                ->select('kd_skpd', 'nm_skpd')
                 ->orderBy('kd_skpd')
                 ->get(),
         ];
         return view('master.PenggunaSkpd.edit')->with($data);
     }
 
-    public function update(PeranRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $input = $request->validated();
+        $input = $request->all();
         $skpd_akses = $input['skpd'];
         $input_akses = array_map('htmlentities', $skpd_akses);
 
-        dd($input_akses);
-        return;
+
         DB::beginTransaction();
-        // try {
-            
+        try {
+
             DB::table('pengguna_skpd')->where('id', $id)->delete();
 
             if (isset($input_akses)) {
@@ -127,10 +126,10 @@ class SkpdPenggunaController extends Controller
             }
             DB::commit();
             return redirect()->route('skpd_pengguna.index');
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     return redirect()->back()->withInput();
-        // }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput();
+        }
     }
 
     public function destroy($id)
