@@ -72,6 +72,8 @@ use App\Http\Controllers\Skpd\Pendapatan\PenyetoranController;
 use App\Http\Controllers\Skpd\Transaksi\LPJController;
 use App\Http\Controllers\skpd\LaporanBendaharaPenerimaanController;
 use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
+use App\Http\Controllers\skpd\SpjPendapatanController;
+
 
 
 // Route::get('/simakda_2023', function () {
@@ -805,6 +807,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             
             // buku terima setor 
             Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
+            // buku SPJ Pendapatan 
+            Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
 
 
         });

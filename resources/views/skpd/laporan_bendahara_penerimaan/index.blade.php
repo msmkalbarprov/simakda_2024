@@ -147,6 +147,20 @@
                     </div>
                 </div>
 
+                <div class="mb-3 row" id="jenisanggaran">
+                    <div class="col-md-6">
+                        <label for="jns_anggaran" class="form-label">Jenis Anggaran</label>
+                        <select name="jns_anggaran" class="form-control" id="jns_anggaran">
+                            <option value="" selected disabled>Silahkan Pilih</option>
+                            @foreach ($jns_anggaran as $anggaran)
+                                <option value="{{ $anggaran->kode }}" data-nama="{{ $anggaran->nama }}">
+                                    {{ $anggaran->kode }} | {{ $anggaran->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="mb-3 row">
                     <div class="col-md-12 text-center">
                         <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf" name="bku_pdf"> PDF</button>
@@ -190,6 +204,11 @@
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
         });
+        $('#jns_anggaran').select2({
+            dropdownParent: $('#modal_cetak'),
+            theme: 'bootstrap-5'
+        });
+        
 
     });
 
@@ -198,7 +217,16 @@
         let kd_skpd = "{{ $data_skpd->kd_skpd }}";
         $('#modal_cetak').modal('show');
         $("#labelcetak").html("Buku Penerimaan dan Pegeluaran");
+        document.getElementById('jenisanggaran').hidden = true; // Hide
         cari_skpd(kd_skpd, 'unit');
+    });
+
+    $('#lapspj').on('click', function() {
+        let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+        $('#modal_cetak').modal('show');
+        $("#labelcetak").html("SPJ Pendapatan");
+        cari_skpd(kd_skpd, 'unit');
+        document.getElementById('jenisanggaran').hidden = false; // Hide
     });
     
 
@@ -333,6 +361,7 @@
         let jenis_cetak     = document.getElementById('labelcetak').textContent
         let tanggal1        = document.getElementById('tanggal1').value;
         let tanggal2        = document.getElementById('tanggal2').value;
+        let jns_anggaran    = document.getElementById('jns_anggaran').value;
         
         // subrincian objek
         
@@ -360,6 +389,11 @@
                 alert("Tanggal tandatangan tidak boleh kosong!");
                 return;
             }
+            if (!jns_anggaran) {
+                alert("Tanggal tandatangan tidak boleh kosong!");
+                return;
+            }
+            
 
         if (jenis_cetak == 'Buku Penerimaan dan Pegeluaran') {
             let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran') }}");
@@ -373,6 +407,23 @@
             searchParams.append("tgl_ttd", tgl_ttd);
             searchParams.append("jenis_print", jenis_print);
             searchParams.append("jenis_cetakan", jenis_cetakan);
+            searchParams.append("cetak", jns_cetak);
+
+
+            window.open(url.toString(), "_blank");
+        }if (jenis_cetak == 'SPJ Pendapatan') {
+            let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("tanggal1", tanggal1);
+            searchParams.append("tanggal2", tanggal2);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tgl_ttd", tgl_ttd);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("jenis_cetakan", jenis_cetakan);
+            searchParams.append("jns_anggaran", jns_anggaran);
             searchParams.append("cetak", jns_cetak);
 
 

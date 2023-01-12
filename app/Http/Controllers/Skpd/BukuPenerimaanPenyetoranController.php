@@ -23,10 +23,18 @@ class BukuPenerimaanPenyetoranController extends Controller
             $tanggal1       = $request->tanggal1;
             $tanggal2       = $request->tanggal2;
             $enter          = $request->spasi;
-            $kd_skpd        = $request->kd_skpd;
+            
             $cetak          = $request->cetak;
             $jenis_cetakan  = $request->jenis_cetakan;
             $tahun_anggaran = tahun_anggaran();
+
+            if($jenis_cetakan=='skpd'){
+                $kd_skpd        = $request->kd_skpd;
+                $kd_org         = $request->kd_skpd;
+            }else{
+                $kd_org        =  substr($request->kd_skpd,0,17);
+                $kd_skpd        =  $request->kd_skpd;
+            }
 
             // TANDA TANGAN
             $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BP', 'kd_skpd' => $kd_skpd])->first();
@@ -61,7 +69,7 @@ class BukuPenerimaanPenyetoranController extends Controller
                 y.rupiah*-1 nilai, cast(x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah*-1 total, x.keterangan, ''status
                 FROM trhkasin_blud x INNER JOIN trdkasin_blud y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd 
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='3'
-                order by tgl, no",[$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd]);
+                order by tgl, no",[$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$kd_org,$kd_org,$tanggal1,$tanggal2,$kd_org,$kd_org,$tanggal1,$tanggal2,$kd_org,$kd_org]);
             }else{
                 $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no, 
                 case when a.tgl_terima >= ? and a.tgl_terima <= ? then cast (a.tgl_terima as varchar(25)) else '' end tgl_terima,
@@ -88,7 +96,7 @@ class BukuPenerimaanPenyetoranController extends Controller
                 y.rupiah*-1 nilai, cast(x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah*-1 total, x.keterangan, x.status
                 FROM trhkasin_pkd x INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='3'
-                order by tgl, no",[$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd,$tanggal1,$tanggal2,$kd_skpd,$kd_skpd]);
+                order by tgl, no",[$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$kd_org,$kd_org,$tanggal1,$tanggal2,$kd_org,$kd_org,$tanggal1,$tanggal2,$kd_org,$kd_org]);
             }
             
 
