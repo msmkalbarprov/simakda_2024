@@ -50,17 +50,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_murni" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Murni</label>
+                                penetapan</label>
                             {{-- Murni dan Murni Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_murni" class="col-md-2 col-form-label align-top">Murni</label>
+                                <label for="angkas_murni" class="col-md-2 col-form-label align-top">Penetapan</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_murni">
                                     </div>
                                 </div>
                                 <label for="angkas_murni_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Murni Geser I</label>
+                                    style="vertical-align:text-top">Penetapan Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_murni_geser1">
@@ -69,7 +69,7 @@
                             </div>
                             {{-- Murni Geser II dan Murni Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_murni_geser2" class="col-md-2 col-form-label align-top">Murni Geser
+                                <label for="angkas_murni_geser2" class="col-md-2 col-form-label align-top">Penetapan Geser
                                     II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_murni_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Murni Geser III</label>
+                                    style="vertical-align:text-top">Penetapan Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_murni_geser3">
@@ -86,7 +86,7 @@
                             </div>
                             {{-- Murni Geser IV dan Murni Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_murni_geser4" class="col-md-2 col-form-label align-top">Murni Geser
+                                <label for="angkas_murni_geser4" class="col-md-2 col-form-label align-top">Penetapan Geser
                                     IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -94,7 +94,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_murni_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Murni Geser V</label>
+                                    style="vertical-align:text-top">Penetapan Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_murni_geser5">
@@ -107,17 +107,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_sempurna1" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Penyempurnaan I</label>
+                                Pergeseran I</label>
                             {{-- Sempurna 1 dan Sempurna 1 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna1" class="col-md-2 col-form-label align-top">Sempurna 1</label>
+                                <label for="angkas_sempurna1" class="col-md-2 col-form-label align-top">pergeseran 1</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna1">
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna1_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 1 Geser I</label>
+                                    style="vertical-align:text-top">pergeseran 1 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna1_geser1">
@@ -126,7 +126,7 @@
                             </div>
                             {{-- Sempurna 1 Geser II dan Sempurna 1 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna1_geser2" class="col-md-2 col-form-label align-top">Sempurna 1
+                                <label for="angkas_sempurna1_geser2" class="col-md-2 col-form-label align-top">pergeseran 1
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -134,7 +134,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna1_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 1 Geser III</label>
+                                    style="vertical-align:text-top">pergeseran 1 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna1_geser3">
@@ -143,7 +143,7 @@
                             </div>
                             {{-- Sempurna 1 Geser IV dan Sempurna 1 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna1_geser4" class="col-md-2 col-form-label align-top">Sempurna 1
+                                <label for="angkas_sempurna1_geser4" class="col-md-2 col-form-label align-top">pergeseran 1
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -151,7 +151,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna1_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 1 Geser V</label>
+                                    style="vertical-align:text-top">pergeseran 1 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna1_geser5">
@@ -164,17 +164,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_sempurna2" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Penyempurnaan II</label>
+                                Pergeseran II</label>
                             {{-- Sempurna 2 dan Sempurna 2 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna2" class="col-md-2 col-form-label align-top">Sempurna 2</label>
+                                <label for="angkas_sempurna2" class="col-md-2 col-form-label align-top">pergeseran 2</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna2">
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna2_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 2 Geser I</label>
+                                    style="vertical-align:text-top">pergeseran 2 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna2_geser1">
@@ -183,7 +183,7 @@
                             </div>
                             {{-- Sempurna 2 Geser II dan Sempurna 2 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna2_geser2" class="col-md-2 col-form-label align-top">Sempurna 2
+                                <label for="angkas_sempurna2_geser2" class="col-md-2 col-form-label align-top">pergeseran 2
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -191,7 +191,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna2_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 2 Geser III</label>
+                                    style="vertical-align:text-top">pergeseran 2 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna2_geser3">
@@ -200,7 +200,7 @@
                             </div>
                             {{-- Sempurna 2 Geser IV dan Sempurna 2 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna2_geser4" class="col-md-2 col-form-label align-top">Sempurna 2
+                                <label for="angkas_sempurna2_geser4" class="col-md-2 col-form-label align-top">pergeseran 2
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -208,7 +208,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna2_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 2 Geser V</label>
+                                    style="vertical-align:text-top">pergeseran 2 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna2_geser5">
@@ -221,17 +221,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_sempurna3" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Penyempurnaan III</label>
+                                Pergeseran III</label>
                             {{-- Sempurna 3 dan Sempurna 3 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna3" class="col-md-2 col-form-label align-top">Sempurna 3</label>
+                                <label for="angkas_sempurna3" class="col-md-2 col-form-label align-top">pergeseran 3</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna3">
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna3_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 3 Geser I</label>
+                                    style="vertical-align:text-top">pergeseran 3 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna3_geser1">
@@ -240,7 +240,7 @@
                             </div>
                             {{-- Sempurna 3 Geser II dan Sempurna 3 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna3_geser2" class="col-md-2 col-form-label align-top">Sempurna 3
+                                <label for="angkas_sempurna3_geser2" class="col-md-2 col-form-label align-top">pergeseran 3
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -248,7 +248,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna3_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 3 Geser III</label>
+                                    style="vertical-align:text-top">pergeseran 3 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna3_geser3">
@@ -257,7 +257,7 @@
                             </div>
                             {{-- Sempurna 3 Geser IV dan Sempurna 3 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna3_geser4" class="col-md-2 col-form-label align-top">Sempurna 3
+                                <label for="angkas_sempurna3_geser4" class="col-md-2 col-form-label align-top">pergeseran 3
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -265,7 +265,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna3_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 3 Geser V</label>
+                                    style="vertical-align:text-top">pergeseran 3 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna3_geser5">
@@ -278,17 +278,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_sempurna4" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Penyempurnaan IV</label>
+                                Pergeseran IV</label>
                             {{-- Sempurna 4 dan Sempurna 4 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna4" class="col-md-2 col-form-label align-top">Sempurna 4</label>
+                                <label for="angkas_sempurna4" class="col-md-2 col-form-label align-top">pergeseran 4</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna4">
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna4_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 4 Geser I</label>
+                                    style="vertical-align:text-top">pergeseran 4 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna4_geser1">
@@ -297,7 +297,7 @@
                             </div>
                             {{-- Sempurna 4 Geser II dan Sempurna 4 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna4_geser2" class="col-md-2 col-form-label align-top">Sempurna 4
+                                <label for="angkas_sempurna4_geser2" class="col-md-2 col-form-label align-top">pergeseran 4
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -305,7 +305,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna4_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 4 Geser III</label>
+                                    style="vertical-align:text-top">pergeseran 4 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna4_geser3">
@@ -314,7 +314,7 @@
                             </div>
                             {{-- Sempurna 4 Geser IV dan Sempurna 4 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna4_geser4" class="col-md-2 col-form-label align-top">Sempurna 4
+                                <label for="angkas_sempurna4_geser4" class="col-md-2 col-form-label align-top">pergeseran 4
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -322,7 +322,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna4_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 4 Geser V</label>
+                                    style="vertical-align:text-top">pergeseran 4 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna4_geser5">
@@ -335,17 +335,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_sempurna5" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Penyempurnaan V</label>
+                                Pergeseran V</label>
                             {{-- Sempurna 5 dan Sempurna 5 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna5" class="col-md-2 col-form-label align-top">Sempurna 5</label>
+                                <label for="angkas_sempurna5" class="col-md-2 col-form-label align-top">pergeseran 5</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna5">
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna5_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 5 Geser I</label>
+                                    style="vertical-align:text-top">pergeseran 5 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna5_geser1">
@@ -354,7 +354,7 @@
                             </div>
                             {{-- Sempurna 5 Geser II dan Sempurna 5 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna5_geser2" class="col-md-2 col-form-label align-top">Sempurna 5
+                                <label for="angkas_sempurna5_geser2" class="col-md-2 col-form-label align-top">pergeseran 5
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -362,7 +362,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna5_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 5 Geser III</label>
+                                    style="vertical-align:text-top">pergeseran 5 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna5_geser3">
@@ -371,7 +371,7 @@
                             </div>
                             {{-- Sempurna 5 Geser IV dan Sempurna 5 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_sempurna5_geser4" class="col-md-2 col-form-label align-top">Sempurna 5
+                                <label for="angkas_sempurna5_geser4" class="col-md-2 col-form-label align-top">pergeseran 5
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -379,7 +379,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_sempurna5_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Sempurna 5 Geser V</label>
+                                    style="vertical-align:text-top">pergeseran 5 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_sempurna5_geser5">
@@ -449,17 +449,17 @@
                     <div class="card">
                         <div class="card-body">
                             <label for="angkas_ubah2" class="col-md-12 col-form-label" style="color: red">Angkas
-                                Perubahan 2</label>
+                                Pergeseran Perubahan I</label>
                             {{-- Perubahan 2 dan Perubahan 2 Geser I --}}
                             <div class="mb-1 row">
-                                <label for="angkas_ubah2" class="col-md-2 col-form-label align-top">Perubahan 2</label>
+                                <label for="angkas_ubah2" class="col-md-2 col-form-label align-top">Pergeseran Perubahan 2</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_ubah2">
                                     </div>
                                 </div>
                                 <label for="angkas_ubah2_geser1" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Perubahan 2 Geser I</label>
+                                    style="vertical-align:text-top">Pergeseran Perubahan 2 Geser I</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_ubah2_geser1">
@@ -468,7 +468,7 @@
                             </div>
                             {{-- Perubahan 2 Geser II dan Perubahan 2 Geser III --}}
                             <div class="mb-1 row">
-                                <label for="angkas_ubah2_geser2" class="col-md-2 col-form-label align-top">Perubahan 2
+                                <label for="angkas_ubah2_geser2" class="col-md-2 col-form-label align-top">Pergeseran Perubahan 2
                                     Geser II</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -476,7 +476,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_ubah2_geser3" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Perubahan 2 Geser III</label>
+                                    style="vertical-align:text-top">Pergeseran Perubahan 2 Geser III</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_ubah2_geser3">
@@ -485,7 +485,7 @@
                             </div>
                             {{-- Perubahan 2 Geser IV dan Perubahan 2 Geser V --}}
                             <div class="mb-1 row">
-                                <label for="angkas_ubah2_geser4" class="col-md-2 col-form-label align-top">Perubahan 2
+                                <label for="angkas_ubah2_geser4" class="col-md-2 col-form-label align-top">Pergeseran Perubahan 2
                                     Geser IV</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
@@ -493,7 +493,7 @@
                                     </div>
                                 </div>
                                 <label for="angkas_ubah2_geser5" class="col-md-2 col-form-label"
-                                    style="vertical-align:text-top">Perubahan 2 Geser V</label>
+                                    style="vertical-align:text-top">Pergeseran Perubahan 2 Geser V</label>
                                 <div class="col-md-4">
                                     <div class="form-check form-switch form-switch-lg">
                                         <input type="checkbox" class="form-check-input" id="angkas_ubah2_geser5">

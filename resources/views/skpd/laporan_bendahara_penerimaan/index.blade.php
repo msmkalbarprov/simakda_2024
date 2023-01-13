@@ -23,7 +23,7 @@
     <div class="col-md-6">
         <div class="card card-info collapsed-card card-outline" id="lapbku">
             <div class="card-body">
-                {{'Buku Penerimaan dan Pegeluaran'}}
+                {{'Buku Penerimaan dan Penyetoran'}}
                 <a class="card-block stretched-link" href="#">
 
                 </a>
