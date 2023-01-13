@@ -73,8 +73,7 @@ use App\Http\Controllers\Skpd\Transaksi\LPJController;
 use App\Http\Controllers\skpd\LaporanBendaharaPenerimaanController;
 use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
 use App\Http\Controllers\skpd\SpjPendapatanController;
-
-
+use App\Http\Controllers\Skpd\SppGuController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -804,11 +803,14 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cari_skpd', [LaporanBendaharaPenerimaanController::class, 'cariSkpd'])->name('skpd.laporan_bendahara_penerimaan.skpd');
             Route::post('cari_bendahara', [LaporanBendaharaPenerimaanController::class, 'cariBendahara'])->name('skpd.laporan_bendahara_penerimaan.bendahara');
             Route::post('cari_pakpa', [LaporanBendaharaPenerimaanController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara_penerimaan.pakpa');
+            Route::post('cari_rekening', [LaporanBendaharaPenerimaanController::class, 'cariRekening'])->name('skpd.laporan_bendahara_penerimaan.rekening');
 
-            // buku terima setor 
+            // buku terima setor
             Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
-            // buku SPJ Pendapatan 
+            // buku SPJ Pendapatan
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
+            // Cek Buku Setoran
+            Route::get('cetak_buku_setoran', [LaporanBendaharaPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
@@ -970,6 +972,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('update', [LPJController::class, 'updateLpjTu'])->name('lpj_tu.update');
                 Route::post('hapus', [LPJController::class, 'hapusLpjTu'])->name('lpj_tu.hapus');
             });
+        });
+        // SPP GU
+        Route::group(['prefix' => 'spp_gu'], function () {
+            Route::get('', [SppGuController::class, 'index'])->name('spp_gu.index');
+            Route::post('load', [SppGuController::class, 'load'])->name('spp_gu.load');
+            Route::get('tambah', [SppGuController::class, 'tambah'])->name('spp_gu.tambah');
+            Route::post('detail', [SppGuController::class, 'detail'])->name('spp_gu.detail');
+            Route::post('nomor', [SppGuController::class, 'nomor'])->name('spp_gu.nomor');
+            Route::post('simpan', [SppGuController::class, 'simpan'])->name('spp_gu.simpan');
+            Route::get('edit/{no_spp?}/{kd_skpd?}', [SppGuController::class, 'edit'])->name('spp_gu.edit');
+            Route::post('update', [SppGuController::class, 'update'])->name('spp_gu.update');
+            Route::post('hapus', [SppGuController::class, 'hapus'])->name('spp_gu.hapus');
         });
     });
 

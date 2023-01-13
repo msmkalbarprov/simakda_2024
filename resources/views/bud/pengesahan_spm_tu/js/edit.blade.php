@@ -5,8 +5,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        let status = "{{ $spp->status }}";
-        let sts_setuju = "{{ $spp->sts_setuju }}";
+        let status = "{{ $spm->status }}";
+        let sts_setuju = "{{ $spm->sts_setuju }}";
 
         if (status == 1 && sts_setuju == 1) {
             $('#setuju').prop('disabled', true);
@@ -22,15 +22,15 @@
             $('#batal_setuju').prop('disabled', true);
         }
 
-        $('#detail_spp').DataTable({
+        $('#detail_spm').DataTable({
             responsive: true,
             serverSide: true,
             processing: true,
             ajax: {
-                "url": "{{ route('pengesahan_spp_tu.detail') }}",
+                "url": "{{ route('pengesahan_spm_tu.detail') }}",
                 "type": "POST",
                 "data": function(d) {
-                    d.no_spp = document.getElementById('no_spp').value;
+                    d.no_spp = "{{ $spm->no_spp }}";
                     d.kd_skpd = document.getElementById('kd_skpd').value;
                 },
                 "dataSrc": function(data) {
@@ -81,12 +81,12 @@
         });
 
         $('#setuju').on('click', function() {
-            let no_spp = document.getElementById('no_spp').value;
+            let no_spp = "{{ $spm->no_spp }}";
             let kd_skpd = document.getElementById('kd_skpd').value;
 
             $('#setuju').prop('disabled', true);
             $.ajax({
-                url: "{{ route('pengesahan_spp_tu.setuju') }}",
+                url: "{{ route('pengesahan_spm_tu.setuju') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -95,10 +95,10 @@
                 },
                 success: function(response) {
                     if (response.message == '1') {
-                        alert('SPP TU Sudah Disetujui');
+                        alert('SPM TU Sudah Disetujui');
                         window.location.reload();
                     } else {
-                        alert('SPP TU Gagal Disetujui!');
+                        alert('SPM TU Gagal Disetujui!');
                         $('#setuju').prop('disabled', false);
                     }
                 }
@@ -106,24 +106,37 @@
         });
 
         $('#batal_setuju').on('click', function() {
-            let no_spp = document.getElementById('no_spp').value;
+            let no_spm = document.getElementById('no_spm').value;
+            let no_spp = "{{ $spm->no_spp }}";
+
+            $('#no_spm_batal').val(no_spm);
+            $('#no_spp_batal').val(no_spp);
+            $('#spm_batal').modal('show');
+        });
+
+        $('#input_batal').on('click', function() {
+            let no_spp = "{{ $spm->no_spp }}";
+            let beban = "{{ $spm->jns_spp }}";
             let kd_skpd = document.getElementById('kd_skpd').value;
+            let keterangan = document.getElementById('keterangan_batal').value;
 
             $('#batal_setuju').prop('disabled', true);
             $.ajax({
-                url: "{{ route('pengesahan_spp_tu.batal_setuju') }}",
+                url: "{{ route('pengesahan_spm_tu.batal_setuju') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     no_spp: no_spp,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    keterangan: keterangan,
+                    beban: beban,
                 },
                 success: function(response) {
                     if (response.message == '1') {
-                        alert('SPP TU telah dibatalkan');
-                        window.location.reload();
+                        alert('SPM TU telah dibatalkan');
+                        window.location.href = "{{ route('pengesahan_spm_tu.index') }}";;
                     } else {
-                        alert('SPP TU Gagal Dibatalkan!');
+                        alert('SPM TU Gagal Dibatalkan!');
                         $('#batal_setuju').prop('disabled', false);
                     }
                 }

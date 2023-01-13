@@ -28,13 +28,13 @@
                     className: "text-center",
                 },
                 {
-                    data: 'no_spp',
-                    name: 'no_spp',
+                    data: 'no_spm',
+                    name: 'no_spm',
                     className: "text-center",
                 },
                 {
-                    data: 'tgl_spp',
-                    name: 'tgl_spp',
+                    data: 'tgl_spm',
+                    name: 'tgl_spm',
                     className: "text-center",
                 },
                 {

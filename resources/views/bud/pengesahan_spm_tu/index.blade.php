@@ -14,7 +14,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 50px;text-align:center">Nomor SPP</th>
+                                        <th style="width: 50px;text-align:center">Nomor SPM</th>
                                         <th style="width: 50px;text-align:center">Tanggal</th>
                                         <th style="width: 50px;text-align:center">Nama SKPD</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>

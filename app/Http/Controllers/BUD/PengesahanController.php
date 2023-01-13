@@ -237,7 +237,7 @@ class PengesahanController extends Controller
         }
     }
 
-    // PENGESAHAN LPJ TU
+    // PENGESAHAN SPM TU
     public function indexPengesahanSpmTu()
     {
         return view('bud.pengesahan_spm_tu.index');
@@ -249,35 +249,43 @@ class PengesahanController extends Controller
         $role           = Auth::user()->role;
         $id_pengguna    = Auth::user()->id;
 
-        $data = DB::table('trhspp as a')
-            ->selectRaw("a.*")
+        $data = DB::table('trhspm as a')
+            ->join('trhspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("a.*, b.sts_setuju")
             ->where(function ($query) use ($role, $id_pengguna) {
                 if ($role == '1012' || $role == '1017') {
                     $query->whereRaw("a.kd_skpd IN (SELECT kd_skpd FROM pengguna_skpd where id=?)", [$id_pengguna]);
                 }
             })
-            ->whereRaw("jns_spp=? AND (sp2d_batal!=? or sp2d_batal is null)", ['3', '1'])
-            ->orderBy('a.no_spp')
+            ->whereRaw("a.jns_spp=? AND (sp2d_batal!=? or sp2d_batal is null)", ['3', '1'])
+            ->orderBy('a.no_spm')
             ->orderBy('a.kd_skpd')
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("pengesahan_spm_tu.edit", ['no_spp' => Crypt::encrypt($row->no_spp), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn = '<a href="' . route("pengesahan_spm_tu.edit", ['no_spm' => Crypt::encrypt($row->no_spm), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spm . '\',\'' . $row->kd_skpd . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
 
-    public function editPengesahanSpmTu($no_spp, $kd_skpd)
+    public function editPengesahanSpmTu($no_spm, $kd_skpd)
     {
-        $no_spp = Crypt::decrypt($no_spp);
+        $no_spm = Crypt::decrypt($no_spm);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
         $data = [
-            'spp' => DB::table('trhspp as a')
-                ->selectRaw("a.*")
-                ->whereRaw("jns_spp=? AND (sp2d_batal!=? or sp2d_batal is null)", ['3', '1'])
-                ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
+            'spm' => DB::table('trhspm as a')
+                ->join('trhspp as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("a.no_spm,a.tgl_spm,a.no_spp,a.kd_skpd,a.nm_skpd,a.tgl_spp,a.no_spd,a.bulan,a.keperluan,a.jns_spp,a.bank,a.no_rek,b.status,b.sts_setuju")
+                ->whereRaw("a.jns_spp=? AND (sp2d_batal!=? or sp2d_batal is null)", ['3', '1'])
+                ->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])
                 ->first()
         ];
 
@@ -329,6 +337,8 @@ class PengesahanController extends Controller
     {
         $no_spp = $request->no_spp;
         $kd_skpd = $request->kd_skpd;
+        $keterangan = $request->keterangan;
+        $beban = $request->beban;
 
         DB::beginTransaction();
         try {
@@ -336,6 +346,79 @@ class PengesahanController extends Controller
                 ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
                 ->update([
                     'sp2d_batal' => '1',
+                    'ket_batal' => $keterangan,
+                    'user_batal' => Auth::user()->nama,
+                    'user_batal' => Auth::user()->nama,
+                    'tgl_batal' => date('d-m-y H:i:s')
+                ]);
+
+            if ($beban == '6') {
+                $no_tagih = DB::table('trhspp')
+                    ->selectRaw("ltrim(no_tagih) as no_tagih")
+                    ->where(['no_spp' => $no_spp])
+                    ->first();
+
+                if (isset($no_tagih)) {
+                    DB::table('trhspp')
+                        ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'no_tagih' => '',
+                            'kontrak' => '',
+                            'sts_tagih' => '0',
+                            'nmrekan' => '',
+                            'pimpinan' => '',
+                        ]);
+
+                    DB::table('trhtagih')
+                        ->where(['no_bukti' => $no_tagih->no_tagih])
+                        ->update([
+                            'sts_tagih' => '0'
+                        ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    // KENDALI PROTEKSI LPJ
+    public function indexKendaliProteksi()
+    {
+        return view('bud.kendali_proteksi_lpj.index');
+    }
+
+    public function loadKendaliProteksi()
+    {
+        $data = DB::table('tb_kendali_lpj as a')
+            ->orderBy('a.kd_skpd')
+            ->get();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="javascript:void(0);" onclick="proteksi(\'' . $row->kd_skpd . '\',\'' . $row->nm_skpd . '\',\'' . $row->status . '\');" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function simpanKendaliProteksi(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $nm_skpd = $request->nm_skpd;
+        $status = $request->status;
+
+        DB::beginTransaction();
+        try {
+            DB::table('tb_kendali_lpj')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->update([
+                    'status' => $status
                 ]);
 
             DB::commit();

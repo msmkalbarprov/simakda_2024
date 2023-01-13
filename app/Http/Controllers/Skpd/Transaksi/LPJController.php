@@ -1039,4 +1039,273 @@ class LPJController extends Controller
             ]);
         }
     }
+
+    // INPUT LPJ TU
+    public function indexLpjTu()
+    {
+        return view('skpd.lpj.lpj_tu.index');
+    }
+
+    public function loadLpjTu()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhlpj_tu as a')
+            ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.jenis' => '3'])
+            ->orderBy('a.tgl_lpj')
+            ->orderBy('a.no_lpj')
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            if ($row->status == '1') {
+                $btn = "";
+            } else {
+                $btn = '<a href="' . route("lpj_tu.edit", ['no_lpj' => Crypt::encrypt($row->no_lpj), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            }
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->jenis . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahLpjTu()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+            'daftar_sp2d' => DB::table('trhsp2d')
+                ->selectRaw("no_sp2d,tgl_sp2d")
+                ->where(['jns_spp' => '3', 'status' => '1'])
+                ->whereRaw("no_sp2d NOT IN (SELECT ISNULL(no_sp2d,'') FROM trhlpj_tu where no_sp2d <> '731/TU/2022')")
+                ->where(['kd_skpd' => $kd_skpd])
+                ->get(),
+        ];
+        // dd($data['daftar_sp2d']);
+        return view('skpd.lpj.lpj_tu.create')->with($data);
+    }
+
+    public function detailLpjTu(Request $request)
+    {
+        $no_sp2d = $request->no_sp2d;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $cek = substr($kd_skpd, 8, 2);
+
+        $data = DB::table('trdtransout as a')
+            ->join('trhtransout as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.nilai, a.no_bukti,a.kd_skpd as kd_bp_skpd")
+            ->where(['a.no_sp2d' => $no_sp2d])
+            ->where(function ($query) use ($cek, $kd_skpd) {
+                if ($cek == '00') {
+                    $query->whereRaw("left(b.kd_skpd,7)=left(?,7)", [$kd_skpd]);
+                } else {
+                    $query->where('b.kd_skpd', $kd_skpd);
+                }
+            })
+            ->orderBy('a.no_bukti')
+            ->orderBy('a.kd_sub_kegiatan')
+            ->orderBy('a.kd_rek6')
+            ->get();
+        return response()->json($data);
+    }
+
+    public function simpanLpjTu(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_lpj = $data['no_lpj'] . "/LPJ/TU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
+
+            $cek_lpj = DB::table('trhlpj_tu')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_lpj > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trhlpj_tu')
+                ->insert([
+                    'no_lpj' => $no_lpj,
+                    'tgl_lpj' => $data['tgl_lpj'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'keterangan' => $data['keterangan'],
+                    'tgl_awal' => $data['tgl_sp2d'],
+                    'no_sp2d' => $data['no_sp2d'],
+                    'status' => '0',
+                    'jenis' => '3',
+                ]);
+
+            DB::table('trlpj_tu')
+                ->where(['no_lpj' => $no_lpj, 'kd_bp_skpd' => $data['kd_skpd']])
+                ->delete();
+
+            if (isset($data['detail_lpj'])) {
+                DB::table('trlpj_tu')
+                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
+                        return [
+                            'no_lpj' => $no_lpj,
+                            'kd_skpd' => $data['kd_skpd'],
+                            'no_bukti' => $value['no_bukti'],
+                            'tgl_lpj' => $data['tgl_lpj'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'keterangan' => $data['keterangan'],
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_bp_skpd' => $value['kd_skpd'],
+                            'no_lpj_unit' => $no_lpj,
+                        ];
+                    }, $data['detail_lpj']));
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editLpjTu($no_lpj, $kd_skpd)
+    {
+        $no_lpj = Crypt::decrypt($no_lpj);
+        $kd_skpd = Crypt::decrypt($kd_skpd);
+        $arr = explode("/", $no_lpj);
+
+        $data = [
+            'nomor' => $arr[0],
+            'lpj' => DB::table('trhlpj_tu as a')
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.jenis' => '3', 'a.no_lpj' => $no_lpj])
+                ->first(),
+            'detail_lpj' => DB::table('trhlpj_tu as a')
+                ->join('trlpj_tu as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('b.*')
+                ->where(['a.no_lpj' => $no_lpj, 'a.kd_skpd' => $kd_skpd, 'a.jenis' => '3'])
+                ->get(),
+            'skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first(),
+        ];
+
+        return view('skpd.lpj.lpj_tu.edit')->with($data);
+    }
+
+    public function updateLpjTu(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_lpj = $data['no_lpj'] . "/LPJ/TU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
+
+            $cek = DB::table('trhlpj_tu')
+                ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $data['kd_skpd']])
+                ->count();
+
+            if ($cek > 0 && $no_lpj != $data['no_lpj_simpan']) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trhlpj_tu')
+                ->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])
+                ->delete();
+
+            DB::table('trhlpj_tu')
+                ->insert([
+                    'no_lpj' => $no_lpj,
+                    'tgl_lpj' => $data['tgl_lpj'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'keterangan' => $data['keterangan'],
+                    'tgl_awal' => $data['tgl_sp2d'],
+                    'no_sp2d' => $data['no_sp2d'],
+                    'status' => '0',
+                    'jenis' => '3',
+                ]);
+
+            DB::table('trlpj_tu')
+                ->where(['no_lpj' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])
+                ->delete();
+
+            if (isset($data['detail_lpj'])) {
+                DB::table('trlpj_tu')
+                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
+                        return [
+                            'no_lpj' => $no_lpj,
+                            'kd_skpd' => $data['kd_skpd'],
+                            'no_bukti' => $value['no_bukti'],
+                            'tgl_lpj' => $data['tgl_lpj'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'keterangan' => $data['keterangan'],
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_bp_skpd' => $value['kd_skpd'],
+                            'no_lpj_unit' => $no_lpj,
+                        ];
+                    }, $data['detail_lpj']));
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusLpjTu(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $kd_skpd = $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trlpj_tu')
+                ->where([
+                    'no_lpj' => $no_lpj,
+                    'kd_skpd' => $kd_skpd
+                ])
+                ->delete();
+
+            DB::table('trhlpj_tu')
+                ->where([
+                    'no_lpj' => $no_lpj,
+                    'kd_skpd' => $kd_skpd,
+                ])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
 }
