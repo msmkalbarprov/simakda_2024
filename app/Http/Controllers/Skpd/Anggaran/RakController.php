@@ -82,7 +82,7 @@ class RakController extends Controller
     {
         $jenis_anggaran = $request->jenis_anggaran;
         $kd_skpd = $request->kd_skpd;
-        $jenis_rak = isNull($request->jenis_rak) ? 'nilai' : $request->jenis_rak;
+        $jenis_rak = empty($request->jenis_rak) ? 'nilai' : "nilai_" . $request->jenis_rak;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
 
         $data = DB::table('trdrka as a')
@@ -90,6 +90,7 @@ class RakController extends Controller
             ->selectRaw("(SELECT sum($jenis_rak) FROM trdskpd_ro WHERE kd_sub_kegiatan=a.kd_sub_kegiatan AND kd_rek6=a.kd_rek6 AND kd_skpd=a.kd_skpd) as nilai_rak")
             ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran, 'status_aktif' => '1'])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')
             ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="javascript:void(0);" onclick="detail(' . $row->kd_rek6 . ', \'' . $row->nm_rek6 . '\', \'' . $row->nilai . '\');" class="btn btn-primary btn-sm"><i class="fa fa-list-ul"></i></a>';
             return $btn;
