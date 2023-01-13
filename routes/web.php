@@ -803,11 +803,14 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cari_skpd', [LaporanBendaharaPenerimaanController::class, 'cariSkpd'])->name('skpd.laporan_bendahara_penerimaan.skpd');
             Route::post('cari_bendahara', [LaporanBendaharaPenerimaanController::class, 'cariBendahara'])->name('skpd.laporan_bendahara_penerimaan.bendahara');
             Route::post('cari_pakpa', [LaporanBendaharaPenerimaanController::class, 'cariPaKpa'])->name('skpd.laporan_bendahara_penerimaan.pakpa');
+            Route::post('cari_rekening', [LaporanBendaharaPenerimaanController::class, 'cariRekening'])->name('skpd.laporan_bendahara_penerimaan.rekening');
 
             // buku terima setor
             Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
             // buku SPJ Pendapatan
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
+            // Cek Buku Setoran
+            Route::get('cetak_buku_setoran', [LaporanBendaharaPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
