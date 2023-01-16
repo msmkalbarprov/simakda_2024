@@ -902,7 +902,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('tambah', [PenyetoranController::class, 'tambahPenyetoranIni'])->name('penyetoran_ini.tambah');
                 Route::post('no_terima', [PenyetoranController::class, 'nomorPenyetoranIni'])->name('penyetoran_ini.no_terima');
                 Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
-                Route::get('edit/{no_sts?}', [PenyetoranController::class, 'editPenyetoranIni'])->where('no_sts', '(.*)')->name('penyetoran_ini.edit');
+                Route::get('edit/{no_sts?}/{kd_skpd?}', [PenyetoranController::class, 'editPenyetoranIni'])->name('penyetoran_ini.edit');
                 Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
                 Route::get('cek', [PenyetoranController::class, 'cekPenyetoranIni'])->name('penyetoran_ini.cek');
@@ -1062,9 +1062,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // CETAK BKU (B IX) RINCIAN (SEMENTARA HANYA PERTANGGAL)
             Route::get('rincian', [BendaharaUmumDaerahController::class, 'bkuRincian'])->name('laporan_bendahara_umum.bku_rincian');
         });
+        // PENERIMAAN PAJAK DAERAH
         Route::get('penerimaan_pajak_daerah', [BendaharaUmumDaerahController::class, 'pajakDaerah'])->name('laporan_bendahara_umum.penerimaan_pajak_daerah');
+        // REKAP GAJI
         Route::get('rekap_gaji', [BendaharaUmumDaerahController::class, 'rekapGaji'])->name('laporan_bendahara_umum.rekap_gaji');
+        // BUKU BESAR KASDA
         Route::get('buku_besar_kasda', [BendaharaUmumDaerahController::class, 'rekapBBKasda'])->name('laporan_bendahara_umum.buku_besar_kasda');
+        // CETAK BUKU KAS PEMBANTU PENGELUARAN
+        Route::get('buku_kas_pembantu_pengeluaran', [BendaharaUmumDaerahController::class, 'pembantuPengeluaran'])->name('laporan_bendahara_umum.buku_kas_pembantu_pengeluaran');
+        // RETRIBUSI
+        Route::get('retribusi', [BendaharaUmumDaerahController::class, 'retribusi'])->name('laporan_bendahara_umum.retribusi');
+        // REGISTER CP
+        Route::get('register_cp', [BendaharaUmumDaerahController::class, 'registerCp'])->name('laporan_bendahara_umum.register_cp');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {

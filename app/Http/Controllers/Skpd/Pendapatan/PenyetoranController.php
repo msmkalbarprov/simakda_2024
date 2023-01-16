@@ -577,8 +577,8 @@ class PenyetoranController extends Controller
             ->orderBy('a.no_sts')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            // $btn = '<a href="' . route("penyetoran_ini.edit", Crypt::encrypt($row->no_sts)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($row->no_sts), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -776,46 +776,27 @@ class PenyetoranController extends Controller
         }
     }
 
-    public function editPenyetoranIni($no_sts)
+    public function editPenyetoranIni($no_sts, $kd_skpd)
     {
         $no_sts = Crypt::decrypt($no_sts);
-        $kd_skpd = Auth::user()->kd_skpd;
-
+        $kd_skpd = Crypt::decrypt($kd_skpd);
+        $spjbulan = cek_status_spj_pend($kd_skpd);
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
-                ->get(),
             'daftar_kegiatan' => DB::table('trskpd_pend as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get(),
-            'setor' => DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                })
-                ->select('a.*')
-                ->where([
-                    'a.kd_skpd' => $kd_skpd, 'b.no_sts' => $no_sts
-                ])
+            'sts' => DB::table('trhkasin_pkd as a')
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd,(CASE WHEN month(a.tgl_sts)<=? THEN 1 ELSE 0 END) ketspj,a.user_name", [$spjbulan])
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4', 'a.no_sts' => $no_sts])
+                ->whereRaw("not exists (select * from trdkasin_pkd b where left(kd_rek6,12) =? and a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts) AND keterangan not like '%keterlambatan%'", ['410411010001'])
                 ->first(),
-            'detail_setor' => DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                })
-                ->select('b.*')
-                ->where([
-                    'a.kd_skpd' => $kd_skpd, 'b.no_sts' => $no_sts
-                ])
-                ->get()
+            'detail_sts' => DB::select("SELECT a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama, (select nm_rek6 from ms_rek6 where kd_rek6 = a.kd_rek6) as nm_rek,b.nm_pengirim
+        from trdkasin_pkd a left join ms_pengirim b on a.sumber=b.kd_pengirim and a.kd_skpd=b.kd_skpd where a.no_sts = ?  AND a.kd_skpd = ? and left(a.kd_rek6,1)='4' order by a.no_sts", [$no_sts, $kd_skpd])
         ];
-        // dd($data['setor']);
-        return view('penatausahaan.penyetoran_tahun_lalu.edit')->with($data);
+        dd($data['detail_sts']);
+        return view('penatausahaan.penyetoran_tahun_ini.edit')->with($data);
     }
 
     public function simpanEditPenyetoranIni(Request $request)
