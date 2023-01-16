@@ -903,7 +903,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('no_terima', [PenyetoranController::class, 'nomorPenyetoranIni'])->name('penyetoran_ini.no_terima');
                 Route::post('simpan', [PenyetoranController::class, 'simpanPenyetoranIni'])->name('penyetoran_ini.simpan');
                 Route::get('edit/{no_sts?}/{kd_skpd?}', [PenyetoranController::class, 'editPenyetoranIni'])->name('penyetoran_ini.edit');
-                Route::post('simpan_edit', [PenyetoranController::class, 'simpanEditPenyetoranIni'])->name('penyetoran_ini.simpan_edit');
+                Route::post('update', [PenyetoranController::class, 'updatePenyetoranIni'])->name('penyetoran_ini.update');
                 Route::post('hapus', [PenyetoranController::class, 'hapusPenyetoranIni'])->name('penyetoran_ini.hapus');
                 Route::get('cek', [PenyetoranController::class, 'cekPenyetoranIni'])->name('penyetoran_ini.cek');
                 Route::post('validasi', [PenyetoranController::class, 'validasiPenyetoranIni'])->name('penyetoran_ini.validasi');

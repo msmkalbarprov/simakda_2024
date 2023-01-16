@@ -71,6 +71,8 @@
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="no_simpan" name="no_simpan" required
                                 value="{{ $sts->no_sts }}" readonly>
+                            <input class="form-control" type="text" id="no_kas" name="no_kas" required
+                                value="{{ $sts->no_kas }}" readonly hidden>
                         </div>
                     </div>
                     {{-- No Terima --}}
@@ -125,16 +127,22 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $total = 0;
+                            @endphp
                             @foreach ($detail_sts as $detail)
+                                @php
+                                    $total += $detail->rupiah;
+                                @endphp
                                 <tr>
                                     <td>{{ $detail->no_sts }}</td>
                                     <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->nm_rek }}</td>
-                                    <td>{{ $detail->rupiah }}</td>
+                                    <td>{{ rupiah($detail->rupiah) }}</td>
                                     <td>{{ $detail->sumber }}</td>
                                     <td>{{ $detail->kanal }}</td>
                                     <td>{{ $detail->nama }}</td>
-                                    <td>{{ $detail->nama }}</td>
+                                    <td>{{ $detail->nm_pengirim }}</td>
                                     <td>
                                         <a href="javascript:void(0);"
                                             onclick="deleteData('{{ $detail->no_terima }}','{{ $detail->kd_rek6 }}','{{ $detail->nm_rek }}','{{ $detail->rupiah }}')"
@@ -148,7 +156,7 @@
                         <label for="total" class="col-md-8 col-form-label" style="text-align: right">Jumlah</label>
                         <div class="col-md-4">
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
-                                class="form-control" id="total" name="total">
+                                class="form-control" id="total" name="total" value="{{ rupiah($total) }}">
                         </div>
                     </div>
                 </div>
