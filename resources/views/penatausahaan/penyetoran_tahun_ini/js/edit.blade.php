@@ -15,7 +15,6 @@
             responsive: true,
             ordering: false,
             columns: [{
-                    visible: false,
                     data: 'no_sts',
                     name: 'no_sts'
                 },
@@ -25,7 +24,8 @@
                 },
                 {
                     data: 'nm_rek6',
-                    name: 'nm_rek6'
+                    name: 'nm_rek6',
+                    visible: false,
                 },
                 {
                     data: 'nilai',
@@ -138,6 +138,8 @@
 
         $('#simpan').on('click', function() {
             let no_sts = document.getElementById('no_sts').value;
+            let no_simpan = document.getElementById('no_simpan').value;
+            let no_kas = document.getElementById('no_kas').value;
             let tgl_sts = document.getElementById('tgl_sts').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
@@ -185,6 +187,8 @@
 
             let data = {
                 no_sts,
+                no_simpan,
+                no_kas,
                 tgl_sts,
                 kd_skpd,
                 nm_skpd,
@@ -196,7 +200,7 @@
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('penyetoran_ini.simpan') }}",
+                url: "{{ route('penyetoran_ini.update') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -321,11 +325,11 @@
     function deleteData(no_sts, kd_rek6, nm_rek6, nilai) {
         let tabel = $('#detail_sts').DataTable();
         let total = rupiah(document.getElementById('total').value);
-        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai :  ' + nilai +
+        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6.trim() + '  Nilai :  ' + nilai +
             ' ?');
         if (hapus == true) {
             tabel.rows(function(idx, data, node) {
-                return data.kd_rek6 == kd_rek6
+                return data.kd_rek6 == kd_rek6.trim()
             }).remove().draw();
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
