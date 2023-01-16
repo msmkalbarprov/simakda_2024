@@ -75,7 +75,7 @@
                         $('#no_terima').append(
                             `<option value="${data.no_terima}" data-tgl_terima="${data.tgl_terima}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-kanal="${data.kanal}" data-nama_kanal="${data.nama}" data-nm_pengirim="${data.nm_pengirim}">${data.no_terima} | ${data.kd_rek6} | ${new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.nilai)} | ${data.nm_pengirim}</option>`
+                        }).format(data.nilai)} | ${data.nm_pengirim} | ${data.nama}</option>`
                         );
                     })
                 }
