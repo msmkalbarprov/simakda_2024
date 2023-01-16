@@ -15,9 +15,9 @@
             responsive: true,
             ordering: false,
             columns: [{
-                    visible: false,
                     data: 'no_sts',
-                    name: 'no_sts'
+                    name: 'no_sts',
+                    width: '50px'
                 },
                 {
                     data: 'kd_rek6',
@@ -25,7 +25,8 @@
                 },
                 {
                     data: 'nm_rek6',
-                    name: 'nm_rek6'
+                    name: 'nm_rek6',
+                    visible: false
                 },
                 {
                     data: 'nilai',

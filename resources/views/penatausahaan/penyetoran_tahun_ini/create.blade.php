@@ -105,7 +105,7 @@
                     <table id="detail_sts" class="table" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>No STS</th>
+                                <th>No Terima</th>
                                 <th>Nomor Rekening</th>
                                 <th>Nama Rekening</th>
                                 <th>Rupiah</th>
