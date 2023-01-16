@@ -127,7 +127,7 @@
             }).draw();
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(total + nilai));
+            }).format(total + parseFloat(nilai)));
             $('#no_terima').val(null).change();
         });
 
@@ -329,7 +329,7 @@
             }).remove().draw();
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(total - nilai));
+            }).format(total - parseFloat(nilai)));
         } else {
             return false;
         }
