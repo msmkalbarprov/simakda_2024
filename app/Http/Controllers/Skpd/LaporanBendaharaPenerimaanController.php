@@ -34,13 +34,14 @@ class LaporanBendaharaPenerimaanController extends Controller
         $kd_org     = substr($kd_skpd, 0, 17);
         if ($type == '1') {
             if ($jenis == 'skpd') {
-                $data   = DB::table('ms_organisasi')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
+                $data   = DB::table('ms_skpd')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
             } else {
                 $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
             }
         } else {
             if ($jenis == 'skpd') {
-                $data   = DB::table('ms_organisasi')->where(DB::raw("LEFT(kd_org)"), '=', $kd_org)->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->get();
+                // select kd_org AS kd_skpd, nm_org AS nm_skpd from [ms_skpd] where LEFT(kd_org) = 5.02.0.00.0.00.01)
+                $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select(DB::raw("kd_skpd AS kd_skpd"), DB::raw("nm_skpd AS nm_skpd"))->get();
             } else {
                 $data   = DB::table('ms_skpd')->where(DB::raw("kd_skpd"), '=', $kd_skpd)->select('kd_skpd', 'nm_skpd')->get();
             }

@@ -74,6 +74,7 @@ use App\Http\Controllers\skpd\LaporanBendaharaPenerimaanController;
 use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
 use App\Http\Controllers\skpd\SpjPendapatanController;
 use App\Http\Controllers\Skpd\SppGuController;
+use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -810,7 +811,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // buku SPJ Pendapatan
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
             // Cek Buku Setoran
-            Route::get('cetak_buku_setoran', [LaporanBendaharaPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
+            Route::get('cetak_buku_setoran', [BukuSetoranPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {

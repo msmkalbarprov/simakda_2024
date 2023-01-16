@@ -257,9 +257,17 @@
             //     dropdownParent: $('#modal_cetak'),
             //     theme: 'bootstrap-5'
             // });
+            // onclick card
+        
         });
+        let jenis_skpd = "{{substr(Auth::user()->kd_skpd,18,4)}}";
+        let jenis
+        if(jenis_skpd == '0000'){
+             jenis='skpd';
+        }else{
+             jenis='unit';
+        }
 
-        // onclick card
         $('#lapbku').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
@@ -273,14 +281,14 @@
             document.getElementById('bendahara1').hidden = false; // Hide
             document.getElementById('pa_kpa1').hidden = false; // Hide
             document.getElementById('rekening2').hidden = true; // Hide
-            cari_skpd(kd_skpd, 'unit');
+            cari_skpd(kd_skpd, jenis);
         });
 
         $('#lapspj').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
             $("#labelcetak").html("SPJ Pendapatan");
-            cari_skpd(kd_skpd, 'unit');
+            cari_skpd(kd_skpd, jenis);
             document.getElementById('jenisanggaran').hidden = false; // Hide
             document.getElementById('jenis1').hidden = false; // Hide
             document.getElementById('spasi1').hidden = false; // Hide
@@ -334,7 +342,6 @@
         });
 
         function cari_skpd(kd_skpd, jenis) {
-            // alert(jenis);
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara_penerimaan.skpd') }}",
                 type: "POST",
@@ -547,7 +554,7 @@
                 window.open(url.toString(), "_blank");
 
             } else if (jenis_cetak == 'Cek Buku Setoran') {
-                let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan') }}");
+                let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tanggal1", tanggal1);
