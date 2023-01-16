@@ -334,7 +334,7 @@
         });
 
         function cari_skpd(kd_skpd, jenis) {
-            alert(jenis);
+            // alert(jenis);
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara_penerimaan.skpd') }}",
                 type: "POST",
