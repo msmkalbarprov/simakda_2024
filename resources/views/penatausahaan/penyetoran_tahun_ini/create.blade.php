@@ -1,12 +1,12 @@
 @extends('template.app')
-@section('title', 'Input Data Penyetoran Atas Penerimaan Tahun Lalu | SIMAKDA')
+@section('title', 'Input Data Penyetoran Atas Penerimaan Tahun Ini | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input Data Penyetoran Atas Penerimaan Tahun Lalu
+                    Input Data Penyetoran Atas Penerimaan Tahun Ini
                 </div>
                 <div class="card-body">
                     @csrf
