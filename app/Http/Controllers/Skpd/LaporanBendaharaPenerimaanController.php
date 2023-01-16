@@ -42,7 +42,7 @@ class LaporanBendaharaPenerimaanController extends Controller
             if ($jenis == 'skpd') {
                 $data   = DB::table('ms_organisasi')->where(DB::raw("LEFT(kd_org)"), '=', $kd_org)->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->get();
             } else {
-                $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd)"), '=', $kd_org)->select('kd_skpd', 'nm_skpd')->get();
+                $data   = DB::table('ms_skpd')->where(DB::raw("kd_skpd"), '=', $kd_skpd)->select('kd_skpd', 'nm_skpd')->get();
             }
         }
 
