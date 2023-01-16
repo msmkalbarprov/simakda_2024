@@ -2819,8 +2819,9 @@ function selisih_angkas()
 
     if (empty($kolom)) {
         return [
-            'status_ang' => '0',
-            'selisih_angkas' => '0'
+            'status_ang'        => $status_ang,
+            'status_angkas'     => '0',
+            'selisih_angkas'    => '0'
         ];
     } else {
         $kolom1 = $kolom->kode;
@@ -2833,8 +2834,9 @@ function selisih_angkas()
             ->whereRaw("anggaran-ISNULL(angkas,0) <> 0")
             ->count();
         return [
-            'status_ang' => $status_ang,
-            'selisih_angkas' => $selisih_angkas
+            'status_ang'        => $status_ang,
+            'status_angkas'     => $status_angkas,
+            'selisih_angkas'    => $selisih_angkas
         ];
     }
 }
