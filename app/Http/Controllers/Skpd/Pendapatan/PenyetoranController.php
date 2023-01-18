@@ -609,7 +609,7 @@ class PenyetoranController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,b.nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
-            ->whereRaw("a.kd_skpd=? AND a.no_terima+'.'+kanal NOT IN(select ISNULL(no_terima,'')+'.'+ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=?", [$kd_skpd, $kd_skpd, $tgl_terima])
+            ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=?", [$kd_skpd, $kd_skpd, $tgl_terima])
             ->orderBy('b.nm_pengirim')
             ->orderBy('a.tgl_terima')
             ->orderBy('a.kd_rek6')
@@ -717,7 +717,7 @@ class PenyetoranController extends Controller
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
                                 'no_terima' => $value['no_sts'],
                                 'sumber' => $value['sumber'],
-                                'kanal' => empty($value['kanal']) ? '' : $value['kanal'],
+                                'kanal' => !isset($value['kanal']) ? '' : $value['kanal'],
                             ];
                         },
                         $data['detail_sts']
@@ -912,7 +912,7 @@ class PenyetoranController extends Controller
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
                                 'no_terima' => $value['no_sts'],
                                 'sumber' => $value['sumber'],
-                                'kanal' => empty($value['kanal']) ? '' : $value['kanal'],
+                                'kanal' => !isset($value['kanal']) ? '' : $value['kanal'],
                             ];
                         },
                         $data['detail_sts']
