@@ -717,7 +717,7 @@ class PenyetoranController extends Controller
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
                                 'no_terima' => $value['no_sts'],
                                 'sumber' => $value['sumber'],
-                                'kanal' => $value['kanal'],
+                                'kanal' => empty($value['kanal']) ? '' : $value['kanal'],
                             ];
                         },
                         $data['detail_sts']
@@ -912,7 +912,7 @@ class PenyetoranController extends Controller
                                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
                                 'no_terima' => $value['no_sts'],
                                 'sumber' => $value['sumber'],
-                                'kanal' => $value['kanal'],
+                                'kanal' => empty($value['kanal']) ? '' : $value['kanal'],
                             ];
                         },
                         $data['detail_sts']
