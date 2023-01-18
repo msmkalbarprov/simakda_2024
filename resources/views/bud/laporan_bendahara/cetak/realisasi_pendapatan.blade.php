@@ -123,14 +123,14 @@
                 @endphp
                 @if (Str::length($data->urut2) > 12)
                     <tr>
-                        <td><b>{{ $data->urut2 }}</b></td>
-                        <td><b>{{ $data->nm_skpd }}</b></td>
-                        <td class="angka"><b>{{ rupiah($data->anggaran) }}</b></td>
-                        <td class="angka"><b>{{ rupiah($data->bulan_lalu) }}</b></td>
-                        <td class="angka"><b>{{ rupiah($data->bulan_ini) }}</b></td>
-                        <td class="angka"><b>{{ rupiah($data->sd_bulan_ini) }}</b></td>
-                        <td class="angka"><b>{{ rupiah($sisa) }}</b></td>
-                        <td class="angka"><b>{{ rupiah($persen) }}</b></td>
+                        <td>{{ dotrek($data->kd_rek6) }}.{{ $data->kd_skpd }}</td>
+                        <td>{{ $data->nm_skpd }}</td>
+                        <td class="angka">{{ rupiah($data->anggaran) }}</td>
+                        <td class="angka">{{ rupiah($data->bulan_lalu) }}</td>
+                        <td class="angka">{{ rupiah($data->bulan_ini) }}</td>
+                        <td class="angka">{{ rupiah($data->sd_bulan_ini) }}</td>
+                        <td class="angka">{{ rupiah($sisa) }}</td>
+                        <td class="angka">{{ rupiah($persen) }}</td>
                         <td></td>
                     </tr>
                 @elseif (Str::length($data->urut2) <= 12 && Str::length($data->urut2) > 1)
