@@ -123,7 +123,7 @@
                 @endphp
                 @if (Str::length($data->urut2) > 12)
                     <tr>
-                        <td>{{ dotrek($data->kd_rek6) }}.{{ $data->kd_skpd }}</td>
+                        <td>{{ dotrek($data->kd_rek) }}.{{ $data->kd_skpd }}</td>
                         <td>{{ $data->nm_skpd }}</td>
                         <td class="angka">{{ rupiah($data->anggaran) }}</td>
                         <td class="angka">{{ rupiah($data->bulan_lalu) }}</td>
