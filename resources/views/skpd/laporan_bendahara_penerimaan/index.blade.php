@@ -149,7 +149,7 @@
                             </select>
                         </div>
 
-                        @if ( substr(Auth::user()->kd_skpd,18,4)=='0000')
+                        @if (substr(Auth::user()->kd_skpd, 18, 4) == '0000')
                             <div class="col-md-4" id="jenis1">
                                 <label for="jenis_cetak" class="form-label">Jenis</label>
                                 <select name="jenis_cetak" class="form-control select2-modal" id="jenis_cetak">
@@ -157,7 +157,7 @@
                                     <option value="org">Organisasi</option>
                                     <option value="skpd">SKPD/Unit</option>
                                 </select>
-                            </div>    
+                            </div>
                         @else
                             <div class="col-md-4" id="jenis1">
                                 <label for="jenis_cetak" class="form-label">Jenis</label>
@@ -165,7 +165,7 @@
                                     <option value="" selected disabled>Silahkan Pilih</option>
                                     <option value="skpd">SKPD/Unit</option>
                                 </select>
-                            </div>    
+                            </div>
                         @endif
                         <div class="col-md-2" id="spasi1">
                             <label for="spasi" class="form-label">Spasi</label>
@@ -258,14 +258,14 @@
             //     theme: 'bootstrap-5'
             // });
             // onclick card
-        
+
         });
-        let jenis_skpd = "{{substr(Auth::user()->kd_skpd,18,4)}}";
+        let jenis_skpd = "{{ substr(Auth::user()->kd_skpd, 18, 4) }}";
         let jenis
-        if(jenis_skpd == '0000'){
-             jenis='skpd';
-        }else{
-             jenis='unit';
+        if (jenis_skpd == '0000') {
+            jenis = 'skpd';
+        } else {
+            jenis = 'unit';
         }
 
         $('#lapbku').on('click', function() {
