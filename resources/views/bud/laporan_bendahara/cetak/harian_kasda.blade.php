@@ -170,9 +170,30 @@
                     Posisi Kas (H)
                 </td>
                 <td style="border-right: hidden"></td>
-                <td class="angka">{{ rupiah($total_masuk - $total_keluar) }}</td>
+                <td class="angka">
+                    {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+                </td>
             </tr>
         </tbody>
+    </table>
+
+    <table style="width: 100%">
+        <tr>
+            <td>Rekapitulasi posisi kas di BUD</td>
+        </tr>
+        <tr>
+            <td>Saldo Bank 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            </td>
+        </tr>
+        <tr>
+            <td>Saldo Bank 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: -</td>
+        </tr>
+        <tr>
+            <td>Total Saldo Kas &nbsp;&nbsp;&nbsp;: Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            </td>
+        </tr>
     </table>
 
     @if (isset($tanda_tangan))

@@ -4926,4 +4926,628 @@ class BendaharaUmumDaerahController extends Controller
 
         return view('bud.laporan_bendahara.cetak.harian_kasda')->with($data);
     }
+
+    public function uyhd(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        if ($pilihan == '1') {
+            $uyhd = DB::select("SELECT * from(
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						ISNULL(e.nm_pengirim, '') nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						c.nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					UNION ALL
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						''nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						b.keterangan nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+
+					UNION ALL
+					SELECT
+							1 AS urut,
+							'' no_sts,
+							'' kd_skpd,
+							nm_skpd,
+							'' kd_sub_kegiatan,
+							'' kd_rek6,
+							[no] as no_kas,
+							'' tgl_kas,
+							'' nm_pengirim,
+							'' nm_rek6,
+							0 rupiah
+						FROM
+							trkasout_ppkd
+						WHERE
+							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
+						UNION ALL
+						SELECT
+								2 AS urut,
+								[no] as no_sts,
+								kd_skpd,
+								'' nm_skpd,
+								''kd_sub_kegiatan,
+								kd_rek kd_rek6,
+								[no] no_kas,
+								[tanggal] tgl_kas,
+								'' nm_pengirim,
+								keterangan+' '+nm_rek nm_rek6,
+								nilai rupiah
+							FROM
+							trkasout_ppkd
+							WHERE
+							tanggal = ?
+							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
+					) a
+
+					order by cast(no_kas as int),urut", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+        } elseif ($pilihan == '2') {
+            $uyhd = DB::select("SELECT * from(
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						ISNULL(e.nm_pengirim, '') nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						c.nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					UNION ALL
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						''nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						b.keterangan nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					and b.keterangan like '%(UYHD)%'
+
+					UNION ALL
+					SELECT
+							1 AS urut,
+							'' no_sts,
+							'' kd_skpd,
+							nm_skpd,
+							'' kd_sub_kegiatan,
+							'' kd_rek6,
+							[no] as no_kas,
+							'' tgl_kas,
+							'' nm_pengirim,
+							'' nm_rek6,
+							0 rupiah
+						FROM
+							trkasout_ppkd
+						WHERE
+							tanggal BETWEEN ? AND ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+						UNION ALL
+						SELECT
+								2 AS urut,
+								[no] as no_sts,
+								kd_skpd,
+								'' nm_skpd,
+								''kd_sub_kegiatan,
+								kd_rek kd_rek6,
+								[no] no_kas,
+								[tanggal] tgl_kas,
+								'' nm_pengirim,
+								keterangan+' '+nm_rek nm_rek6,
+								nilai rupiah
+							FROM
+							trkasout_ppkd
+							WHERE
+							tanggal BETWEEN ? AND ?
+							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+					) a
+
+					order by cast(no_kas as int),urut", [$periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2,]);
+        }
+
+        if ($pilihan == '1') {
+            $uyhd_lalu = collect(DB::select("SELECT sum(rupiah) as nilai from(
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						ISNULL(e.nm_pengirim, '') nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas <=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						c.nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					WHERE b.tgl_kas<=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102')
+					and b.keterangan like '%(UYHD)%'
+
+					UNION ALL
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						''nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102')
+					and b.keterangan like '%(UYHD)%'
+					GROUP BY b.no_kas,f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						b.keterangan nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102')
+					and b.keterangan like '%(UYHD)%'
+
+					UNION ALL
+					SELECT
+							1 AS urut,
+							'' no_sts,
+							'' kd_skpd,
+							nm_skpd,
+							'' kd_sub_kegiatan,
+							'' kd_rek6,
+							[no] as no_kas,
+							'' tgl_kas,
+							'' nm_pengirim,
+							'' nm_rek6,
+							0 rupiah
+						FROM
+							trkasout_ppkd
+						WHERE
+							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102')
+						UNION ALL
+						SELECT
+								2 AS urut,
+								[no] as no_sts,
+								kd_skpd,
+								'' nm_skpd,
+								''kd_sub_kegiatan,
+								kd_rek kd_rek6,
+								[no] no_kas,
+								[tanggal] tgl_kas,
+								'' nm_pengirim,
+								keterangan+' '+nm_rek nm_rek6,
+								nilai rupiah
+							FROM
+							trkasout_ppkd
+							WHERE
+							tanggal <= ?
+							AND LEFT(kd_rek,4) IN ('4102')
+					) a", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
+        } elseif ($pilihan == '2') {
+            $uyhd_lalu = collect(DB::select("SELECT SUM(rupiah) nilai from(
+			SELECT
+				1 as urut,
+				''no_sts,
+				''kd_skpd,
+				f.nm_skpd,
+				''kd_sub_kegiatan,
+				''kd_rek6,
+				b.no_kas,
+				''tgl_kas,
+				ISNULL(e.nm_pengirim, '') nm_pengirim,
+				''nm_rek6,
+				0 rupiah
+			FROM
+				trdkasin_ppkd a
+			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+			LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+			INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
+			and b.keterangan like '%(UYHD)%'
+			GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+			UNION ALL
+			SELECT
+				2 as urut,
+				b.no_sts,
+				a.kd_skpd,
+				'' nm_skpd,
+				a.kd_sub_kegiatan,
+				a.kd_rek6,
+				b.no_kas,
+				b.tgl_kas,
+				'' nm_pengirim,
+				c.nm_rek6,
+				a.rupiah
+			FROM
+				trdkasin_ppkd a
+			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+			LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
+			and b.keterangan like '%(UYHD)%'
+			UNION ALL
+			SELECT
+				1 as urut,
+				''no_sts,
+				''kd_skpd,
+				f.nm_skpd,
+				''kd_sub_kegiatan,
+				''kd_rek6,
+				b.no_kas,
+				''tgl_kas,
+				''nm_pengirim,
+				''nm_rek6,
+				0 rupiah
+			FROM
+				trdkasin_ppkd a
+			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+			INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+			and b.keterangan like '%(UYHD)%'
+			GROUP BY b.no_kas,f.nm_skpd
+			UNION ALL
+			SELECT
+				2 as urut,
+				b.no_sts,
+				a.kd_skpd,
+				'' nm_skpd,
+				a.kd_sub_kegiatan,
+				a.kd_rek6,
+				b.no_kas,
+				b.tgl_kas,
+				'' nm_pengirim,
+				b.keterangan nm_rek6,
+				a.rupiah
+			FROM
+				trdkasin_ppkd a
+			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+			and b.keterangan like '%(UYHD)%'
+
+			UNION ALL
+			SELECT
+					1 AS urut,
+					'' no_sts,
+					'' kd_skpd,
+					nm_skpd,
+					'' kd_sub_kegiatan,
+					'' kd_rek6,
+					[no] as no_kas,
+					'' tgl_kas,
+					'' nm_pengirim,
+					'' nm_rek6,
+					0 rupiah
+				FROM
+					trkasout_ppkd
+				WHERE
+					tanggal < ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+				UNION ALL
+				SELECT
+						2 AS urut,
+						[no] as no_sts,
+						kd_skpd,
+						'' nm_skpd,
+						''kd_sub_kegiatan,
+						kd_rek kd_rek6,
+						[no] no_kas,
+						[tanggal] tgl_kas,
+						'' nm_pengirim,
+						keterangan+' '+nm_rek nm_rek6,
+						nilai rupiah
+					FROM
+					trkasout_ppkd
+					WHERE
+					tanggal < ?
+					AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+			) a", [$periode1, $periode1, $periode1, $periode1, $periode1, $periode1]))->first();
+        }
+
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_uyhd' => $uyhd,
+            'uyhd_lalu' => $uyhd_lalu->nilai,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.uyhd')->with($data);
+    }
+
+    public function koreksiPengeluaran(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $koreksi = DB::table('trkoreksi_pengeluaran')
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN TANGGAL
+                if ($pilihan == '1') {
+                    $query->where('tanggal', $tgl);
+                } elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->orderBy('tanggal')
+            ->orderBy('no')
+            ->get();
+
+        $koreksi_lalu = DB::table('trkoreksi_pengeluaran')
+            ->selectRaw("sum(nilai) as nilai")
+            ->where(function ($query) use ($pilihan, $tgl, $periode1) {
+                // PILIHAN TANGGAL
+                if ($pilihan == '1') {
+                    $query->where('tanggal', '<', $tgl);
+                } elseif ($pilihan == '2') {
+                    $query->where('tanggal', '<', $periode1);
+                }
+            })
+            ->first();
+
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_koreksi' => $koreksi,
+            'koreksi_lalu' => $koreksi_lalu->nilai,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.koreksi_pengeluaran')->with($data);
+    }
+
+    public function koreksiPenerimaan2(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $koreksi = DB::table('tkoreksi_penerimaan')
+            ->whereIn('jenis', ['1'])
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN TANGGAL
+                if ($pilihan == '1') {
+                    $query->where('tanggal', $tgl);
+                } elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->get();
+
+        $koreksi_lalu = DB::table('tkoreksi_penerimaan')
+            ->whereIn('jenis', ['1'])
+            ->selectRaw("sum(nilai) as nilai")
+            ->where(function ($query) use ($pilihan, $tgl, $periode1) {
+                // PILIHAN TANGGAL
+                if ($pilihan == '1') {
+                    $query->where('tanggal', '<', $tgl);
+                } elseif ($pilihan == '2') {
+                    $query->where('tanggal', '<', $periode1);
+                }
+            })
+            ->first();
+
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_koreksi' => $koreksi,
+            'koreksi_lalu' => $koreksi_lalu->nilai,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.koreksi_penerimaan2')->with($data);
+    }
 }

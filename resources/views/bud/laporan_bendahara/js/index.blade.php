@@ -106,6 +106,21 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-uyhd').select2({
+            dropdownParent: $('#modal_uyhd .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        $('.select2-koreksi_pengeluaran').select2({
+            dropdownParent: $('#modal_koreksi_pengeluaran .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        $('.select2-koreksi_penerimaan2').select2({
+            dropdownParent: $('#modal_koreksi_penerimaan2 .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // CETAKAN REALISASI PENDAPATAN
         $('#pilih_skpd_realisasi_pendapatan').hide();
         $('#pilih_unit_realisasi_pendapatan').hide();
@@ -2050,5 +2065,221 @@
             window.open(url.toString(), "_blank");
         });
         //CETAKAN KAS HARIAN KASDA
+
+        // CETAKAN UYHD
+        $('#pilih_tgl_uyhd').hide();
+        $('#pilih_periode_uyhd').hide();
+
+        $('#pilihan_tgl_uyhd').on('click', function() {
+            $('#pilih_periode_uyhd').hide();
+            $('#pilih_tgl_uyhd').show();
+        });
+
+        $('#pilihan_periode_uyhd').on('click', function() {
+            $('#pilih_tgl_uyhd').hide();
+            $('#pilih_periode_uyhd').show();
+        });
+
+        $('#uyhd').on('click', function() {
+            $('#modal_uyhd').modal('show');
+        });
+
+        $('.cetak_uyhd').on('click', function() {
+            let pilih_tgl = document.getElementById('pilihan_tgl_uyhd').checked;
+            let pilih_periode = document.getElementById('pilihan_periode_uyhd')
+                .checked;
+
+            if (pilih_tgl == false) {
+                if (pilih_periode == false) {
+                    alert('Silahkan Pilih Tanggal atau Periode!');
+                    return;
+                }
+            }
+
+            let tgl = document.getElementById('tgl_uyhd').value;
+            let periode1 = document.getElementById('periode1_uyhd').value;
+            let periode2 = document.getElementById('periode2_uyhd').value;
+            let halaman = document.getElementById('halaman_uyhd').value;
+            let spasi = document.getElementById('spasi_uyhd').value;
+            let ttd = document.getElementById('ttd_uyhd').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (pilih_tgl) {
+                if (!tgl) {
+                    alert('Silahkan Pilih Tanggal!');
+                    return;
+                }
+            }
+            if (pilih_periode) {
+                if (!periode1 || !periode2) {
+                    alert('Silahkan Pilih Periode!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (pilih_tgl) {
+                pilihan = '1';
+            } else if (pilih_periode) {
+                pilihan = '2';
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.uyhd') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("tgl", tgl);
+            searchParams.append("halaman", halaman);
+            searchParams.append("spasi", spasi);
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+        // CETAKAN UYHD
+
+        // CETAKAN KOREKSI PENGELUARAN
+        $('#pilih_tgl_koreksi_pengeluaran').hide();
+        $('#pilih_periode_koreksi_pengeluaran').hide();
+
+        $('#pilihan_tgl_koreksi_pengeluaran').on('click', function() {
+            $('#pilih_periode_koreksi_pengeluaran').hide();
+            $('#pilih_tgl_koreksi_pengeluaran').show();
+        });
+
+        $('#pilihan_periode_koreksi_pengeluaran').on('click', function() {
+            $('#pilih_tgl_koreksi_pengeluaran').hide();
+            $('#pilih_periode_koreksi_pengeluaran').show();
+        });
+
+        $('#koreksi_pengeluaran').on('click', function() {
+            $('#modal_koreksi_pengeluaran').modal('show');
+        });
+
+        $('.cetak_koreksi_pengeluaran').on('click', function() {
+            let pilih_tgl = document.getElementById('pilihan_tgl_koreksi_pengeluaran').checked;
+            let pilih_periode = document.getElementById('pilihan_periode_koreksi_pengeluaran')
+                .checked;
+
+            if (pilih_tgl == false) {
+                if (pilih_periode == false) {
+                    alert('Silahkan Pilih Tanggal atau Periode!');
+                    return;
+                }
+            }
+
+            let tgl = document.getElementById('tgl_koreksi_pengeluaran').value;
+            let periode1 = document.getElementById('periode1_koreksi_pengeluaran').value;
+            let periode2 = document.getElementById('periode2_koreksi_pengeluaran').value;
+            let halaman = document.getElementById('halaman_koreksi_pengeluaran').value;
+            let spasi = document.getElementById('spasi_koreksi_pengeluaran').value;
+            let ttd = document.getElementById('ttd_koreksi_pengeluaran').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (pilih_tgl) {
+                if (!tgl) {
+                    alert('Silahkan Pilih Tanggal!');
+                    return;
+                }
+            }
+            if (pilih_periode) {
+                if (!periode1 || !periode2) {
+                    alert('Silahkan Pilih Periode!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (pilih_tgl) {
+                pilihan = '1';
+            } else if (pilih_periode) {
+                pilihan = '2';
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.koreksi_pengeluaran') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("tgl", tgl);
+            searchParams.append("halaman", halaman);
+            searchParams.append("spasi", spasi);
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+        // CETAKAN KOREKSI PENGELUARAN
+
+        // CETAKAN KOREKSI PENERIMAAN
+        $('#pilih_tgl_koreksi_penerimaan2').hide();
+        $('#pilih_periode_koreksi_penerimaan2').hide();
+
+        $('#pilihan_tgl_koreksi_penerimaan2').on('click', function() {
+            $('#pilih_periode_koreksi_penerimaan2').hide();
+            $('#pilih_tgl_koreksi_penerimaan2').show();
+        });
+
+        $('#pilihan_periode_koreksi_penerimaan2').on('click', function() {
+            $('#pilih_tgl_koreksi_penerimaan2').hide();
+            $('#pilih_periode_koreksi_penerimaan2').show();
+        });
+
+        $('#koreksi_penerimaan2').on('click', function() {
+            $('#modal_koreksi_penerimaan2').modal('show');
+        });
+
+        $('.cetak_koreksi_penerimaan2').on('click', function() {
+            let pilih_tgl = document.getElementById('pilihan_tgl_koreksi_penerimaan2').checked;
+            let pilih_periode = document.getElementById('pilihan_periode_koreksi_penerimaan2')
+                .checked;
+
+            if (pilih_tgl == false) {
+                if (pilih_periode == false) {
+                    alert('Silahkan Pilih Tanggal atau Periode!');
+                    return;
+                }
+            }
+
+            let tgl = document.getElementById('tgl_koreksi_penerimaan2').value;
+            let periode1 = document.getElementById('periode1_koreksi_penerimaan2').value;
+            let periode2 = document.getElementById('periode2_koreksi_penerimaan2').value;
+            let halaman = document.getElementById('halaman_koreksi_penerimaan2').value;
+            let spasi = document.getElementById('spasi_koreksi_penerimaan2').value;
+            let ttd = document.getElementById('ttd_koreksi_penerimaan2').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (pilih_tgl) {
+                if (!tgl) {
+                    alert('Silahkan Pilih Tanggal!');
+                    return;
+                }
+            }
+            if (pilih_periode) {
+                if (!periode1 || !periode2) {
+                    alert('Silahkan Pilih Periode!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (pilih_tgl) {
+                pilihan = '1';
+            } else if (pilih_periode) {
+                pilihan = '2';
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.koreksi_penerimaan2') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("tgl", tgl);
+            searchParams.append("halaman", halaman);
+            searchParams.append("spasi", spasi);
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+        // CETAKAN KOREKSI PENERIMAAN
     });
 </script>

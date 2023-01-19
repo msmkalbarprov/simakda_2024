@@ -1098,6 +1098,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('koreksi_penerimaan', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan'])->name('laporan_bendahara_umum.koreksi_penerimaan');
         // KAS HARIAN KASDA
         Route::get('harian_kasda', [BendaharaUmumDaerahController::class, 'harianKasda'])->name('laporan_bendahara_umum.harian_kasda');
+        // UYHD
+        Route::get('uyhd', [BendaharaUmumDaerahController::class, 'uyhd'])->name('laporan_bendahara_umum.uyhd');
+        // KOREKSI PENGELUARAN
+        Route::get('koreksi_pengeluaran', [BendaharaUmumDaerahController::class, 'koreksiPengeluaran'])->name('laporan_bendahara_umum.koreksi_pengeluaran');
+        // KOREKSI PENERIMAAN
+        Route::get('koreksi_penerimaan2', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan2'])->name('laporan_bendahara_umum.koreksi_penerimaan2');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
