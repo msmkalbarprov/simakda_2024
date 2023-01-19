@@ -9,29 +9,34 @@
     <style>
         #header tr>td {
             font-weight: bold;
-            text-align: center
+            text-align: center;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
         }
 
         #tabel_angkas,
         th,
         td {
             border-collapse: collapse;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
         }
 
         .angka {
             text-align: right;
-            vertical-align: top
+            vertical-align: top;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
         }
 
         .ttd1 {
             border-left: hidden;
             border-bottom: hidden;
-            border-right: hidden
+            border-right: hidden;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
         }
 
         .ttd2 {
             border-bottom: hidden;
-            border-right: hidden
+            border-right: hidden;
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
         }
     </style>
 </head>

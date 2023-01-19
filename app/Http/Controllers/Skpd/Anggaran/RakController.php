@@ -3415,11 +3415,11 @@ class RakController extends Controller
         $view = view('skpd.cetak_rak.per_sub_rincian_objek.cetakan')->with($data);
 
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view)
-                ->setOption('page-width', 215)
-                ->setOption('page-height', 330)
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')
+                
                 ->setOption('margin-top', $margin);
             return $pdf->stream('laporan.pdf');
+            
         } elseif ($jenis_print == 'excel') {
             header("Cache-Control:no-cache,no-store,must-revalidate");
             header("Content-Type:application/vnd.ms-excel");
