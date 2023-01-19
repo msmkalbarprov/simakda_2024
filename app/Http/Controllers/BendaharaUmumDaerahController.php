@@ -2840,6 +2840,328 @@ class BendaharaUmumDaerahController extends Controller
         return view('bud.laporan_bendahara.cetak.register_cp')->with($data);
     }
 
+    public function registerCpRinci(Request $request)
+    {
+        $skpd_global = Auth::user()->kd_skpd;
+        $pilihan = $request->pilihan;
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $ttd = $request->ttd;
+        $kd_skpd = $request->kd_skpd;
+        $kd_unit = $request->kd_unit;
+        $jenis_print = $request->jenis_print;
+
+        if ($ttd) {
+            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+        } else {
+            $tanda_tangan = null;
+        }
+
+        if ($pilihan == '1') {
+            $register_cp = DB::select("SELECT a.kd_skpd,a.nm_skpd
+                        ,ISNULL(hkpg,0) hkpg
+                        ,ISNULL(pot_lain,0) pot_lain
+                        ,ISNULL(cp,0) cp
+                        ,ISNULL(ls_peg,0) ls_peg
+                        ,ISNULL(ls_brng,0) ls_brng
+                        ,ISNULL(ls_modal,0) ls_modal
+                        ,ISNULL(phl,0) ls_phl
+                        ,ISNULL(gu,0) gu
+                        ,ISNULL(up_gu_peg,0) up_gu_peg
+                        ,ISNULL(up_gu_brng,0) up_gu_brng
+                        ,ISNULL(up_gu_modal,0) up_gu_modal
+                        ,ISNULL(total,0) total
+                        FROM ms_skpd a LEFT JOIN
+                    (SELECT kd_skpd
+                    ,SUM(CASE  WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg
+                    ,SUM(CASE  WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain
+                    ,SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp
+                    ,SUM(CASE  WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg
+                    ,SUM(  CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng
+                    ,SUM(   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) not in ('5201','5202','5203','5204','5205','5206','5102','5101') THEN    nilai ELSE 0 END) AS phl
+                    ,SUM(  CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal
+                    ,sum(CASE   WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END)as gu
+                    ,SUM (  CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS up_gu_peg
+                    ,SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS up_gu_brng
+                    ,SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS up_gu_modal
+                    ,SUM (nilai) AS total
+                    FROM
+                    (
+                    SELECT a.no_kas,a.tgl_kas, a.kd_skpd,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+                    FROM (
+                    SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, LEFT(kd_rek6,4) as kd_rek, SUM(rupiah) as nilai FROM trhkasin_ppkd a
+                    INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+                    WHERE jns_trans IN ('5','1')
+                    GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd,LEFT(kd_rek6,4)) a
+                    LEFT JOIN
+                    (SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+                    INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+                    WHERE jns_trans IN ('5','1')
+                    GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+                    ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+                    WHERE (tgl_kas BETWEEN ? AND ?)
+                    GROUP BY a.kd_skpd) b
+                    ON a.kd_skpd=b.kd_skpd
+                    order by a.kd_skpd", [$tgl1, $tgl2]);
+        } else if ($pilihan == '2') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,
+						SUM ( CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS up_gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS tu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS tu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS tu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus,kd_rek
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,kd_rek6 as kd_rek, SUM(rupiah) as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd,keterangan,kd_rek6) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							AND left(kd_skpd,17)=?
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan
+
+							UNION ALL
+
+							SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,
+						SUM (    CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS up_gu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS up_gu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS up_gu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							AND left(kd_skpd,17)=?
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan,kd_sub_kegiatan,kd_rek
+							ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $kd_skpd, $tgl1, $tgl2, $kd_skpd]);
+        } else if ($pilihan == '3') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,
+						SUM ( CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS up_gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS tu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS tu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS tu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus,kd_rek
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,kd_rek6 as kd_rek, SUM(rupiah) as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd,keterangan,kd_rek6) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							AND left(kd_skpd,22)=?
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan
+
+							UNION ALL
+
+							SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,
+						SUM (    CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS up_gu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS up_gu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS up_gu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							AND left(kd_skpd,22)=?
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan,kd_sub_kegiatan,kd_rek
+							ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $kd_unit, $tgl1, $tgl2, $kd_unit]);
+        } else if ($pilihan == '4') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,
+						SUM ( CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS up_gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS tu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS tu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS tu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus,kd_rek
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,kd_rek6 as kd_rek, SUM(rupiah) as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd,keterangan,kd_rek6) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan
+
+							UNION ALL
+
+							SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,
+						SUM (    CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '1' THEN nilai ELSE 0 END) AS hkpg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus = '2' THEN nilai ELSE 0 END) AS pot_lain,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '1' AND pot_khusus NOT IN ('1','2') THEN   nilai ELSE 0 END) AS cp,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) IN ('5101') THEN nilai ELSE 0 END) AS ls_peg,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) = '5102' THEN    nilai ELSE 0 END) AS ls_brng,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai ELSE 0 END) AS ls_modal,
+                        SUM (   CASE    WHEN jns_trans IN ('1','5') AND jns_cp = '2' AND LEFT(kd_rek,4) in ('5105') THEN nilai ELSE 0 END) AS ls_phl,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) = '1101' THEN    nilai ELSE 0 END) AS gu,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5101') THEN nilai    ELSE 0 END) AS up_gu_peg,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) IN ('5102') THEN nilai    ELSE 0 END) AS up_gu_brng,
+                        SUM (   CASE    WHEN jns_trans = '1'    AND jns_cp = '3' AND LEFT(kd_rek,4) in ('5201','5202','5203','5204','5205','5206') THEN  nilai    ELSE 0 END) AS up_gu_modal,
+                        SUM (nilai) AS total
+							 FROM(
+							SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+							FROM (
+							SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+							FROM trhkasin_ppkd a
+							INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+							WHERE jns_trans IN ('5','1')) a
+							LEFT JOIN
+							(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+							INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+							WHERE jns_trans IN ('5','1')
+							GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+							ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+							WHERE (tgl_kas  BETWEEN ? AND ?)
+							GROUP BY no_kas,tgl_kas,kd_skpd,keterangan,kd_sub_kegiatan,kd_rek
+							ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $tgl1, $tgl2]);
+        }
+
+        if ($pilihan == '1') {
+            $register_lalu = 0;
+        } elseif ($pilihan == '2') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?) AND LEFT(kd_skpd,17)=?", [$tgl1, $kd_skpd]))->first();
+        } elseif ($pilihan == '3') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?) AND LEFT(kd_skpd,22)=?", [$tgl1, $kd_unit]))->first();
+        } elseif ($pilihan == '4') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?)", [$tgl1]))->first();
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanda_tangan' => $tanda_tangan,
+            'tanggal1' => $tgl1,
+            'tanggal2' => $tgl2,
+            'pilihan' => $pilihan,
+            'data_register' => $register_cp,
+            'total_lalu' => $register_lalu,
+            'skpd' => $kd_skpd,
+            'unit' => $kd_unit,
+        ];
+
+        return view('bud.laporan_bendahara.cetak.register_cp_rinci')->with($data);
+    }
+
     public function potonganPajak(Request $request)
     {
         $skpd_global = Auth::user()->kd_skpd;

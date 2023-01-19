@@ -3131,3 +3131,13 @@ function harian_kasda_bukan_ketiga($nomor)
 
     return $data->nm_skpd . '-' . $data->nama . '-' . $data->jabatan;
 }
+
+function nama_org($org)
+{
+    $data = DB::table('ms_organisasi')
+        ->select('nm_org')
+        ->where(['kd_org' => $org])
+        ->first();
+
+    return $data->nm_org;
+}

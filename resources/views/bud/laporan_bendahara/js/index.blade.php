@@ -1183,6 +1183,75 @@
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
+
+        $('.rinci_register_cp').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register_cp')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register_cp').checked;
+            let unit = document.getElementById('pilihan_unit_register_cp').checked;
+            let rekap = document.getElementById('pilihan_rekap_register_cp').checked;
+
+            if (rekap == false) {
+                if (keseluruhan == false) {
+                    if (skpd == false) {
+                        if (unit == false) {
+                            alert('Silahkan Pilih Keseluruhan, SKPD, Rekap per SKPD atau Unit!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            let kd_skpd = document.getElementById('kd_skpd_register_cp').value;
+            let kd_unit = document.getElementById('kd_unit_register_cp').value;
+            let tgl1 = document.getElementById('tgl1_register_cp').value;
+            let tgl2 = document.getElementById('tgl2_register_cp').value;
+            let ttd = document.getElementById('ttd_register_cp').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+            if (unit) {
+                if (!kd_unit) {
+                    alert('Silahkan Pilih Unit!');
+                    return;
+                }
+            }
+            let pilihan = '';
+            if (rekap) {
+                pilihan = '1';
+            } else if (skpd) {
+                pilihan = '2';
+            } else if (unit) {
+                pilihan = '3';
+            } else if (keseluruhan) {
+                pilihan = '4';
+            }
+
+            if (!tgl1 || !tgl2) {
+                alert('Tanggal tidak boleh kosong!');
+                return;
+            }
+            if (!ttd) {
+                alert("Penandatangan tidak boleh kosong!");
+                return;
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.register_cp_rinci') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("tgl1", tgl1);
+            searchParams.append("tgl2", tgl2);
+            searchParams.append("ttd", ttd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("kd_unit", kd_unit);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
         // CETAKAN REGISTER CP
 
         // CETAKAN DAFTAR POTONGAN PAJAK
