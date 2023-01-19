@@ -695,6 +695,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('per_skpd', [RakController::class, 'rincianPerSkpd'])->name('skpd.cetak_rak.per_skpd');
                     Route::get('per_skpd_preview', [RakController::class, 'cetakPerSkpd'])->name('skpd.cetak_rak.per_skpd_preview');
                 });
+                Route::group(['prefix' => 'pemda'], function () {
+                    Route::get('pemda', [RakController::class, 'RakPemda'])->name('skpd.cetak_rak.pemda');
+                    Route::get('pemda_preview', [RakController::class, 'cetakPemda'])->name('skpd.cetak_rak.pemda_preview');
+                });
             });
             // CEK RAK
             Route::group(['prefix' => 'cek_rak'], function () {

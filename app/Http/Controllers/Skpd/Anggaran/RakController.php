@@ -3739,4 +3739,173 @@ class RakController extends Controller
             return $view;
         }
     }
+
+    public function RakPemda()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'jenis_anggaran'    => DB::table('tb_status_anggaran')->where(['status_aktif' => '1'])->get(),
+            'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
+            'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
+        ];
+
+        return view('skpd.cetak_rak.pemda.cetak')->with($data);
+    }
+
+    public function cetakPemda(Request $request)
+    {
+        $jenis_anggaran     = $request->jenis_anggaran;
+        $jenis_rak          = $request->jenis_rak;
+        $ttd2               = $request->ttd2;
+        $tanggal_ttd        = $request->tanggal_ttd;
+        $jenis_print        = $request->jenis_print;
+        $hidden             = $request->hidden;
+        $jenis              = 'nilai_' . $jenis_rak;
+        $kd_skpd            = Auth::user()->kd_skpd;
+// per skpd
+        
+            $pendapatan = DB::select("SELECT kode giat, (select nm_rek2 from ms_rek2 WHERE kd_rek2=xxx.kode) nm_giat, 
+                                    (select sum(nilai) from trdrka where left(kd_rek6,2)=xxx.kode and jns_ang=?)as ang,
+                                    isnull(sum(jan),0) jan, isnull(sum(feb),0) feb, isnull(sum(mar),0) mar, isnull(sum(apr),0) apr, isnull(sum(mei),0) mei, isnull(sum(jun),0) jun,
+                                    isnull(sum(jul),0) jul, isnull(sum(ags),0) ags, isnull(sum(sep),0) sep, isnull(sum(okt),0) okt, isnull(sum(nov),0) nov, isnull(sum(des),0) des
+                                    from (
+                                    -- 1
+                                    select left(kd_rek6,2)as kode,
+                                    case when bulan=1 then sum($jenis) else 0 end as jan,
+                                    case when bulan=2 then sum($jenis) else 0 end as feb,
+                                    case when bulan=3 then sum($jenis) else 0 end as mar,
+                                    case when bulan=4 then sum($jenis) else 0 end as apr,
+                                    case when bulan=5 then sum($jenis) else 0 end as mei,
+                                    case when bulan=6 then sum($jenis) else 0 end as jun,
+                                    case when bulan=7 then sum($jenis) else 0 end as jul,
+                                    case when bulan=8 then sum($jenis) else 0 end as ags,
+                                    case when bulan=9 then sum($jenis) else 0 end as sep,
+                                    case when bulan=10 then sum($jenis) else 0 end as okt,
+                                    case when bulan=11 then sum($jenis) else 0 end as nov,
+                                    case when bulan=12 then sum($jenis) else 0 end as des 
+                                    from trdskpd_ro a inner join 
+                                    (select left(kd_rek6,2) oke from trdrka 
+                                    GROUP by left(kd_rek6,2)) b 
+                                    on b.oke=left(a.kd_rek6,2) where (left(a.kd_rek6,1) = '4' OR left(a.kd_rek6,2) ='61')
+                                    GROUP BY left(kd_rek6,2), bulan
+                                    -- 1
+                                    )xxx
+                                    GROUP BY kode
+
+                                    UNION all
+                                    /*kegiatan*/
+                                    SELECT kode giat, (select DISTINCT nm_rek3 from ms_rek3 WHERE kd_rek3=xxx.kode) nm_rek,
+                                    (select sum(nilai) from trdrka where left(kd_rek6,4)=xxx.kode and jns_ang=?)as ang, 
+                                    sum(jan) jan, sum(feb) feb, sum(mar) mar, sum(apr) apr, sum(mei) mei, sum(jun) jun,
+                                    sum(jul) jul, sum(ags) ags, sum(sep) sep, sum(okt) okt, sum(nov) nov, sum(des) des
+                                    from (
+                                    select left(kd_rek6,4) kode,
+                                    case when bulan=1 then sum($jenis) else 0 end as jan,
+                                    case when bulan=2 then sum($jenis) else 0 end as feb,
+                                    case when bulan=3 then sum($jenis) else 0 end as mar,
+                                    case when bulan=4 then sum($jenis) else 0 end as apr,
+                                    case when bulan=5 then sum($jenis) else 0 end as mei,
+                                    case when bulan=6 then sum($jenis) else 0 end as jun,
+                                    case when bulan=7 then sum($jenis) else 0 end as jul,
+                                    case when bulan=8 then sum($jenis) else 0 end as ags,
+                                    case when bulan=9 then sum($jenis) else 0 end as sep,
+                                    case when bulan=10 then sum($jenis) else 0 end as okt,
+                                    case when bulan=11 then sum($jenis) else 0 end as nov,
+                                    case when bulan=12 then sum($jenis) else 0 end as des from trdskpd_ro a inner join 
+                                    (select left(kd_rek6,4) oke from trdrka GROUP by left(kd_rek6,4)) b 
+                                    on b.oke=left(a.kd_rek6,4) where 
+                                    (left(a.kd_rek6,1) = '4' OR left(a.kd_rek6,2) ='61')
+                                    GROUP BY left(kd_rek6,4), bulan)xxx
+                                    GROUP BY kode
+
+                                    ORDER BY kode",[$jenis_anggaran,$jenis_anggaran]);
+
+        $belanja = DB::select("SELECT kode giat, (select nm_rek2 from ms_rek2 WHERE kd_rek2=xxx.kode) nm_giat, 
+                                (select sum(nilai) from trdrka where left(kd_rek6,2)=xxx.kode and jns_ang=?)as ang,
+                                isnull(sum(jan),0) jan, isnull(sum(feb),0) feb, isnull(sum(mar),0) mar, isnull(sum(apr),0) apr, isnull(sum(mei),0) mei, isnull(sum(jun),0) jun,
+                                isnull(sum(jul),0) jul, isnull(sum(ags),0) ags, isnull(sum(sep),0) sep, isnull(sum(okt),0) okt, isnull(sum(nov),0) nov, isnull(sum(des),0) des
+                                from (
+                                -- 1
+                                select left(kd_rek6,2)as kode,
+                                case when bulan=1 then sum($jenis) else 0 end as jan,
+                                case when bulan=2 then sum($jenis) else 0 end as feb,
+                                case when bulan=3 then sum($jenis) else 0 end as mar,
+                                case when bulan=4 then sum($jenis) else 0 end as apr,
+                                case when bulan=5 then sum($jenis) else 0 end as mei,
+                                case when bulan=6 then sum($jenis) else 0 end as jun,
+                                case when bulan=7 then sum($jenis) else 0 end as jul,
+                                case when bulan=8 then sum($jenis) else 0 end as ags,
+                                case when bulan=9 then sum($jenis) else 0 end as sep,
+                                case when bulan=10 then sum($jenis) else 0 end as okt,
+                                case when bulan=11 then sum($jenis) else 0 end as nov,
+                                case when bulan=12 then sum($jenis) else 0 end as des 
+                                from trdskpd_ro a inner join 
+                                (select left(kd_rek6,2) oke from trdrka 
+                                GROUP by left(kd_rek6,2)) b 
+                                on b.oke=left(a.kd_rek6,2) where (left(a.kd_rek6,1) = '5' OR left(a.kd_rek6,2) ='62')
+                                GROUP BY left(kd_rek6,2), bulan
+                                -- 1
+                                )xxx
+                                GROUP BY kode
+
+                                UNION all
+                                /*kegiatan*/
+                                SELECT kode giat, (select DISTINCT nm_rek3 from ms_rek3 WHERE kd_rek3=xxx.kode) nm_rek,
+                                (select sum(nilai) from trdrka where left(kd_rek6,4)=xxx.kode and jns_ang=?)as ang, 
+                                sum(jan) jan, sum(feb) feb, sum(mar) mar, sum(apr) apr, sum(mei) mei, sum(jun) jun,
+                                sum(jul) jul, sum(ags) ags, sum(sep) sep, sum(okt) okt, sum(nov) nov, sum(des) des
+                                from (
+                                select left(kd_rek6,4) kode,
+                                case when bulan=1 then sum($jenis) else 0 end as jan,
+                                case when bulan=2 then sum($jenis) else 0 end as feb,
+                                case when bulan=3 then sum($jenis) else 0 end as mar,
+                                case when bulan=4 then sum($jenis) else 0 end as apr,
+                                case when bulan=5 then sum($jenis) else 0 end as mei,
+                                case when bulan=6 then sum($jenis) else 0 end as jun,
+                                case when bulan=7 then sum($jenis) else 0 end as jul,
+                                case when bulan=8 then sum($jenis) else 0 end as ags,
+                                case when bulan=9 then sum($jenis) else 0 end as sep,
+                                case when bulan=10 then sum($jenis) else 0 end as okt,
+                                case when bulan=11 then sum($jenis) else 0 end as nov,
+                                case when bulan=12 then sum($jenis) else 0 end as des from trdskpd_ro a inner join 
+                                (select left(kd_rek6,4) oke from trdrka GROUP by left(kd_rek6,4)) b 
+                                on b.oke=left(a.kd_rek6,4) where 
+                                (left(a.kd_rek6,1) = '5' OR left(a.kd_rek6,2) ='62')
+                                GROUP BY left(kd_rek6,4), bulan)xxx
+                                GROUP BY kode
+
+                                ORDER BY kode",[$jenis_anggaran,$jenis_anggaran]);
+
+       
+        
+        
+
+        $data = [
+            'nama_angkas'   => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
+            'nama_skpd'     => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'pendapatan'    => $pendapatan,
+            'belanja'       => $belanja,
+            'ttd2'          => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['id' => $ttd2])->first(),
+            'tanggal'       => $tanggal_ttd,
+            'hidden'        => $hidden,
+            'header'        => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first()
+        ];
+
+        $view = view('skpd.cetak_rak.pemda.cetakan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'excel') {
+            header("Cache-Control:no-cache,no-store,must-revalidate");
+            header("Content-Type:application/vnd.ms-excel");
+            header("Content-Disposition:attachment;filename=laporan.xls");
+            return $view;
+        } else {
+            return $view;
+        }
+    }
+
 }

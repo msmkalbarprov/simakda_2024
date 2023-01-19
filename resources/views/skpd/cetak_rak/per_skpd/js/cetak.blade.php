@@ -160,7 +160,7 @@
             let ttd2            = document.getElementById('ttd2').value;
             let tanggal_ttd     = document.getElementById('tanggal_ttd').value;
             let jenis_print     = $(this).data("jenis");
-            let jenis_cetakan   = $('input:radio[name="inlineRadioOptions"]').val();
+            let jenis_cetakan   = pilihancetak;
 
             if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd) {
                 alert("Harap Lengkapi Inputan.");
