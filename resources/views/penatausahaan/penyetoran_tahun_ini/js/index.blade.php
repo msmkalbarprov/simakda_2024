@@ -112,7 +112,7 @@
                         if (data.message == '1') {
                             alert('Data berhasil divalidasi');
                             window.location.href = "{{ route('penyetoran_lalu.index') }}";
-                        } else if (data.message == '2 ') {
+                        } else if (data.message == '2') {
                             alert('Hanya Untuk UPPD BPKPD!');
                             return;
                         } else {
