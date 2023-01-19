@@ -303,9 +303,9 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="laporan_koreksi_pengeluaran">
+            <div class="card card-info collapsed-card card-outline" id="koreksi_pengeluaran">
                 <div class="card-body">
-                    {{ 'Laporan Koreksi Pengeluaran' }}
+                    {{ 'Koreksi Pengeluaran' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -318,21 +318,9 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="realisasi_kasda">
+            <div class="card card-info collapsed-card card-outline" id="koreksi_penerimaan2">
                 <div class="card-body">
-                    {{ 'Realisasi Kasda' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="laporan_koreksi_penerimaan">
-                <div class="card-body">
-                    {{ 'Laporan Koreksi Penerimaan' }}
+                    {{ 'Koreksi Penerimaan' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -422,6 +410,18 @@
     {{-- modal cetak kas harian kasda --}}
     @include('bud.laporan_bendahara.modal.harian_kasda')
     {{-- modal cetak kas harian kasda --}}
+
+    {{-- modal cetak uyhd --}}
+    @include('bud.laporan_bendahara.modal.uyhd')
+    {{-- modal cetak uyhd --}}
+
+    {{-- modal cetak koreksi pengeluaran --}}
+    @include('bud.laporan_bendahara.modal.koreksi_pengeluaran')
+    {{-- modal cetak koreksi pengeluaran --}}
+
+    {{-- modal cetak koreksi penerimaan --}}
+    @include('bud.laporan_bendahara.modal.koreksi_penerimaan2')
+    {{-- modal cetak koreksi penerimaan --}}
 @endsection
 @section('js')
     @include('bud.laporan_bendahara.js.index')

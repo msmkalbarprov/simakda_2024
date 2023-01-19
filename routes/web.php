@@ -55,6 +55,8 @@ use App\Http\Controllers\Skpd\PenerimaanLainController;
 use App\Http\Controllers\Skpd\PengeluaranLainController;
 use App\Http\Controllers\Skpd\SetorKasController;
 use App\Http\Controllers\Skpd\SetorSisaController;
+use App\Http\Controllers\PanjarPengembalianController;
+use App\Http\Controllers\PanjarTambahController;
 use App\Http\Controllers\Skpd\UyhdController;
 use App\Http\Controllers\Skpd\UyhdPajakController;
 use App\Http\Controllers\Skpd\Anggaran\RakController;
@@ -661,6 +663,45 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('hapus', [UyhdPajakController::class, 'hapus'])->name('skpd.uyhd_pajak.hapus');
             });
         });
+
+            //PEMBEMBALIAN PANJAR CMS
+            Route::group(['prefix' => 'panjar_cms'], function () {
+                Route::get('index', [PanjarPengembalianController::class, 'index'])->name('panjar_cms.index');
+                Route::post('load_data', [PanjarPengembalianController::class, 'loadData'])->name('panjar_cms.load_data');
+                Route::get('create', [PanjarPengembalianController::class, 'create'])->name('panjar_cms.create');
+                Route::post('simpan', [PanjarPengembalianController::class, 'simpan'])->name('panjar_cms.simpan');
+                Route::post('kegiatan', [PanjarPengembalianController::class, 'getSubKegiatan'])->name('panjar_cms.kegiatan');
+                Route::post('sisaBank', [PanjarPengembalianController::class, 'sisaBank'])->name('panjar_cms.sisaBank');
+                Route::post('sisa_ang', [PanjarPengembalianController::class, 'sisaAng'])->name('panjar_cms.sisa_ang');
+                Route::post('no_urut', [PanjarPengembalianController::class, 'no_urut'])->name('panjar_cms.no_urut');
+                Route::post('cekSimpan', [PanjarPengembalianController::class, 'cekSimpan'])->name('panjar_cms.cek_simpan');
+                Route::post('simpanPanjar', [PanjarPengembalianController::class, 'simpanPanjar'])->name('panjar_cms.simpan_panjar');
+                Route::post('simpanDetailPanjar', [PanjarPengembalianController::class, 'simpanDetailPanjar'])->name('panjar_cms.simpan_detail_panjar');
+                Route::get('edit/{no_panjar?}', [PanjarPengembalianController::class, 'edit'])->where('no_panjar', '(.*)')->name('panjar_cms.edit');
+                Route::post('hapus', [PanjarPengembalianController::class, 'hapus'])->name('panjar_cms.hapus');
+                Route::post('update', [PanjarPengembalianController::class, 'update'])->name('panjar_cms.update'); 
+                Route::get('cetak_list', [PanjarPengembalianController::class, 'cetakList'])->name('panjar_cms.cetak_list');
+            });
+
+             //TAMBAH PANJAR CMS
+             Route::group(['prefix' => 'tpanjar_cms'], function () {
+                Route::get('index', [PanjarTambahController::class, 'index'])->name('tpanjar_cms.index');
+                Route::post('load_data', [PanjarTambahController::class, 'loadData'])->name('tpanjar_cms.load_data');
+                Route::get('create', [PanjarTambahController::class, 'create'])->name('tpanjar_cms.create');
+                Route::post('simpan', [PanjarTambahController::class, 'simpan'])->name('tpanjar_cms.simpan');
+                Route::post('kegiatan', [PanjarTambahController::class, 'getSubKegiatan'])->name('tpanjar_cms.kegiatan');
+                Route::post('no_panjar', [PanjarTambahController::class, 'noPanjar'])->name('tpanjar_cms.no_panjar');
+                Route::post('sisaBank', [PanjarTambahController::class, 'sisaBank'])->name('tpanjar_cms.sisaBank');
+                Route::post('sisa_ang', [PanjarTambahController::class, 'sisaAng'])->name('tpanjar_cms.sisa_ang');
+                Route::post('no_urut', [PanjarTambahController::class, 'no_urut'])->name('tpanjar_cms.no_urut');
+                Route::post('cekSimpan', [PanjarTambahController::class, 'cekSimpan'])->name('tpanjar_cms.cek_simpan');
+                Route::post('simpanPanjar', [PanjarTambahController::class, 'simpanPanjar'])->name('tpanjar_cms.simpan_panjar');
+                Route::post('simpanDetailPanjar', [PanjarTambahController::class, 'simpanDetailPanjar'])->name('tpanjar_cms.simpan_detail_panjar');
+                Route::get('edit/{no_panjar?}', [PanjarTambahController::class, 'edit'])->where('no_panjar', '(.*)')->name('tpanjar_cms.edit');
+                Route::post('hapus', [PanjarTambahController::class, 'hapus'])->name('tpanjar_cms.hapus');
+                Route::post('update', [PanjarTambahController::class, 'update'])->name('tpanjar_cms.update'); 
+                Route::get('cetak_list', [PanjarTambahController::class, 'cetakList'])->name('tpanjar_cms.cetak_list');
+            });
         // Anggaran (RAK)
         Route::group(['prefix' => 'anggaran'], function () {
             // Input RAK
@@ -1102,6 +1143,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('koreksi_penerimaan', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan'])->name('laporan_bendahara_umum.koreksi_penerimaan');
         // KAS HARIAN KASDA
         Route::get('harian_kasda', [BendaharaUmumDaerahController::class, 'harianKasda'])->name('laporan_bendahara_umum.harian_kasda');
+        // UYHD
+        Route::get('uyhd', [BendaharaUmumDaerahController::class, 'uyhd'])->name('laporan_bendahara_umum.uyhd');
+        // KOREKSI PENGELUARAN
+        Route::get('koreksi_pengeluaran', [BendaharaUmumDaerahController::class, 'koreksiPengeluaran'])->name('laporan_bendahara_umum.koreksi_pengeluaran');
+        // KOREKSI PENERIMAAN
+        Route::get('koreksi_penerimaan2', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan2'])->name('laporan_bendahara_umum.koreksi_penerimaan2');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
