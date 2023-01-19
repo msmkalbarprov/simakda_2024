@@ -17,10 +17,16 @@ class BendaharaUmumDaerahController extends Controller
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
             'jns_anggaran' => jenis_anggaran(),
             'daftar_skpd' => DB::table('ms_skpd')->orderBy('kd_skpd')->get(),
-            'daftar_pengirim' => DB::table('ms_pengirim')->selectRaw("kd_pengirim,nm_pengirim,kd_skpd")->orderByRaw("cast(kd_pengirim as int)")->get(),
+            'daftar_pengirim' => DB::table('ms_pengirim')
+                ->selectRaw("kd_pengirim,nm_pengirim,kd_skpd")
+                ->orderByRaw("cast(kd_pengirim as int)")
+                ->get(),
             'daftar_wilayah' => DB::table('ms_wilayah')->selectRaw("kd_wilayah,nm_wilayah")->orderByRaw("cast(kd_wilayah as int)")->get(),
             'bud' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kd_skpd' => $kd_skpd])->whereIn('kode', ['BUD', 'PA'])->get(),
             'daftar_rekening' => DB::table('trdrka')->select('kd_rek6', 'nm_rek6')->groupBy('kd_rek6', 'nm_rek6')->get(),
+            'daftar_org' => DB::table('ms_organisasi')
+                ->select('kd_org', 'nm_org')
+                ->get()
         ];
 
         return view('bud.laporan_bendahara.index')->with($data);
@@ -46,11 +52,11 @@ class BendaharaUmumDaerahController extends Controller
         }
 
         if ($pilihan == '1') {
-            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new(?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $jenis]);
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new(?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $jenis]);
         } else if ($pilihan == '2') {
-            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_skpd(?,?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_skpd, $jenis]);
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_skpd(?,?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_skpd, $jenis]);
         } else if ($pilihan == '3') {
-            $daftar_realisasi  = DB::select("SELECT * FROM penerimaan_kasda_new_unit(?,?,?) WHERE LEFT(kd_rek,1)='4' AND len(kd_rek)<? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_unit, $jenis]);
+            $daftar_realisasi  = DB::select("SELECT * FROM penerimaan_kasda_new_unit(?,?,?) WHERE LEFT(kd_rek,1)='4' AND len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_unit, $jenis]);
         }
 
         if ($pilihan == '1') {
@@ -2047,9 +2053,9 @@ class BendaharaUmumDaerahController extends Controller
     {
         $req = $request->all();
         $kd_skpd  = $request->kd_skpd;
-        $kd_rek  = $request->kd_rek6;
+        $kd_rek  = $request->rekening;
 
-        $buku_besar_kasda = DB::select("select tgl_kas, no_kas,keterangan,0 as debet, kredit from (
+        $buku_besar_kasda = DB::select("SELECT tgl_kas, no_kas,keterangan,0 as debet, kredit from (
 					select a.kd_skpd, a.tgl_kas, a.no_kas, b.kd_rek6, keterangan+', '+(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) keterangan,0 as debet, rupiah as kredit
 					from trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts AND a.no_kas=b.no_kas
 					where pot_khusus<>3 AND jns_trans NOT IN ('2') AND b.kd_rek6 = ?
@@ -2063,9 +2069,7 @@ class BendaharaUmumDaerahController extends Controller
 					where jns_trans IN ('2')
 					) a
 					where kd_skpd= ? and kd_rek6= ? and tgl_kas between ? AND ?
-					order by tgl_kas, no_kas", [$req['kd_rek6'], $req['kd_skpd'], $req['kd_rek6'], $req['periode1'], $req['periode2']]);
-        //dd($buku_besar_kasda);
-        //return;
+					order by tgl_kas, no_kas", [$req['rekening'], $req['kd_skpd'], $req['rekening'], $req['periode1'], $req['periode2']]);
 
         $periode1  = $request->periode1;
         $periode2  = $request->periode2;
@@ -2083,6 +2087,402 @@ class BendaharaUmumDaerahController extends Controller
         ];
 
         return view('bud.laporan_bendahara.cetak.buku_besar_kasda')->with($data);
+    }
+
+    public function pembantuPengeluaran(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $tipe = $request->tipe;
+        $jenis_print = $request->jenis_print;
+
+        if ($pilihan == '1') {
+            $where = "AND a.tgl_kas_bud=?";
+            $where2 = "AND a.tgl_kas_bud < ?";
+        } elseif ($pilihan == '2') {
+            $where = "a.tgl_kas_bud BETWEEN ? AND ?";
+            $where2 = "a.tgl_kas_bud < ?";
+        }
+
+        $pengeluaran1 = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })
+            ->selectRaw("'1' + a.no_sp2d as urut0,1 as urut, a.no_kas_bud as urut2,a.no_kas_bud, a.no_sp2d ,a.tgl_sp2d, a.kd_skpd,a.keperluan, a.jns_spp,a.jenis_beban,a.nmrekan,c.pimpinan, '' kd_sub_kegiatan,''kd_rek6,SUM(d.nilai) nilai, '' no_bukti, count(a.no_sp2d) as jumlah")
+            ->whereRaw("a.status_bud=? AND (c.sp2d_batal=? OR c.sp2d_batal is NULL)", ['1', 0])
+            ->where(function ($query) use ($tipe) {
+                if ($tipe == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($tipe == '1') {
+                    $query->where('a.jns_spp', '!=', '4');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                if ($pilihan == '1') {
+                    $query->where('a.tgl_kas_bud', $tgl);
+                } else if ($pilihan == '2') {
+                    $query->whereBetween('a.tgl_kas_bud', [$periode1, $periode2]);
+                }
+            })
+            ->groupByRaw("a.no_kas_bud, a.no_sp2d ,a.tgl_sp2d, a.kd_skpd,a.keperluan,a.jns_spp,a.jenis_beban,a.nmrekan,c.pimpinan");
+
+        $pengeluaran2 = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })
+            ->selectRaw("'1' +a.no_sp2d as urut0,2 urut, '' no_kas_bud, a.no_kas_bud AS urut2, '' no_sp2d, '' tgl_sp2d, a.kd_skpd, '' keperluan, '' jns_spp, '' jenis_beban, '' nmrekan, '' pimpinan, d.kd_sub_kegiatan, d.kd_rek6, d.nilai, d.no_bukti, 0 AS jumlah")
+            ->whereRaw("a.status_bud=? AND (c.sp2d_batal=? OR c.sp2d_batal is NULL)", ['1', 0])
+            ->where(function ($query) use ($tipe) {
+                if ($tipe == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($tipe == '1') {
+                    $query->where('a.jns_spp', '!=', '4');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                if ($pilihan == '1') {
+                    $query->where('a.tgl_kas_bud', $tgl);
+                } else if ($pilihan == '2') {
+                    $query->whereBetween('a.tgl_kas_bud', [$periode1, $periode2]);
+                }
+            })
+            ->groupByRaw("a.no_kas_bud, a.no_sp2d ,a.tgl_sp2d, a.kd_skpd,a.keperluan, d.kd_sub_kegiatan, d.kd_rek6,d.nilai,d.no_bukti,d.kd")
+            ->union($pengeluaran1);
+
+        $pengeluaran = DB::table(DB::raw("({$pengeluaran2->toSql()}) AS sub"))
+            ->mergeBindings($pengeluaran2)
+            ->orderByRaw("urut0,urut,cast(no_kas_bud as int),kd_sub_kegiatan,kd_rek6")
+            ->get();
+
+        $pengeluaran_lalu = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })
+            ->selectRaw("sum(d.nilai) as nilai")
+            ->whereRaw("a.status_bud=? AND (c.sp2d_batal=? OR c.sp2d_batal is NULL)", ['1', 0])
+            ->where(function ($query) use ($tipe) {
+                if ($tipe == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($tipe == '1') {
+                    $query->where('a.jns_spp', '!=', '4');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                if ($pilihan == '1') {
+                    $query->where('a.tgl_kas_bud', '<', $tgl);
+                } else if ($pilihan == '2') {
+                    $query->where('a.tgl_kas_bud', '<', $periode1);
+                }
+            })
+            ->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'tipe' => $tipe,
+            'data_pengeluaran' => $pengeluaran,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'total_pengeluaran_lalu' => $pengeluaran_lalu->nilai
+        ];
+
+        return view('bud.laporan_bendahara.cetak.pembantu_pengeluaran')->with($data);
+    }
+
+    public function retribusi(Request $request)
+    {
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $retribusi = DB::select("SELECT * from(
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						ISNULL(e.nm_pengirim, '') nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					and a.sumber<>'y'
+					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						c.nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					and a.sumber<>'y'
+					UNION ALL
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						''nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					and a.sumber<>'y'
+					GROUP BY b.no_kas,f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						b.keterangan nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					and a.sumber<>'y'
+
+					UNION ALL
+					SELECT
+							1 AS urut,
+							'' no_sts,
+							'' kd_skpd,
+							nm_skpd,
+							'' kd_sub_kegiatan,
+							'' kd_rek6,
+							[no] as no_kas,
+							'' tgl_kas,
+							'' nm_pengirim,
+							'' nm_rek6,
+							0 rupiah
+						FROM
+							trkasout_ppkd
+						WHERE
+							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003')
+						UNION ALL
+						SELECT
+								2 AS urut,
+								[no] as no_sts,
+								kd_skpd,
+								'' nm_skpd,
+								''kd_sub_kegiatan,
+								kd_rek kd_rek6,
+								[no] no_kas,
+								[tanggal] tgl_kas,
+								'' nm_pengirim,
+								keterangan+' '+nm_rek nm_rek6,
+								nilai rupiah
+							FROM
+							trkasout_ppkd
+							WHERE
+							tanggal = ?
+							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003')
+					) a
+
+					order by cast(no_kas as int),urut", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+
+        $retribusi_lalu = collect(DB::select("SELECT sum(rupiah) as nilai from(
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						ISNULL(e.nm_pengirim, '') nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas <=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
+					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						c.nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
+					WHERE b.tgl_kas<=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
+
+					UNION ALL
+					SELECT
+						1 as urut,
+						''no_sts,
+						''kd_skpd,
+						f.nm_skpd,
+						''kd_sub_kegiatan,
+						''kd_rek6,
+						b.no_kas,
+						''tgl_kas,
+						''nm_pengirim,
+						''nm_rek6,
+						0 rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
+					GROUP BY b.no_kas,f.nm_skpd
+					UNION ALL
+					SELECT
+						2 as urut,
+						b.no_sts,
+						a.kd_skpd,
+						'' nm_skpd,
+						a.kd_sub_kegiatan,
+						a.kd_rek6,
+						b.no_kas,
+						b.tgl_kas,
+						'' nm_pengirim,
+						b.keterangan nm_rek6,
+						a.rupiah
+					FROM
+						trdkasin_ppkd a
+					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
+					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
+
+					UNION ALL
+					SELECT
+							1 AS urut,
+							'' no_sts,
+							'' kd_skpd,
+							nm_skpd,
+							'' kd_sub_kegiatan,
+							'' kd_rek6,
+							[no] as no_kas,
+							'' tgl_kas,
+							'' nm_pengirim,
+							'' nm_rek6,
+							0 rupiah
+						FROM
+							trkasout_ppkd
+						WHERE
+							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102')
+						UNION ALL
+						SELECT
+								2 AS urut,
+								[no] as no_sts,
+								kd_skpd,
+								'' nm_skpd,
+								''kd_sub_kegiatan,
+								kd_rek kd_rek6,
+								[no] no_kas,
+								[tanggal] tgl_kas,
+								'' nm_pengirim,
+								keterangan+' '+nm_rek nm_rek6,
+								nilai rupiah
+							FROM
+							trkasout_ppkd
+							WHERE
+							tanggal <= ?
+							AND LEFT(kd_rek,4) IN ('4102')
+					) a", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanggal' => $tgl,
+            'daftar_retribusi' => $retribusi,
+            'total_retribusi_lalu' => $retribusi_lalu->nilai,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.retribusi')->with($data);
     }
 
     public function kartuKendali(Request $request)
@@ -2238,5 +2638,2292 @@ class BendaharaUmumDaerahController extends Controller
         ];
         // return $data['nilai_ang'];
         return view('bud.kartu_kendali.cetak_per_rekening')->with($data);
+    }
+
+    public function registerCp(Request $request)
+    {
+        $skpd_global = Auth::user()->kd_skpd;
+        $pilihan = $request->pilihan;
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $ttd = $request->ttd;
+        $kd_skpd = $request->kd_skpd;
+        $kd_unit = $request->kd_unit;
+        $jenis_print = $request->jenis_print;
+
+        if ($ttd) {
+            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+        } else {
+            $tanda_tangan = null;
+        }
+
+        if ($pilihan == '1') {
+            $register_cp = DB::select("SELECT a.kd_skpd,a.nm_skpd,isnull(b.total,0) total from ms_skpd a
+                                            left join
+                                            (SELECT a.kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd)nm_skpd,isnull(sum(cp),0) total
+                                            from
+                                            (SELECT no_kas ,no_sts,tgl_kas, kd_skpd , jns_trans, jns_cp, pot_khusus,keterangan,kd_sub_kegiatan,kd_rek6,
+                                            SUM(isnull((case when rtrim(jns_cp) in  ('3','2','1') and (tgl_kas  BETWEEN ? AND ?) then z.nilai else 0 end),0)) AS cp
+                                            from ( SELECT d.no_kas,d.no_sts , d.kd_skpd , d.jns_trans, d.jns_cp, pot_khusus,rupiah as nilai,d.tgl_sts,d.tgl_kas,keterangan,d.kd_sub_kegiatan,kd_rek6  from
+                                            trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd where
+                                            jns_trans in('5','1') AND pot_khusus in('0','1','2') ) z
+                                            group by  no_kas ,no_sts,tgl_kas, kd_skpd , jns_trans, jns_cp, pot_khusus,z.keterangan,kd_sub_kegiatan,kd_rek6) a
+                                            group by a.kd_skpd) b on a.kd_skpd=b.kd_skpd
+                                            order by a.kd_skpd", [$tgl1, $tgl2]);
+        } else if ($pilihan == '2') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,SUM(rupiah) as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+						AND LEFT(kd_skpd,17)=?
+
+						UNION ALL
+
+						SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+						AND LEFT(kd_skpd,17)=?
+						ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $kd_skpd, $tgl1, $tgl2, $kd_skpd]);
+        } else if ($pilihan == '3') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,SUM(rupiah) as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+						AND LEFT(kd_skpd,22)=?
+
+						UNION ALL
+
+						SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+						AND LEFT(kd_skpd,22)=?
+						ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $kd_unit, $tgl1, $tgl2, $kd_unit]);
+        } else if ($pilihan == '4') {
+            $register_cp = DB::select("SELECT '1' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,'' kd_sub_kegiatan, ''kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,SUM(rupiah) as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+
+						UNION ALL
+
+						SELECT '2' as jenis,no_kas,tgl_kas,kd_skpd,keterangan as keterangan,kd_sub_kegiatan,kd_rek,nilai FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas  BETWEEN ? AND ?)
+						ORDER BY tgl_kas,no_kas,jenis", [$tgl1, $tgl2, $tgl1, $tgl2]);
+        }
+
+        if ($pilihan == '1') {
+            $register_lalu = 0;
+        } elseif ($pilihan == '2') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?) AND LEFT(kd_skpd,17)=?", [$tgl1, $kd_skpd]))->first();
+        } elseif ($pilihan == '3') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?) AND LEFT(kd_skpd,22)=?", [$tgl1, $kd_unit]))->first();
+        } elseif ($pilihan == '4') {
+            $register_lalu = collect(DB::select("SELECT SUM(nilai) as nilai_lalu FROM(
+						SELECT a.no_kas,a.tgl_kas, a.kd_skpd,keterangan, kd_sub_kegiatan,kd_rek, nilai, jns_trans,jns_cp,pot_khusus
+						FROM (
+						SELECT a.no_kas,a.no_sts,a.tgl_kas,a.kd_skpd, keterangan,b.kd_sub_kegiatan,kd_rek6 as kd_rek, rupiah as nilai
+						FROM trhkasin_ppkd a
+						INNER JOIN trdkasin_ppkd b ON a.kd_skpd=b.kd_skpd AND a.no_kas=b.no_kas
+						WHERE jns_trans IN ('5','1')) a
+						LEFT JOIN
+						(SELECT a.no_sts , a.kd_skpd , a.jns_trans, a.jns_cp, pot_khusus FROM trhkasin_pkd a
+						INNER JOIN trdkasin_pkd b ON a.kd_skpd=b.kd_skpd AND a.no_sts=b.no_sts
+						WHERE jns_trans IN ('5','1')
+						GROUP BY a.no_sts, a.kd_skpd, a.jns_trans, a.jns_cp, pot_khusus ) b
+						ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd)a
+						WHERE (tgl_kas <?)", [$tgl1]))->first();
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanda_tangan' => $tanda_tangan,
+            'tanggal1' => $tgl1,
+            'tanggal2' => $tgl2,
+            'pilihan' => $pilihan,
+            'data_register' => $register_cp,
+            'total_lalu' => $register_lalu,
+        ];
+
+        return view('bud.laporan_bendahara.cetak.register_cp')->with($data);
+    }
+
+    public function potonganPajak(Request $request)
+    {
+        $skpd_global = Auth::user()->kd_skpd;
+        $pilihan = $request->pilihan;
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $ttd = $request->ttd;
+        $sp2d = $request->sp2d;
+        $belanja = $request->belanja;
+        $kd_skpd = $request->kd_skpd;
+        $kd_unit = $request->kd_unit;
+        $jenis_print = $request->jenis_print;
+
+        if ($ttd) {
+            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+        } else {
+            $tanda_tangan = null;
+        }
+
+        if ($sp2d == '0') {
+            if ($pilihan == '1') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, ISNULL(a.nilai,0) as nilai,
+					ISNULL(iwp,0) iwp,
+					ISNULL(taperum,0) taperum,
+					ISNULL(hkpg,0) hkpg,
+					ISNULL(pph,0) pph,
+					iwp+taperum+hkpg+pph as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd
+					,SUM(CASE WHEN kd_rek6 in ('210108010001') THEN c.nilai ELSE 0 END) AS iwp
+					,SUM(CASE WHEN kd_rek6 ='2110501' THEN c.nilai ELSE 0 END) AS taperum
+					,SUM(CASE WHEN kd_rek6 ='2110801' THEN c.nilai ELSE 0 END) AS hkpg
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					) b ON a.kd_skpd=b.kd_skpd", [$tgl1, $tgl2, $tgl1, $tgl2]);
+            } else if ($pilihan == '2') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, ISNULL(a.nilai,0) as nilai,
+					ISNULL(iwp,0) iwp,
+					ISNULL(taperum,0) taperum,
+					ISNULL(hkpg,0) hkpg,
+					ISNULL(pph,0) pph,
+					iwp+taperum+hkpg+pph as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND LEFT(a.kd_skpd,17)=? AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd
+					,SUM(CASE WHEN kd_rek6 in ('210108010001') THEN c.nilai ELSE 0 END) AS iwp
+					,SUM(CASE WHEN kd_rek6 ='2110501' THEN c.nilai ELSE 0 END) AS taperum
+					,SUM(CASE WHEN kd_rek6 ='2110801' THEN c.nilai ELSE 0 END) AS hkpg
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND LEFT(a.kd_skpd,17)=? AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					) b ON a.kd_skpd=b.kd_skpd", [$tgl1, $tgl2, $kd_skpd, $tgl1, $tgl2, $kd_skpd]);
+            } else if ($pilihan == '3') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, ISNULL(a.nilai,0) as nilai,
+					ISNULL(iwp,0) iwp,
+					ISNULL(taperum,0) taperum,
+					ISNULL(hkpg,0) hkpg,
+					ISNULL(pph,0) pph,
+					iwp+taperum+hkpg+pph as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.kd_skpd=? AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd
+					,SUM(CASE WHEN kd_rek6 in ('210108010001') THEN c.nilai ELSE 0 END) AS iwp
+					,SUM(CASE WHEN kd_rek6 ='2110501' THEN c.nilai ELSE 0 END) AS taperum
+					,SUM(CASE WHEN kd_rek6 ='2110801' THEN c.nilai ELSE 0 END) AS hkpg
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.kd_skpd=? AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					) b ON a.kd_skpd=b.kd_skpd", [$tgl1, $tgl2, $kd_unit, $tgl1, $tgl2, $kd_unit]);
+            } else if ($pilihan == '4') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, ISNULL(a.nilai,0) as nilai,
+					ISNULL(iwp,0) iwp,
+					ISNULL(taperum,0) taperum,
+					ISNULL(hkpg,0) hkpg,
+					ISNULL(pph,0) pph,
+					iwp+taperum+hkpg+pph as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_sp2d
+					,SUM(CASE WHEN kd_rek6 in ('210108010001') THEN c.nilai ELSE 0 END) AS iwp
+					,SUM(CASE WHEN kd_rek6 ='2110501' THEN c.nilai ELSE 0 END) AS taperum
+					,SUM(CASE WHEN kd_rek6 ='2110801' THEN c.nilai ELSE 0 END) AS hkpg
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp='4' AND a.jenis_beban='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_sp2d
+					) b ON a.kd_skpd=b.kd_skpd
+					ORDER BY cast(no_kas_bud as int)", [$tgl1, $tgl2, $tgl1, $tgl2]);
+            }
+        } else {
+            if ($pilihan == '1') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, ISNULL(a.nilai,0) as nilai,
+					ISNULL(ppn,0) ppn,
+					ISNULL(pph21,0) pph21,
+					ISNULL(pph22,0) pph22,
+					ISNULL(pph23,0) pph23,
+					ISNULL(psl4_a2,0) psl4_a2,
+					ISNULL(iwppnpn,0) iwppnpn,
+					ISNULL(pot_lain,0) pot_lain,
+					ppn+pph21+pph22+pph23+psl4_a2+iwppnpn+pot_lain as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd
+					,SUM(CASE WHEN kd_rek6 ='2130301' THEN c.nilai ELSE 0 END) AS ppn
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph21
+					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
+					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
+					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
+					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd
+					) b ON a.kd_skpd=b.kd_skpd", [$tgl1, $tgl2, $tgl1, $tgl2]);
+            } else if ($pilihan == '2') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d,
+				    ISNULL(a.nilai,0) as nilai,
+					ISNULL(ppn,0) ppn,
+					ISNULL(pph21,0) pph21,
+					ISNULL(pph22,0) pph22,
+					ISNULL(pph23,0) pph23,
+					ISNULL(psl4_a2,0) psl4_a2,
+					ISNULL(iwppnpn,0) iwppnpn,
+					ISNULL(pot_lain,0) pot_lain,
+					ppn+pph21+pph22+pph23+psl4_a2+iwppnpn+pot_lain as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1' AND LEFT(a.kd_skpd,17)=?
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_sp2d
+					,SUM(CASE WHEN kd_rek6 ='2130301' THEN c.nilai ELSE 0 END) AS ppn
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph21
+					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
+					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
+					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
+					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1' AND LEFT(a.kd_skpd,17)=?
+					GROUP BY a.kd_skpd, a.nm_skpd,a.no_sp2d
+					) b ON a.kd_skpd=b.kd_skpd AND a.no_sp2d=b.no_sp2d
+					ORDER BY cast(no_kas_bud as int)", [$tgl1, $tgl2, $kd_skpd, $tgl1, $tgl2, $kd_skpd]);
+            } else if ($pilihan == '3') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d,
+				    ISNULL(a.nilai,0) as nilai,
+					ISNULL(ppn,0) ppn,
+					ISNULL(pph21,0) pph21,
+					ISNULL(pph22,0) pph22,
+					ISNULL(pph23,0) pph23,
+					ISNULL(psl4_a2,0) psl4_a2,
+					ISNULL(iwppnpn,0) iwppnpn,
+					ISNULL(pot_lain,0) pot_lain,
+					ppn+pph21+pph22+pph23+psl4_a2+iwppnpn+pot_lain as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1' AND a.kd_skpd=?
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_sp2d
+					,SUM(CASE WHEN kd_rek6 ='2130301' THEN c.nilai ELSE 0 END) AS ppn
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph21
+					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
+					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
+					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
+					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1' AND a.kd_skpd=?
+					GROUP BY a.kd_skpd, a.nm_skpd,a.no_sp2d
+					) b ON a.kd_skpd=b.kd_skpd AND a.no_sp2d=b.no_sp2d
+					ORDER BY cast(no_kas_bud as int)", [$tgl1, $tgl2, $kd_unit, $tgl1, $tgl2, $kd_unit]);
+            } else if ($pilihan == '4') {
+                $potongan_pajak = DB::select("SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d,
+				    ISNULL(a.nilai,0) as nilai,
+					ISNULL(ppn,0) ppn,
+					ISNULL(pph21,0) pph21,
+					ISNULL(pph22,0) pph22,
+					ISNULL(pph23,0) pph23,
+					ISNULL(psl4_a2,0) psl4_a2,
+					ISNULL(iwppnpn,0) iwppnpn,
+					ISNULL(pot_lain,0) pot_lain,
+					ppn+pph21+pph22+pph23+psl4_a2+iwppnpn+pot_lain as jumlah_potongan
+					FROM
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, SUM(d.nilai) as nilai FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+					INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d
+					)a LEFT JOIN
+					(SELECT a.kd_skpd, a.nm_skpd, a.no_sp2d
+					,SUM(CASE WHEN kd_rek6 ='2130301' THEN c.nilai ELSE 0 END) AS ppn
+					,SUM(CASE WHEN kd_rek6 ='210105010001' THEN c.nilai ELSE 0 END) AS pph21
+					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
+					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
+					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
+					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
+					FROM trhsp2d a
+					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+					INNER JOIN trspmpot c ON b.no_spm = c.no_spm AND b.kd_skpd = c.kd_skpd
+					WHERE (a.jns_spp!='4' AND a.jenis_beban!='1') AND (a.tgl_kas_bud >= ? AND  a.tgl_kas_bud <= ?) AND a.status_bud='1'
+					GROUP BY a.kd_skpd, a.nm_skpd,a.no_sp2d
+					) b ON a.kd_skpd=b.kd_skpd AND a.no_sp2d=b.no_sp2d
+					ORDER BY cast(no_kas_bud as int)", [$tgl1, $tgl2, $tgl1, $tgl2]);
+            }
+        }
+
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanda_tangan' => $tanda_tangan,
+            'tanggal1' => $tgl1,
+            'tanggal2' => $tgl2,
+            'pilihan' => $pilihan,
+            'data_potongan' => $potongan_pajak,
+            'sp2d' => $sp2d,
+            'belanja' => $belanja,
+        ];
+
+        return view('bud.laporan_bendahara.cetak.potongan_pajak')->with($data);
+    }
+
+    public function daftarPengeluaran(Request $request)
+    {
+        $skpd_global = Auth::user()->kd_skpd;
+        $pilihan = $request->pilihan;
+        $tgl = $request->tgl;
+        $ttd = $request->ttd;
+        $kd_skpd = $request->kd_skpd;
+        $kd_unit = $request->kd_unit;
+        $beban = $request->beban;
+        $bulan = $request->bulan;
+        $jenis_print = $request->jenis_print;
+
+        if ($ttd) {
+            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+        } else {
+            $tanda_tangan = null;
+        }
+
+        $data_pengeluaran2 = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->selectRaw("2 urut, '' no_kas_bud, a.no_kas_bud as urut2, '' tgl_kas_bud, '' no_sp2d,  '' tgl_sp2d,  a.kd_skpd, '' keperluan, '' nmrekan, '' pimpinan, '' nm_skpd, d.kd_sub_kegiatan,  d.kd_rek6, d.nm_rek6, d.nilai, d.no_bukti")
+            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            ->where(function ($query) use ($beban) {
+                if ($beban == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($beban == '1') {
+                    $query->whereRaw("(a.jns_spp=? or a.jns_spp=?)", ['5', '6']);
+                } else if ($beban == '2') {
+                    $query->where('a.jns_spp', '1');
+                } else if ($beban == '3') {
+                    $query->where('a.jns_spp', '3');
+                } else if ($beban == '4') {
+                    $query->where('a.jns_spp', '2');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit) {
+                if ($pilihan == '2') {
+                    $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
+                } else if ($pilihan == '3') {
+                    $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->groupByRaw("a.no_kas_bud, a.kd_skpd, a.keperluan, d.kd_sub_kegiatan, d.kd_rek6, d.nm_rek6,d.nilai,d.no_bukti");
+
+        $data_pengeluaran1 = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->selectRaw("1 urut, a.no_kas_bud as urut2, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, a.kd_skpd, a.keperluan, a.nmrekan, c.pimpinan, a.nm_skpd, '' kd_sub_kegiatan, '' kd_rek6, '' nm_rek6, 0 nilai, 0 no_bukti")
+            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            ->where(function ($query) use ($beban) {
+                if ($beban == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($beban == '1') {
+                    $query->whereRaw("(a.jns_spp=? or a.jns_spp=?)", ['5', '6']);
+                } else if ($beban == '2') {
+                    $query->where('a.jns_spp', '1');
+                } else if ($beban == '3') {
+                    $query->where('a.jns_spp', '3');
+                } else if ($beban == '4') {
+                    $query->where('a.jns_spp', '2');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit) {
+                if ($pilihan == '2') {
+                    $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
+                } else if ($pilihan == '3') {
+                    $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->groupByRaw("a.tgl_kas_bud, a.no_kas_bud, a.no_sp2d, a.tgl_sp2d, a.keperluan, a.nmrekan, c.pimpinan, a.kd_skpd, a.nm_skpd")->unionAll($data_pengeluaran2);
+
+        $total_pengeluaran = DB::table('trhsp2d as a')
+            ->join('trhspm as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->join('trdspp as d', function ($join) {
+                $join->on('c.no_spp', '=', 'd.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->selectRaw("sum(d.nilai) as nilai")
+            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            ->where(function ($query) use ($beban) {
+                if ($beban == '0') {
+                    $query->where('a.jns_spp', '4');
+                } else if ($beban == '1') {
+                    $query->whereRaw("(a.jns_spp=? or a.jns_spp=?)", ['5', '6']);
+                } else if ($beban == '2') {
+                    $query->where('a.jns_spp', '1');
+                } else if ($beban == '3') {
+                    $query->where('a.jns_spp', '3');
+                } else if ($beban == '4') {
+                    $query->where('a.jns_spp', '2');
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit) {
+                if ($pilihan == '2') {
+                    $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
+                } else if ($pilihan == '3') {
+                    $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->first();
+
+        $pengeluaran = DB::table(DB::raw("({$data_pengeluaran1->toSql()}) AS sub"))
+            ->mergeBindings($data_pengeluaran1)
+            ->orderBy(DB::raw("CAST(no_kas_bud as int)"))
+            ->orderBy('urut')
+            ->orderBy('kd_sub_kegiatan')
+            ->orderBy('kd_rek6')
+            ->get();
+
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanda_tangan' => $tanda_tangan,
+            'pilihan' => $pilihan,
+            'data_pengeluaran' => $pengeluaran,
+            'bulan' => $bulan,
+            'beban' => $beban,
+            'total_pengeluaran' => $total_pengeluaran->nilai
+        ];
+
+        return view('bud.laporan_bendahara.cetak.daftar_pengeluaran')->with($data);
+    }
+
+    public function daftarPenerimaan(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $pengirim = $request->pengirim;
+        $jenis_print = $request->jenis_print;
+
+        $penerimaan = DB::table('trhkasin_ppkd as a')
+            ->leftJoin('ms_pengirim as b', function ($join) {
+                $join->on('a.sumber', '=', 'b.kd_pengirim');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->where(['a.sumber' => $pengirim])
+            ->where(function ($query) use ($pilihan, $tgl1, $tgl2, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("(a.tgl_sts >= ? and a.tgl_sts <= ?)", [$tgl1, $tgl2]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("(month(a.tgl_sts)>=? and month(a.tgl_sts)<=?)", [$periode1, $periode2]);
+                }
+            })
+            ->orderBy('a.tgl_sts')
+            ->get();
+
+        $penerimaan_lalu = DB::table('trhkasin_pkd as a')
+            ->selectRaw("sum(a.total) as nilai")
+            ->where(['a.sumber' => $pengirim])
+            ->where(function ($query) use ($pilihan, $tgl1, $periode1) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("a.tgl_sts < ?", [$tgl1]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("month(a.tgl_sts) < ?", [$periode1]);
+                }
+            })
+            ->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal1' => $tgl1,
+            'tanggal2' => $tgl2,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'kd_pengirim' => $pengirim,
+            'pengirim' => DB::table('ms_pengirim')
+                ->select('nm_pengirim')
+                ->where(['kd_pengirim' => $pengirim])
+                ->first(),
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_penerimaan' => $penerimaan,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'penerimaan_lalu' => $penerimaan_lalu->nilai,
+            'list_pengirim' => [
+                '102', '153', '154', '167', '168', '169', '170', '172', '173', '22', '23', '25', '26', '43', '44', '45', '46', '47', '48', '49', '50', '54', '55', '56', '58', '89', '91', '92', '95', '113', '143', '144', '101', '174',
+            ],
+        ];
+
+        return view('bud.laporan_bendahara.cetak.daftar_penerimaan')->with($data);
+    }
+
+    public function penerimaanNonPendapatan(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $penerimaan = DB::table('penerimaan_non_sp2d as a')
+            ->whereIn('jenis', ['1', '2'])
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("tanggal=?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->get();
+
+        $penerimaan_lalu = DB::table('penerimaan_non_sp2d as a')
+            ->selectRaw("sum(nilai) as nilai")
+            ->whereIn('jenis', ['1', '2'])
+            ->where(function ($query) use ($pilihan, $tgl, $periode1) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("tanggal < ?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal < ?", [$periode1]);
+                }
+            })
+            ->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_penerimaan' => $penerimaan,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'penerimaan_lalu' => $penerimaan_lalu->nilai,
+        ];
+
+        return view('bud.laporan_bendahara.cetak.penerimaan_non_pendapatan')->with($data);
+    }
+
+    public function transferDana(Request $request)
+    {
+        $tgl = $request->tgl;
+        $ttd = $request->ttd;
+        $bln = $request->bulan;
+        $jenis_print = $request->jenis_print;
+
+        $total_transfer = collect(DB::select("SELECT SUM(rupiah) rupiah FROM (
+            SELECT * FROM (
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '1' urut, '1' as spasi, 'PENYALURAN TRANSFER MELALUI KPPN' nama) c
+						LEFT JOIN
+						(SELECT '1' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '2' urut, '1' as spasi, 'TRANSFER DBH PAJAK' nama) c
+						LEFT JOIN
+						(SELECT '2' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '3' urut, '2' as spasi, 'DBH PPh Pasal 21' nama) c
+						LEFT JOIN
+						( SELECT '3' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010002') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '4' urut, '2' as spasi, 'DBH PPh Pasal 25-29 WPOPDN' nama) c
+						LEFT JOIN
+						( SELECT '4' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010003') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '5' urut, '2' as spasi, 'DBH PBB Bagi Rata' nama) c
+						LEFT JOIN
+						( SELECT '5' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '6' urut, '2' as spasi, 'DBH PBB Migas' nama) c
+						LEFT JOIN
+						( SELECT '6' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010001') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '7' urut, '2' as spasi, 'Biaya Pemungutan PBB Migas' nama) c
+						LEFT JOIN
+						( SELECT '7' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210104') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '8' urut, '2' as spasi, 'DBH PBB Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '8' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '9' urut, '2' as spasi, 'Biaya Pemungutan PBB Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '9' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210102') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '10' urut, '2' as spasi, 'PBB Bagian Prov/Kab/Kota' nama) c
+						LEFT JOIN
+						( SELECT '10' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '11' urut, '2' as spasi, 'Kurang Bayar DBH PBB Bagian Prov TA 2014 pada' nama) c
+						LEFT JOIN
+						( SELECT '11' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '12' urut, '1' as spasi, 'TRANSFER DBH CUKAI' nama) c
+						LEFT JOIN
+						( SELECT '12' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '13' urut, '2' as spasi, 'DBH Cukai Hasil Tembakau' nama) c
+						LEFT JOIN
+						( SELECT '13' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010004') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '14' urut, '1' as spasi, 'TRANSFER DBH SDA' nama) c
+						LEFT JOIN
+						( SELECT '14' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '15' urut, '1' as spasi, 'PERTAMBANGAN UMUM' nama) c
+						LEFT JOIN
+						( SELECT '15' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '16' urut, '2' as spasi, 'DBH Pertambangan Umum - Iuran Tetap' nama) c
+						LEFT JOIN
+						( SELECT '16' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210204') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '17' urut, '2' as spasi, 'DBH Pertambangan Umum - Royalti' nama) c
+						LEFT JOIN
+						( SELECT '17' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210205') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '18' urut, '1' as spasi, 'MINYAK' nama) c
+						LEFT JOIN
+						( SELECT '18' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '19' urut, '2' as spasi, 'DBH Minyak 15%' nama) c
+						LEFT JOIN
+						( SELECT '19' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '20' urut, '2' as spasi, 'DBH Minyak 0,5%' nama) c
+						LEFT JOIN
+						( SELECT '20' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '21' urut, '2' as spasi, 'DBH Minyak Dalam Rangka Otsus' nama) c
+						LEFT JOIN
+						( SELECT '21' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '22' urut, '1' as spasi, 'GAS' nama) c
+						LEFT JOIN
+						( SELECT '22' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '23' urut, '2' as spasi, 'DBH Gas 30%' nama) c
+						LEFT JOIN
+						( SELECT '23' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '24' urut, '2' as spasi, 'DBH Gas 0,5%' nama) c
+						LEFT JOIN
+						( SELECT '24' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '25' urut, '2' as spasi, 'DBH Gas Dalam Rangka Otsus' nama) c
+						LEFT JOIN
+						( SELECT '25' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '26' urut, '1' as spasi, 'PANAS BUMI' nama) c
+						LEFT JOIN
+						( SELECT '26' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '27' urut, '2' as spasi, 'DBH Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '27' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '28' urut, '1' as spasi, 'KEHUTANAN' nama) c
+						LEFT JOIN
+						( SELECT '28' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '29' urut, '2' as spasi, 'DBH PSDH Reboisasi Kehutanan' nama) c
+						LEFT JOIN
+						( SELECT '29' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010010') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '30' urut, '2' as spasi, 'DBH PSDH' nama) c
+						LEFT JOIN
+						( SELECT '30' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010012') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '31' urut, '2' as spasi, 'DBH HUPH' nama) c
+						LEFT JOIN
+						( SELECT '31' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210201','420101030046') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '32' urut, '2' as spasi, 'DBH DR' nama) c
+						LEFT JOIN
+						( SELECT '32' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '33' urut, '1' as spasi, 'PERIKANAN' nama) c
+						LEFT JOIN
+						( SELECT '33' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '34' urut, '2' as spasi, 'DBH Perikanan' nama) c
+						LEFT JOIN
+						( SELECT '34' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '35' urut, '1' as spasi, 'TRANSFER DAU' nama) c
+						LEFT JOIN
+						( SELECT '35' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '36' urut, '2' as spasi, 'Transfer Dana Alokasi Umum' nama) c
+						LEFT JOIN
+						( SELECT '36' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4220101') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '37' urut, '1' as spasi, 'TRANSFER DAK' nama) c
+						LEFT JOIN
+						( SELECT '37' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '38' urut, '2' as spasi, 'Transfer Dana Alokasi Khusus' nama) c
+						LEFT JOIN
+						( SELECT '38' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '39' urut, '2' as spasi, 'DAK Fisik Bidang Infrastruktur Jalan dan Irigasi' nama) c
+						LEFT JOIN
+						( SELECT '39' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101030043') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '40' urut, '2' as spasi, 'DAK Fisik Bidang Pendidikan' nama) c
+						LEFT JOIN
+						( SELECT '40' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230103') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '41' urut, '2' as spasi, 'DAK Fisik Bidang Kelautan dan Perikanan' nama) c
+						LEFT JOIN
+						( SELECT '41' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101030032') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '42' urut, '2' as spasi, 'DAK Fisik Bidang Kesehatan' nama) c
+						LEFT JOIN
+						( SELECT '42' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230104','4230206') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '43' urut, '2' as spasi, 'DAK Fisik Bidang Pertanian' nama) c
+						LEFT JOIN
+						( SELECT '43' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230105') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '44' urut, '2' as spasi, 'DAK Fisik Bidang Lingkungan Hidup dan Kehutanan' nama) c
+						LEFT JOIN
+						( SELECT '44' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101030046') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '45' urut, '2' as spasi, 'DAK Fisik Bidang Energi Skala Kecil' nama) c
+						LEFT JOIN
+						( SELECT '45' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230111') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '46' urut, '2' as spasi, 'Transfer Dana Alokasi Khusus BOS Satuan Pendidikan' nama) c
+						LEFT JOIN
+						( SELECT '46' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230207') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '47' urut, '1' as spasi, 'TRANSFER DANA OTONOMI KHUSUS' nama) c
+						LEFT JOIN
+						( SELECT '47' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '48' urut, '2' as spasi, 'Transfer Dana Otonomi Khusus' nama) c
+						LEFT JOIN
+						( SELECT '48' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '49' urut, '1' as spasi, 'TRANSFER DANA PENYESUAIAN' nama) c
+						LEFT JOIN
+						( SELECT '49' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '50' urut, '2' as spasi, 'Pelayanan Administrasi Kependudukan' nama) c
+						LEFT JOIN
+						( SELECT '50' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101040017') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '51' urut, '2' as spasi, 'Dana Tambahan Penghasilan Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '51' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101040005') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '52' urut, '2' as spasi, 'Dana Tunjangan Profesi Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '52' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230202') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '53' urut, '2' as spasi, 'Dana Tunjangan Khusus Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '53' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230209') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '54' urut, '2' as spasi, 'Dana Bantuan Operasional Sekolah' nama) c
+						LEFT JOIN
+						( SELECT '54' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230201') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '55' urut, '2' as spasi, 'Dana Insentif Daerah (DID)' nama) c
+						LEFT JOIN
+						( SELECT '55' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4340104') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '56' urut, '2' as spasi, 'Dana Proyek Pemerintah Daerah dan Desentralisasi' nama) c
+						LEFT JOIN
+						( SELECT '56' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '57' urut, '1' as spasi, 'TRANSFER DANA DESA' nama) c
+						LEFT JOIN
+						( SELECT '57' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '58' urut, '2' as spasi, 'Dana Desa' nama) c
+						LEFT JOIN
+						( SELECT '58' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x ) z
+						) z", [$bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln]))->first();
+
+        $transfer = DB::select("SELECT * FROM (
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '1' urut, '1' as spasi, 'PENYALURAN TRANSFER MELALUI KPPN' nama) c
+						LEFT JOIN
+						(SELECT '1' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '2' urut, '1' as spasi, 'TRANSFER DBH PAJAK' nama) c
+						LEFT JOIN
+						(SELECT '2' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '3' urut, '2' as spasi, 'DBH PPh Pasal 21' nama) c
+						LEFT JOIN
+						( SELECT '3' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010002') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '4' urut, '2' as spasi, 'DBH PPh Pasal 25-29 WPOPDN' nama) c
+						LEFT JOIN
+						( SELECT '4' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010003') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '5' urut, '2' as spasi, 'DBH PBB Bagi Rata' nama) c
+						LEFT JOIN
+						( SELECT '5' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '6' urut, '2' as spasi, 'DBH PBB Migas' nama) c
+						LEFT JOIN
+						( SELECT '6' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010001') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '7' urut, '2' as spasi, 'Biaya Pemungutan PBB Migas' nama) c
+						LEFT JOIN
+						( SELECT '7' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210104') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '8' urut, '2' as spasi, 'DBH PBB Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '8' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '9' urut, '2' as spasi, 'Biaya Pemungutan PBB Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '9' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210102') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '10' urut, '2' as spasi, 'PBB Bagian Prov/Kab/Kota' nama) c
+						LEFT JOIN
+						( SELECT '10' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '11' urut, '2' as spasi, 'Kurang Bayar DBH PBB Bagian Prov TA 2014 pada' nama) c
+						LEFT JOIN
+						( SELECT '11' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '12' urut, '1' as spasi, 'TRANSFER DBH CUKAI' nama) c
+						LEFT JOIN
+						( SELECT '12' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '13' urut, '2' as spasi, 'DBH Cukai Hasil Tembakau' nama) c
+						LEFT JOIN
+						( SELECT '13' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010004') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '14' urut, '1' as spasi, 'TRANSFER DBH SDA' nama) c
+						LEFT JOIN
+						( SELECT '14' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '15' urut, '1' as spasi, 'PERTAMBANGAN UMUM' nama) c
+						LEFT JOIN
+						( SELECT '15' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '16' urut, '2' as spasi, 'DBH Pertambangan Umum - Iuran Tetap' nama) c
+						LEFT JOIN
+						( SELECT '16' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210204') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '17' urut, '2' as spasi, 'DBH Pertambangan Umum - Royalti' nama) c
+						LEFT JOIN
+						( SELECT '17' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210205') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '18' urut, '1' as spasi, 'MINYAK' nama) c
+						LEFT JOIN
+						( SELECT '18' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '19' urut, '2' as spasi, 'DBH Minyak 15%' nama) c
+						LEFT JOIN
+						( SELECT '19' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '20' urut, '2' as spasi, 'DBH Minyak 0,5%' nama) c
+						LEFT JOIN
+						( SELECT '20' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '21' urut, '2' as spasi, 'DBH Minyak Dalam Rangka Otsus' nama) c
+						LEFT JOIN
+						( SELECT '21' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '22' urut, '1' as spasi, 'GAS' nama) c
+						LEFT JOIN
+						( SELECT '22' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '23' urut, '2' as spasi, 'DBH Gas 30%' nama) c
+						LEFT JOIN
+						( SELECT '23' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '24' urut, '2' as spasi, 'DBH Gas 0,5%' nama) c
+						LEFT JOIN
+						( SELECT '24' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '25' urut, '2' as spasi, 'DBH Gas Dalam Rangka Otsus' nama) c
+						LEFT JOIN
+						( SELECT '25' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '26' urut, '1' as spasi, 'PANAS BUMI' nama) c
+						LEFT JOIN
+						( SELECT '26' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '27' urut, '2' as spasi, 'DBH Panas Bumi' nama) c
+						LEFT JOIN
+						( SELECT '27' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '28' urut, '1' as spasi, 'KEHUTANAN' nama) c
+						LEFT JOIN
+						( SELECT '28' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '29' urut, '2' as spasi, 'DBH PSDH Reboisasi Kehutanan' nama) c
+						LEFT JOIN
+						( SELECT '29' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010010') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '30' urut, '2' as spasi, 'DBH PSDH' nama) c
+						LEFT JOIN
+						( SELECT '30' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101010012') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '31' urut, '2' as spasi, 'DBH HUPH' nama) c
+						LEFT JOIN
+						( SELECT '31' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4210201','420101030046') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '32' urut, '2' as spasi, 'DBH DR' nama) c
+						LEFT JOIN
+						( SELECT '32' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '33' urut, '1' as spasi, 'PERIKANAN' nama) c
+						LEFT JOIN
+						( SELECT '33' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '34' urut, '2' as spasi, 'DBH Perikanan' nama) c
+						LEFT JOIN
+						( SELECT '34' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '35' urut, '1' as spasi, 'TRANSFER DAU' nama) c
+						LEFT JOIN
+						( SELECT '35' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '36' urut, '2' as spasi, 'Transfer Dana Alokasi Umum' nama) c
+						LEFT JOIN
+						( SELECT '36' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4220101') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '37' urut, '1' as spasi, 'TRANSFER DAK' nama) c
+						LEFT JOIN
+						( SELECT '37' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '38' urut, '2' as spasi, 'Transfer Dana Alokasi Khusus' nama) c
+						LEFT JOIN
+						( SELECT '38' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '39' urut, '2' as spasi, 'DAK Fisik Bidang Infrastruktur Jalan dan Irigasi' nama) c
+						LEFT JOIN
+						( SELECT '39' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101030043') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '40' urut, '2' as spasi, 'DAK Fisik Bidang Pendidikan' nama) c
+						LEFT JOIN
+						( SELECT '40' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230103') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '41' urut, '2' as spasi, 'DAK Fisik Bidang Kelautan dan Perikanan' nama) c
+						LEFT JOIN
+						( SELECT '41' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101030032') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '42' urut, '2' as spasi, 'DAK Fisik Bidang Kesehatan' nama) c
+						LEFT JOIN
+						( SELECT '42' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230104','4230206') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '43' urut, '2' as spasi, 'DAK Fisik Bidang Pertanian' nama) c
+						LEFT JOIN
+						( SELECT '43' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230105') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '44' urut, '2' as spasi, 'DAK Fisik Bidang Lingkungan Hidup dan Kehutanan' nama) c
+						LEFT JOIN
+						( SELECT '44' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230109') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '45' urut, '2' as spasi, 'DAK Fisik Bidang Energi Skala Kecil' nama) c
+						LEFT JOIN
+						( SELECT '45' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230111') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '46' urut, '2' as spasi, 'Transfer Dana Alokasi Khusus BOS Satuan Pendidikan' nama) c
+						LEFT JOIN
+						( SELECT '46' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230207') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '47' urut, '1' as spasi, 'TRANSFER DANA OTONOMI KHUSUS' nama) c
+						LEFT JOIN
+						( SELECT '47' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '48' urut, '2' as spasi, 'Transfer Dana Otonomi Khusus' nama) c
+						LEFT JOIN
+						( SELECT '48' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '49' urut, '1' as spasi, 'TRANSFER DANA PENYESUAIAN' nama) c
+						LEFT JOIN
+						( SELECT '49' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '50' urut, '2' as spasi, 'Pelayanan Administrasi Kependudukan' nama) c
+						LEFT JOIN
+						( SELECT '50' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101040017') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '51' urut, '2' as spasi, 'Dana Tambahan Penghasilan Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '51' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('420101040005') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '52' urut, '2' as spasi, 'Dana Tunjangan Profesi Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '52' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230202') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '53' urut, '2' as spasi, 'Dana Tunjangan Khusus Guru PNSD' nama) c
+						LEFT JOIN
+						( SELECT '53' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230209') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '54' urut, '2' as spasi, 'Dana Bantuan Operasional Sekolah' nama) c
+						LEFT JOIN
+						( SELECT '54' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4230201') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '55' urut, '2' as spasi, 'Dana Insentif Daerah (DID)' nama) c
+						LEFT JOIN
+						( SELECT '55' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4340104') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '56' urut, '2' as spasi, 'Dana Proyek Pemerintah Daerah dan Desentralisasi' nama) c
+						LEFT JOIN
+						( SELECT '56' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '57' urut, '1' as spasi, 'TRANSFER DANA DESA' nama) c
+						LEFT JOIN
+						( SELECT '57' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x
+
+						UNION
+						SELECT urut, spasi, nama, ISNULL(rupiah,0) rupiah, ISNULL(tgl_kas,'') tgl_kas FROM (
+						SELECT c.urut, c.spasi, c.nama, d.rupiah, d.tgl_kas FROM
+						(select '58' urut, '2' as spasi, 'Dana Desa' nama) c
+						LEFT JOIN
+						( SELECT '58' urut, b.tgl_kas, a.rupiah from trdkasin_ppkd a inner join trhkasin_ppkd b on a.no_kas=b.no_kas and a.kd_skpd=b.kd_skpd
+						where kd_rek6 in ('4') AND MONTH(tgl_kas)=? ) d on c.urut=d.urut )x ) z
+						order by CAST(urut as int)", [$bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln, $bln]);
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanggal' => $tgl,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'total_transfer' => $total_transfer->rupiah,
+            'data_transfer' => $transfer,
+            'bulan' => $bln
+        ];
+
+        return view('bud.laporan_bendahara.cetak.transfer_dana')->with($data);
+    }
+
+    public function restitusi(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $restitusi = DB::table('trhrestitusi as a')
+            ->join('trdrestitusi as b', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_sts', '=', 'b.no_sts');
+            })
+            ->selectRaw("b.no_sts no_bukti, a.keterangan, b.kd_skpd, (SELECT nm_skpd FROM ms_skpd WHERE kd_skpd=b.kd_skpd) nm_skpd, a.tgl_sts tgl_bukti, b.kd_rek6, (SELECT nm_rek6 FROM ms_rek6 WHERE kd_rek6=b.kd_rek6) nm_rek6, b.rupiah")
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("a.tgl_sts=?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("a.tgl_sts between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->orderBy('tgl_bukti')
+            ->orderBy('kd_rek6')
+            ->get();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_restitusi' => $restitusi,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.restitusi')->with($data);
+    }
+
+    public function rth(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $bulan = $request->bulan;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        if ($pilihan == '1') {
+            $rth = DB::select("exec cetak_rth2 ?", array($bulan));
+        } elseif ($pilihan == '2') {
+            $rth = DB::select("exec cetak_rth_periode2 ?,?", array($periode1, $periode2));
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'bulan' => $bulan,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_rth' => $rth,
+            'total_data' => count($rth),
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.rth')->with($data);
+    }
+
+    public function pengeluaranNonSp2d(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $pengeluaran = DB::table('pengeluaran_non_sp2d as a')
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("tanggal=?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->get();
+
+        $pengeluaran_lalu = DB::table('pengeluaran_non_sp2d as a')
+            ->selectRaw("sum(nilai) as nilai")
+            ->where(function ($query) use ($pilihan, $tgl, $periode1) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("tanggal < ?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("tanggal < ?", [$periode1]);
+                }
+            })
+            ->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_pengeluaran' => $pengeluaran,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'pengeluaran_lalu' => $pengeluaran_lalu->nilai,
+        ];
+
+        return view('bud.laporan_bendahara.cetak.pengeluaran_non_sp2d')->with($data);
+    }
+
+    public function dth(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $skpd = $request->skpd;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $bendahara = $request->bendahara;
+        $pa_kpa = $request->pa_kpa;
+        $spasi = $request->spasi;
+        $bulan = $request->bulan;
+        $jenis_print = $request->jenis_print;
+
+        if ($pilihan == '1' && $jenis_print == 'keseluruhan') {
+            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+            FROM (
+                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE MONTH(a.tgl_bukti)=?
+                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    UNION ALL
+
+                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+                                    FROM (
+                                    SELECT x.*, y.keperluan FROM (
+                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE MONTH(a.tgl_bukti)=? ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $bulan]);
+        } elseif ($pilihan == '2' && $jenis_print == 'keseluruhan') {
+            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+            FROM (
+                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?)
+                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    UNION ALL
+
+                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+                                    FROM (
+                                    SELECT x.*, y.keperluan FROM (
+                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $periode1, $periode2]);
+        } elseif ($pilihan == '1') {
+            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+            FROM (
+                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=?
+                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    UNION ALL
+
+                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+                                    FROM (
+                                    SELECT x.*, y.keperluan FROM (
+                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=? ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $skpd, $bulan, $skpd]);
+        } elseif ($pilihan == '2') {
+            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+            FROM (
+                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=?
+                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    UNION ALL
+
+                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+                                    FROM (
+                                    SELECT x.*, y.keperluan FROM (
+                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=? ) x
+                                    LEFT JOIN
+                                    (
+                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+                                    FROM trdspp a INNER JOIN trhspp b
+                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+                                    INNER JOIN trhspm c
+                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+                                    INNER JOIN trhsp2d d
+                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $skpd, $periode1, $periode2, $skpd]);
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'bulan' => $bulan,
+            'data_dth' => $dth,
+            'bendahara' => DB::table('ms_ttd')
+                ->where(['nip' => $bendahara])
+                ->first(),
+            'pa_kpa' => DB::table('ms_ttd')
+                ->where(['nip' => $pa_kpa])
+                ->first(),
+            'jenis_print' => $jenis_print,
+            'skpd' => $skpd
+        ];
+
+        return view('bud.laporan_bendahara.cetak.dth')->with($data);
+    }
+
+    public function koreksiPenerimaan(Request $request)
+    {
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        $koreksi = DB::table('trkasout_ppkd as a')
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("a.tanggal=?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("a.tanggal between ? and ?", [$periode1, $periode2]);
+                }
+            })
+            ->orderBy('tanggal')
+            ->orderBy('no')
+            ->get();
+
+        $koreksi_lalu = DB::table('trkasout_ppkd as a')
+            ->selectRaw("sum(a.nilai) as nilai")
+            ->where(function ($query) use ($pilihan, $tgl, $periode1, $periode2) {
+                // PILIHAN PER TANGGAL
+                if ($pilihan == '1') {
+                    $query->whereRaw("a.tanggal<?", [$tgl]);
+                }
+                //PILIHAN PER PERIODE
+                elseif ($pilihan == '2') {
+                    $query->whereRaw("a.tanggal<?", [$periode1]);
+                }
+            })
+            ->first();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $pilihan,
+            'tanggal' => $tgl,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data_koreksi' => $koreksi,
+            'koreksi_lalu' => $koreksi_lalu->nilai,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.koreksi_penerimaan')->with($data);
+    }
+
+    public function harianKasda(Request $request)
+    {
+        $tgl = $request->tgl;
+        $halaman = $request->halaman;
+        $spasi = $request->spasi;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+
+        if ($tgl == '2022-01-01' || $tgl == '2022-1-1') {
+            $saldoawal = "SELECT '2022-01-01' as urut,0 as urut1,0 as kode,'0' as nomor,uraian,nilai as masuk,0 as keluar from buku_kas
+		                  UNION ALL";
+        } else {
+            $saldoawal = "";
+        }
+
+        if ($tgl != '2022-01-02' || $tgl != '2022-1-2') {
+            $saldoawals = "SELECT '2022-01-01' as urut,0 as urut1,0 as kode,'0' as nomor,uraian,nilai as masuk,0 as keluar from buku_kas
+		                  UNION ALL";
+        } else {
+            $saldoawals = "";
+        }
+
+        $kas_kasda_lalu = collect(DB::select("SELECT SUM(masuk)as masuk, sum(keluar)as keluar FROM (
+			SELECT tgl_kas_bud as urut,
+		no_kas_bud as urut1,
+		1 as kode,
+		no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a inner join trdspp b
+		on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where status_bud=1 and tgl_kas_bud<?
+		group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan
+		UNION ALL
+		$saldoawals
+		-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+		SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+		WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and tgl_kas<?
+		GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		-- 4104	LAIN-LAIN PAD YANG SAH
+		-- 4102	RETRIBUSI DAERAH
+		-- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
+		-- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
+		-- 4301	PENDAPATAN HIBAH
+		-- 4101	PAJAK DAERAH
+		SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+						FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+						LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+						WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and a.tgl_kas<?
+						GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		-- CP
+		SELECT  a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+		WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and a.tgl_kas<?
+		GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		--PENGELUARAN NON SP2D
+		SELECT tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where tanggal<?
+
+		UNION ALL
+		-- RESTITUSI
+		SELECT tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
+		FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and tgl_kas<?
+
+		UNION ALL
+		-- KOREKSI
+		SELECT tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where tanggal<?
+
+		UNION ALL
+		-- KOREKSI PENGELUARAN
+		SELECT tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where tanggal<?
+
+		UNION ALL
+		-- DEPOSITO
+		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and tanggal<?
+
+		UNION ALL
+		-- PENERIMAAN NON SP2D
+		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and tanggal<?
+
+		UNION ALL
+		-- KOREKSI PENERIMAAN
+		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal<?
+		)zz
+		", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
+
+        $kas_kasda = DB::select("SELECT 'sp2d' as jenis,c.jns_spp,c.jns_beban, tgl_kas_bud as urut,no_kas_bud as urut1, 1 as kode,
+		no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a
+		inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+		inner join trhspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
+		where status_bud=1 and tgl_kas_bud=?
+		group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan,c.jns_spp,c.jns_beban
+		UNION ALL
+		$saldoawal
+		-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+		SELECT 'LLPADYS' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+		WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and tgl_kas=?
+		GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		-- 4104	LAIN-LAIN PAD YANG SAH
+		-- 4102	RETRIBUSI DAERAH
+		-- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
+		-- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
+		-- 4301	PENDAPATAN HIBAH
+		-- 4101	PAJAK DAERAH
+		SELECT 'PAD' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+						FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+						LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+						WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and a.tgl_kas=?
+						GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		-- CP
+		SELECT  'CP' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+		WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and a.tgl_kas=?
+		GROUP BY a.tgl_kas,a.no_kas,keterangan
+
+		UNION ALL
+		--PENGELUARAN NON SP2D
+		SELECT 'keluarnonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where tanggal=?
+
+		UNION ALL
+		-- RESTITUSI
+		SELECT 'restitusi' as jenis,'' as jns_spp, '' as jns_beban, tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
+		FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and tgl_kas=?
+
+		UNION ALL
+		-- KOREKSI
+		SELECT 'koreksi' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where tanggal=?
+
+		UNION ALL
+		-- KOREKSI PENGELUARAN
+		SELECT 'koreksipengeluaran' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where tanggal=?
+
+		UNION ALL
+		-- DEPOSITO
+		SELECT'deposito' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and tanggal=?
+
+		UNION ALL
+		-- PENERIMAAN NON SP2D
+		SELECT 'terimanonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and tanggal=?
+
+		UNION ALL
+		-- KOREKSI PENERIMAAN
+		SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal=?
+		ORDER BY urut,urut1", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanggal' => $tgl,
+            'data_kasda' => $kas_kasda,
+            'kasda_lalu' => $kas_kasda_lalu,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+        ];
+
+        return view('bud.laporan_bendahara.cetak.harian_kasda')->with($data);
     }
 }

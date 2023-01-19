@@ -93,6 +93,7 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
             let kop = document.getElementById('kop').value;
+            let margin_atas = document.getElementById('margin_atas').value;
             if (!ttd_bud) {
                 alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
@@ -113,6 +114,7 @@
                 alert("Pilih KOP Terlebih Dahulu!");
                 return;
             }
+
             let url = new URL("{{ route('sp2d.cetak_sp2d') }}");
             let searchParams = url.searchParams;
             searchParams.append("jenis", jenis);
@@ -124,6 +126,7 @@
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
             searchParams.append("kop", kop);
+            searchParams.append("margin_atas", margin_atas);
             window.open(url.toString(), "_blank");
         });
 

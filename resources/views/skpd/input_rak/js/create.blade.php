@@ -321,6 +321,23 @@
             let total_rak_tw3 = rupiah(document.getElementById('total_rak_tw3').value);
             let total_rak_tw4 = rupiah(document.getElementById('total_rak_tw4').value);
 
+            if (Number.isInteger(total_rak_tw1) == false) {
+                alert('RAK Januari, Februari, Maret tidak boleh ada koma');
+                return;
+            };
+            if (Number.isInteger(total_rak_tw2) == false) {
+                alert('RAK April, Mei, Juni tidak boleh ada koma');
+                return;
+            };
+            if (Number.isInteger(total_rak_tw3) == false) {
+                alert('RAK Juli, Agustus, September tidak boleh ada koma');
+                return;
+            };
+            if (Number.isInteger(total_rak_tw4) == false) {
+                alert('RAK Oktober, November, Desember tidak boleh ada koma');
+                return;
+            };
+
             let total_realisasi_tw1 = rupiah(document.getElementById('total_realisasi_tw1').value);
             let total_realisasi_tw2 = rupiah(document.getElementById('total_realisasi_tw2').value);
             let total_realisasi_tw3 = rupiah(document.getElementById('total_realisasi_tw3').value);

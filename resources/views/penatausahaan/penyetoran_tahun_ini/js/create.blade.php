@@ -69,6 +69,7 @@
                     tgl_terima: tgl_terima
                 },
                 success: function(data) {
+                    console.log(data);
                     $('#no_terima').empty();
                     $('#no_terima').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);

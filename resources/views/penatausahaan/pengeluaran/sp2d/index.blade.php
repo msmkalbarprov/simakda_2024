@@ -195,6 +195,14 @@
                                 name="baris">
                         </div>
                     </div>
+                    {{-- Margin Atas --}}
+                    <div class="mb-3 row">
+                        <label for="baris" class="col-md-4 col-form-label">Margin Atas</label>
+                        <div class="col-md-8">
+                            <input type="number" value="10" min="1" class="form-control" id="margin_atas"
+                                name="margin_atas">
+                        </div>
+                    </div>
                     {{-- SP2D, lampiran --}}
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">

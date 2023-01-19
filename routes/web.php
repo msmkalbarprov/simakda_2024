@@ -1076,6 +1076,28 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('retribusi', [BendaharaUmumDaerahController::class, 'retribusi'])->name('laporan_bendahara_umum.retribusi');
         // REGISTER CP
         Route::get('register_cp', [BendaharaUmumDaerahController::class, 'registerCp'])->name('laporan_bendahara_umum.register_cp');
+        // DAFTAR POTONGAN PAJAK
+        Route::get('potongan_pajak', [BendaharaUmumDaerahController::class, 'potonganPajak'])->name('laporan_bendahara_umum.potongan_pajak');
+        // DAFTAR PENGELUARAN
+        Route::get('daftar_pengeluaran', [BendaharaUmumDaerahController::class, 'daftarPengeluaran'])->name('laporan_bendahara_umum.daftar_pengeluaran');
+        // DAFTAR PENERIMAAN
+        Route::get('daftar_penerimaan', [BendaharaUmumDaerahController::class, 'daftarPenerimaan'])->name('laporan_bendahara_umum.daftar_penerimaan');
+        // PENERIMAAN NON PENDAPATAN
+        Route::get('penerimaan_non_pendapatan', [BendaharaUmumDaerahController::class, 'penerimaanNonPendapatan'])->name('laporan_bendahara_umum.penerimaan_non_pendapatan');
+        // TRANSFER DANA
+        Route::get('transfer_dana', [BendaharaUmumDaerahController::class, 'transferDana'])->name('laporan_bendahara_umum.transfer_dana');
+        // RESTITUSI
+        Route::get('restitusi', [BendaharaUmumDaerahController::class, 'restitusi'])->name('laporan_bendahara_umum.restitusi');
+        // RTH
+        Route::get('rth', [BendaharaUmumDaerahController::class, 'rth'])->name('laporan_bendahara_umum.rth');
+        // BUKU PEMBANTU PENGELUARAN NON SP2D
+        Route::get('pengeluaran_non_sp2d', [BendaharaUmumDaerahController::class, 'pengeluaranNonSp2d'])->name('laporan_bendahara_umum.pengeluaran_non_sp2d');
+        // DTH
+        Route::get('dth', [BendaharaUmumDaerahController::class, 'dth'])->name('laporan_bendahara_umum.dth');
+        // REGISTER KOREKSI PENERIMAAN
+        Route::get('koreksi_penerimaan', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan'])->name('laporan_bendahara_umum.koreksi_penerimaan');
+        // KAS HARIAN KASDA
+        Route::get('harian_kasda', [BendaharaUmumDaerahController::class, 'harianKasda'])->name('laporan_bendahara_umum.harian_kasda');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {

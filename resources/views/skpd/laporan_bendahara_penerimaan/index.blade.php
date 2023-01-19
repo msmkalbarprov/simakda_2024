@@ -72,8 +72,6 @@
         </div>
     </div>
 
-    
-    {{-- modal cetak Sub Rincian Objek  --}}
 
     @include('skpd.laporan_bendahara_penerimaan.modal1')
     @include('skpd.laporan_bendahara_penerimaan.modal2')
@@ -97,13 +95,14 @@
                 theme: 'bootstrap-5'
             });
         
+
         });
-        let jenis_skpd = "{{substr(Auth::user()->kd_skpd,18,4)}}";
+        let jenis_skpd = "{{ substr(Auth::user()->kd_skpd, 18, 4) }}";
         let jenis
-        if(jenis_skpd == '0000'){
-             jenis='skpd';
-        }else{
-             jenis='unit';
+        if (jenis_skpd == '0000') {
+            jenis = 'skpd';
+        } else {
+            jenis = 'unit';
         }
 
         let modal

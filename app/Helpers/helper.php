@@ -3071,3 +3071,63 @@ function nama_rekening_cair($beban, $kd_rek6)
         return $data->nm_rek6;
     }
 }
+
+function nama_bend($kd_skpd)
+{
+    $data = DB::table('ms_ttd')
+        ->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])
+        ->first();
+
+    return $data;
+}
+
+function hari($hari)
+{
+    if ($hari == 'Sun') {
+        $hari = 'Minggu';
+    } else if ($hari == 'Mon') {
+        $hari = 'Senin';
+    } else if ($hari == 'tue') {
+        $hari = 'Selasa';
+    } else if ($hari == 'Wed') {
+        $hari = 'Rabu';
+    } else if ($hari == 'Thu') {
+        $hari = 'Kamis';
+    } else if ($hari == 'Fri') {
+        $hari = 'Jumat';
+    } else if ($hari == 'Sat') {
+        $hari = 'Sabtu';
+    } else {
+        $hari = 'Tidak ada nama hari';
+    }
+
+    return $hari;
+}
+
+function harian_kasda_pihak_ketiga($nomor)
+{
+    $data = DB::table('trhspp as a')
+        ->join('trhsp2d as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })
+        ->where(['no_sp2d' => $nomor])
+        ->first();
+
+    return $data->nm_skpd . '-' . $data->nmrekan . '-' . $data->pimpinan . '-' . $data->alamat;
+}
+
+function harian_kasda_bukan_ketiga($nomor)
+{
+    $skpd = DB::table('trhsp2d')
+        ->select('kd_skpd')
+        ->where(['no_sp2d' => $nomor])
+        ->first();
+
+    $data = DB::table('ms_ttd as a')
+        ->selectRaw("a.*,(select nm_skpd from ms_skpd where kd_skpd=ms_ttd.kd_skpd)as nm_skpd")
+        ->where(['kd_skpd' => $skpd->kd_skpd])
+        ->first();
+
+    return $data->nm_skpd . '-' . $data->nama . '-' . $data->jabatan;
+}

@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     <a href="{{ route('sppls.create') }}" id="tambah_spp_ls"
-                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }} {{ $cek['status_angkas'] == 0 ? 'disabled' : '' }}"
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }} {{ $cek['status_angkas'] == '0' ? 'disabled' : '' }}"
                         style="float: right;">Tambah</a>
                     <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
                     <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
@@ -285,7 +285,7 @@
             });
             let status_ang = document.getElementById('status_ang').value;
             let selisih_angkas = document.getElementById('selisih_angkas').value;
-            alert(selisih_angkas)
+
             if (status_ang == 0 || status_ang == '0') {
                 alert('DPA Belum Disahkan!');
             }
