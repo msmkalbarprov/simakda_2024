@@ -87,8 +87,7 @@
         </thead>
         <tbody>
             <tr>
-                <td colspan="18" style="background-color:#CCCCCC"><b>REKAPAN RENCANA PENDAPATAN DAN/ATAU PENERIMAAN
-                        PEMBIAYAAN</b></td>
+                <td colspan="18" style="background-color:#CCCCCC"><b>ALOKASI PENDAPATAN DAN PENERIMAAN PEMBIAYAAN</b></td>
             </tr>
             @php
                 $total_ang = 0;
@@ -219,8 +218,7 @@
                 <td style="height: 15px"></td>
             </tr>
             <tr>
-                <td colspan="18" style="background-color:#CCCCCC"><b>REKAPAN RENCANA BELANJA DAN/ATAU PENGELUARAN
-                        PEMBIAYAAN PER KEGIATAN</b></td>
+                <td colspan="18" style="background-color:#CCCCCC"><b>ALOKASI BELANJA DAN PENGELUARAN PEMBIAYAAN</b></td>
             </tr>
             @php
                 $total_ang = 0;
