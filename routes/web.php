@@ -700,6 +700,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::group(['prefix' => 'cek_rak'], function () {
                 Route::get('cek_anggaran', [RakController::class, 'cekAnggaranIndex'])->name('skpd.cek_rak.cek_anggaran');
                 Route::get('cetakan_cek_anggaran', [RakController::class, 'cetakCekAnggaran'])->name('skpd.cek_rak.cetakan_cek_anggaran');
+                Route::post('cari_skpd', [RakController::class, 'cariSkpd'])->name('skpd.cek_rak.skpd');
             });
         });
         // Transaksi KKPD

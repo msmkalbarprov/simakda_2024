@@ -14,6 +14,38 @@
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
+        let pilihancetak
+        $('input:radio[name="inlineRadioOptions"]').change(function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'skpd') {
+                cari_skpd(kd_skpd, 'skpd')
+            } else {
+                cari_skpd(kd_skpd, 'unit')
+            }
+            pilihancetak = $(this).val();
+        });
+
+        function cari_skpd(kd_skpd, jenis) {
+            $.ajax({
+                url: "{{ route('skpd.cek_rak.skpd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd,
+                    jenis: jenis
+                },
+                success: function(data) {
+                    $('#kd_skpd').empty();
+                    $('#kd_skpd').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                }
+            })
+        }
 
         $('#kd_skpd').on('select2:select', function() {
             let kd_skpd = this.value;
@@ -95,10 +127,13 @@
         });
 
         $('#jenis_rak').on('select2:select', function() {
-            let jenis_rak = this.value;
-            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let hidden = 'hidden';
+            let jenis_rak       = this.value;
+            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
+            let kd_skpd         = document.getElementById('kd_skpd').value;
+            let hidden          = 'hidden';
+            let jenis_cetakan   = pilihancetak;
+
+            alert(jenis_cetakan)
 
             if (!jenis_rak || !kd_skpd || !jenis_anggaran) {
                 alert('Silahkan Lengkapi Inputan!');
@@ -110,6 +145,7 @@
                 searchParams.append("jenis_anggaran", jenis_anggaran);
                 searchParams.append("jenis_rak", jenis_rak);
                 searchParams.append("hidden", hidden);
+                searchParams.append("jenis_cetakan", jenis_cetakan);
 
                 document.getElementById("demo").innerHTML = "<embed src=" + url +
                     " width='100%' height='500px'></embed>";
@@ -117,13 +153,14 @@
         });
 
         $('.cetak_rak').on('click', function() {
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
-            let jenis_rak = document.getElementById('jenis_rak').value;
-            let ttd1 = document.getElementById('ttd1').value;
-            let ttd2 = document.getElementById('ttd2').value;
-            let tanggal_ttd = document.getElementById('tanggal_ttd').value;
-            let jenis_print = $(this).data("jenis");
+            let kd_skpd         = document.getElementById('kd_skpd').value;
+            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
+            let jenis_rak       = document.getElementById('jenis_rak').value;
+            let ttd1            = document.getElementById('ttd1').value;
+            let ttd2            = document.getElementById('ttd2').value;
+            let tanggal_ttd     = document.getElementById('tanggal_ttd').value;
+            let jenis_print     = $(this).data("jenis");
+            let jenis_cetakan   = $('input:radio[name="inlineRadioOptions"]').val();
 
             if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd) {
                 alert("Harap Lengkapi Inputan.");
@@ -139,6 +176,7 @@
             searchParams.append("ttd2", ttd2);
             searchParams.append("tanggal_ttd", tanggal_ttd);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("jenis_cetakan", jenis_cetakan);
             window.open(url.toString(), "_blank");
         });
     });

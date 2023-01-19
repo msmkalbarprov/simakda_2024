@@ -72,150 +72,11 @@
         </div>
     </div>
 
-    {{-- modal cetak SPJ --}}
-    <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><label for="labelcetak" id="labelcetak"></label></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{-- SKPD --}}
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <label for="kd_skpd" class="form-label">Kode SKPD</label>
-                            {{-- <input type="text"  class="form-control" id="kd_skpd" name="kd_skpd" value="{{ $data_skpd->kd_skpd }}" readonly> --}}
-                            <select class="form-control select2-modal" style=" width: 100%;" id="kd_skpd" name="kd_skpd">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3" id="periode1">
-                            <label for="tanggal1" class="form-label">Periode</label>
-                            <input type="date" id="tanggal1" name="tanggal1" class="form-control">
-                        </div>
-                        <div class="col-md-3" id="periode2">
-                            <label for="tanggal2" class="form-label">&nbsp;</label>
-                            <input type="date" id="tanggal2" name="tanggal2" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <div id="bendahara1">
-                                <label for="bendahara" class="form-label">Bendahara</label>
-                                <select class="form-control select2-modal" style=" width: 100%;" id="bendahara"
-                                    name="bendahara">
-                                    <option value="" disabled selected>Silahkan Pilih</option>
-                                </select>
-                            </div>
-                            <div id="rekening1">
-                                <label for="rekening" class="form-label">Rekening</label>
-                                <select class="form-control select2-modal" style=" width: 100%;" id="rekening"
-                                    name="rekening">
-                                    <option value="" disabled selected>Silahkan Pilih</option>
-                                    @foreach ($daftar_rekening as $rekening)
-                                        <option value="{{ $rekening->kd_rek6 }}">
-                                            {{ $rekening->kd_rek6 }} | {{ $rekening->nm_rek6 }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        {{-- PA/KPA --}}
-                        <div class="col-md-6">
-                            <div id="tgl_ttd1">
-                                <label for="pa_kpa" class="form-label">Tanggal TTD</label>
-                                <input type="date" id="tgl_ttd" name="tgl_ttd" class="form-control">
-                            </div>
-                            <div id="tipe1">
-                                <label for="tipe" class="form-label">Data</label>
-                                <select class="form-control select2-modal" style=" width: 100%;" id="tipe"
-                                    name="tipe">
-                                    <option value="1" selected>Setoran</option>
-                                    <option value="2">Penerimaan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Bendahara --}}
-                    <div class="mb-3 row">
-                        <div class="col-md-6" id="pa_kpa1">
-                            <label for="pa_kpa" class="form-label">PA/KPA</label>
-                            <select class="form-control select2-modal" style=" width: 100%;" id="pa_kpa"
-                                name="pa_kpa">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                            </select>
-                        </div>
-
-                        @if ( substr(Auth::user()->kd_skpd,18,4)=='0000')
-                            <div class="col-md-4" id="jenis1">
-                                <label for="jenis_cetak" class="form-label">Jenis</label>
-                                <select name="jenis_cetak" class="form-control select2-modal" id="jenis_cetak">
-                                    <option value="" selected disabled>Silahkan Pilih</option>
-                                    <option value="org">Organisasi</option>
-                                    <option value="skpd">SKPD/Unit</option>
-                                </select>
-                            </div>    
-                        @else
-                            <div class="col-md-4" id="jenis1">
-                                <label for="jenis_cetak" class="form-label">Jenis</label>
-                                <select name="jenis_cetak" class="form-control select2-modal" id="jenis_cetak">
-                                    <option value="" selected disabled>Silahkan Pilih</option>
-                                    <option value="skpd">SKPD/Unit</option>
-                                </select>
-                            </div>    
-                        @endif
-                        <div class="col-md-2" id="spasi1">
-                            <label for="spasi" class="form-label">Spasi</label>
-                            <input type="number" value="1" min="1" class="form-control" id="spasi"
-                                name="spasi">
-                        </div>
-
-                        <div class="col-md-6" id="rekening2">
-                            <label for="rekening3" class="form-label">Rekening</label>
-                            <select class="form-control select2-modal" style=" width: 100%;" id="rekening3"
-                                name="rekening3">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row" id="jenisanggaran">
-                        <div class="col-md-6">
-                            <label for="jns_anggaran" class="form-label">Jenis Anggaran</label>
-                            <select name="jns_anggaran" class="form-control select2-modal" id="jns_anggaran">
-                                <option value="" selected disabled>Silahkan Pilih</option>
-                                @foreach ($jns_anggaran as $anggaran)
-                                    <option value="{{ $anggaran->kode }}" data-nama="{{ $anggaran->nama }}">
-                                        {{ $anggaran->kode }} | {{ $anggaran->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <div class="col-md-12 text-center">
-                            <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"
-                                name="bku_pdf"> PDF</button>
-                            <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
-                                name="bku_layar">Layar</button>
-                            <button type="button" class="btn btn-success btn-md bku_excel" data-jenis="excel"
-                                name="bku_excel">Excel</button>
-                            <button type="button" class="btn btn-md btn-secondary"
-                                data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- modal cetak SPJ  --}}
-
+    
     {{-- modal cetak Sub Rincian Objek  --}}
+
+    @include('skpd.laporan_bendahara_penerimaan.modal1')
+    @include('skpd.laporan_bendahara_penerimaan.modal2')
 @endsection
 @section('js')
     <script>
@@ -231,33 +92,10 @@
                 theme: 'bootstrap-5'
             });
 
-            // $('#bendahara').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-
-            // $('#kd_skpd').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-
-            // $('#pa_kpa').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-            // $('#jenis_cetak').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-            // $('#rekening').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-            // $('#jns_anggaran').select2({
-            //     dropdownParent: $('#modal_cetak'),
-            //     theme: 'bootstrap-5'
-            // });
-            // onclick card
+            $('.select2-modal2').select2({
+                dropdownParent: $('#modal_cetak2'),
+                theme: 'bootstrap-5'
+            });
         
         });
         let jenis_skpd = "{{substr(Auth::user()->kd_skpd,18,4)}}";
@@ -268,44 +106,45 @@
              jenis='unit';
         }
 
+        let modal
+
         $('#lapbku').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
+            $('#modal_cetak2').modal('hide');
             $("#labelcetak").html("Buku Penerimaan dan Pengeluaran");
             document.getElementById('jenisanggaran').hidden = true; // Hide
             document.getElementById('jenis1').hidden = false; // Hide
             document.getElementById('spasi1').hidden = false; // Hide
             document.getElementById('tgl_ttd1').hidden = false; // Hide
-            document.getElementById('tipe1').hidden = true; // Hide
-            document.getElementById('rekening1').hidden = true; // Hide
             document.getElementById('bendahara1').hidden = false; // Hide
             document.getElementById('pa_kpa1').hidden = false; // Hide
-            document.getElementById('rekening2').hidden = true; // Hide
             cari_skpd(kd_skpd, jenis);
+            modal = 1;
         });
 
         $('#lapspj').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
+            $('#modal_cetak2').modal('hide');
             $("#labelcetak").html("SPJ Pendapatan");
             cari_skpd(kd_skpd, jenis);
             document.getElementById('jenisanggaran').hidden = false; // Hide
             document.getElementById('jenis1').hidden = false; // Hide
             document.getElementById('spasi1').hidden = false; // Hide
             document.getElementById('tgl_ttd1').hidden = false; // Hide
-            document.getElementById('tipe1').hidden = true; // Hide
-            document.getElementById('rekening1').hidden = true; // Hide
             document.getElementById('bendahara1').hidden = false; // Hide
             document.getElementById('pa_kpa1').hidden = false; // Hide
-            document.getElementById('rekening2').hidden = true; // Hide
+            modal = 1;
         });
         // cari skpd/org
         $('#lapsetoran').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak').modal('show');
-            $("#labelcetak").html("Cek Buku Setoran");
-            cari_skpd(kd_skpd, 'unit');
-            document.getElementById('jenisanggaran').hidden = true; // Hide
+            $('#modal_cetak2').modal('show');
+            $('#modal_cetak').modal('hide');
+            $("#labelcetak2").html("Cek Buku Setoran");
+            cari_skpd2(kd_skpd, jenis);
+            document.getElementById('jenisanggaran2').hidden = true; // Hide
             document.getElementById('jenis1').hidden = true; // Hide
             document.getElementById('spasi1').hidden = true; // Hide
             document.getElementById('tgl_ttd1').hidden = true; // Hide
@@ -313,15 +152,18 @@
             document.getElementById('rekening1').hidden = false; // Hide
             document.getElementById('bendahara1').hidden = true; // Hide
             document.getElementById('pa_kpa1').hidden = true; // Hide
-            document.getElementById('rekening2').hidden = true; // Hide
+            modal = 2;
+        
         });
 
         $('#laprincian').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak').modal('show');
-            $("#labelcetak").html("BP Sub Rincian Objek");
-            cari_skpd(kd_skpd, 'unit');
-            document.getElementById('jenisanggaran').hidden = false; // Hide
+            $('#modal_cetak2').modal('show');
+            $('#modal_cetak').modal('hide');
+            $("#labelcetak2").html("BP Sub Rincian Objek");
+            cari_skpd2(kd_skpd, jenis);
+
+            document.getElementById('jenisanggaran2').hidden = false; // Hide
             document.getElementById('jenis1').hidden = true; // Hide
             document.getElementById('spasi1').hidden = true; // Hide
             document.getElementById('tgl_ttd1').hidden = false; // Hide
@@ -329,7 +171,8 @@
             document.getElementById('rekening1').hidden = true; // Hide
             document.getElementById('bendahara1').hidden = false; // Hide
             document.getElementById('pa_kpa1').hidden = false; // Hide
-            document.getElementById('rekening2').hidden = false; // Hide
+            modal = 2;
+    
         });
 
         $('input:radio[name="inlineRadioOptions"]').change(function() {
@@ -342,6 +185,7 @@
         });
 
         function cari_skpd(kd_skpd, jenis) {
+            alert(kd_skpd)
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara_penerimaan.skpd') }}",
                 type: "POST",
@@ -373,11 +217,11 @@
                     jenis: jenis
                 },
                 success: function(data) {
-                    $('#kd_skpd2').empty();
-                    $('#kd_skpd2').append(
+                    $('#kd_skpd_2').empty();
+                    $('#kd_skpd_2').append(
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
-                        $('#kd_skpd2').append(
+                        $('#kd_skpd_2').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -390,6 +234,13 @@
             let kd_skpd = this.value;
             cari_bendahara(kd_skpd);
             cari_pakpa(kd_skpd);
+            cari_rekening(kd_skpd);
+        });
+
+        $('#kd_skpd_2').on('select2:select', function() {
+            let kd_skpd = this.value;
+            cari_bendahara2(kd_skpd);
+            cari_pakpa2(kd_skpd);
             cari_rekening(kd_skpd);
         });
 
@@ -407,6 +258,27 @@
                         `<option value="" disabled selected>Pilih Bendahara Penerimaan</option>`);
                     $.each(data, function(index, data) {
                         $('#bendahara').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
+
+        function cari_bendahara2(kd_skpd) {
+            $.ajax({
+                url: "{{ route('skpd.laporan_bendahara_penerimaan.bendahara') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd
+                },
+                success: function(data) {
+                    $('#bendahara_2').empty();
+                    $('#bendahara_2').append(
+                        `<option value="" disabled selected>Pilih Bendahara Penerimaan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#bendahara_2').append(
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
@@ -435,6 +307,27 @@
             })
         }
 
+        function cari_pakpa2(kd_skpd) {
+            $.ajax({
+                url: "{{ route('skpd.laporan_bendahara_penerimaan.pakpa') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd
+                },
+                success: function(data) {
+                    $('#pa_kpa_2').empty();
+                    $('#pa_kpa_2').append(
+                        `<option value="" disabled selected>Pilih PA/KPA</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pa_kpa_2').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
+
         function cari_rekening(kd_skpd) {
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara_penerimaan.rekening') }}",
@@ -444,11 +337,11 @@
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
-                    $('#rekening3').empty();
-                    $('#rekening3').append(
+                    $('#rekening').empty();
+                    $('#rekening').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
-                        $('#rekening3').append(
+                        $('#rekening').append(
                             `<option value="${data.kd_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
                         );
                     })
@@ -467,27 +360,33 @@
         });
 
         function Cetak(jns_cetak) {
-            let spasi = document.getElementById('spasi').value;
-            let tgl_ttd = document.getElementById('tgl_ttd').value;
-            let bendahara = document.getElementById('bendahara').value;
-            let pa_kpa = document.getElementById('pa_kpa').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let jenis_print = $(this).data("jenis");
-            let jenis_cetakan = document.getElementById('jenis_cetak').value;
-            let jenis_cetak = document.getElementById('labelcetak').textContent
-            let tanggal1 = document.getElementById('tanggal1').value;
-            let tanggal2 = document.getElementById('tanggal2').value;
-            let jns_anggaran = document.getElementById('jns_anggaran').value;
-            let rekening = document.getElementById('rekening').value;
-            let tipe = document.getElementById('tipe').value;
+            let jenis_cetak
+            let jenis_print
+            let spasi
+            let tgl_ttd
+            let bendahara
+            let pa_kpa
+            let kd_skpd
+            let jenis_cetakan
+            let tanggal1
+            let tanggal2
+            let jns_anggaran
+            let rekening
+            let tipe
+            if(modal==1){
+                spasi           = document.getElementById('spasi').value;
+                tgl_ttd         = document.getElementById('tgl_ttd').value;
+                bendahara       = document.getElementById('bendahara').value;
+                pa_kpa          = document.getElementById('pa_kpa').value;
+                kd_skpd         = document.getElementById('kd_skpd').value;
+                jenis_print     = $(this).data("jenis");
+                jenis_cetakan   = document.getElementById('jenis_cetak').value;
+                jenis_cetak         = document.getElementById('labelcetak').textContent
+                tanggal1        = document.getElementById('tanggal1').value;
+                tanggal2        = document.getElementById('tanggal2').value;
+                jns_anggaran    = document.getElementById('jns_anggaran').value;
 
-            // subrincian objek
-            if (jenis_cetak == 'Cek Buku Setoran') {
-                if (!rekening) {
-                    alert("Rekening tidak boleh kosong!");
-                    return;
-                }
-            } else {
+                // alert validasi data
                 if (!kd_skpd) {
                     alert('SKPD tidak boleh kosong!');
                     return;
@@ -518,7 +417,64 @@
                         return;
                     }
                 }
+            }else{
+                spasi           = document.getElementById('spasi_2').value;
+                tgl_ttd         = document.getElementById('tgl_ttd_2').value;
+                bendahara       = document.getElementById('bendahara_2').value;
+                pa_kpa          = document.getElementById('pa_kpa_2').value;
+                kd_skpd         = document.getElementById('kd_skpd_2').value;
+                jenis_print     = $(this).data("jenis_2");
+                jenis_cetakan   = document.getElementById('jenis_cetak_2').value;
+                jenis_cetak     = document.getElementById('labelcetak2').textContent;
+                tanggal1        = document.getElementById('tanggal1_2').value;
+                tanggal2        = document.getElementById('tanggal2_2').value;
+                jns_anggaran    = document.getElementById('jns_anggaran_2').value;
+                rekening    = document.getElementById('rekening').value;
+                tipe        = document.getElementById('tipe').value;
+
+                
+                // alert validasi data
+                    if (!kd_skpd) {
+                        alert('SKPD tidak boleh kosong!');
+                        return;
+                    }
+                    if (!bendahara) {
+                        alert('Bendahara Pengeluaran tidak boleh kosong!');
+                        return;
+                    }
+                    if (!pa_kpa) {
+                        alert("PA/KPA tidak boleh kosong!");
+                        return;
+                    }
+                    if (!tanggal1) {
+                        alert("Periode 1 tidak boleh kosong!");
+                        return;
+                    }
+                    if (!tanggal2) {
+                        alert("Periode 2 tidak boleh kosong!");
+                        return;
+                    }
+                    if (!tgl_ttd) {
+                        alert("Tanggal Penandatangan tidak boleh kosong!");
+                        return;
+                    }
+
+                    if (!rekening) {
+                        alert("Rekening tidak boleh kosong!");
+                        return;
+                    }
+
+                    if (!tipe) {
+                        alert("Tipe tidak boleh kosong!");
+                        return;
+                    }
+
+                    
+                    
             }
+
+            // subrincian objek
+ 
 
             if (jenis_cetak == 'Buku Penerimaan dan Pengeluaran') {
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran') }}");
@@ -557,10 +513,13 @@
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("bendahara", bendahara);
+                searchParams.append("pa_kpa", pa_kpa);
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("rekening", rekening);
                 searchParams.append("tipe", tipe);
+                searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
 
                 window.open(url.toString(), "_blank");

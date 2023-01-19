@@ -11,16 +11,33 @@
                 <div class="card-body">
                     @csrf
                     {{-- SKPD dan Nama SKPD --}}
+                    <div class="mb-3 row" id="row-hidden">
+                        <label for="kd_skpd" class="col-md-2 col-form-label">Pilih</label>
+                        <div class="col-md-10">
+                            <div class=" form-check form-check-inline">
+                                <input class="form-check-input pilihancetakan" type="radio" name="inlineRadioOptions" id="pilihan1"
+                                    value="skpd">
+                                <label class="form-check-label" for="pilihan">SKPD</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input pilihancetakan" type="radio" name="inlineRadioOptions" id="pilihan2"
+                                    value="unit">
+                                <label class="form-check-label" for="pilihan">Unit</label>
+                            </div>
+                        </div>
+                       
+                    </div>
+
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">SKPD/UNIT</label>
                         <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%" id="kd_skpd">
+                            <select class="form-control select2-multiple @error('kd_skpd') is-invalid @enderror"
+                                style=" width: 100%;" id="kd_skpd" name="kd_skpd">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($skpd as $kode)
-                                    <option value="{{ $kode->kd_skpd }}" data-nama="{{ $kode->nm_skpd }}">
-                                        {{ $kode->kd_skpd }} | {{ $kode->nm_skpd }}</option>
-                                @endforeach
                             </select>
+                            @error('kd_skpd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     {{-- Jenis Anggaran --}}
