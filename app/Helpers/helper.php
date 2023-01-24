@@ -2060,7 +2060,7 @@ function status_anggaran()
         ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
         ->orderByDesc('tgl_dpa')
         ->first();
-    return $data->jns_ang;
+    return isset($data) ? $data->jns_ang : '0';
 }
 
 function status_anggaran_dashboard()

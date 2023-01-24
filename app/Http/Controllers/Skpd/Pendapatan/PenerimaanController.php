@@ -48,7 +48,7 @@ class PenerimaanController extends Controller
             ->first();
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::table('trdrka_pend as a')
+            'daftar_akun' => DB::table('trdrka as a')
                 ->leftJoin('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')
                 ->leftJoin('ms_rek5 as c', DB::raw("left(a.kd_rek6,8)"), '=', 'c.kd_rek5')
                 ->selectRaw("a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan")
@@ -143,7 +143,7 @@ class PenerimaanController extends Controller
             ->first();
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::table('trdrka_pend as a')
+            'daftar_akun' => DB::table('trdrka as a')
                 ->leftJoin('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')
                 ->leftJoin('ms_rek5 as c', DB::raw("left(a.kd_rek6,8)"), '=', 'c.kd_rek5')
                 ->selectRaw("a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan")
@@ -327,7 +327,7 @@ class PenerimaanController extends Controller
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::table('trdrka_pend as a')
+            'daftar_akun' => DB::table('trdrka as a')
                 ->leftJoin('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')
                 ->leftJoin('ms_rek5 as c', DB::raw("left(a.kd_rek6,8)"), '=', 'c.kd_rek5')
                 ->selectRaw("a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan")
@@ -465,7 +465,7 @@ class PenerimaanController extends Controller
                 ->where(['no_terima' => $no_terima, 'kd_skpd' => $kd_skpd])
                 ->first(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::table('trdrka_pend as a')
+            'daftar_akun' => DB::table('trdrka as a')
                 ->leftJoin('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')
                 ->leftJoin('ms_rek5 as c', DB::raw("left(a.kd_rek6,8)"), '=', 'c.kd_rek5')
                 ->selectRaw("a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan")
@@ -617,7 +617,7 @@ class PenerimaanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'daftar_jenis' => DB::table('trdrka_pend as a')
+            'daftar_jenis' => DB::table('trdrka as a')
                 ->select('kd_rek6', 'nm_rek6')
                 ->whereRaw("left(kd_rek6,1)=? and kd_skpd=?", ['4', '5.02.0.00.0.00.02.0000'])
                 ->orderBy('kd_rek6')
@@ -737,7 +737,7 @@ class PenerimaanController extends Controller
                 ->selectRaw("a.*,b.kd_rek6")
                 ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4', 'a.no_sts' => $no_sts])
                 ->first(),
-            'daftar_jenis' => DB::table('trdrka_pend as a')
+            'daftar_jenis' => DB::table('trdrka as a')
                 ->select('kd_rek6', 'nm_rek6')
                 ->whereRaw("left(kd_rek6,1)=? and kd_skpd=?", ['4', '5.02.0.00.0.00.02.0000'])
                 ->orderBy('kd_rek6')
@@ -877,7 +877,7 @@ class PenerimaanController extends Controller
                 ->select('kd_skpd', 'nm_skpd', 'jns')
                 ->orderBy('kd_skpd')
                 ->get(),
-            'daftar_jenis' => DB::table('trdrka_pend as a')
+            'daftar_jenis' => DB::table('trdrka as a')
                 ->select('kd_rek6', 'nm_rek6')
                 ->whereRaw("left(kd_rek6,1)=? and kd_skpd=?", ['4', '5.02.0.00.0.00.02.0000'])
                 ->orderBy('kd_rek6')
@@ -1254,7 +1254,7 @@ class PenerimaanController extends Controller
         $kd_skpd = $request->kd_skpd;
 
         if ($kd_skpd == '1.02.0.00.0.00.02.0000') {
-            $data1 = DB::table('trdrka_pend as a')
+            $data1 = DB::table('trdrka as a')
                 ->selectRaw(" a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
                 ->where(['a.kd_skpd' => $kd_skpd])
                 ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6");
@@ -1265,7 +1265,7 @@ class PenerimaanController extends Controller
                 ->mergeBindings($data2)
                 ->get();
         } else {
-            $data = DB::table('trdrka_pend as a')
+            $data = DB::table('trdrka as a')
                 ->selectRaw("a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
                 ->where(['a.kd_skpd' => $kd_skpd])
                 ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6")

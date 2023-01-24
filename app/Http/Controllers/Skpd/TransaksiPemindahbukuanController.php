@@ -33,6 +33,10 @@ class TransaksiPemindahbukuanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $jns_ang = status_anggaran();
 
+        if ($jns_ang == '0') {
+            return redirect()->back()->with(['message' => 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
+        }
+
         $data = [
             'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),

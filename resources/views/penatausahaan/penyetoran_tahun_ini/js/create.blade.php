@@ -8,7 +8,8 @@
 
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
-            theme: 'bootstrap-5'
+            theme: 'bootstrap-5',
+            closeOnSelect: false
         });
 
         let detail = $('#detail_sts').DataTable({
