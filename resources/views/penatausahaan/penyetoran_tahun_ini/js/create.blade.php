@@ -9,80 +9,21 @@
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5',
-            closeOnSelect: false
-        });
-
-        let detail = $('#detail_sts').DataTable({
-            responsive: true,
-            ordering: false,
-            columns: [{
-                    data: 'no_sts',
-                    name: 'no_sts',
-                    width: '50px'
-                },
-                {
-                    data: 'kd_rek6',
-                    name: 'kd_rek6'
-                },
-                {
-                    data: 'nm_rek6',
-                    name: 'nm_rek6',
-                    visible: false
-                },
-                {
-                    data: 'nilai',
-                    name: 'nilai'
-                },
-                {
-                    data: 'sumber',
-                    name: 'sumber',
-                    visible: false
-                },
-                {
-                    data: 'kanal',
-                    name: 'kanal',
-                    visible: false
-                },
-                {
-                    data: 'nama_kanal',
-                    name: 'nama_kanal',
-                },
-                {
-                    data: 'nama_pengirim',
-                    name: 'nama_pengirim',
-                },
-                {
-                    data: 'aksi',
-                    name: 'aksi'
-                }
-            ]
         });
 
         $('#tgl_terima').on('change', function() {
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+
+            if (!kd_sub_kegiatan) {
+                alert('Kegiatan harus dipilih!');
+                $('#tgl_terima').val(null);
+                return;
+            }
+
             let tgl_terima = this.value;
             $('#no_terima').empty();
 
-            $.ajax({
-                url: "{{ route('penyetoran_ini.no_terima') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    tgl_terima: tgl_terima
-                },
-                success: function(data) {
-                    console.log(data);
-                    $('#no_terima').empty();
-                    $('#no_terima').append(
-                        `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
-                        $('#no_terima').append(
-                            `<option value="${data.no_terima}" data-tgl_terima="${data.tgl_terima}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-kanal="${data.kanal}" data-nama_kanal="${data.nama}" data-nm_pengirim="${data.nm_pengirim}">${data.no_terima} | ${data.kd_rek6} | ${new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)} | ${data.nm_pengirim} | ${data.nama}</option>`
-                        );
-                    })
-                }
-            })
+            load_terima(tgl_terima);
         });
 
         $('#no_terima').on('select2:select', function() {
@@ -95,25 +36,25 @@
             let nama_kanal = $(this).find(':selected').data('nama_kanal');
             let nm_pengirim = $(this).find(':selected').data('nm_pengirim');
             let no_terima = this.value;
-
+            let tanggal = document.getElementById('tgl_terima').value;
             let total = rupiah(document.getElementById('total').value);
 
-            let tampungan = detail.rows().data().toArray().map((value) => {
-                let result = {
-                    no_sts: value.no_sts,
-                };
-                return result;
-            });
-            let kondisi = tampungan.map(function(data) {
-                if (data.no_sts == no_terima) {
-                    return '2';
-                }
-            });
-            if (kondisi.includes("2")) {
-                alert('No terima telah ada di list!');
-                $('#no_terima').val(null).change();
-                return;
-            }
+            // let tampungan = detail.rows().data().toArray().map((value) => {
+            //     let result = {
+            //         no_sts: value.no_sts,
+            //     };
+            //     return result;
+            // });
+            // let kondisi = tampungan.map(function(data) {
+            //     if (data.no_sts == no_terima) {
+            //         return '2';
+            //     }
+            // });
+            // if (kondisi.includes("2")) {
+            //     alert('No terima telah ada di list!');
+            //     $('#no_terima').val(null).change();
+            //     return;
+            // }
 
             detail.row.add({
                 'no_sts': no_terima,
@@ -132,6 +73,7 @@
                 minimumFractionDigits: 2
             }).format(total + parseFloat(nilai)));
             $('#no_terima').val(null).change();
+            load_terima(tanggal);
         });
 
         $('#kd_sub_kegiatan').on('select2:select', function() {
@@ -236,6 +178,83 @@
         });
     });
 
+    let detail = $('#detail_sts').DataTable({
+        responsive: true,
+        ordering: false,
+        columns: [{
+                data: 'no_sts',
+                name: 'no_sts',
+                width: '50px'
+            },
+            {
+                data: 'kd_rek6',
+                name: 'kd_rek6'
+            },
+            {
+                data: 'nm_rek6',
+                name: 'nm_rek6',
+                visible: false
+            },
+            {
+                data: 'nilai',
+                name: 'nilai'
+            },
+            {
+                data: 'sumber',
+                name: 'sumber',
+                visible: false
+            },
+            {
+                data: 'kanal',
+                name: 'kanal',
+                visible: false
+            },
+            {
+                data: 'nama_kanal',
+                name: 'nama_kanal',
+            },
+            {
+                data: 'nama_pengirim',
+                name: 'nama_pengirim',
+            },
+            {
+                data: 'aksi',
+                name: 'aksi'
+            }
+        ]
+    });
+
+    function load_terima(tgl_terima) {
+        $('#no_terima').empty();
+        let detail_terima = detail.rows().data().toArray().map((value) => {
+            let data = {
+                no_sts: value.no_sts,
+            };
+            return data;
+        });
+        $.ajax({
+            url: "{{ route('penyetoran_ini.no_terima') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                tgl_terima: tgl_terima,
+                no_sts: detail_terima.length == 0 ? '0' : detail_terima
+            },
+            success: function(data) {
+                $('#no_terima').empty();
+                $('#no_terima').append(
+                    `<option value="" disabled selected>Silahkan Pilih</option>`);
+                $.each(data, function(index, data) {
+                    $('#no_terima').append(
+                        `<option value="${data.no_terima}" data-tgl_terima="${data.tgl_terima}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-kanal="${data.kanal}" data-nama_kanal="${data.nama}" data-nm_pengirim="${data.nm_pengirim}">${data.no_terima} | ${data.kd_rek6} | ${new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)} | ${data.nm_pengirim} | ${data.nama}</option>`
+                    );
+                })
+            }
+        })
+    }
+
     function formatNumber(n) {
         // format number 1000000 to 1,234,567
         return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -326,6 +345,7 @@
         let total = rupiah(document.getElementById('total').value);
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai :  ' + nilai +
             ' ?');
+        let tanggal = document.getElementById('tgl_terima').value;
         if (hapus == true) {
             tabel.rows(function(idx, data, node) {
                 return data.kd_rek6 == kd_rek6
@@ -333,6 +353,7 @@
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total - parseFloat(nilai)));
+            load_terima(tanggal);
         } else {
             return false;
         }

@@ -603,6 +603,17 @@ class PenyetoranController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $tgl_terima = $request->tgl_terima;
 
+        $no_sts1 = $request->no_sts;
+
+        $no_sts = array();
+        if (!empty($no_sts1)) {
+            foreach ($no_sts1 as $sts) {
+                $no_sts[] = $sts['no_sts'];
+            }
+        } else {
+            $no_sts[] = '';
+        }
+
         $data = DB::table('tr_terima as a')
             ->leftJoin('ms_pengirim as b', function ($join) {
                 $join->on('a.sumber', '=', 'b.kd_pengirim');
@@ -610,6 +621,7 @@ class PenyetoranController extends Controller
             })
             ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,b.nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
             ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=?", [$kd_skpd, $kd_skpd, $tgl_terima])
+            ->whereNotIn('a.no_terima', $no_sts)
             ->orderBy('b.nm_pengirim')
             ->orderBy('a.tgl_terima')
             ->orderBy('a.kd_rek6')
