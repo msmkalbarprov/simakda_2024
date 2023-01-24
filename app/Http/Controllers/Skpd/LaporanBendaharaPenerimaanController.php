@@ -77,7 +77,7 @@ class LaporanBendaharaPenerimaanController extends Controller
     {
         $kd_skpd = $request->kd_skpd;
 
-        $data = DB::table('trdrka_pend')
+        $data = DB::table('trdrka')
             ->select('kd_rek6', 'nm_rek6')
             ->where(['kd_skpd' => $kd_skpd])
             ->groupBy('kd_skpd', 'kd_rek6', 'nm_rek6')
