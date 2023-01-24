@@ -267,7 +267,7 @@
             let tgl_sp2d = $(this).find(':selected').data('tgl');
             let tgl_voucher = document.getElementById('tgl_voucher').value;
             let beban = document.getElementById('beban').value;
-            if (tgl_sp2d < tgl_voucher) {
+            if (tgl_sp2d > tgl_voucher) {
                 alert('Kesalahan, Tanggal Sp2d lebih kecil Dari Tanggal Bukti');
                 $("#no_sp2d").val(null).change();
                 return;

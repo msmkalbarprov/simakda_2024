@@ -351,7 +351,7 @@ class TransaksiCmsController extends Controller
             ) a
         where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
 
-        return response()->json($data->terima - $data->sisa);
+        return response()->json($data->terima - $data->keluar);
     }
 
     public function potonganLs(Request $request)
