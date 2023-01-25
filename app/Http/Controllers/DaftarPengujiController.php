@@ -137,7 +137,8 @@ class DaftarPengujiController extends Controller
                 'tgl_uji' => $tanggal,
                 'username' => Auth::user()->nama,
                 'tgl_update' => date("Y-m-d H:i:s"),
-                'no_urut' => $no_urut
+                'no_urut' => $no_urut,
+                'stasus_bank' => '1'
             ]);
             DB::commit();
             return response()->json([
