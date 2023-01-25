@@ -1155,7 +1155,8 @@
         }
     }
 
-    function cetakPajak(no_spm, kd_rek6, nm_rek6, nilai) {
+    function cetakPajak(no_spm, kd_rek6, nm_rek6, nilai, idBilling) {
+        $("#id_billing_cetak").val(idBilling);
         $('#modal_cetak').modal('show');
     }
 
