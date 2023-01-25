@@ -129,6 +129,10 @@
                             <input type="text" style="text-align: right" readonly class="form-control"
                                 id="total_belanja" name="total_belanja">
                         </div>
+                        <div class="col-md-4">
+                            <input type="text" style="text-align: right" readonly class="form-control"
+                                id="total_sp2d" name="total_sp2d" hidden>
+                        </div>
                     </div>
                     <div class="mb-2 mt-2 row">
                         <label for="total_potongan" class="col-md-8 col-form-label" style="text-align: right">Total

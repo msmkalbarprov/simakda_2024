@@ -140,6 +140,8 @@
                                         style="border:none;background-color:white;text-align:right" class="form-control"
                                         readonly id="total_belanja">
                                 </td>
+                                <input type="text" style="text-align: right" readonly class="form-control"
+                                    id="total_sp2d" name="total_sp2d" hidden>
                             </tr>
                             <tr>
                                 <td style="padding-left: 600px">Total Potongan</td>

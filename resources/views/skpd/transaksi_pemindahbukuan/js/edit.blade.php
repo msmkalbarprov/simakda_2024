@@ -319,6 +319,10 @@
             $('#total_sumber').val(null);
             $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
+            $('#potongan_ls').val(null);
+            $('#sisa_kas').val(null);
+            $('#total_sisa').val(null);
+
             cari_sumber(kd_rek6);
             if (kd_rek6.substr(0, 2) == '52') {
                 $('#volume').prop('disabled', false);
@@ -931,6 +935,14 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                 },
                 success: function(data) {
+                    let sp2d = 0;
+                    let lalu = 0;
+                    $.each(data, function(index, data) {
+                        sp2d += parseFloat(data.sp2d);
+                        lalu += parseFloat(data.lalu) || 0;
+                    });
+                    $('#total_sp2d').val(sp2d - lalu);
+
                     $('#kd_rekening').empty();
                     $('#kd_rekening').append(
                         `<option value="" disabled selected>Pilih Rekening</option>`);
@@ -985,14 +997,13 @@
                     //     sisa_kas = (persen_tunai / 100) * nilai;
                     // }
                     if (beban != '1') {
-                        let sisa_anggaran = rupiah(document.getElementById('sisa_anggaran').value);
+                        let total_sp2d = rupiah(document.getElementById('total_sp2d').value);
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(sisa_anggaran - potongan_ls));
-                        let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+                        }).format(total_sp2d - potongan_ls));
                         $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(sisa_kas + potongan_ls));
+                        }).format(total_sp2d - potongan_ls + potongan_ls));
                     } else {
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
