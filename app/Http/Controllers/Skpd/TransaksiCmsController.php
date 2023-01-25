@@ -290,7 +290,7 @@ class TransaksiCmsController extends Controller
         //     ->mergeBindings($data15)
         //     ->whereRaw("kode = '$kd_skpd'")
         //     ->first();
-
+        // DB::enableQueryLog();
         $data = collect(DB::select("SELECT
       SUM(case when jns=1 then jumlah else 0 end) AS terima,
       SUM(case when jns=2 then jumlah else 0 end) AS keluar
@@ -350,7 +350,7 @@ class TransaksiCmsController extends Controller
             GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
             ) a
         where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
-
+        // print_r(DB::getQueryLog());
         return response()->json($data->terima - $data->keluar);
     }
 
@@ -359,18 +359,22 @@ class TransaksiCmsController extends Controller
         $no_sp2d = $request->no_sp2d;
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $data = DB::table('trspmpot as a')
-            ->join('trhsp2d as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])
-            ->where(function ($query) {
-                $query->whereRaw('b.jns_spp = ? AND b.jenis_beban != ?', ['4', '1'])
-                    ->orWhereRaw('b.jns_spp = ? AND b.jenis_beban !=?', ['6', '3']);
-            })
-            ->select(DB::raw("SUM(a.nilai) as total"))
-            ->first();
+        // $data = DB::table('trspmpot as a')
+        //     ->join('trhsp2d as b', function ($join) {
+        //         $join->on('a.no_spm', '=', 'b.no_spm');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])
+        //     ->where(function ($query) {
+        //         $query->whereRaw('b.jns_spp = ? AND b.jenis_beban != ?', ['4', '1'])
+        //             ->orWhereRaw('b.jns_spp = ? AND b.jenis_beban !=?', ['6', '3']);
+        //     })
+        //     ->select(DB::raw("SUM(a.nilai) as total"))
+        //     ->first();
+
+        $data = collect(DB::select("SELECT SUM(a.nilai) as total  FROM trspmpot a INNER JOIN trhsp2d b on b.no_spm = a.no_spm AND b.kd_skpd=a.kd_skpd
+		where ((b.jns_spp = '4' AND b.jenis_beban != '1') or (b.jns_spp = '6' AND b.jenis_beban != '3'))
+		and b.no_sp2d = ? and b.kd_skpd = ?", [$no_sp2d, $kd_skpd]))->first();
 
         return response()->json($data->total);
     }

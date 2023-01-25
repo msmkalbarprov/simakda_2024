@@ -1045,8 +1045,48 @@ class PenyetoranController extends Controller
         $tgl_akhir = $request->tgl_akhir;
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $data = [];
-        return view('penatausahaan.pengeluaran.spm.cetak.ringkasan_gu')->with($data);
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'skpd' => $kd_skpd,
+            'tanggal_awal' => $tgl_awal,
+            'tanggal_akhir' => $tgl_akhir,
+            'data_setor' => DB::select("SELECT * FROM (
+                        select 1 nomor, b.no_sts, a.tgl_sts, a.keterangan, '' kd_rek6,
+                        '' nm_rek6, a.total as rupiah, '' no_terima, '' tgl_terima, '' sumber, '' nm_sumber,'' as pembayaran
+                        from trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd
+                                                                and a.no_sts=b.no_sts and a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                        LEFT JOIN tr_terima c on b.kd_skpd=c.kd_skpd and b.kd_rek6=c.kd_rek6
+                                                                and  b.kd_sub_kegiatan=c.kd_sub_kegiatan and b.no_terima=c.no_terima AND b.kanal=c.kanal
+                        where b.kd_skpd=? AND a.jns_trans IN ('4','2')
+                        and a.tgl_sts BETWEEN ? AND ?
+                        group by b.no_sts, a.tgl_sts, a.keterangan, a.total
+
+                        UNION ALL
+
+                        select 2 nomor, b.no_sts, a.tgl_sts, '' keterangan, b.kd_rek6,
+                        (select nm_rek6 from ms_rek6 where kd_rek6=b.kd_rek6) nm_rek6, b.rupiah, b.no_terima, c.tgl_terima, b.sumber,
+                        (select nm_pengirim from ms_pengirim where kd_pengirim=b.sumber) nm_sumber,b.kanal
+                        from trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd
+                                                                and a.no_sts=b.no_sts and a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                        LEFT JOIN tr_terima c on b.kd_skpd=c.kd_skpd and b.kd_rek6=c.kd_rek6 and  b.kd_sub_kegiatan=c.kd_sub_kegiatan
+                                                                    and b.no_terima=c.no_terima AND b.kanal=c.kanal
+                        where b.kd_skpd=? AND a.jns_trans IN ('4','2')
+                        and a.tgl_sts BETWEEN ? AND ?
+                ) x
+                order by tgl_sts, no_sts, nomor, kd_rek6", [$kd_skpd, $tgl_awal, $tgl_akhir, $kd_skpd, $tgl_awal, $tgl_akhir]),
+            'total_setor' => collect(DB::select("SELECT SUM(rupiah) total FROM (
+                        select 1 nomor, b.no_sts, a.tgl_sts, a.keterangan, '' kd_rek6,
+                        '' nm_rek6, a.total as rupiah, '' no_terima, '' tgl_terima, '' sumber, '' nm_sumber
+                        from trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd
+                        and a.no_sts=b.no_sts and a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                        LEFT JOIN tr_terima c on b.kd_skpd=c.kd_skpd and b.kd_rek6=c.kd_rek6 and  b.kd_sub_kegiatan=c.kd_sub_kegiatan and b.no_terima=c.no_terima AND b.kanal=c.kanal
+                        where b.kd_skpd=? AND a.jns_trans IN ('4','2') and a.tgl_sts BETWEEN ? AND ?
+                        group by b.no_sts, a.tgl_sts, a.keterangan, a.total) x", [$kd_skpd, $tgl_awal, $tgl_akhir]))->first()
+        ];
+
+        return view('penatausahaan.penyetoran_tahun_ini.cetak')->with($data);
     }
 
     public function validasiPenyetoranIni(Request $request)
