@@ -129,16 +129,19 @@ class DaftarPengujiController extends Controller
         // return response()->json($no_uji);
         DB::beginTransaction();
         try {
-            $no_bukti = DB::table('trhuji')->select(DB::raw("ISNULL(MAX(no_urut),0) as urut"))->first();
+            $no_bukti = DB::table('trhuji')
+                ->select(DB::raw("ISNULL(MAX(no_urut),0) as urut"))
+                ->first();
             $no_urut = $no_bukti->urut + 1;
             $no_uji = $no_urut . '/AD/' . tahun_anggaran();
+
             DB::table('trhuji')->insert([
                 'no_uji' => $no_uji,
                 'tgl_uji' => $tanggal,
                 'username' => Auth::user()->nama,
                 'tgl_update' => date("Y-m-d H:i:s"),
                 'no_urut' => $no_urut,
-                'stasus_bank' => '1'
+                'status_bank' => '1'
             ]);
             DB::commit();
             return response()->json([
