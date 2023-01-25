@@ -2077,7 +2077,12 @@ function status_anggaran_dashboard()
 function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti, $no_sp2d)
 {
     if ($beban == '1') {
-        $data = DB::table('trdrka as a')->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.status_aktif' => '1', 'jns_ang' => $jenis_ang])->orderBy('a.kd_rek6')->select('a.kd_rek6', 'a.nm_rek6', DB::raw("'0' as sp2d"), 'nilai as anggaran')->selectRaw("(SELECT SUM( nilai ) FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout c LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti  AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = a.kd_sub_kegiatan  AND d.kd_skpd = a.kd_skpd  AND c.kd_rek6 = a.kd_rek6  AND d.jns_spp= ? UNION ALL SELECT SUM( nilai ) FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout_cmsbank c LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher  AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = a.kd_sub_kegiatan  AND d.kd_skpd = a.kd_skpd  AND c.kd_rek6 = a.kd_rek6  AND c.no_voucher <> ?  AND d.jns_spp= ?  AND d.status_validasi<> '1' UNION ALL SELECT SUM( x.nilai ) AS nilai FROM trdspp x INNER JOIN trhspp y ON x.no_spp= y.no_spp  AND x.kd_skpd= y.kd_skpd WHERE x.kd_sub_kegiatan = a.kd_sub_kegiatan AND x.kd_skpd = a.kd_skpd AND x.kd_rek6 = a.kd_rek6 AND y.jns_spp IN ( '3', '4', '5', '6' ) AND ( sp2d_batal IS NULL OR sp2d_batal = '' OR sp2d_batal = '0' ) UNION ALL SELECT SUM( nilai ) AS nilai FROM trdtagih t INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti AND t.kd_skpd= u.kd_skpd WHERE t.kd_sub_kegiatan = a.kd_sub_kegiatan  AND u.kd_skpd = a.kd_skpd  AND t.kd_rek = a.kd_rek6  AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? ) ) r ) r ) AS lalu", [$beban, $no_bukti, $beban, $kd_skpd])->get();
+        $data = DB::table('trdrka as a')
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.status_aktif' => '1', 'jns_ang' => $jenis_ang])
+            ->orderBy('a.kd_rek6')
+            ->select('a.kd_rek6', 'a.nm_rek6', DB::raw("'0' as sp2d"), 'nilai as anggaran')
+            ->selectRaw("(SELECT SUM( nilai ) FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout c LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti  AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = a.kd_sub_kegiatan  AND d.kd_skpd = a.kd_skpd  AND c.kd_rek6 = a.kd_rek6  AND d.jns_spp= ? UNION ALL SELECT SUM( nilai ) FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout_cmsbank c LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher  AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = a.kd_sub_kegiatan  AND d.kd_skpd = a.kd_skpd  AND c.kd_rek6 = a.kd_rek6  AND c.no_voucher <> ?  AND d.jns_spp= ?  AND d.status_validasi<> '1' UNION ALL SELECT SUM( x.nilai ) AS nilai FROM trdspp x INNER JOIN trhspp y ON x.no_spp= y.no_spp  AND x.kd_skpd= y.kd_skpd WHERE x.kd_sub_kegiatan = a.kd_sub_kegiatan AND x.kd_skpd = a.kd_skpd AND x.kd_rek6 = a.kd_rek6 AND y.jns_spp IN ( '3', '4', '5', '6' ) AND ( sp2d_batal IS NULL OR sp2d_batal = '' OR sp2d_batal = '0' ) UNION ALL SELECT SUM( nilai ) AS nilai FROM trdtagih t INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti AND t.kd_skpd= u.kd_skpd WHERE t.kd_sub_kegiatan = a.kd_sub_kegiatan  AND u.kd_skpd = a.kd_skpd  AND t.kd_rek = a.kd_rek6  AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? ) ) r ) r ) AS lalu", [$beban, $no_bukti, $beban, $kd_skpd])
+            ->get();
     } else {
         $data = DB::select("SELECT kd_rek6,nm_rek6,(SELECT SUM( nilai ) FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout c LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = x.kd_sub_kegiatan  AND d.kd_skpd = x.kd_skpd  AND c.kd_rek6 = x.kd_rek6  AND d.jns_spp= ?  AND d.no_sp2d = ? UNION ALL SELECT SUM( nilai )
 		FROM(SELECT SUM( c.nilai ) AS nilai FROM trdtransout_cmsbank c LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher AND c.kd_skpd = d.kd_skpd WHERE c.kd_sub_kegiatan = x.kd_sub_kegiatan  AND d.kd_skpd = x.kd_skpd  AND c.kd_rek6 = x.kd_rek6  AND c.no_voucher <> ?  AND d.jns_spp= ?  AND d.status_validasi<> '1'  AND d.no_sp2d = ? ) r ) r ) AS lalu,sp2d,0 AS anggaran FROM(SELECT b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6, b.nm_rek6, SUM ( b.nilai ) AS sp2d, 0 AS anggaran FROM trhspp a INNER JOIN trdspp b ON a.no_spp= b.no_spp AND a.kd_skpd = b.kd_skpd INNER JOIN trhspm c ON b.no_spp= c.no_spp  AND b.kd_skpd = c.kd_skpd INNER JOIN trhsp2d d ON c.no_spm= d.no_Spm  AND c.kd_skpd= d.kd_skpd WHERE d.no_sp2d = ?  AND b.kd_sub_kegiatan= ? GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6,b.nm_rek6 ) x", [$beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_sp2d, $kd_sub_kegiatan]);
@@ -2839,6 +2844,120 @@ function selisih_angkas()
             'selisih_angkas'    => $selisih_angkas
         ];
     }
+}
+function status_angkas1($skpd)
+{
+    $data = collect(DB::select("SELECT TOP 1 * from (
+                select '1'as urut,'nilai_susun' as status,murni as nilai from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '2'as urut,'nilai_susun1',murni_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '3'as urut,'nilai_susun2',murni_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '4'as urut,'nilai_susun3',murni_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '5'as urut,'nilai_susun4',murni_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '6'as urut,'nilai_susun5',murni_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '7'as urut,'nilai_sempurna',sempurna1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '8'as urut,'nilai_sempurna11',sempurna1_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '9'as urut,'nilai_sempurna12',sempurna1_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '10'as urut,'nilai_sempurna13',sempurna1_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '11'as urut,'nilai_sempurna14',sempurna1_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '12'as urut,'nilai_sempurna15',sempurna1_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '13'as urut,'nilai_sempurna2',sempurna2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '14'as urut,'nilai_sempurna21',sempurna2_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '15'as urut,'nilai_sempurna22',sempurna2_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '16'as urut,'nilai_sempurna23',sempurna2_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '17'as urut,'nilai_sempurna24',sempurna2_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '18'as urut,'nilai_sempurna25',sempurna2_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '19'as urut,'nilai_sempurna3',sempurna3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '20'as urut,'nilai_sempurna31',sempurna3_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '21'as urut,'nilai_sempurna32',sempurna3_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '22'as urut,'nilai_sempurna33',sempurna3_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '23'as urut,'nilai_sempurna34',sempurna3_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '24'as urut,'nilai_sempurna35',sempurna3_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '25'as urut,'nilai_sempurna4',sempurna4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '26'as urut,'nilai_sempurna41',sempurna4_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '27'as urut,'nilai_sempurna42',sempurna4_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '28'as urut,'nilai_sempurna43',sempurna4_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '29'as urut,'nilai_sempurna44',sempurna4_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '30'as urut,'nilai_sempurna45',sempurna4_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '31'as urut,'nilai_sempurna5',sempurna5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '32'as urut,'nilai_sempurna51',sempurna5_geser1 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '33'as urut,'nilai_sempurna52',sempurna5_geser2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '34'as urut,'nilai_sempurna53',sempurna5_geser3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '35'as urut,'nilai_sempurna54',sempurna5_geser4 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '36'as urut,'nilai_sempurna55',sempurna5_geser5 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '37'as urut,'nilai_ubah',ubah from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '38'as urut,'nilai_ubah11',ubah11 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '39'as urut,'nilai_ubah12',ubah12 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '40'as urut,'nilai_ubah13',ubah13 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '41'as urut,'nilai_ubah14',ubah14 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '42'as urut,'nilai_ubah15',ubah15 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '43'as urut,'nilai_ubah2',ubah2 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '44'as urut,'nilai_ubah21',ubah21 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '45'as urut,'nilai_ubah22',ubah22 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '46'as urut,'nilai_ubah23',ubah23 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '47'as urut,'nilai_ubah24',ubah24 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '48'as urut,'nilai_ubah25',ubah25 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '49'as urut,'nilai_ubah3',ubah3 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '51'as urut,'nilai_ubah31',ubah31 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '52'as urut,'nilai_ubah32',ubah32 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '53'as urut,'nilai_ubah33',ubah33 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '54'as urut,'nilai_ubah34',ubah34 from status_angkas where kd_skpd ='$skpd'
+                UNION ALL
+                select '55'as urut,'nilai_ubah35',ubah35 from status_angkas where kd_skpd ='$skpd'
+                )zz where nilai='1' ORDER BY cast(urut as int) DESC"))->first();
+
+    return $data->status;
 }
 
 function status_angkas($skpd)
