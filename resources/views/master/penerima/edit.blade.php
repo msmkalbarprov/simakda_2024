@@ -495,14 +495,16 @@
                         },
                         dataType: "json",
                         success: function(data) {
-                            if (data.status) {
-                                $("#no_rekening_validasi").val(data.data[0].data.nomorRekening);
-                                $("#nm_rekening_validasi").val(data.data[0].data
+                            let data1 = $.parseJSON(data);
+                            if (data1.status) {
+                                $("#no_rekening_validasi").val(data1.data[0].data
+                                .nomorRekening);
+                                $("#nm_rekening_validasi").val(data1.data[0].data
                                     .namaPemilikRekening);
                                 document.getElementById("save").disabled = false;
                                 $("#loading").hide();
                             } else {
-                                alert(data.message);
+                                alert(data1.message);
                                 document.getElementById("save").disabled = true;
                                 $("#no_rekening_validasi").attr("value", '');
                                 $("#nm_rekening_validasi").attr("value", '');
