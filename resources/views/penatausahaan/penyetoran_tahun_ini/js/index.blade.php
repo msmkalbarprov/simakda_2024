@@ -77,7 +77,7 @@
                 return;
             }
 
-            let url = new URL("{{ route('penyetoran_lalu.cek') }}");
+            let url = new URL("{{ route('penyetoran_ini.cek') }}");
             let searchParams = url.searchParams;
             searchParams.append("tgl_awal", tgl_awal);
             searchParams.append("tgl_akhir", tgl_akhir);
