@@ -114,7 +114,7 @@
             </tr>
             <tr>
                 <td colspan="3"><b>Petugas Bank / POS</b></td>
-                <td style="text-align: center;padding-bottom:50px"></td>
+                <td style="text-align: center;padding-bottom:70px"></td>
             </tr>
             <tr>
                 <td colspan="3"></td>
