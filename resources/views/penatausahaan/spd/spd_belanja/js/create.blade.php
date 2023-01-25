@@ -623,13 +623,14 @@
                 };
                 return data;
             });
-            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai),
-                0);
 
             if (daftar_spd.length == 0) {
                 alert('Daftar Rincian Tidak Boleh Kosong');
                 return;
             }
+
+            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai),
+                0);
 
             if (!kd_skpd) {
                 alert('SKPD Tidak Boleh Kosong');
