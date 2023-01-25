@@ -14,7 +14,7 @@ class BankKalbarController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/hh/auth",
+            CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/hh/auth",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -49,7 +49,7 @@ class BankKalbarController extends Controller
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/penerima/validasi",
+                CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/penerima/validasi",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -80,7 +80,7 @@ class BankKalbarController extends Controller
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/npwp/validasi",
+                CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/npwp/validasi",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -114,7 +114,7 @@ class BankKalbarController extends Controller
         );
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/ntp/validasi",
+            CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/ntp/validasi",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -185,7 +185,7 @@ class BankKalbarController extends Controller
         );
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/idbilling/create",
+            CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/idbilling/create",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -261,7 +261,7 @@ class BankKalbarController extends Controller
         );
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "222.124.219.178:10080/sppd/sppd/ntp/report",
+            CURLOPT_URL => "222.124.219.178:10090/sppd/sppd/ntp/report",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -291,7 +291,7 @@ class BankKalbarController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://222.124.219.178:10080/sppd/sppd/idbilling/validasi",
+            CURLOPT_URL => "http://222.124.219.178:10090/sppd/sppd/idbilling/validasi",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
