@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <table style="width: 100%;text-align:center;font-size:16px;font-family:Arial">
+    <table style="width: 100%;text-align:center;font-size:16px;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
             <td>PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
                 PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
@@ -26,7 +26,7 @@
         </tr>
     </table>
     <table
-        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:13px;letter-spacing:normal;font-family:'Open Sans', Helvetica, Arial, sans-serif">
+        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:14px;letter-spacing:normal;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 13%;"><b>Menimbang</b></td>
@@ -57,7 +57,8 @@
         <div>
             <p style="text-indent: 24px;">{{ $konfig->memutuskan }}</p>
         </div>
-        <table id="rincian" style="font-family:Arial, Helvetica, sans-serif; font-size: 16px;letter-spacing:0.5px">
+        <table id="rincian"
+            style="font-family:'Open Sans', Helvetica,Arial,sans-serif; font-size: 14px;letter-spacing:0.5px">
             <tbody>
                 <tr>
                     <td style="width: 3%;">1.</td>
@@ -178,7 +179,7 @@
             </div>
             <div style="clear: both;"></div>
         </div>
-        <div style="font-family:Arial, Helvetica, sans-serif">
+        <div style="font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:14px">
             Tembusan disampaikan kepada:<br />
             1. Inspektur *)<br />
             2. Arsip<br />
