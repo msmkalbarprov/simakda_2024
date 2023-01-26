@@ -342,22 +342,37 @@ class DaftarPengujiController extends Controller
         $ttd = $request->ttd;
         $jenis_print = $request->jenis_print;
 
-        $data1 = DB::table('trhsp2d as a')->join('trhspp as b', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->join('trdspp as z', function ($join) {
-            $join->on('b.no_spp', '=', 'z.no_spp');
-            $join->on('b.kd_skpd', '=', 'z.kd_skpd');
-        })->join('ms_skpd as d', 'a.kd_skpd', '=', 'd.kd_skpd')->groupBy('no_sp2d', 'no_spm', 'tgl_sp2d', 'b.nmrekan', 'b.alamat', 'b.pimpinan', 'a.kd_skpd', 'd.nm_skpd', 'a.jns_spp', 'a.jenis_beban')->select('no_sp2d', 'no_spm', 'tgl_sp2d', 'b.nmrekan', 'b.alamat', 'b.pimpinan', 'a.kd_skpd', 'd.nm_skpd', 'a.jns_spp', 'a.jenis_beban', DB::raw("ISNULL(SUM(z.nilai),0) as kotor"));
+        // $data1 = DB::table('trhsp2d as a')->join('trhspp as b', function ($join) {
+        //     $join->on('a.no_spp', '=', 'b.no_spp');
+        //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        // })->join('trdspp as z', function ($join) {
+        //     $join->on('b.no_spp', '=', 'z.no_spp');
+        //     $join->on('b.kd_skpd', '=', 'z.kd_skpd');
+        // })->join('ms_skpd as d', 'a.kd_skpd', '=', 'd.kd_skpd')->groupBy('no_sp2d', 'no_spm', 'tgl_sp2d', 'b.nmrekan', 'b.alamat', 'b.pimpinan', 'a.kd_skpd', 'd.nm_skpd', 'a.jns_spp', 'a.jenis_beban')->select('no_sp2d', 'no_spm', 'tgl_sp2d', 'b.nmrekan', 'b.alamat', 'b.pimpinan', 'a.kd_skpd', 'd.nm_skpd', 'a.jns_spp', 'a.jenis_beban', DB::raw("ISNULL(SUM(z.nilai),0) as kotor"));
 
-        $data2 = DB::table('trspmpot as b')->leftJoinSub($data1, 'a', function ($join) {
-            $join->on('b.no_spm', '=', 'a.no_spm');
-            $join->on('b.kd_skpd', '=', 'a.kd_skpd');
-        })->groupBy('no_sp2d', 'a.no_spm', 'tgl_sp2d', 'a.nmrekan', 'a.alamat', 'a.pimpinan', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.jenis_beban', 'a.kotor')->select('a.*', DB::raw("ISNULL(SUM(b.nilai),0) as pot"));
+        // $data2 = DB::table('trspmpot as b')->leftJoinSub($data1, 'a', function ($join) {
+        //     $join->on('b.no_spm', '=', 'a.no_spm');
+        //     $join->on('b.kd_skpd', '=', 'a.kd_skpd');
+        // })->groupBy('no_sp2d', 'a.no_spm', 'tgl_sp2d', 'a.nmrekan', 'a.alamat', 'a.pimpinan', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.jenis_beban', 'a.kotor')->select('a.*', DB::raw("ISNULL(SUM(b.nilai),0) as pot"));
 
-        $data3 = DB::table('trhuji as a')->join('trduji as b', 'a.no_uji', '=', 'b.no_uji')->leftJoinSub($data2, 'c', function ($join) {
-            $join->on('b.no_sp2d', '=', 'c.no_sp2d');
-        })->where(['a.no_uji' => $no_uji])->select('b.no_sp2d', 'c.tgl_sp2d', 'c.nmrekan', 'c.pimpinan', 'c.alamat', 'c.kd_skpd', 'c.nm_skpd', 'c.jns_spp', 'c.jenis_beban', 'c.kotor', 'c.pot')->get();
+        // $data3 = DB::table('trhuji as a')->join('trduji as b', 'a.no_uji', '=', 'b.no_uji')->leftJoinSub($data2, 'c', function ($join) {
+        //     $join->on('b.no_sp2d', '=', 'c.no_sp2d');
+        // })->where(['a.no_uji' => $no_uji])->select('b.no_sp2d', 'c.tgl_sp2d', 'c.nmrekan', 'c.pimpinan', 'c.alamat', 'c.kd_skpd', 'c.nm_skpd', 'c.jns_spp', 'c.jenis_beban', 'c.kotor', 'c.pot')->get();
+
+        $data3 = DB::select("SELECT b.no_sp2d,c.tgl_sp2d,c.nmrekan,c.pimpinan,c.alamat,c.kd_skpd,c.nm_skpd
+,c.jns_spp,c.jenis_beban,c.kotor,c.pot FROM TRHUJI a inner join TRDUJI b on a.no_uji=b.no_uji LEFT join (
+SELECT a.*,ISNULL(SUM(b.nilai),0)pot FROM (select no_sp2d,no_spm,tgl_sp2d,b.nmrekan,b.alamat,b.pimpinan,
+a.kd_skpd,d.nm_skpd,a.jns_spp,a.jenis_beban, isnull(SUM(z.nilai),0)kotor
+from trhsp2d a inner join trhspp b on a.no_spp=b.no_spp AND a.kd_skpd=b.kd_skpd
+INNER JOIN trdspp z ON b.no_spp=z.no_spp AND b.kd_skpd=z.kd_skpd
+INNER JOIN ms_skpd d on a.kd_skpd=d.kd_skpd
+GROUP BY no_sp2d,no_spm,tgl_sp2d,b.nmrekan,b.alamat,b.pimpinan,
+a.kd_skpd,d.nm_skpd,a.jns_spp,a.jenis_beban)a
+LEFT JOIN
+trspmpot b ON a.no_spm=b.no_spm and a.kd_skpd=b.kd_skpd
+GROUP BY no_sp2d,a.no_spm,tgl_sp2d,a.nmrekan,a.alamat,a.pimpinan,
+a.kd_skpd,a.nm_skpd,a.jns_spp,a.jenis_beban,a.kotor) c on b.no_sp2d=c.no_sp2d WHERE a.no_uji=?", [$no_uji]);
+
 
         $total_kotor = 0;
         $total_pot = 0;
