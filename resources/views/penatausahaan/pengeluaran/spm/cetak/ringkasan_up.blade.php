@@ -81,17 +81,17 @@
             </tr>
             <tr>
                 <td style="padding-bottom: 50px;text-align: center;padding-left:400px">
-                    {{ $pa->jabatan }}
+                    {{ $pptk->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:400px"><strong><u>{{ $pa->nama }}</u></strong></td>
+                <td style="text-align: center;padding-left:400px"><strong><u>{{ $pptk->nama }}</u></strong></td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:400px">{{ $pa->pangkat }}</td>
+                <td style="text-align: center;padding-left:400px">{{ $pptk->pangkat }}</td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:400px">NIP. {{ $pa->nip }}</td>
+                <td style="text-align: center;padding-left:400px">NIP. {{ $pptk->nip }}</td>
             </tr>
         </table>
     </div>
