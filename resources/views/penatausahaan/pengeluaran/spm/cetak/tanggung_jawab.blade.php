@@ -49,6 +49,7 @@
         </tr>
     </table>
     <hr>
+    <br>
     <div style="text-align: center">
         <table style="width: 100%">
             <tr>
@@ -57,6 +58,9 @@
         </table>
         {{-- <h5 style="margin: 2px 0px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></h5> --}}
     </div>
+    <br>
+    <br>
+    <br>
     <div>
         <table style="100%">
             <tr>
@@ -125,8 +129,7 @@
             menjadi tanggungjawab kami sepenuhnya selaku {{ $pa_kpa->jabatan }}</h5> --}}
     </div>
 
-    <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-family: Open Sans; font-size:12px">
+        <table class="table" style="width: 100%;font-family: Open Sans;">
             <tr>
                 <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
                     {{ $pa_kpa->jabatan }}
@@ -142,7 +145,7 @@
                 <td style="text-align: center;padding-left:600px">NIP. {{ $pa_kpa->nip }}</td>
             </tr>
         </table>
-    </div>
+
 </body>
 
 </html>
