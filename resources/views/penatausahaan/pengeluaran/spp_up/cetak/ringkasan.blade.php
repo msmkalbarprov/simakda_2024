@@ -47,7 +47,7 @@
     </div>
     <div style="text-align: left">
         <h5 style="margin: 2px 0px" class="unborder">Berdasarkan Keputusan Gubernur
-            {{ $nogub }} tentang Penetapan Jumlah Uang Persediaan untuk OPD {{ Str::upper($skpd->nm_skpd) }}
+            {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }}  untuk OPD {{ Str::upper($skpd->nm_skpd) }}
             sejumlah Rp {{ rupiah($spp->nilai) }}</h5>
         <h5 style="margin: 2px 0px" class="unborder">Terbilang : {{ terbilang($spp->nilai) }}</h5>
     </div>

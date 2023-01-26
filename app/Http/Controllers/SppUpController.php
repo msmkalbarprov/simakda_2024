@@ -267,7 +267,7 @@ class SppUpController extends Controller
             'spp' => DB::table('trhspp as a')->join('ms_skpd as b', 'a.kd_skpd', '=', 'b.kd_skpd')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.urusan1 as kd_bidang_urusan', 'a.no_spd', 'a.nilai', 'no_rek', 'a.npwp', 'a.bank', DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=b.urusan1)as nm_bidang_urusan"), DB::raw("(SELECT SUM(nilai) FROM trdspd WHERE no_spd=a.no_spd)as spd"), DB::raw("(SELECT SUM(nilai) FROM trhspp WHERE no_spd=a.no_spd AND kd_skpd=a.kd_skpd AND no_spp <> a.no_spp)as spp"))->first(),
             'no_spp' => $no_spp,
             'peng' => $peng,
-            'nogub' => nogub($status_anggaran->jns_ang, $kd_skpd),
+            'pergub' => DB::table('ms_sk_up')->first(),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa
@@ -297,7 +297,7 @@ class SppUpController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
-            'nogub' => nogub($status_anggaran->jns_ang, $kd_skpd),
+            'pergub' => DB::table('ms_sk_up')->first(),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa,
