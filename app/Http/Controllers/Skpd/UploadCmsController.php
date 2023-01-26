@@ -299,7 +299,7 @@ class UploadCmsController extends Controller
 
             $init_tgl = explode("-", $tgl_upload);
             $tglupl = $init_tgl[2] . $init_tgl[1] . $init_tgl[0];
-            $filename = $obskpd->obskpd . "_" . $tglupl . "_" . $no_upload_tgl;
+            $filename = 'OB' . "_" . $obskpd->obskpd . "_" . $tglupl . "_" . $no_upload_tgl;
 
             echo $result;
         }
