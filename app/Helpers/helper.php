@@ -683,7 +683,10 @@ function data_beban1($data_spm, $kd_skpd, $status_angkas)
 
 function nogub($status_anggaran, $kd_skpd)
 {
-    $daerah = DB::table('sclient')->select('kab_kota', 'daerah', 'nogub_susun', 'nogub_perubahan', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where(['kd_skpd' => $kd_skpd])->first();
+    $daerah = DB::table('sclient')
+        ->select('kab_kota', 'daerah', 'nogub_susun', 'nogub_perubahan', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')
+        ->where(['kd_skpd' => $kd_skpd])
+        ->first();
     if ($status_anggaran == 'M') {
         $nogub = $daerah->nogub_susun;
     } else if ($status_anggaran == 'P1') {
@@ -2509,9 +2512,13 @@ function sisa_bank_by_bulan($bulan)
 
 function cek_status_spj($kd_skpd)
 {
-    $data = DB::table('trhspj_ppkd')->select(DB::raw("CAST(bulan as int) as bulan"))->where(['kd_skpd' => $kd_skpd, 'cek' => '1'])->orderByDesc(DB::raw("CAST(bulan as int)"))->first();
+    $data = DB::table('trhspj_ppkd')
+        ->select(DB::raw("CAST(bulan as int) as bulan"))
+        ->where(['kd_skpd' => $kd_skpd, 'cek' => '1'])
+        ->orderByDesc(DB::raw("CAST(bulan as int)"))
+        ->first();
 
-    return $data->bulan;
+    return isset($data) ? $data->bulan : '';
 }
 
 function filter_menu()
