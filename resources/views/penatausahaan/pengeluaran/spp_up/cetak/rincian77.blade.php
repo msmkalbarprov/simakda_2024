@@ -20,16 +20,21 @@
 </head>
 
 <body>
-    <div style="text-align: center">
-        <h3 style="margin: 2px 0px">{{ title() }}</h3>
-        <h3 style="margin: 2px 0px">SURAT PERMINTAAN PEMBAYARAN {{ $jenisspp }}</h3>
-        <h4 class="unborder" style="margin: 2px 0px">Nomor : {{ $no_spp }}</h4>
-        <h4 class="unborder" style="margin: 2px 0px">Tahun Anggaran : {{ tahun_anggaran() }}</h4>
-        <h3 style="margin:10px 0px">RINCIAN RENCANA PENGGUNAAN</h3>
-    </div>
+    <table class="table" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:14px">
+        <tr>
+            <td align="center"><b>
+                {{ title() }} <br>
+                SURAT PERMINTAAN PEMBAYARAN {{ $jenisspp }} <br></b>
+                Nomor : {{ $no_spp }} <br>
+                Tahun Anggaran : {{ tahun_anggaran() }}<br><br>
+                <b>RINCIAN RENCANA PENGGUNAAN </b>
+            </td>
+        </tr>
+    </table>
+    
     <br>
     <div>
-        <table class="table table-bordered" style="width: 100%" border="1">
+        <table class="table table-bordered" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px" border="1">
             <tr>
                 <td style="font-weight: bold;text-align:center">No</td>
                 <td style="font-weight: bold;text-align:center">Kode Rekening</td>
@@ -54,17 +59,25 @@
             </tr>
         </table>
     </div>
+    <br>
     <div>
-        <h5 class="unborder">Terbilang: ## <span
-                style="font-style:italic">({{ ucwords(terbilang($data_spp->nilaisub)) }})</span> ##</h5>
+        <table  style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+            <tr>
+                <td>
+                    Terbilang: ## <span
+                style="font-style:italic">({{ ucwords(terbilang($data_spp->nilaisub)) }})</span> ##
+                </td>
+            </tr>
+        
+        </table>
     </div>
 
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             @if ($sub_kegiatan == '5.02.00.0.06.62')
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                    <td width='50%' style="margin: 2px 0px;text-align: center;paddin:300px">
                         {{ daerah($kd_skpd) }},
                         @if ($tanpa == 1)
                             ______________{{ $tahun_anggaran }}
@@ -74,20 +87,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                    <td width='50%' style="padding-bottom: 50px;text-align: center">
                         {{ $bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $bendahara->nama }}</td>
+                    <td width='50%' style="text-align: center">{{ $bendahara->nama }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:300px">NIP. {{ $bendahara->nip }}</td>
+                    <td width='50%' style="text-align: center">NIP. {{ $bendahara->nip }}</td>
                 </tr>
             @else
                 <tr>
-                    <td style="text-align: center;padding-left:100px">Mengetahui/Menyetujui:</td>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
+                    <td width='50%' style="text-align: center">Mengetahui/Menyetujui:</td>
+                    <td width='50%' style="margin: 2px 0px;text-align: center">
                         {{ daerah($kd_skpd) }},
                         @if ($tanpa == 1)
                             ______________{{ $tahun_anggaran }}
@@ -97,22 +110,22 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:100px;font-weight: bold">
-                        {{ $bendahara->jabatan }}
-                    </td>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px;font-weight: bold">
+                    <td width='50%' style="padding-bottom: 50px;text-align: center;font-weight: bold">
                         {{ $pa->jabatan }}
                     </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:100px;text-decoration:underline">
-                        {{ $bendahara->nama }}</td>
-                    <td style="text-align: center;padding-left:300px;text-decoration:underline">{{ $pa->nama }}
+                    <td width='50%' style="padding-bottom: 50px;text-align: center;font-weight: bold">
+                        {{ $bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:100px">NIP. {{ $bendahara->nip }}</td>
-                    <td style="text-align: center;padding-left:300px">NIP. {{ $pa->nip }}</td>
+                    <td width='50%' style="text-align: center;text-decoration:underline">
+                        {{ $pa->nama }}</td>
+                    <td width='50%' style="text-align: center;text-decoration:underline">{{ $bendahara->nama }}
+                    </td>
+                </tr>
+                <tr>
+                    <td width='50%' style="text-align: center">NIP. {{ $pa->nip }}</td>
+                    <td width='50%' style="text-align: center">NIP. {{ $bendahara->nip }}</td>
                 </tr>
             @endif
         </table>

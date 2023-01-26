@@ -264,6 +264,8 @@ class SppUpController extends Controller
         }
         $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'spp' => DB::table('trhspp as a')->join('ms_skpd as b', 'a.kd_skpd', '=', 'b.kd_skpd')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.urusan1 as kd_bidang_urusan', 'a.no_spd', 'a.nilai', 'no_rek', 'a.npwp', 'a.bank', DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=b.urusan1)as nm_bidang_urusan"), DB::raw("(SELECT SUM(nilai) FROM trdspd WHERE no_spd=a.no_spd)as spd"), DB::raw("(SELECT SUM(nilai) FROM trhspp WHERE no_spd=a.no_spd AND kd_skpd=a.kd_skpd AND no_spp <> a.no_spp)as spp"))->first(),
             'no_spp' => $no_spp,
             'peng' => $peng,
@@ -295,7 +297,8 @@ class SppUpController extends Controller
 
         $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
             'pergub' => DB::table('ms_sk_up')->first(),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
@@ -326,7 +329,8 @@ class SppUpController extends Controller
 
         $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
@@ -358,7 +362,8 @@ class SppUpController extends Controller
 
         $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $data = [
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
@@ -499,7 +504,7 @@ class SppUpController extends Controller
             'sub_kegiatan' => $kd_sub_kegiatan->kd_sub_kegiatan,
             'tanpa' => $tanpa,
             'kd_skpd' => $kd_skpd,
-            'pa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd])->first()
+            'pa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->first()
         ];
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.rincian77')->with($data);
         if ($jenis_print == 'pdf') {
