@@ -9,13 +9,6 @@
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>{{ $data_beban->nm_skpd }}</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>TAHUN ANGGARAN {{ $tahun_anggaran }}</strong></h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -44,24 +37,40 @@
         </tr>
     </table>
     <hr>
-    <div style="text-align: center">
-        <h5 style="margin: 2px 0px"><strong>SURAT PERINTAH MEMBAYAR UANG PERSEDIAAN</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>(SPM-UP)</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>Nomor : {{ $no_spm }}</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>RINGKASAN</strong></h5>
-    </div>
-    <div>
-        <h5 style="margin: 8px 0px;font-weight:normal;text-align:justify">Berdasarkan Keputusan Gubernur
-            {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }}  untuk OPD {{ $data_beban->nm_skpd }} sejumlah Rp
-            {{ rupiah($data_beban->nilai) }}</h5>
-        <h5 style="margin: 8px 0px;font-weight:normal;text-align:justify">Terbilang:
-            <i>({{ terbilang($data_beban->nilai) }})</i>
-        </h5>
-    </div>
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;text-align:center;font-size:16px">
+        <tr>
+            <td><b>SURAT PERINTAH MEMBAYAR UANG PERSEDIAAN</b></td>
+        </tr>
+        <tr>
+            <td><b>(SPM-UP)</b></td>
+        </tr>
+        <tr>
+            <td><b></b></td>
+        </tr>
+        <tr>
+            <td><b>RINGKASAN</b></td>
+        </tr>
+    </table>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;text-align:justify;font-size:16px">
+        <tr>
+            <td>Berdasarkan Keputusan Gubernur
+                {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }} untuk
+                OPD
+                {{ $data_beban->nm_skpd }} sejumlah Rp
+                {{ rupiah($data_beban->nilai) }}</td>
+        </tr>
+        <tr>
+            <td>Terbilang:
+                <i>({{ terbilang($data_beban->nilai) }})</i>
+            </td>
+        </tr>
+    </table>
+
     <div style="padding-top:20px">
         <table class="table" style="width: 100%">
             <tr>
-                <td style="margin: 2px 0px;text-align: center;padding-left:600px">
+                <td style="margin: 2px 0px;text-align: center;padding-left:400px">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
                         ______________{{ $tahun_anggaran }}
@@ -71,18 +80,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                <td style="padding-bottom: 50px;text-align: center;padding-left:400px">
                     {{ $pa->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px"><strong><u>{{ $pa->nama }}</u></strong></td>
+                <td style="text-align: center;padding-left:400px"><strong><u>{{ $pa->nama }}</u></strong></td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px">{{ $pa->pangkat }}</td>
+                <td style="text-align: center;padding-left:400px">{{ $pa->pangkat }}</td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px">NIP. {{ $pa->nip }}</td>
+                <td style="text-align: center;padding-left:400px">NIP. {{ $pa->nip }}</td>
             </tr>
         </table>
     </div>
