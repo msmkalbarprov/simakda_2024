@@ -35,11 +35,22 @@
 </head>
 
 <body>
-    <table style="width: 100%;text-align:center" id="tabel_angkas" border="1" cellspacing='2' cellpadding='4'>
+    <table style="width: 100%;text-align:center;font-size:12px" id="tabel_angkas" border="1" cellspacing='0' cellpadding='2'>
         <tr>
             <td><b>RENCANA ANGGARAN KAS<br>
                 SATUAN KERJA PERANGKAT DAERAH</b></td>
-            <td rowspan="2"><b>Formulir<br>RAK Belanja</b></td>
+            <td rowspan="2"><b>Formulir<br>RAK 
+                
+                @if(substr($sub_header1->subkegiatan,5,10)=='00.0.00.04')
+                    Pendapatan
+                @elseif(substr($sub_header1->subkegiatan,5,10)=='00.0.00.61')
+                    Penerimaan Pembiayaan
+                @elseif(substr($sub_header1->subkegiatan,5,10)=='00.0.00.62')
+                    Pengeluaran Pembiayaan
+                @else
+                    Belanja
+                @endif
+                </b></td>
         </tr>
         <tr>
             <td style="font-weight: normal">Pemerintah Provinsi Kalimantan Barat Tahun Anggaran {{ tahun_anggaran() }}
@@ -64,31 +75,37 @@
             <td>Sub Unit Organisasi</td>
             <td>: {{ $sub_header->unit }} {{ $sub_header->nmunit }}</td>
         </tr>
-        <tr>
-            <td>Program</td>
-            <td>: {{ $sub_header1->program }} {{ $sub_header1->nmprogram }}</td>
-        </tr>
-        <tr>
-            <td>Kegiatan</td>
-            <td>: {{ $sub_header1->kegiatan }} {{ Str::upper($sub_header1->nmkegiatan) }}</td>
-        </tr>
-        <tr>
-            <td>Sub Kegiatan</td>
-            <td>: {{ $sub_header1->subkegiatan }}{{ Str::upper($sub_header1->nmsubkegiatan) }}</td>
-        </tr>
+        @if(substr($sub_header1->subkegiatan,5,10)!='00.0.00.04' && substr($sub_header1->subkegiatan,5,10)!='00.0.00.61' && substr($sub_header1->subkegiatan,5,10)!='00.0.00.62')
+            <tr>
+                <td>Program</td>
+                <td>: {{ $sub_header1->program }} {{ $sub_header1->nmprogram }}</td>
+            </tr>
+            <tr>
+                <td>Kegiatan</td>
+                <td>: {{ $sub_header1->kegiatan }} {{ ucwords($sub_header1->nmkegiatan) }}</td>
+            </tr>
+            <tr>
+                <td>Sub Kegiatan</td>
+                <td>: {{ $sub_header1->subkegiatan }}{{ ucwords($sub_header1->nmsubkegiatan) }}</td>
+            </tr>
+        @endif
+        
         <tr>
             <td style="vertical-align:top">Nilai Anggaran</td>
-            <td style="vertical-align:top">: {{ rupiah($sub_header1->ang) }}</td>
-            <td style="vertical-align:top">{{ Str::upper(terbilang($sub_header1->ang)) }}</td>
+            <td style="vertical-align:top">: {{ rupiah($sub_header1->ang) }}<br>
+                &nbsp;&nbsp;({{ ucwords(terbilang($sub_header1->ang)) }})</td>
         </tr>
     </table>
 
-    <table style="width: 100%;font-size:9px" id="tabel_angkas" border="1" >
+    <table style="width: 100%;font-size:9px" id="tabel_angkas" border="1" cellspacing='0' cellpadding='2'>
         <thead>
             <tr>
-                <th>No. </th>
-                <th>Rekening</th>
-                <th>Jumlah Anggaran</th>
+                <th rowspan="2">No. </th>
+                <th rowspan="2">Rekening</th>
+                <th rowspan="2">Jumlah Anggaran</th>
+                <th colspan="16">Jumlah Kebutuhan Dana</th>
+            </tr>
+            <tr>
                 <th>Januari</th>
                 <th>Februari</th>
                 <th>Maret</th>

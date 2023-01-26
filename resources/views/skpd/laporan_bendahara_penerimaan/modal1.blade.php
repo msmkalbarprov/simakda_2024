@@ -36,12 +36,20 @@
                             </div>
                         </div>
                         {{-- PA/KPA --}}
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div id="tgl_ttd1">
                                 <label for="pa_kpa" class="form-label">Tanggal TTD</label>
                                 <input type="date" id="tgl_ttd" name="tgl_ttd" class="form-control">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <label for="jenis_cetak" class="form-label">Format</label>
+                            <select name="format" class="form-control select2-modal" id="format">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                <option value="77">Permendagri 77</option>
+                                <option value="13">Permendagri 13 (Untuk Kroscek)</option>
+                            </select>
+                        </div>  
                     </div>
 
                     {{-- Bendahara --}}

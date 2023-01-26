@@ -52,7 +52,7 @@
     </div>
     <div>
         <h5 style="margin: 8px 0px;font-weight:normal;text-align:justify">Berdasarkan Keputusan Gubernur
-            {{ $nogub }} tentang Uang Persediaan untuk OPD {{ $data_beban->nm_skpd }} sejumlah Rp
+            {{ $pergub->no_pergub }} tanggal {{ tanggal($pergub->tgl_pergub) }} tentang {{ $pergub->tentang }}  untuk OPD {{ $data_beban->nm_skpd }} sejumlah Rp
             {{ rupiah($data_beban->nilai) }}</h5>
         <h5 style="margin: 8px 0px;font-weight:normal;text-align:justify">Terbilang:
             <i>({{ terbilang($data_beban->nilai) }})</i>

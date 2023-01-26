@@ -3908,4 +3908,96 @@ class RakController extends Controller
         }
     }
 
+    // RAK PENDAPATAN
+    // CETAK RAK PER SUB RINCIAN OBJEK
+    public function pendapatanIndex()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'skpd' => get_skpd($kd_skpd),
+            'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
+        ];
+
+        return view('skpd.cetak_rak.pendapatan.cetak')->with($data);
+    }
+
+    public function cetakRakPendapatan(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $jenis_anggaran = $request->jenis_anggaran;
+        $jenis_rak = $request->jenis_rak;
+        $ttd1 = $request->ttd1;
+        $tanggal_ttd = $request->tanggal_ttd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $jenis_print = $request->jenis_print;
+        $margin = $request->margin;
+        $hidden = $request->hidden;
+        if ($margin == '') {
+            $margin = 10;
+        } else {
+            $margin = $margin;
+        }
+        $jenis = "nilai_" . $jenis_rak;
+
+        $join1 = DB::table('trdrka')->select('kd_sub_kegiatan', 'kd_skpd', 'kd_rek6')->where(['jns_ang' => $jenis_anggaran])->groupBy('kd_sub_kegiatan', 'kd_skpd', 'kd_rek6');
+
+        $angkas1 = DB::table('trdskpd_ro as a')->joinSub($join1, 'b', function ($join) {
+            $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            $join->on('a.kd_rek6', '=', 'b.kd_rek6');
+        })->selectRaw("a.kd_sub_kegiatan,a.kd_rek6,
+            case when bulan=1 then sum($jenis) else 0 end as jan,
+            case when bulan=2 then sum($jenis) else 0 end as feb,
+            case when bulan=3 then sum($jenis) else 0 end as mar,
+            case when bulan=4 then sum($jenis) else 0 end as apr,
+            case when bulan=5 then sum($jenis) else 0 end as mei,
+            case when bulan=6 then sum($jenis) else 0 end as jun,
+            case when bulan=7 then sum($jenis) else 0 end as jul,
+            case when bulan=8 then sum($jenis) else 0 end as ags,
+            case when bulan=9 then sum($jenis) else 0 end as sep,
+            case when bulan=10 then sum($jenis) else 0 end as okt,
+            case when bulan=11 then sum($jenis) else 0 end as nov,
+            case when bulan=12 then sum($jenis) else 0 end as des")->where(['a.kd_skpd' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->groupBy('a.kd_sub_kegiatan', 'a.kd_rek6', 'a.bulan');
+
+        $angkas = DB::table(DB::raw("({$angkas1->toSql()}) as sub"))
+            ->select(DB::raw("(kd_sub_kegiatan+'.') as giat"), 'kd_rek6', DB::raw("(SELECT nm_rek6 FROM ms_rek6 WHERE kd_rek6=sub.kd_rek6) as nm_rek"), DB::raw("ISNULL(SUM(jan),0) as jan"), DB::raw("ISNULL(SUM(feb),0) as feb"), DB::raw("ISNULL(SUM(mar),0) as mar"), DB::raw("ISNULL(SUM(apr),0) as apr"), DB::raw("ISNULL(SUM(mei),0) as mei"), DB::raw("ISNULL(SUM(jun),0) as jun"), DB::raw("ISNULL(SUM(jul),0) as jul"), DB::raw("ISNULL(SUM(ags),0) as ags"), DB::raw("ISNULL(SUM(sep),0) as sep"), DB::raw("ISNULL(SUM(okt),0) as okt"), DB::raw("ISNULL(SUM(nov),0) as nov"), DB::raw("ISNULL(SUM(des),0) as des"))
+            ->mergeBindings($angkas1)
+            ->groupBy('kd_sub_kegiatan', 'kd_rek6')
+            ->orderBy('kd_sub_kegiatan')
+            ->get();
+
+        $data = [
+            'nama_angkas' => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
+            'nama_skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'data_giat' => $angkas,
+            'kd_sub_kegiatan' => $kd_sub_kegiatan,
+            'jenis_anggaran' => $jenis_anggaran,
+            'kd_skpd' => $kd_skpd,
+            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'tanggal' => $tanggal_ttd,
+            'sub_header' => DB::table('ms_skpd as a')->select(DB::raw("left(kd_skpd,1) as urusan"), DB::raw("(SELECT nm_urusan FROM ms_urusan WHERE kd_urusan=left(a.kd_skpd,1)) as nmurusan"), DB::raw("left(kd_skpd,4) as bidang"), DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=left(a.kd_skpd,4)) as nmbidang"), DB::raw("left(kd_skpd,17) as org"), DB::raw("(SELECT nm_skpd FROM ms_skpd WHERE left(kd_skpd,17)=left(a.kd_skpd,17) AND right(kd_skpd,4)='0000') as nmorg"), 'kd_skpd as unit', 'nm_skpd as nmunit')->where(['kd_skpd' => $kd_skpd])->first(),
+
+            'sub_header1' => DB::table('trdrka as a')->select(DB::raw("left(kd_sub_kegiatan,7) as program"), DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=left(a.kd_sub_kegiatan,7)) as nmprogram"), DB::raw("left(kd_sub_kegiatan,12) as kegiatan"), DB::raw("(SELECT nm_kegiatan FROM ms_kegiatan WHERE kd_kegiatan=left(a.kd_sub_kegiatan,12)) as nmkegiatan"), 'kd_sub_kegiatan as subkegiatan', 'nm_sub_kegiatan as nmsubkegiatan', 'kd_skpd', DB::raw("SUM(nilai) as ang"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $jenis_anggaran])->groupBy('kd_skpd', 'kd_sub_kegiatan', 'nm_sub_kegiatan')->first(),
+            'hidden' => $hidden
+        ];
+
+        $view = view('skpd.cetak_rak.per_sub_rincian_objek.cetakan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')
+                
+                ->setOption('margin-top', $margin);
+            return $pdf->stream('laporan.pdf');
+            
+        } elseif ($jenis_print == 'excel') {
+            header("Cache-Control:no-cache,no-store,must-revalidate");
+            header("Content-Type:application/vnd.ms-excel");
+            header("Content-Disposition:attachment;filename=laporan.xls");
+            return $view;
+        } else {
+            return $view;
+        }
+    }
+
 }

@@ -23,6 +23,7 @@ class BukuPenerimaanPenyetoranController extends Controller
             $tanggal1       = $request->tanggal1;
             $tanggal2       = $request->tanggal2;
             $enter          = $request->spasi;
+            $format         = $request->format;
             
             $cetak          = $request->cetak;
             $jenis_cetakan  = $request->jenis_cetakan;
@@ -117,7 +118,13 @@ class BukuPenerimaanPenyetoranController extends Controller
                 'cari_bendahara'    => $cari_bendahara
             ];
 
-        $view = view('skpd.laporan_bendahara_penerimaan.cetak.buku_penerimaan_penyetoran')->with($data);
+            if ($format=='13'){
+                $view = view('skpd.laporan_bendahara_penerimaan.cetak.buku_penerimaan_penyetoran')->with($data);
+            }else{
+                $view = view('skpd.laporan_bendahara_penerimaan.cetak.buku_penerimaan_penyetoran_77')->with($data);
+            }
+
+        
     
                 if($cetak=='1'){
                     return $view;

@@ -82,9 +82,9 @@
                 <th rowspan="2">KD REK</th>
                 <th rowspan="2">URAIAN</th>
                 <th rowspan="2">ANGGARAN</th>
-                <th colspan="3">Realisasi (Rp.)</th>
+                <th colspan="3">REALISASI (Rp.)</th>
                 <th rowspan="2">SISA</th>
-                <th rowspan="2">Persentase</th>
+                <th rowspan="2">PERSENTASE</th>
                 <th rowspan="2">DASAR HUKUM</th>
             </tr>
             <tr>

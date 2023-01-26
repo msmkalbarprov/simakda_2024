@@ -184,7 +184,6 @@
         });
 
         function cari_skpd(kd_skpd, jenis) {
-            alert(kd_skpd)
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara_penerimaan.skpd') }}",
                 type: "POST",
@@ -372,6 +371,7 @@
             let jns_anggaran
             let rekening
             let tipe
+            let format
             if(modal==1){
                 spasi           = document.getElementById('spasi').value;
                 tgl_ttd         = document.getElementById('tgl_ttd').value;
@@ -380,10 +380,11 @@
                 kd_skpd         = document.getElementById('kd_skpd').value;
                 jenis_print     = $(this).data("jenis");
                 jenis_cetakan   = document.getElementById('jenis_cetak').value;
-                jenis_cetak         = document.getElementById('labelcetak').textContent
+                jenis_cetak     = document.getElementById('labelcetak').textContent
                 tanggal1        = document.getElementById('tanggal1').value;
                 tanggal2        = document.getElementById('tanggal2').value;
                 jns_anggaran    = document.getElementById('jns_anggaran').value;
+                format          = document.getElementById('format').value;
 
                 // alert validasi data
                 if (!kd_skpd) {
@@ -488,6 +489,8 @@
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("format", format);
+                
 
                 window.open(url.toString(), "_blank");
 
