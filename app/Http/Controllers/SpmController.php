@@ -379,8 +379,18 @@ class SpmController extends Controller
         $beban = $request->beban;
 
         $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspm as b', 'a.no_spp', '=', 'b.no_spp')->select('a.kd_sub_kegiatan')->where(['b.no_spm' => $no_spm])->groupBy('a.kd_sub_kegiatan')->first();
-        $data_spm = DB::table('trhspm as a')->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp) as pimpinan"), DB::raw("(SELECT tgl_spd FROM trhspd WHERE no_spd=a.no_spd and LEFT(kd_skpd,17)=LEFT(a.kd_skpd,17)) as tgl_spd"))->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])->first();
-        $status_angkas = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->select('b.nama', 'a.jns_ang')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->first();
+
+        $data_spm = DB::table('trhspm as a')
+            ->join('trhspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp) as pimpinan"), DB::raw("(SELECT tgl_spd FROM trhspd WHERE no_spd=a.no_spd and LEFT(kd_skpd,17)=LEFT(a.kd_skpd,17)) as tgl_spd"), 'b.jns_beban')
+            ->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])->first();
+
+        $status_angkas = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')
+            ->select('b.nama', 'a.jns_ang')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->first();
+
         $total_beban = total_beban($data_spm, $kd_skpd, $status_angkas);
 
         if ($total_beban <= $baris_spm) {
@@ -399,6 +409,15 @@ class SpmController extends Controller
             $total_potongan1 += $potongan->nilai;
         }
         $data = [
+            'pihak_lain' => collect(DB::select("SELECT a.*,
+                SUBSTRING(npwp, 0, 3)+'.'+SUBSTRING(npwp, 3, 3)+'.'+SUBSTRING(npwp, 6, 3)+'.'+SUBSTRING(npwp, 9, 1)+'-'+SUBSTRING(npwp, 10, 3)
++'.'+SUBSTRING(npwp, 13, 3)npwp1,
+                (SELECT nmrekan FROM trhspp WHERE no_spp = a.no_spp) AS nmrekan,
+                (SELECT pimpinan FROM trhspp WHERE no_spp = a.no_spp) AS pimpinan,
+                (SELECT tgl_spd FROM trhspd WHERE no_spd=a.no_spd and left(kd_skpd,17)=left(a.kd_skpd,17)) AS tgl_spd,
+                (SELECT case when jns_beban='5' then 'Belanja Langsung' else 'Belanja Tidak Langsung' end
+                FROM trhspd WHERE no_spd=a.no_spd and kd_skpd=a.kd_skpd) AS jns_beban
+                FROM trhspm a WHERE a.no_spm = ?  AND a.kd_skpd=?", [$no_spm, $kd_skpd]))->first(),
             'no_spm' => $no_spm,
             'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),

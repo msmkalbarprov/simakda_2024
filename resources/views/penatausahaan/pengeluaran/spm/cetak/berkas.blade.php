@@ -120,7 +120,13 @@
                             <tr>
                                 <td>Bendahara/pihak lain</td>
                                 <td>: </td>
-                                <td>{{ $bendahara->nama }}</td>
+                                <td>
+                                    @if (($data_spm->jns_spp == 6 && $data_spm->jns_beban == 6) || $data_spm->jns_spp == 5)
+                                        {{ $pihak_lain->pimpinan }} {{ $pihak_lain->nmrekan }}
+                                    @else
+                                        {{ $bendahara->nama }}
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>No. Rekening Bank</td>
