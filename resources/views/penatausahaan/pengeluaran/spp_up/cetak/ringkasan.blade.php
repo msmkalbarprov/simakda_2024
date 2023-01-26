@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat Pengantar</title>
+    <title>Ringkasan</title>
     <style>
         .unborder {
             font-weight: normal;
@@ -32,28 +32,58 @@
 </head>
 
 <body>
-    <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px">{{ title() }}</h5>
-        <h5 style="margin: 2px 0px">SKPD {{ Str::upper($skpd->nm_skpd) }}</h5>
-        <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ tahun_anggaran() }}</h5>
-        <div style="clear: both"></div>
-    </div>
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td rowspan="5" align="left" width="7%">
+            <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
+            </td>
+            <td align="left" style="font-size:14px" width="93%">&nbsp;</td></tr>
+            <tr>
+            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td></tr>
+            <tr>
+            <td align="left" style="font-size:14px" ><strong>SKPD {{ $skpd->nm_skpd }}</strong></td></tr>
+            <tr>
+            <td align="left" style="font-size:14px" ><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td></tr>
+            <tr>
+            <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td></tr>
+    </table>
     <hr>
-    <div style="text-align: center">
-        <h5 style="margin: 2px 0px">SURAT PERMINTAAN PEMBAYARAN UANG PERSEDIAAN</h5>
-        <h5 style="margin: 2px 0px">(SPP-UP)</h5>
-        <h5 style="margin: 2px 0px">Nomor : {{ $no_spp }}</h5>
-        <h5 style="margin: 2px 0px">RINGKASAN</h5>
-    </div>
-    <div style="text-align: left">
-        <h5 style="margin: 2px 0px" class="unborder">Berdasarkan Keputusan Gubernur
-            {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }}  untuk OPD {{ Str::upper($skpd->nm_skpd) }}
-            sejumlah Rp {{ rupiah($spp->nilai) }}</h5>
-        <h5 style="margin: 2px 0px" class="unborder">Terbilang : {{ terbilang($spp->nilai) }}</h5>
-    </div>
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%"  border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
+                <b>SURAT PERMINTAAN PEMBAYARAN UANG PERSEDIAAN</b>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <b>(SPP-UP)</b>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <b>Nomor : {{ $no_spp }}</b>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <b>RINGKASAN</b>
+            </td>
+        </tr>
+    </table>
+
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%"  border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                Berdasarkan Keputusan Gubernur
+                    {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }}  untuk OPD {{ Str::upper($skpd->nm_skpd) }}
+                    sejumlah Rp {{ rupiah($spp->nilai) }}<br>
+                Terbilang : {{ terbilang($spp->nilai) }}
+            </td>
+        </tr>
+        
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;padding-left:600px">
                     {{ daerah($kd_skpd) }},

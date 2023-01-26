@@ -44,7 +44,7 @@
     </div>
     <br>
     <div>
-        <table class="table table-bordered" style="width: 100%">
+        <table class="table table-bordered" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td colspan="4" style="text-align: center;border:1px solid black"><b>{{ $jenisspp }}</b></td>
             </tr>
@@ -108,12 +108,12 @@
                         style="font-style: italic">({{ terbilang($nilaispd->nilai) }})</span></td>
             </tr>
         </table>
-        <table style="width: 100%">
+        <table style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td style="height:20px;border-right:1px solid black;border-left:1px solid black"></td>
             </tr>
         </table>
-        <table class="table table-bordered" style="width: 100%">
+        <table class="table table-bordered" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td class="border" style="width:40px;text-align:center">No</td>
                 <td class="border" colspan="3" style="text-align: center">Uraian</td>
