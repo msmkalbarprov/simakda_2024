@@ -71,20 +71,27 @@
 </head>
 
 <body>
-    <div id="header">
-        PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
-        PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
-        NOMOR {{ $nospd }}<br />
-        TENTANG<br />
-        SURAT PENYEDIAAN DANA ANGGARAN BELANJA DAERAH<br />
-        TAHUN ANGGARAN {{ tahun_anggaran() }}<br />
-    </div>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
+        <tr>
+            <td>PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
+                PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
+                NOMOR {{ $nospd }}<br />
+                TENTANG<br />
+                SURAT PENYEDIAAN DANA ANGGARAN BELANJA DAERAH<br />
+                TAHUN ANGGARAN {{ tahun_anggaran() }}<br /></td>
+        </tr>
+    </table>
     <br />
     <br />
-    <div class="spd">LAMPIRAN SURAT PENYEDIAAN DANA</div>
     <br />
     <table class="spd" id="info-spd">
         <tbody>
+            <tr>
+                <td colspan="3">LAMPIRAN SURAT PENYEDIAAN DANA</td>
+            </tr>
+            <tr>
+                <td style="height: 20px"></td>
+            </tr>
             <tr>
                 <td>NOMOR SPD </td>
                 <td>:</td>
@@ -144,37 +151,42 @@
         </thead>
         <tbody>
             @php
-            $total_anggaran = 0;
-            $total_spd = 0;
-            $total_spd_lalu = 0;
+                $total_anggaran = 0;
+                $total_spd = 0;
+                $total_spd_lalu = 0;
             @endphp
-            @foreach($datalamp as $key => $value)
-            <tr>
-                <td>{{ $key+1 }}</td>
-                @if ($value->jenis == 'rekening')
-                <td>{{ $value->kd_rek }}</td>
-                <td>{{ $value->nm_rek }}</td>
-                @php
-                $total_anggaran += $value->anggaran;
-                $total_spd += $value->nilai;
-                $total_spd_lalu += $value->nilai_lalu
-                @endphp
-                @else
-                <td class="text-bold">{{ $value->kode }}</td>
-                <td class="text-bold">{{ $value->nama }}</td>
-                @endif
-                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->anggaran, 2, ',', '.') }}</td>
-                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->nilai_lalu, 2, ',', '.') }}</td>
-                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->nilai, 2, ',', '.') }}</td>
-                <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">{{ number_format($value->anggaran - $value->nilai - $value->nilai_lalu, 2, ',', '.') }}</td>
-            </tr>
+            @foreach ($datalamp as $key => $value)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    @if ($value->jenis == 'rekening')
+                        <td>{{ $value->kd_rek }}</td>
+                        <td>{{ $value->nm_rek }}</td>
+                        @php
+                            $total_anggaran += $value->anggaran;
+                            $total_spd += $value->nilai;
+                            $total_spd_lalu += $value->nilai_lalu;
+                        @endphp
+                    @else
+                        <td class="text-bold">{{ $value->kode }}</td>
+                        <td class="text-bold">{{ $value->nama }}</td>
+                    @endif
+                    <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">
+                        {{ number_format($value->anggaran, 2, ',', '.') }}</td>
+                    <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">
+                        {{ number_format($value->nilai_lalu, 2, ',', '.') }}</td>
+                    <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">
+                        {{ number_format($value->nilai, 2, ',', '.') }}</td>
+                    <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">
+                        {{ number_format($value->anggaran - $value->nilai - $value->nilai_lalu, 2, ',', '.') }}</td>
+                </tr>
             @endforeach
             <tr>
                 <td class="text-bold" colspan="3">Jumlah</td>
                 <td class="number text-bold">{{ number_format($total_anggaran, 2, ',', '.') }}</td>
                 <td class="number text-bold">{{ number_format($total_spd_lalu, 2, ',', '.') }}</td>
                 <td class="number text-bold">{{ number_format($total_spd, 2, ',', '.') }}</td>
-                <td class="number text-bold">{{ number_format($total_anggaran - $total_spd - $total_spd_lalu, 2, ',', '.') }}</td>
+                <td class="number text-bold">
+                    {{ number_format($total_anggaran - $total_spd - $total_spd_lalu, 2, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
