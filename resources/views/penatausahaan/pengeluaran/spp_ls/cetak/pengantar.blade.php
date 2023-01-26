@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Surat Pengantar</title>
+
+    <style>
+        #rincian1>tbody>tr>td {
+            vertical-align: top
+        }
+    </style>
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h5>
-        <h5 style="margin: 2px 0px">{{ $cari_data->nm_skpd }}</h5>
-        <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h5>
-        <div style="clear: both"></div>
-    </div> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -39,173 +39,207 @@
         </tr>
     </table>
     <hr>
-    <div style="text-align: center">
-        <h5 style="margin: 2px 0px">SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN</h5>
+
+    <table style="width: 100%;font-size:20px;text-align:center;font-family:'Times New Roman', Times, serif">
+        <tr>
+            <td>
+                <b>
+                    SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN <br>
+                    @if ($beban == '4')
+                        (SPP - {{ strtoupper($lcbeban) }})
+                    @elseif ($beban == '5')
+                        (SPP - LS {{ strtoupper($lcbeban) }})
+                    @else
+                        (SPP - LS {{ strtoupper($lcbeban) }})
+                    @endif
+                </b>
+            </td>
+        </tr>
+        <tr>
+            <td><b><u>SURAT PENGANTAR</u></b></td>
+        </tr>
+        <tr>
+            <td><b>Nomor : {{ $no_spp }}</b></td>
+        </tr>
+    </table>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif">
+        <tr>
+            <td>Kepada Yth:</td>
+        </tr>
+        <tr>
+            <td>{{ $peng }}</td>
+        </tr>
+        <tr>
+            <td>OPD : {{ $cari_data->nm_skpd }}</td>
+        </tr>
+        <tr>
+            <td>Di <b><u>{{ strtoupper($daerah->daerah) }}</u></b></td>
+        </tr>
+    </table>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;padding-top:20px;font-size:16px">
+        <tr>
+            <td>
+                @if ($beban == '4')
+                    Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                    {{ $nogub }}
+                    tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat
+                    Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:
+                @elseif ($beban == '5')
+                    @if ($kd_skpd == '1.03.01.01')
+                        Dengan memperhatikan Peraturan Gubernur Kalimantan Barat tentang
+                        {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015
+                        tentang
+                        Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat
+                        Permintaan
+                        Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:
+                    @else
+                        Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal
+                        30
+                        Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
+                        kami
+                        mengajukan Surat Permintaan Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:
+                    @endif
+                @else
+                    @if ($kd_skpd == '1.03.01.01')
+                        Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                        {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015
+                        tentang
+                        Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat
+                        Permintaan
+                        Pembayaran Langsung Barang dan Jasa sebagai berikut:
+                    @else
+                        Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal
+                        30
+                        Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
+                        kami
+                        mengajukan Surat Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:
+                    @endif
+                @endif
+            </td>
+        </tr>
+    </table>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif" id="rincian1">
+        {{-- Urusan Pemerintahan --}}
+        <tr>
+            <td style="width: 40%">a. Urusan Pemerintahan</td>
+            <td>:</td>
+            <td>{{ $cari_data->kd_bidang_urusan }} - {{ $cari_data->nm_bidang_urusan }}</td>
+        </tr>
+        {{-- OPD --}}
+        <tr>
+            <td>b. OPD</td>
+            <td>:</td>
+            <td>{{ $cari_data->kd_skpd }} - {{ $cari_data->nm_skpd }}</td>
+        </tr>
+        {{-- Tahun Anggaran --}}
+        <tr>
+            <td>c. Tahun Anggaran</td>
+            <td>:</td>
+            <td>{{ $tahun_anggaran }}</td>
+        </tr>
+        {{-- Dasar Pengeluaran SPD --}}
+        <tr>
+            <td>d. Dasar Pengeluaran SPD</td>
+            <td>:</td>
+            <td>{{ $cari_data->no_spd }}</td>
+        </tr>
+        {{-- Jumlah Sisa Dana SPD --}}
+        <tr>
+            <td>e. Jumlah Sisa Dana SPD</td>
+            <td>:</td>
+            <td>Rp. {{ rupiah($cari_data->spd - $cari_data->spp) }}</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">(terbilang)</td>
+            <td></td>
+            <td style="font-style: italic">({{ ucwords(terbilang($cari_data->spd - $cari_data->spp)) }})</td>
+        </tr>
+        {{-- Untuk Keperluan Bulan --}}
+        <tr>
+            <td>f. Untuk Keperluan Bulan</td>
+            <td>:</td>
+            <td>{{ bulan($cari_data->bulan) }}</td>
+        </tr>
+        {{-- Jumlah Pembayaran yang Diminta --}}
+        <tr>
+            <td>g. Jumlah Pembayaran yang Diminta</td>
+            <td>:</td>
+            <td>Rp. {{ rupiah($cari_data->nilai) }}</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">(terbilang)</td>
+            <td></td>
+            <td style="font-style: italic">({{ ucwords(terbilang($cari_data->nilai)) }})</td>
+        </tr>
+        {{-- Nama Bendahara Pengeluaran --}}
         @if ($beban == '4')
-            <h5 style="margin: 2px 0px">(SPP - {{ strtoupper($lcbeban) }})</h5>
+            <tr>
+                <td>h. Nama {{ ucwords($cari_bendahara->jabatan) }}</td>
+                <td>:</td>
+                <td>{{ $cari_bendahara->nama }}</td>
+            </tr>
         @elseif ($beban == '5')
-            <h5 style="margin: 2px 0px">(SPP - LS {{ strtoupper($lcbeban) }})</h5>
-        @else
-            <h5 style="margin: 2px 0px">(SPP - LS {{ strtoupper($lcbeban) }})</h5>
-        @endif
-        <h5 style="margin: 2px 0px">SURAT PENGANTAR</h5>
-        <h5 style="margin: 2px 0px">Nomor : {{ $no_spp }}</h5>
-    </div>
-    <div style="text-align: left">
-        <h5 style="margin: 2px 0px">Kepada Yth:</h5>
-        <h5 style="margin: 2px 0px">{{ $peng }}</h5>
-        <h5 style="margin: 2px 0px">OPD : {{ $cari_data->nm_skpd }}</h5>
-        <h5 style="margin: 2px 0px">Di <u>{{ strtoupper($daerah->daerah) }}</u></h5>
-    </div>
-    <div style="text-align: left">
-        @if ($beban == '4')
-            <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat {{ $nogub }}
-                tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat
-                Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
-        @elseif ($beban == '5')
-            @if ($kd_skpd == '1.03.01.01')
-                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat tentang
-                    {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015 tentang
-                    Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat Permintaan
-                    Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:</h5>
-            @else
-                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                    {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal 30
-                    Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami
-                    mengajukan Surat Permintaan Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:</h5>
-            @endif
-        @else
-            @if ($kd_skpd == '1.03.01.01')
-                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                    {{ $nogub }} tentang Perubahan Peraturan Gubernur Kalimantan Barat No. 84 Tahun 2015 tentang
-                    Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami mengajukan Surat Permintaan
-                    Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
-            @else
-                <h5 style="margin: 2px 0px">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                    {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal 30
-                    Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini kami
-                    mengajukan Surat Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:</h5>
-            @endif
-        @endif
-    </div>
-    <div>
-        <table>
-            {{-- Urusan Pemerintahan --}}
-            <tr>
-                <td>a. Urusan Pemerintahan</td>
-                <td>:</td>
-                <td>{{ $cari_data->kd_bidang_urusan }} - {{ $cari_data->nm_bidang_urusan }}</td>
-            </tr>
-            {{-- OPD --}}
-            <tr>
-                <td>b. OPD</td>
-                <td>:</td>
-                <td>{{ $cari_data->kd_skpd }} - {{ $cari_data->nm_skpd }}</td>
-            </tr>
-            {{-- Tahun Anggaran --}}
-            <tr>
-                <td>c. Tahun Anggaran</td>
-                <td>:</td>
-                <td>{{ $tahun_anggaran }}</td>
-            </tr>
-            {{-- Dasar Pengeluaran SPD --}}
-            <tr>
-                <td>d. Dasar Pengeluaran SPD</td>
-                <td>:</td>
-                <td>{{ $cari_data->no_spd }}</td>
-            </tr>
-            {{-- Jumlah Sisa Dana SPD --}}
-            <tr>
-                <td>e. Jumlah Sisa Dana SPD</td>
-                <td>:</td>
-                <td>Rp. {{ rupiah($cari_data->spd - $cari_data->spp) }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center">(terbilang)</td>
-                <td></td>
-                <td style="font-style: italic">({{ ucwords(terbilang($cari_data->spd - $cari_data->spp)) }})</td>
-            </tr>
-            {{-- Untuk Keperluan Bulan --}}
-            <tr>
-                <td>f. Untuk Keperluan Bulan</td>
-                <td>:</td>
-                <td>{{ bulan($cari_data->bulan) }}</td>
-            </tr>
-            {{-- Jumlah Pembayaran yang Diminta --}}
-            <tr>
-                <td>g. Jumlah Pembayaran yang Diminta</td>
-                <td>:</td>
-                <td>Rp. {{ rupiah($cari_data->nilai) }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center">(terbilang)</td>
-                <td></td>
-                <td style="font-style: italic">({{ ucwords(terbilang($cari_data->nilai)) }})</td>
-            </tr>
-            {{-- Nama Bendahara Pengeluaran --}}
-            @if ($beban == '4')
+            @if ($jenis == '3')
                 <tr>
-                    <td>h. Nama {{ ucwords($cari_bendahara->jabatan) }}</td>
+                    <td>h. Nama Pihak Ketiga</td>
+                    <td>:</td>
+                    <td>{{ $cari_data->nmrekan }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td>h. Nama Bendahara Pengeluaran</td>
                     <td>:</td>
                     <td>{{ $cari_bendahara->nama }}</td>
                 </tr>
+            @endif
+        @else
+            @if ($jenis == '3')
+                <tr>
+                    <td>h. Nama Pihak Ketiga</td>
+                    <td>:</td>
+                    <td>{{ $cari_data->nmrekan }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td>h. Nama Bendahara Pengeluaran</td>
+                    <td>:</td>
+                    <td>{{ $cari_bendahara->nama }}</td>
+                </tr>
+            @endif
+        @endif
+        {{-- Nama Nomor Rekening Bank dan NPWP --}}
+        <tr>
+            @if ($beban == '4')
+                <td>i. Nama, Nomor Rekening Bank dan NPWP</td>
+                <td>:</td>
+                <td>{{ $bank->nama }} / {{ $cari_data->no_rek }} / {{ $cari_data->npwp }}</td>
             @elseif ($beban == '5')
                 @if ($jenis == '3')
-                    <tr>
-                        <td>h. Nama Pihak Ketiga</td>
-                        <td>:</td>
-                        <td>{{ $cari_data->nmrekan }}</td>
-                    </tr>
-                @else
-                    <tr>
-                        <td>h. Nama Bendahara Pengeluaran</td>
-                        <td>:</td>
-                        <td>{{ $cari_bendahara->nama }}</td>
-                    </tr>
-                @endif
-            @else
-                @if ($jenis == '3')
-                    <tr>
-                        <td>h. Nama Pihak Ketiga</td>
-                        <td>:</td>
-                        <td>{{ $cari_data->nmrekan }}</td>
-                    </tr>
-                @else
-                    <tr>
-                        <td>h. Nama Bendahara Pengeluaran</td>
-                        <td>:</td>
-                        <td>{{ $cari_bendahara->nama }}</td>
-                    </tr>
-                @endif
-            @endif
-            {{-- Nama Nomor Rekening Bank dan NPWP --}}
-            <tr>
-                @if ($beban == '4')
                     <td>i. Nama, Nomor Rekening Bank dan NPWP</td>
                     <td>:</td>
                     <td>{{ $bank->nama }} / {{ $cari_data->no_rek }} / {{ $cari_data->npwp }}</td>
-                @elseif ($beban == '5')
-                    @if ($jenis == '3')
-                        <td>i. Nama, Nomor Rekening Bank dan NPWP</td>
-                        <td>:</td>
-                        <td>{{ $bank->nama }} / {{ $cari_data->no_rek }} / {{ $cari_data->npwp }}</td>
-                    @else
-                        <td>i. Nama, Nomor Rekening Bank</td>
-                        <td>:</td>
-                        <td>{{ $bank->nama }} / {{ $cari_data->no_rek }}</td>
-                    @endif
                 @else
                     <td>i. Nama, Nomor Rekening Bank</td>
                     <td>:</td>
                     <td>{{ $bank->nama }} / {{ $cari_data->no_rek }}</td>
                 @endif
+            @else
+                <td>i. Nama, Nomor Rekening Bank</td>
+                <td>:</td>
+                <td>{{ $bank->nama }} / {{ $cari_data->no_rek }}</td>
+            @endif
 
-            </tr>
-        </table>
-    </div>
+        </tr>
+    </table>
+
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
             @if ($beban == '4')
                 <tr>
                     <td style="margin: 2px 0px;text-align: center;padding-left:600px">
