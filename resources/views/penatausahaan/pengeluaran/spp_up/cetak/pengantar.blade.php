@@ -53,7 +53,7 @@
     </div>
     <div style="text-align: left">
         <h5 style="margin: 2px 0px" class="unborder">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-            {{ $pergub->no_pergub }} Tanggal {{$pergub->tgl_pergub}} Tentang {{$pergub->tentang}}, bersama ini kami mengajukan Surat Permintaan
+            {{ $pergub->no_pergub }} Tanggal {{tanggal($pergub->tgl_pergub)}} Tentang {{$pergub->tentang}}, bersama ini kami mengajukan Surat Permintaan
             Pembayaran UP sebagai berikut:</h5>
     </div>
     <div>
