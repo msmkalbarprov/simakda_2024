@@ -297,7 +297,7 @@ class SppUpController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
-            'nogub' => nogub($status_anggaran->jns_ang, $kd_skpd),
+            'pergub' => DB::table('ms_sk_up')->first(),
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa,
