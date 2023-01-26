@@ -12,23 +12,14 @@
         td {
             border-collapse: collapse;
         }
+
+        #rincian>thead>tr>th {
+            background-color: #CCCCCC
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h5>
-        @if ($beban == '4')
-            <h5 style="margin: 2px 0px">{{ $nama_skpd }}</h5>
-        @elseif($beban == '5')
-            <h5 style="margin: 2px 0px">{{ $nama_skpd }}</h5>
-        @elseif ($beban == '6')
-            <h5 style="margin: 2px 0px">SKPD {{ $nama_skpd }}</h5>
-        @endif
-        <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -51,94 +42,107 @@
         </tr>
     </table>
     <hr>
-    <div style="text-align: center">
-        @if ($beban == '4')
-            <h5 style="margin: 2px 0px">SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN</h5>
-            <h5 style="margin: 2px 0px">(SPP - LS {{ strtoupper($lcbeban) }})</h5>
-        @elseif ($beban == '5')
-            <h5 style="margin: 2px 0px">SURAT PERNYATAAN PENGAJUAN SPP - LS Pihak Ketiga Lainnya</h5>
-            <h5 style="margin: 2px 0px">(SPP - {{ strtoupper($lcbeban) }})</h5>
-        @else
-            <h5 style="margin: 2px 0px">(SPP - LS {{ strtoupper($lcbeban) }})</h5>
-        @endif
-        <h5 style="margin: 2px 0px">Nomor : {{ $no_spp }}</h5>
-        <h5 style="margin: 2px 0px;text-decoration:underline"><b>RINCIAN</b></h5>
-    </div>
-    <div style="text-align: left">
-        <h5 style="margin: 2px 0px">RENCANA PENGGUNA ANGGARAN</h5>
-        @if ($beban == '4')
-            <h5 style="margin: 2px 0px">BULAN : {{ bulan($cari_data->bulan) }}</u></h5>
-        @else
-            <h5></h5>
-        @endif
-    </div>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:18px;text-align:center">
+        <tr>
+            <td>
+                @if ($beban == '4')
+                    SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN <br>
+                    (SPP - LS {{ strtoupper($lcbeban) }}) <br>
+                @elseif ($beban == '5')
+                    SURAT PERNYATAAN PENGAJUAN SPP - LS Pihak Ketiga Lainnya <br>
+                    (SPP - {{ strtoupper($lcbeban) }}) <br>
+                @else
+                    (SPP - LS {{ strtoupper($lcbeban) }})
+                    <br>
+                @endif
+                <b>Nomor : {{ $no_spp }}</b> <br>
+                <b><u>RINCIAN</u></b>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif">
+        <tr>
+            <td>
+                RENCANA PENGGUNA ANGGARAN <br>
+                @if ($beban == '4')
+                    BULAN : {{ Str::upper(bulan($cari_data->bulan)) }}</u>
+                @else
+                    <h5></h5>
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <div>
-        <table class="table table-striped" style="width:100%" border="1">
-            <tr>
-                <th style="text-align: center">No Urut</th>
-                <th style="text-align: center">Kode Rekening</th>
-                <th style="text-align: center">Uraian</th>
-                <th style="text-align: center">Jumlah</th>
-            </tr>
+        <table style="width:100%" border="1" id="rincian">
+            <thead>
+                <tr>
+                    <th style="text-align: center">No Urut</th>
+                    <th style="text-align: center">Kode Rekening</th>
+                    <th style="text-align: center">Uraian</th>
+                    <th style="text-align: center">Jumlah</th>
+                </tr>
+            </thead>
             @foreach ($result as $data)
                 <tr>
                     @if ($beban == '4')
                         @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: center"><b>{{ $data->urut }}</b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->nama }}</b></td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @elseif ($data->urut == '5')
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @else
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @endif
                     @elseif ($beban == '5')
                         @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: center"><b>{{ $data->urut }}</b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->nama }}</b></td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @elseif ($data->urut == '7')
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 15) }}.{{ dotrek(STR::substr($data->kode, 16, 13)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @else
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 16) }}{{ dotrek(STR::substr($data->kode, 16, 12)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @endif
                     @elseif ($beban == '6')
                         @if ($data->urut == '1')
-                            <td style="text-align: center">{{ $data->urut }}</td>
-                            <td>{{ $data->kode }}</td>
-                            <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: center"><b>{{ $data->urut }}</b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->nama }}</b></td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @elseif ($data->urut == '5')
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @else
                             <td></td>
                             <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
                             </td>
                             <td>{{ $data->nama }}</td>
-                            <td style="text-align: right">Rp.{{ rupiah($data->nilai) }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         @endif
                     @endif
                 </tr>
@@ -146,17 +150,21 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td style="text-align: center">JUMLAH</td>
-                <td style="text-align: right">Rp.{{ rupiah($total) }}</td>
+                <td style="text-align:right"><b>JUMLAH</b></td>
+                <td style="text-align: right">{{ rupiah($total) }}</td>
             </tr>
         </table>
     </div>
-    <div>
-        <h5>Terbilang : {{ ucwords(terbilang($total)) }}</h5>
-    </div>
+
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
+        <tr>
+            <td>Terbilang : {{ ucwords(terbilang($total)) }}</td>
+        </tr>
+    </table>
+
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;font-family:'Times New Roman', Times, serif">
             @if ($beban == '4')
                 <tr>
                     <td style="margin: 2px 0px;text-align: center;padding-left:500px">
