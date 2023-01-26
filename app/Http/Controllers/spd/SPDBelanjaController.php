@@ -898,7 +898,12 @@ class SPDBelanjaController extends Controller
             'jenis' => $jenis->jns_beban == 5 ? 'Belanja' : 'Pembiayaan',
         ));
         if ($jenispr == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setOption('margin-top',  10)
+                ->setOption('margin-left',  10)
+                ->setOption('margin-right',  10)
+                ->setOption('header-font-name',  'Arial')
+                ->setOption('header-font-size',  6);
             return $pdf->stream('laporan.pdf');
         } else if ($request->jenis == 'excel') {
             header("Cache-Control: no-cache, no-store, must-revalidate");

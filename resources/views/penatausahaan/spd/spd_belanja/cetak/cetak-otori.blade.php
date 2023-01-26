@@ -14,42 +14,50 @@
 </head>
 
 <body>
-    <div style="font-size: 12px; text-align: center;">
-        PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
-        PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
-        NOMOR {{ $nospd }}<br />
-        TENTANG<br />
-        SURAT PENYEDIAAN DANA ANGGARAN BELANJA DAERAH<br />
-        TAHUN ANGGARAN {{ tahun_anggaran() }}<br /><br />
-        PPKD SELAKU BUD<br />
-    </div>
-    <table style="margin-top: 16px; padding-left: 40px;">
+    <table style="width: 100%;text-align:center;font-size:16px;font-family:Arial">
+        <tr>
+            <td>PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
+                PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
+                NOMOR {{ $nospd }}<br />
+                TENTANG<br />
+                SURAT PENYEDIAAN DANA ANGGARAN BELANJA DAERAH<br />
+                TAHUN ANGGARAN {{ tahun_anggaran() }}<br /><br />
+                PPKD SELAKU BUD<br /></td>
+        </tr>
+    </table>
+    <table
+        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:13px;letter-spacing:normal;font-family:'Open Sans', Helvetica, Arial, sans-serif">
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 13%;"><b>Menimbang</b></td>
                 <td style="vertical-align: top;">:</td>
-                <td style="vertical-align: top; text-align: justify;">Bahwa untuk melaksanakan Anggaran {{ $jenis }} sub kegiatan Tahun Anggaran {{ tahun_anggaran() }} berdasarkan DPA-SKPD dan anggaran kas yang telah ditetapkan, perlu disediakan pendanaan dengan menerbitkan Surat Penyediaan Dana (SPD);</td>
+                <td style="vertical-align: top; text-align: justify;font-weight:300">Bahwa untuk
+                    melaksanakan
+                    Anggaran
+                    {{ $jenis }} sub kegiatan Tahun Anggaran {{ tahun_anggaran() }} berdasarkan DPA-SKPD dan
+                    anggaran kas yang telah ditetapkan, perlu disediakan pendanaan dengan menerbitkan Surat Penyediaan
+                    Dana (SPD);</td>
             </tr>
             <tr>
                 <td style="vertical-align: top;"><b>Mengingat</b></td>
                 <td style="vertical-align: top;">:</td>
-                <td style="vertical-align: top;">
+                <td style="vertical-align: top;text-align:justify">
                     <ol style="margin: 0px;">
-                    @for ($tes = 1; $tes <= $total_ingat; $tes++)
-                        <li>{{ ${'konfig'}->{'ingat'.$tes} }}</li>
+                        @for ($tes = 1; $tes <= $total_ingat; $tes++)
+                            <li>{{ ${'konfig'}->{'ingat' . $tes} }}</li>
                         @endfor
-                        <li>{{ $konfig->ingat_akhir }} {{ $no_dpa->no_dpa }}  Tahun Anggaran {{ tahun_anggaran() }}</li>
+                        <li>{{ $konfig->ingat_akhir }} {{ $no_dpa->no_dpa }} Tahun Anggaran {{ tahun_anggaran() }}</li>
                     </ol>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
+    <div>
         <div style="text-align: center;"><strong>M E M U T U S K A N :</strong></div>
         <div>
             <p style="text-indent: 24px;">{{ $konfig->memutuskan }}</p>
         </div>
-        <table id="rincian" style="width: 100%;">
+        <table id="rincian" style="font-family:Arial, Helvetica, sans-serif; font-size: 16px;letter-spacing:0.5px">
             <tbody>
                 <tr>
                     <td style="width: 3%;">1.</td>
@@ -91,7 +99,8 @@
                     <td>5.</td>
                     <td>Untuk Kebutuhan</td>
                     <td>:</td>
-                    <td>{{ $tambahanbln }} Bulan {{ getMonths()[$data->bulan_awal] }} s/d {{ getMonths()[$data->bulan_akhir] }}</td>
+                    <td>{{ $tambahanbln }} Bulan {{ getMonths()[$data->bulan_awal] }} s/d
+                        {{ getMonths()[$data->bulan_akhir] }}</td>
                 </tr>
                 <tr>
                     <td>6.</td>
@@ -145,7 +154,8 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><i>({{ terbilang($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.'    ) }})</i></td>
+                    <td><i>({{ terbilang($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.') }})</i>
+                    </td>
                 </tr>
                 <tr>
                     <td>7.</td>
@@ -156,7 +166,8 @@
             </tbody>
         </table>
         <div>
-            <div style="float: right; text-align: center; padding-right: 128px; padding-top: 32px;">
+            <div
+                style="float: right; text-align: center; padding-right: 128px; padding-top: 32px;font-family:Arial, Helvetica, sans-serif">
                 Ditetapkan di Pontianak<br />
                 Pada tanggal {{ tanggal($data->tgl_spd) }}<br />
                 PPKD SELAKU BUD,<br />
@@ -167,7 +178,7 @@
             </div>
             <div style="clear: both;"></div>
         </div>
-        <div>
+        <div style="font-family:Arial, Helvetica, sans-serif">
             Tembusan disampaikan kepada:<br />
             1. Inspektur *)<br />
             2. Arsip<br />
