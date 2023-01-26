@@ -29,13 +29,6 @@
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>{{ $data_skpd->nm_skpd }}</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>TAHUN ANGGARAN {{ $tahun_anggaran }}</strong></h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -79,6 +72,9 @@
                 </tr>
                 <tr>
                     <td class="center"><strong><u>RINGKASAN</u></strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
                 </tr>
             </tbody>
         </table>
