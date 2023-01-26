@@ -54,66 +54,66 @@
     </div>
 
     <div style="text-align: left">
-        <table class="table" style="width: 100%;border:1px black solid">
+        <table class="table" style="width: 100%;border:1px black solid;font-family: Open Sans; font-size:12px">
             {{-- OPD --}}
             <tr>
-                <td>1. OPD</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $nama_skpd }}</td>
+                <td width='30%'>1. OPD</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $nama_skpd }}</td>
             </tr>
             {{-- Unit Kerja --}}
             <tr>
-                <td>2. Unit Kerja</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $nama_skpd }}</td>
+                <td width='30%'>2. Unit Kerja</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $nama_skpd }}</td>
             </tr>
             {{-- Alamat --}}
             <tr>
-                <td>3. Alamat</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $alamat_skpd }}</td>
+                <td width='30%'>3. Alamat</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $alamat_skpd }}</td>
             </tr>
             {{-- Nomor dan Tanggal DPA/DPPA/DPPAL-OPD --}}
             <tr>
-                <td>4. Nomor dan Tanggal DPA/DPPA/DPPAL-OPD</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $dpa->no_dpa }} / {{ $dpa->tgl_dpa }}</td>
+                <td width='30%'>4. Nomor dan Tanggal DPA/DPPA/DPPAL-OPD</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $dpa->no_dpa }} / {{ $dpa->tgl_dpa }}</td>
             </tr>
             {{-- Tahun Anggaran --}}
             <tr>
-                <td>5. Tahun Anggaran</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $tahun_anggaran }}</td>
+                <td width='30%'>5. Tahun Anggaran</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $tahun_anggaran }}</td>
             </tr>
             {{-- Bulan --}}
             <tr>
-                <td>6. Bulan</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ bulan($data_spp->bulan) }} {{ $tahun_anggaran }}</td>
+                <td width='30%'>6. Bulan</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ bulan($data_spp->bulan) }} {{ $tahun_anggaran }}</td>
             </tr>
             {{-- Urusan Pemerintahan --}}
             <tr>
-                <td>7. Urusan Pemerintahan</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $data_spp->kd_bidang_urusan }} {{ $data_spp->nm_bidang_urusan }}</td>
+                <td width='30%'>7. Urusan Pemerintahan</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $data_spp->kd_bidang_urusan }} {{ $data_spp->nm_bidang_urusan }}</td>
             </tr>
             {{-- Nama Program --}}
             <tr>
-                <td>8. Nama Program</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $nama_program }}</td>
+                <td width='30%'>8. Nama Program</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $nama_program }}</td>
             </tr>
             {{-- Nama Kegiatan --}}
             <tr>
-                <td>9. Nama Kegiatan</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $nama_kegiatan }}</td>
+                <td width='30%'>9. Nama Kegiatan</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $nama_kegiatan }}</td>
             </tr>
             {{-- Nama Sub Kegiatan --}}
             <tr>
-                <td>10. Nama Sub Kegiatan</td>
-                <td style="padding-left:200px">:</td>
-                <td>{{ $data_spp->nm_sub_kegiatan }}</td>
+                <td width='30%'>10. Nama Sub Kegiatan</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $data_spp->nm_sub_kegiatan }}</td>
             </tr>
         </table>
     </div>
@@ -133,12 +133,12 @@
     </div>
 
     <div style="text-align: left">
-        <table class="table" style="width: 100%;border:1px black solid">
+        <table class="table" style="width: 100%;border:1px black solid;font-family: Open Sans; font-size:12px">
             {{-- Jumlah Pembayaran Yang Diminta --}}
             <tr>
-                <td style="width:400px">a. Jumlah Pembayaran Yang Diminta</td>
-                <td>:</td>
-                <td>Rp.{{ rupiah($data_spp->nilai) }}</td>
+                <td width='30%'>a. Jumlah Pembayaran Yang Diminta</td>
+                <td width='2%'>:</td>
+                <td width='68%'>Rp.{{ rupiah($data_spp->nilai) }}</td>
             </tr>
             {{-- Terbilang --}}
             <tr>
@@ -148,59 +148,59 @@
             </tr>
             {{-- Untuk Keperluan --}}
             <tr>
-                <td style="width:400px">b. Untuk Keperluan</td>
-                <td>:</td>
-                <td>{{ $data_spp->keperluan }}</td>
+                <td width='30%'>b. Untuk Keperluan</td>
+                <td width='2%'>:</td>
+                <td width='68%'>{{ $data_spp->keperluan }}</td>
             </tr>
             {{-- Nama Bendahara --}}
             @if ($beban == '6' && $jenis == '6')
                 <tr>
-                    <td style="width: 400px">c. Nama Pihak Ketiga</td>
-                    <td>:</td>
-                    <td>{{ $data_spp->nmrekan }}</td>
+                    <td width='30%'>c. Nama Pihak Ketiga</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $data_spp->nmrekan }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">d. Dasar Bendahara Pengeluaran</td>
-                    <td>:</td>
-                    <td>{{ $no_spd }}</td>
+                    <td width='30%'>d. Dasar Bendahara Pengeluaran</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $no_spd }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">e. Alamat</td>
-                    <td>:</td>
-                    <td>{{ $data_spp->alamat }}</td>
+                    <td width='30%'>e. Alamat</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $data_spp->alamat }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">f. Nama dan Nomor Rekening</td>
-                    <td>:</td>
-                    <td>{{ $data_spp->nama_bank_rek }} / {{ $data_spp->no_rek_rek }}</td>
+                    <td width='30%'>f. Nama dan Nomor Rekening</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $data_spp->nama_bank_rek }} / {{ $data_spp->no_rek_rek }}</td>
                 </tr>
             @else
                 <tr>
-                    <td style="width: 400px">c. Nama Bendahara</td>
-                    <td>:</td>
-                    <td>{{ $cari_bendahara->nama }}</td>
+                    <td width='30%'>c. Nama Bendahara</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $cari_bendahara->nama }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">d. Dasar Bendahara Pengeluaran</td>
-                    <td>:</td>
-                    <td>{{ $no_spd }}</td>
+                    <td width='30%'>d. Dasar Bendahara Pengeluaran</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $no_spd }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">e. Alamat</td>
-                    <td>:</td>
-                    <td>{{ $data_spp->alamat }}</td>
+                    <td width='30%'>e. Alamat</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $data_spp->alamat }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 400px">f. Nama dan Nomor Rekening</td>
-                    <td>:</td>
-                    <td>{{ $nama_bank->nama }} / {{ $data_spp->no_rek }}</td>
+                    <td width='30%'>f. Nama dan Nomor Rekening</td>
+                    <td width='2%'>:</td>
+                    <td width='68%'>{{ $nama_bank->nama }} / {{ $data_spp->no_rek }}</td>
                 </tr>
             @endif
         </table>
     </div>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;font-family: Open Sans; font-size:12px">
             @if ($beban == '4' || $sub_kegiatan == '5.02.00.0.06.62')
                 <tr>
                     <td style="margin: 2px 0px;text-align: center;padding-left:500px">
