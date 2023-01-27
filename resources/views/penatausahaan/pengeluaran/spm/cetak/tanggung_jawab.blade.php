@@ -60,7 +60,7 @@
     <div>
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tr>
-                <td>Yang bertanda tangan di bawah ini:</td>
+                <td>Yang bertanda tangan di bawah ini :</td>
             </tr>
         </table>
 
