@@ -61,7 +61,7 @@
         <tr>
             <td>Berdasarkan Keputusan Gubernur Nomor {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }}
                 Tentang {{ $pergub->tentang }} untuk SKPD {{ $data_beban->nm_skpd }} sejumlah
-                Rp.{{ rupiah($data_beban->nilai) }}</td>
+                Rp{{ rupiah($data_beban->nilai) }}</td>
         </tr>
         <tr>
             <td>Terbilang:
