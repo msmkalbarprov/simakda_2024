@@ -109,31 +109,31 @@
             <tr>
                 <td style="width: 2%">1.</td>
                 <td style="width: 35%">Urusan Pemerintahan</td>
-                <td>:</td>
+                <td>: </td>
                 <td> {{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
             </tr>
             <tr>
                 <td>2.</td>
                 <td>SKPD</td>
-                <td>:</td>
+                <td>: </td>
                 <td> {{ $data_beban->kd_skpd }} - {{ $data_beban->nm_skpd }}</td>
             </tr>
             <tr>
                 <td>3.</td>
                 <td>Tahun Anggaran</td>
-                <td>:</td>
+                <td>: </td>
                 <td> {{ $tahun_anggaran }}</td>
             </tr>
             <tr>
                 <td>4.</td>
                 <td>Dasar Pengeluaran SPD Nomor</td>
-                <td>:</td>
+                <td>: </td>
                 <td> {{ $data_beban->no_spd }}</td>
             </tr>
             <tr>
                 <td>5.</td>
                 <td>Jumlah Sisa Dana SPD</td>
-                <td>:</td>
+                <td>: </td>
                 <td> Rp. {{ rupiah($data_beban->spd - $data_beban->spp) }}</td>
             </tr>
             <tr>
@@ -143,7 +143,7 @@
             <tr>
                 <td>6.</td>
                 <td>Jumlah dana yang diminta untuk dicairkan</td>
-                <td>:</td>
+                <td>: </td>
                 <td> Rp. {{ rupiah($data_beban->nilai) }}</td>
             </tr>
             <tr>
@@ -155,7 +155,7 @@
                     @if ($beban == '6' && $data_beban->jns_beban == '6')
                         <td>7.</td>
                         <td>Nama Pihak Ketiga</td>
-                        <td>:</td>
+                        <td>: </td>
                         <td> {{ $data_beban->nmrekan }}</td>
                     @else
                         <td>7.</td>
@@ -166,7 +166,7 @@
                 @elseif ($beban == '5')
                     <td>7.</td>
                     <td>Nama Pihak Ketiga</td>
-                    <td>:</td>
+                    <td>: </td>
                     <td> {{ $data_beban->nmrekan }}</td>
                 @endif
 
@@ -182,7 +182,7 @@
                 @elseif ($beban == '5')
                     <td>Nama dan Nomor Rekening dan NPWP</td>
                 @endif
-                <td>:</td>
+                <td>: </td>
                 @if ($beban == '1')
                     <td> {{ $data_beban->nama_bank }} - {{ $data_beban->no_rek }}</td>
                 @elseif (in_array($beban, ['2', '3', '4', '6']))
