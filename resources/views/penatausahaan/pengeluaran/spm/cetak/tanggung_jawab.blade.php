@@ -10,17 +10,14 @@
         h5 {
             font-weight: normal
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>{{ $nama_skpd->nm_skpd }}</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>TAHUN ANGGARAN {{ $tahun_anggaran }}</strong></h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -28,21 +25,21 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $nama_skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
             <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
@@ -51,24 +48,24 @@
     <hr>
     <br>
     <div style="text-align: center">
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center"
+            class="rincian">
             <tr>
-                <td><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></td>
+                <td style="font-size:16px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></td>
             </tr>
         </table>
-        {{-- <h5 style="margin: 2px 0px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></h5> --}}
     </div>
     <br>
     <br>
     <br>
     <div>
-        <table style="100%">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tr>
                 <td>Yang bertanda tangan di bawah ini:</td>
             </tr>
         </table>
-        {{-- <h5 style="margin: 2px 0px">Yang bertanda tangan di bawah ini:</h5> --}}
-        <table style="width: 100%;font-family: Open Sans">
+
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tbody>
                 <tr>
                     <td>Nama</td>
@@ -88,8 +85,9 @@
             </tbody>
         </table>
     </div>
+    <br>
     <div>
-        <table style="width: 100%;font-family: Open Sans">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tbody>
                 <tr>
                     <td colspan="2">Menyatakan dengan sesungguhnya bahwa:</td>
@@ -116,6 +114,9 @@
                     </td>
                 </tr>
                 <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+                <tr>
                     <td colspan="2">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen
                         yang
                         dipersyaratkan tersebut terdapat kekeliruan, kekurangan dan tidak sah sesuai ketentuan yang
@@ -124,27 +125,25 @@
                 </tr>
             </tbody>
         </table>
-        {{-- <h5 style="margin: 2px 0px">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen yang
-            dipersyaratkan tersebut terdapat kekeliruan, kekurangan dan tidak sah sesuai ketentuan yang berlaku akan
-            menjadi tanggungjawab kami sepenuhnya selaku {{ $pa_kpa->jabatan }}</h5> --}}
     </div>
-
-        <table class="table" style="width: 100%;font-family: Open Sans;">
-            <tr>
-                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
-                    {{ $pa_kpa->jabatan }}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center;padding-left:600px"><strong><u>{{ $pa_kpa->nama }}</u></strong></td>
-            </tr>
-            <tr>
-                <td style="text-align: center;padding-left:600px">{{ $pa_kpa->pangkat }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;padding-left:600px">NIP. {{ $pa_kpa->nip }}</td>
-            </tr>
-        </table>
+    <br><br>
+    <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif"
+        class="rincian">
+        <tr>
+            <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                {{ $pa_kpa->jabatan }}
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: center;padding-left:600px"><strong><u>{{ $pa_kpa->nama }}</u></strong></td>
+        </tr>
+        <tr>
+            <td style="text-align: center;padding-left:600px">{{ $pa_kpa->pangkat }}</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;padding-left:600px">NIP. {{ $pa_kpa->nip }}</td>
+        </tr>
+    </table>
 
 </body>
 
