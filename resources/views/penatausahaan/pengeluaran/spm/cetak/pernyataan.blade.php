@@ -107,9 +107,9 @@
                 <td style="height: 10px"></td>
             </tr>
             <tr>
-                <td colspan="2">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
+                <td colspan="2">Demikian Surat Pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
                     SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
-                    SKPD kami</td>
+                    SKPD kami.</td>
             </tr>
         </table>
     </div>
