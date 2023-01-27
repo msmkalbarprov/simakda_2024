@@ -26,7 +26,7 @@
         </tr>
     </table>
     <table
-        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:14px;letter-spacing:normal;font-family:'Open Sans', Helvetica,Arial,sans-serif">
+        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:12px;letter-spacing:normal;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 13%;"><b>Menimbang</b></td>
@@ -53,12 +53,19 @@
         </tbody>
     </table>
     <div>
+        <br>
         <div style="text-align: center;"><strong>M E M U T U S K A N :</strong></div>
-        <div>
+        <br>
+        {{-- <div>
             <p style="text-indent: 24px;">{{ $konfig->memutuskan }}</p>
-        </div>
+        </div> --}}
+        <table style="width: 100%;;font-size:12px;font-family:'Open Sans', Helvetica,Arial,sans-serif">
+            <tr>
+                <td style="text-align: justify;text-indent:24px">{{ $konfig->memutuskan }}</td>
+            </tr>
+        </table>
         <table id="rincian"
-            style="font-family:'Open Sans', Helvetica,Arial,sans-serif; font-size: 14px;letter-spacing:0.5px">
+            style="font-family:'Open Sans', Helvetica,Arial,sans-serif; font-size: 12px;letter-spacing:0.5px">
             <tbody>
                 <tr>
                     <td style="width: 3%;">1.</td>
@@ -168,7 +175,7 @@
         </table>
         <div>
             <div
-                style="float: right; text-align: center; padding-right: 128px; padding-top: 32px;font-family:Arial, Helvetica, sans-serif">
+                style="float: right; text-align: center; padding-right: 128px; padding-top: 32px;font-family:Arial, Helvetica, sans-serif;font-size:12px">
                 Ditetapkan di Pontianak<br />
                 Pada tanggal {{ tanggal($data->tgl_spd) }}<br />
                 PPKD SELAKU BUD,<br />
@@ -179,7 +186,7 @@
             </div>
             <div style="clear: both;"></div>
         </div>
-        <div style="font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:14px">
+        <div style="font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:12px">
             Tembusan disampaikan kepada:<br />
             1. Inspektur *)<br />
             2. Arsip<br />
