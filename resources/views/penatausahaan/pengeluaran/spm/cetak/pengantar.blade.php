@@ -110,31 +110,31 @@
                 <td style="width: 2%">1.</td>
                 <td style="width: 35%">Urusan Pemerintahan</td>
                 <td>:</td>
-                <td>{{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
+                <td> {{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
             </tr>
             <tr>
                 <td>2.</td>
                 <td>SKPD</td>
                 <td>:</td>
-                <td>{{ $data_beban->kd_skpd }} - {{ $data_beban->nm_skpd }}</td>
+                <td> {{ $data_beban->kd_skpd }} - {{ $data_beban->nm_skpd }}</td>
             </tr>
             <tr>
                 <td>3.</td>
                 <td>Tahun Anggaran</td>
                 <td>:</td>
-                <td>{{ $tahun_anggaran }}</td>
+                <td> {{ $tahun_anggaran }}</td>
             </tr>
             <tr>
                 <td>4.</td>
                 <td>Dasar Pengeluaran SPD Nomor</td>
                 <td>:</td>
-                <td>{{ $data_beban->no_spd }}</td>
+                <td> {{ $data_beban->no_spd }}</td>
             </tr>
             <tr>
                 <td>5.</td>
                 <td>Jumlah Sisa Dana SPD</td>
                 <td>:</td>
-                <td>Rp. {{ rupiah($data_beban->spd - $data_beban->spp) }}</td>
+                <td> Rp. {{ rupiah($data_beban->spd - $data_beban->spp) }}</td>
             </tr>
             <tr>
                 <td colspan="3"></td>
@@ -144,7 +144,7 @@
                 <td>6.</td>
                 <td>Jumlah dana yang diminta untuk dicairkan</td>
                 <td>:</td>
-                <td>Rp. {{ rupiah($data_beban->nilai) }}</td>
+                <td> Rp. {{ rupiah($data_beban->nilai) }}</td>
             </tr>
             <tr>
                 <td colspan="3"></td>
@@ -156,18 +156,18 @@
                         <td>7.</td>
                         <td>Nama Pihak Ketiga</td>
                         <td>:</td>
-                        <td>{{ $data_beban->nmrekan }}</td>
+                        <td> {{ $data_beban->nmrekan }}</td>
                     @else
                         <td>7.</td>
                         <td>Nama Bendahara Pengeluaran</td>
                         <td>:</td>
-                        <td>{{ $bendahara->nama }}</td>
+                        <td> {{ $bendahara->nama }}</td>
                     @endif
                 @elseif ($beban == '5')
                     <td>7.</td>
                     <td>Nama Pihak Ketiga</td>
                     <td>:</td>
-                    <td>{{ $data_beban->nmrekan }}</td>
+                    <td> {{ $data_beban->nmrekan }}</td>
                 @endif
 
             </tr>
@@ -184,16 +184,16 @@
                 @endif
                 <td>:</td>
                 @if ($beban == '1')
-                    <td>{{ $data_beban->nama_bank }} - {{ $data_beban->no_rek }}</td>
+                    <td> {{ $data_beban->nama_bank }} - {{ $data_beban->no_rek }}</td>
                 @elseif (in_array($beban, ['2', '3', '4', '6']))
                     @if ($beban == '6' && $data_beban->jns_beban == '6')
-                        <td>{{ $data_beban->nama_bank_rek }} / {{ $data_beban->no_rek_rek }} /
+                        <td> {{ $data_beban->nama_bank_rek }} / {{ $data_beban->no_rek_rek }} /
                             {{ $data_beban->npwp_rek }}</td>
                     @else
-                        <td>{{ cari_bank_spm($kd_skpd) }} - {{ $data_beban->no_rek }}</td>
+                        <td> {{ cari_bank_spm($kd_skpd) }} - {{ $data_beban->no_rek }}</td>
                     @endif
                 @elseif ($beban == '5')
-                    <td>{{ $data_beban->nama_bank_rek }} / {{ $data_beban->no_rek_rek }} /
+                    <td> {{ $data_beban->nama_bank_rek }} / {{ $data_beban->no_rek_rek }} /
                         {{ $data_beban->npwp_rek }}</td>
                 @endif
             </tr>
@@ -202,7 +202,7 @@
 
     <br>
     <br>
-
+    <br>
     <table class="table" style="width: 100%;font-size: 13px;font-family:'Open Sans', Helvetica,Arial,sans-serif;"
         class="rincian1">
         @if (in_array($beban, ['1', '2', '3', '4', '5', '6']))
