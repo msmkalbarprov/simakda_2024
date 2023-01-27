@@ -12,17 +12,14 @@
         td {
             border-collapse: collapse;
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h5>
-        <h5 style="margin: 2px 0px">{{ $skpd->nm_skpd }}</h5>
-        <h5 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -30,43 +27,58 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
-    <div style="text-align: center">
-        <h5 style="margin: 2px 0px">LAMPIRAN SURAT PERINTAH MEMBAYARAN</h5>
-        <h5 style="margin: 2px 0px"><b>(LAMPIRAN SPM)</b></h5>
-        <h5 style="margin: 2px 0px"><b>{{ $no_spm }}</b></h5>
-    </div>
+    <br>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center" class="rincian">
+        <tr>
+            <td><b>LAMPIRAN SURAT PERINTAH MEMBAYARAN</b></td>
+        </tr>
+        <tr>
+            <td><b>(LAMPIRAN SPM)</b></td>
+        </tr>
+        <tr>
+            <td><b>{{ $no_spm }}</b></td>
+        </tr>
+    </table>
+    <br>
     <div>
-        <table class="table table-striped" style="width:100%" border="1">
+        <table class="table table-striped rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" border="1">
             <tr>
                 <th style="text-align: center">No Urut</th>
                 <th style="text-align: center">Kode Rekening</th>
                 <th style="text-align: center">Uraian</th>
                 <th style="text-align: center">Jumlah</th>
             </tr>
+            @php
+                $total = 0;
+            @endphp
             @foreach ($data_beban as $data)
                 <tr>
                     @if ($data->urut == '1')
+                        @php
+                            $total += $data->nilai;
+                        @endphp
                         <td style="text-align: center"><b>{{ $loop->iteration }}</b></td>
                         <td><b>{{ $data->kode }}</b></td>
                         <td><b>{{ $data->nama }}</b></td>
@@ -92,12 +104,15 @@
             </tr>
         </table>
     </div>
-    <div>
-        <h5 style="margin: 2px 0px">Terbilang : <i>{{ ucwords(terbilang($total)) }}</i></h5>
-    </div>
+    <br>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
+        <tr>
+            <td>Terbilang : <i>{{ ucwords(terbilang($total)) }}</i></td>
+        </tr>
+    </table>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;padding-left:500px">
                     {{ $daerah->daerah }},
