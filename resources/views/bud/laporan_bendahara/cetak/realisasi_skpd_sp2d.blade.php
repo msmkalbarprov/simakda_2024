@@ -80,7 +80,7 @@
         cellspacing="0" cellpadding="0">
         <tr>
             <td style="text-align: center;font-size:16px">REALISASI SURAT PERINTAH PENCAIRAN DANA (SP2D)
-                PERDINAS/ISNTANSI/UNIT
+                PERDINAS/INSTANSI/UNIT
                 KERJA</td>
         </tr>
     </table>
