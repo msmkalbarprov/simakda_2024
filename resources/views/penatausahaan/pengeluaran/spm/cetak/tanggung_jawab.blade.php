@@ -92,7 +92,7 @@
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tbody>
                 <tr>
-                    <td colspan="2">Menyatakan dengan sesungguhnya bahwa:</td>
+                    <td colspan="2">Menyatakan dengan sesungguhnya bahwa :</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="height: 10px"></td>
