@@ -82,7 +82,7 @@
             <td style="height: 20px"></td>
         </tr>
         <tr>
-            <td style="text-indent: 24px;text-align:justify">
+            <td style="text-align:justify">
                 Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
                 {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun {{ $tahun_anggaran }},
                 bersama ini kami mengajukan Surat Perintah Membayar @if ($beban == '1')
@@ -107,7 +107,7 @@
         class="rincian1">
         <tbody style="text-align:justify">
             <tr>
-                <td style="width: 5%">1.</td>
+                <td style="width: 2%">1.</td>
                 <td style="width: 30%">Urusan Pemerintahan</td>
                 <td>:</td>
                 <td>{{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
