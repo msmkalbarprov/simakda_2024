@@ -10,17 +10,14 @@
         h5 {
             font-weight: normal
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h5 style="margin: 2px 0px"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>{{ $nama_skpd->nm_skpd }}</strong></h5>
-        <h5 style="margin: 2px 0px"><strong>TAHUN ANGGARAN {{ $tahun_anggaran }}</strong></h5>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -28,43 +25,43 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $nama_skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
+    <br>
     <div style="text-align: center">
-        <table style="width:100%">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;">
             <tr>
-                <td><strong><u>SURAT PERNYATAAN
+                <td style="font-size: 16px"><strong><u>SURAT PERNYATAAN
                             {{ Str::upper(nama_beban($beban, $data_beban->jenis_beban)) }}</u></strong></td>
             </tr>
             <tr>
-                <td><strong>Nomor: {{ $no_spm }}</strong></td>
+                <td style="font-size: 16px"><strong>Nomor: {{ $no_spm }}</strong></td>
             </tr>
         </table>
-        {{-- <h5 style="margin: 2px 0px"><strong><u>SURAT PERNYATAAN
-                    {{ Str::upper(nama_beban($beban, $data_beban->jenis_beban)) }}</u></strong></h5> --}}
-        {{-- <h5 style="margin: 2px 0px"><strong>Nomor: {{ $no_spm }}</strong></h5> --}}
     </div>
+    <br>
     <div>
-        <table style="width: 100%;text-align:justify">
+        <table class="rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:justify">
             <tr>
                 <td>Sehubungan dengan Surat Perintah Membayar
                     {{ nama_spm($beban, $data_beban->jenis_beban) }}
@@ -72,34 +69,32 @@
                     {{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})</td>
             </tr>
             <tr>
-                <td>Untuk Keperluan OPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
+                <td>Untuk Keperluan SKPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
                     {{ $tahun_anggaran }}</td>
+            </tr>
+            <tr>
+                <td style="height: 10px"></td>
             </tr>
             <tr>
                 <td>Dengan ini menyatakan sebenarnya bahwa :</td>
             </tr>
+            <tr>
+                <td style="height: 10px"></td>
+            </tr>
         </table>
-        {{-- <h5 style="margin: 2px 0px;text-align:justify">Sehubungan dengan Surat Perintah Membayar
-            {{ nama_spm($beban, $data_beban->jenis_beban) }}
-            Nomor {{ $no_spm }} Tanggal {{ tanggal($data_beban->tgl_spm) }} yang kami ajukan sebesar
-            {{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})
-        </h5> --}}
-        {{-- <h5 style="margin: 2px 0px;text-align:justify">Untuk Keperluan OPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
-            {{ $tahun_anggaran }}</h5> --}}
-        {{-- <h5 style="margin: 2px 0px;text-align:justify">Dengan ini menyatakan sebenarnya bahwa :</h5> --}}
     </div>
     <div>
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
             <tr>
-                <td style="padding-left:10px;width:5%">1.</td>
+                <td style="padding-left:10px;width:2%;vertical-align:top">1.</td>
                 <td style="text-align:justify">
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut di atas akan dipergunakan untuk keperluan guna membiayai kegiatan yang akan kami
-                    laksanan sesuai DPA-OPD
+                    laksanan sesuai DPA-SKPD
                 </td>
             </tr>
             <tr>
-                <td style="padding-left:10px">2.</td>
+                <td style="padding-left:10px;vertical-align:top">2.</td>
                 <td style="text-align: justify">
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut tidak akan
@@ -109,19 +104,18 @@
                 </td>
             </tr>
             <tr>
+                <td style="height: 10px"></td>
+            </tr>
+            <tr>
                 <td colspan="2">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
                     SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
-                    OPD kami</td>
+                    SKPD kami</td>
             </tr>
         </table>
-        {{-- <h5 style="margin: 2px 0px">Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
-            SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
-            OPD kami
-        </h5> --}}
     </div>
 
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;padding-left:500px">
                     {{ $daerah->daerah }},
