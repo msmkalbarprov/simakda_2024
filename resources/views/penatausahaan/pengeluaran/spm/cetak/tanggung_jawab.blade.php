@@ -57,7 +57,6 @@
     </div>
     <br>
     <br>
-    <br>
     <div>
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tr>
@@ -85,7 +84,7 @@
             </tbody>
         </table>
     </div>
-    <br>
+
     <div>
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tbody>
@@ -94,7 +93,7 @@
                 </tr>
                 {{-- <h5 style="margin: 2px 0px">Menyatakan dengan sesungguhnya bahwa:</h5> --}}
                 <tr>
-                    <td style="padding-left:10px;width: 5%">1.</td>
+                    <td style="padding-left:10px;width: 5%;vertical-align:top">1.</td>
                     <td style="text-align:justify">
                         <p style="margin: 2px 0px">SPM {{ cari_jenis($beban) }} Nomor: {{ $no_spm }} tanggal
                             {{ tanggal($tgl_spm->tgl_spm) }} yang kami ajukan untuk diterbitkan Surat Perintah Pencairan
@@ -103,7 +102,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-left:10px">2.</td>
+                    <td style="padding-left:10px;vertical-align:top">2.</td>
                     <td style="text-align: justify">
                         <p style="margin: 2px 0px">Bahwa semua dokumen persyaratan dan kelengkapan untuk penerbitan SPM
                             tersebut disimpan sesuai dengan ketentuan yang berlaku pada
@@ -114,7 +113,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="height: 20px"></td>
+                    <td style="height: 10px"></td>
                 </tr>
                 <tr>
                     <td colspan="2">Demikian surat pernyataan ini dibuat dengan sebenar-benarnya, apabila dokumen
