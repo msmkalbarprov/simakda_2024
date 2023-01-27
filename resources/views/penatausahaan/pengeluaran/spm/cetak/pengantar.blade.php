@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+    {{-- <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -48,7 +48,7 @@
         <tr>
             <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
-    </table>
+    </table> --}}
     <hr>
 
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
@@ -82,7 +82,7 @@
             <td style="height: 20px"></td>
         </tr>
         <tr>
-            <td style="text-align:justify">
+            <td>
                 Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
                 {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun {{ $tahun_anggaran }},
                 bersama ini kami mengajukan Surat Perintah Membayar @if ($beban == '1')
@@ -105,16 +105,16 @@
 
     <table style="width: 100%;font-size: 13px;font-family:'Open Sans', Helvetica,Arial,sans-serif" id="rincian"
         class="rincian1">
-        <tbody style="text-align:justify">
+        <tbody>
             <tr>
                 <td style="width: 2%">1.</td>
-                <td style="width: 30%">Urusan Pemerintahan</td>
+                <td style="width: 35%">Urusan Pemerintahan</td>
                 <td>:</td>
                 <td>{{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
             </tr>
             <tr>
                 <td>2.</td>
-                <td>OPD</td>
+                <td>SKPD</td>
                 <td>:</td>
                 <td>{{ $data_beban->kd_skpd }} - {{ $data_beban->nm_skpd }}</td>
             </tr>
