@@ -366,6 +366,11 @@ class SppUpController extends Controller
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
             'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa,
             'spp' => DB::table('trhspp as a')->join('ms_skpd as b', 'a.kd_skpd', '=', 'b.kd_skpd')->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.urusan1 as kd_bidang_urusan', 'a.no_spd', 'a.nilai', DB::raw("(SELECT nm_bidang_urusan from ms_bidang_urusan where kd_bidang_urusan=b.urusan1) as nm_bidang_urusan"))->first(),
