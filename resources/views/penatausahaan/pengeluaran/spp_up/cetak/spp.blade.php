@@ -44,7 +44,8 @@
     </div>
     <br>
     <div>
-        <table class="table table-bordered" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+        <table class="table table-bordered"
+            style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td colspan="4" style="text-align: center;border:1px solid black"><b>{{ $jenisspp }}</b></td>
             </tr>
@@ -113,7 +114,8 @@
                 <td style="height:20px;border-right:1px solid black;border-left:1px solid black"></td>
             </tr>
         </table>
-        <table class="table table-bordered" style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+        <table class="table table-bordered"
+            style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
             <tr>
                 <td class="border" style="width:40px;text-align:center">No</td>
                 <td class="border" colspan="3" style="text-align: center">Uraian</td>
@@ -197,18 +199,18 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="padding-bottom: 50px;text-align: center;padding-left:100px">
-                        {{ $pptk->jabatan }}
+
                     </td>
                     <td colspan="2" style="padding-bottom: 50px;text-align: center;padding-left:300px">
                         {{ $bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: center;padding-left:100px"><u>{{ $pptk->nama }}</u></td>
+                    <td colspan="2" style="text-align: center;padding-left:100px"></td>
                     <td colspan="2" style="text-align: center;padding-left:300px"><u>{{ $bendahara->nama }}</u></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: center;padding-left:100px">NIP. {{ $pptk->nip }}</td>
+                    <td colspan="2" style="text-align: center;padding-left:100px"></td>
                     <td colspan="2" style="text-align: center;padding-left:300px">NIP. {{ $bendahara->nip }}
                     </td>
                 </tr>
