@@ -70,24 +70,24 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
@@ -218,8 +218,8 @@
             </td>
         </tr>
     </table>
-
-
+    <br>
+    <br>
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         @if ($beban == '1')
             <tr>
