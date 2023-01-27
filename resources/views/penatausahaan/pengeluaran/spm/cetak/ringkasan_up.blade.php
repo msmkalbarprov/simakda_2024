@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
+    </style>
 </head>
 
 <body>
@@ -16,14 +21,14 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $data_beban->nm_skpd }}
                 </strong>
@@ -37,7 +42,7 @@
         </tr>
     </table>
     <hr>
-    <table style="width: 100%;font-family:'Times New Roman', Times, serif;text-align:center;font-size:16px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center;" class="rincian">
         <tr>
             <td><b>SURAT PERINTAH MEMBAYAR UANG PERSEDIAAN</b></td>
         </tr>
@@ -45,14 +50,14 @@
             <td><b>(SPM-UP)</b></td>
         </tr>
         <tr>
-            <td><b></b></td>
+            <td><b>Nomor : {{ $no_spm }}</b></td>
         </tr>
         <tr>
             <td><b>RINGKASAN</b></td>
         </tr>
     </table>
-
-    <table style="width: 100%;font-family:'Times New Roman', Times, serif;text-align:justify;font-size:16px">
+    <br>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:justify;" class="rincian">
         <tr>
             <td>Berdasarkan Keputusan Gubernur
                 {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }} untuk
@@ -66,9 +71,10 @@
             </td>
         </tr>
     </table>
-
+    <br>
+    <br>
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
+        <table class="table" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;padding-left:400px">
                     {{ $daerah->daerah }},
