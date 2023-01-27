@@ -48,7 +48,7 @@
 {{-- <body onload="window.print()"> --}}
 
 <body>
-    {{-- <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -74,7 +74,7 @@
         <tr>
             <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
-    </table> --}}
+    </table>
     <br>
     <table style="border-collapse:collapse;font-family: Open Sans" width="100%" align="center" border="0"
         cellspacing="0" cellpadding="0">
