@@ -260,7 +260,7 @@ class SpmController extends Controller
         $no_spm = $request->no_spm;
         $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="hapusPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="hapusPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\',\'' . $row->status_setor . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             $btn .= '<button type="button" onclick="cetakPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nilai . '\',\'' . $row->idBilling . '\')" class="btn btn-success btn-sm" style="margin-left:4px"><i class="uil-print"></i></button>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -411,7 +411,7 @@ class SpmController extends Controller
         $data = [
             'pihak_lain' => collect(DB::select("SELECT a.*,
                 SUBSTRING(npwp, 0, 3)+'.'+SUBSTRING(npwp, 3, 3)+'.'+SUBSTRING(npwp, 6, 3)+'.'+SUBSTRING(npwp, 9, 1)+'-'+SUBSTRING(npwp, 10, 3)
-+'.'+SUBSTRING(npwp, 13, 3)npwp1,
+            +'.'+SUBSTRING(npwp, 13, 3)npwp1,
                 (SELECT nmrekan FROM trhspp WHERE no_spp = a.no_spp) AS nmrekan,
                 (SELECT pimpinan FROM trhspp WHERE no_spp = a.no_spp) AS pimpinan,
                 (SELECT tgl_spd FROM trhspd WHERE no_spd=a.no_spd and left(kd_skpd,17)=left(a.kd_skpd,17)) AS tgl_spd,

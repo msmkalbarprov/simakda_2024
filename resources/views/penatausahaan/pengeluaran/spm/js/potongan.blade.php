@@ -1106,7 +1106,11 @@
         }
     }
 
-    function hapusPajak(no_spm, kd_rek6, nm_rek6, idBilling, nilai) {
+    function hapusPajak(no_spm, kd_rek6, nm_rek6, idBilling, nilai, status_setor) {
+        if (status_setor == '1') {
+            alert(nm_rek6 + ' Telah Disetor!');
+            return;
+        }
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai : Rp. ' + nilai +
             ' ?');
         let total = rupiah(document.getElementById('total_pajak').value);
