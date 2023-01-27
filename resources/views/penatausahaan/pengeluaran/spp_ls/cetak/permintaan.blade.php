@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    {{-- <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -38,7 +38,7 @@
         <tr>
             <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
         </tr>
-    </table> --}}
+    </table>
     <hr>
     <table style="width: 100%;text-align:center;font-family:'Times New Roman', Times, serif">
         <tr>
