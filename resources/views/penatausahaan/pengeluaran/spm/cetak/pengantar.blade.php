@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    {{-- <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -48,7 +48,7 @@
         <tr>
             <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
-    </table> --}}
+    </table>
     <hr>
 
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
@@ -102,7 +102,7 @@
             </td>
         </tr>
     </table>
-
+    <br>
     <table style="width: 100%;font-size: 13px;font-family:'Open Sans', Helvetica,Arial,sans-serif" id="rincian"
         class="rincian1">
         <tbody>
