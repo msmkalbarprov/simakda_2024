@@ -159,7 +159,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                @if ($dengan != 'true')
+                @if ($dengan == 'true')
                     * Dengan UP
                 @else
                     * Tanpa UP
