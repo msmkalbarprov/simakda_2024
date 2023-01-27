@@ -81,6 +81,9 @@
                     <td>:</td>
                     <td>{{ $pa_kpa->jabatan }}</td>
                 </tr>
+                <tr>
+                    <td style="height: 10px" colspan="3"></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -90,6 +93,9 @@
             <tbody>
                 <tr>
                     <td colspan="2">Menyatakan dengan sesungguhnya bahwa:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height: 10px"></td>
                 </tr>
                 {{-- <h5 style="margin: 2px 0px">Menyatakan dengan sesungguhnya bahwa:</h5> --}}
                 <tr>
