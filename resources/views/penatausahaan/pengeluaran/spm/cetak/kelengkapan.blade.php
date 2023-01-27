@@ -238,6 +238,9 @@
                 <td>........................................................................</td>
             </tr>
             <tr>
+                <td style="height: 20px"></td>
+            </tr>
+            <tr>
                 <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan SPM-UP
                 </td>
             </tr>
@@ -260,6 +263,9 @@
                 <td class="judul2">2. Tanggal Terima SPP-GU</td>
                 <td>:</td>
                 <td>........................................................................</td>
+            </tr>
+            <tr>
+                <td style="height: 20px"></td>
             </tr>
             <tr>
                 <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan SPM-GU
@@ -286,6 +292,9 @@
                 <td>........................................................................</td>
             </tr>
             <tr>
+                <td style="height: 20px"></td>
+            </tr>
+            <tr>
                 <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan SPM-TU
                 </td>
             </tr>
@@ -309,6 +318,9 @@
                     <td class="judul2">2. Tanggal Terima SPP-Gaji</td>
                     <td>:</td>
                     <td>........................................................................</td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
                 </tr>
                 <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
@@ -351,6 +363,9 @@
                     </td>
                     <td>:</td>
                     <td>........................................................................</td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
                 </tr>
                 <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
@@ -407,6 +422,9 @@
                     <td>........................................................................</td>
                 </tr>
                 <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+                <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
                         SPM-LS
                         @if ($jenis == '1')
@@ -447,6 +465,9 @@
                     </td>
                     <td>:</td>
                     <td>........................................................................</td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
                 </tr>
                 <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
@@ -507,6 +528,9 @@
                     <td>........................................................................</td>
                 </tr>
                 <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+                <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
                         SPM-LS
                         @if ($jenis == '1')
@@ -549,6 +573,9 @@
                     <td>........................................................................</td>
                 </tr>
                 <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+                <tr>
                     <td style="padding-top: 5px" colspan="3" class="judul1">B. Kelengkapan dan Persyaratan
                         @if ($jenis == '3')
                             SPM-LS untuk Tambahan Penghasilan
@@ -587,8 +614,6 @@
             @endif
         @endif
     </table>
-
-
 
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
         <thead>
@@ -2742,14 +2767,16 @@
             @endif
         </tbody>
     </table>
-
-
-
+    <br>
+    <br>
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
         @if (in_array($beban, ['1', '2', '3', '4']))
             <tr>
                 <td style="width: 300px">Tanggal Pengembalian SPP</td>
                 <td>: ..............................................................................</td>
+            </tr>
+            <tr>
+                <td style="height: 20px"></td>
             </tr>
             <tr>
                 <td style="width: 300px">Tanggal Terima Kembali SPP</td>
@@ -2760,6 +2787,9 @@
                 <tr>
                     <td style="width: 300px">Tanggal Pengembalian SPP</td>
                     <td>: ..............................................................................</td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
                 </tr>
                 <tr>
                     <td style="width: 300px">Tanggal Terima Kembali SPP</td>
@@ -2774,6 +2804,9 @@
                     <td>: ..............................................................................</td>
                 </tr>
                 <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+                <tr>
                     <td style="width: 300px">Tanggal Terima Kembali SPP</td>
                     <td>: ..............................................................................</td>
                 </tr>
@@ -2781,8 +2814,8 @@
             @endif
         @endif
     </table>
-
-
+    <br>
+    <br>
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
         <tr>
             <td style="text-align: center;padding-left:600px">
