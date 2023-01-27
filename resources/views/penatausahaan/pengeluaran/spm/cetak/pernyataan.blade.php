@@ -90,7 +90,7 @@
                 <td style="text-align:justify">
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut di atas akan dipergunakan untuk keperluan guna membiayai kegiatan yang akan kami
-                    laksanan sesuai DPA-SKPD
+                    laksanakan sesuai DPA-SKPD
                 </td>
             </tr>
             <tr>
