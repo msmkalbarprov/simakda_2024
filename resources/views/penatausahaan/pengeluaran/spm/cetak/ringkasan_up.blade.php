@@ -35,7 +35,7 @@
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
             <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
@@ -61,7 +61,7 @@
         <tr>
             <td>Berdasarkan Keputusan Gubernur
                 {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }} Tentang {{ $pergub->tentang }} untuk
-                OPD
+                SKPD
                 {{ $data_beban->nm_skpd }} sejumlah Rp
                 {{ rupiah($data_beban->nilai) }}</td>
         </tr>
