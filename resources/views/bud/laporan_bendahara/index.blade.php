@@ -329,6 +329,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="register_sp2d">
+                <div class="card-body">
+                    {{ 'Register SP2D' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- modal cetak realisasi pendapatan --}}
@@ -422,6 +434,10 @@
     {{-- modal cetak koreksi penerimaan --}}
     @include('bud.laporan_bendahara.modal.koreksi_penerimaan2')
     {{-- modal cetak koreksi penerimaan --}}
+
+    {{-- modal cetak register_sp2d --}}
+    @include('bud.laporan_bendahara.modal.register_sp2d')
+    {{-- modal cetak register_sp2d  --}}
 @endsection
 @section('js')
     @include('bud.laporan_bendahara.js.index')

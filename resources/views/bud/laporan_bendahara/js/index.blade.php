@@ -121,6 +121,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-register_sp2d').select2({
+            dropdownParent: $('#modal_register_sp2d .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // CETAKAN REALISASI PENDAPATAN
         $('#pilih_skpd_realisasi_pendapatan').hide();
         $('#pilih_unit_realisasi_pendapatan').hide();
@@ -2350,5 +2355,292 @@
             window.open(url.toString(), "_blank");
         });
         // CETAKAN KOREKSI PENERIMAAN
+
+        // CETAKAN REGISTER SP2D
+        $('#pilih_skpd_register_sp2d').hide();
+
+        $('#pilihan_keseluruhan_register_sp2d').on('click', function() {
+            $('#kd_skpd_register_sp2d').val(null).change();
+            $('#nm_skpd_register_sp2d').val(null);
+
+            $('#pilih_skpd_register_sp2d').hide();
+        });
+
+        $('#pilihan_skpd_register_sp2d').on('click', function() {
+            $('#kd_skpd_register_sp2d').val(null).change();
+            $('#nm_skpd_register_sp2d').val(null);
+
+            $('#pilih_skpd_register_sp2d').show();
+        });
+
+        $('#kd_skpd_register_sp2d').on('select2:select', function() {
+            let nama = $(this).find(':selected').data('nama');
+            $('#nm_skpd_register_sp2d').val(nama);
+        });
+
+        $('#register_sp2d').on('click', function() {
+            $('#modal_register_sp2d').modal('show');
+        });
+
+        $('.cetak_register_sp2d').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register_sp2d')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register_sp2d').checked;
+
+            let keseluruhan1 = document.getElementById('pilihan_keseluruhan_register_sp2d1')
+                .checked;
+            let bulan = document.getElementById('pilihan_bulan_register_sp2d')
+                .checked;
+            let periode = document.getElementById('pilihan_periode_register_sp2d')
+                .checked;
+
+            if (keseluruhan == false) {
+                if (skpd == false) {
+                    alert('Silahkan Pilih Keseluruhan atau SKPD!');
+                    return;
+                }
+            }
+
+            if (keseluruhan) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            let kd_skpd = document.getElementById('kd_skpd_register_sp2d').value;
+            let bulan1 = document.getElementById('bulan_register_sp2d').value;
+            let periode1 = document.getElementById('periode1_register_sp2d').value;
+            let periode2 = document.getElementById('periode2_register_sp2d').value;
+            let ttd = document.getElementById('ttd_register_sp2d').value;
+            let anggaran = document.getElementById('anggaran_register_sp2d').value;
+            let urutan = document.getElementById('urutan_register_sp2d').value;
+            let status = document.getElementById('status_register_sp2d').value;
+            let kasda = document.getElementById('kasda_register_sp2d').checked;
+            let dengan = document.getElementById('dengan_register_sp2d').checked;
+            let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let jenis_print = $(this).data("jenis");
+
+            if (keseluruhan || skpd) {
+                if (bulan) {
+                    if (!bulan1) {
+                        alert('Silahkan Pilih Bulan!');
+                        return;
+                    }
+                }
+            }
+
+            if (keseluruhan || skpd) {
+                if (periode) {
+                    if (!periode1 || !periode2) {
+                        alert('Silahkan Pilih Periode!');
+                        return;
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                if (keseluruhan1) {
+                    pilihan = '11';
+                }
+                if (bulan) {
+                    pilihan = '12';
+                }
+                if (periode) {
+                    pilihan = '13';
+                }
+            }
+            if (skpd) {
+                if (keseluruhan1) {
+                    pilihan = '21';
+                }
+                if (bulan) {
+                    pilihan = '22';
+                }
+                if (periode) {
+                    pilihan = '23';
+                }
+            }
+
+            if (!ttd) {
+                alert('Silahkan Pilih Penandatangan!');
+                return;
+            }
+            if (!anggaran) {
+                alert('Silahkan Pilih Anggaran!');
+                return;
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.register_sp2d') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("bulan", bulan1);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("ttd", ttd);
+            searchParams.append("status", status);
+            searchParams.append("anggaran", anggaran);
+            searchParams.append("urutan", urutan);
+            searchParams.append("kasda", kasda);
+            searchParams.append("dengan", dengan);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.cetak_realisasiskpd_sp2d').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register_sp2d')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register_sp2d').checked;
+
+            let keseluruhan1 = document.getElementById('pilihan_keseluruhan_register_sp2d1')
+                .checked;
+            let bulan = document.getElementById('pilihan_bulan_register_sp2d')
+                .checked;
+            let periode = document.getElementById('pilihan_periode_register_sp2d')
+                .checked;
+
+            if (keseluruhan == false) {
+                if (skpd == false) {
+                    alert('Silahkan Pilih Keseluruhan atau SKPD!');
+                    return;
+                }
+            }
+
+            if (keseluruhan) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            let kd_skpd = document.getElementById('kd_skpd_register_sp2d').value;
+            let bulan1 = document.getElementById('bulan_register_sp2d').value;
+            let periode1 = document.getElementById('periode1_register_sp2d').value;
+            let periode2 = document.getElementById('periode2_register_sp2d').value;
+            let ttd = document.getElementById('ttd_register_sp2d').value;
+            let anggaran = document.getElementById('anggaran_register_sp2d').value;
+            let urutan = document.getElementById('urutan_register_sp2d').value;
+            let status = document.getElementById('status_register_sp2d').value;
+            let kasda = document.getElementById('kasda_register_sp2d').checked;
+            let dengan = document.getElementById('dengan_register_sp2d').checked;
+            let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let jenis_print = $(this).data("jenis");
+
+            if (keseluruhan || skpd) {
+                if (bulan) {
+                    if (!bulan1) {
+                        alert('Silahkan Pilih Bulan!');
+                        return;
+                    }
+                }
+            }
+
+            if (keseluruhan || skpd) {
+                if (periode) {
+                    if (!periode1 || !periode2) {
+                        alert('Silahkan Pilih Periode!');
+                        return;
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                if (keseluruhan1) {
+                    pilihan = '11';
+                }
+                if (bulan) {
+                    pilihan = '12';
+                }
+                if (periode) {
+                    pilihan = '13';
+                }
+            }
+            if (skpd) {
+                if (keseluruhan1) {
+                    pilihan = '21';
+                }
+                if (bulan) {
+                    pilihan = '22';
+                }
+                if (periode) {
+                    pilihan = '23';
+                }
+            }
+
+            if (!ttd) {
+                alert('Silahkan Pilih Penandatangan!');
+                return;
+            }
+            if (!anggaran) {
+                alert('Silahkan Pilih Anggaran!');
+                return;
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.realisasiskpd_sp2d') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("bulan", bulan1);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("ttd", ttd);
+            searchParams.append("status", status);
+            searchParams.append("anggaran", anggaran);
+            searchParams.append("urutan", urutan);
+            searchParams.append("kasda", kasda);
+            searchParams.append("dengan", dengan);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+        // CETAKAN REGISTER SP2D
     });
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class BendaharaUmumDaerahController extends Controller
 {
@@ -22,13 +23,15 @@ class BendaharaUmumDaerahController extends Controller
                 ->orderByRaw("cast(kd_pengirim as int)")
                 ->get(),
             'daftar_wilayah' => DB::table('ms_wilayah')->selectRaw("kd_wilayah,nm_wilayah")->orderByRaw("cast(kd_wilayah as int)")->get(),
-            'bud' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kd_skpd' => $kd_skpd])->whereIn('kode', ['BUD', 'PA'])->get(),
+            'bud' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD', 'PA'])->get(),
             'daftar_rekening' => DB::table('trdrka')->select('kd_rek6', 'nm_rek6')->groupBy('kd_rek6', 'nm_rek6')->get(),
             'daftar_org' => DB::table('ms_organisasi')
                 ->select('kd_org', 'nm_org')
+                ->get(),
+            'daftar_anggaran' => DB::table('tb_status_anggaran')
+                ->where(['status_aktif' => '1'])
                 ->get()
         ];
-
         return view('bud.laporan_bendahara.index')->with($data);
     }
 
@@ -5871,5 +5874,221 @@ class BendaharaUmumDaerahController extends Controller
         ];
 
         return view('bud.laporan_bendahara.cetak.koreksi_penerimaan2')->with($data);
+    }
+
+    public function registerSp2d(Request $request)
+    {
+        $req = $request->all();
+        // dd($req);
+        $join1 = DB::table('trdspp')
+            ->selectRaw("no_spp, sum(nilai) [nilai]")
+            ->groupBy('no_spp');
+
+        $register = DB::table('trhspm as a')
+            ->join('trhsp2d as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->joinSub($join1, 'c', function ($join) {
+                $join->on('a.no_spp', '=', 'c.no_spp');
+            })
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_spm,a.tgl_spm,b.tgl_sp2d,b.no_sp2d,b.keperluan,
+				(case when a.jns_spp=1 then c.nilai else 0  end)up,
+				(case when a.jns_spp=2 then c.nilai else 0  end)gu,
+				(case when a.jns_spp=3 then c.nilai else 0  end)tu,
+				(case when a.jns_spp=4 then c.nilai else 0  end)gaji,
+				(case when a.jns_spp=6 then c.nilai else 0  end)ls,
+                (case when a.jns_spp=5 then c.nilai else 0  end)ph3")
+            ->where(function ($query) use ($req) {
+                if ($req['pilihan'] == '11' || $req['pilihan'] == '12' || $req['pilihan'] == '13') {
+                    $query->whereRaw("(b.sp2d_batal IS NULL  OR b.sp2d_batal !=1)");
+                } else {
+                    $query->whereRaw("(b.sp2d_batal IS NULL  OR b.sp2d_batal !=1) and a.kd_skpd =?", [$req['kd_skpd']]);
+                }
+            })
+            ->where(function ($query) use ($req) {
+                if ($req['status'] == '2') {
+                    $query->whereRaw("status_bud=?", ['1']);
+                } else if ($req['status'] == '3') {
+                    $query->whereRaw("no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)");
+                } else if ($req['status'] == '4') {
+                    $query->whereRaw("no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji) and status_bud <> 1");
+                } else if ($req['status'] == '5') {
+                    $query->whereRaw("no_sp2d NOT IN (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)");
+                }
+            })
+            ->where(function ($query) use ($req) {
+                if (substr($req['pilihan'], -1) == '2') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("MONTH(tgl_kas_bud)=?", [$req['bulan']]);
+                    } else {
+                        $query->whereRaw("MONTH(tgl_sp2d)=?", [$req['bulan']]);
+                    }
+                } elseif (substr($req['pilihan'], -1) == '3') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("( tgl_kas_bud between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    } else {
+                        $query->whereRaw("( tgl_sp2d between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    }
+                }
+            })
+            ->where(function ($query) use ($req) {
+                if ($req['urutan'] == '1') {
+                    $query->orderBy('tgl_sp2d')->orderBy('no_sp2d');
+                } else if ($req['urutan'] == '2') {
+                    $query->orderByRaw("CAST(no_kas_bud as int)");
+                }
+            })
+            ->get();
+        dd($register);
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $req['pilihan'],
+            'data_awal' => $req,
+            'rekap_gaji' => $rekap_gaji
+        ];
+
+        return view('bud.laporan_bendahara.cetak.register_sp2d')->with($data);
+    }
+
+    public function realisasiSkpdSp2d(Request $request)
+    {
+        $req = $request->all();
+        // dd($req);
+        // return $req['dengan'];
+        $realisasi1 = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52') and jns_ang=?", [$req['anggaran']])
+            // ->where(function ($query) use ($req) {
+            //     if ($req['dengan'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
+            //     } elseif ($req['tanpa'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
+            //     }
+            // })
+            ->groupBy('kd_skpd', 'nm_skpd');
+
+        $realisasi2 = DB::table('trhsp2d as a')
+            ->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->selectRaw("b.kd_bidang as kd_skpd, (select nm_skpd from ms_skpd where kd_skpd=kd_bidang)as nm_skpd,0 as anggaran,sum(b.nilai) as realisasi")
+            ->whereRaw("(c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+                    and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
+            ->where(function ($query) use ($req) {
+                if ($req['dengan'] == 'true') {
+                    $query->whereRaw("LEFT(b.kd_rek6,1) in ('5','1') and right(b.kd_rek6,7) not in ('9999999','8888888')");
+                } elseif ($req['tanpa'] == 'true') {
+                    $query->whereRaw("LEFT(b.kd_rek6,1) in ('5') and right(b.kd_rek6,7) not in ('9999999','8888888')");
+                }
+            })
+            ->where(function ($query) use ($req) {
+                if (substr($req['pilihan'], -1) == '1') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("status_bud=1");
+                    }
+                } elseif (substr($req['pilihan'], -1) == '2') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("MONTH(tgl_kas_bud)=?)", [$req['bulan']]);
+                    } else {
+                        $query->whereRaw("MONTH(tgl_sp2d)=?)", [$req['bulan']]);
+                    }
+                } elseif (substr($req['pilihan'], -1) == '3') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("( tgl_kas_bud between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    } else {
+                        $query->whereRaw("( tgl_sp2d between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    }
+                }
+            })
+            ->groupBy('b.kd_bidang')
+            ->union($realisasi1);
+        // dd($realisasi2->get());
+        $realisasi = DB::table(DB::raw("({$realisasi2->toSql()}) AS sub"))
+            ->selectRaw("kd_skpd as kode,nm_skpd as nama,sum(anggaran)as ang,sum(realisasi)as bel")
+            ->mergeBindings($realisasi2)
+            ->groupByRaw("kd_skpd,nm_skpd")
+            ->orderBy('kd_skpd')
+            ->get();
+
+        $blud_soedarso = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("left(kd_rek6,1)='5' and right(kd_rek6,7) in ('9999999') and jns_ang=? and kd_skpd=?", [$req['anggaran'], ['1.02.0.00.0.00.02.0000']])
+            // ->where(function ($query) use ($req) {
+            //     if ($req['dengan'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
+            //     } elseif ($req['tanpa'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) in ('9999999')");
+            //     }
+            // })
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
+        $blud_rsj = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("left(kd_rek6,1)='5' and right(kd_rek6,7) in ('9999999') and jns_ang=? and kd_skpd=?", [$req['anggaran'], ['1.02.0.00.0.00.03.0000']])
+            // ->where(function ($query) use ($req) {
+            //     if ($req['dengan'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
+            //     } elseif ($req['tanpa'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) in ('9999999')");
+            //     }
+            // })
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
+        $bos_dikbud = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52')", [$req['anggaran'], ['1.01.2.22.0.00.01.0000']])
+            // ->where(function ($query) use ($req) {
+            //     if ($req['dengan'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
+            //     } elseif ($req['tanpa'] == 'true') {
+            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) in ('8888888')");
+            //     }
+            // })
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+        // dd([
+        //     $blud_soedarso, $blud_rsj, $bos_dikbud
+        // ]);
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $req['pilihan'],
+            'data_awal' => $req,
+            'realisasi' => $realisasi,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->select('nip', 'nama', 'jabatan', 'pangkat')
+                ->where(['nip' => $req['ttd']])
+                ->whereIn('kode', ['BUD', 'PA'])
+                ->first(),
+            'tanggal' => now(),
+            'dengan' => $req['dengan'],
+            'blud_soedarso' => $blud_soedarso->anggaran,
+            'blud_rsj' => $blud_rsj->anggaran,
+            'bos_dikbud' => $bos_dikbud->anggaran,
+            'nama_anggaran' => DB::table('tb_status_anggaran')
+                ->select('nama')
+                ->where(['kode' => $req['anggaran']])
+                ->first()
+        ];
+
+        $view = view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setOrientation('portrait')->setPaper('legal');
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+        // return view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
     }
 }

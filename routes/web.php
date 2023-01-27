@@ -77,6 +77,11 @@ use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
 use App\Http\Controllers\skpd\SpjPendapatanController;
 use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
+use App\Http\Controllers\Skpd\Panjar\PembayaranPanjarController;
+use App\Http\Controllers\Skpd\Panjar\PengembalianPanjarController;
+use App\Http\Controllers\Skpd\Panjar\PertanggungjawabanPanjarController;
+use App\Http\Controllers\Skpd\Panjar\TambahPanjarController;
+use App\Http\Controllers\Skpd\Panjar\TransaksiPanjarController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -664,6 +669,64 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             });
         });
 
+        // PERTANGGUNGJAWABAN PANJAR
+        Route::group(['prefix' => 'pertanggungjawaban_panjar'], function () {
+            Route::get('', [PertanggungjawabanPanjarController::class, 'index'])->name('jawabpanjar.index');
+            Route::post('load', [PertanggungjawabanPanjarController::class, 'load'])->name('jawabpanjar.load');
+            Route::get('tambah', [PertanggungjawabanPanjarController::class, 'tambah'])->name('jawabpanjar.tambah');
+            Route::post('simpan', [PertanggungjawabanPanjarController::class, 'simpan'])->name('jawabpanjar.simpan');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [PertanggungjawabanPanjarController::class, 'edit'])->name('jawabpanjar.edit');
+            Route::post('update', [PertanggungjawabanPanjarController::class, 'update'])->name('jawabpanjar.update');
+            Route::post('hapus', [PertanggungjawabanPanjarController::class, 'hapus'])->name('jawabpanjar.hapus');
+        });
+
+        // PEMBAYARAN PANJAR
+        Route::group(['prefix' => 'pembayaran_panjar'], function () {
+            Route::get('', [PembayaranPanjarController::class, 'index'])->name('bayarpanjar.index');
+            Route::post('load', [PembayaranPanjarController::class, 'load'])->name('bayarpanjar.load');
+            Route::get('tambah', [PembayaranPanjarController::class, 'tambah'])->name('bayarpanjar.tambah');
+            Route::post('simpan', [PembayaranPanjarController::class, 'simpan'])->name('bayarpanjar.simpan');
+            Route::get('edit/{no_panjar?}/{kd_skpd?}', [PembayaranPanjarController::class, 'edit'])->name('bayarpanjar.edit');
+            Route::post('update', [PembayaranPanjarController::class, 'update'])->name('bayarpanjar.update');
+            Route::post('hapus', [PembayaranPanjarController::class, 'hapus'])->name('bayarpanjar.hapus');
+        });
+
+        // TAMBAH PANJAR
+        Route::group(['prefix' => 'tambah_panjar'], function () {
+            Route::get('', [TambahPanjarController::class, 'index'])->name('tambahpanjar.index');
+            Route::post('load', [TambahPanjarController::class, 'load'])->name('tambahpanjar.load');
+            Route::get('tambah', [TambahPanjarController::class, 'tambah'])->name('tambahpanjar.tambah');
+            Route::post('sub_kegiatan', [TambahPanjarController::class, 'subKegiatan'])->name('tambahpanjar.sub_kegiatan');
+            Route::post('simpan', [TambahPanjarController::class, 'simpan'])->name('tambahpanjar.simpan');
+            Route::get('edit/{no_panjar?}/{kd_skpd?}', [TambahPanjarController::class, 'edit'])->name('tambahpanjar.edit');
+            Route::post('update', [TambahPanjarController::class, 'update'])->name('tambahpanjar.update');
+            Route::post('hapus', [TambahPanjarController::class, 'hapus'])->name('tambahpanjar.hapus');
+        });
+
+        // TRANSAKSI PANJAR
+        Route::group(['prefix' => 'transaksi_panjar'], function () {
+            Route::get('', [TransaksiPanjarController::class, 'index'])->name('transaksipanjar.index');
+            Route::post('load', [TransaksiPanjarController::class, 'load'])->name('transaksipanjar.load');
+            Route::get('tambah', [TransaksiPanjarController::class, 'tambah'])->name('transaksipanjar.tambah');
+            Route::post('load_data', [TransaksiPanjarController::class, 'loadData'])->name('transaksipanjar.load_data');
+            Route::post('simpan', [TransaksiPanjarController::class, 'simpan'])->name('transaksipanjar.simpan');
+            Route::get('edit/{no_bukti?}/{kd_skpd?}', [TransaksiPanjarController::class, 'edit'])->name('transaksipanjar.edit');
+            Route::post('update', [TransaksiPanjarController::class, 'update'])->name('transaksipanjar.update');
+            Route::post('hapus', [TransaksiPanjarController::class, 'hapus'])->name('transaksipanjar.hapus');
+        });
+
+        // PENGEMBALIAN SISA PANJAR
+        Route::group(['prefix' => 'pengembalian_panjar'], function () {
+            Route::get('', [PengembalianPanjarController::class, 'index'])->name('kembalipanjar.index');
+            Route::post('load', [PengembalianPanjarController::class, 'load'])->name('kembalipanjar.load');
+            Route::get('tambah', [PengembalianPanjarController::class, 'tambah'])->name('kembalipanjar.tambah');
+            Route::post('load_data', [PengembalianPanjarController::class, 'loadData'])->name('kembalipanjar.load_data');
+            Route::post('simpan', [PengembalianPanjarController::class, 'simpan'])->name('kembalipanjar.simpan');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [PengembalianPanjarController::class, 'edit'])->name('kembalipanjar.edit');
+            Route::post('update', [PengembalianPanjarController::class, 'update'])->name('kembalipanjar.update');
+            Route::post('hapus', [PengembalianPanjarController::class, 'hapus'])->name('kembalipanjar.hapus');
+        });
+
         //PEMBEMBALIAN PANJAR CMS
         Route::group(['prefix' => 'panjar_cms'], function () {
             Route::get('index', [PanjarPengembalianController::class, 'index'])->name('panjar_cms.index');
@@ -684,7 +747,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
 
         //TAMBAH PANJAR CMS
-        Route::group(['prefix' => 'tpanjar_cms'], function () {
+        Route::group(['prefix' => 'tambah_panjar_cms'], function () {
             Route::get('index', [PanjarTambahController::class, 'index'])->name('tpanjar_cms.index');
             Route::post('load_data', [PanjarTambahController::class, 'loadData'])->name('tpanjar_cms.load_data');
             Route::get('create', [PanjarTambahController::class, 'create'])->name('tpanjar_cms.create');
@@ -702,6 +765,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('update', [PanjarTambahController::class, 'update'])->name('tpanjar_cms.update');
             Route::get('cetak_list', [PanjarTambahController::class, 'cetakList'])->name('tpanjar_cms.cetak_list');
         });
+
         // Anggaran (RAK)
         Route::group(['prefix' => 'anggaran'], function () {
             // Input RAK
@@ -842,6 +906,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // cetak Kartu Kendali Sub Kegiatan
             Route::get('cetak_kk_pengajuan', [KartuKendaliSubkegiatanController::class, 'cetakKkpengajuan'])->name('skpd.laporan_bendahara.cetak_kk_pengajuan');
             Route::get('cetak_kk_spj', [KartuKendaliSubkegiatanController::class, 'cetakKkSpj'])->name('skpd.laporan_bendahara.cetak_kk_spj');
+            // Cetak BKU Permendagri 13
+            Route::get('cetak_bku13', [LaporanBendaharaController::class, 'cetakbku13'])->name('skpd.laporan_bendahara.cetak_bku13');
         });
 
         // Laporan Bendahara Penerimaan
@@ -1151,6 +1217,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('koreksi_pengeluaran', [BendaharaUmumDaerahController::class, 'koreksiPengeluaran'])->name('laporan_bendahara_umum.koreksi_pengeluaran');
         // KOREKSI PENERIMAAN
         Route::get('koreksi_penerimaan2', [BendaharaUmumDaerahController::class, 'koreksiPenerimaan2'])->name('laporan_bendahara_umum.koreksi_penerimaan2');
+        // REGISTER SP2D
+        Route::get('register_sp2d', [BendaharaUmumDaerahController::class, 'registerSp2d'])->name('laporan_bendahara_umum.register_sp2d');
+        // REGISTER SP2D
+        Route::get('realisasiskpd_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSkpdSp2d'])->name('laporan_bendahara_umum.realisasiskpd_sp2d');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
