@@ -59,13 +59,6 @@
 </head>
 
 <body>
-    {{-- <div style="text-align: left;margin-top:20px">
-        <h4 style="margin: 2px 0px">PEMERINTAH PROVINSI KALIMANTAN BARAT</h4>
-        <h4 style="margin: 2px 0px">{{ $skpd->nm_skpd }}</h4>
-        <h4 style="margin: 2px 0px">TAHUN ANGGARAN {{ $tahun_anggaran }}</h4>
-        <div style="clear: both"></div>
-    </div>
-    <hr> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -95,131 +88,138 @@
     </table>
     <hr>
 
-    <div style="text-align: center">
-        @if ($beban == '1')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-UP(PPK/PPKP)</h3>
-        @elseif ($beban == '2')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-GU(PPK/PPKP)</h3>
-        @elseif ($beban == '3')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-TU(PPK/PPKP)</h3>
-        @elseif ($beban == '4')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)</h3>
-            @if ($jenis == '1')
-                <h3 style="margin: 2px 0px">(Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)</h3>
-            @elseif ($jenis == '3')
-                <h3 style="margin: 2px 0px">(Untuk Tambahan Penghasilan)</h3>
-            @elseif ($jenis == '5')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium Tenaga Kontrak)</h3>
-            @elseif ($jenis == '6')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)</h3>
-            @elseif ($jenis == '7')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Konsumsi)</h3>
-            @elseif ($jenis == '8')
-                <h3 style="margin: 2px 0px">(Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/Gedung Pertemuan/Tempat
-                    Pertemuan/Tempat Penginapan/Kendaraan)</h3>
-            @elseif ($jenis == '9')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Sertifikat Tanah)</h3>
-            @elseif ($jenis == '10')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Tanah)</h3>
-            @elseif ($jenis == '11')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Barang dan Jasa pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '12')
-                <h3 style="margin: 2px 0px">(Untuk LS Bantuan Sosial pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '13')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Uang Pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '14')
-                <h3 style="margin: 2px 0px">(Untuk Bantuan Keuangan Pada Kabupaten/Kota)</h3>
-            @elseif ($jenis == '15')
-                <h3 style="margin: 2px 0px">(Untuk Bagi Hasil Pajak dan Bukan Pajak)</h3>
-            @elseif ($jenis == '16')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Konstruksi Pada Pihak Ketiga)</h3>
-            @else
-            @endif
-        @elseif ($beban == '5')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)</h3>
-            @if ($jenis == '1')
-                <h3 style="margin: 2px 0px">(Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)</h3>
-            @elseif ($jenis == '3')
-                <h3 style="margin: 2px 0px">(Untuk Tambahan Penghasilan)</h3>
-            @elseif ($jenis == '4')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium PNS)</h3>
-            @elseif ($jenis == '5')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium Tenaga Kontrak)</h3>
-            @elseif ($jenis == '6')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)</h3>
-            @elseif ($jenis == '7')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Konsumsi)</h3>
-            @elseif ($jenis == '8')
-                <h3 style="margin: 2px 0px">(Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/Gedung Pertemuan/Tempat
-                    Pertemuan/Tempat Penginapan/Kendaraan)</h3>
-            @elseif ($jenis == '9')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Sertifikat Tanah)</h3>
-            @elseif ($jenis == '10')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Tanah)</h3>
-            @elseif ($jenis == '11')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Barang dan Jasa pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '12')
-                <h3 style="margin: 2px 0px">(Untuk LS Bantuan Sosial pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '13')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Uang Pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '14')
-                <h3 style="margin: 2px 0px">(Untuk Bantuan Keuangan Pada Kabupaten/Kota)</h3>
-            @elseif ($jenis == '15')
-                <h3 style="margin: 2px 0px">(Untuk Bagi Hasil Pajak dan Bukan Pajak)</h3>
-            @elseif ($jenis == '16')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Konstruksi Pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '98')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)</h3>
-            @elseif ($jenis == '99')
-                <h3 style="margin: 2px 0px">(Untuk Pengeluaran Pembiayaan)</h3>
-            @endif
-        @elseif ($beban == '6')
-            <h3 style="margin: 2px 0px">Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)</h3>
-            @if ($jenis == '1')
-                <h3 style="margin: 2px 0px">(Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)</h3>
-            @elseif ($jenis == '3')
-                <h3 style="margin: 2px 0px">(Untuk Tambahan Penghasilan)</h3>
-            @elseif ($jenis == '4')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium PNS)</h3>
-            @elseif ($jenis == '5')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium Tenaga Kontrak)</h3>
-            @elseif ($jenis == '6')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)</h3>
-            @elseif ($jenis == '7')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Konsumsi)</h3>
-            @elseif ($jenis == '8')
-                <h3 style="margin: 2px 0px">(Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/Gedung Pertemuan/Tempat
-                    Pertemuan/Tempat Penginapan/Kendaraan)</h3>
-            @elseif ($jenis == '9')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Sertifikat Tanah)</h3>
-            @elseif ($jenis == '10')
-                <h3 style="margin: 2px 0px">(Untuk Pengadaan Tanah)</h3>
-            @elseif ($jenis == '11')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Barang dan Jasa pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '12')
-                <h3 style="margin: 2px 0px">(Untuk LS Bantuan Sosial pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '13')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Uang Pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '14')
-                <h3 style="margin: 2px 0px">(Untuk Bantuan Keuangan Pada Kabupaten/Kota)</h3>
-            @elseif ($jenis == '15')
-                <h3 style="margin: 2px 0px">(Untuk Bagi Hasil Pajak dan Bukan Pajak)</h3>
-            @elseif ($jenis == '16')
-                <h3 style="margin: 2px 0px">(Untuk Hibah Konstruksi Pada Pihak Ketiga)</h3>
-            @elseif ($jenis == '98')
-                <h3 style="margin: 2px 0px">(Belanja Operasional KDH/WKDH dan Pimpinan DPRD)</h3>
-            @elseif ($jenis == '99')
-                <h3 style="margin: 2px 0px">(Untuk Honorarium PNS)</h3>
-            @endif
-        @else
-        @endif
-    </div>
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;text-align:center">
+        <tr>
+            <td style="font-weight:bold;font-size:16px">
+                @if ($beban == '1')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-UP(PPK/PPKP)
+                @elseif ($beban == '2')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-GU(PPK/PPKP)
+                @elseif ($beban == '3')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-TU(PPK/PPKP)
+                @elseif ($beban == '4')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)
+                    @if ($jenis == '1')
+                        (Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)
+                    @elseif ($jenis == '3')
+                        (Untuk Tambahan Penghasilan)
+                    @elseif ($jenis == '5')
+                        (Untuk Honorarium Tenaga Kontrak)
+                    @elseif ($jenis == '6')
+                        (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
+                    @elseif ($jenis == '7')
+                        (Untuk Pengadaan Konsumsi)
+                    @elseif ($jenis == '8')
+                        (Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/G
+                        Pertemuan/Tempat
+                        Pertemuan/Tempat Penginapan/Kendaraan)</h3>
+                    @elseif ($jenis == '9')
+                        (Untuk Pengadaan Sertifikat Tanah)
+                    @elseif ($jenis == '10')
+                        (Untuk Pengadaan Tanah)
+                    @elseif ($jenis == '11')
+                        (Untuk Hibah Barang dan Jasa pada Pihak Ketiga)
+                    @elseif ($jenis == '12')
+                        (Untuk LS Bantuan Sosial pada Pihak Ketiga)
+                    @elseif ($jenis == '13')
+                        (Untuk Hibah Uang Pada Pihak Ketiga)
+                    @elseif ($jenis == '14')
+                        (Untuk Bantuan Keuangan Pada Kabupaten/Kota)
+                    @elseif ($jenis == '15')
+                        (Untuk Bagi Hasil Pajak dan Bukan Pajak)
+                    @elseif ($jenis == '16')
+                        (Untuk Hibah Konstruksi Pada Pihak Ketiga)
+                    @else
+                    @endif
+                @elseif ($beban == '5')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)
+                    @if ($jenis == '1')
+                        (Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)
+                    @elseif ($jenis == '3')
+                        (Untuk Tambahan Penghasilan)
+                    @elseif ($jenis == '4')
+                        (Untuk Honorarium PNS)
+                    @elseif ($jenis == '5')
+                        (Untuk Honorarium Tenaga Kontrak)
+                    @elseif ($jenis == '6')
+                        (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
+                    @elseif ($jenis == '7')
+                        (Untuk Pengadaan Konsumsi)
+                    @elseif ($jenis == '8')
+                        (Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/G
+                        Pertemuan/Tempat
+                        Pertemuan/Tempat Penginapan/Kendaraan)</h3>
+                    @elseif ($jenis == '9')
+                        (Untuk Pengadaan Sertifikat Tanah)
+                    @elseif ($jenis == '10')
+                        (Untuk Pengadaan Tanah)
+                    @elseif ($jenis == '11')
+                        (Untuk Hibah Barang dan Jasa pada Pihak Ketiga)
+                    @elseif ($jenis == '12')
+                        (Untuk LS Bantuan Sosial pada Pihak Ketiga)
+                    @elseif ($jenis == '13')
+                        (Untuk Hibah Uang Pada Pihak Ketiga)
+                    @elseif ($jenis == '14')
+                        (Untuk Bantuan Keuangan Pada Kabupaten/Kota)
+                    @elseif ($jenis == '15')
+                        (Untuk Bagi Hasil Pajak dan Bukan Pajak)
+                    @elseif ($jenis == '16')
+                        (Untuk Hibah Konstruksi Pada Pihak Ketiga)
+                    @elseif ($jenis == '98')
+                        (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
+                    @elseif ($jenis == '99')
+                        (Untuk Pengeluaran Pembiayaan)
+                    @endif
+                @elseif ($beban == '6')
+                    Laporan Penelitian Kelengkapan Dokumen Penerbitan SPM-LS(PPK/PPKP)
+                    @if ($jenis == '1')
+                        (Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)
+                    @elseif ($jenis == '3')
+                        (Untuk Tambahan Penghasilan)
+                    @elseif ($jenis == '4')
+                        (Untuk Honorarium PNS)
+                    @elseif ($jenis == '5')
+                        (Untuk Honorarium Tenaga Kontrak)
+                    @elseif ($jenis == '6')
+                        (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
+                    @elseif ($jenis == '7')
+                        (Untuk Pengadaan Konsumsi)
+                    @elseif ($jenis == '8')
+                        (Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/G
+                        Pertemuan/Tempat
+                        Pertemuan/Tempat Penginapan/Kendaraan)</h3>
+                    @elseif ($jenis == '9')
+                        (Untuk Pengadaan Sertifikat Tanah)
+                    @elseif ($jenis == '10')
+                        (Untuk Pengadaan Tanah)
+                    @elseif ($jenis == '11')
+                        (Untuk Hibah Barang dan Jasa pada Pihak Ketiga)
+                    @elseif ($jenis == '12')
+                        (Untuk LS Bantuan Sosial pada Pihak Ketiga)
+                    @elseif ($jenis == '13')
+                        (Untuk Hibah Uang Pada Pihak Ketiga)
+                    @elseif ($jenis == '14')
+                        (Untuk Bantuan Keuangan Pada Kabupaten/Kota)
+                    @elseif ($jenis == '15')
+                        (Untuk Bagi Hasil Pajak dan Bukan Pajak)
+                    @elseif ($jenis == '16')
+                        (Untuk Hibah Konstruksi Pada Pihak Ketiga)
+                    @elseif ($jenis == '98')
+                        (Belanja Operasional KDH/WKDH dan Pimpinan DPRD)
+                    @elseif ($jenis == '99')
+                        (Untuk Honorarium PNS)
+                    @endif
+                @else
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <div style="padding-top: 20px">
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:14px">
             @if ($beban == '1')
                 <tr>
-                    <td>OPD/UPTD/BIRO</td>
+                    <td>SKPD/BIRO/UPT</td>
                     <td>:</td>
                     <td>{{ $skpd->nm_skpd }}</td>
                 </tr>
@@ -590,7 +590,7 @@
     </div>
 
     <div style="padding-top: 20px">
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:14px">
             <thead>
                 <tr>
                     <th></th>
@@ -2745,7 +2745,7 @@
     </div>
 
     <div style="text-align: left;margin-top:20px">
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:14px">
             @if (in_array($beban, ['1', '2', '3', '4']))
                 <tr>
                     <td style="width: 300px">Tanggal Pengembalian SPP</td>
@@ -2784,7 +2784,7 @@
     </div>
 
     <div>
-        <table style="width: 100%">
+        <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:14px">
             <tr>
                 <td style="text-align: center;padding-left:600px">
                     Dikerjakan oleh
