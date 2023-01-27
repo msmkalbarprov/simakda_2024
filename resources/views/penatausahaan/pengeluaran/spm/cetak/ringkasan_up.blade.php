@@ -59,8 +59,7 @@
     <br>
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
         <tr>
-            <td style="text-indent: 20px">Berdasarkan Keputusan Gubernur Nomor {{ $pergub->no_pergub }} Tanggal
-                {{ tanggal($pergub->tgl_pergub) }}
+            <td>Berdasarkan Keputusan Gubernur Nomor {{ $pergub->no_pergub }} Tanggal {{ tanggal($pergub->tgl_pergub) }}
                 Tentang {{ $pergub->tentang }} untuk SKPD {{ $data_beban->nm_skpd }} sejumlah Rp
                 {{ rupiah($data_beban->nilai) }}</td>
         </tr>
