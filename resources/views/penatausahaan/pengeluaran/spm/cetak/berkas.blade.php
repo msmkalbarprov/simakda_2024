@@ -61,11 +61,6 @@
 </head>
 
 <body>
-    {{-- <div style="text-align: center; font-size: 15px;">
-        <div><strong>{{ strtoupper($daerah->kab_kota) }}</strong></div>
-        <div><strong>SURAT PERINTAH MEMBAYAR</strong></div>
-        <div><strong>Langsung (LS)</strong></div>
-    </div> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -87,7 +82,8 @@
         </tr>
     </table>
     <hr>
-    <table class="bordered" style="font-size: 12px;">
+
+    <table class="bordered" style="font-size: 16px;width: 100%;font-family:Open Sans">
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 50%;">
@@ -97,11 +93,11 @@
             </tr>
         </tbody>
     </table>
-    <table class="bordered" style="border-top: none">
+    <table class="bordered" style="border-top: none;font-size: 14px;width: 100%;font-family:Open Sans;">
         <tbody>
             <tr>
                 <td style="border-top: none; width: 50%; vertical-align: top; padding-left: 0px;">
-                    <table>
+                    <table style="font-size: 14px;width: 100%;font-family:Open Sans;">
                         <tbody>
                             <tr>
                                 <td colspan="3"><strong>KUASA BENDAHARA UMUM DAERAH</strong></td>
@@ -131,7 +127,7 @@
                             <tr>
                                 <td>No. Rekening Bank</td>
                                 <td>: </td>
-                                <td>{{ empty($bank->rekening) ? '' : $bank->rekening }}</td>
+                                <td>{{ empty($data_spm->no_rek) ? '' : $data_spm->no_rek }}</td>
                             </tr>
                             <tr>
                                 <td>Nama Bank</td>
@@ -156,7 +152,7 @@
                         </tbody>
                     </table>
                     <div><strong>Pembebanan pada kode rekening:</strong></div>
-                    <table style="font-size: 12px">
+                    <table style="font-size: 14px;width: 100%;font-family:Open Sans;"">
                         <thead>
                             <tr>
                                 <th
@@ -239,7 +235,7 @@
                     </table>
                 </td>
                 <td style="border-top: none; vertical-align: top; padding: 0px;">
-                    <table id="potongan" class="bordered">
+                    <table id="potongan" class="bordered" style="font-size: 14px;width: 100%;font-family:Open Sans;">
                         <tbody>
                             <tr>
                                 <td colspan="4" style="border-top:none;text-align: left"><strong>Potongan - Potongan
@@ -266,7 +262,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="4">Informasi :<i>(tidak mengurangi jumlah pembayaran SPM)</i></td>
+                                <td colspan="4">Informasi :<i> (tidak mengurangi jumlah pembayaran SPM)</i></td>
                             </tr>
                             <tr>
                                 <th>No.</th>
@@ -315,19 +311,19 @@
                         </tbody>
                     </table>
                     <div style="text-align: center;vertical-align:text-bottom ;margin-top: 80px;">
-                        <div>{{ $daerah->daerah }},
+                        <div style="font-size: 14px">{{ $daerah->daerah }},
                             @if ($tanpa == 1)
                                 ______________{{ $tahun_anggaran }}
                             @else
                                 {{ tanggal($data_spm->tgl_spm) }}
                             @endif
                         </div>
-                        <div>{{ $pa_kpa->jabatan }}</div>
+                        <div style="font-size:14px">{{ $pa_kpa->jabatan }}</div>
                         <div style="height: 50px;"></div>
                         <div><b><u></u></b></div>
-                        <div><u><b>{{ $pa_kpa->nama }}</b></u></div>
-                        <div>{{ $pa_kpa->pangkat }}</div>
-                        <div>NIP. {{ $pa_kpa->nip }}</div>
+                        <div style="font-size:14px"><u><b>{{ $pa_kpa->nama }}</b></u></div>
+                        <div style="font-size:14px">{{ $pa_kpa->pangkat }}</div>
+                        <div style="font-size:14px">NIP. {{ $pa_kpa->nip }}</div>
                     </div>
                 </td>
             </tr>
