@@ -90,7 +90,7 @@
                 <td style="text-align:justify">
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut di atas akan dipergunakan untuk keperluan guna membiayai kegiatan yang akan kami
-                    laksanakan sesuai DPA-SKPD
+                    laksanakan sesuai DPA-SKPD.
                 </td>
             </tr>
             <tr>
@@ -99,7 +99,7 @@
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut tidak akan
                     dipergunakan untuk membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
-                    harus dilaksanakan dengan Pembayaran Langsung (LS)
+                    harus dilaksanakan dengan Pembayaran Langsung (LS).
                     {{-- {{ nama_beban1($beban, $data_beban->jenis_beban) }} --}}
                 </td>
             </tr>
