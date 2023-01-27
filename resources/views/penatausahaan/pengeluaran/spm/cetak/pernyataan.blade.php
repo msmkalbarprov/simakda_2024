@@ -66,7 +66,7 @@
                 <td>Sehubungan dengan Surat Perintah Membayar
                     {{ nama_spm($beban, $data_beban->jenis_beban) }}
                     Nomor {{ $no_spm }} Tanggal {{ tanggal($data_beban->tgl_spm) }} yang kami ajukan sebesar
-                    {{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})</td>
+                    Rp{{ rupiah($data_beban->nilai) }} ({{ terbilang($data_beban->nilai) }})</td>
             </tr>
             <tr>
                 <td>Untuk Keperluan SKPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
