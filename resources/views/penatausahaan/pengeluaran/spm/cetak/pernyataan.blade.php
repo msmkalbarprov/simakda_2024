@@ -108,8 +108,7 @@
             </tr>
             <tr>
                 <td colspan="2">Demikian Surat Pernyataan ini dibuat untuk melengkapi persyaratan pengajuan
-                    SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}
-                    SKPD kami.</td>
+                    SPM-{{ nama_beban2($beban, $data_beban->jenis_beban) }}.</td>
             </tr>
         </table>
     </div>
