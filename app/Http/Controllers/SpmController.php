@@ -408,6 +408,7 @@ class SpmController extends Controller
         foreach ($data_potongan1 as $potongan) {
             $total_potongan1 += $potongan->nilai;
         }
+
         $data = [
             'pihak_lain' => collect(DB::select("SELECT a.*,
                 SUBSTRING(npwp, 0, 3)+'.'+SUBSTRING(npwp, 3, 3)+'.'+SUBSTRING(npwp, 6, 3)+'.'+SUBSTRING(npwp, 9, 1)+'-'+SUBSTRING(npwp, 10, 3)
@@ -496,7 +497,7 @@ class SpmController extends Controller
         ];
         $view = view('penatausahaan.pengeluaran.spm.cetak.pengantar')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
