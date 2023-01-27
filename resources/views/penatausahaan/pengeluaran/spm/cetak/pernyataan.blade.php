@@ -69,7 +69,7 @@
                     Rp{{ rupiah($data_beban->nilai) }} ({{ ucwords(terbilang($data_beban->nilai)) }})</td>
             </tr>
             <tr>
-                <td>Untuk Keperluan SKPD : {{ $data_beban->nm_skpd }} Tahun Anggaran
+                <td>Untuk Keperluan SKPD {{ $data_beban->nm_skpd }} Tahun Anggaran
                     {{ $tahun_anggaran }}</td>
             </tr>
             <tr>
