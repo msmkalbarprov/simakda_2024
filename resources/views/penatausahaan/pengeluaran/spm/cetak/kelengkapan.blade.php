@@ -216,7 +216,7 @@
     </table>
 
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
         @if ($beban == '1')
             <tr>
                 <td>SKPD/BIRO/UPT</td>
@@ -615,7 +615,7 @@
         @endif
     </table>
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
         <thead>
             <tr>
                 <th></th>
@@ -2769,7 +2769,7 @@
     </table>
     <br>
     <br>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
         @if (in_array($beban, ['1', '2', '3', '4']))
             <tr>
                 <td style="width: 300px">Tanggal Pengembalian SPP</td>
@@ -2816,7 +2816,7 @@
     </table>
     <br>
     <br>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:16px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
         <tr>
             <td style="text-align: center;padding-left:600px">
                 Dikerjakan oleh
