@@ -678,7 +678,8 @@ class SpmController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spm.cetak.ringkasan_up')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)->setPaper('legal')->setOption('page-width', 215)
+                ->setOption('page-height', 330);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
