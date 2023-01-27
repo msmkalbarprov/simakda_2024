@@ -634,6 +634,7 @@ class SPDBelanjaController extends Controller
 
         DB::beginTransaction();
         try {
+            ini_set('max_input_vars', '6000');
             $nospdexplode = explode("/", $data['nomor']);
             $nospd = $nospdexplode[2];
 
@@ -641,6 +642,13 @@ class SPDBelanjaController extends Controller
 
             $nomor_spd = $data['nomor'];
             $field_angkas = status_angkas1($data['skpd']);
+            $status = DB::table('trhrka')
+                ->select('jns_ang')
+                ->where(['kd_skpd' => $data['skpd'], 'status' => '1'])
+                ->orderByDesc('tgl_dpa')
+                ->first();
+
+            $status1 = $status->jns_ang;
 
             if ($nomorspd > 0) {
                 DB::rollBack();
@@ -730,7 +738,7 @@ class SPDBelanjaController extends Controller
 
                                     )xxx
 
-                                    ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $data['jenis_anggaran'], $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal']]);
+                                    ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $status1, $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal']]);
                 } else {
                     $nmskpd = DB::table('ms_skpd')->select('nm_skpd')
                         ->where(['kd_skpd' => $data['skpd']])->first();
@@ -816,7 +824,7 @@ class SPDBelanjaController extends Controller
 
                                             )xxx
 
-                                            ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $data['jenis_anggaran'], $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal'], $data['skpd'], $data['bulan_awal'], $data['bulan_akhir'], $nomor_spd, $data['tanggal']]);
+                                            ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $status1, $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal'], $data['skpd'], $data['bulan_awal'], $data['bulan_akhir'], $nomor_spd, $data['tanggal']]);
                 }
 
                 $user = Auth()->user()->nama;
@@ -869,7 +877,7 @@ class SPDBelanjaController extends Controller
         $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
         $total_anggaran = DB::table('trdrka')
             ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
-            ->where(['jns_ang' => 'P2'])->sum('nilai');
+            ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
 
         $spd_lalu = array_column(DB::select(
             "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking
@@ -897,6 +905,7 @@ class SPDBelanjaController extends Controller
             'kepala_skpd' => $kepala_skpd,
             'jenis' => $jenis->jns_beban == 5 ? 'Belanja' : 'Pembiayaan',
         ));
+
         if ($jenispr == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setOption('margin-top',  10)
