@@ -55,6 +55,10 @@
         .judul2 {
             padding-left: 30px
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -216,7 +220,7 @@
     </table>
 
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         @if ($beban == '1')
             <tr>
                 <td>SKPD/BIRO/UPT</td>
@@ -615,7 +619,7 @@
         @endif
     </table>
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         <thead>
             <tr>
                 <th></th>
@@ -2769,7 +2773,7 @@
     </table>
     <br>
     <br>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         @if (in_array($beban, ['1', '2', '3', '4']))
             <tr>
                 <td style="width: 300px">Tanggal Pengembalian SPP</td>
@@ -2816,26 +2820,28 @@
     </table>
     <br>
     <br>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;font-size:18px">
-        <tr>
-            <td style="text-align: center;padding-left:600px">
-                Dikerjakan oleh
-            </td>
-        </tr>
-        <tr>
-            <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
-                {{ $pptk->jabatan }}
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align: center;padding-left:600px;font-weight:bold"><u>{{ $pptk->nama }}</u></td>
-        </tr>
-        <tr>
-            <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
-        </tr>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
+        <tbody>
+            <tr>
+                <td style="text-align: center;padding-left:600px">
+                    Dikerjakan oleh
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                    {{ $pptk->jabatan }}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px;font-weight:bold"><u>{{ $pptk->nama }}</u></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
+            </tr>
+        </tbody>
     </table>
 
 </body>
