@@ -97,9 +97,7 @@
                 </tr>
             @endforeach
             <tr>
-                <td></td>
-                <td></td>
-                <td style="text-align: center"><b>JUMLAH</b></td>
+                <td style="text-align: center" colspan="3"><b>JUMLAH</b></td>
                 <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
             </tr>
         </table>
@@ -110,6 +108,7 @@
             <td>Terbilang : <i>{{ ucwords(terbilang($total)) }}</i></td>
         </tr>
     </table>
+    <br>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
         <table class="table" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
