@@ -98,7 +98,7 @@
                 <td style="text-align: justify">
                     Jumlah Pembayaran {{ nama_spm1($beban, $data_beban->jenis_beban) }}
                     tersebut tidak akan
-                    dipergunakan untuk membiayai pengeluaran-pengeluaran menurut ketentuan yang berlaku
+                    dipergunakan untuk membiayai pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
                     harus dilaksanakan dengan Pembayaran Langsung (LS).
                     {{-- {{ nama_beban1($beban, $data_beban->jenis_beban) }} --}}
                 </td>
@@ -112,7 +112,7 @@
             </tr>
         </table>
     </div>
-
+    <br>
     <div style="padding-top:20px">
         <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;">
             <tr>
