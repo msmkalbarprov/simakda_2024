@@ -49,15 +49,15 @@
     </table>
     <hr>
     <br>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center" class="rincian">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
         <tr>
-            <td><b>LAMPIRAN SURAT PERINTAH MEMBAYARAN</b></td>
+            <td style="font-size: 16px"><b>LAMPIRAN SURAT PERINTAH MEMBAYARAN</b></td>
         </tr>
         <tr>
-            <td><b>(LAMPIRAN SPM)</b></td>
+            <td style="font-size: 16px"><b>(LAMPIRAN SPM)</b></td>
         </tr>
         <tr>
-            <td><b>{{ $no_spm }}</b></td>
+            <td style="font-size: 16px"><b>{{ $no_spm }}</b></td>
         </tr>
     </table>
     <br>
