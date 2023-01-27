@@ -10,6 +10,14 @@
         h5 {
             font-weight: normal
         }
+
+        #rincian>tbody>tr>td {
+            vertical-align: top
+        }
+
+        .rincian1>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
@@ -21,40 +29,41 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     {{ $skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
 
-    <table style="width: 100%;text-align:center;font-family:'Times New Roman', Times, serif">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
         <tr>
-            <td><strong><u>SURAT PENGANTAR</u></strong></td>
+            <td style="font-size:16px"><strong><u>SURAT PENGANTAR</u></strong></td>
         </tr>
         @if (in_array($beban, ['2', '3', '4', '5', '6']))
             <tr>
-                <td><strong>Nomor : {{ $no_spm }}</strong></td>
+                <td style="font-size:16px"><strong>Nomor : {{ $no_spm }}</strong></td>
             </tr>
         @endif
     </table>
-
-    <table style="width: 100%">
+    <br>
+    <br>
+    <table style="font-size: 13px;width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian1">
         <tr>
             <td>Kepada Yth.</td>
         </tr>
@@ -63,7 +72,7 @@
         </tr>
         @if (in_array($beban, ['1', '2', '3', '4']))
             <tr>
-                <td>OPD : </td>
+                <td>SKPD : </td>
             </tr>
         @endif
         <tr>
@@ -73,11 +82,10 @@
             <td style="height: 20px"></td>
         </tr>
         <tr>
-            <td>Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun
-                {{ $tahun_anggaran }},
-                bersama ini kami mengajukan Surat Perintah Membayar
-                @if ($beban == '1')
+            <td style="text-indent: 24px;text-align:justify">
+                Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
+                {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun {{ $tahun_anggaran }},
+                bersama ini kami mengajukan Surat Perintah Membayar @if ($beban == '1')
                     (SPM-UP)
                 @elseif ($beban == '2')
                     (SPM-GU)
@@ -85,23 +93,22 @@
                     (SPM-TU)
                 @elseif (in_array($beban, ['4', '5', '6']))
                     (SPM-LS)
-                @endif
-                Nomor {{ $no_spm }} tanggal
+                @endif Nomor {{ $no_spm }} tanggal
                 @if ($tanpa == 1)
                     ______________{{ $tahun_anggaran }}
                 @else
                     {{ tanggal($data_beban->tgl_spm) }}
-                @endif
-                untuk diterbitkan SP2D sebagai berikut:
+                @endif untuk diterbitkan SP2D sebagai berikut:
             </td>
         </tr>
     </table>
 
-    <table style="width: 100%">
-        <tbody>
+    <table style="width: 100%;font-size: 13px;font-family:'Open Sans', Helvetica,Arial,sans-serif" id="rincian"
+        class="rincian1">
+        <tbody style="text-align:justify">
             <tr>
                 <td style="width: 5%">1.</td>
-                <td style="width: 40%">Urusan Pemerintahan</td>
+                <td style="width: 30%">Urusan Pemerintahan</td>
                 <td>:</td>
                 <td>{{ $data_beban->kd_bidang_urusan }} - {{ $data_beban->nm_bidang_urusan }}</td>
             </tr>
@@ -193,36 +200,39 @@
         </tbody>
     </table>
 
-    <div style="padding-top:20px">
-        <table class="table" style="width: 100%">
-            @if (in_array($beban, ['1', '2', '3', '4', '5', '6']))
-                <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:600px">
-                        {{ $daerah->daerah }},
-                        @if ($tanpa == 1)
-                            ______________{{ $tahun_anggaran }}
-                        @else
-                            {{ tanggal($data_beban->tgl_spm) }}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
-                        {{ $pptk->jabatan }}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:600px"><strong><u>{{ $pptk->nama }}</u></strong></td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
-                </tr>
-            @endif
-        </table>
-    </div>
+    <br>
+    <br>
+
+    <table class="table" style="width: 100%;font-size: 13px;font-family:'Open Sans', Helvetica,Arial,sans-serif;"
+        class="rincian1">
+        @if (in_array($beban, ['1', '2', '3', '4', '5', '6']))
+            <tr>
+                <td style="margin: 2px 0px;text-align: center;padding-left:600px">
+                    {{ $daerah->daerah }},
+                    @if ($tanpa == 1)
+                        ______________{{ $tahun_anggaran }}
+                    @else
+                        {{ tanggal($data_beban->tgl_spm) }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                    {{ $pptk->jabatan }}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px"><strong><u>{{ $pptk->nama }}</u></strong></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
+            </tr>
+        @endif
+    </table>
+
 </body>
 
 </html>
