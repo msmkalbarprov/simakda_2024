@@ -162,10 +162,11 @@ class PencairanSp2dController extends Controller
                 ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
                 ->count();
             // berhasil
-            $sts = $no_kas + 1;
-            $no_sts = "$sts";
+            $sts = $no_kas;
 
             if ($total_data > 0) {
+                $sts = $no_kas + 1;
+                $no_sts = "$sts";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
                 if (isNull($data_pot)) {
                     $no_bukti = '';
