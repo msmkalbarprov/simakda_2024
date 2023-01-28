@@ -156,7 +156,11 @@ class PencairanSp2dController extends Controller
                 'nocek' => $no_kontrak
             ]);
 
-            $total_data = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereNotBetween('a.kd_rek6', ['2110801', '4140612'])->count();
+            $total_data = DB::table('trspmpot as a')
+                ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
+                ->where(['b.no_sp2d' => $no_sp2d])
+                ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
+                ->count();
             // berhasil
             if ($total_data > 0) {
                 $sts = $no_kas + 1;
