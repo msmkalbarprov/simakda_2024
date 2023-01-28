@@ -185,6 +185,7 @@ class TerimaSp2dController extends Controller
                     ->where(['b.no_sp2d' => $no_sp2d, 'b.kd_skpd' => $kd_skpd])
                     ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
                     ->get();
+
                 $data_potongan = json_decode(json_encode($data_potongan), true);
 
                 if (isset($data_potongan)) {
@@ -240,12 +241,12 @@ class TerimaSp2dController extends Controller
                         ];
                     }, $data_potongan2));
                 }
-
-                DB::commit();
-                return response()->json([
-                    'message' => '1'
-                ]);
             }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
