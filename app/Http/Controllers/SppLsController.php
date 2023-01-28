@@ -1873,6 +1873,7 @@ class SppLsController extends Controller
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
         $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
+
         if ($beban == '4') {
             $cari_jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
             $jenis = $cari_jenis->jns_beban;
@@ -2119,8 +2120,12 @@ class SppLsController extends Controller
             if (substr($kd_skpd, 18, 4) == '0000') {
                 $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->whereRaw("LEFT(kd_rek6,1)= '5' AND left(kd_skpd,17) = LEFT('$kd_skpd', 17) AND kd_sub_kegiatan='$sub_kegiatan' AND jns_ang='$status_anggaran'")->first();
             } else {
-                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
+                $data_nilai = DB::table('trdrka')
+                    ->selectRaw("sum(nilai) as nilai")
+                    ->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $sub_kegiatan, 'jns_ang' => $status_anggaran])
+                    ->first();
             }
+
             $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
             $tglspd = $cari_spp->tgl_spp;
 
