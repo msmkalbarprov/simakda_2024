@@ -7,6 +7,7 @@
         });
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
+        $('#bank').prop('disabled', true);
 
         // no bukti cms
         $.ajax({
@@ -88,7 +89,10 @@
 
         $('#rek_tujuan').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
+            let bank = $(this).find(':selected').data('bank');
+
             $("#nm_rekening_tujuan").val(nama);
+            $("#bank").val(bank).trigger('change');
         });
 
         let tabel_rekening = $('#input_rekening').DataTable({

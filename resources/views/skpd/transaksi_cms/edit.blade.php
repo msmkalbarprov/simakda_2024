@@ -528,8 +528,9 @@
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($data_rek_tujuan as $rek_tujuan)
                                     <option value="{{ $rek_tujuan->rekening }}"
-                                        data-nama="{{ $rek_tujuan->nm_rekening }}">{{ $rek_tujuan->rekening }} |
-                                        {{ $rek_tujuan->nm_rekening }}</option>
+                                        data-nama="{{ $rek_tujuan->nm_rekening }}" data-bank="{{ $rek_tujuan->bank }}">
+                                        {{ $rek_tujuan->rekening }} |
+                                        {{ $rek_tujuan->nm_rekening }} | {{ $rek_tujuan->bank }}</option>
                                 @endforeach
                             </select>
                         </div>
