@@ -66,10 +66,9 @@
                         </div>
                         <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="jenis" name="jenis"
-                                data-placeholder="Silahkan Pilih">
-                                <option value="" disabled selected>Silahkan Pilih Jenis</option>
-                                <option value="">Tanpa Termin / Sekali Pembayaran</option>
+                            <select class="form-control select2-multiple" style="width: 100%;" id="jenis"
+                                name="jenis">
+                                <option value=" ">Tanpa Termin / Sekali Pembayaran</option>
                                 <option value="1">Konstruksi Dalam Pengerjaan</option>
                                 <option value="2">Uang Muka</option>
                                 <option value="3">Hutang Tahun Lalu</option>
