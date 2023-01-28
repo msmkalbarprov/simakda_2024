@@ -17,7 +17,7 @@ class SppLsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_spp' => DB::table('trhspp')->where('kd_skpd', $kd_skpd)->whereNotIn('jns_spp', ['1', '2', '3'])->orderByRaw("tgl_spp ASC, no_spp ASC,CAST(urut AS INT) ASC")->get(),
-            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK', 'KPA'])->get(),
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK', 'KPA', 'BPP', 'BP'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
@@ -1864,7 +1864,11 @@ class SppLsController extends Controller
         $nama_skpd = $skpd->nm_skpd;
         $alamat_skpd = $skpd->alamat;
         $kodepos = $skpd->kodepos == '' ? "--------" : $skpd->kodepos;
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP', 'BP'])
+            ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;

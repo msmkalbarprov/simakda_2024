@@ -422,7 +422,11 @@ class SpmController extends Controller
             'no_spm' => $no_spm,
             'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daerah' => DB::table('sclient')->select('kab_kota', 'daerah')->where(['kd_skpd' => $kd_skpd])->first(),
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
+                ->whereIn('kode', ['BK', 'BPP', 'BP'])
+                ->first(),
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
             'data_spm' => $data_spm,
             'tahun_anggaran' => tahun_anggaran(),
@@ -721,7 +725,11 @@ class SpmController extends Controller
             'tahun_anggaran' => tahun_anggaran(),
             'no_spm' => $no_spm,
             'nilai_ang' => nilai_anggaran_ringkasan($beban, $kd_skpd, $status_anggaran->jns_ang, $kd_sub_kegiatan, $no_spp->no_spp),
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
+                ->whereIn('kode', ['BK', 'BPP', 'BP'])
+                ->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
             'data_beban' => $data_beban,
             'total_spd' => $total_spd,
