@@ -162,7 +162,7 @@ class PencairanSp2dController extends Controller
                 ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
                 ->count();
             // berhasil
-            $sts = $no_kas;
+            $bukti_str = $no_kas;
 
             if ($total_data > 0) {
                 $sts = $no_kas + 1;
@@ -217,15 +217,15 @@ class PencairanSp2dController extends Controller
                 }
             }
 
-            $setor = $sts + 1;
+            $setor = $bukti_str + 1;
             $no_setor = "$setor";
 
             $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
 
             if ($total_data1 > 0) {
-                $sts = $sts + 1;
+                $sts = $bukti_str + 1;
                 $no_sts = "$sts";
-                $setor = $setor + 2;
+                $setor = $sts + 2;
                 $no_setor = "$setor";
 
                 $data_potongan = DB::table('trspmpot as a')->leftJoin('trhsp2d as b', function ($join) {
