@@ -162,9 +162,10 @@ class PencairanSp2dController extends Controller
                 ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
                 ->count();
             // berhasil
+            $sts = $no_kas + 1;
+            $no_sts = "$sts";
+
             if ($total_data > 0) {
-                $sts = $no_kas + 1;
-                $no_sts = "$sts";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
                 if (isNull($data_pot)) {
                     $no_bukti = '';
@@ -219,6 +220,7 @@ class PencairanSp2dController extends Controller
             $no_setor = "$setor";
 
             $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
+
             if ($total_data1 > 0) {
                 $sts = $sts + 1;
                 $no_sts = "$sts";
@@ -378,6 +380,7 @@ class PencairanSp2dController extends Controller
             //     }
             // }
             $data_spp = json_decode(json_encode($data_spp), true);
+
             if (($beban == '4') && ($jenis == '1' || $jenis == '10')) {
                 if (isset($data_spp)) {
                     DB::table('trdtransout')->insert(array_map(function ($value) use ($no_trans, $no_sp2d, $beban) {

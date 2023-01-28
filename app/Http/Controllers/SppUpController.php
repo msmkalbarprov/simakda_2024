@@ -94,6 +94,7 @@ class SppUpController extends Controller
                     'jns_spp' => $beban,
                     'bank' => $bank,
                     'nmrekan' => $nama_penerima,
+                    'penerima' => $nama_penerima,
                     'no_rek' => $rekening,
                     'npwp' => $npwp,
                     'nm_skpd' => $nm_skpd,
