@@ -439,8 +439,16 @@
 
             let rekanan = '';
             if (rekanan1 == 'Input Manual') {
+                if (!nama_rekanan) {
+                    alert('Nama Rekanan Tidak Boleh Kosong!');
+                    return;
+                }
                 rekanan = nama_rekanan;
             } else {
+                if (!rekanan1) {
+                    alert('Rekanan Tidak Boleh Kosong!');
+                    return;
+                }
                 rekanan = rekanan1;
             }
 
