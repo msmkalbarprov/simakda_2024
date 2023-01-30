@@ -5,6 +5,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        $('#rekanan1').hide();
 
         let rincian_upload = $('#rincian_upload').DataTable({
             responsive: true,
@@ -155,6 +156,15 @@
         });
 
         $('#rekanan').on('select2:select', function() {
+            let rekanan = this.value;
+            if (rekanan == 'Input Manual') {
+                $('#rekanan1').show();
+                $('#nama_rekanan').val(null);
+            } else {
+                $('#rekanan1').hide();
+                $('#nama_rekanan').val(null);
+            }
+
             let npwp = $(this).find(':selected').data('npwp');
             let pimpinan = $(this).find(':selected').data('pimpinan');
             let alamat = $(this).find(':selected').data('alamat');
@@ -266,7 +276,8 @@
             let no_sp2d = document.getElementById('no_sp2d').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let kd_rekening = document.getElementById('kd_rekening').value;
-            let rekanan = document.getElementById('rekanan').value;
+            let rekanan1 = document.getElementById('rekanan').value;
+            let nama_rekanan = document.getElementById('nama_rekanan').value;
             let no_transaksi = document.getElementById('no_transaksi').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
@@ -330,6 +341,10 @@
                 alert('Nama Pimpinan Tidak Boleh Kosong');
                 return;
             }
+            if (!alamat) {
+                alert('Alamat Tidak Boleh Kosong');
+                return;
+            }
             if (!tgl_bukti) {
                 alert('Tanggal Bukti Tidak Boleh Kosong');
                 return;
@@ -358,6 +373,22 @@
                 alert('List potongan tidak boleh kosong!');
                 return;
             }
+
+            let rekanan = '';
+            if (rekanan1 == 'Input Manual') {
+                if (!nama_rekanan) {
+                    alert('Nama Rekanan Tidak Boleh Kosong!');
+                    return;
+                }
+                rekanan = nama_rekanan;
+            } else {
+                if (!rekanan1) {
+                    alert('Rekanan Tidak Boleh Kosong!');
+                    return;
+                }
+                rekanan = rekanan1;
+            }
+
             let data = {
                 rincian_potongan,
                 tgl_bukti,

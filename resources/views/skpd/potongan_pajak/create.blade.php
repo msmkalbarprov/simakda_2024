@@ -121,7 +121,14 @@
                         </div>
                         <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="pimpinan" name="pimpinan" readonly>
+                            <input type="text" class="form-control" id="pimpinan" name="pimpinan">
+                        </div>
+                    </div>
+                    {{-- Rekanan --}}
+                    <div class="mb-3 row" id="rekanan1">
+                        <label for="rekanan" class="col-md-2 col-form-label">Nama Rekanan</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="nama_rekanan" name="nama_rekanan">
                         </div>
                     </div>
                     {{-- Beban dan NPWP --}}
@@ -141,14 +148,14 @@
                         </div>
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="npwp" name="npwp" readonly>
+                            <input type="text" class="form-control" id="npwp" name="npwp">
                         </div>
                     </div>
                     {{-- Alamat Perusahaan --}}
                     <div class="mb-3 row">
                         <label for="alamat" class="col-md-2 col-form-label">Alamat</label>
                         <div class="col-md-10">
-                            <textarea class="form-control" style="width: 100%" id="alamat" name="alamat" readonly></textarea>
+                            <textarea class="form-control" style="width: 100%" id="alamat" name="alamat"></textarea>
                         </div>
                     </div>
                     {{-- Keterangan --}}

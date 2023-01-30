@@ -58,9 +58,11 @@ class PotonganPajakController extends Controller
 
         $rekanan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($rekanan2);
 
-        $rekanan = DB::table(DB::raw("({$rekanan3->toSql()}) AS sub"))
+        $rekanan4 = DB::query()->select(DB::raw("'Input Manual' as nmrekan"), DB::raw("'' as pimpinan"), DB::raw("'' as npwp"), DB::raw("'' as alamat"))->unionAll($rekanan3);
+
+        $rekanan = DB::table(DB::raw("({$rekanan4->toSql()}) AS sub"))
             ->select('*')
-            ->mergeBindings($rekanan3)
+            ->mergeBindings($rekanan4)
             ->get();
 
         $data = [
