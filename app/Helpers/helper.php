@@ -1924,7 +1924,7 @@ function cetak_penguji($kd_skpd)
     $data = DB::table('ms_ttd')
         ->select('nama', 'jabatan')
         ->where(['kd_skpd' => $kd_skpd])
-        ->whereIn('kode', ['BP', 'BPP'])
+        ->whereIn('kode', ['BK', 'BPP'])
         ->first();
     return $data->nama;
 }

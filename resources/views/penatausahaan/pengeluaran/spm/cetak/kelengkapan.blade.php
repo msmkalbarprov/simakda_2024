@@ -2833,14 +2833,20 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px;font-weight:bold"><u>{{ $pptk->nama }}</u></td>
+                <td style="text-align: center;padding-left:600px">
+                    <b><u>{{ $pptk->nama }}</u></b>
+                    <br>
+                    {{ $pptk->pangkat }}
+                    <br>
+                    NIP. {{ $pptk->nip }}
+                </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
-            </tr>
-            <tr>
+            </tr> --}}
+            {{-- <tr>
                 <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
-            </tr>
+            </tr> --}}
         </tbody>
     </table>
 
