@@ -452,6 +452,13 @@
                 alert("Isi Nilai Terlebih Dahulu...!!!");
                 return;
             }
+
+            if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
+                rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
+                rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
+                alert('ID Billing wajib diisi!');
+                return;
+            }
             let tampungan = tabel_pot.rows().data().toArray().map((value) => {
                 let result = {
                     map_pot: value.map_pot,
