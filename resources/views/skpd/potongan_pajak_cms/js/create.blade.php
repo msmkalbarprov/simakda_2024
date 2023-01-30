@@ -424,6 +424,7 @@
             let data = {
                 rincian_potongan,
                 tgl_bukti,
+                no_bukti,
                 npwp,
                 beban,
                 nm_sub_kegiatan,

@@ -14,7 +14,8 @@
                     <div class="mb-3 row">
                         <label for="no_bukti" class="col-md-2 col-form-label">No Bukti Terima</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required readonly>
+                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required
+                                value="{{ $nomor }}">
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ $tahun_anggaran }}">
                         </div>

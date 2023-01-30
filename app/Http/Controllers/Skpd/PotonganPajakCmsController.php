@@ -62,6 +62,15 @@ class PotonganPajakCmsController extends Controller
             ->mergeBindings($rekanan3)
             ->get();
 
+        $nomor1 = DB::table('trhtransout_cmsbank')->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
+        $nomor2 = DB::table('trhtrmpot_cmsbank')->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor1);
+        $nomor3 = DB::table('tr_panjar_cmsbank')->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor2);
+
+        $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
+            ->select(DB::raw("CASE WHEN MAX(nomor+1) is null THEN 1 else MAX(nomor+1) END as nomor"))
+            ->mergeBindings($nomor3)
+            ->first();
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_potongan' => $potongan,
@@ -71,7 +80,8 @@ class PotonganPajakCmsController extends Controller
             })->where(['b.kd_skpd' => $kd_skpd])->select('b.no_sp2d', 'a.jns_spp')->groupBy('b.no_sp2d', 'jns_spp')->orderBy('no_sp2d')->get(),
             'daftar_rekanan' => $rekanan,
             'daftar_rek' => DB::table('ms_pot')->select('kd_rek6', 'nm_rek6')->get(),
-            'tahun_anggaran' => tahun_anggaran()
+            'tahun_anggaran' => tahun_anggaran(),
+            'nomor' => $nomor->nomor
         ];
 
         return view('skpd.potongan_pajak_cms.create')->with($data);
@@ -108,20 +118,20 @@ class PotonganPajakCmsController extends Controller
         DB::beginTransaction();
         try {
             // NOMOR BUKTI
-            $nomor1 = DB::table('trhtransout_cmsbank')->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
-            $nomor2 = DB::table('trhtrmpot_cmsbank')->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor1);
-            $nomor3 = DB::table('tr_panjar_cmsbank')->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor2);
+            // $nomor1 = DB::table('trhtransout_cmsbank')->select('no_voucher as nomor', DB::raw("'Daftar Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
+            // $nomor2 = DB::table('trhtrmpot_cmsbank')->select('no_bukti as nomor', DB::raw("'Potongan Pajak Transaksi Non Tunai' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor1);
+            // $nomor3 = DB::table('tr_panjar_cmsbank')->select('no_panjar as nomor', DB::raw("'Daftar Panjar' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->union($nomor2);
 
-            $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
-                ->select(DB::raw("CASE WHEN MAX(nomor+1) is null THEN 1 else MAX(nomor+1) END as nomor"))
-                ->mergeBindings($nomor3)
-                ->first();
-            $no_bukti = $nomor->nomor;
+            // $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
+            //     ->select(DB::raw("CASE WHEN MAX(nomor+1) is null THEN 1 else MAX(nomor+1) END as nomor"))
+            //     ->mergeBindings($nomor3)
+            //     ->first();
+            // $no_bukti = $nomor->nomor;
             // TRHTRMPOT
-            DB::table('trhtrmpot_cmsbank')->where(['kd_skpd' => $data['kd_skpd'], 'no_bukti' => $no_bukti])->delete();
+            DB::table('trhtrmpot_cmsbank')->where(['kd_skpd' => $data['kd_skpd'], 'no_bukti' => $data['no_bukti']])->delete();
 
             DB::table('trhtrmpot_cmsbank')->insert([
-                'no_bukti' => $no_bukti,
+                'no_bukti' => $data['no_bukti'],
                 'tgl_bukti' => $data['tgl_bukti'],
                 'ket' => $data['keterangan'],
                 'username' => Auth::user()->nama,
@@ -151,12 +161,12 @@ class PotonganPajakCmsController extends Controller
             ]);
 
             // TRDTRMPOT
-            DB::table('trdtrmpot_cmsbank')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trdtrmpot_cmsbank')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
 
             if (isset($data['rincian_potongan'])) {
-                DB::table('trdtrmpot_cmsbank')->insert(array_map(function ($value) use ($data, $no_bukti) {
+                DB::table('trdtrmpot_cmsbank')->insert(array_map(function ($value) use ($data) {
                     return [
-                        'no_bukti' => $no_bukti,
+                        'no_bukti' => $data['no_bukti'],
                         'kd_rek6' => $value['kd_rek6'],
                         'nm_rek6' => $value['nm_rek6'],
                         'nilai' => $value['nilai'],
@@ -172,7 +182,7 @@ class PotonganPajakCmsController extends Controller
             DB::commit();
             return response()->json([
                 'message' => '1',
-                'no_bukti' => $no_bukti
+                'no_bukti' => $data['no_bukti']
             ]);
         } catch (Exception $e) {
             DB::rollBack();
