@@ -82,6 +82,10 @@ class DaftarPengujiController extends Controller
                 ->where(['no_uji' => $no_advice, 'no_sp2d' => $no_sp2d])
                 ->delete();
 
+            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
+                'is_verified' => '1'
+            ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -143,6 +147,7 @@ class DaftarPengujiController extends Controller
                 'no_urut' => $no_urut,
                 'status_bank' => '1'
             ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1',
@@ -164,6 +169,15 @@ class DaftarPengujiController extends Controller
 
         DB::beginTransaction();
         try {
+            $no_sp2d = array();
+            if (!empty($detail_penguji)) {
+                foreach ($detail_penguji as $penguji) {
+                    $no_sp2d[] = $penguji['no_sp2d'];
+                }
+            } else {
+                $no_sp2d[] = '';
+            }
+
             DB::table('trduji')->where(['no_uji' => $nomor_baru])->delete();
             if (isset($detail_penguji)) {
                 DB::table('trduji')->insert(array_map(function ($value) use ($nomor_baru, $tanggal) {
@@ -174,6 +188,13 @@ class DaftarPengujiController extends Controller
                     ];
                 }, $detail_penguji));
             }
+
+            DB::table('trhsp2d')
+                ->whereIn('no_sp2d', $no_sp2d)
+                ->update([
+                    'is_verified' => '3'
+                ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -215,6 +236,8 @@ class DaftarPengujiController extends Controller
         DB::beginTransaction();
         try {
             DB::table('trduji')->where(['no_uji' => $no_uji, 'no_sp2d' => $no_sp2d])->delete();
+
+
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -293,8 +316,29 @@ class DaftarPengujiController extends Controller
 
         DB::beginTransaction();
         try {
+            $sp2d = DB::table('trduji')
+                ->select('no_sp2d')
+                ->where(['no_uji' => $no_uji])
+                ->get();
+
+            $no_sp2d = array();
+            if (!empty($sp2d)) {
+                foreach ($sp2d as $penguji) {
+                    $no_sp2d[] = $penguji->no_sp2d;
+                }
+            } else {
+                $no_sp2d[] = '';
+            }
+
             DB::table('trhuji')->where(['no_uji' => $no_uji])->delete();
             DB::table('trduji')->where(['no_uji' => $no_uji])->delete();
+
+            DB::table('trhsp2d')
+                ->whereIn('no_sp2d', $no_sp2d)
+                ->update([
+                    'is_verified' => '1'
+                ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1'
