@@ -165,8 +165,8 @@ class PencairanSp2dController extends Controller
             $bukti_str = $no_kas;
 
             if ($total_data > 0) {
-                $sts = $no_kas + 1;
-                $no_sts = "$sts";
+                $bukti_str = $no_kas + 1;
+                $bukti_str = "$bukti_str";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
                 if (isNull($data_pot)) {
                     $no_bukti = '';
@@ -176,9 +176,9 @@ class PencairanSp2dController extends Controller
                 $data_potongan = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereNotIn('a.kd_rek6', ['2110801', '4140612'])->select('a.*', 'b.jns_spp')->get();
                 $data_potongan = json_decode(json_encode($data_potongan), true);
                 if (isset($data_potongan)) {
-                    DB::table('trdstrpot')->insert(array_map(function ($value) use ($no_sts, $opd, $no_sp2d) {
+                    DB::table('trdstrpot')->insert(array_map(function ($value) use ($bukti_str, $opd, $no_sp2d) {
                         return [
-                            'no_bukti' => $no_sts,
+                            'no_bukti' => $bukti_str,
                             'kd_rek6' => $value['kd_rek6'],
                             'nm_rek6' => $value['nm_rek6'],
                             'nilai' => $value['nilai'],
@@ -193,9 +193,9 @@ class PencairanSp2dController extends Controller
                 $data_potongan2 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->join('trhspp as c', 'b.no_spp', '=', 'c.no_spp')->where(['b.no_sp2d' => $no_sp2d])->select(DB::raw("SUM(a.nilai) as nilai_pot"), 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')->groupBy('no_sp2d', 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')->get();
                 $data_potongan2 = json_decode(json_encode($data_potongan2), true);
                 if (isset($data_potongan2)) {
-                    DB::table('trhstrpot')->insert(array_map(function ($value) use ($no_sts, $tgl_cair, $nama, $opd, $no_bukti, $no_sp2d) {
+                    DB::table('trhstrpot')->insert(array_map(function ($value) use ($bukti_str, $tgl_cair, $nama, $opd, $no_bukti, $no_sp2d) {
                         return [
-                            'no_bukti' => $no_sts,
+                            'no_bukti' => $bukti_str,
                             'tgl_bukti' => $tgl_cair,
                             'ket' => 'Setor pajak nomor SP2D  ' . $no_sp2d,
                             'username' => $nama,
