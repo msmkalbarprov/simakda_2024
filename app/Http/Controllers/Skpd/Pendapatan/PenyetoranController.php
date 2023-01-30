@@ -23,7 +23,7 @@ class PenyetoranController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('trhkasin_pkd as a')
             ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
-            ->where(['a.jns_trans' => '2'])
+            ->where(['a.jns_trans' => '2', 'a.kd_skpd' => $kd_skpd])
             ->orderBy('a.tgl_sts')
             ->orderBy('a.no_sts')
             ->get();
