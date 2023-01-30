@@ -432,7 +432,7 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        {{-- <button id="create_billing" class="btn btn-primary btn-md">Create Id Billing</button> --}}
+                        <button id="create_billing" class="btn btn-primary btn-md">Create Id Billing</button>
                         <a href="{{ route('spm.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
