@@ -61,6 +61,10 @@
                 alert("Isi NPWP Terlebih Dahulu...!!!");
                 return;
             }
+            if (!bank) {
+                alert("Isi BANK Terlebih Dahulu...!!!");
+                return;
+            }
             $('#simpan_spp').prop('disabled', true);
             $.ajax({
                 url: "{{ route('sppup.edit_spp') }}",
