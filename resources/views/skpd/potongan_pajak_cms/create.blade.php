@@ -130,7 +130,7 @@
                         </div>
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" id="npwp" name="npwp" readonly>
+                            <input type="text" class="form-control" id="npwp" name="npwp">
                         </div>
                     </div>
                     {{-- Alamat Perusahaan --}}
