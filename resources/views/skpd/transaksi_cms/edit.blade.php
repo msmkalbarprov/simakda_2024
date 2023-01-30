@@ -530,7 +530,8 @@
                                     <option value="{{ $rek_tujuan->rekening }}"
                                         data-nama="{{ $rek_tujuan->nm_rekening }}" data-bank="{{ $rek_tujuan->bank }}">
                                         {{ $rek_tujuan->rekening }} |
-                                        {{ $rek_tujuan->nm_rekening }} | {{ $rek_tujuan->bank }}</option>
+                                        {{ $rek_tujuan->nm_rekening }} | {{ $rek_tujuan->bank }} |
+                                        {{ $rek_tujuan->keterangan }}</option>
                                 @endforeach
                             </select>
                         </div>
