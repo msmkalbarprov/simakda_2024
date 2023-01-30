@@ -100,9 +100,9 @@
                                     id="rekening" value="{{ old('rekening') }}" name="rekening">
                             </div>
                         </div>
-                        <!-- Nama Pemilik/Penerima -->
+                        <!-- Nama Pemilik -->
                         <div class="mb-3 row">
-                            <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik/Penerima</label>
+                            <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik</label>
                             <div class="col-md-10">
                                 <input class="form-control" type="text" placeholder="Silahkan isi dengan nama penerima"
                                     id="nm_rekening" name="nm_rekening" value="{{ old('nm_rekening') }}">
@@ -182,7 +182,7 @@
                         </div>
                         {{-- Rekanan --}}
                         <div class="mb-3 row">
-                            <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                            <label for="rekanan" class="col-md-2 col-form-label">Rekanan/Penerima</label>
                             <div class="col-md-10">
                                 {{-- <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
                                     name="rekanan" data-placeholder="Silahkan Pilih">
@@ -230,10 +230,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <!-- Nama Pemilik/Penerima -->
+                        <!-- Nama Pemilik -->
                         <div class="mb-3 row">
                             <label for="nm_rekening_validasi" class="col-md-2 col-form-label">Nama
-                                Pemilik/Penerima</label>
+                                Pemilik</label>
                             <div class="col-md-10">
                                 <input class="form-control @error('nm_rekening_validasi') is-invalid @enderror" readonly
                                     type="text" value="{{ old('nm_rekening_validasi') }}" id="nm_rekening_validasi"
@@ -296,16 +296,10 @@
                 let jenis = this.value;
 
                 if (jenis == '2') {
-                    $('#rekanan').prop('readonly', false);
-                    $('#pimpinan').prop('readonly', false);
-                    $('#alamat').prop('readonly', false);
                     $('#rekanan').val(null);
                     $('#pimpinan').val(null);
                     $('#alamat').val(null);
                 } else {
-                    $('#rekanan').prop('readonly', true);
-                    $('#pimpinan').prop('readonly', true);
-                    $('#alamat').prop('readonly', true);
                     $('#rekanan').val(null);
                     $('#pimpinan').val(null);
                     $('#alamat').val(null);
@@ -433,6 +427,7 @@
             });
 
             $('#cek_rekening').on("click", function() {
+                let jenis = document.getElementById('jenis').value;
                 let kode_bank = document.getElementById('bank').value;
                 let no_rek = document.getElementById('rekening').value;
                 let nm_rek = document.getElementById('nm_rekening').value;
@@ -487,12 +482,17 @@
                                     .nomorRekening);
                                 $("#nm_rekening_validasi").val(data1.data[0].data
                                     .namaPemilikRekening);
+                                if (jenis == '1') {
+                                    $("#rekanan").val(data1.data[0].data
+                                        .namaPemilikRekening);
+                                }
                                 document.getElementById("save").disabled = false;
                             } else {
                                 alert(data1.message);
                                 document.getElementById("save").disabled = true;
                                 $("#no_rekening_validasi").attr("value", '');
                                 $("#nm_rekening_validasi").attr("value", '');
+                                $('#rekanan').val(null);
                             }
                         }
                     })
