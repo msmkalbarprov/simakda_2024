@@ -1921,7 +1921,11 @@ function cari_lampiran_lama($sp2d)
 
 function cetak_penguji($kd_skpd)
 {
-    $data = DB::table('ms_ttd')->select('nama', 'jabatan')->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
+    $data = DB::table('ms_ttd')
+        ->select('nama', 'jabatan')
+        ->where(['kd_skpd' => $kd_skpd])
+        ->whereIn('kode', ['BP', 'BPP'])
+        ->first();
     return $data->nama;
 }
 
@@ -3201,7 +3205,8 @@ function nama_rekening_cair($beban, $kd_rek6)
 function nama_bend($kd_skpd)
 {
     $data = DB::table('ms_ttd')
-        ->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])
+        ->where(['kd_skpd' => $kd_skpd])
+        ->whereIn('kode', ['BK', 'BPP'])
         ->first();
 
     return $data;

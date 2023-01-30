@@ -124,7 +124,9 @@ class TerimaSp2dController extends Controller
             'nm_prog' => $nm_prog,
             'pagu' => $pagu->nilai,
             'bud' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kode' => 'BUD'])->first(),
-            'bk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $data_sp2d->kd_skpd, 'kode' => 'BK'])->first(),
+            'bk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $data_sp2d->kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'total_kegiatan' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $data_sp2d->no_spp, 'kd_skpd' => $data_sp2d->kd_skpd])->first(),
             'sub_kegiatan' => $sp2d,
             'potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),

@@ -17,7 +17,11 @@ class SppUpController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_spp' => DB::table('trhspp')->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '1'])->orderBy('no_spp')->orderBy('kd_skpd')->get(),
-            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK', 'KPA'])->get(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nip', 'nama', 'jabatan')
+                ->where('kd_skpd', $kd_skpd)
+                ->whereIn('kode', ['BK', 'BPP', 'KPA'])
+                ->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
@@ -271,7 +275,11 @@ class SppUpController extends Controller
             'no_spp' => $no_spp,
             'peng' => $peng,
             'pergub' => DB::table('ms_sk_up')->first(),
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa
         ];
@@ -302,7 +310,11 @@ class SppUpController extends Controller
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
             'pergub' => DB::table('ms_sk_up')->first(),
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa,
             'spp' => DB::table('trhspp as a')->join('ms_skpd as b', 'a.kd_skpd', '=', 'b.kd_skpd')->where(['a.no_spp' => $no_spp])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.urusan1 as kd_urusan', 'a.no_spd', 'a.nilai', DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=b.urusan1) as nm_urusan"))->first()
@@ -333,7 +345,11 @@ class SppUpController extends Controller
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'kd_skpd' => $kd_skpd,
             'tanpa' => $request->tanpa,
             'spp' => DB::table('trdspp')->select('kd', 'kd_sub_kegiatan', 'kd_rek6', 'nm_rek6', 'nilai')->where(['no_spp' => $no_spp])->orderBy('kd')->first(),
@@ -366,7 +382,11 @@ class SppUpController extends Controller
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_spp' => $no_spp,
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'pa_kpa' => DB::table('ms_ttd')
                 ->select('nama', 'nip', 'jabatan', 'pangkat')
                 ->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])
@@ -439,7 +459,11 @@ class SppUpController extends Controller
             'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first(),
             'kd_sub_kegiatan1' => $kd_sub_kegiatan1,
             'nm_sub_kegiatan1' => $nm_sub_kegiatan1,
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan')
+                ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd, 'kode' => 'PPTK'])->first(),
             'pa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first(),
             'bank' => DB::table('ms_bank')->select('nama')->where(['kode' => $data->bank])->first(),

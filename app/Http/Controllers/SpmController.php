@@ -16,7 +16,7 @@ class SpmController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
-            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK', 'BPP', 'BP'])->get(),
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BPP', 'BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'PPK'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD'])->get(),
@@ -355,7 +355,10 @@ class SpmController extends Controller
         ];
         $view = view('penatausahaan.pengeluaran.spm.cetak.kelengkapan')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -425,7 +428,7 @@ class SpmController extends Controller
             'bendahara' => DB::table('ms_ttd')
                 ->select('nama', 'nip', 'jabatan', 'pangkat')
                 ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
-                ->whereIn('kode', ['BK', 'BPP', 'BP'])
+                ->whereIn('kode', ['BPP', 'BK'])
                 ->first(),
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
             'data_spm' => $data_spm,
@@ -492,7 +495,11 @@ class SpmController extends Controller
             'no_spm' => $no_spm,
             'data_beban' => $data_beban,
             'tanpa' => $tanpa,
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
             'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first(),
             'header' =>  DB::table('config_app')
@@ -669,7 +676,11 @@ class SpmController extends Controller
         $data = [
             'pergub' => DB::table('ms_sk_up')->first(),
             'data_beban' => DB::table('trhspm as a')->select('a.no_spm', 'a.jenis_beban', 'a.tgl_spm', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.no_spd', 'a.nilai')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->where(['a.no_spm' => $no_spm])->first(),
-            'bendahara' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara, 'kode' => 'BK'])->first(),
+            'bendahara' => DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
             'tahun_anggaran' => tahun_anggaran(),
             'no_spm' => $no_spm,
@@ -728,7 +739,7 @@ class SpmController extends Controller
             'bendahara' => DB::table('ms_ttd')
                 ->select('nama', 'nip', 'jabatan', 'pangkat')
                 ->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])
-                ->whereIn('kode', ['BK', 'BPP', 'BP'])
+                ->whereIn('kode', ['BPP', 'BK'])
                 ->first(),
             'pptk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pptk])->whereIn('kode', ['PPK', 'PPTK'])->first(),
             'data_beban' => $data_beban,

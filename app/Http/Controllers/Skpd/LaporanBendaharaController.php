@@ -16,7 +16,12 @@ class LaporanBendaharaController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
-            'bendahara' => DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])->orderBy('nip')->orderBy('nama')->get(),
+            'bendahara' => DB::table('ms_ttd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
             'pa_kpa' => DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->orderBy('nip')->orderBy('nama')->get(),
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
             'jns_anggaran' => jenis_anggaran(),
@@ -60,7 +65,7 @@ class LaporanBendaharaController extends Controller
         }
         $data       = DB::table('ms_ttd')
             ->where(['kd_skpd' => $kd_skpd])
-            ->whereIn('kode', ['BK', 'BP', 'BPP'])
+            ->whereIn('kode', ['BK', 'BPP'])
             ->orderBy('nip')
             ->orderBy('nama')
             ->get();
@@ -107,7 +112,11 @@ class LaporanBendaharaController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
         // rekal
@@ -361,7 +370,11 @@ class LaporanBendaharaController extends Controller
         $tahun_anggaran = '2022';
 
         // TANDA TANGAN
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
         // rekal

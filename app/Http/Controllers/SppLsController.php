@@ -17,7 +17,7 @@ class SppLsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_spp' => DB::table('trhspp')->where('kd_skpd', $kd_skpd)->whereNotIn('jns_spp', ['1', '2', '3'])->orderByRaw("tgl_spp ASC, no_spp ASC,CAST(urut AS INT) ASC")->get(),
-            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BK', 'KPA', 'BPP', 'BP'])->get(),
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['KPA', 'BPP', 'BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
@@ -1136,7 +1136,11 @@ class SppLsController extends Controller
         } else {
             $kodepos = $cari_kode->kodepos;
         }
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $cari_spp = DB::table('trhspp')->select('no_spd', 'tgl_spp')->where('no_spp', $no_spp)->first();
         $cari_spd = DB::table('trhspd')->select('tgl_spd')->where('no_spd', $cari_spp->no_spd)->first();
@@ -1398,7 +1402,12 @@ class SppLsController extends Controller
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'kodepos')->where('kd_skpd', $kd_skpd)->first();
         $nama_skpd = $skpd->nm_skpd;
         $kodepos = $skpd->kodepos == '' ? "--------" : $skpd->kodepos;
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
@@ -1681,7 +1690,12 @@ class SppLsController extends Controller
         $nama_skpd = $skpd->nm_skpd;
         $alamat_skpd = $skpd->alamat;
         $kodepos = $skpd->kodepos == '' ? "--------" : $skpd->kodepos;
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
+
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
@@ -1867,7 +1881,7 @@ class SppLsController extends Controller
         $cari_bendahara = DB::table('ms_ttd')
             ->select('nama', 'nip', 'jabatan', 'pangkat')
             ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
-            ->whereIn('kode', ['BK', 'BPP', 'BP'])
+            ->whereIn('kode', ['BPP', 'BK'])
             ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kode' => 'PPTK', 'kd_skpd' => $kd_skpd])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
@@ -2414,7 +2428,11 @@ class SppLsController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         $skpd = DB::table('ms_skpd')->select('nm_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first();
-        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd, 'kode' => 'BK'])->first();
+        $cari_bendahara = DB::table('ms_ttd')
+            ->select('nama', 'nip', 'jabatan', 'pangkat')
+            ->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])
+            ->whereIn('kode', ['BK', 'BPP'])
+            ->first();
         $cari_pptk = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pptk, 'kd_skpd' => $kd_skpd, 'kode' => 'PPTK'])->first();
         $cari_pa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp])->groupBy('kd_sub_kegiatan')->first();

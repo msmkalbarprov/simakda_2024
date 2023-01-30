@@ -13,7 +13,12 @@ class BendaharaUmumDaerahController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
-            'bendahara' => DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd, 'kode' => 'BK'])->orderBy('nip')->orderBy('nama')->get(),
+            'bendahara' => DB::table('ms_ttd')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
             'pa_kpa' => DB::table('ms_ttd')->whereIn('kode', ['PA', 'KPA'])->orderBy('nama')->get(),
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
             'jns_anggaran' => jenis_anggaran(),

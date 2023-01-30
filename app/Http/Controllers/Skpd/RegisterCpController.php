@@ -10,29 +10,30 @@ use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
 use PDF;
 use Knp\Snappy\Pdf as SnappyPdf;
+
 class RegisterCpController extends Controller
 {
-    
+
 
     // Cetak Reg Pajak Up Gu Tu ls
-    public function cetakRegisterCp (Request $request)
+    public function cetakRegisterCp(Request $request)
     {
-            $tanggal_ttd    = $request->tgl_ttd ;
-            $pa_kpa         = $request->pa_kpa ;
-            $bendahara      = $request->bendahara ;
-            $bulan          = $request->bulan;
-            $enter          = $request->spasi;
-            $kd_skpd        = $request->kd_skpd;
-            $cetak          = $request->cetak;
-            $tahun_anggaran = tahun_anggaran();
-            
-            // TANDA TANGAN
-            $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BK', 'kd_skpd' => $kd_skpd])->first();
-            $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
-            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-            $nm_skpd = cari_nama($kd_skpd,'ms_skpd','kd_skpd','nm_skpd');
+        $tanggal_ttd    = $request->tgl_ttd;
+        $pa_kpa         = $request->pa_kpa;
+        $bendahara      = $request->bendahara;
+        $bulan          = $request->bulan;
+        $enter          = $request->spasi;
+        $kd_skpd        = $request->kd_skpd;
+        $cetak          = $request->cetak;
+        $tahun_anggaran = tahun_anggaran();
 
-            $rincian = DB::select("SELECT
+        // TANDA TANGAN
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first();
+        $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
+
+        $rincian = DB::select("SELECT
                                 a.tgl_sts,
                                 b.no_sts,
                                 a.no_sp2d,
@@ -61,9 +62,9 @@ class RegisterCpController extends Controller
                                 a.tgl_sts,
                                 b.no_sts,
                                 a.no_sp2d,
-                                keterangan,b.rupiah,jns_trans,jns_cp,pot_khusus,kd_rek6",[$kd_skpd,$bulan]);
-            
-            $lalu = DB::select("SELECT
+                                keterangan,b.rupiah,jns_trans,jns_cp,pot_khusus,kd_rek6", [$kd_skpd, $bulan]);
+
+        $lalu = DB::select("SELECT
                                 SUM (	CASE	WHEN jns_trans = '5'	AND jns_cp = '1' AND pot_khusus = '1' THEN b.rupiah	ELSE 0 END) AS hkpg_l,
                                 SUM (	CASE	WHEN jns_trans = '5'	AND jns_cp = '1' AND pot_khusus = '2' THEN b.rupiah	ELSE 0 END) AS pot_lain_l,
                                 SUM (	CASE	WHEN jns_trans = '1'	AND jns_cp = '1' THEN	b.rupiah ELSE 0 END) AS cp_l,
@@ -83,36 +84,35 @@ class RegisterCpController extends Controller
                             WHERE
                                 a.kd_skpd =  ?
                             AND MONTH(a.tgl_sts)< ? AND pot_khusus !='3'
-                            AND jns_trans IN ('1', '5') AND LEFT(b.kd_rek6,1)<>4",[$kd_skpd,$bulan]);
+                            AND jns_trans IN ('1', '5') AND LEFT(b.kd_rek6,1)<>4", [$kd_skpd, $bulan]);
 
         // KIRIM KE VIEW
-            $data = [
-                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan','logo_pemda_hp')->first(),
-                'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-                'bulan'             => $bulan,
-                'nm_skpd'           => $nm_skpd,
-                'lalu'              => $lalu,
-                'rincian'           => $rincian,
-                'enter'             => $enter,
-                'daerah'            => $daerah,
-                'tanggal_ttd'       => $tanggal_ttd,
-                'cari_pa_kpa'       => $cari_pakpa,
-                'cari_bendahara'    => $cari_bendahara
-            ];
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'bulan'             => $bulan,
+            'nm_skpd'           => $nm_skpd,
+            'lalu'              => $lalu,
+            'rincian'           => $rincian,
+            'enter'             => $enter,
+            'daerah'            => $daerah,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'cari_pa_kpa'       => $cari_pakpa,
+            'cari_bendahara'    => $cari_bendahara
+        ];
 
         $view =  view('skpd.laporan_bendahara.cetak.registercp')->with($data);
-        if($cetak=='1'){
+        if ($cetak == '1') {
             return $view;
-        }else if($cetak=='2'){
+        } else if ($cetak == '2') {
             $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
             return $pdf->stream('REGISTER CP.pdf');
-        }else{
-            
+        } else {
+
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachement; filename="REGISTER CP - ' . $nm_skpd . '.xls"');
             return $view;
-
         }
     }
 }

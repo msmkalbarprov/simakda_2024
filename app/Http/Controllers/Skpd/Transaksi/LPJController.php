@@ -22,7 +22,7 @@ class LPJController extends Controller
             'ttd1' => DB::table('ms_ttd')
                 ->select('nip', 'nama')
                 ->where(['kd_skpd' => $kd_skpd])
-                ->whereIn('kode', ['BK'])
+                ->whereIn('kode', ['BK', 'BPP'])
                 ->get(),
             'ttd2' => DB::table('ms_ttd')
                 ->select('nip', 'nama')
