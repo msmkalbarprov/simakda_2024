@@ -12,6 +12,16 @@
                 {{-- Input Potongan --}}
                 <div class="card-body" id="form_potongan">
                     @csrf
+                    {{-- CATATAN --}}
+                    <div class="mb-3 row">
+                        <label for="catatan" class="col-md-12 col-form-label" style="color:red">CATATAN!!!</label>
+                        <label for="catatan" class="col-md-12 col-form-label" style="color:red">Input Potongan Digunakan
+                            Untuk Yang
+                            Menggunakan ID Billing dari luar SIMAKDA (PPH/PPN)</label>
+                        <label for="catatan" class="col-md-12 col-form-label" style="color:red">Input Pajak Digunakan Untuk
+                            Membuat ID
+                            BILLING</label>
+                    </div>
                     {{-- No SPM --}}
                     <div class="mb-3 row">
                         <label for="no_spm_potongan" class="col-md-2 col-form-label">No SPM</label>
@@ -80,9 +90,8 @@
                     <div class="mb-3 row">
                         <label for="id_billing" class="col-md-2 col-form-label">ID Billing</label>
                         <div class="col-md-10">
-                            <input type="text" placeholder="Sementara kosongkan"
-                                class="form-control @error('id_billing') is-invalid @enderror" id="id_billing"
-                                name="id_billing">
+                            <input type="text" class="form-control @error('id_billing') is-invalid @enderror"
+                                id="id_billing" name="id_billing">
                             @error('id_billing')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
