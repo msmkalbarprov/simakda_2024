@@ -551,12 +551,21 @@ class LaporanPenutupanKasBulananController extends Controller
             ->select(DB::raw('isnull(sld_awal,0) AS nilai'), 'sld_awalpajak')
             ->where('kd_skpd', $kd_skpd)
             ->first();
-        $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
-        $tunai_lalu = DB::select("exec kas_tunai_lalu ?,?", array($kd_skpd, $bulan));
 
-        $tunai      = DB::select("exec kas_tunai ?,?", array($kd_skpd, $bulan));
+        $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
+
+        $tunai_lalu = collect(DB::select("exec kas_tunai_lalu ?,?", array($kd_skpd, $bulan)))->first();
+
+        $xhasil_lalu = ($tunai_lalu->terima - $tunai_lalu->keluar) + $tahun_lalu->sld_awalpajak;
+
+        $tunai      = collect(DB::select("exec kas_tunai ?,?", array($kd_skpd, $bulan)))->first();
+
+        $xhasil_tunai = ($tunai->terima - $tunai->keluar) + $xhasil_lalu;
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+
+        $saldo_berharga = collect(DB::select("select sum(nilai) as total from trhsp2d where month(tgl_terima)=? and kd_skpd=?
+                    and status_terima = '1' and month(tgl_kas) > ?", [$bulan, $kd_skpd, $bulan]))->first();
 
         // KIRIM KE VIEW
         $data = [
@@ -572,6 +581,8 @@ class LaporanPenutupanKasBulananController extends Controller
             'tanggal_ttd'       => $tanggal_ttd,
             'cari_pa_kpa'       => $cari_pakpa,
             'cari_bendahara'    => $cari_bendahara,
+            'xhasil_tunai'      => $xhasil_tunai,
+            'saldoberharga'     => $saldo_berharga->total,
 
         ];
 
