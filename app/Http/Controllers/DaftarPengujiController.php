@@ -118,6 +118,7 @@ class DaftarPengujiController extends Controller
     {
         $no_advice = $request->no_advice;
         $tanggal = $request->tanggal;
+        $sp2d_online = $request->sp2d_online;
         $detail_penguji = $request->detail_penguji;
 
 
@@ -136,7 +137,8 @@ class DaftarPengujiController extends Controller
                 'username' => Auth::user()->nama,
                 'tgl_update' => date("Y-m-d H:i:s"),
                 'no_urut' => $no_urut,
-                'status_bank' => '1'
+                'status_bank' => '0',
+                'sp2d_online' => $sp2d_online
             ]);
 
             DB::commit();
@@ -270,6 +272,7 @@ class DaftarPengujiController extends Controller
     {
         $no_advice = $request->no_advice;
         $tanggal = $request->tanggal;
+        $sp2d_online = $request->sp2d_online;
         $detail_penguji = $request->detail_penguji;
 
         DB::beginTransaction();
@@ -277,7 +280,8 @@ class DaftarPengujiController extends Controller
             DB::table('trhuji')->where(['no_uji' => $no_advice])->update([
                 'tgl_uji' => $tanggal,
                 'username' => Auth::user()->nama,
-                'tgl_update' => date("Y-m-d H:i:s")
+                'tgl_update' => date("Y-m-d H:i:s"),
+                'sp2d_online' => $sp2d_online
             ]);
             // DB::table('trduji')->where(['no_uji' => $no_advice])->delete();
             // if (isset($detail_penguji)) {

@@ -46,6 +46,17 @@
                             </select>
                         </div>
                     </div>
+                    {{-- SP2D ONLINE --}}
+                    <div class="mb-3 row">
+                        <label for="sp2d_online" class="col-md-12 col-form-label">SP2D Online</label>
+                        <div class="col-md-12">
+                            <select name="sp2d_online" id="sp2d_online" class="form-control select2-multiple">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
+                            </select>
+                        </div>
+                    </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_penguji" class="btn btn-primary btn-md">Simpan</button>

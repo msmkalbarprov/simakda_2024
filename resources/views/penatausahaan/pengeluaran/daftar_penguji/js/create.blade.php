@@ -85,8 +85,13 @@
         $('#simpan_penguji').on('click', function() {
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
+            let sp2d_online = document.getElementById('sp2d_online').value;
             if (!tanggal) {
                 alert('Tanggal Bukti Tidak Boleh Kosong');
+                return;
+            }
+            if (!sp2d_online) {
+                alert('SP2D Online Tidak Boleh Kosong');
                 return;
             }
             let rincian = rincian_penguji.rows().data().toArray();
@@ -114,6 +119,7 @@
                 data: {
                     no_advice: no_advice,
                     tanggal: tanggal,
+                    sp2d_online: sp2d_online,
                 },
                 success: function(data) {
                     let nomor_baru = data.no_uji;
