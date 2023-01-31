@@ -94,9 +94,10 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        <button id="simpan_cms"
-                            {{ $cms->status_upload == '1' || $cms->status_trmpot == '1' ? 'disabled' : '' }}
-                            class="btn btn-primary btn-md">Simpan</button>
+                        @if ($cms->status_upload == '1' || $cms->status_trmpot == '1')
+                        @else
+                            <button id="simpan_cms" class="btn btn-primary btn-md">Simpan</button>
+                        @endif
                         <a href="{{ route('skpd.transaksi_cms.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>

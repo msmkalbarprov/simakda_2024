@@ -26,10 +26,10 @@ class TransaksiCmsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('trhtransout_cmsbank as a')->where(['a.panjar' => '0', 'kd_skpd' => $kd_skpd])->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("'' as kete"))->orderBy('tgl_voucher')->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("skpd.transaksi_cms.edit", Crypt::encryptString($row->no_voucher)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             if ($row->status_upload == '1' || $row->status_trmpot == '1') {
-                $btn = '';
+                $btn .= '';
             } else {
-                $btn = '<a href="' . route("skpd.transaksi_cms.edit", Crypt::encryptString($row->no_voucher)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_voucher . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
             }
             return $btn;
