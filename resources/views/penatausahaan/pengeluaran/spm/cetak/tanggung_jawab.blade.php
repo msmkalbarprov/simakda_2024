@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+    {{-- <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
@@ -44,12 +44,11 @@
         <tr>
             <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
         </tr>
-    </table>
+    </table> --}}
     <hr>
     <br>
     <div style="text-align: center">
-        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center"
-            class="rincian">
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center" class="rincian">
             <tr>
                 <td style="font-size:16px"><strong>SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK</strong></td>
             </tr>
@@ -135,12 +134,12 @@
     <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif"
         class="rincian">
         <tr>
-            <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+            <td style="padding-bottom: 50px;text-align: center;padding-left:500px">
                 {{ $pa_kpa->jabatan }}
             </td>
         </tr>
         <tr>
-            <td style="text-align: center;padding-left:600px">
+            <td style="text-align: center;padding-left:500px">
                 <strong><u>{{ $pa_kpa->nama }}</u></strong> <br>
                 {{ $pa_kpa->pangkat }} <br>
                 NIP. {{ $pa_kpa->nip }}
