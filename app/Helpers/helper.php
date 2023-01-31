@@ -1826,20 +1826,25 @@ function cara_bayar($no_spm)
 function nilai_pagu($kd_skpd, $no_spp, $beban)
 {
     $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
+
     if ($beban == '2') {
-        $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['a.no_spp' => $no_spp])->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
-        $data2 = json_decode(json_encode($kd_sub_kegiatan), true);
-        $nilai_pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as total"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $data2)->first();
+        // $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+        //     $join->on('a.no_spp', '=', 'b.no_spp');
+        //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        // })->where(['a.no_spp' => $no_spp])->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
+        // $data2 = json_decode(json_encode($kd_sub_kegiatan), true);
+        // $nilai_pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as total"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $data2)->first();
+
+        $nilai_pagu = collect(DB::select("SELECT sum(nilai)total FROM trdrka where jns_ang=? and kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND left(a.kd_skpd,17)=left(?,17)and b.jns_spp not in ('1','2')) AND left(kd_skpd,17)=left(?,17)", [$status_anggaran->jns_ang, $no_spp, $kd_skpd, $kd_skpd]))->first();
     } else {
-        $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd, 'b.kd_skpd' => $kd_skpd])->whereNotIn('b.jns_spp', ['1', '2'])->select('a.kd_sub_kegiatan')->get();
-        $data2 = json_decode(json_encode($kd_sub_kegiatan), true);
-        $nilai_pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as total"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $data2)->first();
+        // $kd_sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+        //     $join->on('a.no_spp', '=', 'b.no_spp');
+        //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        // })->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd, 'b.kd_skpd' => $kd_skpd])->whereNotIn('b.jns_spp', ['1', '2'])->select('a.kd_sub_kegiatan')->get();
+        // $data2 = json_decode(json_encode($kd_sub_kegiatan), true);
+        // $nilai_pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as total"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $data2)->first();
+
+        $nilai_pagu = collect(DB::select("SELECT sum(nilai)total FROM trdrka where jns_ang=? and  kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND a.kd_skpd=? and b.jns_spp not in ('1','2')) AND kd_skpd=?", [$status_anggaran->jns_ang, $no_spp, $kd_skpd, $kd_skpd]))->first();
     }
 
     return rupiah($nilai_pagu->total);
