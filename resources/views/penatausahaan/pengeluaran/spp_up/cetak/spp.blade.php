@@ -25,27 +25,31 @@
         .border {
             border: 1px solid black;
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
 <body>
-    <div style="text-align: center">
-        <table style="width: 100%">
-            <tr>
-                <td><b>{{ title() }}</b></td>
-            </tr>
-            <tr>
-                <td><b>SURAT PERMINTAAN PEMBAYARAN (SPP)</b></td>
-            </tr>
-            <tr>
-                <td class="unbold">Nomor : {{ $no_spp }}</td>
-            </tr>
-        </table>
-    </div>
+
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
+        <tr>
+            <td><b>{{ title() }}</b></td>
+        </tr>
+        <tr>
+            <td><b>SURAT PERMINTAAN PEMBAYARAN (SPP)</b></td>
+        </tr>
+        <tr>
+            <td class="unbold">Nomor : {{ $no_spp }}</td>
+        </tr>
+    </table>
+
     <br>
     <div>
-        <table class="table table-bordered"
-            style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+        <table class="table table-bordered rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             <tr>
                 <td colspan="4" style="text-align: center;border:1px solid black"><b>{{ $jenisspp }}</b></td>
             </tr>
@@ -109,13 +113,13 @@
                         style="font-style: italic">({{ terbilang($nilaispd->nilai) }})</span></td>
             </tr>
         </table>
-        <table style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+        <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             <tr>
                 <td style="height:20px;border-right:1px solid black;border-left:1px solid black"></td>
             </tr>
         </table>
-        <table class="table table-bordered"
-            style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:12px">
+        <table class="table table-bordered rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             <tr>
                 <td class="border" style="width:40px;text-align:center">No</td>
                 <td class="border" colspan="3" style="text-align: center">Uraian</td>
@@ -177,7 +181,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="text-align: center;padding-left:700px"><u>{{ $bendahara->nama }}</u></td>
+                    <td colspan="4" style="text-align: center;padding-left:700px">
+                        <u><b>{{ $bendahara->nama }}</b></u>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4" style="text-align: center;padding-left:700px">NIP. {{ $bendahara->nip }}
@@ -207,7 +213,8 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;padding-left:100px"></td>
-                    <td colspan="2" style="text-align: center;padding-left:300px"><u>{{ $bendahara->nama }}</u></td>
+                    <td colspan="2" style="text-align: center;padding-left:300px">
+                        <b><u>{{ $bendahara->nama }}</u></b></td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;padding-left:100px"></td>
@@ -216,22 +223,22 @@
                 </tr>
             @endif
             <tr>
-                <td style="font-size: 10px;font-weight:bold;padding-top:30px" colspan="4">Lembar Asli :
+                <td style="font-size: 12px;font-weight:bold;padding-top:30px" colspan="4">Lembar Asli :
                     <span style="font-weight: normal">Untuk Pengguna
                         Anggaran/PPK-SKPD</span>
                 </td>
             </tr>
             <tr>
-                <td style="font-size: 10px;font-weight:bold" colspan="4">Salinan 1 : <span
+                <td style="font-size: 12px;font-weight:bold" colspan="4">Salinan 1 : <span
                         style="font-weight: normal">Untuk Kuasa BUD</span></td>
             </tr>
             <tr>
-                <td style="font-size: 10px;font-weight:bold" colspan="4">Salinan 2 : <span
+                <td style="font-size: 12px;font-weight:bold" colspan="4">Salinan 2 : <span
                         style="font-weight: normal">Untuk Bendahara Pengeluaran/PPTK</span>
                 </td>
             </tr>
             <tr>
-                <td style="font-size: 10px;text-align:left;font-weight:bold" colspan="4">Salinan 3 : <span
+                <td style="font-size: 12px;text-align:left;font-weight:bold" colspan="4">Salinan 3 : <span
                         style="font-weight: normal">Untuk Arsip
                         Bendahara Pengeluaran/PPTK</span></td>
             </tr>

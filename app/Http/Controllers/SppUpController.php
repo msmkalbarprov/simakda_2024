@@ -286,7 +286,10 @@ class SppUpController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.pengantar')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -322,7 +325,10 @@ class SppUpController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.ringkasan')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -359,7 +365,10 @@ class SppUpController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.rincian')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -399,7 +408,10 @@ class SppUpController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.pernyataan')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -478,7 +490,10 @@ class SppUpController extends Controller
         ];
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.spp')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -538,7 +553,10 @@ class SppUpController extends Controller
         ];
         $view = view('penatausahaan.pengeluaran.spp_up.cetak.rincian77')->with($data);
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
