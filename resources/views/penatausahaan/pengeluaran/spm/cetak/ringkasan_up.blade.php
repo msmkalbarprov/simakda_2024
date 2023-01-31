@@ -85,14 +85,14 @@
             </tr>
             <tr>
                 <td style="padding-bottom: 50px;text-align: center;padding-left:400px">
-                    {{ $pptk->jabatan }}
+                    {{ $bendahara->jabatan }}
                 </td>
             </tr>
             <tr>
                 <td style="text-align: center;padding-left:400px">
-                    <strong><u>{{ $pptk->nama }}</u></strong> <br>
-                    {{ $pptk->pangkat }} <br>
-                    NIP. {{ $pptk->nip }}
+                    <strong><u>{{ $bendahara->nama }}</u></strong> <br>
+                    {{ $bendahara->pangkat }} <br>
+                    NIP. {{ $bendahara->nip }}
                 </td>
             </tr>
             {{-- <tr>

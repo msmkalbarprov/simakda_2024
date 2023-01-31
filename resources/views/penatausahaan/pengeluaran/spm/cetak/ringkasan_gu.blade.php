@@ -285,7 +285,8 @@
     <div style="padding-top: 30px">
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
             <tr>
-                <td style="text-align: center">MENGETAHUI :</td>
+                {{-- <td style="text-align: center">MENGETAHUI :</td> --}}
+                <td style="width: 50%"></td>
                 <td style="margin: 2px 0px;text-align: center">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
@@ -296,19 +297,21 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center">
+                {{-- <td style="padding-bottom: 50px;text-align: center">
                     {{ $pptk->jabatan }}
-                </td>
+                </td> --}}
+                <td style="width: 50%"></td>
                 <td style="padding-bottom: 50px;text-align: center">
                     {{ $bendahara->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center">
+                {{-- <td style="text-align: center">
                     <strong><u>{{ $pptk->nama }}</u></strong> <br>
                     {{ $pptk->pangkat }} <br>
                     NIP. {{ $pptk->nip }}
-                </td>
+                </td> --}}
+                <td style="width: 50%"></td>
                 <td style="text-align: center">
                     <strong><u>{{ $bendahara->nama }}</u></strong> <br>
                     {{ $bendahara->pangkat }} <br>
