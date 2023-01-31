@@ -747,7 +747,7 @@ class SpmController extends Controller
         }
         $no_spp = DB::table('trhspm')->select('no_spp', 'jenis_beban')->where(['no_spm' => $no_spm])->first();
         $tgl_spp = DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp->no_spp])->first();
-        // return $status_anggaran->jns_ang;
+
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'tahun_anggaran' => tahun_anggaran(),
@@ -764,6 +764,8 @@ class SpmController extends Controller
             'kd_skpd' => $kd_skpd,
             'no_spp' => $no_spp,
             'tgl_spp' => $tgl_spp,
+            'jenis_beban' => $no_spp->jenis_beban,
+            'beban' => $beban,
             'daerah' => DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first(),
             'tanpa' => $tanpa,
             'tgl_spm' => DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->where(['a.no_spm' => $no_spm])->select('tgl_spm')->first(),
