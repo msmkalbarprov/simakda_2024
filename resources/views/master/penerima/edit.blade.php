@@ -239,10 +239,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <!-- Nama Pemilik/Penerima -->
+                        <!-- Nama Pemilik -->
                         <div class="mb-3 row">
                             <label for="nm_rekening_validasi" class="col-md-2 col-form-label">Nama
-                                Pemilik/Penerima</label>
+                                Pemilik</label>
                             <div class="col-md-10">
                                 <input class="form-control @error('nm_rekening_validasi') is-invalid @enderror"
                                     value="{{ $data_penerima->nm_rekening }}" readonly type="text"
@@ -256,7 +256,7 @@
                         <div class="mb-3 row">
                             <label for="npwp_validasi" class="col-md-2 col-form-label">NPWP</label>
                             <div class="col-md-10">
-                                <input class="form-control @error('npwp_validasi') is-invalid @enderror"
+                                <input class="form-control @error('npwp_validasi') is-invalid @enderror" readonly
                                     value="{{ $data_penerima->npwp }}" type="text" id="npwp_validasi"
                                     name="npwp_validasi">
                                 @error('npwp_validasi')
@@ -268,7 +268,7 @@
                         <div class="mb-3 row">
                             <label for="nm_npwp_validasi" class="col-md-2 col-form-label">Nama WP</label>
                             <div class="col-md-10">
-                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror"
+                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror" readonly
                                     value="{{ $data_penerima->nm_wp }}" type="text" id="nm_npwp_validasi"
                                     name="nm_npwp_validasi">
                                 @error('nm_npwp_validasi')
@@ -318,14 +318,12 @@
                 let jenis = this.value;
 
                 if (jenis == '2') {
-                    $('#rekanan').prop('readonly', false);
                     $('#pimpinan').prop('readonly', false);
                     $('#alamat').prop('readonly', false);
                     $('#rekanan').val(null);
                     $('#pimpinan').val(null);
                     $('#alamat').val(null);
                 } else {
-                    $('#rekanan').prop('readonly', true);
                     $('#pimpinan').prop('readonly', true);
                     $('#alamat').prop('readonly', true);
                     $('#rekanan').val(null);
@@ -498,7 +496,7 @@
                             let data1 = $.parseJSON(data);
                             if (data1.status) {
                                 $("#no_rekening_validasi").val(data1.data[0].data
-                                .nomorRekening);
+                                    .nomorRekening);
                                 $("#nm_rekening_validasi").val(data1.data[0].data
                                     .namaPemilikRekening);
                                 document.getElementById("save").disabled = false;

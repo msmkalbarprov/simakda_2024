@@ -248,7 +248,7 @@
                             <label for="npwp_validasi" class="col-md-2 col-form-label">NPWP</label>
                             <div class="col-md-10">
                                 <input class="form-control @error('npwp_validasi') is-invalid @enderror" type="text"
-                                    value="{{ old('npwp_validasi') }}" id="npwp_validasi" name="npwp_validasi">
+                                    readonly value="{{ old('npwp_validasi') }}" id="npwp_validasi" name="npwp_validasi">
                                 @error('npwp_validasi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -258,7 +258,7 @@
                         <div class="mb-3 row">
                             <label for="nm_npwp_validasi" class="col-md-2 col-form-label">Nama WP</label>
                             <div class="col-md-10">
-                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror"
+                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror" readonly
                                     type="text" value="{{ old('nm_npwp_validasi') }}" id="nm_npwp_validasi"
                                     name="nm_npwp_validasi">
                                 @error('nm_npwp_validasi')
