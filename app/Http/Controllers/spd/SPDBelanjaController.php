@@ -682,26 +682,26 @@ class SPDBelanjaController extends Controller
                         'jns_ang' => $data['jenis_anggaran'],
                         'jns_angkas' => $data['status_angkas'],
                     ]);
-
-                    // if (isset($data['daftar_spd'])) {
-                    //     DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
-                    //         return [
-                    //             'no_spd' => $value['nomor'],
-                    //             'kd_program' => kd_Program($value['kd_sub_kegiatan'])->kd_program,
-                    //             'nm_program' => kd_Program($value['kd_sub_kegiatan'])->nm_program,
-                    //             'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->kd_kegiatan,
-                    //             'nm_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_kegiatan,
-                    //             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                    //             'nm_sub_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_sub_kegiatan,
-                    //             'kd_rek6' => $value['kd_rek6'],
-                    //             'nm_rek6' => kd_kegiatan($value['kd_rek6'])->nm_kegiatan,
-                    //             'nilai' => $value['nilai'],
-                    //             'kd_unit' => $value['kd_skpd'],
-                    //         ];
-                    //     }, $data['daftar_spd']));
-                    // }
-
-                    DB::insert("INSERT trdspd
+                    if ($data['jenis'] == '6') {
+                        if (isset($data['daftar_spd'])) {
+                            DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                                return [
+                                    'no_spd' => $value['nomor'],
+                                    'kd_program' => kd_Program($value['kd_sub_kegiatan'])->kd_program,
+                                    'nm_program' => kd_Program($value['kd_sub_kegiatan'])->nm_program,
+                                    'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->kd_kegiatan,
+                                    'nm_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_kegiatan,
+                                    'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                                    'nm_sub_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_sub_kegiatan,
+                                    'kd_rek6' => $value['kd_rek6'],
+                                    'nm_rek6' => kd_kegiatan($value['kd_rek6'])->nm_kegiatan,
+                                    'nilai' => $value['nilai'],
+                                    'kd_unit' => $value['kd_skpd'],
+                                ];
+                            }, $data['daftar_spd']));
+                        }
+                    } else {
+                        DB::insert("INSERT trdspd
                                     select '$nomor_spd' as no_spd,kd_program,RTRIM(nm_program),left(kd_sub_kegiatan,12),
                                     RTRIM((select nm_kegiatan from ms_kegiatan where left(kd_sub_kegiatan,12)=kd_kegiatan))as nm_kegiatan,
                                     kd_sub_kegiatan,RTRIM(nm_sub_kegiatan),kd_rek6,RTRIM(nm_rek6),nilai,kd_unit
@@ -739,6 +739,7 @@ class SPDBelanjaController extends Controller
                                     )xxx
 
                                     ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $status1, $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal']]);
+                    }
                 } else {
                     $nmskpd = DB::table('ms_skpd')->select('nm_skpd')
                         ->where(['kd_skpd' => $data['skpd']])->first();
@@ -762,24 +763,26 @@ class SPDBelanjaController extends Controller
                         'jns_angkas' => $data['status_angkas'],
                     ]);
 
-                    // if (isset($data['daftar_spd'])) {
-                    //     DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
-                    //         return [
-                    //             'no_spd' => $data['nomor'],
-                    //             'kd_program' => kd_Program($value['kd_sub_kegiatan']),
-                    //             'nm_program' => nm_Program($value['kd_sub_kegiatan']),
-                    //             'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan']),
-                    //             'nm_kegiatan' => nm_kegiatan($value['kd_sub_kegiatan']),
-                    //             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                    //             'nm_sub_kegiatan' => kd_sub_kegiatan($value['kd_sub_kegiatan']),
-                    //             'kd_rek6' => $value['kd_rek6'],
-                    //             'nm_rek6' => kd_rek($value['kd_rek6']),
-                    //             'nilai' => $value['nilai'],
-                    //             'kd_unit' => $value['kd_skpd'],
-                    //         ];
-                    //     }, $data['daftar_spd']));
-                    // }
-                    DB::insert("INSERT trdspd
+                    if ($data['jenis'] == '6') {
+                        if (isset($data['daftar_spd'])) {
+                            DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                                return [
+                                    'no_spd' => $data['nomor'],
+                                    'kd_program' => kd_Program($value['kd_sub_kegiatan']),
+                                    'nm_program' => nm_Program($value['kd_sub_kegiatan']),
+                                    'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan']),
+                                    'nm_kegiatan' => nm_kegiatan($value['kd_sub_kegiatan']),
+                                    'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                                    'nm_sub_kegiatan' => kd_sub_kegiatan($value['kd_sub_kegiatan']),
+                                    'kd_rek6' => $value['kd_rek6'],
+                                    'nm_rek6' => kd_rek($value['kd_rek6']),
+                                    'nilai' => $value['nilai'],
+                                    'kd_unit' => $value['kd_skpd'],
+                                ];
+                            }, $data['daftar_spd']));
+                        }
+                    } else {
+                        DB::insert("INSERT trdspd
                                             select '$nomor_spd' as no_spd,kd_program,RTRIM(nm_program),left(kd_sub_kegiatan,12),
                                             RTRIM((select nm_kegiatan from ms_kegiatan where left(kd_sub_kegiatan,12)=kd_kegiatan))as nm_kegiatan,
                                             kd_sub_kegiatan,RTRIM(nm_sub_kegiatan),kd_rek6,RTRIM(nm_rek6),nilai,kd_unit
@@ -825,6 +828,7 @@ class SPDBelanjaController extends Controller
                                             )xxx
 
                                             ORDER BY kd_unit,kd_sub_kegiatan", [$data['skpd'], $status1, $data['bulan_awal'], $data['bulan_akhir'], $data['skpd'], $data['skpd'], $nomor_spd, $data['tanggal'], $data['skpd'], $data['bulan_awal'], $data['bulan_akhir'], $nomor_spd, $data['tanggal']]);
+                    }
                 }
 
                 $user = Auth()->user()->nama;
