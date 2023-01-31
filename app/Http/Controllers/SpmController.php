@@ -232,8 +232,11 @@ class SpmController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = Crypt::decryptString($no_spm);
-        $cari_spm = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm])->first();
-        // return [$no_spm, $cari_spm];
+        $cari_spm = DB::table('trhspm as a')
+            ->select('a.no_spp')
+            ->where(['a.no_spm' => $no_spm])
+            ->first();
+
         $data = [
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
             'no_spm' => $no_spm,
@@ -259,8 +262,18 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = $request->no_spm;
         $data = DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->orderBy('kd_rek6')->get();
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="hapusPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\',\'' . $row->status_setor . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+
+        $spm = DB::table('trhspm as a')
+            ->selectRaw("(SELECT isnull(is_verified, '0') FROM trhsp2d c WHERE a.no_spm=c.no_spm and a.kd_skpd=c.kd_skpd) as is_verified")
+            ->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])
+            ->first();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use ($spm) {
+            if ($spm->is_verified > '0') {
+                $btn = '';
+            } else {
+                $btn = '<a href="javascript:void(0);" onclick="hapusPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\',\'' . $row->status_setor . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
             $btn .= '<button type="button" onclick="cetakPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nilai . '\',\'' . $row->idBilling . '\')" class="btn btn-success btn-sm" style="margin-left:4px"><i class="uil-print"></i></button>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
