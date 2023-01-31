@@ -304,17 +304,25 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center"><strong><u>{{ $pptk->nama }}</u></strong></td>
-                <td style="text-align: center"><strong><u>{{ $bendahara->nama }}</u></strong></td>
+                <td style="text-align: center">
+                    <strong><u>{{ $pptk->nama }}</u></strong> <br>
+                    {{ $pptk->pangkat }} <br>
+                    NIP. {{ $pptk->nip }}
+                </td>
+                <td style="text-align: center">
+                    <strong><u>{{ $bendahara->nama }}</u></strong> <br>
+                    {{ $bendahara->pangkat }} <br>
+                    NIP. {{ $bendahara->nip }}
+                </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="text-align: center">{{ $pptk->pangkat }}</td>
                 <td style="text-align: center">{{ $bendahara->pangkat }}</td>
             </tr>
             <tr>
                 <td style="text-align: center">NIP. {{ $pptk->nip }}</td>
                 <td style="text-align: center">NIP. {{ $bendahara->nip }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
 </body>

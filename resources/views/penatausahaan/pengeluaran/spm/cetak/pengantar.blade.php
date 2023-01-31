@@ -222,14 +222,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px"><strong><u>{{ $pptk->nama }}</u></strong></td>
+                <td style="text-align: center;padding-left:600px">
+                    <strong><u>{{ $pptk->nama }}</u></strong> <br>
+                    {{ $pptk->pangkat }} <br>
+                    NIP. {{ $pptk->nip }}
+                </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="text-align: center;padding-left:600px">{{ $pptk->pangkat }}</td>
             </tr>
             <tr>
                 <td style="text-align: center;padding-left:600px">NIP. {{ $pptk->nip }}</td>
-            </tr>
+            </tr> --}}
         @endif
     </table>
 

@@ -89,14 +89,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:400px"><strong><u>{{ $pptk->nama }}</u></strong></td>
+                <td style="text-align: center;padding-left:400px">
+                    <strong><u>{{ $pptk->nama }}</u></strong> <br>
+                    {{ $pptk->pangkat }} <br>
+                    NIP. {{ $pptk->nip }}
+                </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="text-align: center;padding-left:400px">{{ $pptk->pangkat }}</td>
             </tr>
             <tr>
                 <td style="text-align: center;padding-left:400px">NIP. {{ $pptk->nip }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
 </body>

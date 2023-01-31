@@ -128,14 +128,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:500px"><strong><u>{{ $pa_kpa->nama }}</u></strong></td>
+                <td style="text-align: center;padding-left:500px">
+                    <strong><u>{{ $pa_kpa->nama }}</u></strong> <br>
+                    {{ $pa_kpa->pangkat }} <br>
+                    NIP. {{ $pa_kpa->nip }}
+                </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="text-align: center;padding-left:500px">{{ $pa_kpa->pangkat }}</td>
             </tr>
             <tr>
                 <td style="text-align: center;padding-left:500px">NIP. {{ $pa_kpa->nip }}</td>
-            </tr>
+            </tr> --}}
         </table>
     </div>
 </body>

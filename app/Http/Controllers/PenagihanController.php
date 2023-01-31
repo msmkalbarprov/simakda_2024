@@ -22,7 +22,11 @@ class PenagihanController extends Controller
 
     public function loadData()
     {
-        $data = DB::table('trhtagih as a')->select('a.*', DB::raw("(SELECT COUNT(*) FROM trhspp WHERE no_tagih=a.no_bukti) as jumlah_spp"))->get();
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = DB::table('trhtagih as a')
+            ->select('a.*', DB::raw("(SELECT COUNT(*) FROM trhspp WHERE no_tagih=a.no_bukti) as jumlah_spp"))
+            ->where(['kd_skpd' => $kd_skpd])
+            ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penagihan.show", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="fas fa-info-circle"></i></a>';
             $btn .= '<a href="' . route("penagihan.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
@@ -38,7 +42,7 @@ class PenagihanController extends Controller
     public function create()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => 1])->orderBy('tgl_dpa', 'DESC')->first();
+        $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => 1])->orderByDesc('tgl_dpa')->first();
         $data = [
             'data_penagihan' => DB::table('trhtagih')->get(),
             'kd_skpd' => $kd_skpd,
@@ -51,6 +55,8 @@ class PenagihanController extends Controller
                 ->join('ms_sub_kegiatan AS b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->where(['a.kd_skpd' => $kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get()
         ];
+
+
         return view('penatausahaan.pengeluaran.penagihan.create')->with($data);
     }
 
