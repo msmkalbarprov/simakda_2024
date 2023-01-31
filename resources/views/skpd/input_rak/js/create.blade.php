@@ -39,6 +39,12 @@
         // } else {
         //     proteksi();
         // }
+        let role = "{{ $role }}";
+        if (role == '1006' || role == '1012' || role == '1016' || role == '1017') {
+            alert('Selamat Datang ' + user);
+        } else {
+            proteksi();
+        }
 
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
