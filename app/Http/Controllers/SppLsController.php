@@ -1378,7 +1378,10 @@ class SppLsController extends Controller
             ->first();
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.pengantar', compact('tanpa', 'jenis', 'kd_skpd', 'beban', 'lcbeban', 'no_spp', 'peng', 'cari_data', 'tahun_anggaran', 'cari_bendahara', 'bank', 'daerah', 'tanggal', 'nogub', 'cari_pptk', 'sub_kegiatan', 'jumlah_spp', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -1663,7 +1666,10 @@ class SppLsController extends Controller
             ->first();
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.rincian', compact('jumlah_spp', 'sub_kegiatan', 'cari_pptk', 'tanggal', 'cari_bendahara', 'tanpa', 'daerah', 'total', 'result', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'no_spp', 'cari_data', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -1851,7 +1857,10 @@ class SppLsController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.permintaan', compact('nama_kegiatan', 'nama_program', 'data_spp', 'dpa', 'alamat_skpd', 'lcbeban', 'nama_skpd', 'tahun_anggaran', 'no_spp', 'beban', 'daerah', 'nogub', 'jenis', 'no_spd', 'cari_bendahara', 'nama_bank', 'sub_kegiatan', 'jumlah_spp', 'cari_pptk', 'tanpa', 'tanggal', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2218,7 +2227,10 @@ class SppLsController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.ringkasan', compact('result', 'data_nilai', 'no_spp', 'beban', 'nama_skpd', 'tahun_anggaran', 'lcbeban', 'nilai1', 'nilai2', 'nilai3', 'nilai4', 'nilai5', 'totalspd', 'blmspd', 'totalbelanja', 'sisaspp', 'tanpa', 'tanggal', 'cari_bendahara', 'cari_pptk', 'daerah', 'sub_kegiatan', 'jenis', 'data_spp', 'data_dpa', 'jumlah_spp', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2316,7 +2328,10 @@ class SppLsController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.pernyataan', compact('data', 'beban', 'no_spp', 'tahun_anggaran', 'lcbeban', 'tanpa', 'daerah', 'cari_bendahara', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2406,7 +2421,10 @@ class SppLsController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.sptb', compact('tahun_anggaran', 'no_spp', 'beban', 'lcbeban', 'data', 'cari_bendahara', 'daerah', 'tanpa', 'kd_skpd', 'data_dpa', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2478,7 +2496,10 @@ class SppLsController extends Controller
 
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.spp77', compact('no_spp', 'jenisspp', 'jenis_spp', 'skpd', 'kd_sub_kegiatan1', 'nm_sub_kegiatan1', 'cari_bendahara', 'cari_pptk', 'cari_pa', 'bank', 'tglspd', 'data', 'nilaispd', 'dataspd', 'datasp2d', 'sub_kegiatan', 'tanpa', 'header'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2531,7 +2552,10 @@ class SppLsController extends Controller
         })->where(['a.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->groupBy('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6')->select('a.no_spp', 'a.tgl_spp', 'b.kd_skpd', 'b.nm_skpd', 'b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'kd_rek6', 'nm_rek6', DB::raw("SUM(b.nilai) as nilaispp"))->get();
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.rincian77', compact('jenisspp', 'no_spp', 'tahun_anggaran', 'data_spp', 'nama_kegiatan', 'data_spp_rinci', 'spp', 'cari_bendahara', 'sub_kegiatan', 'tanpa', 'cari_pa'));
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view);
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;

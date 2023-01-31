@@ -17,6 +17,10 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
@@ -28,14 +32,14 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px">
+            <td align="left" style="font-size:16px">
                 <strong>
                     @if ($beban == '4')
                         {{ $skpd->nm_skpd }}
@@ -48,17 +52,17 @@
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
 
-    <table style="width:100%;font-family:'Open Sans', Helvetica, Arial,sans-serif;font-size:20px;text-align:center">
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
         <tr>
-            <td>
+            <td style="font-size:16px">
                 @if ($beban == '4')
                     SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN <br>
                     (SPP - {{ strtoupper($lcbeban) }}) <br>
@@ -79,8 +83,8 @@
     </table>
 
     @if ($beban == '4')
-        <table class="table table-striped" style="width: 100%;font-family:'Open Sans', Helvetica, Arial,sans-serif"
-            border="1">
+        <table class="table table-striped rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" border="1">
             <tr>
                 <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
             </tr>
@@ -151,7 +155,7 @@
         </table>
     @elseif ($beban == '5')
         @if ($jenis == '1' || $jenis == '2')
-            <table class="table table-striped"
+            <table class="table table-striped rincian"
                 style="width: 100%;border:1px black solid;font-family:'Open Sans', Helvetica, Arial,sans-serif">
                 <tr>
                     <td colspan="3" style="text-align: center;border-bottom:1px black solid">RINGKASAN KEGIATAN
@@ -224,8 +228,8 @@
                 </tr>
             </table>
         @endif
-        <table class="table table-striped" style="width: 100%;font-family:'Open Sans', Helvetica, Arial,sans-serif"
-            border="1">
+        <table class="table table-striped rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica, Arial,sans-serif" border="1">
             <tr>
                 <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
             </tr>
@@ -373,8 +377,8 @@
                 </tr>
             </table>
         @endif
-        <table class="table table-striped" style="width: 100%;font-family:'Open Sans', Helvetica, Arial,sans-serif"
-            border="1">
+        <table class="table table-striped rincian"
+            style="width: 100%;font-family:'Open Sans', Helvetica, Arial,sans-serif" border="1">
             <tr>
                 <td colspan="4" style="text-align: center">RINGKASAN DPA/DPPA/DPPAL-OPD</td>
             </tr>
@@ -448,10 +452,10 @@
             </tr>
         </table>
     @endif
-
+    <br>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width:100%;font-family:'Open Sans', Helvetica, Arial,sans-serif">
+        <table class="table rincian" style="width:100%;font-family:'Open Sans', Helvetica, Arial,sans-serif">
             @if ($beban == '4')
                 <tr>
                     <td style="margin: 2px 0px;text-align: center;padding-left:500px">
@@ -469,14 +473,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:500px"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
+                    <td style="text-align: center;padding-left:500px">
+                        <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
+                        {{ $cari_bendahara->pangkat }} <br>
+                        NIP. {{ $cari_bendahara->nip }}
+                    </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style="text-align: center;padding-left:500px">{{ $cari_bendahara->pangkat }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:500px">NIP. {{ $cari_bendahara->nip }}</td>
-                </tr>
+                </tr> --}}
             @elseif ($beban == '5')
                 <tr>
                     <td style="text-align: center">MENGETAHUI :</td>
@@ -498,17 +506,25 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center"><b><u>{{ $cari_pptk->nama }}</u></b></td>
-                    <td style="text-align: center"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
+                    <td style="text-align: center">
+                        <b><u>{{ $cari_pptk->nama }}</u></b> <br>
+                        {{ $cari_pptk->pangkat }} <br>
+                        NIP. {{ $cari_pptk->nip }}
+                    </td>
+                    <td style="text-align: center">
+                        <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
+                        {{ $cari_bendahara->pangkat }} <br>
+                        NIP. {{ $cari_bendahara->nip }}
+                    </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
                     <td style="text-align: center">{{ $cari_bendahara->pangkat }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: center">NIP. {{ $cari_pptk->nip }}</td>
                     <td style="text-align: center">NIP. {{ $cari_bendahara->nip }}</td>
-                </tr>
+                </tr> --}}
             @elseif ($beban == '6')
                 @if ($jumlah_spp > 0)
                     <tr>
@@ -527,15 +543,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center;padding-left:300px"><b><u>{{ $cari_bendahara->nama }}</u></b>
+                        <td style="text-align: center;padding-left:300px">
+                            <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
+                            {{ $cari_bendahara->pangkat }} <br>
+                            NIP. {{ $cari_bendahara->nip }}
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
-                    </tr>
+                    </tr> --}}
                 @else
                     <tr>
                         <td style="text-align: center">MENGETAHUI :</td>
@@ -557,10 +576,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center"><b><u>{{ $cari_pptk->nama }}</u></b></td>
-                        <td style="text-align: center"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
+                        <td style="text-align: center">
+                            <b><u>{{ $cari_pptk->nama }}</u></b> <br>
+                            {{ $cari_pptk->pangkat }} <br>
+                            NIP. {{ $cari_pptk->nip }}
+                        </td>
+                        <td style="text-align: center">
+                            <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
+                            {{ $cari_bendahara->pangkat }} <br>
+                            NIP. {{ $cari_bendahara->nip }}
+                        </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td style="text-align: center">{{ $cari_pptk->pangkat }}</td>
                         <td style="text-align: center">{{ $cari_bendahara->pangkat }}
                         </td>
@@ -568,7 +595,7 @@
                     <tr>
                         <td style="text-align: center">NIP. {{ $cari_pptk->nip }}</td>
                         <td style="text-align: center">NIP. {{ $cari_bendahara->nip }}</td>
-                    </tr>
+                    </tr> --}}
                 @endif
             @endif
         </table>

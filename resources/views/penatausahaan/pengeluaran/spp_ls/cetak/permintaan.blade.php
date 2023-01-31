@@ -12,6 +12,10 @@
         td {
             border-collapse: collapse;
         }
+
+        .rincian>tbody>tr>td {
+            font-size: 14px
+        }
     </style>
 </head>
 
@@ -23,38 +27,39 @@
                 <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
                     height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>{{ $skpd->nm_skpd }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>{{ $skpd->nm_skpd }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
-    <table style="width: 100%;text-align:center;font-family:'Times New Roman', Times, serif">
+
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
         <tr>
-            <td><b>SURAT PERMINTAAN PEMBAYARAN {{ strtoupper($lcbeban) }}</b></td>
+            <td style="font-size: 16px"><b>SURAT PERMINTAAN PEMBAYARAN {{ strtoupper($lcbeban) }}</b></td>
         </tr>
         <tr>
-            <td><b>(SPP - LS {{ strtoupper($lcbeban) }})</b></td>
+            <td style="font-size: 16px"><b>(SPP - LS {{ strtoupper($lcbeban) }})</b></td>
         </tr>
         <tr>
-            <td><b>Nomor : {{ $no_spp }}</b></td>
+            <td style="font-size: 16px"><b>Nomor : {{ $no_spp }}</b></td>
         </tr>
     </table>
     <br>
 
-    <table class="table"
-        style="width: 100%;border:1px black solid;font-family:'Times New Roman', Times, serif; font-size:14px">
+    <table class="table rincian"
+        style="width: 100%;border:1px black solid;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         {{-- OPD --}}
         <tr>
             <td width='30%'>1. OPD</td>
@@ -116,9 +121,10 @@
             <td width='68%'>{{ $data_spp->nm_sub_kegiatan }}</td>
         </tr>
     </table>
+
     <br>
 
-    <table style="width: 100%;text-align:center;font-family:'Times New Roman', Times, serif">
+    <table style="width: 100%;text-align:center;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         <tr>
             <td><b>Kepada Yth:</b></td>
         </tr>
@@ -132,8 +138,8 @@
             <td><b>di {{ $daerah->daerah }}</b></td>
         </tr>
     </table>
-
-    <table style="width: 100%;font-family:'Times New Roman', Times, serif">
+    <br>
+    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         <tr>
             <td style="text-align: justify">Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
                 {{ $nogub }}
@@ -143,9 +149,9 @@
                 Jasa sebagai berikut:</td>
         </tr>
     </table>
-
-    <table class="table"
-        style="width: 100%;border:1px black solid;font-family:'Times New Roman', Times, serif; font-size:14px">
+    <br>
+    <table class="table rincian"
+        style="width: 100%;border:1px black solid;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         {{-- Jumlah Pembayaran Yang Diminta --}}
         <tr>
             <td width='30%'>a. Jumlah Pembayaran Yang Diminta</td>
@@ -210,9 +216,10 @@
         @endif
     </table>
 
+    <br>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-family:'Times New Roman', Times, serif; font-size:14px">
+        <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             @if ($beban == '4' || $sub_kegiatan == '5.02.00.0.06.62')
                 <tr>
                     <td style="margin: 2px 0px;text-align: center;padding-left:500px">
