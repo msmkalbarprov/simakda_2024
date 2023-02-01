@@ -254,6 +254,10 @@
                     return;
                 }
             }
+            if (!no_terima) {
+                alert('No Terima kosong tolong disi dulu!');
+                return;
+            }
             if (!pimpinan) {
                 alert('Pimpinan kosong tolong disi dulu!');
                 return;

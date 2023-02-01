@@ -121,7 +121,7 @@
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-10">
-                            <textarea class="form-control" style="width: 100%" id="keterangan" readonly name="keterangan"></textarea>
+                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan"></textarea>
                         </div>
                     </div>
                     {{-- SKPD dan Nama SKPD --}}
