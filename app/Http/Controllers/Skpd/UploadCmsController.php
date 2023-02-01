@@ -51,6 +51,7 @@ class UploadCmsController extends Controller
             ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_tgl,a.no_voucher,a.tgl_voucher,a.no_sp2d,a.ket,a.total,a.status_upload,a.tgl_upload,a.status_validasi,a.tgl_validasi,a.rekening_awal,a.nm_rekening_tujuan,a.rekening_tujuan,a.bank_tujuan,a.ket_tujuan,b.kd_sub_kegiatan,b.nm_sub_kegiatan,c.no_upload,c.no_upload_tgl")
             ->orderByRaw("cast(c.no_upload as int),cast(a.no_voucher as int),a.kd_skpd")
             ->get();
+
         return Datatables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="javascript:void(0);" onclick="lihatDataUpload(\'' . $row->no_upload . '\',\'' . $row->total . '\');" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="batalUpload(\'' . $row->no_upload . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
@@ -124,32 +125,65 @@ class UploadCmsController extends Controller
         $rincian_data = $request->rincian_data;
         $tanggal = date("Y-m-d");
         $kd_skpd = Auth::user()->kd_skpd;
+        // return response()->json($rincian_data);
         DB::beginTransaction();
         try {
-            $nomor1 = DB::table('trhupload_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
-            $nomor2 = DB::table('trhupload_cmsbank_panjar')->select('no_upload as nomor', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
-            $nomor3 = DB::table('trhupload_sts_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor2);
-            $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
-                ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
-                ->mergeBindings($nomor3)
-                ->first();
 
-            $no_upload1 = DB::table('trdupload_cmsbank as a')->leftJoin('trhupload_cmsbank as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal]);
-            $no_upload2 = DB::table('trdupload_cmsbank_panjar as a')->leftJoin('trhupload_cmsbank_panjar as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal])->unionAll($no_upload1);
-            $no_upload3 = DB::table('trdupload_sts_cmsbank as a')->leftJoin('trhupload_sts_cmsbank as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal])->unionAll($no_upload2);
-            $no_upload = DB::table(DB::raw("({$no_upload3->toSql()}) AS sub"))
-                ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
-                ->mergeBindings($no_upload3)
-                ->first();
+            // $nomor1 = DB::table('trhupload_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
+
+            // $nomor2 = DB::table('trhupload_cmsbank_panjar')->select('no_upload as nomor', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
+
+            // $nomor3 = DB::table('trhupload_sts_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor2);
+
+            // $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
+            //     ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
+            //     ->mergeBindings($nomor3)
+            //     ->first();
+
+            $nomor = collect(DB::select("select case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+	select no_upload nomor, 'Urut Upload Pengeluaran cms' ket, kd_skpd from trhupload_cmsbank where kd_skpd=?
+    union all
+    select no_upload nomor, 'Urut Upload Panjar Bank cms' ket, kd_skpd from trhupload_cmsbank_panjar where kd_skpd=?
+    union all
+    select no_upload nomor, 'Urut Upload Penerimaan cms' ket, kd_skpd from trhupload_sts_cmsbank where kd_skpd=?
+    )
+    z WHERE kd_skpd=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+
+            // $no_upload1 = DB::table('trdupload_cmsbank as a')->leftJoin('trhupload_cmsbank as b', function ($join) {
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //     $join->on('a.no_upload', '=', 'b.no_upload');
+            // })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal]);
+
+            // $no_upload2 = DB::table('trdupload_cmsbank_panjar as a')->leftJoin('trhupload_cmsbank_panjar as b', function ($join) {
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //     $join->on('a.no_upload', '=', 'b.no_upload');
+            // })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal])->unionAll($no_upload1);
+
+            // $no_upload3 = DB::table('trdupload_sts_cmsbank as a')->leftJoin('trhupload_sts_cmsbank as b', function ($join) {
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //     $join->on('a.no_upload', '=', 'b.no_upload');
+            // })->select('a.no_upload as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd, 'b.tgl_upload' => $tanggal])->unionAll($no_upload2);
+
+            // $no_upload = DB::table(DB::raw("({$no_upload3->toSql()}) AS sub"))
+            //     ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
+            //     ->mergeBindings($no_upload3)
+            //     ->first();
+
+            $no_upload = collect(DB::select("select case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+		select a.no_upload_tgl nomor, b.tgl_upload tanggal,'Urut Upload Pengeluaran cms' ket, a.kd_skpd from trdupload_cmsbank a
+		left join trhupload_cmsbank b on b.kd_skpd=a.kd_bp and b.no_upload=a.no_upload
+    where a.kd_skpd=?
+		union all
+    select a.no_upload_tgl nomor, b.tgl_upload tanggal,'Urut Upload Panjar Bank cms' ket, a.kd_skpd from trdupload_cmsbank_panjar a
+		left join trhupload_cmsbank_panjar b on b.kd_skpd=a.kd_bp and b.no_upload=a.no_upload
+    where a.kd_skpd=?
+		union all
+    select a.no_upload_tgl nomor, b.tgl_upload tanggal,'Urut Upload Penerimaan cms' ket, a.kd_skpd from trdupload_sts_cmsbank a
+		left join trhupload_sts_cmsbank b on b.kd_skpd=a.kd_bp and b.no_upload=a.no_upload
+    where a.kd_skpd=?
+    )
+    z WHERE kd_skpd=? AND tanggal=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $tanggal]))->first();
+
             if (strlen($no_upload->nomor == '1')) {
                 $no_upload1 = "00" . $no_upload->nomor;
             } elseif (strlen($no_upload->nomor == '2')) {
@@ -201,6 +235,7 @@ class UploadCmsController extends Controller
                 'c.status_upload' => '1',
                 'c.tgl_upload' => date("Y-m-d")
             ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1'
