@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class UploadCmsController extends Controller
 {
@@ -184,12 +185,14 @@ class UploadCmsController extends Controller
     )
     z WHERE kd_skpd=? AND tanggal=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $tanggal]))->first();
 
-            if (strlen($no_upload->nomor == '1')) {
-                $no_upload1 = "00" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '2')) {
-                $no_upload1 = "0" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '3')) {
-                $no_upload1 = $no_upload->nomor;
+            $no_upload = $no_upload->nomor;
+
+            if (Str::length($no_upload) == '1') {
+                $no_upload1 = "00" . $no_upload;
+            } elseif (Str::length($no_upload) == '2') {
+                $no_upload1 = "0" . $no_upload;
+            } elseif (Str::length($no_upload) == '3') {
+                $no_upload1 = $no_upload;
             }
 
             DB::table('trhupload_cmsbank')->where(['no_upload' => $nomor->nomor, 'kd_skpd' => $kd_skpd])->delete();
