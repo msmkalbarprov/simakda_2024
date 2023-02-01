@@ -210,6 +210,13 @@
             ]
         });
 
+        $('#tgl_spp').on('change', function() {
+            let tanggal = this.value;
+            let bulan = new Date(tanggal);
+            let bulan1 = bulan.getMonth() + 1;
+            $('#bulan').val(bulan1).trigger('change');
+        });
+
         $('#rekanan').on('change', function() {
             let pimpinan = $(this).find(':selected').data('pimpinan');
             let alamat = $(this).find(':selected').data('alamat');

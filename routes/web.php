@@ -82,6 +82,10 @@ use App\Http\Controllers\Skpd\Panjar\PengembalianPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PertanggungjawabanPanjarController;
 use App\Http\Controllers\Skpd\Panjar\TambahPanjarController;
 use App\Http\Controllers\Skpd\Panjar\TransaksiPanjarController;
+use App\Http\Controllers\Skpd\PanjarCMS\PemberianPanjarController;
+use App\Http\Controllers\Skpd\PanjarCMS\TambahPanjarCMSController;
+use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
+use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -669,6 +673,56 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             });
         });
 
+        // PANJAR CMS
+        Route::group(['prefix' => 'panjar_cms'], function () {
+            // PEMBERIAN PANJAR CMS
+            Route::group(['prefix' => 'pemberian_panjar'], function () {
+                Route::get('', [PemberianPanjarController::class, 'index'])->name('pemberian_panjarcms.index');
+                Route::post('load', [PemberianPanjarController::class, 'load'])->name('pemberian_panjarcms.load');
+                Route::get('tambah', [PemberianPanjarController::class, 'tambah'])->name('pemberian_panjarcms.tambah');
+                Route::post('simpan', [PemberianPanjarController::class, 'simpan'])->name('pemberian_panjarcms.simpan');
+                Route::get('edit/{no_kas?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
+                Route::post('update', [PemberianPanjarController::class, 'update'])->name('pemberian_panjarcms.update');
+                Route::post('hapus', [PemberianPanjarController::class, 'hapus'])->name('pemberian_panjarcms.hapus');
+            });
+            // TAMBAH PANJAR CMS
+            Route::group(['prefix' => 'tambah_panjar'], function () {
+                Route::get('', [TambahPanjarCMSController::class, 'index'])->name('tambah_panjarcms.index');
+                Route::post('load', [TambahPanjarCMSController::class, 'load'])->name('tambah_panjarcms.load');
+                Route::get('tambah', [TambahPanjarCMSController::class, 'tambah'])->name('tambah_panjarcms.tambah');
+                Route::post('kegiatan', [TambahPanjarCMSController::class, 'kegiatan'])->name('tambah_panjarcms.kegiatan');
+                Route::post('simpan', [TambahPanjarCMSController::class, 'simpan'])->name('tambah_panjarcms.simpan');
+                Route::get('edit/{no_kas?}/{kd_skpd?}', [TambahPanjarCMSController::class, 'edit'])->name('tambah_panjarcms.edit');
+                Route::post('update', [TambahPanjarCMSController::class, 'update'])->name('tambah_panjarcms.update');
+                Route::post('hapus', [TambahPanjarCMSController::class, 'hapus'])->name('tambah_panjarcms.hapus');
+            });
+            // UPLOAD PANJAR CMS
+            Route::group(['prefix' => 'upload_panjar'], function () {
+                Route::get('', [UploadPanjarCMSController::class, 'index'])->name('upload_panjarcms.index');
+                Route::post('load_upload', [UploadPanjarCMSController::class, 'loadUpload'])->name('upload_panjarcms.load_data');
+                Route::post('draft_upload', [UploadPanjarCMSController::class, 'draftUpload'])->name('upload_panjarcms.draft_upload');
+                Route::post('data_upload', [UploadPanjarCMSController::class, 'dataUpload'])->name('upload_panjarcms.data_upload');
+                Route::get('tambah', [UploadPanjarCMSController::class, 'create'])->name('upload_panjarcms.create');
+                Route::post('proses_upload', [UploadPanjarCMSController::class, 'prosesUpload'])->name('upload_panjarcms.proses_upload');
+                Route::post('batal_upload', [UploadPanjarCMSController::class, 'batalUpload'])->name('upload_panjarcms.batal_upload');
+                Route::get('cetak_csv_kalbar', [UploadPanjarCMSController::class, 'cetakCsvKalbar'])->name('upload_panjarcms.cetak_csv_kalbar');
+                Route::get('cetak_csv_luar_kalbar', [UploadPanjarCMSController::class, 'cetakCsvLuarKalbar'])->name('upload_panjarcms.cetak_csv_luar_kalbar');
+                Route::post('rekening_transaksi', [UploadPanjarCMSController::class, 'rekeningTransaksi'])->name('upload_panjarcms.rekening_transaksi');
+                Route::post('rekening_potongan', [UploadPanjarCMSController::class, 'rekeningPotongan'])->name('upload_panjarcms.rekening_potongan');
+                Route::post('rekening_tujuan', [UploadPanjarCMSController::class, 'rekeningTujuan'])->name('upload_panjarcms.rekening_tujuan');
+            });
+            // VALIDASI PANJAR CMS
+            Route::group(['prefix' => 'validasi_panjar'], function () {
+                Route::get('', [ValidasiPanjarCMSController::class, 'index'])->name('validasi_panjarcms.index');
+                Route::post('load_data', [ValidasiPanjarCMSController::class, 'loadData'])->name('validasi_panjarcms.load_data');
+                Route::post('draft_validasi', [ValidasiPanjarCMSController::class, 'draftValidasi'])->name('validasi_panjarcms.draft_validasi');
+                Route::post('data_upload', [ValidasiPanjarCMSController::class, 'dataUpload'])->name('validasi_panjarcms.data_upload');
+                Route::get('tambah', [ValidasiPanjarCMSController::class, 'create'])->name('validasi_panjarcms.create');
+                Route::post('proses_validasi', [ValidasiPanjarCMSController::class, 'prosesValidasi'])->name('validasi_panjarcms.proses_validasi');
+                Route::post('batal_validasi', [ValidasiPanjarCMSController::class, 'batalValidasi'])->name('validasi_panjarcms.batal_validasi');
+            });
+        });
+
         // PERTANGGUNGJAWABAN PANJAR
         Route::group(['prefix' => 'pertanggungjawaban_panjar'], function () {
             Route::get('', [PertanggungjawabanPanjarController::class, 'index'])->name('jawabpanjar.index');
@@ -708,6 +762,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [TransaksiPanjarController::class, 'index'])->name('transaksipanjar.index');
             Route::post('load', [TransaksiPanjarController::class, 'load'])->name('transaksipanjar.load');
             Route::get('tambah', [TransaksiPanjarController::class, 'tambah'])->name('transaksipanjar.tambah');
+            Route::post('kegiatan', [TransaksiPanjarController::class, 'kegiatan'])->name('transaksipanjar.kegiatan');
+            Route::post('sp2d', [TransaksiPanjarController::class, 'sp2d'])->name('transaksipanjar.sp2d');
+            Route::post('rekening', [TransaksiPanjarController::class, 'rekening'])->name('transaksipanjar.rekening');
+            Route::post('angkas_spd', [TransaksiPanjarController::class, 'angkasSpd'])->name('transaksipanjar.angkas_spd');
             Route::post('load_data', [TransaksiPanjarController::class, 'loadData'])->name('transaksipanjar.load_data');
             Route::post('simpan', [TransaksiPanjarController::class, 'simpan'])->name('transaksipanjar.simpan');
             Route::get('edit/{no_bukti?}/{kd_skpd?}', [TransaksiPanjarController::class, 'edit'])->name('transaksipanjar.edit');

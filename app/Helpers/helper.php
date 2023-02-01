@@ -3116,6 +3116,122 @@ function status_angkas($skpd)
     return empty($result) ? '' : $result->status;
 }
 
+function status_angkas_penagihan()
+{
+    $skpd = Auth::user()->kd_skpd;
+    $data = collect(DB::select("SELECT TOP 1 * from (
+select '1'as urut,'murni' as status,murni as nilai from status_angkas where kd_skpd =?
+UNION ALL
+select '2'as urut,'murni_geser1',murni_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '3'as urut,'murni_geser2',murni_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '4'as urut,'murni_geser3',murni_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '5'as urut,'murni_geser4',murni_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '6'as urut,'murni_geser5',murni_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '7'as urut,'sempurna1',sempurna1 from status_angkas where kd_skpd =?
+UNION ALL
+select '8'as urut,'sempurna1_geser1',sempurna1_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '9'as urut,'sempurna1_geser2',sempurna1_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '10'as urut,'sempurna1_geser3',sempurna1_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '11'as urut,'sempurna1_geser4',sempurna1_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '12'as urut,'sempurna1_geser5',sempurna1_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '13'as urut,'sempurna2',sempurna2 from status_angkas where kd_skpd =?
+UNION ALL
+select '14'as urut,'sempurna2_geser1',sempurna2_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '15'as urut,'sempurna2_geser2',sempurna2_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '16'as urut,'sempurna2_geser3',sempurna2_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '17'as urut,'sempurna2_geser4',sempurna2_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '18'as urut,'sempurna2_geser5',sempurna2_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '19'as urut,'sempurna3',sempurna3 from status_angkas where kd_skpd =?
+UNION ALL
+select '20'as urut,'sempurna3_geser1',sempurna3_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '21'as urut,'sempurna3_geser2',sempurna3_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '22'as urut,'sempurna3_geser3',sempurna3_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '23'as urut,'sempurna3_geser4',sempurna3_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '24'as urut,'sempurna3_geser5',sempurna3_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '25'as urut,'sempurna4',sempurna4 from status_angkas where kd_skpd =?
+UNION ALL
+select '26'as urut,'sempurna4_geser1',sempurna4_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '27'as urut,'sempurna4_geser2',sempurna4_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '28'as urut,'sempurna4_geser3',sempurna4_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '29'as urut,'sempurna4_geser4',sempurna4_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '30'as urut,'sempurna4_geser5',sempurna4_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '31'as urut,'sempurna5',sempurna5 from status_angkas where kd_skpd =?
+UNION ALL
+select '32'as urut,'sempurna5_geser1',sempurna5_geser1 from status_angkas where kd_skpd =?
+UNION ALL
+select '33'as urut,'sempurna5_geser2',sempurna5_geser2 from status_angkas where kd_skpd =?
+UNION ALL
+select '34'as urut,'sempurna5_geser3',sempurna5_geser3 from status_angkas where kd_skpd =?
+UNION ALL
+select '35'as urut,'sempurna5_geser4',sempurna5_geser4 from status_angkas where kd_skpd =?
+UNION ALL
+select '36'as urut,'sempurna5_geser5',sempurna5_geser5 from status_angkas where kd_skpd =?
+UNION ALL
+select '37'as urut,'ubah',ubah from status_angkas where kd_skpd =?
+UNION ALL
+select '38'as urut,'ubah11',ubah11 from status_angkas where kd_skpd =?
+UNION ALL
+select '39'as urut,'ubah12',ubah12 from status_angkas where kd_skpd =?
+UNION ALL
+select '40'as urut,'ubah13',ubah13 from status_angkas where kd_skpd =?
+UNION ALL
+select '41'as urut,'ubah14',ubah14 from status_angkas where kd_skpd =?
+UNION ALL
+select '42'as urut,'ubah15',ubah15 from status_angkas where kd_skpd =?
+UNION ALL
+select '43'as urut,'ubah2',ubah2 from status_angkas where kd_skpd =?
+UNION ALL
+select '44'as urut,'ubah21',ubah21 from status_angkas where kd_skpd =?
+UNION ALL
+select '45'as urut,'ubah22',ubah22 from status_angkas where kd_skpd =?
+UNION ALL
+select '46'as urut,'ubah23',ubah23 from status_angkas where kd_skpd =?
+UNION ALL
+select '47'as urut,'ubah24',ubah24 from status_angkas where kd_skpd =?
+UNION ALL
+select '48'as urut,'ubah25',ubah25 from status_angkas where kd_skpd =?
+UNION All
+select '49'as urut,'ubah3',ubah3 from status_angkas where kd_skpd =?
+UNION ALL
+select '50'as urut,'ubah31',ubah31 from status_angkas where kd_skpd =?
+UNION ALL
+select '51'as urut,'ubah32',ubah32 from status_angkas where kd_skpd =?
+UNION ALL
+select '52'as urut,'ubah33',ubah33 from status_angkas where kd_skpd =?
+UNION ALL
+select '53'as urut,'ubah34',ubah34 from status_angkas where kd_skpd =?
+UNION ALL
+select '54'as urut,'ubah35',ubah35 from status_angkas where kd_skpd =?
+)zz where nilai='1' ORDER BY cast(urut as int) DESC", [$skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd, $skpd]))->first();
+
+    return $data->status;
+}
+
 function nomor_urut_ppkd()
 {
     $data1 = DB::table('trhkasin_ppkd')
