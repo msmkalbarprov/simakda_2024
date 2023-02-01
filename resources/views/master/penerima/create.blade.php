@@ -158,7 +158,7 @@
                             <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                             <div class="col-md-10">
                                 <input class="form-control" type="text" placeholder="Silahkan isi dengan npwp"
-                                    id="npwp" name="npwp" value="{{ old('npwp') }}">
+                                    id="npwp" name="npwp" value="{{ old('npwp') }}" maxlength="15">
                             </div>
                         </div>
                         <!-- Cek NPWP -->
@@ -551,7 +551,8 @@
                         dataType: "json",
                         success: function(data) {
                             let data1 = $.parseJSON(data);
-                            if (data1.status) {
+                            if (data1.status == true) {
+                                alert(data1.data[0].message);
                                 $("#npwp_validasi").val(data1.data[0].data
                                     .nomorPokokWajibPajak);
                                 $("#nm_npwp_validasi").val(data1.data[0].data.namaWajibPajak);
