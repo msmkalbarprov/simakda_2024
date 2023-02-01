@@ -250,7 +250,7 @@
             </tr>
         @elseif ($beban == '2')
             <tr>
-                <td>OPD/UPTD/BIRO</td>
+                <td>SKPD/BIRO/UPT</td>
                 <td>:</td>
                 <td>{{ $skpd->nm_skpd }}</td>
             </tr>
@@ -277,7 +277,7 @@
             </tr>
         @elseif ($beban == '3')
             <tr>
-                <td>OPD/UPTD/BIRO</td>
+                <td>SKPD/BIRO/UPT</td>
                 <td>:</td>
                 <td>{{ $skpd->nm_skpd }}</td>
             </tr>
@@ -304,7 +304,7 @@
             </tr>
         @elseif ($beban == '4')
             <tr>
-                <td>OPD/UPTD/BIRO</td>
+                <td>SKPD/BIRO/UPT</td>
                 <td>:</td>
                 <td>{{ $skpd->nm_skpd }}</td>
             </tr>
@@ -406,7 +406,7 @@
             @endif
         @elseif ($beban == '5')
             <tr>
-                <td>OPD/UPTD/BIRO</td>
+                <td>SKPD/BIRO/UPT</td>
                 <td>:</td>
                 <td>{{ $skpd->nm_skpd }}</td>
             </tr>
@@ -512,7 +512,7 @@
             @endif
         @elseif ($beban == '6')
             <tr>
-                <td>OPD/UPTD/BIRO</td>
+                <td>SKPD/BIRO/UPT</td>
                 <td>:</td>
                 <td>{{ $skpd->nm_skpd }}</td>
             </tr>
@@ -963,7 +963,7 @@
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
-                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala OPD</td>
+                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala SKPD</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '5')
@@ -1005,7 +1005,7 @@
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
                         <td class="row4">4. Rekap daftar hadir harian Pegawai (Tanda tangan pembuat daftar dan
-                            mengetahui Kepala OPD)</td>
+                            mengetahui Kepala SKPD)</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '5')
@@ -1609,7 +1609,7 @@
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
-                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala OPD</td>
+                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala SKPD</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '4')
@@ -1655,7 +1655,7 @@
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
                         <td class="row4">4. Rekap daftar hadir harian Pegawai (Tanda tangan pembuat daftar dan
-                            mengetahui Kepala OPD)</td>
+                            mengetahui Kepala SKPD)</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '4')
@@ -2269,7 +2269,7 @@
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
-                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala OPD</td>
+                        <td class="row4">3. Daftar Hadir/Absensi Bulanan mengetahui Kepala SKPD</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif (in_array($jenis, ['4', '99']))
@@ -2320,7 +2320,7 @@
                         <td class="row3"></td>
                     @elseif ($jenis == '3')
                         <td class="row4">4. Rekap daftar hadir harian Pegawai (Tanda tangan pembuat daftar dan
-                            mengetahui Kepala OPD)</td>
+                            mengetahui Kepala SKPD)</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '4')

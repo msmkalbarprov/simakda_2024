@@ -104,7 +104,7 @@
 
     <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
-            <td style="vertical-align: top;padding-left:40px">
+            <td style="vertical-align: top">
                 1.
             </td>
             <td style="vertical-align: top">
@@ -116,7 +116,7 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top;padding-left:40px">
+            <td style="vertical-align: top">
                 2.
             </td>
             <td style="vertical-align: top">

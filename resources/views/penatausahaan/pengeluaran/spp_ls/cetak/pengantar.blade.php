@@ -76,7 +76,7 @@
             <td>{{ $peng }}</td>
         </tr>
         <tr>
-            <td>OPD : {{ $cari_data->nm_skpd }}</td>
+            <td>SKPD : {{ $cari_data->nm_skpd }}</td>
         </tr>
         <tr>
             <td>Di <b><u>{{ strtoupper($daerah->daerah) }}</u></b></td>
@@ -143,7 +143,7 @@
         </tr>
         {{-- OPD --}}
         <tr>
-            <td>b. OPD</td>
+            <td>b. SKPD</td>
             <td>:</td>
             <td>{{ $cari_data->kd_skpd }} - {{ $cari_data->nm_skpd }}</td>
         </tr>
