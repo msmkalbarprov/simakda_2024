@@ -596,7 +596,13 @@ class PelimpahanController extends Controller
 
             DB::table('trdupload_cmsbank_bidang')->where(['no_upload' => $no_upload, 'no_upload_tgl' => $no_upload_tgl, 'kd_bp' => $kd_bp, 'kd_skpd' => $kd_skpd])->delete();
 
-            DB::table('trhupload_cmsbank_bidang')->where(['no_upload' => $no_upload, 'tgl_upload' => $tgl_upload, 'kd_skpd' => $kd_bp])->delete();
+            $cek = DB::table('trdupload_cmsbank_bidang')
+                ->where(['no_upload' => $no_upload, 'no_upload_tgl' => $no_upload_tgl, 'kd_bp' => $kd_bp])
+                ->count();
+
+            if ($cek == 0) {
+                DB::table('trhupload_cmsbank_bidang')->where(['no_upload' => $no_upload, 'tgl_upload' => $tgl_upload, 'kd_skpd' => $kd_bp])->delete();
+            }
 
             DB::commit();
             return response()->json([
