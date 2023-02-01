@@ -142,11 +142,16 @@ class PencairanSp2dController extends Controller
         $total_potongan = $request->total_potongan;
         $tgl_sp2d = $request->tgl_sp2d;
         $nama = Auth::user()->nama;
+        $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
+
+        // $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '0') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
 
         DB::beginTransaction();
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
-            $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp]);
+            // $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp]);
+            $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
+            $kontrak = $kontrak->no_kontrak;
             $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $opd])->first();
 
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
@@ -308,7 +313,7 @@ class PencairanSp2dController extends Controller
                 }
             }
 
-            if (($beban < 5) || ($beban == '6' && isNull($kontrak))) {
+            if (($beban < 5) || ($beban == '6' && !isset($kontrak))) {
                 DB::table('tr_setorsimpanan')->insert([
                     'no_kas' => $no_setor,
                     'tgl_kas' => $tgl_cair,
