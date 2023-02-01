@@ -236,6 +236,10 @@
                 "type": "POST",
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
+                },
+                "dataSrc": function(data) {
+                    record = data.data;
+                    return record;
                 }
             },
             ordering: false,
@@ -256,12 +260,12 @@
                 },
                 {
                     data: null,
-                    name: 'total',
+                    name: 'nilai',
                     className: 'text-right',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.total)
+                        }).format(data.nilai)
                     }
                 },
                 {
@@ -295,6 +299,13 @@
                     visible: false
                 },
             ],
+            "drawCallback": function(settings) {
+                let total = record.reduce((previousValue,
+                    currentValue) => (previousValue += parseFloat(currentValue.nilai)), 0);
+                $('#total_transaksi_satuan').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(total));
+            },
         });
 
         let rekening_transaksi = $('#rekening_transaksi').DataTable({
@@ -588,9 +599,9 @@
     function lihatDataUpload(no_upload, tgl_upload, total) {
         $('#no_upload').val(no_upload);
         $('#tgl_upload').val(tgl_upload);
-        $('#total_transaksi_satuan').val(new Intl.NumberFormat('id-ID', {
-            minimumFractionDigits: 2
-        }).format(total));
+        // $('#total_transaksi_satuan').val(new Intl.NumberFormat('id-ID', {
+        //     minimumFractionDigits: 2
+        // }).format(total));
         let tabel = $('#data_transaksi1').DataTable();
         tabel.ajax.reload();
         $('#modal_transaksi').modal('show');
