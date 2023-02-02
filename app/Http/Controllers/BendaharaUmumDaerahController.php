@@ -2022,7 +2022,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.no_spm', '=', 'b.no_spm');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011') THEN b.nilai ELSE 0 END) AS HKPG")
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
             ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
