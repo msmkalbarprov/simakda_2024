@@ -142,16 +142,21 @@ class PencairanSp2dController extends Controller
         $total_potongan = $request->total_potongan;
         $tgl_sp2d = $request->tgl_sp2d;
         $nama = Auth::user()->nama;
-        $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
+
+        // $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
 
         // $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '0') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
+        // $kontrak = DB::table('trhspp')->select('no_kontrak')->where(['no_spp' => $no_spp->no_spp])->first();
+        // $kontrak = isNull($kontrak) ? '' : $kontrak->no_kontrak;
+
+        // dd($kontrak);
 
         DB::beginTransaction();
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
             // $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp]);
             $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
-            $kontrak = $kontrak->no_kontrak;
+            $kontrak = isNull($kontrak) ? '' : $kontrak->no_kontrak;
             $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $opd])->first();
 
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
@@ -317,7 +322,7 @@ class PencairanSp2dController extends Controller
                 }
             }
 
-            if (($beban < 5) || ($beban == '6' && !isset($kontrak))) {
+            if (($beban < 5) || ($beban == '6' && $kontrak == '')) {
                 DB::table('tr_setorsimpanan')->insert([
                     'no_kas' => $no_setor,
                     'tgl_kas' => $tgl_cair,
@@ -353,7 +358,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if ($beban == '5' || ($beban == '6' && isset($kontrak))) {
+            if ($beban == '5' || ($beban == '6' && $kontrak <> '')) {
                 DB::table('trhtransout')->insert([
                     'no_kas' => $no_kas,
                     'tgl_kas' => $tgl_cair,
@@ -422,7 +427,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if (($beban == '6' && isset($kontrak)) || $beban == '5') {
+            if (($beban == '6' && $kontrak <> '') || $beban == '5') {
                 if (isset($data_spp)) {
                     DB::table('trdtransout')->insert(array_map(function ($value) use ($no_kas, $no_sp2d, $beban) {
                         return [
