@@ -2000,7 +2000,7 @@ class BendaharaUmumDaerahController extends Controller
         $req = $request->all();
 
         $rekap_gaji1 = DB::table('trhsp2d as a')
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 IWP,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
             ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
@@ -2022,7 +2022,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.no_spm', '=', 'b.no_spm');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.kd_rek6='210108010001' THEN b.nilai ELSE 0 END) AS IWP,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011') THEN b.nilai ELSE 0 END) AS HKPG")
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011') THEN b.nilai ELSE 0 END) AS HKPG")
             ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
@@ -2041,7 +2041,7 @@ class BendaharaUmumDaerahController extends Controller
             ->unionAll($rekap_gaji1);
 
         $rekap_gaji = DB::table(DB::raw("({$rekap_gaji2->toSql()}) AS sub"))
-            ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP) IWP, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
+            ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP1) + sum(IWP8) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
             ->mergeBindings($rekap_gaji2)
             ->groupByRaw("kd_skpd,nm_skpd,nomor")
             ->orderBy('kd_skpd')
