@@ -178,7 +178,7 @@ class PencairanSp2dController extends Controller
                 } else {
                     $no_bukti = $data_pot->no_bukti;
                 }
-                $data_potongan = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereNotIn('a.kd_rek6', ['2110801', '4140612'])->select('a.*', 'b.jns_spp')->get();
+                $data_potongan = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereNotIn('a.kd_rek6', ['2110801', '4140612'])->select('a.*', 'b.jns_spp', 'b.nmrekan', 'b.npwp')->get();
                 $data_potongan = json_decode(json_encode($data_potongan), true);
                 if (isset($data_potongan)) {
                     DB::table('trdstrpot')->insert(array_map(function ($value) use ($bukti_str, $opd, $no_sp2d) {
@@ -191,6 +191,10 @@ class PencairanSp2dController extends Controller
                             'kd_rek_trans' => $value['kd_trans'],
                             'map_pot' => $value['map_pot'],
                             'no_sp2d' => $no_sp2d,
+                            'ntpn' => $value['ntpn'],
+                            'rekanan' => $value['nmrekan'],
+                            'npwp' => $value['npwp'],
+                            'ebilling' => $value['idBilling'],
                         ];
                     }, $data_potongan));
                 }
