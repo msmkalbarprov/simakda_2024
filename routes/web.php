@@ -766,6 +766,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('sp2d', [TransaksiPanjarController::class, 'sp2d'])->name('transaksipanjar.sp2d');
             Route::post('rekening', [TransaksiPanjarController::class, 'rekening'])->name('transaksipanjar.rekening');
             Route::post('angkas_spd', [TransaksiPanjarController::class, 'angkasSpd'])->name('transaksipanjar.angkas_spd');
+            Route::post('sumber', [TransaksiPanjarController::class, 'sumber'])->name('transaksipanjar.sumber');
+            Route::post('sumber_dana', [TransaksiPanjarController::class, 'sumberDana'])->name('transaksipanjar.sumber_dana');
             Route::post('load_data', [TransaksiPanjarController::class, 'loadData'])->name('transaksipanjar.load_data');
             Route::post('simpan', [TransaksiPanjarController::class, 'simpan'])->name('transaksipanjar.simpan');
             Route::get('edit/{no_bukti?}/{kd_skpd?}', [TransaksiPanjarController::class, 'edit'])->name('transaksipanjar.edit');
