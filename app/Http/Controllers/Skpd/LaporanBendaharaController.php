@@ -364,12 +364,12 @@ class LaporanBendaharaController extends Controller
             return $view;
         } else if ($cetak == '2') {
             $pdf = PDF::loadHtml($view)->setPaper('legal');
-            return $pdf->stream('BP PAJAK.pdf');
+            return $pdf->stream('laporan BKU.pdf');
         } else {
 
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+            header('Content-Disposition: attachement; filename="laporan BKU - ' . $nm_skpd . '.xls"');
             return $view;
         }
     }
