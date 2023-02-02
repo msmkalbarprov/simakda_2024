@@ -303,16 +303,10 @@
                             <table style="width: 100%" id="data_transaksi1" class="table">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>No Voucher</th>
-                                        <th>Tanggal Voucher</th>
+                                        <th>No Bukti</th>
+                                        <th>Tanggal Bukti</th>
                                         <th>KD SKPD</th>
-                                        <th>Keterangan</th>
-                                        <th>Total</th>
-                                        <th>Netto</th>
-                                        <th>Potongan</th>
                                         <th>Nilai Pengeluaran</th>
-                                        <th>Status Upload</th>
                                         <th>Rek Bend</th>
                                         <th>Nama Rek</th>
                                         <th>Rek Tujuan</th>
@@ -320,8 +314,6 @@
                                         <th>Ket. Tujuan</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
                             </table>
                             <hr>
                             <table style="width: 100%">
@@ -330,9 +322,9 @@
                                         <td><button type="button" class="btn btn-sm btn-primary" id="cetakCsvKalbar"><i
                                                     class="uil-print"></i>[Unduh CSV] Bank
                                                 Kalbar</button></td>
-                                        <td><button type="button" class="btn btn-sm btn-primary"
+                                        {{-- <td><button type="button" class="btn btn-sm btn-primary"
                                                 id="cetakCsvLuarKalbar"><i class="uil-print"></i>[Unduh CSV] Di Luar Bank
-                                                Kalbar</button></td>
+                                                Kalbar</button></td> --}}
                                         <td style="padding-left: 200px">Total Transaksi</td>
                                         <td>:</td>
                                         <td><input type="text"
