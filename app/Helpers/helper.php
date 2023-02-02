@@ -3464,3 +3464,12 @@ function no_urut_cms()
 
     return $data->nomor;
 }
+
+function trans_denda($kd_rek6)
+{
+    if ($kd_rek6 == '410411010001') {
+        return '4';
+    } else {
+        return '5';
+    }
+}
