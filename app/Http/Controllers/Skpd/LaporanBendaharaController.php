@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Static_;
 use PhpParser\ErrorHandler\Collecting;
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 
 class LaporanBendaharaController extends Controller
 {
@@ -109,6 +111,7 @@ class LaporanBendaharaController extends Controller
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $kd_skpd        = $request->kd_skpd;
+        $cetak          = $request->cetak;
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
@@ -355,7 +358,20 @@ class LaporanBendaharaController extends Controller
             'cari_bendahara'    => $cari_bendahara
         ];
 
-        return view('skpd.laporan_bendahara.cetak.bku')->with($data);
+        
+        $view =  view('skpd.laporan_bendahara.cetak.bku')->with($data);
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            return $pdf->stream('BP PAJAK.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BP PAJAK - ' . $nm_skpd . '.xls"');
+            return $view;
+        }
     }
 
     // Cetak List
