@@ -94,11 +94,11 @@
                         name: 'npwp',
                     },
                     {
-                        data: null,
+                        data: 'keterangan',
                         name: 'keterangan',
-                        render: function(data, type, row, meta) {
-                            return data.keterangan.substr(0, 10) + '.....';
-                        }
+                        // render: function(data, type, row, meta) {
+                        //     return data.keterangan.substr(0, 10) + '.....';
+                        // }
                     },
                     {
                         data: 'aksi',
