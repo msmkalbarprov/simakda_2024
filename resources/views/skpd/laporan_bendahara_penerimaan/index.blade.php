@@ -232,14 +232,14 @@
             let kd_skpd = this.value;
             cari_bendahara(kd_skpd);
             cari_pakpa(kd_skpd);
-            // cari_rekening(kd_skpd);
+            cari_rekening(kd_skpd);
         });
 
         $('#kd_skpd_2').on('select2:select', function() {
             let kd_skpd = this.value;
             cari_bendahara2(kd_skpd);
             cari_pakpa2(kd_skpd);
-            // cari_rekening(kd_skpd);
+            cari_rekening(kd_skpd);
         });
 
         function cari_bendahara(kd_skpd) {
@@ -335,11 +335,11 @@
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
-                    $('#rekening').empty();
-                    $('#rekening').append(
+                    $('#rekening3').empty();
+                    $('#rekening3').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
-                        $('#rekening').append(
+                        $('#rekening3').append(
                             `<option value="${data.kd_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
                         );
                     })
@@ -430,8 +430,8 @@
                 tanggal2 = document.getElementById('tanggal2_2').value;
                 jns_anggaran = document.getElementById('jns_anggaran_2').value;
                 rekening = document.getElementById('rekening').value;
+                rekening3 = document.getElementById('rekening3').value;
                 tipe = document.getElementById('tipe').value;
-
 
                 // alert validasi data
                 if (!kd_skpd) {
@@ -458,10 +458,16 @@
                     alert("Tanggal Penandatangan tidak boleh kosong!");
                     return;
                 }
-
-                if (!rekening) {
-                    alert("Rekening tidak boleh kosong!");
-                    return;
+                if (jenis_cetak == "BP Sub Rincian Objek") {
+                    if (!rekening3) {
+                        alert('Rekening tidak boleh kosong!');
+                        return;
+                    }
+                } else {
+                    if (!rekening) {
+                        alert("Rekening tidak boleh kosong!");
+                        return;
+                    }
                 }
 
                 if (!tipe) {
@@ -520,6 +526,23 @@
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("rekening", rekening);
+                searchParams.append("tipe", tipe);
+                searchParams.append("jenis_print", jenis_print);
+                searchParams.append("cetak", jns_cetak);
+
+                window.open(url.toString(), "_blank");
+
+            } else if (jenis_cetak == 'BP Sub Rincian Objek') {
+                let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_bp_sub_rincian_objek') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("bendahara", bendahara);
+                searchParams.append("pa_kpa", pa_kpa);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("rekening", rekening3);
+                searchParams.append("jns_anggaran", jns_anggaran);
                 searchParams.append("tipe", tipe);
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
