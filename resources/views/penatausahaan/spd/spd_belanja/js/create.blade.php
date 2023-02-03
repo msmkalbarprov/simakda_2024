@@ -681,10 +681,16 @@
                 alert('Keterangan Tidak Boleh Kosong');
                 return;
             }
-
-            if (nomor.length != 49) {
-                alert('Format Nomor SPD Belum Lengkap');
-                return;
+            if (jenis_anggaran == 'M') {
+                if (nomor.length != 49) {
+                    alert('Format Nomor SPD Belum Lengkap');
+                    return;
+                }
+            } else {
+                if (nomor.length != 50) {
+                    alert('Format Nomor SPD Belum Lengkap');
+                    return;
+                }
             }
 
             let response = {
