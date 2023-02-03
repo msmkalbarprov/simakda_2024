@@ -94,7 +94,7 @@
                 dropdownParent: $('#modal_cetak2'),
                 theme: 'bootstrap-5'
             });
-        
+
 
         });
         let jenis_skpd = "{{ substr(Auth::user()->kd_skpd, 18, 4) }}";
@@ -152,7 +152,7 @@
             document.getElementById('bendahara1').hidden = true; // Hide
             document.getElementById('pa_kpa1').hidden = true; // Hide
             modal = 2;
-        
+
         });
 
         $('#laprincian').on('click', function() {
@@ -171,7 +171,7 @@
             document.getElementById('bendahara1').hidden = false; // Hide
             document.getElementById('pa_kpa1').hidden = false; // Hide
             modal = 2;
-    
+
         });
 
         $('input:radio[name="inlineRadioOptions"]').change(function() {
@@ -232,14 +232,14 @@
             let kd_skpd = this.value;
             cari_bendahara(kd_skpd);
             cari_pakpa(kd_skpd);
-            cari_rekening(kd_skpd);
+            // cari_rekening(kd_skpd);
         });
 
         $('#kd_skpd_2').on('select2:select', function() {
             let kd_skpd = this.value;
             cari_bendahara2(kd_skpd);
             cari_pakpa2(kd_skpd);
-            cari_rekening(kd_skpd);
+            // cari_rekening(kd_skpd);
         });
 
         function cari_bendahara(kd_skpd) {
@@ -372,19 +372,19 @@
             let rekening
             let tipe
             let format
-            if(modal==1){
-                spasi           = document.getElementById('spasi').value;
-                tgl_ttd         = document.getElementById('tgl_ttd').value;
-                bendahara       = document.getElementById('bendahara').value;
-                pa_kpa          = document.getElementById('pa_kpa').value;
-                kd_skpd         = document.getElementById('kd_skpd').value;
-                jenis_print     = $(this).data("jenis");
-                jenis_cetakan   = document.getElementById('jenis_cetak').value;
-                jenis_cetak     = document.getElementById('labelcetak').textContent
-                tanggal1        = document.getElementById('tanggal1').value;
-                tanggal2        = document.getElementById('tanggal2').value;
-                jns_anggaran    = document.getElementById('jns_anggaran').value;
-                format          = document.getElementById('format').value;
+            if (modal == 1) {
+                spasi = document.getElementById('spasi').value;
+                tgl_ttd = document.getElementById('tgl_ttd').value;
+                bendahara = document.getElementById('bendahara').value;
+                pa_kpa = document.getElementById('pa_kpa').value;
+                kd_skpd = document.getElementById('kd_skpd').value;
+                jenis_print = $(this).data("jenis");
+                jenis_cetakan = document.getElementById('jenis_cetak').value;
+                jenis_cetak = document.getElementById('labelcetak').textContent
+                tanggal1 = document.getElementById('tanggal1').value;
+                tanggal2 = document.getElementById('tanggal2').value;
+                jns_anggaran = document.getElementById('jns_anggaran').value;
+                format = document.getElementById('format').value;
 
                 // alert validasi data
                 if (!kd_skpd) {
@@ -417,64 +417,64 @@
                         return;
                     }
                 }
-            }else{
-                spasi           = document.getElementById('spasi_2').value;
-                tgl_ttd         = document.getElementById('tgl_ttd_2').value;
-                bendahara       = document.getElementById('bendahara_2').value;
-                pa_kpa          = document.getElementById('pa_kpa_2').value;
-                kd_skpd         = document.getElementById('kd_skpd_2').value;
-                jenis_print     = $(this).data("jenis_2");
-                jenis_cetakan   = document.getElementById('jenis_cetak_2').value;
-                jenis_cetak     = document.getElementById('labelcetak2').textContent;
-                tanggal1        = document.getElementById('tanggal1_2').value;
-                tanggal2        = document.getElementById('tanggal2_2').value;
-                jns_anggaran    = document.getElementById('jns_anggaran_2').value;
-                rekening    = document.getElementById('rekening').value;
-                tipe        = document.getElementById('tipe').value;
+            } else {
+                spasi = document.getElementById('spasi_2').value;
+                tgl_ttd = document.getElementById('tgl_ttd_2').value;
+                bendahara = document.getElementById('bendahara_2').value;
+                pa_kpa = document.getElementById('pa_kpa_2').value;
+                kd_skpd = document.getElementById('kd_skpd_2').value;
+                jenis_print = $(this).data("jenis_2");
+                jenis_cetakan = document.getElementById('jenis_cetak_2').value;
+                jenis_cetak = document.getElementById('labelcetak2').textContent;
+                tanggal1 = document.getElementById('tanggal1_2').value;
+                tanggal2 = document.getElementById('tanggal2_2').value;
+                jns_anggaran = document.getElementById('jns_anggaran_2').value;
+                rekening = document.getElementById('rekening').value;
+                tipe = document.getElementById('tipe').value;
 
-                
+
                 // alert validasi data
-                    if (!kd_skpd) {
-                        alert('SKPD tidak boleh kosong!');
-                        return;
-                    }
-                    if (!bendahara) {
-                        alert('Bendahara Pengeluaran tidak boleh kosong!');
-                        return;
-                    }
-                    if (!pa_kpa) {
-                        alert("PA/KPA tidak boleh kosong!");
-                        return;
-                    }
-                    if (!tanggal1) {
-                        alert("Periode 1 tidak boleh kosong!");
-                        return;
-                    }
-                    if (!tanggal2) {
-                        alert("Periode 2 tidak boleh kosong!");
-                        return;
-                    }
-                    if (!tgl_ttd) {
-                        alert("Tanggal Penandatangan tidak boleh kosong!");
-                        return;
-                    }
+                if (!kd_skpd) {
+                    alert('SKPD tidak boleh kosong!');
+                    return;
+                }
+                if (!bendahara) {
+                    alert('Bendahara Pengeluaran tidak boleh kosong!');
+                    return;
+                }
+                if (!pa_kpa) {
+                    alert("PA/KPA tidak boleh kosong!");
+                    return;
+                }
+                if (!tanggal1) {
+                    alert("Periode 1 tidak boleh kosong!");
+                    return;
+                }
+                if (!tanggal2) {
+                    alert("Periode 2 tidak boleh kosong!");
+                    return;
+                }
+                if (!tgl_ttd) {
+                    alert("Tanggal Penandatangan tidak boleh kosong!");
+                    return;
+                }
 
-                    if (!rekening) {
-                        alert("Rekening tidak boleh kosong!");
-                        return;
-                    }
+                if (!rekening) {
+                    alert("Rekening tidak boleh kosong!");
+                    return;
+                }
 
-                    if (!tipe) {
-                        alert("Tipe tidak boleh kosong!");
-                        return;
-                    }
+                if (!tipe) {
+                    alert("Tipe tidak boleh kosong!");
+                    return;
+                }
 
-                    
-                    
+
+
             }
 
             // subrincian objek
- 
+
 
             if (jenis_cetak == 'Buku Penerimaan dan Pengeluaran') {
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran') }}");
@@ -490,7 +490,7 @@
                 searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("format", format);
-                
+
 
                 window.open(url.toString(), "_blank");
 
