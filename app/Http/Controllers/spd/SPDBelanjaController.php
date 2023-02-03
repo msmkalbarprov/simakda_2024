@@ -657,6 +657,7 @@ class SPDBelanjaController extends Controller
                 ]);
             } else {
                 if ($data['revisi'] == '1') {
+
                     $revisi = DB::table('trhspd')->selectRaw('max(revisi_ke)+1 as revisi')
                         ->where(['kd_skpd' => $data['skpd'], 'bulan_awal' => $data['bulan_awal'], 'bulan_akhir' => $data['bulan_akhir']])
                         ->first();
@@ -678,10 +679,11 @@ class SPDBelanjaController extends Controller
                         'tglupdate' => date('Y-m-d H:i:s'),
                         'total' => $data['totalNilai'],
                         'status' => '0',
-                        'revisi_ke' => $revisi,
+                        'revisi_ke' => $revisi->revisi,
                         'jns_ang' => $data['jenis_anggaran'],
                         'jns_angkas' => $data['status_angkas'],
                     ]);
+
                     if ($data['jenis'] == '6') {
                         if (isset($data['daftar_spd'])) {
                             DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
