@@ -34,7 +34,7 @@
                                         data-bank_tujuan="{{ $data->bank_tujuan }}"
                                         data-ket_tujuan="{{ $data->ket_tujuan }}">
                                         {{ $data->no_voucher }} |
-                                        {{ $data->tgl_voucher }}
+                                        {{ $data->tgl_voucher }} | {{ rupiah($data->total) }}
                                     </option>
                                 @endforeach
                             </select>
