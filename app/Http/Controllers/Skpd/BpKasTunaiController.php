@@ -185,7 +185,7 @@ class BpKasTunaiController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('BP KAS TUNAI.pdf');
         } else {
 
