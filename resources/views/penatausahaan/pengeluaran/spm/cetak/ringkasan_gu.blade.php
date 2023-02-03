@@ -60,40 +60,74 @@
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
 
+    @if ($beban == '6' && $jenis == '4')
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
+            <tbody>
+                <tr>
+                    <td class="center">SURAT PERINTAH MEMBAYAR {{ judul_ringkasan($beban) }}</td>
+                </tr>
+                <tr>
+                    @if ($beban == '2')
+                        <td class="center">(SPM - GU)</td>
+                    @elseif ($beban == '3')
+                        <td class="center">(SPM - TU)</td>
+                    @elseif ($beban == '4')
+                        <td class="center">(SPM - LS {{ strtoupper(judul_ringkasan_ls($no_spm, $beban)) }})</td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="center"><strong>(PEMBAYARAN HONORARIUM PNS DAN NON PNS)</strong></td>
+                </tr>
+                <tr>
+                    <td class="center">Nomor : {{ $no_spm }} Tahun {{ tahun_anggaran() }}</td>
+                </tr>
+                <tr>
+                    <td style="height: 5px"></td>
+                </tr>
+                <tr>
+                    <td class="center"><strong><u>RINGKASAN</u></strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+            </tbody>
+        </table>
+    @else
+        <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
+            <tbody>
+                <tr>
+                    <td class="center">SURAT PERINTAH MEMBAYAR {{ judul_ringkasan($beban) }}</td>
+                </tr>
+                <tr>
+                    @if ($beban == '2')
+                        <td class="center">(SPM - GU)</td>
+                    @elseif ($beban == '3')
+                        <td class="center">(SPM - TU)</td>
+                    @elseif ($beban == '4')
+                        <td class="center">(SPM - LS {{ strtoupper(judul_ringkasan_ls($no_spm, $beban)) }})</td>
+                    @endif
+                </tr>
+                <tr>
+                    <td class="center"><strong>Nomor : {{ $no_spm }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="center"><strong><u>RINGKASAN</u></strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 20px"></td>
+                </tr>
+            </tbody>
+        </table>
+    @endif
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
-        <tbody>
-            <tr>
-                <td class="center">SURAT PERINTAH MEMBAYAR {{ judul_ringkasan($beban) }}</td>
-            </tr>
-            <tr>
-                @if ($beban == '2')
-                    <td class="center">(SPM - GU)</td>
-                @elseif ($beban == '3')
-                    <td class="center">(SPM - TU)</td>
-                @elseif ($beban == '4')
-                    <td class="center">(SPM - LS {{ strtoupper(judul_ringkasan_ls($no_spm, $beban)) }})</td>
-                @endif
-            </tr>
-            <tr>
-                <td class="center"><strong>Nomor : {{ $no_spm }}</strong></td>
-            </tr>
-            <tr>
-                <td class="center"><strong><u>RINGKASAN</u></strong></td>
-            </tr>
-            <tr>
-                <td style="height: 20px"></td>
-            </tr>
-        </tbody>
-    </table>
 
     <table style="width: 100%;border:1px solid black;font-family:'Open Sans', Helvetica,Arial,sans-serif"
         class="rincian">
@@ -284,7 +318,7 @@
 
     <div style="padding-top: 30px">
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
-            @if (($beban == '6' && $jenis_beban == '6') || $beban == '5')
+            @if (($beban == '6' && $jenis_beban == '6') || $beban == '5' || ($beban == '6' && $jenis_beban == '4'))
                 <tr>
                     <td style="text-align: center">MENGETAHUI :</td>
                     <td style="margin: 2px 0px;text-align: center">
