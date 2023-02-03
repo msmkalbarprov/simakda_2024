@@ -120,14 +120,28 @@
                     <td>{{ $rekap->nama }}</td>
                     <td class="angka">{{ rupiah($rekap->ang) }}</td>
                     <td class="angka">{{ rupiah($rekap->bel) }}</td>
-                    <td class="angka">{{ rupiah(($rekap->bel * 100) / $rekap->ang) }}</td>
+                    <td class="angka">
+                        @if ($rekap->bel != 0 && $rekap->ang != 0)
+                            {{ rupiah(($rekap->bel * 100) / $rekap->ang) }}
+                        @else
+                            {{ rupiah(0) }}
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             <tr>
                 <td colspan="2" style="text-align: center"><b>TOTAL</b></td>
                 <td class="angka"><b>{{ rupiah($tot_ang) }}</b></td>
                 <td class="angka"><b>{{ rupiah($tot_bel) }}</b></td>
-                <td class="angka"><b>{{ rupiah(($tot_bel * 100) / $tot_ang) }}</b></td>
+                <td class="angka">
+                    <b>
+                        @if ($tot_bel != 0 && $tot_ang != 0)
+                            {{ rupiah(($tot_bel * 100) / $tot_ang) }}
+                        @else
+                            {{ rupiah(0) }}
+                        @endif
+                    </b>
+                </td>
             </tr>
         </tbody>
     </table>
