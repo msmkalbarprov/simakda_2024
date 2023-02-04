@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Surat Rincian</title>
     <style>
         .unborder {
             font-weight: normal
@@ -29,13 +29,13 @@
             <td><b>PEMERINTAH PROVINSI KALIMANTAN BARAT</b></td>
         </tr>
         <tr>
-            <td><b>SURAT PERMINTAAN PEMBAYARAN {{ $jenisspp }}</b></td>
+            <td><b>SURAT PERMINTAAN PEMBAYARAN TAMBAHAN UANG PERSEDIAAN (SPP-TU)</b></td>
         </tr>
         <tr>
             <td>Nomor : {{ $no_spp }}</td>
         </tr>
         <tr>
-            <td>Tahun Anggaran : {{ $tahun_anggaran }}</td>
+            <td>Tahun Anggaran : {{ tahun_anggaran() }}</td>
         </tr>
         <tr>
             <td style="height: 5px"></td>
@@ -71,7 +71,9 @@
             <td style="text-align:right">{{ rupiah($data_spp->nilaisub) }}</td>
         </tr>
     </table>
+
     <br>
+
     <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
             <td>Terbilang: ## <span style="font-style:italic">({{ ucwords(terbilang($data_spp->nilaisub)) }})</span> ##
@@ -87,7 +89,7 @@
                     <td style="margin: 2px 0px;text-align: center;padding-left:300px">
                         Pontianak,
                         @if ($tanpa == 1)
-                            ______________{{ $tahun_anggaran }}
+                            ______________{{ tahun_anggaran() }}
                         @else
                             {{ \Carbon\Carbon::parse($spp->tgl_spp)->locale('id')->isoFormat('D MMMM Y') }}
                         @endif
@@ -95,29 +97,23 @@
                 </tr>
                 <tr>
                     <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
-                        {{ $cari_bendahara->jabatan }}
+                        {{ $bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:300px">
-                        <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
-                        {{ $cari_bendahara->pangkat }} <br>
-                        NIP. {{ $cari_bendahara->nip }}
+                        <b><u>{{ $bendahara->nama }}</u></b> <br>
+                        {{ $bendahara->pangkat }} <br>
+                        NIP. {{ $bendahara->nip }}
                     </td>
                 </tr>
-                {{-- <tr>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}</td>
-                </tr> --}}
             @else
                 <tr>
                     <td style="text-align: center;padding-left:100px">Mengetahui/Menyetujui:</td>
                     <td style="margin: 2px 0px;text-align: center;padding-left:300px">
                         Pontianak,
                         @if ($tanpa == 1)
-                            ______________{{ $tahun_anggaran }}
+                            ______________{{ tahun_anggaran() }}
                         @else
                             {{ \Carbon\Carbon::parse($spp->tgl_spp)->locale('id')->isoFormat('DD MMMM Y') }}
                         @endif
@@ -125,34 +121,24 @@
                 </tr>
                 <tr>
                     <td style="padding-bottom: 50px;text-align: center;padding-left:100px;font-weight: bold">
-                        {{ $cari_bendahara->jabatan }}
+                        {{ $bendahara->jabatan }}
                     </td>
                     <td style="padding-bottom: 50px;text-align: center;padding-left:300px;font-weight: bold">
-                        {{ $cari_pa->jabatan }}
+                        {{ $pptk->jabatan }}
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center;padding-left:100px">
-                        <u>{{ $cari_bendahara->nama }}</u> <br>
-                        {{ $cari_bendahara->pangkat }} <br>
-                        NIP. {{ $cari_bendahara->nip }}
+                        <u>{{ $bendahara->nama }}</u> <br>
+                        {{ $bendahara->pangkat }} <br>
+                        NIP. {{ $bendahara->nip }}
                     </td>
                     <td style="text-align: center;padding-left:300px">
-                        <u>{{ $cari_pa->nama }}</u> <br>
-                        {{ $cari_pa->pangkat }} <br>
-                        NIP. {{ $cari_pa->nip }}
+                        <u>{{ $pptk->nama }}</u> <br>
+                        {{ $pptk->pangkat }} <br>
+                        NIP. {{ $pptk->nip }}
                     </td>
                 </tr>
-                {{-- <tr>
-                    <td style="text-align: center;padding-left:100px">
-                        {{ $cari_bendahara->pangkat }}</td>
-                    <td style="text-align: center;padding-left:300px">{{ $cari_pa->pangkat }}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;padding-left:100px">NIP. {{ $cari_bendahara->nip }}</td>
-                    <td style="text-align: center;padding-left:300px">NIP. {{ $cari_pa->nip }}</td>
-                </tr> --}}
             @endif
         </table>
     </div>

@@ -1181,6 +1181,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('ringkasan', [SppTuController::class, 'ringkasan'])->name('spp_tu.ringkasan');
             Route::get('pernyataan', [SppTuController::class, 'pernyataan'])->name('spp_tu.pernyataan');
             Route::get('permintaan', [SppTuController::class, 'permintaan'])->name('spp_tu.permintaan');
+            Route::get('sptb', [SppTuController::class, 'sptb'])->name('spp_tu.sptb');
+            Route::get('spp', [SppTuController::class, 'spp'])->name('spp_tu.spp');
+            Route::get('rincian77', [SppTuController::class, 'rincian77'])->name('spp_tu.rincian77');
 
             // CTTN
             // Route::get('tambah1', [SppTUController::class, 'tambah1'])->name('spp_tu.create');

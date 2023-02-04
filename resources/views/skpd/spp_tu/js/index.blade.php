@@ -276,7 +276,6 @@
         });
 
         $('.sptb_layar').on('click', function() {
-            let spasi = document.getElementById('spasi').value;
             let no_spp = document.getElementById('no_spp').value;
             let beban = document.getElementById('beban').value;
             let bendahara = document.getElementById('bendahara').value;
@@ -304,11 +303,10 @@
                 alert("PPKD tidak boleh kosong!");
                 return;
             }
-            let url = new URL("{{ route('sppls.cetak_sptb_layar') }}");
+            let url = new URL("{{ route('spp_tu.sptb') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_spp", no_spp);
             searchParams.append("beban", beban);
-            searchParams.append("spasi", spasi);
             searchParams.append("bendahara", bendahara);
             searchParams.append("pptk", pptk);
             searchParams.append("pa_kpa", pa_kpa);
@@ -320,7 +318,6 @@
         });
 
         $('.spp_layar').on('click', function() {
-            let spasi = document.getElementById('spasi').value;
             let no_spp = document.getElementById('no_spp').value;
             let beban = document.getElementById('beban').value;
             let bendahara = document.getElementById('bendahara').value;
@@ -348,11 +345,10 @@
                 alert("PPKD tidak boleh kosong!");
                 return;
             }
-            let url = new URL("{{ route('sppls.cetak_spp77_layar') }}");
+            let url = new URL("{{ route('spp_tu.spp') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_spp", no_spp);
             searchParams.append("beban", beban);
-            searchParams.append("spasi", spasi);
             searchParams.append("bendahara", bendahara);
             searchParams.append("pptk", pptk);
             searchParams.append("pa_kpa", pa_kpa);
@@ -364,7 +360,6 @@
         });
 
         $('.rincian77_layar').on('click', function() {
-            let spasi = document.getElementById('spasi').value;
             let no_spp = document.getElementById('no_spp').value;
             let beban = document.getElementById('beban').value;
             let bendahara = document.getElementById('bendahara').value;
@@ -392,11 +387,10 @@
                 alert("PPKD tidak boleh kosong!");
                 return;
             }
-            let url = new URL("{{ route('sppls.cetak_rincian77_layar') }}");
+            let url = new URL("{{ route('spp_tu.rincian77') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_spp", no_spp);
             searchParams.append("beban", beban);
-            searchParams.append("spasi", spasi);
             searchParams.append("bendahara", bendahara);
             searchParams.append("pptk", pptk);
             searchParams.append("pa_kpa", pa_kpa);
