@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Crypt;
 
 use PDF;
 
-class SppTUController extends Controller
+class SppTU1Controller extends Controller
 {
     public function index()
     {
@@ -88,17 +88,17 @@ class SppTUController extends Controller
                 ->where('trhspd.bulan_awal', '<=', $tgl_spp)
                 ->groupBy('trhspd.no_spd', 'trhspd.tgl_spd')
                 ->get();
-            // 
+            //
             // Master Bank
             $data['master_bank'] = DB::table('ms_bank')
                 ->select('kode', 'nama')->get();
-            // 
+            //
             // Master Rekening Bank
             $data['rekening_bank'] = DB::table('ms_rekening_bank_online')
                 ->select('rekening', 'nm_rekening', 'npwp')
                 ->where('kd_skpd', $skpd)
                 ->get();
-            // 
+            //
             // Master Kode Sub Kegiatan
             // $data['kode_sub_kegiatan'] = $this->getSubKegiatan();
             // dd($data['kode_sub_kegiatan']);
@@ -207,56 +207,56 @@ class SppTUController extends Controller
             if ($statusproteksi == '1') {
                 $data  = DB::select("SELECT kd_sub_kegiatan, nm_sub_kegiatan, kd_program, nm_program FROM (SELECT DISTINCT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.kd_program,b.nm_program FROM trdspd a INNER JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan where b.kd_skpd = ? AND a.no_spd= ? AND b.status_sub_kegiatan='1' AND b.jns_ang= ? ) h WHERE h.kd_sub_kegiatan NOT IN (SELECT b.kd_sub_kegiatan FROM trhspp a INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd WHERE a.jns_spp='3' AND a.kd_skpd = ? and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') AND b.no_spp NOT IN (SELECT no_spp from trhsp2d where kd_skpd = ? and jns_spp ='3') GROUP BY b.kd_sub_kegiatan
                 UNION ALL
-                SELECT b.kd_sub_kegiatan FROM trhspp a 
-                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd 
+                SELECT b.kd_sub_kegiatan FROM trhspp a
+                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
                 INNER JOIN trhsp2d c on a.no_spp=b.no_spp and a.kd_skpd=c.kd_skpd
                 WHERE a.jns_spp='3' AND a.kd_skpd = ?
-                AND b.kd_sub_kegiatan not in ('') AND (a.sp2d_batal is null or a.sp2d_batal<>'1') 
-                AND b.kd_sub_kegiatan IN (SELECT e.kd_sub_kegiatan FROM trhtransout_cmsbank f INNER JOIN trdtransout_cmsbank e on f.no_voucher=e.no_voucher 
+                AND b.kd_sub_kegiatan not in ('') AND (a.sp2d_batal is null or a.sp2d_batal<>'1')
+                AND b.kd_sub_kegiatan IN (SELECT e.kd_sub_kegiatan FROM trhtransout_cmsbank f INNER JOIN trdtransout_cmsbank e on f.no_voucher=e.no_voucher
                 AND f.kd_skpd=e.kd_skpd AND jns_spp='3'
                 WHERE f.kd_skpd = ? AND f.jns_spp ='3' and f.status_validasi<>'1')
                 UNION ALL
-                SELECT b.kd_sub_kegiatan FROM trhspp a 
-                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd 
+                SELECT b.kd_sub_kegiatan FROM trhspp a
+                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
                 INNER JOIN trhsp2d c on a.no_spp=b.no_spp AND a.kd_skpd=c.kd_skpd
-                WHERE a.jns_spp='3' AND a.kd_skpd = ? 
-                AND b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') 
-                AND b.kd_sub_kegiatan IN (SELECT e.kd_sub_kegiatan FROM trhtransout f INNER JOIN trdtransout e on f.no_bukti=e.no_bukti 
+                WHERE a.jns_spp='3' AND a.kd_skpd = ?
+                AND b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1')
+                AND b.kd_sub_kegiatan IN (SELECT e.kd_sub_kegiatan FROM trhtransout f INNER JOIN trdtransout e on f.no_bukti=e.no_bukti
                 AND f.kd_skpd=e.kd_skpd
                 where f.kd_skpd = ? and f.jns_spp ='3'
-                and f.no_bukti not in (select no_bukti FROM trlpj g inner join trhlpj_tu h on g.no_lpj=h.no_lpj where h.kd_skpd = ? and jenis='3')) GROUP BY b.kd_sub_kegiatan 
+                and f.no_bukti not in (select no_bukti FROM trlpj g inner join trhlpj_tu h on g.no_lpj=h.no_lpj where h.kd_skpd = ? and jenis='3')) GROUP BY b.kd_sub_kegiatan
                 UNION ALL
                 select kd_sub_kegiatan FROM trhlpj_tu a inner join trlpj b on a.no_lpj=b.no_lpj and a.kd_skpd=b.kd_skpd WHERE status<>'1' AND jenis = '3' AND a.kd_skpd = ?)
                 union all
                 SELECT kd_sub_kegiatan, nm_sub_kegiatan, kd_program, nm_program FROM (SELECT DISTINCT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.kd_program,b.nm_program FROM trdspd a INNER JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan where b.kd_skpd = ? AND a.no_spd= ? AND b.jns_ang= ? AND b.status_sub_kegiatan='1') h WHERE  h.kd_sub_kegiatan in ('?')", [$kd_skpd, $no_spd, $jns_ang, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $no_spd, $jns_ang, $subkegiatanproteksi]);
             } else {
                 $data  = DB::select("SELECT kd_sub_kegiatan, nm_sub_kegiatan, kd_program, nm_program FROM (SELECT DISTINCT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.kd_program,b.nm_program FROM trdspd a INNER JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan where b.kd_skpd = ? AND a.no_spd= ? AND b.status_sub_kegiatan='1' AND b.jns_ang= ?) h WHERE h.kd_sub_kegiatan NOT IN (
-                    SELECT b.kd_sub_kegiatan FROM trhspp a INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd WHERE a.jns_spp='3' AND a.kd_skpd = ? and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') AND b.no_spp NOT IN ( 
+                    SELECT b.kd_sub_kegiatan FROM trhspp a INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd WHERE a.jns_spp='3' AND a.kd_skpd = ? and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') AND b.no_spp NOT IN (
                     select no_spp from trhsp2d where kd_skpd = ? and jns_spp ='3'
-                    ) GROUP BY b.kd_sub_kegiatan 
+                    ) GROUP BY b.kd_sub_kegiatan
                     UNION ALL
-                    SELECT b.kd_sub_kegiatan FROM trhspp a 
-                    INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd 
+                    SELECT b.kd_sub_kegiatan FROM trhspp a
+                    INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
                     INNER JOIN trhsp2d c on a.no_spp=b.no_spp and a.kd_skpd=c.kd_skpd
-                    WHERE a.jns_spp='3' AND a.kd_skpd = ? 
-                    and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') 
-                    AND b.kd_sub_kegiatan IN ( 
-                    SELECT e.kd_sub_kegiatan FROM trhtransout_cmsbank f INNER JOIN trdtransout_cmsbank e on f.no_voucher=e.no_voucher 
+                    WHERE a.jns_spp='3' AND a.kd_skpd = ?
+                    and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1')
+                    AND b.kd_sub_kegiatan IN (
+                    SELECT e.kd_sub_kegiatan FROM trhtransout_cmsbank f INNER JOIN trdtransout_cmsbank e on f.no_voucher=e.no_voucher
                     AND f.kd_skpd=e.kd_skpd and jns_spp='3'
                     where f.kd_skpd = ? and f.jns_spp ='3' and f.status_validasi<>'1'
                     )
                 UNION ALL
-                SELECT b.kd_sub_kegiatan FROM trhspp a 
-                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd 
+                SELECT b.kd_sub_kegiatan FROM trhspp a
+                INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
                 INNER JOIN trhsp2d c on a.no_spp=b.no_spp and a.kd_skpd=c.kd_skpd
                 WHERE a.jns_spp='3' AND a.kd_skpd = ?
-                and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1') 
-                AND b.kd_sub_kegiatan IN ( 
-                SELECT e.kd_sub_kegiatan FROM trhtransout f INNER JOIN trdtransout e on f.no_bukti=e.no_bukti 
+                and b.kd_sub_kegiatan not in ('') and (a.sp2d_batal is null or a.sp2d_batal<>'1')
+                AND b.kd_sub_kegiatan IN (
+                SELECT e.kd_sub_kegiatan FROM trhtransout f INNER JOIN trdtransout e on f.no_bukti=e.no_bukti
                 AND f.kd_skpd=e.kd_skpd
                 where f.kd_skpd = ? and f.jns_spp ='3'
                 and f.no_bukti not in (SELECT no_bukti FROM trlpj_tu g inner join trhlpj_tu h on g.no_lpj=h.no_lpj where h.kd_skpd= ? and jenis='3')
-                ) GROUP BY b.kd_sub_kegiatan 
+                ) GROUP BY b.kd_sub_kegiatan
                 UNION ALL
                 SELECT kd_sub_kegiatan FROM trhlpj_tu a inner join trlpj_tu b on a.no_lpj=b.no_lpj and a.kd_skpd=b.kd_skpd WHERE status<>'1' AND jenis = '3' AND a.kd_skpd= ?)", [$kd_skpd, $no_spd, $jns_ang, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]);
             }
@@ -274,7 +274,7 @@ class SppTUController extends Controller
         $jns_ang = $jns_anggaran->jns_ang;
         $giat = $request->ckd_subkeg;
         $rek = $request->ckd_rek;
-        $data = DB::select("SELECT sumber as sumber,nm_sumber as nm_sumber_dana,sum(total) as nilai , (SELECT ISNULL(SUM(nilai),0) as nilai FROM trdtagih t  INNER JOIN trhtagih u  ON t.no_bukti=u.no_bukti AND t.kd_skpd=u.kd_skpd WHERE  t.kd_sub_kegiatan = '$giat' AND 
+        $data = DB::select("SELECT sumber as sumber,nm_sumber as nm_sumber_dana,sum(total) as nilai , (SELECT ISNULL(SUM(nilai),0) as nilai FROM trdtagih t  INNER JOIN trhtagih u  ON t.no_bukti=u.no_bukti AND t.kd_skpd=u.kd_skpd WHERE  t.kd_sub_kegiatan = '$giat' AND
         u.kd_skpd = '$kd_skpd' AND t.kd_rek = '$rek' AND u.no_bukti  NOT IN (select no_tagih FROM trhspp WHERE kd_skpd='$kd_skpd' ) and sumber=sumber)as lalu from trdpo where kd_sub_kegiatan = '$giat' and kd_rek6 = '$rek' and kd_skpd = '$kd_skpd' and jns_ang = '$jns_ang' GROUP BY sumber, nm_sumber");
 
         // $data = DB::select("SELECT nilai, sumber,nm_sumber, jns_ang FROM (SELECT ISNULL(a.nsumber1,0) as nilai, a.sumber1 as sumber, b.nm_sumberdana as nm_sumber, a.jns_ang FROM trdrka a INNER JOIN hsumber_dana b ON b.kd_sumberdana=a.sumber1 WHERE a.kd_skpd='$kd_skpd' AND a.kd_sub_kegiatan='$giat' AND a.kd_rek6='$rek'

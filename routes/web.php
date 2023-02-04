@@ -86,6 +86,8 @@ use App\Http\Controllers\Skpd\PanjarCMS\PemberianPanjarController;
 use App\Http\Controllers\Skpd\PanjarCMS\TambahPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
+use App\Http\Controllers\SppTU1Controller;
+use App\Http\Controllers\Skpd\SppTuController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1158,6 +1160,32 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit/{no_spp?}/{kd_skpd?}', [SppGuController::class, 'edit'])->name('spp_gu.edit');
             Route::post('update', [SppGuController::class, 'update'])->name('spp_gu.update');
             Route::post('hapus', [SppGuController::class, 'hapus'])->name('spp_gu.hapus');
+        });
+        // SPP TU
+        Route::group(['prefix' => 'spp_tu'], function () {
+            Route::get('', [SppTuController::class, 'index'])->name('spp_tu.index');
+            Route::post('load', [SppTuController::class, 'load'])->name('spp_tu.load');
+            Route::get('tambah', [SppTuController::class, 'tambah'])->name('spp_tu.tambah');
+            Route::post('kegiatan', [SppTuController::class, 'kegiatan'])->name('spp_tu.kegiatan');
+            Route::post('rekening', [SppTuController::class, 'rekening'])->name('spp_tu.rekening');
+            Route::post('ang_spd_angkas', [SppTuController::class, 'angSpdAngkas'])->name('spp_tu.ang_spd_angkas');
+            Route::post('nomor', [SppTuController::class, 'nomor'])->name('spp_tu.nomor');
+            Route::post('simpan', [SppTuController::class, 'simpan'])->name('spp_tu.simpan');
+            Route::get('edit/{no_spp?}/{kd_skpd?}', [SppTuController::class, 'edit'])->name('spp_tu.edit');
+            Route::post('update', [SppTuController::class, 'update'])->name('spp_tu.update');
+            Route::post('hapus', [SppTuController::class, 'hapus'])->name('spp_tu.hapus');
+
+            // CETAKAN
+            Route::get('pengantar', [SppTuController::class, 'pengantar'])->name('spp_tu.pengantar');
+            Route::get('rincian', [SppTuController::class, 'rincian'])->name('spp_tu.rincian');
+            Route::get('ringkasan', [SppTuController::class, 'ringkasan'])->name('spp_tu.ringkasan');
+            Route::get('pernyataan', [SppTuController::class, 'pernyataan'])->name('spp_tu.pernyataan');
+            Route::get('permintaan', [SppTuController::class, 'permintaan'])->name('spp_tu.permintaan');
+
+            // CTTN
+            // Route::get('tambah1', [SppTUController::class, 'tambah1'])->name('spp_tu.create');
+            // Route::get('tambah2', [SppTUController::class, 'tambah2'])->name('spp_tu.list');
+            // Route::get('tambah3', [SppTUController::class, 'tambah3'])->name('spptu.hapusdata');
         });
     });
 

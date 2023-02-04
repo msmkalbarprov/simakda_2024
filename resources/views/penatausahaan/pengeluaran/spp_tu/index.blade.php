@@ -6,8 +6,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('spp_tu.create') }}" id="tambah_spp_tu" class="btn btn-outline-info tomboltambah"
-                        style="float: right;"><i class="bx bx-plus-circle"></i> Tambah Data</a>
+                    {{-- <a href="{{ route('spp_tu.create') }}" id="tambah_spp_tu" class="btn btn-outline-info tomboltambah"
+                        style="float: right;"><i class="bx bx-plus-circle"></i> Tambah Data</a> --}}
                 </div>
                 <div class="card-body">
                     <!-- <div class="col-12"> -->
@@ -53,40 +53,40 @@
                 }
             });
             // Datatable
-            table = $('#spp_tu').DataTable({
-                responsive: true,
-                ordering: false,
-                serverSide: true,
-                processing: true,
-                scrollY: "300px",
-                scrollCollapse: true,
-                lengthMenu: [5, 10, 25, 50, 100],
-                ajax: {
-                    "url": "{{ route('spp_tu.list') }}",
-                    "type": "POST",
-                },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    },
-                    {
-                        data: 'no_spp',
-                        name: 'no_spp'
-                    },
-                    {
-                        data: 'tgl_spp',
-                        name: 'tgl_spp'
-                    },
-                    {
-                        data: 'keterangan',
-                        name: 'keterangan'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
-                    },
-                ]
-            });
+            // table = $('#spp_tu').DataTable({
+            //     responsive: true,
+            //     ordering: false,
+            //     serverSide: true,
+            //     processing: true,
+            //     scrollY: "300px",
+            //     scrollCollapse: true,
+            //     lengthMenu: [5, 10, 25, 50, 100],
+            //     ajax: {
+            //         "url": "{{ route('spp_tu.list') }}",
+            //         "type": "POST",
+            //     },
+            //     columns: [{
+            //             data: 'DT_RowIndex',
+            //             name: 'DT_RowIndex'
+            //         },
+            //         {
+            //             data: 'no_spp',
+            //             name: 'no_spp'
+            //         },
+            //         {
+            //             data: 'tgl_spp',
+            //             name: 'tgl_spp'
+            //         },
+            //         {
+            //             data: 'keterangan',
+            //             name: 'keterangan'
+            //         },
+            //         {
+            //             data: 'action',
+            //             name: 'action'
+            //         },
+            //     ]
+            // });
 
             // Show modal
             $('.tomboltambah').click(function() {
@@ -98,26 +98,26 @@
             })
         });
 
-        function DeleteData(no_spp) {
-            var aksi = confirm("Yakin menghapus data " + no_spp + " ?");
-            if (aksi == true) {
-                $.ajax({
-                    url: "{{ route('spptu.hapusdata') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        cno_spp: no_spp,
-                    },
-                    success: function(response) {
-                        var response = response.message;
-                        if (response == 1) {
-                            alert("Data " + no_spp + " Berhasil dihapus !");
-                        }
-                        $('#spp_tu').DataTable().ajax.reload();
-                    }
-                });
-            }
+        // function DeleteData(no_spp) {
+        //     var aksi = confirm("Yakin menghapus data " + no_spp + " ?");
+        //     if (aksi == true) {
+        //         $.ajax({
+        //             url: "{{ route('spptu.hapusdata') }}",
+        //             type: "POST",
+        //             dataType: 'json',
+        //             data: {
+        //                 cno_spp: no_spp,
+        //             },
+        //             success: function(response) {
+        //                 var response = response.message;
+        //                 if (response == 1) {
+        //                     alert("Data " + no_spp + " Berhasil dihapus !");
+        //                 }
+        //                 $('#spp_tu').DataTable().ajax.reload();
+        //             }
+        //         });
+        //     }
 
-        }
+        // }
     </script>
 @endsection

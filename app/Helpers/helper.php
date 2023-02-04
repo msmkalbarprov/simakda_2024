@@ -3473,3 +3473,19 @@ function trans_denda($kd_rek6)
         return '5';
     }
 }
+
+function tanggal_spp_lalu()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = collect(DB::select("SELECT max(tgl_spp) as tgl_spp from trhspp where kd_skpd =? and (sp2d_batal is null or sp2d_batal= '0')", [$kd_skpd]))->first();
+
+    return $data->tgl_spp;
+}
+
+function nilai_spd($no_spd)
+{
+    $data = collect(DB::select("SELECT sum(nilai) as nilai from trdspd where no_spd=?", [$no_spd]))->first();
+
+    return $data->nilai;
+}
