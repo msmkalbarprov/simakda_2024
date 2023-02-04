@@ -305,25 +305,25 @@
 
             let akumulasi = nilai;
 
-            // if (nilai > sisa_angkas) {
-            //     alert('Nilai Melebihi Sisa Anggaran Kas...!!!, Cek Lagi...!!!');
-            //     return;
-            // }
+            if (nilai > sisa_angkas) {
+                alert('Nilai Melebihi Sisa Anggaran Kas...!!!, Cek Lagi...!!!');
+                return;
+            }
 
-            // if (nilai > sisa_spd) {
-            //     alert('Nilai Melebihi Sisa Dana SPD...!!!, Cek Lagi...!!!');
-            //     return;
-            // }
+            if (nilai > sisa_spd) {
+                alert('Nilai Melebihi Sisa Dana SPD...!!!, Cek Lagi...!!!');
+                return;
+            }
 
-            // if (nilai > sisa_anggaran) {
-            //     alert('Nilai Melebihi Sisa Anggaran...!!!, Cek Lagi...!!!');
-            //     return;
-            // }
+            if (nilai > sisa_anggaran) {
+                alert('Nilai Melebihi Sisa Anggaran...!!!, Cek Lagi...!!!');
+                return;
+            }
 
-            // if (nilai > sisa_sumber) {
-            //     alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
-            //     return;
-            // }
+            if (nilai > sisa_sumber) {
+                alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
+                return;
+            }
 
             if (nilai == 0) {
                 alert('Nilai Nol.....!!!, Cek Lagi...!!!');
