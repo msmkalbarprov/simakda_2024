@@ -77,6 +77,8 @@ use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
 use App\Http\Controllers\skpd\SpjPendapatanController;
 use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
+use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
+use App\Http\Controllers\Akuntansi\LraController;
 use App\Http\Controllers\Skpd\Panjar\PembayaranPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PengembalianPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PertanggungjawabanPanjarController;
@@ -86,6 +88,8 @@ use App\Http\Controllers\Skpd\PanjarCMS\PemberianPanjarController;
 use App\Http\Controllers\Skpd\PanjarCMS\TambahPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
+use App\Http\Controllers\SppTU1Controller;
+use App\Http\Controllers\Skpd\SppTuController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1351,7 +1355,22 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
     });
 
+    // AKUNTANSI
+     // laporan Keuangan
+     Route::group(['prefix' => 'laporan_akuntansi'], function () {
+        Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
+        Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
+        Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
 
+        Route::group(['prefix' => 'konsolidasi'], function () {
+            Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
+            // LRA
+            Route::get('cetak_lra_semester', [LraController::class, 'cetakLraSemester'])->name('laporan_akuntansi.konsolidasi.cetak_lra_semester');
+            Route::get('cetak_lra_77', [LraController::class, 'cetakLra77'])->name('laporan_akuntansi.konsolidasi.cetak_lra_77');
+        });
+        
+        
+    });
 });
 
 
