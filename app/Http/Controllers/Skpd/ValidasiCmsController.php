@@ -22,32 +22,86 @@ class ValidasiCmsController extends Controller
     public function loadData(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('trhtransout_cmsbank as a')->leftJoin('trdtransout_cmsbank as b', function ($join) {
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            $join->on('a.no_voucher', '=', 'b.no_voucher');
-        })->leftJoin('trdupload_cmsbank as c', function ($join) {
-            $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-            $join->on('a.no_voucher', '=', 'c.no_voucher');
-        })->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload')->selectRaw("(CASE WHEN a.jns_spp IN ( '4', '6' ) THEN(SELECT SUM( x.nilai ) tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd= b.kd_skpd AND x.no_spm= b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd= c.kd_skpd AND b.no_sp2d= c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d= a.no_sp2d AND c.jns_spp IN ( '4', '6' )) ELSE 0 END) as tot_pot", [$kd_skpd])->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'status_validasi' => '0'])->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload', 'a.jns_spp')->orderBy('a.kd_skpd')->orderBy(DB::raw("CAST(a.no_voucher as int)"))->get();
+
+        $data = DB::table('trhtransout_cmsbank as a')
+            ->leftJoin('trdtransout_cmsbank as b', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+            })
+            ->leftJoin('trdupload_cmsbank as c', function ($join) {
+                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+                $join->on('a.no_voucher', '=', 'c.no_voucher');
+            })
+            ->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload')
+            ->selectRaw("(CASE WHEN a.jns_spp IN ( '4', '6' ) THEN(SELECT SUM( x.nilai ) tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd= b.kd_skpd AND x.no_spm= b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd= c.kd_skpd AND b.no_sp2d= c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d= a.no_sp2d AND c.jns_spp IN ( '4', '6' )) ELSE 0 END) as tot_pot", [$kd_skpd])
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'status_validasi' => '0'])
+            ->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload', 'a.jns_spp')
+            ->orderBy('a.kd_skpd')
+            ->orderBy(DB::raw("CAST(a.no_voucher as int)"))
+            ->get();
+
         return Datatables::of($data)->addIndexColumn()->make(true);
-        return view('skpd.validasi_cms.index');
     }
 
     public function create()
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
-            'daftar_transaksi' => DB::table('trhtransout_cmsbank as a')->leftJoin('trdtransout_cmsbank as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_voucher', '=', 'b.no_voucher');
-            })->leftJoin('trdupload_cmsbank as c', function ($join) {
-                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-                $join->on('a.no_voucher', '=', 'c.no_voucher');
-            })->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload')->selectRaw("(CASE WHEN a.jns_spp IN ( '4', '6' ) THEN(SELECT SUM( x.nilai ) tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd= b.kd_skpd AND x.no_spm= b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd= c.kd_skpd AND b.no_sp2d= c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d= a.no_sp2d AND c.jns_spp IN ( '4', '6' )) ELSE 0 END) as tot_pot", [$kd_skpd])->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'status_validasi' => '0'])->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload', 'a.jns_spp')->orderBy('a.kd_skpd')->orderBy(DB::raw("CAST(a.no_voucher as int)"))->get(),
+            // 'daftar_transaksi' => DB::table('trhtransout_cmsbank as a')
+            //     ->leftJoin('trdtransout_cmsbank as b', function ($join) {
+            //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //         $join->on('a.no_voucher', '=', 'b.no_voucher');
+            //     })
+            //     ->leftJoin('trdupload_cmsbank as c', function ($join) {
+            //         $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+            //         $join->on('a.no_voucher', '=', 'c.no_voucher');
+            //     })
+            //     ->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload')
+            //     ->selectRaw("(CASE WHEN a.jns_spp IN ( '4', '6' ) THEN(SELECT SUM( x.nilai ) tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd= b.kd_skpd AND x.no_spm= b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd= c.kd_skpd AND b.no_sp2d= c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d= a.no_sp2d AND c.jns_spp IN ( '4', '6' )) ELSE 0 END) as tot_pot", [$kd_skpd])
+            //     ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'status_validasi' => '0'])
+            //     ->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload', 'a.jns_spp')
+            //     ->orderBy('a.kd_skpd')
+            //     ->orderBy(DB::raw("CAST(a.no_voucher as int)"))
+            //     ->get(),
             'sisa_bank' => sisa_bank()
         ];
 
         return view('skpd.validasi_cms.create')->with($data);
+    }
+
+    public function loadTransaksi(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_voucher = $request->no_voucher;
+
+        $no_bukti = array();
+        if (!empty($no_voucher)) {
+            foreach ($no_voucher as $voucher) {
+                $no_bukti[] = $voucher['no_voucher'];
+            }
+        } else {
+            $no_bukti[] = '';
+        }
+
+        $data = DB::table('trhtransout_cmsbank as a')
+            ->leftJoin('trdtransout_cmsbank as b', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+            })
+            ->leftJoin('trdupload_cmsbank as c', function ($join) {
+                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+                $join->on('a.no_voucher', '=', 'c.no_voucher');
+            })
+            ->select('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload')
+            ->selectRaw("(CASE WHEN a.jns_spp IN ( '4', '6' ) THEN(SELECT SUM( x.nilai ) tot_pot FROM trspmpot x INNER JOIN trhsp2d b ON x.kd_skpd= b.kd_skpd AND x.no_spm= b.no_spm INNER JOIN trhtransout_cmsbank c ON b.kd_skpd= c.kd_skpd AND b.no_sp2d= c.no_sp2d WHERE c.kd_skpd=? AND c.no_sp2d= a.no_sp2d AND c.jns_spp IN ( '4', '6' )) ELSE 0 END) as tot_pot", [$kd_skpd])
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'status_validasi' => '0'])
+            ->whereNotIn('a.no_voucher', $no_bukti)
+            ->groupBy('a.kd_skpd', 'a.nm_skpd', 'a.no_tgl', 'a.no_voucher', 'a.tgl_voucher', 'a.no_sp2d', 'a.ket', 'a.total', 'a.status_upload', 'a.tgl_upload', 'a.status_validasi', 'a.tgl_validasi', 'a.rekening_awal', 'a.nm_rekening_tujuan', 'a.rekening_tujuan', 'a.bank_tujuan', 'a.ket_tujuan', 'a.status_trmpot', 'c.no_upload', 'a.jns_spp')
+            ->orderBy('a.kd_skpd')
+            ->orderBy(DB::raw("CAST(a.no_voucher as int)"))
+            ->get();
+
+        return response()->json($data);
     }
 
     public function prosesValidasi(Request $request)

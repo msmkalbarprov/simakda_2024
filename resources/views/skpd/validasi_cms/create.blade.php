@@ -23,7 +23,7 @@
                         <div class="col-md-12">
                             <select name="data_transaksi" id="data_transaksi" class="form-control select2-multiple">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_transaksi as $data)
+                                {{-- @foreach ($daftar_transaksi as $data)
                                     <option value="{{ $data->no_voucher }}" data-tgl="{{ $data->tgl_voucher }}"
                                         data-kd_skpd="{{ $data->kd_skpd }}" data-ket="{{ $data->ket }}"
                                         data-status_upload="{{ $data->status_upload }}"
@@ -36,7 +36,7 @@
                                         {{ $data->no_voucher }} |
                                         {{ $data->tgl_voucher }} | {{ rupiah($data->total) }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>

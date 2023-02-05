@@ -432,6 +432,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('draft_validasi', [ValidasiCmsController::class, 'draftValidasi'])->name('skpd.validasi_cms.draft_validasi');
             Route::post('data_upload', [ValidasiCmsController::class, 'dataUpload'])->name('skpd.validasi_cms.data_upload');
             Route::get('tambah', [ValidasiCmsController::class, 'create'])->name('skpd.validasi_cms.create');
+            Route::post('load_transaksi', [ValidasiCmsController::class, 'loadTransaksi'])->name('skpd.validasi_cms.load_transaksi');
             Route::post('proses_validasi', [ValidasiCmsController::class, 'prosesValidasi'])->name('skpd.validasi_cms.proses_validasi');
             Route::post('batal_validasi', [ValidasiCmsController::class, 'batalValidasi'])->name('skpd.validasi_cms.batal_validasi');
         });
