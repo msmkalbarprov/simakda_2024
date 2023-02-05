@@ -982,7 +982,15 @@
                         $('#simpan_cms').prop('disabled', false);
                     } else if (data.message == '1') {
                         alert('Data Berhasil Tersimpan...!!!');
-                        window.location.href = "{{ route('skpd.transaksi_cms.index') }}";
+                        // window.location.href = "{{ route('skpd.transaksi_cms.index') }}";
+                        let potongan = confirm(
+                            'Data Berhasil Tersimpan...!, Apakah Transaksi ini Terdapat Terima Potongan Pajak ?'
+                        );
+                        if (potongan == true) {
+                            window.location.href = "{{ route('skpd.potongan_pajak_cms.index') }}";
+                        } else {
+                            window.location.href = "{{ route('skpd.transaksi_cms.index') }}";
+                        }
                     }
                 }
             })

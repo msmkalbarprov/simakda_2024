@@ -888,8 +888,18 @@
                     if (data.message == '1') {
                         alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
                             .no_bukti);
-                        window.location.href =
-                            "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                        // window.location.href =
+                        //     "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                        let potongan = confirm(
+                            'Data Berhasil Tersimpan...!, Apakah Transaksi ini Terdapat Terima Potongan Pajak ?'
+                        );
+                        if (potongan == true) {
+                            window.location.href =
+                                "{{ route('skpd.potongan_pajak.index') }}";
+                        } else {
+                            window.location.href =
+                                "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                        }
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan_transaksi').prop('disabled', false);
