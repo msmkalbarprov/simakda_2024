@@ -86,7 +86,7 @@
 
             kosong();
 
-            $('#keterangan').val(ket);
+            $('#keterangan').val('Setor Pajak ' + ket);
             $('#no_sp2d').val(no_sp2d);
             $('#npwp').val(npwp);
             $('#beban').val(jns_spp);

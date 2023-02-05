@@ -78,7 +78,6 @@
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="pembayaran"
                                 name="pembayaran">
-                                <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="TUNAI">TUNAI</option>
                                 <option value="BANK">BANK</option>
                             </select>
@@ -328,7 +327,7 @@
                         <label for="sisa_panjar" class="col-md-2 col-form-label">Sisa Panjar</label>
                         <div class="col-md-2">
                             <input type="text" class="form-control" name="sisa_panjar" id="sisa_panjar"
-                                style="text-align: right">
+                                style="text-align: right" readonly>
                         </div>
                     </div>
                     {{-- Nilai --}}
@@ -370,8 +369,8 @@
                                         <th>Kode Rekening</th>
                                         <th>Nama Rekening</th>
                                         <th>Rupiah</th>
-                                        <th>Sumber</th>
                                         <th>Sudah Dibayarkan</th>
+                                        <th>Sumber</th>
                                         <th>SP2D Non UP</th>
                                         <th>Anggaran</th>
                                         <th>Aksi</th>

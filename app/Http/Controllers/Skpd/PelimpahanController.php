@@ -475,10 +475,24 @@ class PelimpahanController extends Controller
         DB::beginTransaction();
         try {
             // Nomor Upload
-            $nomor1 = DB::table('trdupload_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd', 'username')->where(['kd_skpd' => $kd_skpd]);
-            $nomor2 = DB::table('trhupload_cmsbank_bidang')->select('no_upload as nomor', DB::raw("'Urut Upload Setor Dana Bank cms' as ket"), 'kd_skpd', 'username')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
-            $nomor3 = DB::table('trhupload_cmsbank_panjar')->select('no_upload as nomor', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'kd_skpd', 'username')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor2);
-            $nomor4 = DB::table('trhupload_sts_cmsbank')->select('no_upload as nomor', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'kd_skpd', 'username')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor3);
+            $nomor1 = DB::table('trdupload_cmsbank')
+                ->select('no_upload as nomor', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd', 'username')
+                ->where(['kd_skpd' => $kd_skpd]);
+
+            $nomor2 = DB::table('trhupload_cmsbank_bidang')
+                ->select('no_upload as nomor', DB::raw("'Urut Upload Setor Dana Bank cms' as ket"), 'kd_skpd', 'username')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->unionAll($nomor1);
+
+            $nomor3 = DB::table('trhupload_cmsbank_panjar')
+                ->select('no_upload as nomor', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'kd_skpd', 'username')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->unionAll($nomor2);
+
+            $nomor4 = DB::table('trhupload_sts_cmsbank')
+                ->select('no_upload as nomor', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'kd_skpd', 'username')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->unionAll($nomor3);
 
             $nomor = DB::table(DB::raw("({$nomor4->toSql()}) AS sub"))
                 ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
@@ -486,19 +500,37 @@ class PelimpahanController extends Controller
                 ->first();
 
             // Nomor Upload Hari
-            $no_upload1 = DB::table('trhupload_cmsbank')->select('no_upload_tgl as nomor', 'tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
-            $no_upload2 = DB::table('trdupload_cmsbank_bidang as a')->leftJoin('trhupload_cmsbank_bidang as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Setor Dropping Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload1);
-            $no_upload3 = DB::table('trdupload_cmsbank_panjar as a')->leftJoin('trhupload_cmsbank_panjar as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload2);
-            $no_upload4 = DB::table('trdupload_sts_cmsbank as a')->leftJoin('trhupload_sts_cmsbank as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')->where(['a.kd_skpd' => $kd_skpd])->unionAll($no_upload3);
+            $no_upload1 = DB::table('trhupload_cmsbank')
+                ->select('no_upload_tgl as nomor', 'tgl_upload as tanggal', DB::raw("'Urut Upload Pengeluaran cms' as ket"), 'kd_skpd')
+                ->where(['kd_skpd' => $kd_skpd]);
+
+            $no_upload2 = DB::table('trdupload_cmsbank_bidang as a')
+                ->leftJoin('trhupload_cmsbank_bidang as b', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.no_upload', '=', 'b.no_upload');
+                })
+                ->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Setor Dropping Bank cms' as ket"), 'a.kd_skpd')
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->unionAll($no_upload1);
+
+            $no_upload3 = DB::table('trdupload_cmsbank_panjar as a')
+                ->leftJoin('trhupload_cmsbank_panjar as b', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.no_upload', '=', 'b.no_upload');
+                })
+                ->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Panjar Bank cms' as ket"), 'a.kd_skpd')
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->unionAll($no_upload2);
+
+            $no_upload4 = DB::table('trdupload_sts_cmsbank as a')
+                ->leftJoin('trhupload_sts_cmsbank as b', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.no_upload', '=', 'b.no_upload');
+                })
+                ->select('a.no_upload_tgl as nomor', 'b.tgl_upload as tanggal', DB::raw("'Urut Upload Penerimaan cms' as ket"), 'a.kd_skpd')
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->unionAll($no_upload3);
+
             $no_upload = DB::table(DB::raw("({$no_upload4->toSql()}) AS sub"))
                 ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
                 ->mergeBindings($no_upload4)
@@ -692,17 +724,45 @@ class PelimpahanController extends Controller
 
         DB::beginTransaction();
         try {
-            $nomor1 = DB::table('trvalidasi_cmsbank')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd]);
-            $nomor2 = DB::table('trvalidasi_cmsbank_panjar')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms Panjar' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor1);
-            $nomor3 = DB::table('trvalidasi_cmsbank_bidang')->select('no_validasi as nomor', DB::raw("'Urut Validasi cms Perbidang' as ket"), 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->unionAll($nomor2);
-            $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
-                ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
-                ->mergeBindings($nomor3)
-                ->first();
+            if (substr($kd_skpd, 18, 4) == '0000') {
+                $init_skpd = "left(kd_skpd,17) = left(?,17)";
+            } else {
+                $init_skpd = "KD_SKPD = ?";
+            }
+
+            $nomor = collect(DB::select("SELECT case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+    select no_validasi nomor, 'Urut Validasi cms' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank where kd_skpd = ?
+    union all
+    select no_validasi nomor, 'Urut Validasi cms Perbidang' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_bidang where kd_skpd = ?
+    union all
+    select no_validasi nomor, 'Urut Validasi cms Panjar' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_panjar where kd_skpd = ?
+    )
+    z WHERE $init_skpd", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+
+            // $nomor1 = DB::table('trvalidasi_cmsbank')
+            //     ->select('no_validasi as nomor', DB::raw("'Urut Validasi cms' as ket"), 'kd_skpd')
+            //     ->where(['kd_skpd' => $kd_skpd]);
+
+            // $nomor2 = DB::table('trvalidasi_cmsbank_panjar')
+            //     ->select('no_validasi as nomor', DB::raw("'Urut Validasi cms Panjar' as ket"), 'kd_skpd')
+            //     ->where(['kd_skpd' => $kd_skpd])
+            //     ->unionAll($nomor1);
+
+            // $nomor3 = DB::table('trvalidasi_cmsbank_bidang')
+            //     ->select('no_validasi as nomor', DB::raw("'Urut Validasi cms Perbidang' as ket"), 'kd_skpd')
+            //     ->where(['kd_skpd' => $kd_skpd])
+            //     ->unionAll($nomor2);
+
+            // $nomor = DB::table(DB::raw("({$nomor3->toSql()}) AS sub"))
+            //     ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
+            //     ->mergeBindings($nomor3)
+            //     ->first();
 
             $no_validasi = $nomor->nomor;
-            $no_bku = no_urut($kd_skpd);
-            $bku = $no_bku - 1;
+            // $no_bku = no_urut($kd_skpd);
+            // $bku = $no_bku - 1;
+
+            DB::delete("DELETE from trvalidasi_cmsbank_bidang where kd_bp=? and no_validasi=?", [$kd_skpd, $no_validasi]);
 
             foreach ($rincian_data as $data => $value) {
                 $data = [
@@ -725,22 +785,38 @@ class PelimpahanController extends Controller
                 DB::table('trvalidasi_cmsbank_bidang')->insert($data);
             }
 
-            $data1 = DB::table('trvalidasi_cmsbank_bidang as a')->where(['a.kd_bp' => $kd_skpd, 'a.no_validasi' => $no_validasi])->select('a.no_bukti', 'a.kd_skpd', 'a.kd_bp', 'a.tgl_validasi', 'a.status_validasi');
+            // $data1 = DB::table('trvalidasi_cmsbank_bidang as a')
+            //     ->where(['a.kd_bp' => $kd_skpd, 'a.no_validasi' => $no_validasi])
+            //     ->select('a.no_bukti', 'a.kd_skpd', 'a.kd_bp', 'a.tgl_validasi', 'a.status_validasi');
 
-            DB::table('tr_setorpelimpahan_bank_cms as c')->joinSub($data1, 'd', function ($join) {
-                $join->on('c.no_bukti', '=', 'd.no_bukti');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->whereRaw('left(c.kd_skpd,17) = left(?,17)', $kd_skpd)->update([
-                'c.status_validasi' => DB::raw("d.status_validasi"),
-                'c.tgl_validasi' => DB::raw("d.tgl_validasi"),
-            ]);
+            // DB::table('tr_setorpelimpahan_bank_cms as c')
+            //     ->joinSub($data1, 'd', function ($join) {
+            //         $join->on('c.no_bukti', '=', 'd.no_bukti');
+            //         $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            //     })
+            //     ->whereRaw('left(c.kd_skpd,17) = left(?,17)', $kd_skpd)
+            //     ->update([
+            //         'c.status_validasi' => DB::raw("d.status_validasi"),
+            //         'c.tgl_validasi' => DB::raw("d.tgl_validasi"),
+            //     ]);
 
-            $data_transout1 = DB::table('tr_setorpelimpahan_bank_cms as a')->join('trvalidasi_cmsbank_bidang as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd_sumber', '=', 'b.kd_bp');
-            })->where(['b.no_validasi' => $no_validasi, 'b.kd_bp' => $kd_skpd])->select(DB::raw("RTRIM(a.no_kas)"), 'a.tgl_kas', 'a.no_bukti', 'a.tgl_bukti', 'a.kd_skpd', 'a.nilai', 'a.jenis_spp', 'a.keterangan', 'a.kd_skpd_sumber');
+            // $data_transout1 = DB::table('tr_setorpelimpahan_bank_cms as a')
+            //     ->join('trvalidasi_cmsbank_bidang as b', function ($join) {
+            //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+            //         $join->on('a.kd_skpd_sumber', '=', 'b.kd_bp');
+            //     })
+            //     ->where(['b.no_validasi' => $no_validasi, 'b.kd_bp' => $kd_skpd])
+            //     ->select(DB::raw("RTRIM(a.no_kas)"), 'a.tgl_kas', 'a.no_bukti', 'a.tgl_bukti', 'a.kd_skpd', 'a.nilai', 'a.jenis_spp', 'a.keterangan', 'a.kd_skpd_sumber');
 
-            DB::table('tr_setorpelimpahan_bank')->insertUsing(['no_kas', 'tgl_kas', 'no_bukti', 'tgl_bukti', 'kd_skpd', 'nilai', 'jenis_spp', 'keterangan', 'kd_skpd_sumber'], $data_transout1);
+            // DB::table('tr_setorpelimpahan_bank')
+            //     ->insertUsing(['no_kas', 'tgl_kas', 'no_bukti', 'tgl_bukti', 'kd_skpd', 'nilai', 'jenis_spp', 'keterangan', 'kd_skpd_sumber'], $data_transout1);
+
+            DB::update("UPDATE tr_setorpelimpahan_bank_cms SET tr_setorpelimpahan_bank_cms.status_validasi = Table_B.status_validasi,
+            tr_setorpelimpahan_bank_cms.tgl_validasi = Table_B.tgl_validasi FROM tr_setorpelimpahan_bank_cms
+            INNER JOIN (select a.no_bukti,a.kd_skpd,a.kd_bp,a.tgl_validasi,a.status_validasi from trvalidasi_cmsbank_bidang a
+            where a.kd_bp=? and no_validasi=?) AS Table_B ON tr_setorpelimpahan_bank_cms.no_bukti = Table_B.no_bukti AND tr_setorpelimpahan_bank_cms.kd_skpd = Table_B.kd_skpd where left(tr_setorpelimpahan_bank_cms.kd_skpd,17)=left(?,17)", [$kd_skpd, $no_validasi, $kd_skpd]);
+
+            DB::insert("INSERT INTO tr_setorpelimpahan_bank (no_kas, tgl_kas, no_bukti, tgl_bukti, kd_skpd, nilai, jenis_spp, keterangan, kd_skpd_sumber) SELECT rtrim(a.no_kas), a.tgl_kas, a.no_bukti, a.tgl_bukti, a.kd_skpd, a.nilai, a.jenis_spp, a.keterangan, a.kd_skpd_sumber FROM tr_setorpelimpahan_bank_cms a left join trvalidasi_cmsbank_bidang b on b.no_bukti=a.no_bukti and a.kd_skpd_sumber=b.kd_bp WHERE b.no_validasi=? and b.kd_bp=?", [$no_validasi, $kd_skpd]);
 
 
             DB::commit();

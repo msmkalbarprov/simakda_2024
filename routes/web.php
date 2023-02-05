@@ -77,8 +77,6 @@ use App\Http\Controllers\skpd\BukuPenerimaanPenyetoranController;
 use App\Http\Controllers\skpd\SpjPendapatanController;
 use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
-use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
-use App\Http\Controllers\Akuntansi\LraController;
 use App\Http\Controllers\Skpd\Panjar\PembayaranPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PengembalianPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PertanggungjawabanPanjarController;
@@ -88,7 +86,6 @@ use App\Http\Controllers\Skpd\PanjarCMS\PemberianPanjarController;
 use App\Http\Controllers\Skpd\PanjarCMS\TambahPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
-// Akuntansi
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -417,6 +414,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('draft_upload', [UploadCmsController::class, 'draftUpload'])->name('skpd.upload_cms.draft_upload');
             Route::post('data_upload', [UploadCmsController::class, 'dataUpload'])->name('skpd.upload_cms.data_upload');
             Route::get('tambah', [UploadCmsController::class, 'create'])->name('skpd.upload_cms.create');
+            Route::post('load_transaksi', [UploadCmsController::class, 'loadTransaksi'])->name('skpd.upload_cms.load_transaksi');
             Route::post('proses_upload', [UploadCmsController::class, 'prosesUpload'])->name('skpd.upload_cms.proses_upload');
             Route::post('batal_upload', [UploadCmsController::class, 'batalUpload'])->name('skpd.upload_cms.batal_upload');
             Route::get('cetak_csv_kalbar', [UploadCmsController::class, 'cetakCsvKalbar'])->name('skpd.upload_cms.cetak_csv_kalbar');
@@ -432,6 +430,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('draft_validasi', [ValidasiCmsController::class, 'draftValidasi'])->name('skpd.validasi_cms.draft_validasi');
             Route::post('data_upload', [ValidasiCmsController::class, 'dataUpload'])->name('skpd.validasi_cms.data_upload');
             Route::get('tambah', [ValidasiCmsController::class, 'create'])->name('skpd.validasi_cms.create');
+            Route::post('load_transaksi', [ValidasiCmsController::class, 'loadTransaksi'])->name('skpd.validasi_cms.load_transaksi');
             Route::post('proses_validasi', [ValidasiCmsController::class, 'prosesValidasi'])->name('skpd.validasi_cms.proses_validasi');
             Route::post('batal_validasi', [ValidasiCmsController::class, 'batalValidasi'])->name('skpd.validasi_cms.batal_validasi');
         });
@@ -769,6 +768,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('sp2d', [TransaksiPanjarController::class, 'sp2d'])->name('transaksipanjar.sp2d');
             Route::post('rekening', [TransaksiPanjarController::class, 'rekening'])->name('transaksipanjar.rekening');
             Route::post('angkas_spd', [TransaksiPanjarController::class, 'angkasSpd'])->name('transaksipanjar.angkas_spd');
+            Route::post('sumber', [TransaksiPanjarController::class, 'sumber'])->name('transaksipanjar.sumber');
+            Route::post('sumber_dana', [TransaksiPanjarController::class, 'sumberDana'])->name('transaksipanjar.sumber_dana');
             Route::post('load_data', [TransaksiPanjarController::class, 'loadData'])->name('transaksipanjar.load_data');
             Route::post('simpan', [TransaksiPanjarController::class, 'simpan'])->name('transaksipanjar.simpan');
             Route::get('edit/{no_bukti?}/{kd_skpd?}', [TransaksiPanjarController::class, 'edit'])->name('transaksipanjar.edit');
@@ -985,6 +986,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
             // Cek Buku Setoran
             Route::get('cetak_buku_setoran', [BukuSetoranPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
+            Route::get('cetak_bp_sub_rincian_objek', [BukuSetoranPenerimaanController::class, 'cetakRincianObjek'])->name('skpd.laporan_bendahara_penerimaan.cetak_bp_sub_rincian_objek');
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
@@ -1159,6 +1161,35 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('update', [SppGuController::class, 'update'])->name('spp_gu.update');
             Route::post('hapus', [SppGuController::class, 'hapus'])->name('spp_gu.hapus');
         });
+        // SPP TU
+        Route::group(['prefix' => 'spp_tu'], function () {
+            Route::get('', [SppTuController::class, 'index'])->name('spp_tu.index');
+            Route::post('load', [SppTuController::class, 'load'])->name('spp_tu.load');
+            Route::get('tambah', [SppTuController::class, 'tambah'])->name('spp_tu.tambah');
+            Route::post('kegiatan', [SppTuController::class, 'kegiatan'])->name('spp_tu.kegiatan');
+            Route::post('rekening', [SppTuController::class, 'rekening'])->name('spp_tu.rekening');
+            Route::post('ang_spd_angkas', [SppTuController::class, 'angSpdAngkas'])->name('spp_tu.ang_spd_angkas');
+            Route::post('nomor', [SppTuController::class, 'nomor'])->name('spp_tu.nomor');
+            Route::post('simpan', [SppTuController::class, 'simpan'])->name('spp_tu.simpan');
+            Route::get('edit/{no_spp?}/{kd_skpd?}', [SppTuController::class, 'edit'])->name('spp_tu.edit');
+            Route::post('update', [SppTuController::class, 'update'])->name('spp_tu.update');
+            Route::post('hapus', [SppTuController::class, 'hapus'])->name('spp_tu.hapus');
+
+            // CETAKAN
+            Route::get('pengantar', [SppTuController::class, 'pengantar'])->name('spp_tu.pengantar');
+            Route::get('rincian', [SppTuController::class, 'rincian'])->name('spp_tu.rincian');
+            Route::get('ringkasan', [SppTuController::class, 'ringkasan'])->name('spp_tu.ringkasan');
+            Route::get('pernyataan', [SppTuController::class, 'pernyataan'])->name('spp_tu.pernyataan');
+            Route::get('permintaan', [SppTuController::class, 'permintaan'])->name('spp_tu.permintaan');
+            Route::get('sptb', [SppTuController::class, 'sptb'])->name('spp_tu.sptb');
+            Route::get('spp', [SppTuController::class, 'spp'])->name('spp_tu.spp');
+            Route::get('rincian77', [SppTuController::class, 'rincian77'])->name('spp_tu.rincian77');
+
+            // CTTN
+            // Route::get('tambah1', [SppTUController::class, 'tambah1'])->name('spp_tu.create');
+            // Route::get('tambah2', [SppTUController::class, 'tambah2'])->name('spp_tu.list');
+            // Route::get('tambah3', [SppTUController::class, 'tambah3'])->name('spptu.hapusdata');
+        });
     });
 
     Route::group(['prefix' => 'pendapatan'], function () {
@@ -1320,22 +1351,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
     });
 
-    // AKUNTANSI
-     // laporan Keuangan
-     Route::group(['prefix' => 'laporan_akuntansi'], function () {
-        Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
-        Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
-        Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
 
-        Route::group(['prefix' => 'konsolidasi'], function () {
-            Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
-            // LRA
-            Route::get('cetak_lra_semester', [LraController::class, 'cetakLraSemester'])->name('laporan_akuntansi.konsolidasi.cetak_lra_semester');
-            Route::get('cetak_lra_77', [LraController::class, 'cetakLra77'])->name('laporan_akuntansi.konsolidasi.cetak_lra_77');
-        });
-        
-        
-    });
 });
 
 

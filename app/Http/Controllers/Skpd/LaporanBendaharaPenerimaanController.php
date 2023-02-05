@@ -34,7 +34,7 @@ class LaporanBendaharaPenerimaanController extends Controller
         $kd_org     = substr($kd_skpd, 0, 17);
         if ($type == '1') {
             if ($jenis == 'skpd') {
-                $data   = DB::table('ms_skpd')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
+                $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_org')->get();
             } else {
                 $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
             }

@@ -142,16 +142,21 @@ class PencairanSp2dController extends Controller
         $total_potongan = $request->total_potongan;
         $tgl_sp2d = $request->tgl_sp2d;
         $nama = Auth::user()->nama;
-        $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
+
+        // $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
 
         // $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '0') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
+        // $kontrak = DB::table('trhspp')->select('no_kontrak')->where(['no_spp' => $no_spp->no_spp])->first();
+        // $kontrak = isNull($kontrak) ? '' : $kontrak->no_kontrak;
+
+        // dd($kontrak);
 
         DB::beginTransaction();
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
             // $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp]);
             $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
-            $kontrak = $kontrak->no_kontrak;
+            $kontrak = isNull($kontrak) ? '' : $kontrak->no_kontrak;
             $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $opd])->first();
 
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
@@ -161,29 +166,40 @@ class PencairanSp2dController extends Controller
                 'nocek' => $no_kontrak
             ]);
 
-            $total_data = DB::table('trspmpot as a')
-                ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
-                ->where(['b.no_sp2d' => $no_sp2d])
-                ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
-                ->count();
+            // $total_data = DB::table('trspmpot as a')
+            //     ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
+            //     ->where(['b.no_sp2d' => $no_sp2d])
+            //     ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
+            //     ->count();
+            $total_data = collect(DB::select("SELECT COUNT(*) as jumlah FROM trspmpot a
+            INNER JOIN trhsp2d b ON a.no_spm = b.no_spm
+            WHERE b.no_sp2d = ? AND a.kd_rek6 NOT IN ('2110801','4140612')", [$no_sp2d]))->first();
             // berhasil
             $bukti_str = $no_kas;
 
-            if ($total_data > 0) {
+            if ($total_data->jumlah > 0) {
                 $bukti_str = $no_kas + 1;
-                $bukti_str = "$bukti_str";
+                $bukti_str1 = "$bukti_str";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
                 if (isNull($data_pot)) {
                     $no_bukti = '';
                 } else {
                     $no_bukti = $data_pot->no_bukti;
                 }
-                $data_potongan = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereNotIn('a.kd_rek6', ['2110801', '4140612'])->select('a.*', 'b.jns_spp')->get();
+
+                $data_potongan = DB::table('trspmpot as a')
+                    ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
+                    ->where(['b.no_sp2d' => $no_sp2d])
+                    ->whereNotIn('a.kd_rek6', ['2110801', '4140612'])
+                    ->select('a.*', 'b.jns_spp', 'b.nmrekan', 'b.npwp')
+                    ->get();
+
                 $data_potongan = json_decode(json_encode($data_potongan), true);
+
                 if (isset($data_potongan)) {
-                    DB::table('trdstrpot')->insert(array_map(function ($value) use ($bukti_str, $opd, $no_sp2d) {
+                    DB::table('trdstrpot')->insert(array_map(function ($value) use ($bukti_str1, $opd, $no_sp2d) {
                         return [
-                            'no_bukti' => $bukti_str,
+                            'no_bukti' => $bukti_str1,
                             'kd_rek6' => $value['kd_rek6'],
                             'nm_rek6' => $value['nm_rek6'],
                             'nilai' => $value['nilai'],
@@ -191,16 +207,28 @@ class PencairanSp2dController extends Controller
                             'kd_rek_trans' => $value['kd_trans'],
                             'map_pot' => $value['map_pot'],
                             'no_sp2d' => $no_sp2d,
+                            'ntpn' => $value['ntpn'],
+                            'rekanan' => $value['nmrekan'],
+                            'npwp' => $value['npwp'],
+                            'ebilling' => $value['idBilling'],
                         ];
                     }, $data_potongan));
                 }
 
-                $data_potongan2 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->join('trhspp as c', 'b.no_spp', '=', 'c.no_spp')->where(['b.no_sp2d' => $no_sp2d])->select(DB::raw("SUM(a.nilai) as nilai_pot"), 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')->groupBy('no_sp2d', 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')->get();
+                $data_potongan2 = DB::table('trspmpot as a')
+                    ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
+                    ->join('trhspp as c', 'b.no_spp', '=', 'c.no_spp')
+                    ->where(['b.no_sp2d' => $no_sp2d])
+                    ->select(DB::raw("SUM(a.nilai) as nilai_pot"), 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')
+                    ->groupBy('no_sp2d', 'b.keperluan', 'b.npwp', 'b.jns_spp', 'b.nm_skpd', 'c.kd_sub_kegiatan', 'c.nm_sub_kegiatan', 'c.nmrekan', 'c.pimpinan', 'c.alamat')
+                    ->get();
+
                 $data_potongan2 = json_decode(json_encode($data_potongan2), true);
+
                 if (isset($data_potongan2)) {
-                    DB::table('trhstrpot')->insert(array_map(function ($value) use ($bukti_str, $tgl_cair, $nama, $opd, $no_bukti, $no_sp2d) {
+                    DB::table('trhstrpot')->insert(array_map(function ($value) use ($bukti_str1, $tgl_cair, $nama, $opd, $no_bukti, $no_sp2d) {
                         return [
-                            'no_bukti' => $bukti_str,
+                            'no_bukti' => $bukti_str1,
                             'tgl_bukti' => $tgl_cair,
                             'ket' => 'Setor pajak nomor SP2D  ' . $no_sp2d,
                             'username' => $nama,
@@ -225,33 +253,45 @@ class PencairanSp2dController extends Controller
             $setor = $bukti_str + 1;
             $no_setor = "$setor";
 
-            $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
+            // $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
 
-            if ($total_data1 > 0) {
+            $total_data1 = collect(DB::select("SELECT COUNT(*) as jumlah FROM trspmpot a INNER JOIN trhsp2d b ON a.no_spm = b.no_spm WHERE b.no_sp2d = '$no_sp2d' AND a.kd_rek6 IN ('210601010003','210601010017','210601010001','210601010021','210601010019','210601010007','210601020001','210601020009','210601010022','210601010011','210601010012','210601010009','410411010001')"))->first();
+
+            if ($total_data1->jumlah > 0) {
                 $sts = $bukti_str + 1;
                 $no_sts = "$sts";
                 $setor = $sts + 2;
                 $no_setor = "$setor";
 
-                $data_potongan = DB::table('trspmpot as a')->leftJoin('trhsp2d as b', function ($join) {
-                    $join->on('a.no_spm', '=', 'b.no_spm');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })->join('trdspp as c', function ($join) {
-                    $join->on('c.no_spp', '=', 'b.no_spp');
-                    $join->on('c.kd_skpd', '=', 'b.kd_skpd');
-                })->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->groupBy('a.no_spm', 'a.kd_skpd', 'a.kd_rek6', 'a.nm_rek6', 'a.nilai', 'a.pot', 'a.kd_trans', 'a.map_pot', 'a.nm_pot', 'a.noreff', 'a.nomorPokokWajibPajak', 'a.namaWajibPajak', 'a.alamatWajibPajak', 'a.kota', 'a.nik', 'a.kodeMap', 'a.keteranganKodeMap', 'a.kodeSetor', 'a.keteranganKodeSetor', 'a.masaPajak', 'a.tahunPajak', 'a.jumlahBayar', 'a.nomorObjekPajak', 'a.nomorSK', 'a.nomorPokokWajibPajakPenyetor', 'a.nomorPokokWajibPajakRekanan', 'a.nikRekanan', 'a.nomorFakturPajak', 'a.idBilling', 'a.tanggalExpiredBilling', 'a.tgl_setor', 'a.status_setor', 'a.ntpn', 'a.keterangan', 'a.jenis', 'a.username', 'a.last_update', 'c.kd_sub_kegiatan')->select('a.*', 'c.kd_sub_kegiatan')->get();
+                $data_potongan = DB::table('trspmpot as a')
+                    ->selectRaw("a.*,c.kd_sub_kegiatan")
+                    ->leftJoin('trhsp2d as b', function ($join) {
+                        $join->on('a.no_spm', '=', 'b.no_spm');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->join('trdspp as c', function ($join) {
+                        $join->on('b.no_spp', '=', 'c.no_spp');
+                        $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                    })
+                    ->whereRaw("b.no_sp2d = ? AND a.kd_rek6 IN ('210601010003','210601010017','210601010001','210601010021','210601010019','210601010007','210601020001','210601020009','210601010022','210601010011','210601010012','210601010009','410411010001')", [$no_sp2d])
+                    ->groupByRaw("a.no_spm,a.kd_skpd,a.kd_rek6,a.nm_rek6,a.nilai,a.pot,a.kd_trans,a.map_pot,a.nm_pot,a.noreff,a.nomorPokokWajibPajak,a.namaWajibPajak,a.alamatWajibPajak,a.kota,a.nik,a.kodeMap,a.keteranganKodeMap,a.kodeSetor,a.keteranganKodeSetor,a.masaPajak,a.tahunPajak,a.jumlahBayar,a.nomorObjekPajak,a.nomorSK,a.nomorPokokWajibPajakPenyetor,a.nomorPokokWajibPajakRekanan,a.nikRekanan,a.nomorFakturPajak,a.idBilling,a.tanggalExpiredBilling,a.tgl_setor,a.status_setor,a.ntpn,a.keterangan,a.jenis,a.username,a.last_update,c.kd_sub_kegiatan")
+                    ->get();
 
                 $totalkasin = 0;
                 foreach ($data_potongan as $potongan) {
                     $totalkasin += $potongan->nilai;
+                    $nm_rek6 = $potongan->nm_rek6;
+                    $kd_rek6 = $potongan->kd_rek6;
+                    $kd_sub_kegiatan = $potongan->kd_sub_kegiatan;
                 }
                 $data_potongan = json_decode(json_encode($data_potongan), true);
+
                 if (isset($data_potongan)) {
                     DB::table('trdkasin_pkd')->insert(array_map(function ($value) use ($no_sts, $opd) {
                         return [
                             'kd_skpd' => $opd,
                             'no_sts' => $no_sts,
-                            'kd_rek6' => $value['kd_trans'],
+                            'kd_rek6' => $value['kd_rek6'],
                             'rupiah' => $value['nilai'],
                             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
                         ];
@@ -259,61 +299,94 @@ class PencairanSp2dController extends Controller
                 }
 
                 if ($beban == '4') {
-                    if (isset($data_potongan)) {
-                        DB::table('trhkasin_pkd')->insert(array_map(function ($value) use ($no_sts, $opd, $tgl_cair, $no_sp2d, $totalkasin) {
-                            if ($value['kd_rek6'] == '410411010001') {
-                                $jns_transdenda = '4';
-                            } else {
-                                $jns_transdenda = '5';
-                            }
-                            return [
-                                'no_sts' => $no_sts,
-                                'kd_skpd' => $opd,
-                                'tgl_sts' => $tgl_cair,
-                                'keterangan' => $value['nm_rek6'] . ' atas SP2D ' . $no_sp2d,
-                                'total' => $totalkasin,
-                                'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                                'jns_trans' => $jns_transdenda,
-                                'no_kas' => $no_sts,
-                                'tgl_kas' => $tgl_cair,
-                                'sumber' => '0',
-                                'jns_cp' => '1',
-                                'pot_khusus' => '1',
-                                'no_sp2d' => $no_sp2d,
-                            ];
-                        }, $data_potongan));
-                    }
+                    // if (isset($data_potongan)) {
+                    //     DB::table('trhkasin_pkd')->insert(array_map(function ($value) use ($no_sts, $opd, $tgl_cair, $no_sp2d, $totalkasin) {
+                    //         // if ($value['kd_rek6'] == '410411010001') {
+                    //         //     $jns_transdenda = '4';
+                    //         // } else {
+                    //         //     $jns_transdenda = '5';
+                    //         // }
+                    //         return [
+                    //             'no_sts' => $no_sts,
+                    //             'kd_skpd' => $opd,
+                    //             'tgl_sts' => $tgl_cair,
+                    //             'keterangan' => $value['nm_rek6'] . ' atas SP2D ' . $no_sp2d,
+                    //             'total' => $totalkasin,
+                    //             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                    //             'jns_trans' => trans_denda($value['kd_rek6']),
+                    //             'no_kas' => $no_sts,
+                    //             'tgl_kas' => $tgl_cair,
+                    //             'sumber' => '0',
+                    //             'jns_cp' => '1',
+                    //             'pot_khusus' => '1',
+                    //             'no_sp2d' => $no_sp2d,
+                    //         ];
+                    //     }, $data_potongan));
+                    // }
+
+                    DB::table('trhkasin_pkd')
+                        ->insert([
+                            'no_sts' => $no_sts,
+                            'kd_skpd' => $opd,
+                            'tgl_sts' => $tgl_cair,
+                            'keterangan' => $nm_rek6 . ' atas SP2D ' . $no_sp2d,
+                            'total' => $totalkasin,
+                            'kd_sub_kegiatan' => $kd_sub_kegiatan,
+                            'jns_trans' => trans_denda($kd_rek6),
+                            'no_kas' => $no_sts,
+                            'tgl_kas' => $tgl_cair,
+                            'sumber' => '0',
+                            'jns_cp' => '1',
+                            'pot_khusus' => '1',
+                            'no_sp2d' => $no_sp2d,
+                        ]);
                 }
 
                 if ($beban == '6') {
-                    if (isset($data_potongan)) {
-                        DB::table('trhkasin_pkd')->insert(array_map(function ($value) use ($no_sts, $opd, $tgl_cair, $no_sp2d, $totalkasin) {
-                            if ($value['kd_rek6'] == '410411010001') {
-                                $jns_transdenda = '4';
-                            } else {
-                                $jns_transdenda = '5';
-                            }
-                            return [
-                                'no_sts' => $no_sts,
-                                'kd_skpd' => $opd,
-                                'tgl_sts' => $tgl_cair,
-                                'keterangan' => $value['nm_rek6'] . ' atas SP2D ' . $no_sp2d,
-                                'total' => $totalkasin,
-                                'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                                'jns_trans' => $jns_transdenda,
-                                'no_kas' => $no_sts,
-                                'tgl_kas' => $tgl_cair,
-                                'sumber' => '0',
-                                'jns_cp' => '2',
-                                'pot_khusus' => '2',
-                                'no_sp2d' => $no_sp2d,
-                            ];
-                        }, $data_potongan));
-                    }
+                    // if (isset($data_potongan)) {
+                    //     DB::table('trhkasin_pkd')->insert(array_map(function ($value) use ($no_sts, $opd, $tgl_cair, $no_sp2d, $totalkasin) {
+                    //         // if ($value['kd_rek6'] == '410411010001') {
+                    //         //     $jns_transdenda = '4';
+                    //         // } else {
+                    //         //     $jns_transdenda = '5';
+                    //         // }
+                    //         return [
+                    //             'no_sts' => $no_sts,
+                    //             'kd_skpd' => $opd,
+                    //             'tgl_sts' => $tgl_cair,
+                    //             'keterangan' => $value['nm_rek6'] . ' atas SP2D ' . $no_sp2d,
+                    //             'total' => $totalkasin,
+                    //             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                    //             'jns_trans' => trans_denda($value['kd_rek6']),
+                    //             'no_kas' => $no_sts,
+                    //             'tgl_kas' => $tgl_cair,
+                    //             'sumber' => '0',
+                    //             'jns_cp' => '2',
+                    //             'pot_khusus' => '2',
+                    //             'no_sp2d' => $no_sp2d,
+                    //         ];
+                    //     }, $data_potongan));
+                    // }
+                    DB::table('trhkasin_pkd')
+                        ->insert([
+                            'no_sts' => $no_sts,
+                            'kd_skpd' => $opd,
+                            'tgl_sts' => $tgl_cair,
+                            'keterangan' => $nm_rek6 . ' atas SP2D ' . $no_sp2d,
+                            'total' => $totalkasin,
+                            'kd_sub_kegiatan' => $kd_sub_kegiatan,
+                            'jns_trans' => trans_denda($kd_rek6),
+                            'no_kas' => $no_sts,
+                            'tgl_kas' => $tgl_cair,
+                            'sumber' => '0',
+                            'jns_cp' => '2',
+                            'pot_khusus' => '2',
+                            'no_sp2d' => $no_sp2d,
+                        ]);
                 }
             }
 
-            if (($beban < 5) || ($beban == '6' && !isset($kontrak))) {
+            if (($beban < 5) || ($beban == '6' && $kontrak == '')) {
                 DB::table('tr_setorsimpanan')->insert([
                     'no_kas' => $no_setor,
                     'tgl_kas' => $tgl_cair,
@@ -349,7 +422,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if ($beban == '5' || ($beban == '6' && isset($kontrak))) {
+            if ($beban == '5' || ($beban == '6' && $kontrak <> '')) {
                 DB::table('trhtransout')->insert([
                     'no_kas' => $no_kas,
                     'tgl_kas' => $tgl_cair,
@@ -367,7 +440,13 @@ class PencairanSp2dController extends Controller
                 ]);
             }
 
-            $data_spp = DB::table('trdspp as a')->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->leftJoin('trhspm as c', 'b.no_spp', '=', 'c.no_spp')->leftJoin('trhsp2d as d', 'c.no_spm', '=', 'd.no_spm')->where(['d.no_sp2d' => $no_sp2d])->select('a.no_spp', 'a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nilai', 'b.bulan', 'c.no_spm', 'd.no_sp2d', 'b.sts_tagih', 'a.sumber')->get();
+            $data_spp = DB::table('trdspp as a')
+                ->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')
+                ->leftJoin('trhspm as c', 'b.no_spp', '=', 'c.no_spp')
+                ->leftJoin('trhsp2d as d', 'c.no_spm', '=', 'd.no_spm')
+                ->where(['d.no_sp2d' => $no_sp2d])
+                ->selectRaw("a.no_spp,a.kd_skpd,a.kd_sub_kegiatan,a.kd_rek6,a.nilai,b.bulan,c.no_spm,d.no_sp2d,b.sts_tagih,a.sumber")
+                ->get();
 
             // if (isset($data_spp)) {
             //     $giat = DB::table('trskpd')->select('nm_sub_kegiatan')->where(['kd_sub_kegiatan' => $data_spp->kd_sub_kegiatan])->first();
@@ -418,7 +497,7 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            if (($beban == '6' && isset($kontrak)) || $beban == '5') {
+            if (($beban == '6' && $kontrak <> '') || $beban == '5') {
                 if (isset($data_spp)) {
                     DB::table('trdtransout')->insert(array_map(function ($value) use ($no_kas, $no_sp2d, $beban) {
                         return [
@@ -449,12 +528,23 @@ class PencairanSp2dController extends Controller
             }
 
             // berhasil
-            DB::table('trdstrpot as a')->join('trhstrpot as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->where(['a.kd_skpd' => $opd])->update([
-                'a.id_terima' => DB::raw("(SELECT DISTINCT id FROM trdtrmpot WHERE trdtrmpot.kd_skpd=a.kd_skpd AND trdtrmpot.kd_rek6=a.kd_rek6 AND trdtrmpot.kd_rek_trans=a.kd_rek_trans AND trdtrmpot.nilai=a.nilai AND trdtrmpot.no_bukti=b.no_terima)")
-            ]);
+            // DB::table('trdstrpot as a')->join('trhstrpot as b', function ($join) {
+            //     $join->on('a.no_bukti', '=', 'b.no_bukti');
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            // })->where(['a.kd_skpd' => $opd])->update([
+            //     'a.id_terima' => DB::raw("(SELECT DISTINCT id FROM trdtrmpot WHERE trdtrmpot.kd_skpd=a.kd_skpd AND trdtrmpot.kd_rek6=a.kd_rek6 AND trdtrmpot.kd_rek_trans=a.kd_rek_trans AND trdtrmpot.nilai=a.nilai AND trdtrmpot.no_bukti=b.no_terima)")
+            // ]);
+
+            DB::update("UPDATE R
+        SET R.id_terima = (select DISTINCT id from trdtrmpot  where
+        trdtrmpot.kd_skpd=R.kd_skpd
+        and trdtrmpot.kd_rek6=R.kd_rek6
+        and trdtrmpot.kd_rek_trans=R.kd_rek_trans
+        and trdtrmpot.nilai=R.nilai
+        and trdtrmpot.no_bukti=H.no_terima
+        )
+        FROM trdstrpot AS R
+        INNER JOIN trhstrpot AS H ON R.no_bukti = H.no_bukti and R.kd_skpd=H.kd_skpd where R.kd_skpd=?", [$opd]);
 
             DB::commit();
             return response()->json([

@@ -85,16 +85,16 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_kas, no_panjar, kd_skpd) {
-        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Panjar : ' + no_kas);
+    function hapus(no_bukti, no_kas, kd_skpd) {
+        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Bukti : ' + no_kas);
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('kembalipanjar.hapus') }}",
+                url: "{{ route('transaksipanjar.hapus') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     no_kas: no_kas,
-                    no_panjar: no_panjar,
+                    no_bukti: no_bukti,
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {

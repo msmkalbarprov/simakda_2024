@@ -261,39 +261,12 @@ class UploadPanjarCMSController extends Controller
 
         $obskpd = DB::table('ms_skpd')->select('obskpd')->where(['kd_skpd' => $kd_skpd])->first();
 
-        $query1 = DB::table('trhupload_cmsbank as a')->leftJoin('trdupload_cmsbank as b', function ($join) {
-            $join->on('a.no_upload', '=', 'b.no_upload');
-            $join->on('a.kd_skpd', '=', 'b.kd_bp');
-        })->leftJoin('trdtransout_transfercms as c', function ($join) {
-            $join->on('b.no_voucher', '=', 'c.no_voucher');
-            $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            $join->on('b.tgl_voucher', '=', 'c.tgl_voucher');
-        })->leftJoin('ms_rekening_bank_online as d', function ($join) {
-            $join->on('b.kd_bp', '=', 'd.kd_skpd');
-            $join->on(DB::raw("RTRIM(c.rekening_tujuan)"), '=', DB::raw("RTRIM(d.rekening)"));
-        })->leftJoin('trdtransout_cmsbank as e', function ($join) {
-            $join->on('b.kd_skpd', '=', 'e.kd_skpd');
-            $join->on('b.no_voucher', '=', 'e.no_voucher');
-        })->leftJoin('ms_bank_online as f', function ($join) {
-            $join->on('d.kd_bank', '=', 'f.kd_bank');
-            $join->on('d.bic', '=', 'f.bic');
-        })->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload, 'f.bic' => 'PDKBIDJ1'])->select(
-            'a.tgl_upload',
-            'a.kd_skpd',
-            DB::raw("(SELECT obskpd FROM ms_skpd WHERE kd_skpd=b.kd_skpd) as nm_skpd"),
-            'b.rekening_awal',
-            'c.nm_rekening_tujuan',
-            'c.rekening_tujuan',
-            'c.nilai',
-            DB::raw("(REPLACE(b.ket_tujuan, '2022.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan"),
-            'b.no_upload_tgl'
-        );
-
-        $query = DB::table(DB::raw("({$query1->toSql()}) AS sub"))
-            ->select('*')
-            ->mergeBindings($query1)
-            ->groupBy('tgl_upload', 'kd_skpd', 'nm_skpd', 'rekening_awal', 'nm_rekening_tujuan', 'rekening_tujuan', 'nilai', 'ket_tujuan', 'no_upload_tgl')
-            ->get();
+        $query = DB::select("SELECT * FROM (SELECT a.tgl_upload,a.kd_skpd,(SELECT obskpd from ms_skpd where kd_skpd=a.kd_skpd) as nm_skpd,
+        b.rekening_awal,c.nm_rekening_tujuan,c.rekening_tujuan,c.nilai,b.ket_tujuan,b.no_upload_tgl FROM trhupload_cmsbank_panjar a
+        left join trdupload_cmsbank_panjar b on b.kd_bp=a.kd_skpd and a.no_upload=b.no_upload
+        left join tr_panjar_transfercms c on c.kd_skpd=b.kd_skpd and c.no_bukti=b.no_bukti
+        where a.kd_skpd=? and a.no_upload=?) x
+        GROUP BY tgl_upload, kd_skpd, nm_skpd, rekening_awal, nm_rekening_tujuan, rekening_tujuan, nilai, ket_tujuan, no_upload_tgl", [$kd_skpd, $no_upload]);
 
         foreach ($query as $data) {
             $tgl_upload = $data->tgl_upload;
@@ -379,18 +352,10 @@ class UploadPanjarCMSController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_upload = $request->no_upload;
 
-        $join1 = DB::table('trdtransout_transfercms as a')->select('a.no_voucher', 'a.kd_skpd', DB::raw("SUM(a.nilai) as bersih"))->where(['a.kd_skpd' => $kd_skpd])->groupBy('a.no_voucher', 'a.kd_skpd');
+        $data = DB::select("SELECT a.*,b.* FROM trhupload_cmsbank_panjar a left join trdupload_cmsbank_panjar b on b.kd_bp=a.kd_skpd and a.no_upload=b.no_upload
+        where a.kd_skpd=? and a.no_upload=?
+        order by cast(a.no_upload as int),a.kd_skpd", [$kd_skpd, $no_upload]);
 
-        $data = DB::table('trhupload_cmsbank as a')->leftJoin('trdupload_cmsbank as b', function ($join) {
-            $join->on('a.kd_skpd', '=', 'b.kd_bp');
-            $join->on('a.no_upload', '=', 'b.no_upload');
-        })->join('trhtransout_cmsbank as d', function ($join) {
-            $join->on('b.no_voucher', '=', 'd.no_voucher');
-            $join->on('b.kd_skpd', '=', 'd.kd_skpd');
-        })->leftJoinSub($join1, 'c', function ($join) {
-            $join->on('c.no_voucher', '=', 'b.no_voucher');
-            $join->on('c.kd_skpd', '=', 'b.kd_skpd');
-        })->select('d.ket', 'b.kd_skpd', 'b.no_voucher', 'b.tgl_voucher', 'a.no_upload', 'a.tgl_upload', 'a.total', 'b.nilai', 'b.status_upload', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.ket_tujuan', 'c.bersih', DB::raw("b.nilai - c.bersih as pot"))->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload])->groupBy('b.kd_skpd', 'b.no_voucher', 'b.tgl_voucher', 'a.no_upload', 'a.tgl_upload', 'a.total', 'b.nilai', 'b.status_upload', 'b.rekening_awal', 'b.nm_rekening_tujuan', 'b.rekening_tujuan', 'b.bank_tujuan', 'b.ket_tujuan', 'c.bersih', 'd.ket')->orderBy(DB::raw("CAST(a.no_upload as int)"))->orderBy('b.kd_skpd')->get();
         return Datatables::of($data)->addIndexColumn()->make(true);
     }
 }

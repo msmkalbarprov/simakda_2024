@@ -60,14 +60,13 @@
             </td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
-
 
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
         <tbody>
@@ -94,6 +93,7 @@
             </tr>
         </tbody>
     </table>
+
 
     <table style="width: 100%;border:1px solid black;font-family:'Open Sans', Helvetica,Arial,sans-serif"
         class="rincian">
@@ -284,7 +284,7 @@
 
     <div style="padding-top: 30px">
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
-            @if (($beban == '6' && $jenis_beban == '6') || $beban == '5')
+            @if (($beban == '6' && $jenis_beban == '6') || $beban == '5' || ($beban == '6' && $jenis_beban == '4'))
                 <tr>
                     <td style="text-align: center">MENGETAHUI :</td>
                     <td style="margin: 2px 0px;text-align: center">

@@ -564,8 +564,8 @@
 
     }
 
-    function batalUpload(no_upload, kd_skpd) {
-        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Upload : ' + no_upload);
+    function batalUpload(no_upload, kd_skpd, no_voucher) {
+        let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Bukti : ' + no_voucher);
         if (tanya == true) {
             $.ajax({
                 url: "{{ route('skpd.upload_cms.batal_upload') }}",
@@ -574,6 +574,7 @@
                 data: {
                     no_upload: no_upload,
                     kd_skpd: kd_skpd,
+                    no_voucher: no_voucher,
                 },
                 success: function(data) {
                     if (data.message == '1') {

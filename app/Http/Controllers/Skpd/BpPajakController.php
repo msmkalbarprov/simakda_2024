@@ -206,7 +206,7 @@ class BpPajakController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -240,45 +240,13 @@ class BpPajakController extends Controller
         // return $pilihan1;
         // saldo lalu
         if ($pilihan1 == 'semua') {
-            $rincian = DB::select("SELECT a.kd_rek6, a.nm_rek6, isnull(SUM(terima_lalu),0) as terima_lalu, isnull(SUM(terima_ini),0) as terima_ini,
-                            isnull(SUM(setor_lalu),0) as setor_lalu, isnull(SUM(setor_ini),0) as setor_ini
-                            FROM
-                            (SELECT RTRIM(kd_rek6) as kd_rek6,nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210107010001','210108010001','210106010001','210105010001','210105020001','210106010001','210105030001','210109010001'))a
-                            LEFT JOIN
-                            (SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
-                            SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS terima_lalu,
-                            SUM(CASE WHEN MONTH(tgl_bukti)= ? THEN b.nilai ELSE 0 END) AS terima_ini,
-                            0 as setor_lalu,
-                            0 as setor_ini
-                            FROM trhtrmpot a
-                            INNER JOIN trdtrmpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                            LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
-                            WHERE a.kd_skpd= ?
-                            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd
-
-                            UNION ALL
-
-                            SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
-                            0 as terima_lalu,
-                            0 as terima_ini,
-                            SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS setor_lalu,
-                            SUM(CASE WHEN MONTH(tgl_bukti)= ? THEN b.nilai ELSE 0 END) AS setor_ini
-                            FROM trhstrpot a
-                            INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                            LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
-                            WHERE a.kd_skpd= ?
-                            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd)b
-                            ON a.kd_rek6=b.kd_rek6
-                            GROUP BY a.kd_rek6, a.nm_rek6
-                            ORDER BY kd_rek6", [$bulan, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd]);
-        } else if ($pilihan1 == 'tanpalsphk') {
             $rincian = DB::select("SELECT
 	a.kd_rek6,
 	a.nm_rek6,
-	ISNULL( SUM ( terima_lalu ), 0 ) AS terima_lalu,
-	ISNULL( SUM ( terima_ini ), 0 ) AS terima_ini,
-	ISNULL( SUM ( setor_lalu ), 0 ) AS setor_lalu,
-	ISNULL( SUM ( setor_ini ), 0 ) AS setor_ini
+	isnull( SUM ( terima_lalu ), 0 ) AS terima_lalu,
+	isnull( SUM ( terima_ini ), 0 ) AS terima_ini,
+	isnull( SUM ( setor_lalu ), 0 ) AS setor_lalu,
+	isnull( SUM ( setor_ini ), 0 ) AS setor_ini
 FROM
 	(
 	SELECT
@@ -305,8 +273,7 @@ FROM
 		LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
 		AND a.no_sp2d= c.no_sp2d
 	WHERE
-		( nocek = '' OR nocek IS NULL )
-		AND a.kd_skpd= ?
+		a.kd_skpd= ?
 	GROUP BY
 		b.map_pot,
 		a.kd_skpd UNION ALL
@@ -325,8 +292,7 @@ FROM
 		LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
 		AND a.no_sp2d= c.no_sp2d
 	WHERE
-		( nocek = '' OR nocek IS NULL )
-		AND a.kd_skpd= ?
+		a.kd_skpd= ?
 	GROUP BY
 		b.map_pot,
 		a.kd_skpd
@@ -336,13 +302,71 @@ GROUP BY
 	a.nm_rek6
 ORDER BY
 	kd_rek6", [$bulan, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd]);
+        } else if ($pilihan1 == 'tanpalsphk') {
+            $rincian = DB::select("SELECT a.kd_rek6, a.nm_rek6, ISNULL( SUM ( terima_lalu ), 0 ) AS terima_lalu, ISNULL( SUM ( terima_ini ), 0 ) AS terima_ini, ISNULL( SUM ( setor_lalu ), 0 ) AS setor_lalu, ISNULL( SUM ( setor_ini ), 0 ) AS setor_ini FROM
+	            (
+	                SELECT
+		                RTRIM( map_pot ) AS kd_rek6,
+		                nm_rek6
+	                FROM
+		                ms_pot
+	                WHERE
+		                map_pot IN ( '210107010001', '210108010001a','210108010001b', '210106010001', '210105010001', '210105020001', '210106010001',               '210105030001', '210109010001' )
+	                ) a
+	                LEFT JOIN (
+	                SELECT
+		                b.map_pot as kd_rek6,
+		                (SELECT nm_rek6 FROM ms_pot WHERE b.map_pot=map_pot) as nm_rek6,
+		                a.kd_skpd,
+		                SUM ( CASE WHEN MONTH ( tgl_bukti ) < ? THEN b.nilai ELSE 0 END ) AS terima_lalu,
+		                SUM ( CASE WHEN MONTH ( tgl_bukti ) = ? THEN b.nilai ELSE 0 END ) AS terima_ini,
+		                0 AS setor_lalu,
+		                0 AS setor_ini
+	                FROM
+		                trhtrmpot a
+		                INNER JOIN trdtrmpot b ON a.no_bukti= b.no_bukti
+		                AND a.kd_skpd= b.kd_skpd
+		                LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
+		                AND a.no_sp2d= c.no_sp2d
+	                WHERE
+		                ( nocek = '' OR nocek IS NULL )
+		                AND a.kd_skpd= ?
+	                GROUP BY
+		                b.map_pot,
+		                a.kd_skpd UNION ALL
+	                SELECT
+		                b.map_pot as kd_rek6,
+		                (SELECT nm_rek6 FROM ms_pot WHERE b.map_pot=map_pot) as nm_rek6,
+		                a.kd_skpd,
+		                0 AS terima_lalu,
+		                0 AS terima_ini,
+		                SUM ( CASE WHEN MONTH ( tgl_bukti ) < ? THEN b.nilai ELSE 0 END ) AS setor_lalu,
+		                SUM ( CASE WHEN MONTH ( tgl_bukti ) = ? THEN b.nilai ELSE 0 END ) AS setor_ini
+	                FROM
+		                trhstrpot a
+		                INNER JOIN trdstrpot b ON a.no_bukti= b.no_bukti
+		                AND a.kd_skpd= b.kd_skpd
+		                LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
+		                AND a.no_sp2d= c.no_sp2d
+	                WHERE
+		                ( nocek = '' OR nocek IS NULL )
+		                AND a.kd_skpd= ?
+	                GROUP BY
+		                b.map_pot,
+		                a.kd_skpd
+	                ) b ON a.kd_rek6= b.kd_rek6
+                GROUP BY
+	                a.kd_rek6,
+	                a.nm_rek6
+                ORDER BY
+	                kd_rek6", [$bulan, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd]);
         } else if ($pilihan1 == 'hanyalsphk') {
             $rincian = DB::select("SELECT a.kd_rek6, a.nm_rek6, ISNULL(SUM(terima_lalu),0) as terima_lalu, ISNULL(SUM(terima_ini),0) as terima_ini,
                             ISNULL(SUM(setor_lalu),0) as setor_lalu, ISNULL(SUM(setor_ini),0) as setor_ini
                             FROM
-                            (SELECT RTRIM(kd_rek6) as kd_rek6,nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210107010001','210108010001','210106010001','210105010001','210105020001','210106010001','210105030001','210109010001'))a
+                            (SELECT RTRIM(map_pot) as kd_rek6,nm_rek6 FROM ms_pot WHERE kd_rek6 IN ( '210107010001', '210108010001a','210108010001b', '210106010001', '210105010001', '210105020001', '210106010001', '210105030001', '210109010001' ))a
                             LEFT JOIN
-                            (SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
+                            (SELECT b.map_pot as kd_rek6, (SELECT nm_rek6 FROM ms_pot WHERE b.map_pot=map_pot) as nm_rek6,a.kd_skpd,
                             SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS terima_lalu,
                             SUM(CASE WHEN MONTH(tgl_bukti)= ? THEN b.nilai ELSE 0 END) AS terima_ini,
                             0 as setor_lalu,
@@ -352,11 +376,11 @@ ORDER BY
                             LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
                             WHERE (nocek !='' AND nocek IS NOT NULL)
                             AND	a.kd_skpd= ?
-                            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd
+                            GROUP BY  b.map_pot, a.kd_skpd
 
                             UNION ALL
 
-                            SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
+                            SELECT b.map_pot,(SELECT nm_rek6 FROM ms_pot WHERE b.map_pot=map_pot) as nm_rek6,a.kd_skpd,
                             0 as terima_lalu,
                             0 as terima_ini,
                             SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN b.nilai ELSE 0 END) AS setor_lalu,
@@ -366,7 +390,7 @@ ORDER BY
                             LEFT JOIN trhsp2d c on a.kd_skpd=c.kd_skpd AND a.no_sp2d=c.no_sp2d
                             WHERE (nocek !='' AND nocek IS NOT NULL)
                             AND	a.kd_skpd= ?
-                            GROUP BY  b.kd_rek6, b.nm_rek6, a.kd_skpd)b
+                            GROUP BY  b.map_pot, a.kd_skpd)b
                             ON a.kd_rek6=b.kd_rek6
                             GROUP BY a.kd_rek6, a.nm_rek6
                             ORDER BY kd_rek6", [$bulan, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd]);
@@ -391,7 +415,7 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -584,7 +608,7 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -954,7 +978,7 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 

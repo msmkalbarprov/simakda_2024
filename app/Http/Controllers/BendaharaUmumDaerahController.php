@@ -6091,7 +6091,12 @@ class BendaharaUmumDaerahController extends Controller
         if ($req['jenis_print'] == 'pdf') {
             $pdf = PDF::loadHtml($view)->setOrientation('portrait')->setPaper('legal');
             return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
         } else {
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
             return $view;
         }
         // return view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);

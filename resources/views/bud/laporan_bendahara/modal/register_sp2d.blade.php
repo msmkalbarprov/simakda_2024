@@ -221,7 +221,7 @@
                             PDF</button>
                         <button type="button" class="btn btn-dark btn-md cetak_realisasiskpd_sp2d"
                             data-jenis="layar">Layar</button>
-                        <button type="button" class="btn btn-dark btn-md cetak_realisasiskpd_sp2d"
+                        <button type="button" class="btn btn-success btn-md cetak_realisasiskpd_sp2d"
                             data-jenis="excel">Excel</button>
                     </div>
                 </div>
