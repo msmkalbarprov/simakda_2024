@@ -416,6 +416,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('draft_upload', [UploadCmsController::class, 'draftUpload'])->name('skpd.upload_cms.draft_upload');
             Route::post('data_upload', [UploadCmsController::class, 'dataUpload'])->name('skpd.upload_cms.data_upload');
             Route::get('tambah', [UploadCmsController::class, 'create'])->name('skpd.upload_cms.create');
+            Route::post('load_transaksi', [UploadCmsController::class, 'loadTransaksi'])->name('skpd.upload_cms.load_transaksi');
             Route::post('proses_upload', [UploadCmsController::class, 'prosesUpload'])->name('skpd.upload_cms.proses_upload');
             Route::post('batal_upload', [UploadCmsController::class, 'batalUpload'])->name('skpd.upload_cms.batal_upload');
             Route::get('cetak_csv_kalbar', [UploadCmsController::class, 'cetakCsvKalbar'])->name('skpd.upload_cms.cetak_csv_kalbar');

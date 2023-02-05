@@ -1,6 +1,10 @@
 @extends('template.app')
 @section('title', 'Tambah Upload CMS | SIMAKDA')
 @section('content')
+    {{-- <option value="{{ $sp2d->no_sp2d }}" data-tgl_sp2d="{{ $sp2d->tgl_sp2d }}"
+                                        data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
+                                        data-nilai="{{ $sp2d->nilai }}">{{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }}
+                                    </option> --}}
     <div class="row">
         {{-- Input form --}}
         <div class="col-12">
@@ -16,11 +20,7 @@
                         <div class="col-md-12">
                             <select name="data_transaksi" id="data_transaksi" class="form-control select2-multiple">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_transaksi as $data)
-                                    {{-- <option value="{{ $sp2d->no_sp2d }}" data-tgl_sp2d="{{ $sp2d->tgl_sp2d }}"
-                                        data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
-                                        data-nilai="{{ $sp2d->nilai }}">{{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }}
-                                    </option> --}}
+                                {{-- @foreach ($daftar_transaksi as $data)
                                     <option value="{{ $data->no_voucher }}" data-tgl="{{ $data->tgl_voucher }}"
                                         data-kd_skpd="{{ $data->kd_skpd }}" data-ket="{{ $data->ket }}"
                                         data-bersih="{{ $data->bersih }}" data-tot_pot="{{ $data->tot_pot }}"
@@ -33,7 +33,7 @@
                                         {{ $data->no_voucher }} |
                                         {{ $data->tgl_voucher }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>
