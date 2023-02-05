@@ -466,15 +466,15 @@
                 return;
             }
 
-            // if (nilai > sisa_panjar) {
-            //     alert('Transaksi melebihi Sisa Panjar');
-            //     return;
-            // }
+            if (nilai > sisa_panjar) {
+                alert('Transaksi melebihi Sisa Panjar');
+                return;
+            }
 
-            // if (akumulasi > sisa_panjar) {
-            //     alert('Total Transaksi melebihi Sisa Panjar');
-            //     return;
-            // }
+            if (akumulasi > sisa_panjar) {
+                alert('Total Transaksi melebihi Sisa Panjar');
+                return;
+            }
 
             if ((status_anggaran == 'Penyusunan') && (nilai > sisa_sp2d)) {
                 alert('Nilai Melebihi Sisa Anggaran Penyusunan...!!!, Cek Lagi...!!!');
