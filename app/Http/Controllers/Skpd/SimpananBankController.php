@@ -38,23 +38,44 @@ class SimpananBankController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $kas1 = DB::table('tr_setorpelimpahan_bank')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd]);
-        $kas2 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'status_drop' => '1'])->unionAll($kas1);
-        $kas3 = DB::table('tr_setorpelimpahan_tunai')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd])->where(function ($query) {
-            $query->where('status_ambil', '0')->orWhereNull('status_ambil');
-        })->unionAll($kas2);
+        // $kas1 = DB::table('tr_setorpelimpahan_bank')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd]);
+        // $kas2 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'status_drop' => '1'])->unionAll($kas1);
+        // $kas3 = DB::table('tr_setorpelimpahan_tunai')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd])->where(function ($query) {
+        //     $query->where('status_ambil', '0')->orWhereNull('status_ambil');
+        // })->unionAll($kas2);
 
-        $kas = DB::table(DB::raw("({$kas3->toSql()}) AS sub"))
-            ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END)-SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) as sisa"))
-            ->mergeBindings($kas3)
-            ->first();
+        // $kas = DB::table(DB::raw("({$kas3->toSql()}) AS sub"))
+        //     ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END)-SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) as sisa"))
+        //     ->mergeBindings($kas3)
+        //     ->first();
+        $kas = collect(DB::select("SELECT
+            SUM(case when jns=1 then jumlah else 0 end) AS terima,
+            SUM(case when jns=2 then jumlah else 0 end) AS keluar
+            from (
 
-        $ketdrop1 = DB::table('tr_setorpelimpahan_bank')->select('no_bukti', 'tgl_bukti', 'nilai', 'keterangan', 'kd_skpd_sumber')->where(['kd_skpd' => $kd_skpd])->whereNull('status_ambil');
-        $ketdrop2 = DB::table('tr_setorpelimpahan_tunai')->select('no_bukti', 'tgl_bukti', 'nilai', 'keterangan', 'kd_skpd_sumber')->where(['kd_skpd' => $kd_skpd])->whereNull('status_ambil')->unionAll($ketdrop1);
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorpelimpahan_bank WHERE kd_skpd=?
+            union all
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_setorsimpanan WHERE kd_skpd=? AND status_drop='1'
+            UNION ALL
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorpelimpahan_tunai WHERE kd_skpd=?
+            ) a
+                where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
 
-        $ketdrop = DB::table(DB::raw("({$ketdrop2->toSql()}) AS sub"))
-            ->mergeBindings($ketdrop2)
-            ->get();
+        $kas = $kas->terima - $kas->keluar;
+
+
+        // $ketdrop1 = DB::table('tr_setorpelimpahan_bank')->select('no_bukti', 'tgl_bukti', 'nilai', 'keterangan', 'kd_skpd_sumber')->where(['kd_skpd' => $kd_skpd])->whereNull('status_ambil');
+        // $ketdrop2 = DB::table('tr_setorpelimpahan_tunai')->select('no_bukti', 'tgl_bukti', 'nilai', 'keterangan', 'kd_skpd_sumber')->where(['kd_skpd' => $kd_skpd])->whereNull('status_ambil')->unionAll($ketdrop1);
+
+        // $ketdrop = DB::table(DB::raw("({$ketdrop2->toSql()}) AS sub"))
+        //     ->mergeBindings($ketdrop2)
+        //     ->get();
+
+        $ketdrop = DB::select("SELECT no_bukti,tgl_bukti,nilai,keterangan,kd_skpd_sumber from tr_setorpelimpahan_bank where kd_skpd=? and
+        status_ambil is null
+        UNION ALL
+        SELECT no_bukti,tgl_bukti,nilai,keterangan,kd_skpd_sumber from tr_setorpelimpahan_tunai where kd_skpd=? and
+        status_ambil is null", [$kd_skpd, $kd_skpd]);
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),

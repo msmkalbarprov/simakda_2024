@@ -72,7 +72,7 @@
                         <label for="sisa_kas" class="col-md-2 col-form-label">Sisa Kas Bank</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="sisa_kas" name="sisa_kas" required readonly
-                                value="{{ rupiah($sisa_bank->sisa) }}" style="text-align: right">
+                                value="{{ rupiah($sisa_bank) }}" style="text-align: right">
                         </div>
                         <label for="nilai" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-4">
