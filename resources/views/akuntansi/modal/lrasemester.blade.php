@@ -114,6 +114,7 @@
                             <option value="2">SP2D Lunas</option>
                             <option value="3">SP2D Advice</option>
                             <option value="4">SPJ</option>
+                            <option value="5">Jurnal</option>
                         </select>
                     </div>
                 </div>

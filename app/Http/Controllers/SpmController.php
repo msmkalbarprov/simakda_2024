@@ -446,6 +446,7 @@ class SpmController extends Controller
             'pa_kpa' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
             'data_spm' => $data_spm,
             'tahun_anggaran' => tahun_anggaran(),
+            'wp' => DB::table('trhspm')->select('npwp')->where(['kd_skpd' => $kd_skpd, 'no_spm' => $no_spm])->first(),
             'bank' => DB::table('ms_skpd as a')->select('bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'rekening', 'npwp')->where(['a.kd_skpd' => $kd_skpd])->first(),
             'beban1' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->first(),
             'beban' => $beban,
