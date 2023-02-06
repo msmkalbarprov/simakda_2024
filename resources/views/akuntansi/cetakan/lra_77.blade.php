@@ -298,7 +298,7 @@
                             </tr> 
                     @endif                     
                 @endforeach
-                {{-- @php
+                @php
                     $silpa_anggaran = $nanggaran_pendapatan-$nanggaran_belanja+$apenerimaan_pembiayaan-$apengeluaran_pembiayaan;
                     $silpa_belanja = $nrealisasi_pendapatan-$nrealisasi_belanja+$bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan; 
                     if($silpa_anggaran !=0 && $silpa_belanja!=0){
@@ -318,7 +318,7 @@
                     <td align="right" valign="top"><b>{{number_format($silpa_belanja, "2", ",", ".")}}</b></td> 
                     <td align="right" valign="top"><b>{{number_format($persensilpa, "2", ",", ".")}}</b></td> 
                     <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td>     
-                </tr> --}}
+                </tr>
                 
 
     </table>

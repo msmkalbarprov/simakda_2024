@@ -115,187 +115,19 @@
                                 $kd_rek="";
                             @endphp
                         @endif
-            
-                        @if ($group_id == 0)
-                            @if ($row->kd_rek== 5 || $row->kd_rek== 6)
-                                <tr>
-                                    <td colspan="7">&nbsp;</td>
-                                </tr>
-                                @if ($right_align==1)
-                                    <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                    </tr>        
-                                @else
-                                    <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                    </tr>        
-                                @endif
-                                
-                            @else
-                                <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  ><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                </tr>    
-                            @endif
-                            
-                    @elseif ($group_id == 1)
-                            @if ($row->kd_rek== 5 || $row->kd_rek== 6 || $group_id==0)
-                                <tr>
-                                    <td colspan="7">&nbsp;</td>
-                                </tr>
-                                @if ($right_align==1)
-                                    <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                    </tr>        
-                                @else
-                                    <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                    </tr>        
-                                @endif
-                                
-                            @else
-                                <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  ><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                </tr>    
-                            @endif
-                            
-                    @elseif ($group_id == 2)
-                            @if ($row->kd_rek== 61 || $group_id==0)
-                                <tr>
-                                    <td colspan="7">&nbsp;</td>
-                                </tr>
-                                @if ($right_align==1)
-                                <tr>
-                                    <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                    <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                </tr>
-                                @else
-                                <tr>
-                                    <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                    <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                </tr>    
-                                @endif
-                                        
-                            @else
-                                <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  style="padding-left:10px"><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                                </tr>    
-                            @endif
-                    @elseif ($group_id == 3)
-                            <tr>
-                                <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:60px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                            </tr> 
-                                
-                    @elseif ($group_id == 4)
+
+
+                        <tr>
+                            <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                            <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
+                            <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                            <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                            <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
+                            <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
+                            <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
+                        </tr>        
+
                         
-                            <tr>
-                                <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:20px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                            </tr>    
-                    @elseif ($group_id == 5)
-                            <tr>
-                                <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:80px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
-                            </tr>
-                        
-                    @elseif ($group_id == 6)
-                            <tr>
-                                        <td align="left" valign="top">{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top" style="padding-left:30px">{{$nm_rek}}</td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                            </tr>
-                    @elseif ($group_id == 8)
-                            <tr>
-                                        <td align="left" valign="top" >{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top" style="padding-left:40px">{{$nm_rek}}</td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                            </tr>
-                    @else
-                            <tr>
-                                        <td align="left" valign="top">{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top"  style="padding-left:50px">{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                                        </tr>
-                    @endif                     
                 @endforeach
                 
 
