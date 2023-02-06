@@ -3497,7 +3497,7 @@ function npwp($npwp){
         }else if(strlen($npwp)==16){
             $new_npwp=$npwp; 
         }else{
-            $new_npwp="NPWP Tidak Valid"; 
+            $new_npwp="-"; 
         }
         
     return $new_npwp;
