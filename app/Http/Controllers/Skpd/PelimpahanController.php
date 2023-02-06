@@ -536,11 +536,11 @@ class PelimpahanController extends Controller
                 ->mergeBindings($no_upload4)
                 ->first();
 
-            if (strlen($no_upload->nomor == '1')) {
+            if (Str::length($no_upload->nomor) == '1') {
                 $no_upload5 = "00" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '2')) {
+            } elseif (Str::length($no_upload->nomor) == '2') {
                 $no_upload5 = "0" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '3')) {
+            } elseif (Str::length($no_upload->nomor) == '3') {
                 $no_upload5 = $no_upload->nomor;
             }
 
