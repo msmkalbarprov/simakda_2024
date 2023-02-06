@@ -169,6 +169,11 @@
                 return;
             }
 
+            if (!keterangan) {
+                alert('Keterangan Tidak Boleh Kosong');
+                return;
+            }
+
             let detail_sts = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
