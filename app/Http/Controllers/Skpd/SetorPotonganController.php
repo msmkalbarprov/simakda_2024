@@ -23,7 +23,7 @@ class SetorPotonganController extends Controller
         $data = DB::table('trhstrpot')->select('no_bukti', 'no_ntpn', 'tgl_bukti', 'no_terima', 'kd_skpd', 'no_sp2d', DB::raw("RTRIM(jns_spp) as jns_spp"), 'nm_skpd', 'nm_sub_kegiatan', 'kd_sub_kegiatan', 'nmrekan', 'pimpinan', 'alamat', 'npwp', 'ket', 'nilai', 'pay')->where(['kd_skpd' => $kd_skpd])->orderBy('no_bukti')->orderBy('kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("skpd.setor_potongan.edit", $row->no_bukti) . '" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="fa fa-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(\'' . $row->no_bukti . '\', \'' . $row->no_terima . '\', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('skpd.setor_potongan.index');
@@ -233,13 +233,16 @@ class SetorPotonganController extends Controller
     public function hapusPotongan(Request $request)
     {
         $no_bukti = $request->no_bukti;
-        $kd_skpd = Auth::user()->kd_skpd;
+        $no_terima = $request->no_terima;
+        $kd_skpd = $request->kd_skpd;
 
         DB::beginTransaction();
         try {
             DB::table('trdstrpot')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
 
             DB::table('trhstrpot')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+
+            DB::update("UPDATE trhtrmpot SET status = '0' WHERE no_bukti=? AND kd_skpd=?", [$no_terima, $kd_skpd]);
 
             DB::commit();
             return response()->json([

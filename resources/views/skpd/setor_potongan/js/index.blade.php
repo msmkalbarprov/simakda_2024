@@ -57,7 +57,7 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapusPotongan(no_bukti) {
+    function hapusPotongan(no_bukti, no_terima, kd_skpd) {
         let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Bukti : ' + no_bukti);
         if (tanya == true) {
             $.ajax({
@@ -66,6 +66,8 @@
                 dataType: 'json',
                 data: {
                     no_bukti: no_bukti,
+                    no_terima: no_terima,
+                    kd_skpd: kd_skpd,
                 },
                 success: function(data) {
                     if (data.message == '1') {
