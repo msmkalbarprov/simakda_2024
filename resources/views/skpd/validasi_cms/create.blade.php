@@ -74,6 +74,7 @@
                                 <th>Bank Tujuan</th>
                                 <th>Ket Tujuan</th>
                                 <th>Potongan</th>
+                                <th>Status Pot</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

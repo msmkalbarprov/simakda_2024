@@ -128,9 +128,17 @@ class ValidasiCmsController extends Controller
 
             $no_validasi = $nomor->nomor;
             $no_bku = no_urut($kd_skpd);
-            $bku = $no_bku - 1;
+
+            // $bku = $no_bku - 1;
+            $i = 0;
 
             foreach ($rincian_data as $data => $value) {
+                $bku = $no_bku + $i;
+                if ($rincian_data[$data]['status_pot'] == 1) {
+                    $i = $i + 2;
+                } else {
+                    $i = $i + 1;
+                }
                 $data = [
                     'no_voucher' => $rincian_data[$data]['no_voucher'],
                     'tgl_voucher' => $rincian_data[$data]['tgl_voucher'],
@@ -147,7 +155,7 @@ class ValidasiCmsController extends Controller
                     'tgl_validasi' => $tanggal_validasi,
                     'status_validasi' => '1',
                     'no_validasi' => $no_validasi,
-                    'no_bukti' => ++$bku,
+                    'no_bukti' => $bku,
                 ];
                 DB::table('trvalidasi_cmsbank')->insert($data);
             }
