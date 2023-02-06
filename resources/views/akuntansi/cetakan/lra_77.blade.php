@@ -64,12 +64,12 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width='100%' align='center' border='1' cellspacing='1' cellpadding='$spasi'>
         <thead>
             <tr>
-                <td width='7%' align='center' bgcolor='#CCCCCC' ><b>KD REK</b></td>
-                <td width='32%' align='center' bgcolor='#CCCCCC' ><b>URAIAN</b></td>
-                <td width='15%' align='center' bgcolor='#CCCCCC' ><b>JUMLAH ANGGARAN</b></td>
-                <td width='15%' align='center' bgcolor='#CCCCCC' ><b>REALISASI {{tahun_anggaran()}}</b></td>
-                <td width='10%' align='center' bgcolor='#CCCCCC' ><b>%</b></td>
-                <td width='15%' align='center' bgcolor='#CCCCCC' ><b>REALISASI {{tahun_anggaran()-1}}</b></td>
+                <th width='7%' align='center' bgcolor='#CCCCCC' ><b>KD REK</b></th>
+                <th width='38%' align='center' bgcolor='#CCCCCC' ><b>URAIAN</b></th>
+                <th width='15%' align='center' bgcolor='#CCCCCC' ><b>JUMLAH ANGGARAN</b></th>
+                <th width='15%' align='center' bgcolor='#CCCCCC' ><b>REALISASI {{tahun_anggaran()}}</b></th>
+                <th width='5%' align='center' bgcolor='#CCCCCC' ><b>%</b></th>
+                <th width='15%' align='center' bgcolor='#CCCCCC' ><b>REALISASI {{tahun_anggaran()-1}}</b></th>
                 
             </tr>
             <tr>
@@ -149,34 +149,34 @@
                                 </tr>
                                 @if ($row->kd_rek==45)
                                     <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nanggaran_pendapatan-$nanggaran_belanja, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nrealisasi_pendapatan-$nrealisasi_belanja, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format(($nrealisasi_pendapatan-$nrealisasi_belanja)/$nanggaran_pendapatan-$nanggaran_belanja*100, "2", ",", ".")}}</b></td>
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                        <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                        <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($nanggaran_pendapatan-$nanggaran_belanja, "2", ",", ".")}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($nrealisasi_pendapatan-$nrealisasi_belanja, "2", ",", ".")}}</b></td> 
+                                        <td width='5%' align="right" valign="top"><b>{{number_format(($nrealisasi_pendapatan-$nrealisasi_belanja)/$nanggaran_pendapatan-$nanggaran_belanja*100, "2", ",", ".")}}</b></td>
+                                        <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                         
                                          
                                     </tr>        
                                 @elseif ($row->kd_rek==6263)
                                     <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($apenerimaan_pembiayaan-$apengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format(($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan)/($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)*100, "2", ",", ".")}}</b></td>
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                        <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                        <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($apenerimaan_pembiayaan-$apengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
+                                        <td width='5%' align="right" valign="top"><b>{{number_format(($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan)/($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)*100, "2", ",", ".")}}</b></td>
+                                        <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                         
                                          
                                     </tr>        
                                 @else
                                     <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                        <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                        <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                        <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                        <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                         
                                          
                                     </tr>        
@@ -189,23 +189,23 @@
                                 </tr>
                                 @if ($right_align==1)
                                     <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                        <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                        <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                        <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                        <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                         
                                          
                                     </tr>        
                                 @else
                                     <tr>
-                                        <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                        <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                        <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                        <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                        <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                        <td width='38%' align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                        <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                        <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                        <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                         
                                          
                                     </tr>        
@@ -213,12 +213,12 @@
                                 
                             @else
                                 <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  ><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                    <td width='7%' align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
+                                    <td width='38%' align="left"  valign="top"  ><b>{{$nm_rek}}</b></td> 
+                                    <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                    <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                    <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                    <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                     
                                      
                                 </tr>    
@@ -227,23 +227,23 @@
                     @elseif ($group_id == 2)
                             
                                 <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  style="padding-left:10px"><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                    <td width='7%' align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
+                                    <td width='38%' align="left"  valign="top"  style="padding-left:10px"><b>{{$nm_rek}}</b></td> 
+                                    <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                    <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                    <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                    <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                     
                                      
                                 </tr>    
                     @elseif ($group_id == 3)
                             <tr>
-                                <td align="left" valign="top"><b>{{$kd_rek}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:60px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
+                                <td width='38%' align="left"  valign="top" style="padding-left:60px"><b>{{$nm_rek}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                 
                                  
                             </tr> 
@@ -251,61 +251,57 @@
                     @elseif ($group_id == 4)
                         
                             <tr>
-                                <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:20px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                <td width='7%' align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
+                                <td width='38%' align="left"  valign="top" style="padding-left:20px"><b>{{$nm_rek}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                 
                                  
                             </tr>    
                     @elseif ($group_id == 5)
                             
                             <tr>
-                                <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                <td align="left"  valign="top" style="padding-left:80px"><b>{{$nm_rek}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
+                                <td width='7%' align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
+                                <td width='38%' align="left"  valign="top" style="padding-left:80px"><b>{{$nm_rek}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
+                                <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
+                                <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
+                                <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
                                 
                                  
                             </tr>
                         
                     @elseif ($group_id == 6)
                             <tr>
-                                        <td align="left" valign="top">{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top" style="padding-left:30px">{{$nm_rek}}</td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
+                                        <td width='7%' align="left" valign="top">{{dotrek($kd_rek)}}</td> 
+                                        <td width='38%' align="left"  valign="top" style="padding-left:30px">{{$nm_rek}}</td> 
+                                        <td width='15%' align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
+                                        <td width='15%' align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
+                                        <td width='5%' align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
+                                        <td width='15%' align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
                                         
                                         
                             </tr>
                     @elseif ($group_id == 8)
                             <tr>
-                                        <td align="left" valign="top" >{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top" style="padding-left:40px">{{$nm_rek}}</td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
-                                        
-                                        
+                                        <td width='7%' align="left" valign="top" >{{dotrek($kd_rek)}}</td> 
+                                        <td width='38%' align="left"  valign="top" style="padding-left:40px">{{$nm_rek}}</td> 
+                                        <td width='15%' align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
+                                        <td width='15%' align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
+                                        <td width='5%' align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
+                                        <td width='15%' align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
                             </tr>
                     @else
                             <tr>
-                                        <td align="left" valign="top">{{dotrek($kd_rek)}}</td> 
-                                        <td align="left"  valign="top"  style="padding-left:50px">{{$nm_rek}}</b></td> 
-                                        <td align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
-                                        <td align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
-                                        
-                                        
-                                        </tr>
+                                <td width='7%' align="left" valign="top">{{dotrek($kd_rek)}}</td> 
+                                <td width='38%' align="left"  valign="top"  style="padding-left:50px">{{$nm_rek}}</b></td> 
+                                <td width='15%' align="right" valign="top">{{number_format($nil_ang, "2", ",", ".")}}</td> 
+                                <td width='15%' align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
+                                <td width='5%' align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
+                                <td width='15%' align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
+                            </tr>
                     @endif                     
                 @endforeach
                 @php
