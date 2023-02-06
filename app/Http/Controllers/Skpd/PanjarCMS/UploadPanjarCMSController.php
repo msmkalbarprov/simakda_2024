@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class UploadPanjarCMSController extends Controller
 {
@@ -117,9 +118,10 @@ class UploadPanjarCMSController extends Controller
         $rincian_data = $request->rincian_data;
         $tanggal = date("Y-m-d");
         $kd_skpd = Auth::user()->kd_skpd;
+
         DB::beginTransaction();
         try {
-            $nomor = collect(DB::select("select case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+            $nomor = collect(DB::select("SELECT case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
 	select no_upload nomor, 'Urut Upload Pengeluaran cms' ket, kd_skpd from trhupload_cmsbank where kd_skpd=?
     union all
     select no_upload nomor, 'Urut Upload Panjar Bank cms' ket, kd_skpd from trhupload_cmsbank_panjar where kd_skpd=?
@@ -128,7 +130,7 @@ class UploadPanjarCMSController extends Controller
     )
     z WHERE kd_skpd=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
 
-            $no_upload = collect(DB::select("select case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+            $no_upload = collect(DB::select("SELECT case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
 		select a.no_upload_tgl nomor, b.tgl_upload tanggal,'Urut Upload Pengeluaran cms' ket, a.kd_skpd from trdupload_cmsbank a
 		left join trhupload_cmsbank b on b.kd_skpd=a.kd_bp and b.no_upload=a.no_upload
     where a.kd_skpd=?
@@ -143,11 +145,11 @@ class UploadPanjarCMSController extends Controller
     )
     z WHERE kd_skpd=? AND tanggal=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $tanggal]))->first();
 
-            if (strlen($no_upload->nomor == '1')) {
+            if (Str::length($no_upload->nomor) == '1') {
                 $no_upload1 = "00" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '2')) {
+            } elseif (Str::length($no_upload->nomor) == '2') {
                 $no_upload1 = "0" . $no_upload->nomor;
-            } elseif (strlen($no_upload->nomor == '3')) {
+            } elseif (Str::length($no_upload->nomor) == '3') {
                 $no_upload1 = $no_upload->nomor;
             }
 
