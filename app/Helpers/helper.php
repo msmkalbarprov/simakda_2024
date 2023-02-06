@@ -3495,7 +3495,7 @@ function npwp($npwp){
         if(strlen($npwp)==15){
             $new_npwp = substr($npwp,0,2).'.'.substr($npwp,2,3).'.'.substr($npwp,5,3).'.'.substr($npwp,8,1).'-'.substr($npwp,9,3).'.'.substr($npwp,12,3);
         }else if(strlen($npwp)==16){
-            $new_npwp = substr($npwp,2).'.'.substr($npwp,3,2);
+            $new_npwp=$npwp; 
         }else{
             $new_npwp="NPWP Tidak Valid"; 
         }

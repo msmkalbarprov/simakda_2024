@@ -474,7 +474,7 @@
                 if (data.kd_sub_kegiatan == kdgiat && data.kd_rek == kdrek && data.sumber ==
                     sumber) {
                     return '2';
-                } else if (data.kd_sub_kegiatan != kdgiat || data.kd_rek != kdrek) {
+                } else if (data.kd_sub_kegiatan != kdgiat) {
                     return '3';
                 } else {
                     return '1';
@@ -485,7 +485,7 @@
                 return;
             }
             if (kondisi.includes("3")) {
-                alert('Sub kegiatan dan rekening tidak boleh beda dengan rincian penagihan!');
+                alert('Sub kegiatan tidak boleh beda dengan rincian penagihan!');
                 return;
             }
             // tampungan
