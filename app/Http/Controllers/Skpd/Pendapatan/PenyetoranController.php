@@ -569,6 +569,7 @@ class PenyetoranController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $spjbulan = cek_status_spj_pend($kd_skpd);
+
         $data = DB::table('trhkasin_pkd as a')
             ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd,(CASE WHEN month(a.tgl_sts)<=? THEN 1 ELSE 0 END) ketspj,a.user_name", [$spjbulan])
             ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
@@ -576,6 +577,7 @@ class PenyetoranController extends Controller
             ->orderBy('a.tgl_sts')
             ->orderBy('a.no_sts')
             ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($row->no_sts), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';

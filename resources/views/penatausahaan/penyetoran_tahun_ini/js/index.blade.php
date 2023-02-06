@@ -36,15 +36,15 @@
                     className: "text-center",
                 },
                 {
-                    data: null,
+                    data: 'keterangan',
                     name: 'keterangan',
-                    render: function(data, type, row, meta) {
-                        return data.keterangan.substr(0, 10) + '.....';
-                    }
+                    // render: function(data, type, row, meta) {
+                    //     return data.keterangan.substr(0, 10) + '.....';
+                    // }
                 },
                 {
                     data: null,
-                    name: 'keterangan',
+                    name: 'status',
                     className: "text-center",
                     render: function(data, type, row, meta) {
                         if (data.ketspj == '1') {
