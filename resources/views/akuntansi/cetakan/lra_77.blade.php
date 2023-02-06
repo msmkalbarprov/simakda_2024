@@ -57,7 +57,7 @@
             <tr>
                 <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td>
             </tr>
-            </table>
+    </table>
     <hr>
  
     {{-- isi --}}
@@ -73,12 +73,12 @@
                 
             </tr>
             <tr>
-               <td align='center' bgcolor='#CCCCCC' >1</td> 
-               <td align='center' bgcolor='#CCCCCC' >2</td> 
-               <td align='center' bgcolor='#CCCCCC' >3</td> 
-               <td align='center' bgcolor='#CCCCCC' >4</td> 
-               <td align='center' bgcolor='#CCCCCC' >5</td> 
-               <td align='center' bgcolor='#CCCCCC' >6</td> 
+               <td width='7%' align='center' bgcolor='#CCCCCC' >1</td> 
+               <td width='38%' align='center' bgcolor='#CCCCCC' >2</td> 
+               <td width='15%' align='center' bgcolor='#CCCCCC' >3</td> 
+               <td width='15%' align='center' bgcolor='#CCCCCC' >4</td> 
+               <td width='5%' align='center' bgcolor='#CCCCCC' >5</td> 
+               <td width='15%' align='center' bgcolor='#CCCCCC' >6</td> 
             </tr>
             </thead>
                 @php
@@ -143,22 +143,20 @@
 
 
                         @if ($group_id == 0)
-                            {{-- @if ($row->kd_rek== 5 || $row->kd_rek== 6) --}}
                                 <tr>
-                                    <td colspan="7">&nbsp;</td>
+                                    <td colspan="6">&nbsp;</td>
                                 </tr>
-                                @if ($row->kd_rek==45)
+                                @if ($row->kd_rek == 45)
                                     <tr>
                                         <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
                                         <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
                                         <td width='15%' align="right" valign="top"><b>{{number_format($nanggaran_pendapatan-$nanggaran_belanja, "2", ",", ".")}}</b></td> 
                                         <td width='15%' align="right" valign="top"><b>{{number_format($nrealisasi_pendapatan-$nrealisasi_belanja, "2", ",", ".")}}</b></td> 
-                                        <td width='5%' align="right" valign="top"><b>{{number_format(($nrealisasi_pendapatan-$nrealisasi_belanja)/$nanggaran_pendapatan-$nanggaran_belanja*100, "2", ",", ".")}}</b></td>
+                                        <td width='5%' align="right" valign="top"><b>{{number_format(($nrealisasi_pendapatan-$nrealisasi_belanja)/($nanggaran_pendapatan-$nanggaran_belanja)*100, "2", ",", ".")}}</b></td>
                                         <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
-                                        
-                                         
+
                                     </tr>        
-                                @elseif ($row->kd_rek==6263)
+                                @elseif ($row->kd_rek == 6263)
                                     <tr>
                                         <td width='7%' align="left" valign="top"><b>{{$kd_rek}}</b></td> 
                                         <td width='38%' align="right"  valign="top"><b>{{$nm_rek}}</b></td> 
@@ -177,15 +175,13 @@
                                         <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
                                         <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
                                         <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
-                                        
-                                         
                                     </tr>        
                                 @endif
                             
                     @elseif ($group_id == 1)
                             @if ($row->kd_rek== 5 || $row->kd_rek== 6 || $group_id==0)
                                 <tr>
-                                    <td colspan="7">&nbsp;</td>
+                                    <td colspan="6">&nbsp;</td>
                                 </tr>
                                 @if ($right_align==1)
                                     <tr>
@@ -195,8 +191,6 @@
                                         <td width='15%' align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
                                         <td width='5%' align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
                                         <td width='15%' align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
-                                        
-                                         
                                     </tr>        
                                 @else
                                     <tr>
@@ -301,10 +295,10 @@
                                 <td width='15%' align="right" valign="top">{{number_format($realisasi, "2", ",", ".")}}</td> 
                                 <td width='5%' align="right" valign="top">{{number_format($persen, "2", ",", ".")}}</td> 
                                 <td width='15%' align="right" valign="top">{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</td> 
-                            </tr>
+                            </tr> 
                     @endif                     
                 @endforeach
-                @php
+                {{-- @php
                     $silpa_anggaran = $nanggaran_pendapatan-$nanggaran_belanja+$apenerimaan_pembiayaan-$apengeluaran_pembiayaan;
                     $silpa_belanja = $nrealisasi_pendapatan-$nrealisasi_belanja+$bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan; 
                     if($silpa_anggaran !=0 && $silpa_belanja!=0){
@@ -324,7 +318,7 @@
                     <td align="right" valign="top"><b>{{number_format($silpa_belanja, "2", ",", ".")}}</b></td> 
                     <td align="right" valign="top"><b>{{number_format($persensilpa, "2", ",", ".")}}</b></td> 
                     <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td>     
-                </tr>
+                </tr> --}}
                 
 
     </table>
