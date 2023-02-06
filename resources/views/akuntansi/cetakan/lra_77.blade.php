@@ -40,22 +40,22 @@
                 <td rowspan="5" align="left" width="7%">
                     <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
                 </td>
-                <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+                <td align="left" style="font-size:18px" width="93%">&nbsp;</td>
                 <td rowspan="5" align="left" width="7%">
                    &nbsp;
                 </td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
+                <td align="center" style="font-size:18px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px" ><strong>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH</strong></td>
+                <td align="center" style="font-size:18px" ><strong>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH</strong></td>
             </tr>
             <tr>
-                <td align="center" style="font-size:14px" ><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN 31 DESEMBER {{ tahun_anggaran() }} DAN {{ tahun_anggaran()-1 }}</strong></td>
+                <td align="center" style="font-size:18px" ><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN 31 DESEMBER {{ tahun_anggaran() }} DAN {{ tahun_anggaran()-1 }}</strong></td>
             </tr>
             <tr>
-                <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td>
+                <td align="left" style="font-size:18px" ><strong>&nbsp;</strong></td>
             </tr>
     </table>
     <hr>
