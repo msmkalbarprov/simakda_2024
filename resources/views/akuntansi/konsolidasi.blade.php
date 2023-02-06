@@ -81,8 +81,8 @@
 
         $('#lrasemester').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_sap').modal('show');
-            $("#labelcetak_sap").html("Cetak LRA Semester");
+            $('#modal_cetak_semester').modal('show');
+            $("#labelcetak_semester").html("Cetak LRA Semester");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     // onclick card end
@@ -220,6 +220,24 @@
             // SET CETAKAN
             if (labelcetak_semester == 'Cetak LRA 77') {
                 let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra_77') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("format", format);
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("ttd", ttd);
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_data", jenis_data);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("pilihkonversi", pilihkonversi);
+                searchParams.append("pilihakumulsai", pilihakumulsai);
+                searchParams.append("jns_rincian", jns_rincian);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("periodebulan", periodebulan);
+                window.open(url.toString(), "_blank");
+            }else if (labelcetak_semester == 'Cetak LRA Semester') {
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra_semester') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("format", format);
                 searchParams.append("tanggal1", tanggal1);
