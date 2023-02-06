@@ -184,6 +184,7 @@
             let ttd                      = document.getElementById('ttd').value;
             let jns_anggaran             = document.getElementById('jns_anggaran').value;
             let jenis_data               = document.getElementById('jenis_data').value;
+            let jns_rincian              = document.getElementById('jns_rincian').value;
             let pilihkonversi            = document.getElementById('pilihkonversi').value;
             let pilihakumulsai           = document.getElementById('pilihakumulsai').value;
             let format                   = document.getElementById('format').value;
@@ -231,6 +232,7 @@
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("pilihkonversi", pilihkonversi);
                 searchParams.append("pilihakumulsai", pilihakumulsai);
+                searchParams.append("jns_rincian", jns_rincian);
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("periodebulan", periodebulan);
                 window.open(url.toString(), "_blank");

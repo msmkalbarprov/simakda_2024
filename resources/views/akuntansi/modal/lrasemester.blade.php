@@ -146,8 +146,8 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="format" class="form-label">Pilihan 1</label>
-                        <select class="form-control select2" id="format" name="format">
+                        <label for="jns_rincian" class="form-label">Pilihan 1</label>
+                        <select class="form-control select2" id="jns_rincian" name="jns_rincian">
                             <option value="" disabled selected>Silahkan Pilih</option>
                             <option value="4">Jenis</option>
                             <option value="6">Obyek</option>

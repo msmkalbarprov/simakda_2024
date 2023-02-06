@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LRA SEMESTER 77</title>
+    <title>LRA 77</title>
     <style>
         table {
             border-collapse: collapse
@@ -38,7 +38,7 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:20px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td rowspan="5" align="left" width="7%">
-                    {{-- <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" /> --}}
+                    <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
                 </td>
                 <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
                 <td rowspan="5" align="left" width="7%">
@@ -181,19 +181,6 @@
                                          
                                     </tr>        
                                 @endif
-{{--                                 
-                            @else
-                                <tr>
-                                    <td align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
-                                    <td align="left"  valign="top"  ><b>{{$nm_rek}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($nil_ang, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($realisasi, "2", ",", ".")}}</b></td> 
-                                    <td align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td>
-                                    <td align="right" valign="top"><b>{{$a}} {{number_format(0, "2", ",", ".")}} {{$b}}</b></td> 
-                                    
-                                     
-                                </tr>    
-                            @endif --}}
                             
                     @elseif ($group_id == 1)
                             @if ($row->kd_rek== 5 || $row->kd_rek== 6 || $group_id==0)
@@ -348,34 +335,35 @@
     {{-- isi --}}
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
+        <table class="table" style="width: 100%;font-size:14px;font-family:Open Sans">
             <tr>
-                <td style="margin: 2px 0px;text-align: center;">
+                <td style="margin: 2px 0px;text-align: center;" width='50%'>
                     &nbsp;
                 </td>
-                <td style="margin: 2px 0px;text-align: center;">
+                <td style="margin: 2px 0px;text-align: center;" width='50%'>
                     {{ $daerah->daerah }},
                         {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center;">
+                <td style="padding-bottom: 50px;text-align: center;">&nbsp;
                 </td>
                 <td style="padding-bottom: 50px;text-align: center;">
                     {{ ucwords(strtolower($tandatangan->jabatan)) }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;"><b></b></td>
+                <td style="text-align: center;">&nbsp;</td>
+                <td style="text-align: center;">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><b>&nbsp;</b></td>
                 <td style="text-align: center;"><b><u>{{ $tandatangan->nama }}</u></b></td>
             </tr>
+            
             <tr>
-                <td style="text-align: center;"></td>
-                <td style="text-align: center;">{{ $tandatangan->pangkat }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;"></td>
-                <td style="text-align: center;">NIP. {{ $tandatangan->nip }}</td>
+                <td style="text-align: center;">&nbsp;</td>
+                <td style="text-align: center;">&nbsp;</td>
             </tr>
 
         </table>
