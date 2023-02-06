@@ -15,7 +15,7 @@
                         <label for="tanggal_validasi" class="col-md-12 col-form-label">Tanggal Validasi</label>
                         <div class="col-md-2">
                             <input type="date" class="form-control" name="tanggal_validasi" id="tanggal_validasi"
-                                value="{{ date('Y-m-d') }}" readonly>
+                                value="{{ date('Y-m-d') }}">
                         </div>
                     </div>
                     {{-- Data Transaksi --}}
