@@ -3489,3 +3489,16 @@ function nilai_spd($no_spd)
 
     return $data->nilai;
 }
+
+function npwp($npwp){
+        // 01.495.932.7-511.000
+        if(strlen($npwp)==15){
+            $new_npwp = substr($npwp,0,2).'.'.substr($npwp,2,3).'.'.substr($npwp,5,3).'.'.substr($npwp,8,1).'-'.substr($npwp,9,3).'.'.substr($npwp,12,3);
+        }else if(strlen($npwp)==16){
+            $new_npwp = substr($npwp,2).'.'.substr($npwp,3,2);
+        }else{
+            $new_npwp="NPWP Tidak Valid"; 
+        }
+        
+    return $new_npwp;
+}
