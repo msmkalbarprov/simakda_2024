@@ -142,6 +142,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('#masa_pajak_awal').on('select2:select', function() {
+            let masa = this.value;
+            $('#masa_pajak_akhir').val(masa).trigger('change');
+        });
+
         $('#form_pajak').hide();
         $('#rincian_pajak').hide();
 
