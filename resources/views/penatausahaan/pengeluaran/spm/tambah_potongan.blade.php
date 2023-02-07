@@ -5,8 +5,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button id="input_potongan" class="btn btn-primary btn-md">Input Potongan</button>
-                    <button id="input_pajak" class="btn btn-success btn-md">Input Pajak</button>
+                    <button id="input_potongan" class="btn btn-primary btn-md">Input Potongan/Pajak</button>
+                    <button id="input_pajak" class="btn btn-success btn-md">Buat ID Billing</button>
                 </div>
 
                 {{-- Input Potongan --}}
