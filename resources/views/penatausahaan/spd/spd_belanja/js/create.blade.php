@@ -313,13 +313,36 @@
         });
 
         $('#jenis_anggaran').on('select2:select', function() {
-            var jenis_anggaran = $(this).select2('data')[0];
-            $('#status_angkas').val(null).trigger('change').trigger('select2:select');
-            if (jenis_anggaran) {
-                $('#status_angkas').prop('disabled', false)
-            } else {
-                $('#status_angkas').prop('disabled', true)
-            }
+            let kd_skpd = $('#kd_skpd').val();
+            let jns_ang = $('#jenis_anggaran').val();
+
+            $.ajax({
+                delay: 1000,
+                url: "{{ route('spd.spd_belanja.cek_skpd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd,
+                    jns_ang: jns_ang,
+                },
+                success: function(data) {
+                    if (kd_skpd && jns_ang) {
+                        if (data.message == '1') {
+                            alert('SKPD Belum Lengkap Di Anggaran ' + data.nama);
+                            return;
+                        } else {
+                            var jenis_anggaran = $(this).select2('data')[0];
+                            $('#status_angkas').val(null).trigger('change').trigger(
+                                'select2:select');
+                            if (jenis_anggaran) {
+                                $('#status_angkas').prop('disabled', false)
+                            } else {
+                                $('#status_angkas').prop('disabled', true)
+                            }
+                        }
+                    }
+                }
+            });
         }).trigger('select2:select');
 
         //status angkas

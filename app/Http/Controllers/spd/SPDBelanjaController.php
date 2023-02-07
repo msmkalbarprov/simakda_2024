@@ -1075,4 +1075,31 @@ class SPDBelanjaController extends Controller
         return DataTables::of($data)->addIndexColumn()->make(true);
         return view('penatausahaan.spd.spd_belanja.show');
     }
+
+    public function cekSkpd(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $jns_ang = $request->jns_ang;
+
+        $total_skpd = collect(DB::select("SELECT COUNT(*) as total FROM ms_skpd where left(kd_skpd,17)=left(?,17)", [$kd_skpd]))->first();
+
+        $total_angkas = collect(DB::select("SELECT count(*) as total FROM  (SELECT kd_skpd FROM trdrka where jns_ang=? and left(kd_skpd,17)=left(?,17) GROUP BY kd_skpd)z", [$jns_ang, $kd_skpd]))->first();
+
+        $nama_anggaran = DB::table('tb_status_anggaran')
+            ->select('nama')
+            ->where(['kode' => $jns_ang])
+            ->first();
+
+        if ($total_skpd->total != $total_angkas->total) {
+            return response()->json([
+                'message' => '0',
+                'nama' => $nama_anggaran->nama
+            ]);
+        } else {
+            return response()->json([
+                'message' => '1',
+                'nama' => $nama_anggaran->nama
+            ]);
+        }
+    }
 }
