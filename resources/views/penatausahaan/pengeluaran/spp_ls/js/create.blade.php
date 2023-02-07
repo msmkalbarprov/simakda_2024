@@ -1038,6 +1038,11 @@
             });
             let sts_tagih = dengan_penagihan == false ? 0 : 1;
 
+            if (rincian_rekening.length == 0) {
+                alert('Rincian Rekening tidak boleh kosong!');
+                return;
+            }
+
             if (!no_spp) {
                 alert("Isi Nomor SPP Terlebih Dahulu...!!!");
                 return;
