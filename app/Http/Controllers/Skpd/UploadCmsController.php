@@ -366,6 +366,7 @@ class UploadCmsController extends Controller
 
     public function cetakCsvKalbar(Request $request)
     {
+        ob_start();
         $no_upload = $request->no_upload;
         $kd_skpd = Auth::user()->kd_skpd;
 
@@ -418,10 +419,10 @@ class UploadCmsController extends Controller
             $filename = 'OB' . "_" . $obskpd->obskpd . "_" . $tglupl . "_" . $no_upload_tgl;
 
             echo $result;
+            header("Cache-Control: no-cache, no-store");
+            header('Content-Type: application/csv');
+            header('Content-Disposition: attachement; filename="' . $filename . '.csv"');
         }
-        header("Cache-Control: no-cache, no-store, must_revalidate");
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachement; filename="' . $filename . '.csv"');
     }
 
     public function cetakCsvLuarKalbar(Request $request)
