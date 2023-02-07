@@ -195,23 +195,18 @@ class RegisterSPDController extends Controller
 
         $total = 0;
 
-        $data = DB::table('trdspd as a')->select(
-            'a.no_spd',
-            'b.tgl_spd',
-            'b.kd_skpd',
-            'b.nm_skpd',
-            'c.nama',
-            DB::raw('sum(a.nilai) as nilai'),
-            'revisi_ke',
-            DB::raw('(SELECT isnull(max(revisi_ke),0) as revisi from trhspd where kd_skpd=b.kd_skpd and bulan_akhir=b.bulan_akhir) as revisi')
-        )
+        $data = DB::table('trdspd as a')
+            ->select('a.no_spd', 'b.tgl_spd', 'b.kd_skpd', 'b.nm_skpd', DB::raw('sum(a.nilai) as nilai'), 'revisi_ke', DB::raw('(SELECT isnull(max(revisi_ke),0) as revisi from trhspd where kd_skpd=b.kd_skpd and bulan_akhir=b.bulan_akhir) as revisi'))
+            ->selectRaw("(SELECT TOP 1 nama from ms_ttd where b.kd_bkeluar=nip) as nama")
             ->join('trhspd as b', function ($join) {
                 $join->on('a.no_spd', '=', 'b.no_spd');
-            })->join('ms_ttd as c', function ($join) {
-                $join->on('b.kd_bkeluar', '=', 'c.nip');
-            })->whereRaw("b.tgl_spd >= ? and b.tgl_spd <= ?", [$tgl_awal, $tgl_akhir])
-            ->groupBy(['a.no_spd', 'b.tgl_spd', 'b.kd_skpd', 'b.nm_skpd', 'c.nama', 'bulan_awal', 'bulan_akhir', 'revisi_ke']);
-
+            })
+            // ->join('ms_ttd as c', function ($join) {
+            //     $join->on('b.kd_bkeluar', '=', 'c.nip');
+            // })
+            ->whereRaw("b.tgl_spd >= ? and b.tgl_spd <= ?", [$tgl_awal, $tgl_akhir])
+            ->groupBy(['a.no_spd', 'b.tgl_spd', 'b.kd_skpd', 'b.nm_skpd', 'bulan_awal', 'bulan_akhir', 'revisi_ke', 'b.kd_bkeluar']);
+        // dd($data->get());
         $data1 = DB::table(DB::raw("({$data->toSql()}) AS sub"))
             ->mergeBindings($data)
             ->whereRaw("revisi_ke = revisi")
