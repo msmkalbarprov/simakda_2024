@@ -186,9 +186,9 @@
 
             // PROTEKSI LS PIHAK KETIGA LAINNYA
             if (beban == '5') {
-                document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
-                document.getElementById('dengan_penagihan').checked = true;
-                $('#card_penagihan').show();
+                // document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
+                // document.getElementById('dengan_penagihan').checked = true;
+                // $('#card_penagihan').show();
             } else {
                 document.getElementById('tambah_rincian').removeAttribute("disabled");
                 document.getElementById('dengan_penagihan').checked = false;
@@ -254,10 +254,6 @@
 
             // PROTEKSI LS BARANG JASA DAN LS PIHAK KETIGA LAINNYA
             if (beban == '6' && jenis == '6') {
-                document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
-                document.getElementById('dengan_penagihan').checked = true;
-                $('#card_penagihan').show();
-            } else if (beban == '5') {
                 document.getElementById('tambah_rincian').setAttribute("disabled", "disabled");
                 document.getElementById('dengan_penagihan').checked = true;
                 $('#card_penagihan').show();
