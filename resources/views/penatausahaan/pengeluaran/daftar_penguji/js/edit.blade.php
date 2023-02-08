@@ -192,7 +192,7 @@
         })
     }
 
-    function deleteData(no_sp2d, no_spm) {
+    function deleteData(no_sp2d, no_spm, status) {
         let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor SP2D : ' + no_sp2d);
         let tabel = $('#rincian_penguji').DataTable();
         if (tanya == true) {

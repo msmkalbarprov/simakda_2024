@@ -51,13 +51,17 @@ class DaftarPengujiController extends Controller
                 $join->on('a.no_uji', '=', 'c.no_uji');
             })
             ->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')
-            ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')
+            ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'a.status')
             ->where(['a.no_uji' => $no_advice])
             ->orderBy('a.no_sp2d')
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<button type="button" onclick="deleteData(\'' . $row->no_sp2d . '\',\'' . $row->no_spm . '\')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>';
+            if ($row->status == 0 || $row->status == 3) {
+                $btn = '<button type="button" onclick="deleteData(\'' . $row->no_sp2d . '\',\'' . $row->no_spm . '\',\'' . $row->status . '\')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>';
+            } else {
+                $btn = '';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
