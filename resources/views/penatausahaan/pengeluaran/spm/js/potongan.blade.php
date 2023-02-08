@@ -431,6 +431,7 @@
                 $('#id_billing').prop('disabled', false);
             } else {
                 $('#id_billing').prop('disabled', true);
+                $('#id_billing').val(null);
             }
             let nama = $(this).find(':selected').data('nama');
             let map_pot = $(this).find(':selected').data('map_pot');
