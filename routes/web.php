@@ -90,6 +90,7 @@ use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
 use App\Http\Controllers\SppTU1Controller;
 use App\Http\Controllers\Skpd\SppTuController;
+use App\Http\Controllers\Utility\KunciBelanjaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 
 // Route::get('/simakda_2023', function () {
@@ -1364,6 +1365,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::group(['prefix' => 'kunci_penagihan_spp_spm'], function () {
                 Route::get('', [KunciPengeluaranController::class, 'index'])->name('kunci_pengeluaran.index');
                 Route::post('load', [KunciPengeluaranController::class, 'load'])->name('kunci_pengeluaran.load');
+                Route::post('kunci', [KunciPengeluaranController::class, 'kunci'])->name('kunci_pengeluaran.kunci');
+            });
+            // BUKA KUNCI REKENING BELANJA
+            Route::group(['prefix' => 'kunci_belanja'], function () {
+                Route::get('', [KunciBelanjaController::class, 'index'])->name('kunci_belanja.index');
+                Route::post('load', [KunciBelanjaController::class, 'load'])->name('kunci_belanja.load');
+                Route::post('kegiatan', [KunciBelanjaController::class, 'kegiatan'])->name('kunci_belanja.kegiatan');
+                Route::post('rekening', [KunciBelanjaController::class, 'rekening'])->name('kunci_belanja.rekening');
+                Route::post('kunci', [KunciBelanjaController::class, 'kunci'])->name('kunci_belanja.kunci');
             });
         });
     });
