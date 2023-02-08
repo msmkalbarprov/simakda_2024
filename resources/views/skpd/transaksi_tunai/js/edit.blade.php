@@ -199,7 +199,7 @@
             let tgl_sp2d = $(this).find(':selected').data('tgl');
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let beban = document.getElementById('beban').value;
-            if (tgl_sp2d < tgl_bukti) {
+            if (tgl_sp2d > tgl_bukti) {
                 alert('Kesalahan, Tanggal Sp2d lebih kecil Dari Tanggal Bukti');
                 $("#no_sp2d").val(null).change();
                 return;
