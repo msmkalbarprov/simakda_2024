@@ -132,7 +132,7 @@
                             <tr>
                                 <td>Nama Bank</td>
                                 <td>: </td>
-                                <td>{{ empty($bank->nm_bank) ? '' : $bank->nm_bank }}</td>
+                                <td>{{ empty($data_spm->bank) ? '' : nama_bank($data_spm->bank) }}</td>
                             </tr>
                             <tr>
                                 <td>NPWP</td>

@@ -74,6 +74,11 @@
                     visible: false
                 },
                 {
+                    data: 'status_pot',
+                    name: 'status_pot',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -125,6 +130,7 @@
                 'bank_tujuan': $(this).find(':selected').data('bank_tujuan'),
                 'ket_tujuan': $(this).find(':selected').data('ket_tujuan'),
                 'potongan': $(this).find(':selected').data('tot_pot'),
+                'status_pot': $(this).find(':selected').data('status_trmpot'),
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_voucher}','${total}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
@@ -175,6 +181,7 @@
                         rekening_tujuan: value.rekening_tujuan,
                         bank_tujuan: value.bank_tujuan,
                         ket_tujuan: value.ket_tujuan,
+                        status_pot: value.status_pot,
                     };
                     return data;
                 });
@@ -233,7 +240,7 @@
                     `<option value="" disabled selected>Silahkan Pilih</option>`);
                 $.each(data, function(index, data) {
                     $('#data_transaksi').append(
-                        `<option value="${data.no_voucher}" data-tgl="${data.tgl_voucher}" data-kd_skpd="${data.kd_skpd}" data-ket="${data.ket}" data-status_upload="${data.status_upload}" data-no_upload="${data.no_upload}" data-total="${data.total}" data-tot_pot="${data.tot_pot}" data-rekening_awal="${data.rekening_awal}" data-nm_rekening_tujuan="${data.nm_rekening_tujuan}" data-rekening_tujuan="${data.rekening_tujuan}" data-bank_tujuan="${data.bank_tujuan}" data-ket_tujuan="${data.ket_tujuan}">${data.no_voucher} | ${data.tgl_voucher} | ${new Intl.NumberFormat('id-ID', {
+                        `<option value="${data.no_voucher}" data-tgl="${data.tgl_voucher}" data-kd_skpd="${data.kd_skpd}" data-ket="${data.ket}" data-status_upload="${data.status_upload}" data-no_upload="${data.no_upload}" data-total="${data.total}" data-tot_pot="${data.tot_pot}" data-rekening_awal="${data.rekening_awal}" data-nm_rekening_tujuan="${data.nm_rekening_tujuan}" data-rekening_tujuan="${data.rekening_tujuan}" data-bank_tujuan="${data.bank_tujuan}" data-ket_tujuan="${data.ket_tujuan}" data-status_trmpot="${data.status_trmpot}">${data.no_voucher} | ${data.tgl_voucher} | ${new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(data.total)}</option>`
                     );

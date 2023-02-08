@@ -79,12 +79,16 @@ class SpmController extends Controller
             $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['1', '2'])->where(function ($query) {
                 $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
             })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd);
-            $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd, 'sts_setuju' => '1'])->whereIn('jns_spp', ['3'])->where(function ($query) {
+
+            // 'sts_setuju' => '1' MATIIN DLU KARENA PENGESAHAN SPM TU DI WHERE
+            $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['3'])->where(function ($query) {
                 $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
             })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd)->unionAll($data_spp1);
+
             $data_spp3 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['4', '5', '6'])->where(function ($query) {
                 $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
             })->whereNotIn('no_spp', $data2)->unionAll($data_spp2);
+
             $data_spp = DB::table(DB::raw("({$data_spp3->toSql()}) AS sub"))
                 ->mergeBindings($data_spp3)
                 ->get();

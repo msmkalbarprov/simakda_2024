@@ -255,7 +255,7 @@
         <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             @if ($beban == '4')
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center;padding-left:600px">
+                    <td style="margin: 2px 0px;text-align: center;padding-left:300px">
                         {{ $daerah->daerah }},
                         @if ($tanpa == 1)
                             ______________{{ $tahun_anggaran }}
@@ -265,12 +265,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                    <td style="padding-bottom: 50px;text-align: center;padding-left:300px">
                         {{ $cari_bendahara->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;padding-left:600px">
+                    <td style="text-align: center;padding-left:300px">
                         <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
                         {{ $cari_bendahara->pangkat }} <br>
                         NIP. {{ $cari_bendahara->nip }}

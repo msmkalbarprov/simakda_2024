@@ -253,6 +253,7 @@
         $('#kode_setor').on('select2:select', function() {
             $("#kode_akun_transaksi").val(null).change();
             $("#kode_akun_potongan").val(null).change();
+
             let nama = $(this).find(':selected').data('nama');
             let no_sk = $(this).find(':selected').data('nosk');
             let npwp_nol = $(this).find(':selected').data('npwp_nol');
@@ -263,6 +264,7 @@
             let npwp_lain = $(this).find(':selected').data('npwp_lain');
             let masa_bulan = $(this).find(':selected').data('masa_bulan');
             let npwp = document.getElementById('npwp').value;
+
             $('#nama_setor').val(nama);
             $('#masa_pajak_akhir').prop('disabled', true);
             if (no_sk == '1') {
@@ -273,7 +275,7 @@
                 $("#no_sk").val('');
             }
 
-            if (npwp_nol != '0') {
+            if (npwp_nol != 0) {
                 $("#nik").prop('disabled', false);
                 $("#nik").val('');
                 $("#kota").prop('disabled', false);
@@ -293,7 +295,7 @@
                 $("#alamat_wajib_pajak").val('');
             }
 
-            if (nop == '1') {
+            if (nop == 1) {
                 $("#nop").prop('disabled', false);
                 $("#nop").val('');
             } else {
@@ -301,7 +303,7 @@
                 $("#nop").val('');
             }
 
-            if (npwp_rekanan == '1') {
+            if (npwp_rekanan == 1) {
                 $("#npwp_rekanan").prop('disabled', false);
                 $("#npwp_rekanan").val('');
                 $("#npwp_setor").val(npwp);
@@ -310,7 +312,7 @@
                 $("#npwp_rekanan").val('');
             }
 
-            if (npwp_rekanan == '1') {
+            if (nik_rekanan == 1) {
                 $("#nik_rekanan").prop('disabled', false);
                 $("#nik_rekanan").val('');
             } else {
@@ -318,7 +320,7 @@
                 $("#nik_rekanan").val('');
             }
 
-            if (no_faktur == '1') {
+            if (no_faktur == 1) {
                 $("#no_faktur").prop('disabled', false);
                 $("#no_faktur").val('');
             } else {
@@ -326,7 +328,7 @@
                 $("#no_faktur").val('');
             }
 
-            if (npwp_lain == '0') {
+            if (npwp_lain == 0) {
                 $("#npwp_setor").val(npwp);
             }
 

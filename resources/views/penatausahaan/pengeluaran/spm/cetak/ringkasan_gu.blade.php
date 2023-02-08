@@ -284,9 +284,41 @@
 
     <div style="padding-top: 30px">
         <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
-            @if (($beban == '6' && $jenis_beban == '6') || $beban == '5' || ($beban == '6' && $jenis_beban == '4'))
+            {{-- @if (($beban == '6' && $jenis_beban == '6') || $beban == '5' || ($beban == '6' && $jenis_beban == '4')) --}}
+            <tr>
+                <td style="text-align: center">MENGETAHUI :</td>
+                <td style="margin: 2px 0px;text-align: center">
+                    {{ $daerah->daerah }},
+                    @if ($tanpa == 1)
+                        ______________{{ $tahun_anggaran }}
+                    @else
+                        {{ tanggal($tgl_spm->tgl_spm) }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 50px;text-align: center">
+                    {{ $pptk->jabatan }}
+                </td>
+                <td style="padding-bottom: 50px;text-align: center">
+                    {{ $bendahara->jabatan }}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center">
+                    <strong><u>{{ $pptk->nama }}</u></strong> <br>
+                    {{ $pptk->pangkat }} <br>
+                    NIP. {{ $pptk->nip }}
+                </td>
+                <td style="text-align: center">
+                    <strong><u>{{ $bendahara->nama }}</u></strong> <br>
+                    {{ $bendahara->pangkat }} <br>
+                    NIP. {{ $bendahara->nip }}
+                </td>
+            </tr>
+            {{-- @else
                 <tr>
-                    <td style="text-align: center">MENGETAHUI :</td>
+                    <td style="width: 50%"></td>
                     <td style="margin: 2px 0px;text-align: center">
                         {{ $daerah->daerah }},
                         @if ($tanpa == 1)
@@ -297,38 +329,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center">
-                        {{ $pptk->jabatan }}
-                    </td>
-                    <td style="padding-bottom: 50px;text-align: center">
-                        {{ $bendahara->jabatan }}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">
-                        <strong><u>{{ $pptk->nama }}</u></strong> <br>
-                        {{ $pptk->pangkat }} <br>
-                        NIP. {{ $pptk->nip }}
-                    </td>
-                    <td style="text-align: center">
-                        <strong><u>{{ $bendahara->nama }}</u></strong> <br>
-                        {{ $bendahara->pangkat }} <br>
-                        NIP. {{ $bendahara->nip }}
-                    </td>
-                </tr>
-            @else
-                <tr>
-                    <td style="width: 50%"></td>
-                    <td style="margin: 2px 0px;text-align: center">
-                        {{ $daerah->daerah }},
-                        @if ($tanpa == 1)
-                            ______________{{ $tahun_anggaran }}
-                        @else
-                            {{ tanggal($tgl_spm->tgl_spm) }}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
                     <td style="width: 50%"></td>
                     <td style="padding-bottom: 50px;text-align: center">
                         {{ $bendahara->jabatan }}
@@ -342,7 +342,7 @@
                         NIP. {{ $bendahara->nip }}
                     </td>
                 </tr>
-            @endif
+            @endif --}}
             {{-- <tr>
                 <td style="text-align: center">{{ $pptk->pangkat }}</td>
                 <td style="text-align: center">{{ $bendahara->pangkat }}</td>

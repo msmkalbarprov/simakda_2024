@@ -764,17 +764,16 @@
 
             $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(total_potongan + nilai_potongan));
+            }).format(nilai_potongan));
             $('#total_transfer').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transfer + nilai_transfer));
 
-            $('#nilai_potongan').val(null);
             $('#rek_tujuan').val(null).change();
             $('#nm_rekening_tujuan').val(null);
             $('#bank').val(null).change();
             $('#nilai_transfer').val(null);
-            $('#modal_rekening').modal('hide');
+            // $('#modal_rekening').modal('hide');
         });
 
         $('#simpan_cms').on('click', function() {

@@ -90,6 +90,7 @@ use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
 use App\Http\Controllers\SppTU1Controller;
 use App\Http\Controllers\Skpd\SppTuController;
+use App\Http\Controllers\Utility\KunciPengeluaranController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -339,6 +340,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('/hapus_data_spd', [SPDBelanjaController::class, 'destroy'])->name('spd.spd_belanja.hapus_data_spd');
                 Route::get('tampil/{no_spd}', [SPDBelanjaController::class, 'tampilspdBP'])->where('no_spd', '(.*)')->name('spdBP.show');
                 Route::post('show_load_data', [SPDBelanjaController::class, 'ShowloadData'])->name('spd.spd_belanja.show_load_data');
+                Route::post('cek_skpd', [SPDBelanjaController::class, 'cekSkpd'])->name('spd.spd_belanja.cek_skpd');
             });
 
             // register spd
@@ -1355,9 +1357,20 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
     });
 
+    Route::group(['prefix' => 'utility'], function () {
+        // MANAJEMEN RENJA
+        Route::group(['prefix' => 'manajemen_renja'], function () {
+            // BUKA KUNCI PENAGIHAN/SPP/SPM
+            Route::group(['prefix' => 'kunci_penagihan_spp_spm'], function () {
+                Route::get('', [KunciPengeluaranController::class, 'index'])->name('kunci_pengeluaran.index');
+                Route::post('load', [KunciPengeluaranController::class, 'load'])->name('kunci_pengeluaran.load');
+            });
+        });
+    });
+
     // AKUNTANSI
-     // laporan Keuangan
-     Route::group(['prefix' => 'laporan_akuntansi'], function () {
+    // laporan Keuangan
+    Route::group(['prefix' => 'laporan_akuntansi'], function () {
         Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
         Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
@@ -1368,8 +1381,6 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_lra_semester', [LraController::class, 'cetakLraSemester'])->name('laporan_akuntansi.konsolidasi.cetak_lra_semester');
             Route::get('cetak_lra_77', [LraController::class, 'cetakLra77'])->name('laporan_akuntansi.konsolidasi.cetak_lra_77');
         });
-        
-        
     });
 });
 

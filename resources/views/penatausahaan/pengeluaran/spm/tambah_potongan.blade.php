@@ -5,8 +5,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button id="input_potongan" class="btn btn-primary btn-md">Input Potongan</button>
-                    <button id="input_pajak" class="btn btn-success btn-md">Input Pajak</button>
+                    <button id="input_potongan" class="btn btn-primary btn-md">Input Potongan/Pajak</button>
+                    <button id="input_pajak" class="btn btn-success btn-md">Buat ID Billing</button>
                 </div>
 
                 {{-- Input Potongan --}}
@@ -241,15 +241,15 @@
                             <select class="form-control select2-multiple @error('masa_pajak_awal') is-invalid @enderror"
                                 style=" width: 100%;" id="masa_pajak_awal" data-placeholder="Silahkan Pilih">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
+                                <option value="01">1</option>
+                                <option value="02">2</option>
+                                <option value="03">3</option>
+                                <option value="04">4</option>
+                                <option value="05">5</option>
+                                <option value="06">6</option>
+                                <option value="07">7</option>
+                                <option value="08">8</option>
+                                <option value="09">9</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
@@ -262,15 +262,15 @@
                             <select class="form-control select2-multiple @error('masa_pajak_akhir') is-invalid @enderror"
                                 style=" width: 100%;" id="masa_pajak_akhir" data-placeholder="Silahkan Pilih">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
+                                <option value="01">1</option>
+                                <option value="02">2</option>
+                                <option value="03">3</option>
+                                <option value="04">4</option>
+                                <option value="05">5</option>
+                                <option value="06">6</option>
+                                <option value="07">7</option>
+                                <option value="08">8</option>
+                                <option value="09">9</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
