@@ -222,6 +222,7 @@
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
                                 <th>Keterangan</th>
+                                <th>Id Billing</th>
                             </tr>
                         </thead>
                         <tbody>

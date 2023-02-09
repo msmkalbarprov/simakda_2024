@@ -197,7 +197,7 @@ class Sp2dController extends Controller
     {
         $no_spm = $request->no_spm;
 
-        $data = DB::table('trspmpot')->select('kd_rek6', 'nm_rek6', 'nilai', 'pot')->where(['no_spm' => $no_spm])->orderBy('kd_rek6')->get();
+        $data = DB::table('trspmpot')->select('kd_rek6', 'nm_rek6', 'nilai', 'pot', 'idBilling')->where(['no_spm' => $no_spm])->orderBy('kd_rek6')->get();
 
         return DataTables::of($data)->make(true);;
         return view('penatausahaan.pengeluaran.sp2d.create');
