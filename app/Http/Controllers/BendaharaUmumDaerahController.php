@@ -5964,7 +5964,7 @@ class BendaharaUmumDaerahController extends Controller
         $realisasi1 = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52') and jns_ang=?", [$req['anggaran']])
+            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52') and jns_ang=? ", [$req['anggaran']])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
@@ -5972,6 +5972,27 @@ class BendaharaUmumDaerahController extends Controller
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
             //     }
             // })
+            ->whereRaw("
+            kd_rek6 != (
+             CASE WHEN kd_skpd=? THEN ('540203010001')
+                  ELSE ('') END
+            )
+            AND
+            kd_rek6 != (
+                    CASE WHEN kd_skpd=? THEN ('530101010001')
+                        ELSE ('') END
+                    )
+            AND
+            kd_rek6 != (
+                    CASE WHEN kd_skpd=? THEN ('540101020001')
+                        ELSE ('') END
+                    )
+            AND
+            kd_rek6 != (
+                    CASE WHEN kd_skpd=? THEN ('540101010001')
+                        ELSE ('')
+            END
+            )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000'])
             ->groupBy('kd_skpd', 'nm_skpd');
 
         $realisasi2 = DB::table('trhsp2d as a')
@@ -6066,6 +6087,28 @@ class BendaharaUmumDaerahController extends Controller
         // dd([
         //     $blud_soedarso, $blud_rsj, $bos_dikbud
         // ]);
+
+        $bantuan_keuangan = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_rek6 IN (?)", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '540203010001']])
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
+        $btt = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_rek6 IN (?)", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '530101010001']])
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
+        $bagi_hasil = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_rek6 IN (?,?)", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '540101020001', '540101010001']])
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
@@ -6081,6 +6124,9 @@ class BendaharaUmumDaerahController extends Controller
             'blud_soedarso' => $blud_soedarso->anggaran,
             'blud_rsj' => $blud_rsj->anggaran,
             'bos_dikbud' => $bos_dikbud->anggaran,
+            'bantuan_keuangan' => $bantuan_keuangan->anggaran,
+            'btt' => $btt->anggaran,
+            'bagi_hasil' => $bagi_hasil->anggaran,
             'nama_anggaran' => DB::table('tb_status_anggaran')
                 ->select('nama')
                 ->where(['kode' => $req['anggaran']])
