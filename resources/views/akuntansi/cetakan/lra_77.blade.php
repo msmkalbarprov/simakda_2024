@@ -323,41 +323,44 @@
 
     </table>
     {{-- isi --}}
-    {{-- tanda tangan --}}
-    <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-size:14px;font-family:Open Sans">
-            <tr>
-                <td style="margin: 2px 0px;text-align: center;" width='50%'>
-                    &nbsp;
-                </td>
-                <td style="margin: 2px 0px;text-align: center;" width='50%'>
-                    {{ $daerah->daerah }},
-                        {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
-                </td>
-            </tr>
-            <tr>
-                <td style="padding-bottom: 50px;text-align: center;">&nbsp;
-                </td>
-                <td style="padding-bottom: 50px;text-align: center;">
-                    {{ ucwords(strtolower($tandatangan->jabatan)) }}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center;">&nbsp;</td>
-                <td style="text-align: center;">&nbsp;</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;"><b>&nbsp;</b></td>
-                <td style="text-align: center;"><b><u>{{ $tandatangan->nama }}</u></b></td>
-            </tr>
-            
-            <tr>
-                <td style="text-align: center;">&nbsp;</td>
-                <td style="text-align: center;">&nbsp;</td>
-            </tr>
+    @if ($jenis_ttd !=0)
+        {{-- tanda tangan --}}
+        <div style="padding-top:20px">
+            <table class="table" style="width: 100%;font-size:14px;font-family:Open Sans">
+                <tr>
+                    <td style="margin: 2px 0px;text-align: center;" width='50%'>
+                        &nbsp;
+                    </td>
+                    <td style="margin: 2px 0px;text-align: center;" width='50%'>
+                        {{ $daerah->daerah }},
+                            {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 50px;text-align: center;">&nbsp;
+                    </td>
+                    <td style="padding-bottom: 50px;text-align: center;">
+                        {{ ucwords(strtolower($tandatangan->jabatan)) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">&nbsp;</td>
+                    <td style="text-align: center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"><b>&nbsp;</b></td>
+                    <td style="text-align: center;"><b><u>{{ $tandatangan->nama }}</u></b></td>
+                </tr>
+                
+                <tr>
+                    <td style="text-align: center;">&nbsp;</td>
+                    <td style="text-align: center;">&nbsp;</td>
+                </tr>
 
-        </table>
-    </div>
+            </table>
+        </div>
+    @endif
+    
 </body>
 
 </html>

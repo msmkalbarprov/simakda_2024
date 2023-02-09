@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LRA SEMESTER 77</title>
+    <title>LRA SAP SEMESTER</title>
     <style>
         table {
             border-collapse: collapse
@@ -320,7 +320,7 @@
 
     </table>
     {{-- isi --}}
-    {{-- tanda tangan --}}
+    @if ($jenis_ttd !=0)
     <div style="padding-top:20px">
         <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
             <tr>
@@ -358,6 +358,9 @@
 
         </table>
     </div>
+    @endif
+    {{-- tanda tangan --}}
+    
 </body>
 
 </html>

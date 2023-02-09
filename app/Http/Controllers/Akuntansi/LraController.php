@@ -14,226 +14,14 @@ use Knp\Snappy\Pdf as SnappyPdf;
 class LraController extends Controller
 {
 
-
-    // Cetak List
-    public function cetakLraSemester(Request $request)
-    {
-        
-        $tanggal_ttd    = $request->tgl_ttd;
-        $ttd            = $request->ttd;
-        $bulan          = $request->bulan;
-        $enter          = $request->spasi;
-        $cetak          = $request->cetak;
-        $tanggal1       = $request->tanggal1;
-        $tanggal2       = $request->tanggal2;
-        $akumulasi      = $request->pilihakumulsai;
-        $jns_ang        = $request->jenis_anggaran;
-        $periodebulan   = $request->periodebulan;
-        $jenis_data     = $request->jenis_data;
-        $jns_rincian    = $request->jns_rincian;
-        if($request->kd_skpd==''){
-            $kd_skpd        = Auth::user()->kd_skpd;
-            $skpd_clause="";
-        }else{
-            $kd_skpd        = $request->kd_skpd;
-            $skpd_clause = "AND a.kd_skpd='$kd_skpd'";
-        }
-        
-        $tahun_anggaran = tahun_anggaran();
-
-        // TANDA TANGAN
-        $tandatangan = DB::table('ms_ttd')
-            ->select('nama', 'nip', 'jabatan', 'pangkat')
-            ->where('nip', $ttd)
-            ->whereIn('kode', ['1'])
-            ->first();
-        
-            if($akumulasi=='akum'){
-                    $isi    = "sd_bulan_ini";
-                    $pilih  = "S/D";
-                    $judul  = BULAN($bulan);
-                    $operator="<=";
-                }else{
-                    $isi = "bulan_ini";
-                    $pilih = "BULAN";
-                    $judul  = BULAN($bulan);
-                    $operator="=";
-                }
-
-        
-                
-        // rincian
-        if($jenis_data==5){
-            if($periodebulan=='periode'){
-                    $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
-                isnull(SUM(trdrka.nilai),0) AS anggaran, isnull(SUM(jurnal.realisasi),0) AS realisasi
-                                            FROM map_lra_2023
-                                            LEFT JOIN (
-                                                SELECT * FROM trdrka where jns_ang= ?
-                                            ) trdrka ON LEFT(trdrka.kd_rek6, LEN(kd_rek)) = map_lra_2023.kd_rek
-                                            LEFT JOIN
-                                            (
-                                                SELECT
-                                                trdju_pkd.kd_unit,
-                                                trdju_pkd.kd_sub_kegiatan,
-                                                trdju_pkd.map_real,
-                                                CASE
-                                                    WHEN LEFT(trdju_pkd.map_real, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(trdju_pkd.map_real, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                                                    WHEN LEFT(trdju_pkd.map_real, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(trdju_pkd.map_real, 2) = '62' THEN SUM(debet) - SUM(kredit)
-                                                    ELSE 0
-                                                END AS realisasi
-                                                FROM trhju_pkd
-                                                JOIN trdju_pkd ON trhju_pkd.no_voucher = trdju_pkd.no_voucher 
-                                                            AND trhju_pkd.kd_skpd = trdju_pkd.kd_unit
-                                                WHERE trdju_pkd.kd_rek1_cmp IN ('4', '5', '6') 
-                                                $skpd_clause AND (tgl_voucher between ? and ? )
-                                                GROUP BY trdju_pkd.kd_unit, trdju_pkd.kd_sub_kegiatan, trdju_pkd.map_real
-                                            ) jurnal
-                                            ON trdrka.kd_skpd = jurnal.kd_unit AND trdrka.kd_sub_kegiatan = jurnal.kd_sub_kegiatan 
-                                            AND trdrka.kd_rek6 = jurnal.map_real
-                                            where group_id <= ?
-                                            GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                            ORDER BY id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
-                }else{
-                    $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
-                isnull(SUM(trdrka.nilai),0) AS anggaran, isnull(SUM(jurnal.realisasi),0) AS realisasi
-                                            FROM map_lra_2023
-                                            LEFT JOIN (
-                                                SELECT * FROM trdrka where jns_ang=?
-                                            ) trdrka ON LEFT(trdrka.kd_rek6, LEN(kd_rek)) = map_lra_2023.kd_rek
-                                            LEFT JOIN
-                                            (
-                                                SELECT
-                                                trdju_pkd.kd_unit,
-                                                trdju_pkd.kd_sub_kegiatan,
-                                                trdju_pkd.map_real,
-                                                CASE
-                                                    WHEN LEFT(trdju_pkd.map_real, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(trdju_pkd.map_real, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                                                    WHEN LEFT(trdju_pkd.map_real, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(trdju_pkd.map_real, 2) = '62' THEN SUM(debet) - SUM(kredit)
-                                                    ELSE 0
-                                                END AS realisasi
-                                                FROM trhju_pkd
-                                                JOIN trdju_pkd ON trhju_pkd.no_voucher = trdju_pkd.no_voucher 
-                                                            AND trhju_pkd.kd_skpd = trdju_pkd.kd_unit
-                                                WHERE trdju_pkd.kd_rek1_cmp IN ('4', '5', '6') 
-                                                $skpd_clause AND MONTH(tgl_voucher) $operator ?
-                                                GROUP BY trdju_pkd.kd_unit, trdju_pkd.kd_sub_kegiatan, trdju_pkd.map_real
-                                            ) jurnal
-                                            ON trdrka.kd_skpd = jurnal.kd_unit AND trdrka.kd_sub_kegiatan = jurnal.kd_sub_kegiatan 
-                                            AND trdrka.kd_rek6 = jurnal.map_real
-                                            where group_id <= ?
-                                            GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                            ORDER BY id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
-                }
-        }else if($jenis_data==4){
-                if ($periodebulan=='periode') {
-                    # code...
-                } else {
-                    # code...
-                    $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
-                                        -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
-                                        -- realisasi SPJ
-                                        ( 
-                                            SELECT sum(realisasi) from (
-                                                SELECT
-                                                SUM(trdtransout.nilai) realisasi
-                                                FROM trdtransout
-                                                JOIN trhtransout ON trdtransout.no_bukti = trhtransout.no_bukti
-                                                AND trhtransout.kd_skpd = trdtransout.kd_skpd
-                                                WHERE left(trdtransout.kd_rek6,1) IN ('5', '6') $skpd_clause
-                                                AND MONTH(trhtransout.tgl_bukti) $operator ? and  LEFT(trdtransout.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-
-                                                UNION ALL
-                                                -- CP
-                                                SELECT
-                                                CASE 
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
-                                                ELSE 0
-                                                END as realisasi
-                                                from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
-                                                WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5' $skpd_clause
-                                                AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by b.jns_trans,b.jns_cp,b.pot_khusus
-                                                UNION ALL
-                                                -- PENDAPATAN													
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
-                                                FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
-                                                ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ? $skpd_clause
-                                                AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by a.jns_trans
-                                                UNION ALL
-
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
-                                                FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
-                                                ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ? $skpd_clause 
-                                                and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
-                                                AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by a.jns_trans
-                                                UNION ALL
-
-                                                SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
-                                                ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ?  $skpd_clause
-                                                AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by a.jns_trans
-                                            )zzzz
-                                                ) AS realisasi
-                                                            FROM map_lra_2023
-                                                            where group_id <= ?
-                                                            GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
-                }
-        }
-        
-        
-
-
-        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-            
-        $data = [
-            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'rincian'           => $rincian,
-            'enter'             => $enter,
-            'daerah'            => $daerah,
-            'tanggal_ttd'       => $tanggal_ttd,
-            'tandatangan'       => $tandatangan,
-            'judul'             => $bulan,
-            'pilih'             => $pilih,
-            'jenis'             => $jns_rincian
-        ];
-
-        $view =  view('akuntansi.cetakan.lra_semester')->with($data);
-        if ($cetak == '1') {
-            return $view;
-        } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
-            return $pdf->stream('LRA SEMESTER.pdf');
-        } else {
-
-            header("Cache-Control: no-cache, no-store, must_revalidate");
-            header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachement; filename="LRA SEMESTER.xls"');
-            return $view;
-        }
-    }
-
-
-    // P77
-    public function cetakLra77(Request $request)
+public function cetakLra(Request $request)
     {
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', -1);
         $tanggal_ttd    = $request->tgl_ttd;
         $ttd            = $request->ttd;
         $bulan          = $request->bulan;
+        $format          = $request->format;
         $enter          = $request->spasi;
         $cetak          = $request->cetak;
         $tanggal1       = $request->tanggal1;
@@ -254,12 +42,15 @@ class LraController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
-        $tandatangan = DB::table('ms_ttd')
-            ->select('nama', 'nip', 'jabatan', 'pangkat')
-            ->where('nip', $ttd)
-            ->whereIn('kode', ['1'])
-            ->first();
-        
+        if($ttd == '0'){
+            $tandatangan="";
+        }else{
+            $tandatangan = DB::table('ms_ttd')
+                            ->select('nama', 'nip', 'jabatan', 'pangkat')
+                            ->where('nip', $ttd)
+                            ->whereIn('kode', ['1'])
+                            ->first();
+        }
             if($akumulasi=='akum'){
                     $isi    = "sd_bulan_ini";
                     $pilih  = "S/D";
@@ -346,6 +137,62 @@ class LraController extends Controller
         }else if ($jenis_data==4){
             if ($periodebulan=='periode') {
                 # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdtransout a
+                                            JOIN trhtransout b ON a.no_bukti = b.no_bukti
+                                            AND b.kd_skpd = a.kd_skpd
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            AND (b.tgl_voucher between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            SELECT
+                                            CASE 
+                                                WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            ELSE 0
+                                            END as realisasi
+                                            from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
             } else {
                 # code...
                 $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
@@ -361,6 +208,373 @@ class LraController extends Controller
                                             AND b.kd_skpd = a.kd_skpd
                                             WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
                                             AND MONTH(b.tgl_bukti) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            SELECT
+                                            CASE 
+                                                WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            ELSE 0
+                                            END as realisasi
+                                            from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+            }
+            
+        }else if ($jenis_data==3){ // SP2D LUNAS
+            if ($periodebulan=='periode') {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and status_bud = 1
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND (b.tgl_sp2d between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            -- SELECT
+                                            -- CASE 
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            -- ELSE 0
+                                            -- END as realisasi
+                                            -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            -- WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            -- group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            -- UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+            } else {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and status_bud=1
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND MONTH(b.tgl_sp2d) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            SELECT
+                                            CASE 
+                                                WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            ELSE 0
+                                            END as realisasi
+                                            from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+            }
+            
+        }else if ($jenis_data==2){ // SP2D Advis
+            if ($periodebulan=='periode') {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            INNER JOIN trduji c on b.no_sp2d=c.no_sp2d
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND (b.tgl_sp2d between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            -- SELECT
+                                            -- CASE 
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            -- ELSE 0
+                                            -- END as realisasi
+                                            -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            -- WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            -- group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            -- UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+            } else {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            INNER JOIN trduji c on b.no_sp2d=c.no_sp2d
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND MONTH(b.tgl_sp2d) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            SELECT
+                                            CASE 
+                                                WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            ELSE 0
+                                            END as realisasi
+                                            from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE month(a.tgl_sts) $operator ? $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+            }
+            
+        }else if ($jenis_data==1){ // SP2D terbit
+            if ($periodebulan=='periode') {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND (b.tgl_sp2d between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
+                                            UNION ALL
+                                            -- CP
+                                            -- SELECT
+                                            -- CASE 
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                            --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                            -- ELSE 0
+                                            -- END as realisasi
+                                            -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                            -- WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                            -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            -- group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                            -- UNION ALL
+                                            -- PENDAPATAN													
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
+                                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
+                                            $skpd_clause
+                                            AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                            UNION ALL
+
+                                            SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                            ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
+                                            WHERE (b.tgl_sts between ? and ? )  $skpd_clause
+                                            AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                            group by a.jns_trans
+                                        )zzzz
+                                            ) AS realisasi
+                                                        FROM map_lra_2023
+                                                        where group_id <= ?
+                                                        GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                                        ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+            } else {
+                # code...
+                $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                    -- realisasi SPJ
+                                    ( 
+                                        SELECT sum(realisasi) from (
+                                            SELECT
+                                            SUM(a.nilai) realisasi
+                                            FROM trdspp a
+                                            INNER JOIN trhsp2d b ON a.no_spp = b.no_spp
+                                            AND b.kd_skpd = a.kd_skpd
+                                            WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                            and (sp2d_batal is null OR sp2d_batal <> 1)
+                                            AND MONTH(b.tgl_sp2d) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
 
                                             UNION ALL
                                             -- CP
@@ -424,10 +638,17 @@ class LraController extends Controller
             'tandatangan'       => $tandatangan,
             'judul'             => $bulan,
             'pilih'             => $pilih,
+            'jenis_ttd'         => $ttd,
             'jenis'             => $jns_rincian
         ];
-
-        $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        if($format=='sap'){
+            $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        }elseif($format=='djpk'){
+            $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        }elseif($format=='p77'){
+            $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        }
+        
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {

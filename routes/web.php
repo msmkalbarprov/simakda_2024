@@ -1378,8 +1378,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
             // LRA
-            Route::get('cetak_lra_semester', [LraController::class, 'cetakLraSemester'])->name('laporan_akuntansi.konsolidasi.cetak_lra_semester');
-            Route::get('cetak_lra_77', [LraController::class, 'cetakLra77'])->name('laporan_akuntansi.konsolidasi.cetak_lra_77');
+            Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
         });
     });
 });

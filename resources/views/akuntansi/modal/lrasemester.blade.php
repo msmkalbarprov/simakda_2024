@@ -110,10 +110,10 @@
                         <label for="jenis_data" class="form-label">Jenis Data</label>
                         <select name="jenis_data" class="form-control select2" id="jenis_data">
                             <option value="">Silahkan Pilih</option>
-                            <option value="1">SP2D terbit</option>
-                            <option value="2">SP2D Lunas</option>
-                            <option value="3">SP2D Advice</option>
-                            <option value="4">SPJ</option>
+                            <option value="1">SP2D terbit & SPJ Pendapatan</option>
+                            <option value="2">SP2D Advice & SPJ Pendapatan</option>
+                            <option value="3">SP2D Lunas & SPJ Pendapatan</option>
+                            <option value="4">SPJ Fungsional & Pendapatan</option>
                             <option value="5">Jurnal</option>
                         </select>
                     </div>
@@ -138,12 +138,13 @@
                 </div>
 
                 <div class="mb-3 row" id="row-hidden3">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label for="format" class="form-label">Format</label>
                         <select class="form-control select2" id="format" name="format">
                             <option value="" disabled selected>Silahkan Pilih</option>
-                            <option value="sap">SAP</option>
+                            <option value="sap">SAP - Semester</option>
                             <option value="djpk">DJPK</option>
+                            <option value="p77">Permendagri 77</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -156,14 +157,14 @@
                             <option value="12">Sub Rincian Obyek</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <label for="pilihkonversi" class="form-label">Pilihan 2</label>
                         <select class="form-control select2" id="pilihkonversi" name="pilihkonversi">
                             <option value="" disabled selected>Silahkan Pilih</option>
                             <option value="konversi">Konversi</option>
                             <option value="tanpakonversi">Tanpa Konversi</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <div class="col-md-3">
                         <label for="pilihakumulsai" class="form-label">Pilihan 3</label>
                         <select class="form-control select2" id="pilihakumulsai" name="pilihakumulsai">
