@@ -423,6 +423,16 @@
         });
 
         $('#rekening_potongan').on('select2:select', function() {
+            let rekening_potongan = this.value;
+
+            if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
+                rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
+                rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
+                $('#id_billing').prop('disabled', false);
+            } else {
+                $('#id_billing').prop('disabled', true);
+                $('#id_billing').val(null);
+            }
             let nama = $(this).find(':selected').data('nama');
             let map_pot = $(this).find(':selected').data('map_pot');
             $('#nm_rek_pot').val(nama);
