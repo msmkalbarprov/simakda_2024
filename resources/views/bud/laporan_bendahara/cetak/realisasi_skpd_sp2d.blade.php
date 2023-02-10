@@ -89,7 +89,7 @@
         <thead>
             <tr id="header3">
                 <th rowspan="2" style="width: 10%">KODE</th>
-                <th rowspan="2" style="width: 5%">Urusan Permerintah Daerah</th>
+                <th rowspan="2" style="width: 5%">Urusan Pemerintah Daerah</th>
                 <th colspan="2" style="width: 5%">Belanja</th>
                 <th rowspan="2" style="width: 5%">Persen <br> tase</th>
             </tr>
