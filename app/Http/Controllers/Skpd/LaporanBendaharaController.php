@@ -383,7 +383,7 @@ class LaporanBendaharaController extends Controller
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $kd_skpd        = $request->kd_skpd;
-        $tahun_anggaran = '2022';
+        $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
         $cari_bendahara = DB::table('ms_ttd')
