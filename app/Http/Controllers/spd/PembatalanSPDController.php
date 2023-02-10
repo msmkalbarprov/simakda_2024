@@ -30,7 +30,8 @@ class PembatalanSPDController extends Controller
             'a.*',
             DB::raw("(select TOP 1 nama from ms_ttd b where a.kd_bkeluar=b.nip ) as nama"),
             DB::raw("case when jns_beban='5' then 'BELANJA' else 'PEMBIAYAAN' end AS nm_beban"),
-            DB::raw("(select nama from tb_status_angkas where a.jns_ang=status_kunci) as nm_angkas")
+            DB::raw("(select nama from tb_status_angkas where a.jns_ang=status_kunci) as nm_angkas"),
+            DB::raw("(select count(no_spd) from trhspp where a.no_spd=no_spd) as total")
         )
             ->whereIn('a.jns_beban', [5, 6])
             ->where(function ($query) use ($skpd) {
@@ -46,15 +47,19 @@ class PembatalanSPDController extends Controller
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->status == '1') {
-                $btn = '<div class="form-check form-switch form-switch-lg">
-                <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
-                     checked></div>';
+            if($row->total > 0) {
+                $btn = '<i class="fa fa-check" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Sudah Digunakan"></i>';
             } else {
-                $btn = '<div class="form-check form-switch form-switch-lg">
-                <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
-                    ></div>';
-            }
+                if ($row->status == '1') {
+                    $btn = '<div class="form-check form-switch form-switch-lg">
+                    <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
+                         checked></div>';
+                } else {
+                    $btn = '<div class="form-check form-switch form-switch-lg">
+                    <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
+                        ></div>';
+                }
+            } 
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('penatausahaan.spd.pembatalan_spd.index');
