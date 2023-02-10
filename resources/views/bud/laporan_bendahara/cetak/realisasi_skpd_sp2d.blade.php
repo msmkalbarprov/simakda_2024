@@ -203,26 +203,26 @@
         <div style="padding-top:20px;padding-left:500px">
             <table class="table rincian" style="width:100%">
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center">
+                    <td style="margin: 2px 0px;text-align: center;font-size:16px">
                         @if (isset($tanggal))
                             Pontianak, {{ tanggal($tanggal) }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center">
+                    <td style="padding-bottom: 50px;text-align: center;font-size:16px">
                         {{-- {{ $tanda_tangan->jabatan }} --}}
                         Kepala Bidang Perbendaharaan <br> Badan Keuangan dan Aset Daerah <br> Provinsi Kalimantan Barat
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
+                    <td style="text-align: center;font-size:16px"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center">{{ $tanda_tangan->pangkat }}</td>
+                    <td style="text-align: center;font-size:16px">{{ $tanda_tangan->pangkat }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center">NIP. {{ $tanda_tangan->nip }}</td>
+                    <td style="text-align: center;font-size:16px">NIP. {{ $tanda_tangan->nip }}</td>
                 </tr>
             </table>
         </div>
