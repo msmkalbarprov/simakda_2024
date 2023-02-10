@@ -48,6 +48,11 @@
                     <div class="text-center">
                         <button id="pilihan" class="btn btn-primary btn-md">PILIHAN</button>
                     </div>
+                    <div class="mb-3 row">
+                        <label for="catatan" class="col-md-12 col-form-label" style="color: red">MERAH BERARTI REKENING
+                            NON-AKTIF</label>
+                        <label for="catatan" class="col-md-12 col-form-label">HITAM BERARTI REKENING AKTIF</label>
+                    </div>
                 </div>
             </div>
         </div>

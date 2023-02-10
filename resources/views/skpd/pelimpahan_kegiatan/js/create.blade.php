@@ -124,7 +124,6 @@
                     data: data
                 },
                 success: function(response) {
-                    return;
                     if (response.message == '1') {
                         Swal.fire({
                             position: 'top-end',

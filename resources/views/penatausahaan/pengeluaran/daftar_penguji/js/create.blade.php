@@ -43,6 +43,12 @@
         });
 
         $('#no_sp2d').on('select2:select', function() {
+            let sp2d_online = document.getElementById('sp2d_online').value;
+            if (!sp2d_online) {
+                alert('Silahkan Pilih SP2D Online!');
+                $('#no_sp2d').val(null).change();
+                return;
+            }
             let no_sp2d = this.value;
             let tgl_sp2d = $(this).find(':selected').data('tgl_sp2d');
             let no_spm = $(this).find(':selected').data('no_spm');
@@ -80,6 +86,7 @@
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_sp2d}','${tgl_sp2d}','${no_spm}','${tgl_spm}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             $("#no_sp2d").val(null).change();
+            $('#sp2d_online').prop('disabled', true);
         });
 
         $('#simpan_penguji').on('click', function() {

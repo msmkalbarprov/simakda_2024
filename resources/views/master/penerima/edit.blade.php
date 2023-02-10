@@ -94,6 +94,26 @@
                                 @enderror
                             </div>
                         </div>
+                        <!-- KEPERLUAN -->
+                        <div class="mb-3 row">
+                            <label for="keperluan" class="col-md-2 col-form-label">Keperluan</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2-multiple @error('keperluan') is-invalid @enderror"
+                                    style="width: 100%;" id="keperluan" name="keperluan" data-placeholder="Silahkan Pilih">
+                                    <option value="" disabled selected>Silahkan Pilih Jenis Rekening</option>
+                                    <option value="1" {{ $data_penerima->keperluan == '1' ? 'selected' : '' }}>
+                                        Transfer
+                                        (Transaksi CMS, Transaksi Pemindahbukuan, Transaksi Tunai)
+                                    </option>
+                                    <option value="2" {{ $data_penerima->keperluan == '2' ? 'selected' : '' }}>
+                                        Pengajuan
+                                        Penagihan SPP SPM</option>
+                                </select>
+                                @error('keperluan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <!-- No Rekening Bank -->
                         <div class="mb-3 row">
                             <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>

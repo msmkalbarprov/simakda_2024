@@ -358,7 +358,7 @@ class LaporanBendaharaController extends Controller
             'cari_bendahara'    => $cari_bendahara
         ];
 
-        
+
         $view =  view('skpd.laporan_bendahara.cetak.bku')->with($data);
         if ($cetak == '1') {
             return $view;
@@ -383,7 +383,7 @@ class LaporanBendaharaController extends Controller
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $kd_skpd        = $request->kd_skpd;
-        $tahun_anggaran = '2022';
+        $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
         $cari_bendahara = DB::table('ms_ttd')
@@ -416,6 +416,8 @@ class LaporanBendaharaController extends Controller
              month(z.tgl_kas) < ? and year(z.tgl_kas) = ? AND z.kd_skpd = ?", [$bulan, $tahun_anggaran, $kd_skpd, $tahun_anggaran, $kd_skpd, $bulan, $tahun_anggaran, $kd_skpd]))->first();
 
         $saldo_awal_pajak = collect(DB::select("SELECT isnull(sld_awal,0) AS jumlah,sld_awalpajak FROM ms_skpd where kd_skpd=?", [$kd_skpd]))->first();
+
+        $saldo_awal = $saldo_awal->sel + $saldo_awal_pajak->jumlah + $saldo_awal_pajak->sld_awalpajak;
 
 
         $sisa_bank = collect(DB::select("SELECT terima-keluar as sisa FROM(select
@@ -477,9 +479,11 @@ class LaporanBendaharaController extends Controller
             ) a
       where month(tgl)<=? and kode=?) a", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $bulan, $kd_skpd]))->first();
 
-        $data_tunai_lalu = DB::update("exec kas_tunai_lalu ?,?", array($kd_skpd, $bulan));
+        $data_tunai_lalu = collect(DB::select("exec kas_tunai_lalu ?,?", array($kd_skpd, $bulan)))->first();
 
-        $data_tunai = DB::update("exec kas_tunai ?,?", array($kd_skpd, $bulan));
+        $data_tunai = collect(DB::select("exec kas_tunai ?,?", array($kd_skpd, $bulan)))->first();
+
+        $hasil_tunai = ($data_tunai->terima - $data_tunai->keluar) + ($data_tunai_lalu->terima - $data_tunai_lalu->keluar) + $saldo_awal_pajak->sld_awalpajak;
 
         $saldo_pajak = collect(DB::select("SELECT ISNULL(SUM(terima_lalu),0) as terima_lalu, ISNULL(SUM(terima_ini),0) as terima_ini, ISNULL(SUM(terima),0) as terima,
         ISNULL(SUM(setor_lalu),0) as setor_lalu, ISNULL(SUM(setor_ini),0) as setor_ini, ISNULL(SUM(setor),0) as setor,
@@ -531,16 +535,39 @@ class LaporanBendaharaController extends Controller
                year(a.tgl_kas) = ? and b.kd_skpd=?))z ) OKE
                ORDER BY tgl_kas,CAST(no_kas AS INT),jns_trans,st,rekening", [$bulan, $tahun_anggaran, $kd_skpd, $bulan, $tahun_anggaran, $kd_skpd]);
 
+
+        $nilai = collect(DB::select("SELECT SUM(z.terima) AS jmterima,SUM(z.keluar) AS jmkeluar , SUM(z.terima)-SUM(z.keluar) AS sel FROM (
+
+                SELECT distinct z.* FROM ((SELECT kd_skpd,tgl_kas,tgl_kas AS tanggal,no_kas,'' AS kegiatan,
+           '' AS rekening,uraian,0 AS terima,0 AS keluar , '' AS st,jns_trans FROM trhrekal a
+           where month(a.tgl_kas) < ? AND
+           year(a.tgl_kas) = ? and kd_skpd=?)
+               UNION ALL
+              ( SELECT a.kd_skpd,a.tgl_kas,NULL AS tanggal,b.no_kas,b.kd_sub_kegiatan as kegiatan,b.kd_rek6 AS rekening,
+               b.nm_rek6 AS uraian,
+               CASE WHEN b.keluar+b.terima<0 THEN (keluar*-1) ELSE terima END as terima,
+               CASE WHEN b.keluar+b.terima<0 THEN (terima*-1) ELSE keluar END as keluar,
+               case when b.terima<>0 then '1' else '2' end AS st, b.jns_trans FROM
+               trdrekal b LEFT JOIN trhrekal a ON a.no_kas = b.no_kas and a.kd_skpd = b.kd_skpd where month(a.tgl_kas) <? AND
+               year(a.tgl_kas) = ? and b.kd_skpd=?))z
+
+
+             )z WHERE
+             month(z.tgl_kas) < ? and year(z.tgl_kas) = ? AND z.kd_skpd = ?", [$bulan, $tahun_anggaran, $kd_skpd, $bulan, $tahun_anggaran, $kd_skpd, $bulan, $tahun_anggaran, $kd_skpd]))->first();
+
         // KIRIM KE VIEW
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'bulan'             => $bulan,
             'data_bku'          => $data_bku,
-            // 'data_sawal'        => $result,
-            // 'data_rincian'      => $result_rincian,
-            // 'data_tahun_lalu'   => $data_tahun_lalu,
-            // 'tunai_lalu'        => $tunai_lalu,
+            'saldo_awal'        => $saldo_awal,
+            'nilai'             => $nilai,
+            'saldo_awal_pajak'  => $saldo_awal_pajak,
+            'hasil_tunai'       => $hasil_tunai,
+            'sisa_bank'         => $sisa_bank,
+            'saldo_berharga'    => $saldo_berharga,
+            'saldo_pajak'       => $saldo_pajak,
             // 'tunai'             => $tunai,
             // 'terima_lalu'       => $terima_lalu,
             // 'keluar_lalu'       => $keluar_lalu,

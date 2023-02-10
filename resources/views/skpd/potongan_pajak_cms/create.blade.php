@@ -41,17 +41,22 @@
                     {{-- No Transaksi dan No SP2D --}}
                     <div class="mb-3 row">
                         <label for="no_transaksi" class="col-md-2 col-form-label">No Transaksi</label>
-                        <div class="col-md-4">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="no_transaksi"
                                 name="no_transaksi">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_potongan as $potongan)
                                     <option value="{{ $potongan->no_voucher }}" data-kode="{{ $potongan->kd_rek6 }}"
                                         data-nama="{{ $potongan->nm_rek6 }}">{{ $potongan->no_voucher }} |
-                                        {{ $potongan->tgl_voucher }}</option>
+                                        {{ $potongan->tgl_voucher }} | {{ $potongan->no_sp2d }} |
+                                        {{ $potongan->nm_sub_kegiatan }} | {{ $potongan->nm_rek6 }} |
+                                        {{ rupiah($potongan->total) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label for="no_sp2d" class="col-md-2 col-form-label">No SP2D</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="no_sp2d" name="no_sp2d">

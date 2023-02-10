@@ -18,10 +18,11 @@
                                         <th style="text-align: center;">Username</th>
                                         <th style="text-align: center;">Nama</th>
                                         <th style="text-align: center;">SKPD</th>
+                                        <th style="text-align: center;">JABATAN</th>
                                         <th style="text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
-                                
+
                             </table>
                         </div>
 
@@ -46,7 +47,7 @@
                 ordering: false,
                 serverSide: true,
                 processing: true,
-                lengthMenu: [5, 10],
+                lengthMenu: [5, 10, 20, 50],
                 ajax: {
                     "url": "{{ route('user.load_data') }}",
                     "type": "POST",
@@ -58,12 +59,15 @@
                 }, {
                     data: 'username',
                     name: 'username',
-                },{
+                }, {
                     data: 'nama',
                     name: 'nama',
-                },{
+                }, {
                     data: 'nm_skpd',
                     name: 'nm_skpd',
+                }, {
+                    data: 'jabatan',
+                    name: 'jabatan',
                 }, {
                     data: 'aksi',
                     name: 'aksi',

@@ -88,6 +88,10 @@
                     data: 'pot',
                     name: 'pot',
                 },
+                {
+                    data: 'idBilling',
+                    name: 'idBilling',
+                },
             ]
         });
 

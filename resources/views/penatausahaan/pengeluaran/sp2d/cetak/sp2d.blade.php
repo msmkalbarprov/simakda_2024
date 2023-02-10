@@ -448,7 +448,7 @@
                     <td style="text-align: center" class="kanan"></td>
                 </tr>
                 <tr>
-                    <td colspan="6" class="kanan kiri" style="height: 40px"></td>
+                    <td colspan="6" class="kanan kiri" style="height: 20px"></td>
                 </tr>
                 <tr>
                     <td class="kiri"></td>

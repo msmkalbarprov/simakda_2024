@@ -40,17 +40,22 @@
                     {{-- No Transaksi dan Tanggal Transaksi --}}
                     <div class="mb-3 row">
                         <label for="no_transaksi" class="col-md-2 col-form-label">No Transaksi</label>
-                        <div class="col-md-4">
+                        <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="no_transaksi"
                                 name="no_transaksi">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_potongan as $potongan)
                                     <option value="{{ $potongan->no_bukti }}" data-tgl="{{ $potongan->tgl_bukti }}">
                                         {{ $potongan->no_bukti }} |
-                                        {{ $potongan->tgl_bukti }}</option>
+                                        {{ $potongan->tgl_bukti }} | {{ $potongan->no_sp2d }} |
+                                        {{ rupiah($potongan->nilai) }} |
+                                        {{ $potongan->ket }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label for="tgl_transaksi" class="col-md-2 col-form-label">Tanggal Transaksi</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi" readonly>

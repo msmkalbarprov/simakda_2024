@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class PenerimaRequest extends FormRequest
 {
@@ -21,7 +22,7 @@ class PenerimaRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
         $rules = [
             'bank' => 'required',
@@ -40,11 +41,37 @@ class PenerimaRequest extends FormRequest
             'rekanan' => 'sometimes',
             'pimpinan' => 'sometimes',
             'alamat' => 'sometimes',
+            'keperluan' => 'sometimes'
         ];
+
+        $rules1 = [
+            'bank' => 'required',
+            'nama_bank' => 'required',
+            'bic' => 'required',
+            'cabang' => 'required',
+            'nama_cabang' => 'required',
+            'jenis' => 'required',
+            'keterangan' => 'required',
+            'no_rekening_validasi' => 'required|numeric',
+            'nm_rekening_validasi' => 'required',
+            'rekanan' => 'sometimes',
+            'pimpinan' => 'sometimes',
+            'alamat' => 'sometimes',
+            'keperluan' => 'sometimes'
+        ];
+
         if (request()->isMethod('post')) {
-            $rule = $rules;
+            if ($request->keperluan == '1') {
+                $rule = $rules1;
+            } else {
+                $rule = $rules;
+            }
         } elseif (request()->isMethod('put')) {
-            $rule = $rules;
+            if ($request->keperluan == '1') {
+                $rule = $rules1;
+            } else {
+                $rule = $rules;
+            }
         }
         return $rule;
     }

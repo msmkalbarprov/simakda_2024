@@ -32,6 +32,11 @@ class DaftarPengujiController extends Controller
             } else {
                 $btn = '';
             }
+            if ($row->status_bank == 1 || $row->status_bank == '1') {
+                $btn .= '<a href="javascript:void(0);" onclick="siapKirim(\'' . $row->no_uji . '\',\'' . $row->status_bank . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Batalin Siap Kirim"><i class="uil-exclamation-triangle"></i></a>';
+            } else {
+                $btn .= '';
+            }
             if ($row->status_bank == 5 || $row->status_bank == '5') {
                 $btn .= '<a href="javascript:void(0);" onclick="hapusData(\'' . $row->no_uji . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Sudah Dikirim"><i class="uil-trash"></i></a>';
             } else {

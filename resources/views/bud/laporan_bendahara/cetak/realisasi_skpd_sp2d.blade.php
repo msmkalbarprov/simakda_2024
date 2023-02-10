@@ -166,6 +166,22 @@
             <td>Plafond Anggaran Dinas Pendidikan telah dikurangi BOS sebesar Rp. {{ rupiah($bos_dikbud) }}</td>
         </tr>
         <tr>
+            <td>4.</td>
+            <td>Plafond Anggaran Badan Keuangan dan Aset Daerah dikurangi :</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>- Bantuan Keuangan sebesar Rp. {{ rupiah($bantuan_keuangan) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>- BTT sebesar Rp. {{ rupiah($btt) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>- Dana Bagi Hasil Provinsi sebesar Rp. {{ rupiah($bagi_hasil) }}</td>
+        </tr>
+        <tr>
             <td style="height: 20px"></td>
         </tr>
         <tr>
