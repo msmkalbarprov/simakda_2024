@@ -154,7 +154,7 @@ class BukuSetoranPenerimaanController extends Controller
             'rekening'       => $rekening,
             'cari_pa_kpa'       => $cari_pakpa,
             'cari_bendahara'    => $cari_bendahara,
-            'anggaran'          => DB::table('trdrka_pend')->selectRaw("SUM(nilai) anggaran")->where(['kd_skpd' => $kd_skpd, 'kd_rek6' => $rekening, 'jns_ang' => $jns_anggaran])->first(),
+            'anggaran'          => DB::table('trdrka')->selectRaw("SUM(nilai) anggaran")->where(['kd_skpd' => $kd_skpd, 'kd_rek6' => $rekening, 'jns_ang' => $jns_anggaran])->first(),
         ];
 
         $view = view('skpd.laporan_bendahara_penerimaan.cetak.rincian_objek')->with($data);
