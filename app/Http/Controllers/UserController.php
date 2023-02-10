@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         $data = DB::table('pengguna as a')
             ->select('a.*')
-            ->selectRaw("(select nm_skpd from ms_skpd as b where a.kd_skpd=b.kd_skpd) as nm_skpd")
+            ->selectRaw("(select nm_skpd from ms_skpd as b where a.kd_skpd=b.kd_skpd) as nm_skpd,(select nama_role from peran where a.role=id) as jabatan")
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             // $btn = '<a href="' . route("user.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
