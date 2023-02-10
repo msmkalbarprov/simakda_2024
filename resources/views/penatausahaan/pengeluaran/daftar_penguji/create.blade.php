@@ -29,6 +29,17 @@
                             @enderror
                         </div>
                     </div>
+                    {{-- SP2D ONLINE --}}
+                    <div class="mb-3 row">
+                        <label for="sp2d_online" class="col-md-12 col-form-label">SP2D Online</label>
+                        <div class="col-md-12">
+                            <select name="sp2d_online" id="sp2d_online" class="form-control select2-multiple">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- No SP2D --}}
                     <div class="mb-3 row">
                         <label for="no_sp2d" class="col-md-12 col-form-label">No. SP2D <small>(otomatis turun ke tabel
@@ -43,17 +54,6 @@
                                         {{ nama_bank($sp2d->bank) }} | {{ $sp2d->nm_skpd }}
                                     </option>
                                 @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    {{-- SP2D ONLINE --}}
-                    <div class="mb-3 row">
-                        <label for="sp2d_online" class="col-md-12 col-form-label">SP2D Online</label>
-                        <div class="col-md-12">
-                            <select name="sp2d_online" id="sp2d_online" class="form-control select2-multiple">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="1">Ya</option>
-                                <option value="0">Tidak</option>
                             </select>
                         </div>
                     </div>
