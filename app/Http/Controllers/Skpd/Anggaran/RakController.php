@@ -3350,7 +3350,13 @@ class RakController extends Controller
             'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
         ];
 
-        return view('skpd.cetak_rak.per_sub_rincian_objek.cetak')->with($data);
+        if(Auth::user()->is_admin==1){
+            return view('skpd.cetak_rak.per_sub_rincian_objek.cetak_seluruh')->with($data);
+        }else{
+            return view('skpd.cetak_rak.per_sub_rincian_objek.cetak')->with($data);
+        }
+
+        
     }
 
     public function cetakRakPerObjek(Request $request)
@@ -3414,6 +3420,110 @@ class RakController extends Controller
         ];
 
         $view = view('skpd.cetak_rak.per_sub_rincian_objek.cetakan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)->setOrientation('landscape')
+
+                ->setOption('margin-top', $margin);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'excel') {
+            header("Cache-Control:no-cache,no-store,must-revalidate");
+            header("Content-Type:application/vnd.ms-excel");
+            header("Content-Disposition:attachment;filename=laporan.xls");
+            return $view;
+        } else {
+            return $view;
+        }
+    }
+
+    public function cetakRakPerObjekSkpd(Request $request)
+    {
+        ini_set("memory_limit", -1);
+        ini_set("execution_time", -1);
+        $kd_skpd                = $request->kd_skpd;
+        $jenis_anggaran         = $request->jenis_anggaran;
+        $jenis_rak              = $request->jenis_rak;
+        $ttd1                   = $request->ttd1;
+        $tanggal_ttd            = $request->tanggal_ttd;
+        $jenis_print            = $request->jenis_print;
+        $margin                 = $request->margin;
+        $hidden                 = $request->hidden;
+        if ($margin == '') {
+            $margin = 10;
+        } else {
+            $margin = $margin;
+        }
+        $jenis      = "nilai_" . $jenis_rak;
+
+        $anggaran   = DB::select("SELECT kd_skpd+kd_sub_kegiatan as urut, 
+                                kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,
+                                kd_sub_kegiatan as kd_rek,nm_sub_kegiatan as nm_rek,
+                                sum(nilai)as anggaran
+                                from trdrka a 
+                                where kd_skpd= ? and jns_ang= ? 
+                                GROUP BY kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan
+                                UNION ALL
+                                SELECT kd_skpd+kd_sub_kegiatan as urut, 
+                                kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,
+                                kd_rek6,nm_rek6,
+                                sum(nilai)as anggaran
+                                from trdrka a 
+                                where kd_skpd= ? and jns_ang= ? 
+                                GROUP BY kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,kd_rek6,nm_rek6
+                                ",[$kd_skpd,$jenis_anggaran,$kd_skpd,$jenis_anggaran]);
+
+        $angkas = DB::select("SELECT a.kd_skpd+a.kd_sub_kegiatan as urut, a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_sub_kegiatan as kd_rek,a.nm_sub_kegiatan as nm_rek,
+                                SUM(CASE WHEN bulan=1 THEN $jenis ELSE 0 END) as jan,
+                                SUM(CASE WHEN bulan=2 THEN $jenis ELSE 0 END) as feb,
+                                SUM(CASE WHEN bulan=3 THEN $jenis ELSE 0 END) as mar,
+                                SUM(CASE WHEN bulan=4 THEN $jenis ELSE 0 END) as apr,
+                                SUM(CASE WHEN bulan=5 THEN $jenis ELSE 0 END) as mei,
+                                SUM(CASE WHEN bulan=6 THEN $jenis ELSE 0 END) as jun,
+                                SUM(CASE WHEN bulan=7 THEN $jenis ELSE 0 END) as jul,
+                                SUM(CASE WHEN bulan=8 THEN $jenis ELSE 0 END) as ags,
+                                SUM(CASE WHEN bulan=9 THEN $jenis ELSE 0 END) as sep,
+                                SUM(CASE WHEN bulan=10 THEN $jenis ELSE 0 END) as okt,
+                                SUM(CASE WHEN bulan=11 THEN $jenis ELSE 0 END) as nov,
+                                SUM(CASE WHEN bulan=12 THEN $jenis ELSE 0 END) as des
+                                from trdrka a INNER JOIN trdskpd_ro b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6
+                                where a.kd_skpd= ? and a.jns_ang= ? 
+                                GROUP BY a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan
+                                UNION ALL
+                                SELECT a.kd_skpd+a.kd_sub_kegiatan+a.kd_rek6 as urut,a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,
+                                SUM(CASE WHEN bulan=1 THEN $jenis ELSE 0 END) as jan,
+                                SUM(CASE WHEN bulan=2 THEN $jenis ELSE 0 END) as feb,
+                                SUM(CASE WHEN bulan=3 THEN $jenis ELSE 0 END) as mar,
+                                SUM(CASE WHEN bulan=4 THEN $jenis ELSE 0 END) as apr,
+                                SUM(CASE WHEN bulan=5 THEN $jenis ELSE 0 END) as mei,
+                                SUM(CASE WHEN bulan=6 THEN $jenis ELSE 0 END) as jun,
+                                SUM(CASE WHEN bulan=7 THEN $jenis ELSE 0 END) as jul,
+                                SUM(CASE WHEN bulan=8 THEN $jenis ELSE 0 END) as ags,
+                                SUM(CASE WHEN bulan=9 THEN $jenis ELSE 0 END) as sep,
+                                SUM(CASE WHEN bulan=10 THEN $jenis ELSE 0 END) as okt,
+                                SUM(CASE WHEN bulan=11 THEN $jenis ELSE 0 END) as nov,
+                                SUM(CASE WHEN bulan=12 THEN $jenis ELSE 0 END) as des
+                                from trdrka a INNER JOIN trdskpd_ro b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6
+                                where a.kd_skpd= ? and a.jns_ang= ?
+                                GROUP BY a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.nm_rek6,a.kd_rek6,a.nm_rek6
+                                ORDER BY urut",[$kd_skpd,$jenis_anggaran,$kd_skpd,$jenis_anggaran]);
+
+    
+
+        $data = [
+            'nama_angkas'       => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
+            'nama_skpd'         => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'angkas'            => $angkas,
+            'anggaran'          => $anggaran,
+            'jenis_anggaran'    => $jenis_anggaran,
+            'kd_skpd'           => $kd_skpd,
+            'ttd1'              => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'tanggal'           => $tanggal_ttd,
+            'sub_header'        => DB::table('ms_skpd as a')->select(DB::raw("left(kd_skpd,1) as urusan"), DB::raw("(SELECT nm_urusan FROM ms_urusan WHERE kd_urusan=left(a.kd_skpd,1)) as nmurusan"), DB::raw("left(kd_skpd,4) as bidang"), DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=left(a.kd_skpd,4)) as nmbidang"), DB::raw("left(kd_skpd,17) as org"), DB::raw("(SELECT nm_skpd FROM ms_skpd WHERE left(kd_skpd,17)=left(a.kd_skpd,17) AND right(kd_skpd,4)='0000') as nmorg"), 'kd_skpd as unit', 'nm_skpd as nmunit')->where(['kd_skpd' => $kd_skpd])->first(),
+            'hidden'            => $hidden
+        ];
+
+
+        $view = view('skpd.cetak_rak.per_sub_rincian_objek.cetakan_seluruh')->with($data);
 
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)->setOrientation('landscape')
@@ -3908,7 +4018,7 @@ class RakController extends Controller
     }
 
     // RAK PENDAPATAN
-    // CETAK RAK PER SUB RINCIAN OBJEK
+    // CETAK RAK PENDAPATAN
     public function pendapatanIndex()
     {
         $kd_skpd = Auth::user()->kd_skpd;

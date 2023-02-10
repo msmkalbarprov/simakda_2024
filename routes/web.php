@@ -863,6 +863,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::group(['prefix' => 'per_sub_rincian_objek'], function () {
                     Route::get('cetak_anggaran_per_sub_rincian_objek', [RakController::class, 'rincianObjekIndex'])->name('skpd.cetak_rak.per_sub_rincian_objek');
                     Route::get('cetak_angkas_giat_preview', [RakController::class, 'cetakRakPerObjek'])->name('skpd.cetak_rak.cetak_objek');
+                    // keseluruhan seperti SPD
+                    Route::get('cetak_angkas_seluruh_preview', [RakController::class, 'cetakRakPerObjekSkpd'])->name('skpd.cetak_rak.cetak_objek_seluruh');
                 });
                 // PER SKPD
                 Route::group(['prefix' => 'per_skpd'], function () {

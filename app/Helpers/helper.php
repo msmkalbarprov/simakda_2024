@@ -2852,6 +2852,12 @@ function anggaran_rekening_objek($kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jenis_an
     return $data->anggaran;
 }
 
+function anggaran_subkegiatan($kd_skpd, $kd_sub_kegiatan, $jenis_anggaran)
+{
+    $data = DB::table('trdrka')->select(DB::raw("SUM(nilai) as anggaran"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $jenis_anggaran])->first();
+    return $data->anggaran;
+}
+
 function no_urut_tukd()
 {
     $kd_skpd = Auth::user()->kd_skpd;

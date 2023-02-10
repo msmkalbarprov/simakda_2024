@@ -140,7 +140,9 @@
             });
 
             $(".select2").select2({
-                theme: 'bootstrap-5'
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_semester .modal-content'),
+                
             });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
@@ -278,6 +280,7 @@
             let format                   = document.getElementById('format').value;
             let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
             let periodebulan             = $('input:radio[name="pilihanperiode"]:checked').val();
+            let skpdunit                 = $('input:radio[name="inlineRadioOptions"]:checked').val();
             
             // PERINGATAN
                 if (!ttd) {
@@ -318,7 +321,7 @@
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_data", jenis_data);
                 searchParams.append("jenis_anggaran", jns_anggaran);
-                // searchParams.append("pilihkonversi", pilihkonversi);
+                searchParams.append("skpdunit", skpdunit);
                 searchParams.append("pilihakumulsai", pilihakumulsai);
                 searchParams.append("jns_rincian", jns_rincian);
                 searchParams.append("cetak", jns_cetak);
