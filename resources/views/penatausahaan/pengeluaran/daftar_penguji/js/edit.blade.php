@@ -52,12 +52,21 @@
         // Load SP2D
         load_sp2d();
 
+        $('#sp2d_online').prop('disabled', true);
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
 
         $('#no_sp2d').on('select2:select', function() {
+            let sp2d_online = document.getElementById('sp2d_online').value;
+            if (!sp2d_online) {
+                alert('Silahkan Pilih SP2D Online!');
+                $('#no_sp2d').val(null).change();
+                return;
+            }
+
             let no_sp2d = this.value;
             let tgl_sp2d = $(this).find(':selected').data('tgl_sp2d');
             let no_spm = $(this).find(':selected').data('no_spm');

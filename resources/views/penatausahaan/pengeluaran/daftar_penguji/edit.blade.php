@@ -27,16 +27,6 @@
                             @enderror
                         </div>
                     </div>
-                    {{-- No SP2D --}}
-                    <div class="mb-3 row">
-                        <label for="no_sp2d" class="col-md-12 col-form-label">No. SP2D <small>(otomatis turun ke tabel
-                                bawah)</small></label>
-                        <div class="col-md-12">
-                            <select name="no_sp2d" id="no_sp2d" class="form-control select2-multiple">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                            </select>
-                        </div>
-                    </div>
                     {{-- SP2D ONLINE --}}
                     <div class="mb-3 row">
                         <label for="sp2d_online" class="col-md-12 col-form-label">SP2D Online</label>
@@ -45,6 +35,16 @@
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="1" {{ $penguji->sp2d_online == '1' ? 'selected' : '' }}>Ya</option>
                                 <option value="0" {{ $penguji->sp2d_online == '0' ? 'selected' : '' }}>Tidak</option>
+                            </select>
+                        </div>
+                    </div>
+                    {{-- No SP2D --}}
+                    <div class="mb-3 row">
+                        <label for="no_sp2d" class="col-md-12 col-form-label">No. SP2D <small>(otomatis turun ke tabel
+                                bawah)</small></label>
+                        <div class="col-md-12">
+                            <select name="no_sp2d" id="no_sp2d" class="form-control select2-multiple">
+                                <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
                         </div>
                     </div>
