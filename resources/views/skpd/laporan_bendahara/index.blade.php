@@ -222,16 +222,16 @@
             </div>
         </div>
         <div class="col-md-6">
-            {{-- <div class="card card-info collapsed-card card-outline" id="lapregsppspm">
-        <div class="card-body">
-            {{'Register SPP/SPM/SP2D'}}
-        <a class="card-block stretched-link" href="#">
+            <div class="card card-info collapsed-card card-outline" id="bku13">
+                <div class="card-body">
+                    {{ 'BKU Permendagri 13' }}
+                    <a class="card-block stretched-link" href="#">
 
-        </a>
-        <i class="fa fa-chevron-right float-end mt-2"></i>
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
 
-    </div>
-</div> --}}
+                </div>
+            </div>
         </div>
     </div>
 
@@ -906,6 +906,18 @@
             document.getElementById('periode0').hidden = false; // show
         });
 
+        $('#bku13').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak').modal('show');
+            document.getElementById('jns_anggaran').disabled = true;
+            $("#labelcetak").html("Cetak BKU Permendagri 13");
+            $("#labelcetak2").html("");
+            document.getElementById('row-hidden').hidden = true; // Hide
+            document.getElementById('row-hidden2').hidden = true; // Hide
+            document.getElementById('row-hidden3').hidden = true; // Hide
+            document.getElementById('row-hidden4').hidden = true; // Hide
+            cari_skpd(kd_skpd, 'unit');
+        });
 
         // cari skpd/org
 
@@ -919,6 +931,7 @@
         });
 
         function cari_skpd(kd_skpd, jenis) {
+
             $.ajax({
                 url: "{{ route('skpd.laporan_bendahara.skpd') }}",
                 type: "POST",
@@ -1505,6 +1518,21 @@
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            } else if (jenis_cetak == 'Cetak BKU Permendagri 13') {
+
+                let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bku13') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("spasi", spasi);
+                searchParams.append("bendahara", bendahara);
+                searchParams.append("pa_kpa", pa_kpa);
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_print", jenis_print);
+                searchParams.append("cetak", jns_cetak);
+
+
                 window.open(url.toString(), "_blank");
             } else {
                 if (jenis_cetak2 == 'Cetak Buku Sub Rincian Objek') {
