@@ -21,7 +21,7 @@
             ordering: false,
             serverSide: true,
             processing: true,
-            lengthMenu: [5, 10],
+            lengthMenu: [5, 10, 20, 50],
             ajax: {
                 "url": "{{ route('skpd.transaksi_cms.load_data') }}",
                 "type": "POST",
