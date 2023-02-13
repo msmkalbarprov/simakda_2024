@@ -105,6 +105,13 @@
                                     id="last_backup" name="last_backup" required value="{{ $data_setting->last_db_backup }}" readonly>
                             </div>
                         </div>
+                        <div class="mb-3 row">
+                            <label for="last_backup" class="col-md-2 col-form-label">Rekal terakhir</label>
+                            <div class="col-md-10">
+                                <input class="form-control" placeholder="Isi dengan nama pemerintah" type="text"
+                                    id="last_backup" name="last_backup" required value="{{ $data_setting->last_rekal }}" readonly>
+                            </div>
+                        </div>
                         <!-- SIMPAN -->
                         <div style="float: right;">
                             <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>

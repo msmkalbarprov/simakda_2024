@@ -67,7 +67,6 @@ class HomeController extends Controller
             ];
         } else {
             $data = [
-
                 'data_pendapatan' => DB::table('trdrka')
                     ->select(DB::raw("isnull(sum(nilai),0) as pendapatan"))
                     ->where(['jns_ang' => $status_anggaran])
