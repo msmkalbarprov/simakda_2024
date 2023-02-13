@@ -327,7 +327,7 @@
                 },
                 success: function(data) {
                     if (kd_skpd && jns_ang) {
-                        if (data.message == '1') {
+                        if (data.message == '0') {
                             alert('SKPD Belum Lengkap Di Anggaran ' + data.nama);
                             return;
                         } else {
