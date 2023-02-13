@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     List Data Tambah Panjar CMS
-                    <a href="{{ route('upload_panjarcms.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('upload_panjarcms.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
