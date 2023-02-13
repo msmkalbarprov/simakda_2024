@@ -218,6 +218,23 @@
             let beban = document.getElementById('beban').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tgl_voucher = document.getElementById('tgl_voucher').value;
+
+            let tampungan = tabel_rekening.rows().data().toArray().map((value) => {
+                let result = {
+                    kd_sub_kegiatan: value.kd_sub_kegiatan,
+                    kd_rek6: value.kd_rek6,
+                    sumber: value.sumber,
+                };
+                return result;
+            });
+
+            if (tampungan.length == 1 && beban == '1') {
+                alert(
+                    'Pada transaski UP/GU hanya boleh 1 Rekening Belanja, Info lebih lanjut silahkan hubungi bidang Perbendaharaan'
+                );
+                return;
+            }
+
             if (beban && kd_skpd && tgl_voucher) {
                 status_anggaran();
                 status_angkas();
