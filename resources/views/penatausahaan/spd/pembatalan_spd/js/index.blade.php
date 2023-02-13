@@ -32,11 +32,6 @@
                     className: "text-left",
                 },
                 {
-                    data: 'status',
-                    name: 'status',
-                    className: "text-center",
-                },
-                {
                     data: 'aksi',
                     name: 'aksi',
                     className: "text-center",
