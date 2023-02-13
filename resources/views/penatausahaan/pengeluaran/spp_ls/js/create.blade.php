@@ -696,8 +696,8 @@
                     document.getElementById('nilai_penagihan').value = '';
                     document.getElementById('no_kontrak').value = '';
                     // $('#no_penagihan').val(null).change();
-                    tabel.clear().draw();
-                    $('#total').val('');
+                    // tabel.clear().draw();
+                    // $('#total').val('');
                     $('#card_penagihan').show();
                 }
             } else {
@@ -708,8 +708,8 @@
                     document.getElementById('nilai_penagihan').value = '';
                     document.getElementById('no_kontrak').value = '';
                     $('#no_penagihan').val(null).change();
-                    $('#total').val('');
-                    tabel.clear().draw();
+                    // $('#total').val('');
+                    // tabel.clear().draw();
                     $('#card_penagihan').hide();
                 }
             }
@@ -1032,6 +1032,25 @@
                 };
                 return data;
             });
+
+            let tampungan = tabel.rows().data().toArray().map((value) => {
+                let result = {
+                    kd_sub_kegiatan: value.kd_sub_kegiatan
+                };
+                return result;
+            });
+
+            let kondisi = tampungan.map(function(data) {
+                if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
+                    return '2';
+                }
+            });
+
+            if (kondisi.includes("2")) {
+                alert('Kode Sub Kegiatan Tidak Sama Dengan Rincian SPP');
+                return;
+            }
+
             let sts_tagih = dengan_penagihan == false ? 0 : 1;
 
             if (rincian_rekening.length == 0) {
