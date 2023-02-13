@@ -8,6 +8,11 @@
                 <div class="card-header">
                     Input SPP UP
                 </div>
+                <div class="alert alert-warning alert-block">
+                    @if ($spp->status == 1)
+                        <b style="font-size:16px">Sudah di Buat SPM!!</b>
+                    @endif
+                </div>
                 <div class="card-body">
                     @csrf
                     {{-- No SPP dan Tanggal SPP --}}

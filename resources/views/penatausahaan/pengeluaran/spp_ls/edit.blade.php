@@ -54,6 +54,11 @@
                 <div class="card-header">
                     Data Penagihan
                 </div>
+                <div class="alert alert-warning alert-block">
+                    @if ($sppls->status == 1)
+                        <b style="font-size:16px">Sudah di Buat SPM!!</b>
+                    @endif
+                </div>
                 <div class="card-body">
                     @csrf
                     {{-- No Tersimpan dan Tanggal SPP --}}
@@ -371,7 +376,10 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
+                        @if ($sppls->status == 1)
+                        @else
+                            <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
+                        @endif
                         <a href="{{ route('sppls.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
