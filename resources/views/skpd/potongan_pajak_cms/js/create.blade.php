@@ -305,6 +305,7 @@
 
         $('#tambah_potongan').on('click', function() {
             let rekanan = document.getElementById('rekanan').value;
+            let nama_rekanan = document.getElementById('nama_rekanan').value;
             let rekening_potongan = document.getElementById('rekening_potongan').value;
             let kd_rekening = document.getElementById('kd_rekening').value;
             let nm_rekening = document.getElementById('nm_rekening').value;
@@ -314,14 +315,26 @@
             let npwp = document.getElementById('npwp').value;
             let no_billing = document.getElementById('no_billing').value;
 
+            let rekan = '';
+            if (rekanan == 'Input Manual') {
+                rekan = nama_rekanan;
+                if (!nama_rekanan) {
+                    alert('Isi Rekanan Terlebih Dahulu!');
+                    return;
+                }
+            } else {
+                rekan = rekanan;
+                if (!rekanan) {
+                    alert('Isi Rekanan Terlebih Dahulu!');
+                    return;
+                }
+            }
+
             if (!npwp) {
                 alert('Isi NPWP Terlebih Dahulu!');
                 return;
             }
-            if (!rekanan) {
-                alert('Isi Rekanan Terlebih Dahulu!');
-                return;
-            }
+
             if (!rekening_potongan) {
                 alert('Isi Rekening Terlebih Dahulu!');
                 return;
@@ -339,7 +352,7 @@
                 'kd_rek_trans': kd_rekening,
                 'kd_rek6': rekening_potongan,
                 'nm_rek6': nm_rekening_potongan,
-                'rekanan': rekanan,
+                'rekanan': rekan,
                 'npwp': npwp,
                 'nilai': new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
