@@ -648,9 +648,10 @@
         $('#no_penagihan').on('select2:select', function() {
             let no_kontrak = this.value;
             let tgl = $(this).find(':selected').data('tgl');
+            let kontrak = $(this).find(':selected').data('kontrak');
             let total = parseFloat($(this).find(':selected').data('total')) || 0;
             $("#tgl_penagihan").val(tgl);
-            $("#no_kontrak").val(no_kontrak);
+            $("#no_kontrak").val(kontrak);
             $("#nilai_penagihan").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total));

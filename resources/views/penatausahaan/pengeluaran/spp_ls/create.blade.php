@@ -29,7 +29,8 @@
                                                 @foreach ($daftar_penagihan as $penagihan)
                                                     <option value="{{ $penagihan->no_bukti }}"
                                                         data-tgl="{{ $penagihan->tgl_bukti }}"
-                                                        data-total="{{ $penagihan->total }}">
+                                                        data-total="{{ $penagihan->total }}"
+                                                        data-kontrak="{{ $penagihan->kontrak }}">
                                                         {{ $penagihan->no_bukti }} | {{ $penagihan->tgl_bukti }} |
                                                         {{ $penagihan->kd_skpd }}
                                                     </option>
