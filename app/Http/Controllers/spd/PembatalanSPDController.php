@@ -48,7 +48,12 @@ class PembatalanSPDController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if($row->total > 0) {
-                $btn = '<i class="fa fa-check" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Sudah Digunakan"></i>';
+                if ($row->status == '1') {
+                    $btn = '<font color="green"><i class="fa fa-check" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Sudah Digunakan"></i></font>';
+                }else{
+                    $btn = '<font color="red"><i class="fa fa-check" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Sudah Digunakan"></i></font>';
+                }
+                
             } else {
                 if ($row->status == '1') {
                     $btn = '<div class="form-check form-switch form-switch-lg">
