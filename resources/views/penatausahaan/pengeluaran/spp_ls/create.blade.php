@@ -30,7 +30,8 @@
                                                     <option value="{{ $penagihan->no_bukti }}"
                                                         data-tgl="{{ $penagihan->tgl_bukti }}"
                                                         data-total="{{ $penagihan->total }}"
-                                                        data-kontrak="{{ $penagihan->kontrak }}">
+                                                        data-kontrak="{{ $penagihan->kontrak }}"
+                                                        data-ket="{{ $penagihan->ket }}">
                                                         {{ $penagihan->no_bukti }} | {{ $penagihan->tgl_bukti }} |
                                                         {{ $penagihan->kd_skpd }}
                                                     </option>
