@@ -92,6 +92,7 @@ use App\Http\Controllers\SppTU1Controller;
 use App\Http\Controllers\Skpd\SppTuController;
 use App\Http\Controllers\Skpd\TransaksiLaluController;
 use App\Http\Controllers\Utility\KunciBelanjaController;
+use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 
 // Route::get('/simakda_2023', function () {
@@ -1406,6 +1407,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('rekening', [KunciBelanjaController::class, 'rekening'])->name('kunci_belanja.rekening');
                 Route::post('kunci', [KunciBelanjaController::class, 'kunci'])->name('kunci_belanja.kunci');
             });
+        });
+        // KUNCI DATA KASDA
+        Route::group(['prefix' => 'kunci_kasda'], function () {
+            Route::get('', [KunciKasdaController::class, 'index'])->name('kunci_kasda.index');
+            Route::post('kunci', [KunciKasdaController::class, 'kunci'])->name('kunci_kasda.kunci');
         });
     });
 
