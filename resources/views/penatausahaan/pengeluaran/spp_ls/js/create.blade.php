@@ -191,11 +191,11 @@
                 // $('#card_penagihan').show();
             } else {
                 document.getElementById('tambah_rincian').removeAttribute("disabled");
-                document.getElementById('dengan_penagihan').checked = false;
-                $('#card_penagihan').hide();
-                $('#no_penagihan').val(null).change();
-                $('#tgl_penagihan').val(null);
-                $('#nilai_penagihan').val(null);
+                // document.getElementById('dengan_penagihan').checked = false;
+                // $('#card_penagihan').hide();
+                // $('#no_penagihan').val(null).change();
+                // $('#tgl_penagihan').val(null);
+                // $('#nilai_penagihan').val(null);
                 // $('#total').val(null);
                 // tabel.clear().draw();
             }
@@ -259,11 +259,11 @@
                 $('#card_penagihan').show();
             } else {
                 document.getElementById('tambah_rincian').removeAttribute("disabled");
-                document.getElementById('dengan_penagihan').checked = false;
-                $('#card_penagihan').hide();
-                $('#no_penagihan').val(null).change();
-                $('#tgl_penagihan').val(null);
-                $('#nilai_penagihan').val(null);
+                // document.getElementById('dengan_penagihan').checked = false;
+                // $('#card_penagihan').hide();
+                // $('#no_penagihan').val(null).change();
+                // $('#tgl_penagihan').val(null);
+                // $('#nilai_penagihan').val(null);
                 // $('#total').val(null);
                 // tabel.clear().draw();
             }
