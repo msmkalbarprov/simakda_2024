@@ -163,26 +163,39 @@ class SppGuController extends Controller
                 ->where(['no_spp' => $data['no_spp'], 'kd_skpd' => $data['kd_skpd']])
                 ->delete();
 
+            $cek = collect(DB::select("SELECT count(*)jml FROM [dbo].[trlpj] where no_lpj=?", [$data['no_lpj']]))->first();
+
             $no_spp = $data['no_spp'];
             $spd = $data['no_spd'];
 
-            $data_lpj = DB::table('trlpj as a')
-                ->selectRaw("'$no_spp' no_spp, kd_rek6, nm_rek6, nilai, kd_bp_skpd, (Select nm_skpd from ms_skpd where kd_skpd=a.kd_bp_skpd) as nm_skpd, kd_sub_kegiatan, (Select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan) as nm_sub_kegiatan, '$spd' as no_spd, no_bukti, kd_skpd, (Select sumber from trdtransout where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6 and no_bukti=a.no_bukti) as sumber, (Select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows", [$no_spp])
-                ->where(['no_lpj' => $data['no_lpj']]);
+            // if ($cek->jml >= 1000) {
+            DB::insert("INSERT INTO trdspp (no_spp,kd_rek6,nm_rek6,nilai,kd_skpd,nm_skpd,kd_sub_kegiatan,nm_sub_kegiatan,no_spd,no_bukti,kd_bidang,sumber,kd)
+                        SELECT
+                        '$no_spp' no_spp,
+                        kd_rek6,
+                        nm_rek6,
+                        nilai,
+                        kd_bp_skpd,
+                        (select nm_skpd from ms_skpd where ms_skpd.kd_skpd=trlpj.kd_bp_skpd)as nm_skpd,
+                        kd_sub_kegiatan,
+                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj.kd_rek6 and trdtransout.no_bukti=trlpj.no_bukti)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows
+                         from trlpj where no_lpj=?", [$no_spp, $data['no_lpj']]);
+            // } else {
+            //     $data_lpj = DB::table('trlpj as a')
+            //         ->selectRaw("'$no_spp' no_spp, kd_rek6, nm_rek6, nilai, kd_bp_skpd, (Select nm_skpd from ms_skpd where kd_skpd=a.kd_bp_skpd) as nm_skpd, kd_sub_kegiatan, (Select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan) as nm_sub_kegiatan, '$spd' as no_spd, no_bukti, kd_skpd, (Select sumber from trdtransout where kd_skpd=a.kd_skpd and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6 and no_bukti=a.no_bukti) as sumber, (Select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows", [$no_spp])
+            //         ->where(['no_lpj' => $data['no_lpj']]);
 
 
-            DB::table('trdspp')
-                ->insertUsing(['no_spp', 'kd_rek6', 'nm_rek6', 'nilai', 'kd_skpd', 'nm_skpd', 'kd_sub_kegiatan', 'nm_sub_kegiatan', 'no_spd', 'no_bukti', 'kd_bidang', 'sumber', 'kd'], $data_lpj);
+            //     DB::table('trdspp')
+            //         ->insertUsing(['no_spp', 'kd_rek6', 'nm_rek6', 'nilai', 'kd_skpd', 'nm_skpd', 'kd_sub_kegiatan', 'nm_sub_kegiatan', 'no_spd', 'no_bukti', 'kd_bidang', 'sumber', 'kd'], $data_lpj);
+            // }
 
-            DB::table('trdspp as a')
-                ->join('trskpd as b', function ($join) {
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->where(['no_spp' => $data['no_spp']])
-                ->update([
-                    'a.nm_sub_kegiatan' => DB::raw("b.nm_sub_kegiatan"),
-                ]);
+            DB::update("UPDATE a
+                                SET a.nm_sub_kegiatan=b.nm_sub_kegiatan
+                                FROM trdspp  a
+                                INNER JOIN trskpd b
+                                ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+                                WHERE no_spp=?", [$no_spp]);
 
             DB::table('trhlpj')
                 ->where(['no_lpj' => $data['no_lpj'], 'kd_skpd' => $data['kd_skpd']])
