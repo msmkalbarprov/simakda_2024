@@ -53,11 +53,11 @@
                 return result;
             });
 
-            let total_detail = detail_sts.rows().data().toArray();
-            if (total_detail.length > 0) {
-                alert('Detail STS Tidak Boleh Lebih Dari 1!');
-                return;
-            }
+            // let total_detail = detail_sts.rows().data().toArray();
+            // if (total_detail.length > 0) {
+            //     alert('Detail STS Tidak Boleh Lebih Dari 1!');
+            //     return;
+            // }
 
             if (!jenis_transaksi) {
                 alert('Jenis Transaksi harus dipilih!');
