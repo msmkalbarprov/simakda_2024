@@ -196,8 +196,8 @@
                 $('#no_penagihan').val(null).change();
                 $('#tgl_penagihan').val(null);
                 $('#nilai_penagihan').val(null);
-                $('#total').val(null);
-                tabel.clear().draw();
+                // $('#total').val(null);
+                // tabel.clear().draw();
             }
 
             // cek beban dan jenis
@@ -264,8 +264,8 @@
                 $('#no_penagihan').val(null).change();
                 $('#tgl_penagihan').val(null);
                 $('#nilai_penagihan').val(null);
-                $('#total').val(null);
-                tabel.clear().draw();
+                // $('#total').val(null);
+                // tabel.clear().draw();
             }
 
             // cek beban dan jenis
@@ -654,7 +654,7 @@
             $("#nilai_penagihan").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total));
-            tabel.clear().draw();
+            // tabel.clear().draw();
             $("#total").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total));
