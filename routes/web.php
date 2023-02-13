@@ -90,6 +90,7 @@ use App\Http\Controllers\Skpd\PanjarCMS\UploadPanjarCMSController;
 use App\Http\Controllers\Skpd\PanjarCMS\ValidasiPanjarCMSController;
 use App\Http\Controllers\SppTU1Controller;
 use App\Http\Controllers\Skpd\SppTuController;
+use App\Http\Controllers\Skpd\TransaksiLaluController;
 use App\Http\Controllers\Utility\KunciBelanjaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 
@@ -1169,6 +1170,16 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit/{no_spp?}/{kd_skpd?}', [SppGuController::class, 'edit'])->name('spp_gu.edit');
             Route::post('update', [SppGuController::class, 'update'])->name('spp_gu.update');
             Route::post('hapus', [SppGuController::class, 'hapus'])->name('spp_gu.hapus');
+
+            // CETAKAN
+            Route::get('pengantar', [SppGuController::class, 'pengantar'])->name('spp_gu.pengantar');
+            Route::get('rincian', [SppGuController::class, 'rincian'])->name('spp_gu.rincian');
+            Route::get('ringkasan', [SppGuController::class, 'ringkasan'])->name('spp_gu.ringkasan');
+            Route::get('pernyataan', [SppGuController::class, 'pernyataan'])->name('spp_gu.pernyataan');
+            Route::get('permintaan', [SppGuController::class, 'permintaan'])->name('spp_gu.permintaan');
+            Route::get('sptb', [SppGuController::class, 'sptb'])->name('spp_gu.sptb');
+            Route::get('spp', [SppGuController::class, 'spp'])->name('spp_gu.spp');
+            Route::get('rincian77', [SppGuController::class, 'rincian77'])->name('spp_gu.rincian77');
         });
         // SPP TU
         Route::group(['prefix' => 'spp_tu'], function () {
@@ -1198,6 +1209,24 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // Route::get('tambah1', [SppTUController::class, 'tambah1'])->name('spp_tu.create');
             // Route::get('tambah2', [SppTUController::class, 'tambah2'])->name('spp_tu.list');
             // Route::get('tambah3', [SppTUController::class, 'tambah3'])->name('spptu.hapusdata');
+        });
+
+        // TRANSAKSI TAHUN LALU
+        Route::group(['prefix' => 'transaksi_tahun_lalu'], function () {
+            Route::get('', [TransaksiLaluController::class, 'index'])->name('transaksi_lalu.index');
+            Route::post('load', [TransaksiLaluController::class, 'load'])->name('transaksi_lalu.load');
+            Route::get('tambah', [TransaksiLaluController::class, 'tambah'])->name('transaksi_lalu.tambah');
+            Route::post('kegiatan', [TransaksiLaluController::class, 'kegiatan'])->name('transaksi_lalu.kegiatan');
+            Route::post('sp2d', [TransaksiLaluController::class, 'sp2d'])->name('transaksi_lalu.sp2d');
+            Route::post('rekening', [TransaksiLaluController::class, 'rekening'])->name('transaksi_lalu.rekening');
+            Route::post('angkas_spd', [TransaksiLaluController::class, 'angkasSpd'])->name('transaksi_lalu.angkas_spd');
+            Route::post('sumber', [TransaksiLaluController::class, 'sumber'])->name('transaksi_lalu.sumber');
+            Route::post('sumber_dana', [TransaksiLaluController::class, 'sumberDana'])->name('transaksi_lalu.sumber_dana');
+            Route::post('load_data', [TransaksiLaluController::class, 'loadData'])->name('transaksi_lalu.load_data');
+            Route::post('simpan', [TransaksiLaluController::class, 'simpan'])->name('transaksi_lalu.simpan');
+            Route::get('edit/{no_bukti?}/{kd_skpd?}', [TransaksiLaluController::class, 'edit'])->name('transaksi_lalu.edit');
+            Route::post('update', [TransaksiLaluController::class, 'update'])->name('transaksi_lalu.update');
+            Route::post('hapus', [TransaksiLaluController::class, 'hapus'])->name('transaksi_lalu.hapus');
         });
     });
 

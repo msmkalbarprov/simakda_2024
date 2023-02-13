@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat SPTB</title>
+    <title>Surat Pernyataan</title>
     <style>
         .unbold {
-            font-weight: normal;
+            font-weight: normal
         }
 
         .rincian>tbody>tr>td {
@@ -32,11 +32,7 @@
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td align="left" style="font-size:16px">
-                <strong>
-                    SKPD {{ $skpd->nm_skpd }}
-                </strong>
-            </td>
+            <td align="left" style="font-size:16px"><strong>{{ $skpd->nm_skpd }}</strong></td>
         </tr>
         <tr>
             <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
@@ -49,87 +45,96 @@
 
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
         <tr>
-            <td style="font-size: 16px">
-                <b><u>SURAT PERNYATAAN TANGGUNG JAWABAN BELANJA</u></b>
-            </td>
-        </tr>
-        {{-- <tr>
-            <td style="font-size: 16px">
-                <b>Nomor : {{ $no_spp }}</b>
-            </td>
-        </tr> --}}
-    </table>
-    <br>
-    <br>
-
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
-        <tr>
-            <td>1. SKPD</td>
-            <td>:</td>
-            <td>{{ $skpd->kd_skpd }} - {{ $skpd->nm_skpd }}</td>
-        </tr>
-        <tr>
-            <td>2. Satuan Kerja</td>
-            <td>:</td>
-            <td>{{ $skpd->kd_skpd }} - {{ $skpd->nm_skpd }}</td>
-        </tr>
-        <tr>
-            <td>3. Tanggal/NO.DPA</td>
-            <td>:</td>
             <td>
-                {{ $data_dpa->tgl_dpa == ''? 'Belum ada Tanggal DPA': \Carbon\Carbon::parse($data_dpa->tgl_dpa)->locale('id')->isoFormat('DD MMMM Y') }}
-                dan {{ $data_dpa->no_dpa }}
+                <b>
+                    <u>
+                        SURAT PERNYATAAN PENGAJUAN SPP - GU
+                    </u>
+                </b>
             </td>
         </tr>
         <tr>
-            <td>4. Tahun Anggaran</td>
-            <td>:</td>
-            <td>{{ tahun_anggaran() }}</td>
+            <td><b>Nomor : {{ $no_spp }}</b></td>
+        </tr>
+    </table>
+    <br>
+    <br>
+
+    <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
+        <tr>
+            <td>
+                Sehubungan dengan Surat Permintaan Pembayaran Langsung (SPP - GU) Nomor
+                {{ $no_spp }} Tanggal
+                {{ tanggal($data->tgl_spp) }} yang kami ajukan sebesar
+                {{ rupiah($data->nilai) }} ({{ ucwords(terbilang($data->nilai)) }})
+            </td>
         </tr>
         <tr>
-            <td>5. Jumlah Belanja</td>
-            <td>:</td>
-            <td>Rp. {{ rupiah($data->nilai) }}</td>
+            <td style="height:20px"></td>
         </tr>
         <tr>
-            <td style="height: 5px"></td>
+            <td>
+                Untuk Keperluan SKPD : {{ $data->nm_skpd }} Tahun Anggaran
+                {{ tahun_anggaran() }}
+            </td>
+        </tr>
+        <tr>
+            <td style="height:20px"></td>
+        </tr>
+        <tr>
+            <td>
+                Dengan ini menyatakan sebenarnya bahwa :
+            </td>
+        </tr>
+        <tr>
+            <td style="height:10px"></td>
         </tr>
     </table>
 
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif" class="rincian">
+
+    <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
-            <td>Yang bertanda tangan di bawah ini adalah {{ $pa_kpa->jabatan }} Satuan Kerja {{ $skpd->nm_skpd }}
-                Menyatakan bahwa
-                saya
-                bertanggung jawab penuh atas segala pengeluaran-pengeluaran
-                yang telah dibayar lunas oleh Bendahara Pengeluaran kepada yang berhak menerima, sebagaimana tertera
-                dalam Laporan Pertanggung Jawaban Ganti Uang di sampaikan oleh Bendahara Pengeluaran</td>
+            <td style="vertical-align: top">
+                1.
+            </td>
+            <td style="vertical-align: top">
+                Jumlah Pembayaran Ganti Uang (GU) tersebut di atas akan dipergunakan untuk keperluan guna membiayai
+                kegiatan yang akan kami laksanan sesuai DPA-SKPD
+            </td>
         </tr>
         <tr>
-            <td style="height: 5px"></td>
-        </tr>
-        <tr>
-            <td>Bukti-bukti belanja tertera dalam Laporan Pertanggung Jawaban Ganti Uang disimpan sesuai ketentuan yang
-                berlaku pada sistem Satuan Kerja {{ $skpd->nm_skpd }}
-                untuk kelengkapan administrasi dan keperluan pemeriksaan aparat pengawasan Fungsional</td>
-        </tr>
-        <tr>
-            <td style="height: 5px"></td>
-        </tr>
-        <tr>
-            <td>Demikian Surat Pernyataan ini dibuat dengan sebenarnya</td>
+            <td style="vertical-align: top">
+                2.
+            </td>
+            <td style="vertical-align: top">
+                Jumlah Pembayaran Ganti Uang (GU) tersebut tidak akan dipergunakan untuk membiayai
+                pengeluaran-pengeluaran yang menurut ketentuan yang berlaku
+                harus dilaksanakan dengan Pembayaran Langsung GU
+            </td>
         </tr>
     </table>
+
+    <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
+        <tr>
+            <td style="height:5px"></td>
+        </tr>
+        <tr>
+            <td>
+                Demikian Surat pernyataan ini dibuat untuk melengkapi persyaratan pengajuan SPP-GU SKPD kami
+            </td>
+        </tr>
+    </table>
+
     <br>
     <br>
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table rincian" style="width: 100%">
+        <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;padding-left:500px">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
-                        ______________{{ $tahun_anggaran }}
+                        ______________{{ tahun_anggaran() }}
                     @else
                         {{ tanggal($data->tgl_spp) }}
                     @endif

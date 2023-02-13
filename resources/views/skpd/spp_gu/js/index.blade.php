@@ -79,61 +79,364 @@
             ],
         });
 
-        $('#pilihan').on('select2:select', function() {
-            let pilihan = this.value;
-            if (pilihan != '2') {
-                $('#kd_sub_kegiatan').val(null).change();
-                $('#kd_sub_kegiatan').prop('disabled', true);
-            } else {
-                $('#kd_sub_kegiatan').val(null).change();
-                $('#kd_sub_kegiatan').prop('disabled', false);
-
-                // CARI KODE SUB KEGIATAN
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('lpj.skpd_tanpa_unit.sub_kegiatan') }}",
-                    dataType: 'json',
-                    data: {
-                        no_lpj: document.getElementById('no_lpj').value
-                    },
-                    success: function(data) {
-                        $('#kd_sub_kegiatan').empty();
-                        $('#kd_sub_kegiatan').append(
-                            `<option value="" disabled selected>Silahkan Pilih</option>`
-                        );
-                        $.each(data, function(index, data) {
-                            $('#kd_sub_kegiatan').append(
-                                `<option value="${data.kd_sub_kegiatan}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
-                            );
-                        })
-                    }
-                });
-            }
-        });
-
-        $('.sptb').on('click', function() {
-            let no_lpj = document.getElementById('no_lpj').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
+        // cetak pengantar layar
+        $('.pengantar_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
             let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
             let jenis_print = $(this).data("jenis");
-
-            if (!pa_kpa) {
-                alert("Pengguna Anggaran tidak boleh kosong!");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
                 return;
             }
-
-            let url = new URL("{{ route('lpj.skpd_tanpa_unit.cetak_sptb') }}");
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.pengantar') }}");
             let searchParams = url.searchParams;
-            searchParams.append("no_lpj", no_lpj);
-            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
             searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        // cetak rincian layar
+        $('.rincian_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.rincian') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        // cetak permintaan layar
+        $('.permintaan_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.permintaan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.ringkasan_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.ringkasan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.pernyataan_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.pernyataan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.sptb_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.sptb') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.spp_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.spp') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.rincian77_layar').on('click', function() {
+            let spasi = document.getElementById('spasi').value;
+            let no_spp = document.getElementById('no_spp').value;
+            let beban = document.getElementById('beban').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pptk = document.getElementById('pptk').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let ppkd = document.getElementById('ppkd').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+            let jenis_print = $(this).data("jenis");
+            let tanpa;
+            if (tanpa_tanggal == false) {
+                tanpa = 0;
+            } else {
+                tanpa = 1;
+            }
+            if (!bendahara) {
+                alert('Bendahara Penghasilan tidak boleh kosong!');
+                return;
+            }
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+            if (!ppkd) {
+                alert("PPKD tidak boleh kosong!");
+                return;
+            }
+            let url = new URL("{{ route('spp_gu.rincian77') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_spp", no_spp);
+            searchParams.append("beban", beban);
+            searchParams.append("spasi", spasi);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pptk", pptk);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("ppkd", ppkd);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tanpa", tanpa);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
     });
 
-    function cetak(no_lpj, jenis, kd_skpd) {
-        $('#no_lpj').val(no_lpj);
+    function cetak(no_spp, jenis, kd_skpd) {
+        $('#no_spp').val(no_spp);
         $('#jenis').val(jenis);
         $('#kd_skpd').val(kd_skpd);
         $('#modal_cetak').modal('show');

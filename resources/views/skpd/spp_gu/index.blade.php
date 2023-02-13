@@ -36,90 +36,168 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Cetak LPJ</h5>
+                    <h5 class="modal-title">Cetak SPP</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{-- No. LPJ --}}
+                    {{-- No SPP --}}
                     <div class="mb-3 row">
-                        <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly class="form-control" id="no_lpj" name="no_lpj">
-                            <input type="text" hidden class="form-control" id="jenis" name="jenis">
+                        <label for="no_spp" class="col-md-2 col-form-label">No SPP</label>
+                        <div class="col-md-6">
+                            <input type="text" readonly class="form-control" id="no_spp" name="no_spp">
+                            <input type="text" hidden class="form-control" id="beban" name="beban">
                             <input type="text" hidden class="form-control" id="kd_skpd" name="kd_skpd">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch form-switch-lg">
+                                <input type="checkbox" class="form-check-input" id="tanpa_tanggal">
+                                <label class="form-check-label" for="tanpa_tanggal">Tanpa Tanggal</label>
+                            </div>
                         </div>
                     </div>
                     {{-- Bendahara --}}
                     <div class="mb-3 row">
-                        <label for="bendahara" class="col-md-2 col-form-label">Bendahara Pengeluaran</label>
-                        <div class="col-md-10">
+                        <label for="bendahara" class="col-md-2 col-form-label">Bendahara</label>
+                        <div class="col-md-6">
                             <select name="bendahara" class="form-control select-modal" id="bendahara">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                {{-- @foreach ($ttd1 as $bendahara)
-                                    <option value="{{ $bendahara->nip }}">
-                                        {{ $bendahara->nip }} | {{ $bendahara->nama }}</option>
-                                @endforeach --}}
+                                @foreach ($bendahara as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_bendahara" id="nama_bendahara" class="form-control" readonly>
+                        </div>
+                    </div>
+                    {{-- PPTK --}}
+                    <div class="mb-3 row">
+                        <label for="pptk" class="col-md-2 col-form-label">PPTK</label>
+                        <div class="col-md-6">
+                            <select name="pptk" class="form-control select-modal" id="pptk">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($pptk as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_pptk" id="nama_pptk" class="form-control" readonly>
                         </div>
                     </div>
                     {{-- PA/KPA --}}
                     <div class="mb-3 row">
                         <label for="pa_kpa" class="col-md-2 col-form-label">PA/KPA</label>
-                        <div class="col-md-10">
+                        <div class="col-md-6">
                             <select name="pa_kpa" class="form-control select-modal" id="pa_kpa">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                {{-- @foreach ($ttd2 as $pa)
-                                    <option value="{{ $pa->nip }}">
-                                        {{ $pa->nip }} | {{ $pa->nama }}</option>
-                                @endforeach --}}
+                                @foreach ($pa_kpa as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_pa_kpa" id="nama_pa_kpa" class="form-control" readonly>
+                        </div>
                     </div>
-                    {{-- Pilihan --}}
+                    {{-- PPKD --}}
                     <div class="mb-3 row">
-                        <label for="pilihan" class="col-md-2 col-form-label">Pilihan</label>
-                        <div class="col-md-10">
-                            <select name="pilihan" class="form-control select-modal" id="pilihan">
+                        <label for="ppkd" class="col-md-2 col-form-label">PPKD</label>
+                        <div class="col-md-6">
+                            <select name="ppkd" class="form-control select-modal" id="ppkd">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                <option value="0">Rinci</option>
-                                <option value="1">Rekap Rincian</option>
-                                <option value="2">Rincian Perkegiatan</option>
+                                @foreach ($ppkd as $ttd)
+                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
+                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
-                    </div>
-                    {{-- Sub Kegiatan --}}
-                    <div class="mb-3 row">
-                        <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
-                        <div class="col-md-10">
-                            <select name="kd_sub_kegiatan" class="form-control select-modal" id="kd_sub_kegiatan">
-                                <option value="" selected disabled>Silahkan Pilih</option>
-                            </select>
+                        <div class="col-md-4">
+                            <input type="text" name="nama_ppkd" id="nama_ppkd" class="form-control" readonly>
                         </div>
                     </div>
-                    {{-- Cetak SPTB dan Cetak Rincian --}}
+                    {{-- Spasi --}}
                     <div class="mb-3 row">
-                        <label for="sptb" class="col-md-2 col-form-label">Cetak SPTB</label>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-danger btn-md sptb" data-jenis="pdf">PDF</button>
-                            <button type="button" class="btn btn-dark btn-md sptb" data-jenis="layar">Layar</button>
-                        </div>
-                        <label for="rincian" class="col-md-2 col-form-label">Cetak Rincian</label>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-danger btn-md rincian" data-jenis="pdf">PDF</button>
-                            <button type="button" class="btn btn-dark btn-md rincian" data-jenis="layar">Layar</button>
+                        <label for="spasi" class="col-md-2 col-form-label">Spasi</label>
+                        <div class="col-md-6">
+                            <input type="number" value="1" min="1" class="form-control" id="spasi"
+                                name="spasi">
                         </div>
                     </div>
-                    {{-- Cetak Rekap Per Unit --}}
+                    {{-- Pengantar, Ringkasan dan Format Permandagri 77 --}}
                     <div class="mb-3 row">
-                        <label for="rekap" class="col-md-2 col-form-label">Cetak Rekap Per Unit</label>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-danger btn-md rekap" data-jenis="pdf">PDF</button>
-                            <button type="button" class="btn btn-dark btn-md rekap" data-jenis="layar">Layar</button>
+                        <label for="pengantar" class="col-md-2 col-form-label">Pengantar</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md pengantar_layar" data-jenis="pdf"
+                                name="pengantar_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md pengantar_layar" data-jenis="layar"
+                                name="pengantar_layar">Layar</button>
+                        </div>
+                        <label for="ringkasan" class="col-md-2 col-form-label">Ringkasan</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md ringkasan_layar" data-jenis="pdf"
+                                name="ringkasan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md ringkasan_layar" data-jenis="layar"
+                                name="ringkasan_layar">Layar</button>
+                        </div>
+                        <label for="ringkasan" style="text-align: center" class="col-md-4 col-form-label">Format
+                            Permendagri 77</label>
+                    </div>
+                    {{-- Rincian, Pernyataan dan SPP --}}
+                    <div class="mb-3 row">
+                        <label for="rincian" class="col-md-2 col-form-label">Rincian</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md rincian_layar" data-jenis="pdf"
+                                name="rincian_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md rincian_layar" data-jenis="layar"
+                                name="rincian_layar">Layar</button>
+                        </div>
+                        <label for="pernyataan" class="col-md-2 col-form-label">Pernyataan</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md pernyataan_layar" data-jenis="pdf"
+                                name="pernyataan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md pernyataan_layar" data-jenis="layar"
+                                name="pernyataan_layar">Layar</button>
+                        </div>
+                        <label for="spp" class="col-md-2 col-form-label">SPP</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md spp_layar" data-jenis="pdf"
+                                name="spp_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md spp_layar" data-jenis="layar"
+                                name="spp_layar">Layar</button>
+                        </div>
+                    </div>
+                    {{-- Permintaan, SPTB dan Rincian --}}
+                    <div class="mb-3 row">
+                        <label for="permintaan" class="col-md-2 col-form-label">Permintaan</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md permintaan_layar" data-jenis="pdf"
+                                name="permintaan_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md permintaan_layar" data-jenis="layar"
+                                name="permintaan_layar">Layar</button>
+                        </div>
+                        <label for="sptb" class="col-md-2 col-form-label">SPTB</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md sptb_layar" data-jenis="pdf"
+                                name="sptb_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md sptb_layar" data-jenis="layar"
+                                name="sptb_layar">Layar</button>
+                        </div>
+                        <label for="rincian77" class="col-md-2 col-form-label">Rincian</label>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-md rincian77_layar" data-jenis="pdf"
+                                name="rincian77_pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md rincian77_layar" data-jenis="layar"
+                                name="rincian77_layar">Layar</button>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">
-                            <button type="button" class="btn btn-md btn-warning" data-bs-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
                         </div>
                     </div>
                 </div>

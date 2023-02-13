@@ -337,6 +337,9 @@ function tgl_spd($data)
 
 function bulan($data)
 {
+    if ($data == '0') {
+        return '-';
+    }
     if ($data == '1') {
         return 'Januari';
     }
@@ -3571,4 +3574,13 @@ function npwp($npwp)
     }
 
     return $new_npwp;
+}
+
+function nama_sub_kegiatan($kd_sub_kegiatan)
+{
+    $kd_kegiatan = substr($kd_sub_kegiatan, 0, 12);
+
+    $data = collect(DB::select("SELECT nm_kegiatan FROM ms_kegiatan WHERE kd_kegiatan=?", [$kd_kegiatan]))->first();
+
+    return $data->nm_kegiatan;
 }

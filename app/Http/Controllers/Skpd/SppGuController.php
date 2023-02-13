@@ -14,7 +14,16 @@ class SppGuController extends Controller
 {
     public function index()
     {
-        return view('skpd.spp_gu.index');
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['KPA', 'BPP', 'BK'])->get(),
+            'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
+            'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
+        ];
+
+        return view('skpd.spp_gu.index')->with($data);
     }
 
     public function load()
@@ -317,6 +326,590 @@ class SppGuController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function pengantar(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $spp = DB::table('trhspp')
+            ->select('no_spd', 'tgl_spp')
+            ->where(['no_spp' => $no_spp])
+            ->first();
+
+        $tgl_spd = DB::table('trhspd')
+            ->select('tgl_spd')
+            ->where(['no_spd' => $spp->no_spd])
+            ->first();
+
+        $tgl_spd = $tgl_spd->tgl_spd;
+        $tgl_spp = $spp->tgl_spp;
+
+        $spp = collect(DB::select("SELECT a.no_spp,a.tgl_spp,a.kd_skpd,a.nm_skpd,a.bulan,a.nmrekan,
+        b.urusan1 as kd_bidang_urusan,
+        (select nm_bidang_urusan from ms_bidang_urusan where kd_bidang_urusan=b.urusan1)as nm_bidang_urusan,
+         a.bank,
+                (SELECT rekening FROM ms_skpd WHERE kd_skpd=a.kd_skpd) AS no_rek,
+                (SELECT npwp FROM ms_skpd WHERE kd_skpd=a.kd_skpd) AS npwp,
+                a.no_spd,(select sum(nilai) from trdspp where no_spp=a.no_spp)as nilai,
+                (SELECT SUM(a.nilai) FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' and b.kd_skpd=?
+                    and b.tgl_spd <=?) AS spd,
+                    (SELECT SUM(b.nilai) FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd
+                    INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE a.kd_skpd=?
+                    AND a.jns_spp IN ('1','2','3','6') AND a.no_spp != ? AND c.tgl_sp2d <=?) AS spp
+                FROM trhspp a INNER JOIN ms_skpd b ON a.kd_skpd=b.kd_skpd  where a.no_spp=? AND a.kd_skpd=?", [$kd_skpd, $tgl_spd, $kd_skpd, $no_spp, $tgl_spp, $no_spp, $kd_skpd]))->first();
+
+        $bank = DB::table('ms_skpd')
+            ->select('bank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->first();
+
+        $nama_bank = empty($bank->bank) || $bank->bank == '' ? '-' : DB::table('ms_bank')->select('nama')->where(['kode' => $bank->bank])->first()->nama;
+
+        $unit = substr($kd_skpd, -2);
+        if ($unit == '01' || $kd_skpd == '1.20.03.00') {
+            $peng = "Pengguna Anggaran";
+        } else {
+            $peng = "Kuasa Pengguna Anggaran";
+        }
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'beban' => $beban,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'spp' => $spp,
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'nama_bank' => $nama_bank,
+            'peng' => $peng,
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+        ];
+        $view = view('skpd.spp_gu.cetak.pengantar')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function rincian(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $spp = DB::select("SELECT SUM(nilai) AS nilai FROM trdspp WHERE no_spp=? AND kd_skpd=?", [$no_spp, $kd_skpd]);
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'data_spp' => $spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+        ];
+
+        $view = view('skpd.spp_gu.cetak.rincian')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function ringkasan(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $kegiatan = DB::table('trdspp')
+            ->select('kd_sub_kegiatan')
+            ->where(['no_spp' => $no_spp])
+            ->groupBy('kd_sub_kegiatan')
+            ->first();
+
+        $kd_sub_kegiatan = $kegiatan->kd_sub_kegiatan;
+
+        $spp = DB::table('trhspp')
+            ->select('no_spd', 'tgl_spp')
+            ->where(['no_spp' => $no_spp])
+            ->first();
+
+        $tgl_spd = DB::table('trhspd')
+            ->select('tgl_spd')
+            ->where(['no_spd' => $spp->no_spd])
+            ->first();
+
+        $tgl_spd = $tgl_spd->tgl_spd;
+        $tgl_spp = $spp->tgl_spp;
+
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='3' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='6' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='9' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='12' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $data_beban = DB::select("SELECT a.no_spd, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' and left(a.kd_unit,17)=left(?,17)
+                    and bulan_akhir='3' and revisi_ke=?
+                    GROUP BY a.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT a.no_spd, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' and left(a.kd_unit,17)=left(?,17)
+                    and bulan_akhir='6' and revisi_ke=?
+                    GROUP BY a.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT a.no_spd, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' and left(a.kd_unit,17)=left(?,17)
+                    and bulan_akhir='9' and revisi_ke=?
+                    GROUP BY a.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT a.no_spd, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' and left(a.kd_unit,17)=left(?,17)
+                    and bulan_akhir='12' and revisi_ke=?
+                    GROUP BY a.no_spd, b.tgl_spd", [$kd_skpd, $revisi1->revisi, $kd_skpd, $revisi2->revisi, $kd_skpd, $revisi3->revisi, $kd_skpd, $revisi4->revisi]);
+
+        $nilai_ang = collect(DB::select("SELECT sum(nilai) as nilai FROM trdrka where left(kd_rek6,1)='5' and left(kd_skpd,17)=left(?,17) and jns_ang=?", [$kd_skpd, $status_anggaran]))->first();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $belanja_up = collect(DB::select("SELECT SUM(b.nilai)AS nilai  FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE left(a.kd_skpd,17)=left(?,17) AND a.jns_spp IN ('1','2') AND a.no_spp != ? AND c.tgl_sp2d <=?", [$kd_skpd, $no_spp, $tgl_spp]))->first();
+
+        $belanja_tu = collect(DB::select("SELECT SUM(b.nilai)AS nilai  FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE left(a.kd_skpd,17)=left(?,17) AND a.jns_spp='3' AND a.no_spp != ? AND c.tgl_sp2d <=? and (c.sp2d_batal is null OR c.sp2d_batal ='')", [$kd_skpd, $no_spp, $tgl_spp]))->first();
+
+        $belanja_gaji = collect(DB::select("SELECT SUM(b.nilai)AS nilai  FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE left(a.kd_skpd,17)=left(?,17) AND a.jns_spp IN ('4') AND a.no_spp != ? AND c.tgl_sp2d <=?", [$kd_skpd, $no_spp, $tgl_spp]))->first();
+
+        $belanja_barjas = collect(DB::select("SELECT SUM(b.nilai)AS nilai  FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE left(a.kd_skpd,17)=left(?,17) AND a.jns_spp='6' AND a.no_spp != ? AND c.tgl_sp2d <=? and  (c.sp2d_batal is null OR c.sp2d_batal ='')", [$kd_skpd, $no_spp, $tgl_spp]))->first();
+
+        $belanja_ketiga = collect(DB::select("SELECT SUM(b.nilai)AS nilai  FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE left(a.kd_skpd,17)=left(?,17) AND a.jns_spp IN ('5') AND a.no_spp != ? AND c.tgl_sp2d <=? and  (c.sp2d_batal is null OR c.sp2d_batal ='')", [$kd_skpd, $no_spp, $tgl_spp]))->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'nilai_ang' => $nilai_ang,
+            'data_beban' => $data_beban,
+            'kd_skpd' => $kd_skpd,
+            'beban' => $beban,
+            'tgl_spp' => $tgl_spp,
+            'kd_sub_kegiatan' => $kd_sub_kegiatan,
+            'belanja_up' => $belanja_up,
+            'belanja_tu' => $belanja_tu,
+            'belanja_gaji' => $belanja_gaji,
+            'belanja_barjas' => $belanja_barjas,
+            'belanja_ketiga' => $belanja_ketiga,
+        ];
+
+        $view = view('skpd.spp_gu.cetak.ringkasan')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function pernyataan(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $data = collect(DB::select("SELECT a.no_spp,a.tgl_spp,a.kd_skpd,a.nm_skpd,a.bulan,a.nmrekan, a.no_rek,a.npwp,b.kd_bidang_urusan, b.nm_bidang_urusan, a.bank,a.no_spd,a.nilai
+                , ( SELECT
+                            nama
+                        FROM
+                            ms_bank
+                        WHERE
+                            kode=a.bank
+                ) AS nama_bank
+                FROM trhspp a INNER JOIN ms_bidang_urusan b
+                ON SUBSTRING(a.kd_skpd,1,4)=b.kd_bidang_urusan  where a.no_spp=? AND a.kd_skpd=?", [$no_spp, $kd_skpd]))->first();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'data' => $data
+        ];
+
+        $view = view('skpd.spp_gu.cetak.pernyataan')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function permintaan(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $data_spp = collect(DB::select("SELECT a.no_spp,a.tgl_spp,a.kd_skpd,a.nm_skpd,a.kd_program,a.nm_program,a.nm_sub_kegiatan,a.kd_sub_kegiatan,a.bulan,a.nmrekan,
+                a.no_rek as no_rek_rek, a.npwp as npwp_rek,b.kd_bidang_urusan, b.nm_bidang_urusan, a.bank, lanjut, kontrak, keperluan,pimpinan, alamat,
+                ( SELECT nama FROM ms_bank WHERE  kode=a.bank ) AS nama_bank_rek,
+                ( SELECT rekening FROM ms_skpd WHERE  kd_skpd=a.kd_skpd ) AS no_rek,
+                ( SELECT npwp FROM ms_skpd WHERE  kd_skpd=a.kd_skpd ) AS npwp,
+                a.no_spd,a.nilai
+                FROM trhspp a INNER JOIN ms_bidang_urusan b
+                ON SUBSTRING(a.kd_skpd,1,4)=b.kd_bidang_urusan  where a.no_spp=? AND a.kd_skpd=?", [$no_spp, $kd_skpd]))->first();
+
+        $program1 = substr($data_spp->kd_sub_kegiatan, 0, 7);
+        $program2 = substr($data_spp->kd_sub_kegiatan, 0, 12);
+
+        if (substr($data_spp->kd_sub_kegiatan, 0, 12) == 0 || substr($data_spp->kd_sub_kegiatan, 0, 12) == '') {
+            $nama_program = '';
+            $nama_kegiatan = '';
+        } else {
+            $program = DB::table('ms_program')->select('nm_program')->where('kd_program', $program1)->first();
+            $nama_program = $program->nm_program;
+            $kegiatan = DB::table('ms_kegiatan')->select('nm_kegiatan')->where('kd_kegiatan', $program2)->first();
+            $nama_kegiatan = $kegiatan->nm_kegiatan;
+        }
+
+        $daerah1 = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $bank = DB::table('ms_skpd')
+            ->select('bank')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->first();
+
+        $nama_bank = empty($bank->bank) || $bank->bank == '' ? '-' : DB::table('ms_bank')->select('nama')->where(['kode' => $bank->bank])->first()->nama;
+
+        if ($status_anggaran == 'M') {
+            $nogub = $daerah1->nogub_susun;
+        } else if ($status_anggaran == 'P1') {
+            $nogub = $daerah1->nogub_p1;
+        } else if ($status_anggaran == 'P2') {
+            $nogub = $daerah1->nogub_p2;
+        } else if ($status_anggaran == 'P3') {
+            $nogub = $daerah1->nogub_p3;
+        } else if ($status_anggaran == 'P4') {
+            $nogub = $daerah1->nogub_p4;
+        } else if ($status_anggaran == 'P5') {
+            $nogub = $daerah1->nogub_p5;
+        } else if ($status_anggaran == 'U1') {
+            $nogub = $daerah1->nogub_perubahan;
+        } else if ($status_anggaran == 'U2') {
+            $nogub = $daerah1->nogub_perubahan2;
+        } else if ($status_anggaran == 'U3') {
+            $nogub = $daerah1->nogub_perubahan3;
+        } else if ($status_anggaran == 'U4') {
+            $nogub = $daerah1->nogub_perubahan4;
+        } else {
+            $nogub = $daerah1->nogub_perubahan5;
+        }
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'alamat')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'dpa' => DB::table('trhrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first(),
+            'data_spp' => $data_spp,
+            'nama_program' => $nama_program,
+            'nama_kegiatan' => $nama_kegiatan,
+            'nogub' => $nogub,
+            'nama_bank' => $nama_bank
+        ];
+
+        $view = view('skpd.spp_gu.cetak.permintaan')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function sptb(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $spp = collect(DB::select("SELECT a.no_spp,a.tgl_spp,a.kd_skpd,a.nm_skpd,a.bulan,a.nmrekan, a.no_rek,a.npwp,b.kd_bidang_urusan, b.nm_bidang_urusan, a.bank
+                , ( SELECT
+                            nama
+                        FROM
+                            ms_bank
+                        WHERE
+                            kode=a.bank
+                ) AS nama_bank, a.nilai
+                FROM trhspp a INNER JOIN ms_bidang_urusan b
+                ON SUBSTRING(a.kd_skpd,1,4)=b.kd_bidang_urusan  where a.no_spp=? AND a.kd_skpd=?", [$no_spp, $kd_skpd]))->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'alamat', 'kd_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'data_dpa' => DB::table('trhrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first(),
+            'data' => $spp
+        ];
+
+        $view = view('skpd.spp_gu.cetak.sptb')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function spp(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $spp = collect(DB::select("SELECT a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,a.bank,no_rek,keperluan,a.no_spd,b.kd_sub_kegiatan,b.nm_sub_kegiatan,sum(b.nilai)as nilaispp FROM trhspp a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND b.kd_skpd=? GROUP BY a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,a.bank,no_rek,keperluan,a.no_spd,b.kd_sub_kegiatan,b.nm_sub_kegiatan", [$no_spp, $kd_skpd]))->first();
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'alamat', 'kd_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'data_dpa' => DB::table('trhrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first(),
+            'data' => $spp,
+            'bank' => DB::table('ms_bank')->select('nama')->where(['kode' => $spp->bank])->first(),
+            'nilai_spp' => DB::table('trhspp')->select('nilai')->where(['no_spp' => $no_spp])->first(),
+            'spd' => DB::table('trhspd')->select('tgl_spd')->where(['no_spd' => $spp->no_spd])->first(),
+            'dataspd' => DB::select("SELECT no_spd,tgl_spd,total from trhspd where left(kd_skpd,17)=left(?,17)", [$kd_skpd]),
+            'datasp2d' => DB::select("SELECT no_sp2d,tgl_sp2d,nilai as total from trhsp2d where kd_skpd=? and jns_spp='6'", [$kd_skpd]),
+            'sub_kegiatan' => collect(DB::select("SELECT kd_sub_kegiatan FROM trdspp WHERE no_spp=? GROUP BY kd_sub_kegiatan", [$no_spp]))->first()->kd_sub_kegiatan
+        ];
+
+        $view = view('skpd.spp_gu.cetak.spp77')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function rincian77(Request $request)
+    {
+        $no_spp = $request->no_spp;
+        $beban = $request->beban;
+        $spasi = $request->spasi;
+        $bendahara = $request->bendahara;
+        $pptk = $request->pptk;
+        $pa_kpa = $request->pa_kpa;
+        $ppkd = $request->ppkd;
+        $tanpa = $request->tanpa;
+        $kd_skpd = $request->kd_skpd;
+        $jenis_print = $request->jenis_print;
+
+        $status_anggaran = status_anggaran();
+
+        $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
+
+        $kegiatan = collect(DB::select("SELECT a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,b.kd_sub_kegiatan,b.nm_sub_kegiatan,sum(b.nilai)as nilaisub FROM trhspp a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND b.kd_skpd=? GROUP BY a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,b.kd_sub_kegiatan,b.nm_sub_kegiatan", [$no_spp, $kd_skpd]))->first();
+
+        $sub_kegiatan = substr($kegiatan->kd_sub_kegiatan, 0, 12);
+
+        $data = [
+            'skpd' => DB::table('ms_skpd')->select('nm_skpd', 'alamat', 'kd_skpd', 'npwp')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_spp' => $no_spp,
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'daerah' => $daerah,
+            'tanpa' => $tanpa,
+            'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
+            'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
+            'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'data_dpa' => DB::table('trhrka')->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])->first(),
+            'nilai_spp' => DB::table('trhspp')->select('nilai')->where(['no_spp' => $no_spp])->first(),
+            'dataspd' => DB::select("SELECT no_spd,tgl_spd,total from trhspd where left(kd_skpd,17)=left(?,17)", [$kd_skpd]),
+            'datasp2d' => DB::select("SELECT no_sp2d,tgl_sp2d,nilai as total from trhsp2d where kd_skpd=? and jns_spp='6'", [$kd_skpd]),
+            'sub_kegiatan' => collect(DB::select("SELECT kd_sub_kegiatan FROM trdspp WHERE no_spp=? GROUP BY kd_sub_kegiatan", [$no_spp]))->first()->kd_sub_kegiatan,
+            'data_spp' => $kegiatan,
+            'data_kegiatan' => DB::select("SELECT a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,b.kd_sub_kegiatan,b.nm_sub_kegiatan,sum(b.nilai)as nilaisub FROM trhspp a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND b.kd_skpd=? GROUP BY a.no_spp,a.tgl_spp,b.kd_skpd,b.nm_skpd,b.kd_sub_kegiatan,b.nm_sub_kegiatan", [$no_spp, $kd_skpd]),
+            'spp' => DB::table('trhspp')->where(['no_spp' => $no_spp])->first()
+        ];
+
+        $view = view('skpd.spp_gu.cetak.rincian77')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 }
