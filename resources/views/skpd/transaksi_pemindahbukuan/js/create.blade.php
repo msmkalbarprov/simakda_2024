@@ -218,6 +218,23 @@
             let beban = document.getElementById('beban').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tgl_voucher = document.getElementById('tgl_voucher').value;
+
+            let tampungan = tabel_rekening.rows().data().toArray().map((value) => {
+                let result = {
+                    kd_sub_kegiatan: value.kd_sub_kegiatan,
+                    kd_rek6: value.kd_rek6,
+                    sumber: value.sumber,
+                };
+                return result;
+            });
+
+            if (tampungan.length == 1 && beban == '1') {
+                alert(
+                    'Pada transaski UP/GU hanya boleh 1 Rekening Belanja, Info lebih lanjut silahkan hubungi bidang Perbendaharaan'
+                );
+                return;
+            }
+
             if (beban && kd_skpd && tgl_voucher) {
                 status_anggaran();
                 status_angkas();
@@ -769,149 +786,149 @@
                 return data;
             });
 
-            if (beban == '1') {
-                alert(
-                    'Pada transaski UP/GU hanya boleh 1 Rekening Belanja, Info lebih lanjut silahkan hubungi bidang Perbendaharaan'
-                );
-            }
+            // if (beban == '1') {
+            //     alert(
+            //         'Pada transaski UP/GU hanya boleh 1 Rekening Belanja, Info lebih lanjut silahkan hubungi bidang Perbendaharaan'
+            //     );
+            // }
 
-            let r = confirm("Yakin Data akan disimpan ?");
-            if (r == true) {
-                if (rincian_rekening.length == 0) {
-                    alert('Rincian Rekening tidak boleh kosong!');
-                    return;
-                }
-
-                let no_sp2d = rekening_belanja.rows().data().toArray().map((value) => {
-                    let data = {
-                        no_sp2d: value.no_sp2d,
-                    };
-                    return data;
-                });
-                let sp2d = no_sp2d[0]['no_sp2d'];
-
-                let rincian_rek_tujuan = rekening_tujuan.rows().data().toArray().map((value) => {
-                    let data = {
-                        no_bukti: value.no_bukti,
-                        tgl_bukti: value.tgl_bukti,
-                        rekening_awal: value.rekening_awal,
-                        nm_rekening_tujuan: value.nm_rekening_tujuan,
-                        rekening_tujuan: value.rekening_tujuan,
-                        bank_tujuan: value.bank_tujuan,
-                        kd_skpd: value.kd_skpd,
-                        nilai: rupiah(value.nilai),
-                    };
-                    return data;
-                });
-
-                let tahun_input = tgl_voucher.substr(0, 4);
-
-                if (tahun_input != tahun_anggaran) {
-                    alert('Tahun tidak sama dengan tahun Anggaran');
-                    return;
-                }
-
-                if (!pembayaran) {
-                    alert('Jenis Pembayaran Tidak Boleh Kosong');
-                    return;
-                }
-
-                if (pembayaran == 'BANK' && total_belanja > total_sisa) {
-                    alert('Nilai Melebihi sisa Simpanan Bank');
-                    return;
-                }
-
-                // if (!no_bukti) {
-                //     alert('Nomor Bukti Tidak Boleh Kosong');
-                //     return;
-                // }
-
-                if (!tgl_voucher) {
-                    alert('Tanggal Bukti Tidak Boleh Kosong');
-                    return;
-                }
-
-                if (!kd_skpd) {
-                    alert('Kode SKPD Tidak Boleh Kosong');
-                    return;
-                }
-
-                if (!beban) {
-                    alert('Jenis beban Tidak Boleh Kosong');
-                    return;
-                }
-
-                if (!keterangan) {
-                    alert('Keterangan Tidak Boleh Kosong');
-                    return;
-                }
-
-                if (total_belanja == '0') {
-                    alert('Rincian Tidak ada rekening!');
-                    return;
-                }
-
-                if (total_transfer > total_belanja) {
-                    alert('Total Transfer melebihi Total Belanja!');
-                    return;
-                }
-
-                if (!rekening) {
-                    alert('Isian Rekening Belum Lengkap!');
-                    return;
-                }
-
-                let response = {
-                    no_bukti,
-                    tgl_voucher,
-                    kd_skpd,
-                    nm_skpd,
-                    beban,
-                    keterangan,
-                    total_belanja,
-                    pembayaran,
-                    rekening,
-                    ketcms,
-                    sp2d,
-                    rincian_rekening,
-                    rincian_rek_tujuan
-                };
-
-                $('#simpan_transaksi').prop('disabled', true);
-                $.ajax({
-                    url: "{{ route('skpd.transaksi_pemindahbukuan.simpan_transaksi') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        data: response
-                    },
-                    success: function(data) {
-                        if (data.message == '1') {
-                            alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
-                                .no_bukti);
-                            // window.location.href =
-                            //     "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
-                            let potongan = confirm(
-                                'Data Berhasil Tersimpan...!, Apakah Transaksi ini Terdapat Terima Potongan Pajak ?'
-                            );
-                            if (potongan == true) {
-                                window.location.href =
-                                    "{{ route('skpd.potongan_pajak.index') }}";
-                            } else {
-                                window.location.href =
-                                    "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
-                            }
-                        } else {
-                            alert('Data tidak berhasil ditambahkan!');
-                            $('#simpan_transaksi').prop('disabled', false);
-                            return;
-                        }
-                    }
-                })
-            } else {
-                alert('Silahkan Periksa Lagi...');
+            // let r = confirm("Yakin Data akan disimpan ?");
+            // if (r == true) {
+            if (rincian_rekening.length == 0) {
+                alert('Rincian Rekening tidak boleh kosong!');
                 return;
             }
+
+            let no_sp2d = rekening_belanja.rows().data().toArray().map((value) => {
+                let data = {
+                    no_sp2d: value.no_sp2d,
+                };
+                return data;
+            });
+            let sp2d = no_sp2d[0]['no_sp2d'];
+
+            let rincian_rek_tujuan = rekening_tujuan.rows().data().toArray().map((value) => {
+                let data = {
+                    no_bukti: value.no_bukti,
+                    tgl_bukti: value.tgl_bukti,
+                    rekening_awal: value.rekening_awal,
+                    nm_rekening_tujuan: value.nm_rekening_tujuan,
+                    rekening_tujuan: value.rekening_tujuan,
+                    bank_tujuan: value.bank_tujuan,
+                    kd_skpd: value.kd_skpd,
+                    nilai: rupiah(value.nilai),
+                };
+                return data;
+            });
+
+            let tahun_input = tgl_voucher.substr(0, 4);
+
+            if (tahun_input != tahun_anggaran) {
+                alert('Tahun tidak sama dengan tahun Anggaran');
+                return;
+            }
+
+            if (!pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
+            if (pembayaran == 'BANK' && total_belanja > total_sisa) {
+                alert('Nilai Melebihi sisa Simpanan Bank');
+                return;
+            }
+
+            // if (!no_bukti) {
+            //     alert('Nomor Bukti Tidak Boleh Kosong');
+            //     return;
+            // }
+
+            if (!tgl_voucher) {
+                alert('Tanggal Bukti Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!kd_skpd) {
+                alert('Kode SKPD Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!beban) {
+                alert('Jenis beban Tidak Boleh Kosong');
+                return;
+            }
+
+            if (!keterangan) {
+                alert('Keterangan Tidak Boleh Kosong');
+                return;
+            }
+
+            if (total_belanja == '0') {
+                alert('Rincian Tidak ada rekening!');
+                return;
+            }
+
+            if (total_transfer > total_belanja) {
+                alert('Total Transfer melebihi Total Belanja!');
+                return;
+            }
+
+            if (!rekening) {
+                alert('Isian Rekening Belum Lengkap!');
+                return;
+            }
+
+            let response = {
+                no_bukti,
+                tgl_voucher,
+                kd_skpd,
+                nm_skpd,
+                beban,
+                keterangan,
+                total_belanja,
+                pembayaran,
+                rekening,
+                ketcms,
+                sp2d,
+                rincian_rekening,
+                rincian_rek_tujuan
+            };
+
+            $('#simpan_transaksi').prop('disabled', true);
+            $.ajax({
+                url: "{{ route('skpd.transaksi_pemindahbukuan.simpan_transaksi') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    data: response
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
+                            .no_bukti);
+                        // window.location.href =
+                        //     "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                        let potongan = confirm(
+                            'Data Berhasil Tersimpan...!, Apakah Transaksi ini Terdapat Terima Potongan Pajak ?'
+                        );
+                        if (potongan == true) {
+                            window.location.href =
+                                "{{ route('skpd.potongan_pajak.index') }}";
+                        } else {
+                            window.location.href =
+                                "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
+                        }
+                    } else {
+                        alert('Data tidak berhasil ditambahkan!');
+                        $('#simpan_transaksi').prop('disabled', false);
+                        return;
+                    }
+                }
+            })
+            // } else {
+            //     alert('Silahkan Periksa Lagi...');
+            //     return;
+            // }
         });
 
         function cari_nomor(kd_sub_kegiatan) {
