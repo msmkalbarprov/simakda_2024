@@ -80,7 +80,7 @@ class PencairanSp2dController extends Controller
                 $no_setor = "$setor";
             }
 
-            if (($beban < 5) || ($beban == 6 && isNull($kontrak))) {
+            if (($beban < 5) || ($beban == 6 && !isset($kontrak))) {
                 $total_data2 = DB::table('tr_setorsimpanan')->where(['kd_skpd' => $kd_skpd, 'no_sp2d' => $no_sp2d])->count();
                 if ($total_data2 > 0) {
                     DB::table('tr_setorsimpanan')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
@@ -173,11 +173,13 @@ class PencairanSp2dController extends Controller
                 $bukti_str = $no_kas + 1;
                 $bukti_str1 = "$bukti_str";
                 $data_pot = DB::table('trhtrmpot')->select('no_bukti')->where(['no_sp2d' => $no_sp2d])->first();
-                if (isNull($data_pot)) {
-                    $no_bukti = '';
-                } else {
-                    $no_bukti = $data_pot->no_bukti;
-                }
+                // if (isNull($data_pot)) {
+                //     $no_bukti = '';
+                // } else {
+                //     $no_bukti = $data_pot->no_bukti;
+                // }
+
+                $no_bukti = isset($data_pot) ? $data_pot->no_bukti : '';
 
                 $data_potongan = DB::table('trspmpot as a')
                     ->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')
