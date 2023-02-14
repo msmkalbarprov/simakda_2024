@@ -99,17 +99,20 @@
                         </div>
                         <!-- backup -->
                         <div class="mb-3 row">
-                            <label for="last_backup" class="col-md-2 col-form-label">Backup database terakhir</label>
-                            <div class="col-md-10">
-                                <input class="form-control" placeholder="Isi dengan nama pemerintah" type="text"
-                                    id="last_backup" name="last_backup" required value="{{ $data_setting->last_db_backup }}" readonly>
-                            </div>
+                            
+                            <div class="input-group">
+                                <label for="last_backup" class="col-md-2 col-form-label">Backup database terakhir</label>
+                                <input type="text" class="form-control" placeholder="Backup terakhir" aria-label="Backup terakhir" value="{{ $data_setting->last_db_backup }}" aria-describedby="basic-addon2" readonly>
+                                <div class="input-group-append">
+                                  <button  class="btn btn-success btn-md btn_backup" name="btn_backup" type="button">Backup</button>
+                                </div>
+                              </div>
                         </div>
                         <div class="mb-3 row">
                             <label for="last_backup" class="col-md-2 col-form-label">Rekal terakhir</label>
                             <div class="col-md-10">
                                 <input class="form-control" placeholder="Isi dengan nama pemerintah" type="text"
-                                    id="last_backup" name="last_backup" required value="{{ $data_setting->last_rekal }}" readonly>
+                                    id="last_backup" name="last_backup" value="{{ $data_setting->last_rekal }}" readonly>
                             </div>
                         </div>
                         <!-- SIMPAN -->
@@ -128,6 +131,54 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5',
             });
+           
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
+        });
+        
+
+        $('.btn_backups').on("click", function() {
+                    Swal.fire({
+                        title: 'Sabar Ya Guys!',
+                        html: 'Backup database dalam Waktu : <strong></strong> detik.',
+                        timer: 5000,
+                        willOpen: function() {
+                            Swal.showLoading()
+                            timerInterval = setInterval(function() {
+                                Swal.getContent().querySelector('strong')
+                                    .textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: function() {
+                            clearInterval(timerInterval)
+                        }
+                    }).then(function(result) {
+                        if (
+                            // Read more about handling dismissals
+                            result.dismiss === Swal.DismissReason.timer
+                        ) {
+                            console.log('Loading');
+                        }
+                    })
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('backup_database') }}",
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.message == '1') {
+                                alert('Backup Selesai Guys -_-');
+                                location.reload();
+                            } else {
+                                alert('Gagal Backup Guys');
+                            }
+                        }
+                    })
+
+            });
+
+
     </script>
 @endsection

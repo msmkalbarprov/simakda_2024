@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-
+use Exception;
 class SettingController extends Controller
 {
 
@@ -122,5 +122,40 @@ class SettingController extends Controller
 
 
         return redirect()->route('setting.edit');
+    }
+
+    function BackupDatabase(Request $request)
+    {   
+        $tahunx = "_2023";
+        $tahun  = "2023";
+        $keterangan='_';
+        date_default_timezone_set('Asia/Jakarta');
+        $oke = date('Y-m-d_H:i');
+        $mantap = str_replace(':', '-', $oke);
+        $strip = "_";
+        $datetime = date('Y-m-d H:i:s');
+        // DB::beginTransaction();
+        try {
+            
+            DB::unprepared(DB::raw("BACKUP database simakda$tahunx to disk = 'E:backup_database_harian" . "\\2023\\" . "db_simakda_$tahun$strip$mantap$keterangan.bak'"));
+
+            DB::update("UPDATE config_app set last_db_backup='$datetime'");
+
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0',
+                'error' => $e
+            ]);
+        }
+
+
+       
+       
     }
 }
