@@ -44,7 +44,7 @@
                     {{-- No. LPJ --}}
                     <div class="mb-3 row">
                         <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <input type="text" readonly class="form-control" id="no_lpj" name="no_lpj">
                             <input type="text" hidden class="form-control" id="jenis" name="jenis">
                             <input type="text" hidden class="form-control" id="kd_skpd" name="kd_skpd">
@@ -53,39 +53,33 @@
                     {{-- Bendahara --}}
                     <div class="mb-3 row">
                         <label for="bendahara" class="col-md-2 col-form-label">Bendahara Pengeluaran</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select name="bendahara" class="form-control select-modal" id="bendahara">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                {{-- @foreach ($bendahara as $ttd)
-                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
-                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
-                                @endforeach --}}
+                                @foreach ($ttd1 as $bendahara)
+                                    <option value="{{ $bendahara->nip }}">
+                                        {{ $bendahara->nip }} | {{ $bendahara->nama }}</option>
+                                @endforeach
                             </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" name="nama_bendahara" id="nama_bendahara" class="form-control" readonly>
                         </div>
                     </div>
                     {{-- PA/KPA --}}
                     <div class="mb-3 row">
                         <label for="pa_kpa" class="col-md-2 col-form-label">PA/KPA</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select name="pa_kpa" class="form-control select-modal" id="pa_kpa">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                {{-- @foreach ($pa_kpa as $ttd)
-                                    <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
-                                        {{ $ttd->nip }} | {{ $ttd->nama }}</option>
-                                @endforeach --}}
+                                @foreach ($ttd2 as $pa)
+                                    <option value="{{ $pa->nip }}">
+                                        {{ $pa->nip }} | {{ $pa->nama }}</option>
+                                @endforeach
                             </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" name="nama_pa_kpa" id="nama_pa_kpa" class="form-control" readonly>
                         </div>
                     </div>
                     {{-- Pilihan --}}
                     <div class="mb-3 row">
                         <label for="pilihan" class="col-md-2 col-form-label">Pilihan</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select name="pilihan" class="form-control select-modal" id="pilihan">
                                 <option value="" selected disabled>Silahkan Pilih</option>
                                 <option value="0">Rinci</option>
@@ -97,7 +91,7 @@
                     {{-- Sub Kegiatan --}}
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
-                        <div class="col-md-6">
+                        <div class="col-md-10">
                             <select name="kd_sub_kegiatan" class="form-control select-modal" id="kd_sub_kegiatan">
                                 <option value="" selected disabled>Silahkan Pilih</option>
                             </select>
@@ -114,14 +108,6 @@
                         <div class="col-md-4">
                             <button type="button" class="btn btn-danger btn-md rincian" data-jenis="pdf">PDF</button>
                             <button type="button" class="btn btn-dark btn-md rincian" data-jenis="layar">Layar</button>
-                        </div>
-                    </div>
-                    {{-- Cetak Rekap Per Unit --}}
-                    <div class="mb-3 row">
-                        <label for="rekap" class="col-md-2 col-form-label">Cetak Rekap Per Unit</label>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-danger btn-md rekap" data-jenis="pdf">PDF</button>
-                            <button type="button" class="btn btn-dark btn-md rekap" data-jenis="layar">Layar</button>
                         </div>
                     </div>
                     <div class="mb-3 row">
