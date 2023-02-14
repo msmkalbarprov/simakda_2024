@@ -69,7 +69,13 @@ public function cetakLra(Request $request)
         if($jenis_data==5){ //Jurnal
             if($periodebulan=='periode'){
                 $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
-            isnull(SUM(trdrka.nilai),0) AS anggaran, isnull(SUM(jurnal.realisasi),0) AS realisasi
+            isnull(SUM(trdrka.nilai),0) AS anggaran, CASE
+                                                WHEN LEFT(kd_rek, 1) = '4' THEN isnull((SUM(kredit) - SUM(debet)),0)
+                                                WHEN LEFT(kd_rek, 1) = '5' THEN isnull((SUM(debet) - SUM(kredit)),0)
+                                                WHEN LEFT(kd_rek, 2) = '61' THEN isnull((SUM(kredit) - SUM(debet)),0)
+                                                WHEN LEFT(kd_rek, 2) = '62' THEN isnull((SUM(debet) - SUM(kredit)),0)
+                                                ELSE 0
+                                            END AS realisasi
                                         FROM map_lra_2023
                                         LEFT JOIN (
                                             SELECT * FROM trdrka where jns_ang= ?
@@ -77,25 +83,20 @@ public function cetakLra(Request $request)
                                         LEFT JOIN
                                         (
                                             SELECT
+                                            a.tgl_voucher,b.no_voucher,
                                             b.kd_unit,
                                             b.kd_sub_kegiatan,
-                                            b.map_real,
-                                            CASE
-                                                WHEN LEFT(b.map_real, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                                                WHEN LEFT(b.map_real, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                                                WHEN LEFT(b.map_real, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                                                WHEN LEFT(b.map_real, 2) = '62' THEN SUM(debet) - SUM(kredit)
-                                                ELSE 0
-                                            END AS realisasi
+                                            b.kd_rek6,b.debet,b.kredit
+                                            
                                             FROM trhju_pkd a
                                             JOIN trdju_pkd b ON a.no_voucher = b.no_voucher 
                                                         AND a.kd_skpd = b.kd_unit
                                             WHERE b.kd_rek1_cmp IN ('4', '5', '6') 
                                             $skpd_clause AND (tgl_voucher between ? and ? )
-                                            GROUP BY b.kd_unit, b.kd_sub_kegiatan, b.map_real
+                                            GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6,b.debet,b.kredit
                                         ) jurnal
                                         ON trdrka.kd_skpd = jurnal.kd_unit AND trdrka.kd_sub_kegiatan = jurnal.kd_sub_kegiatan 
-                                        AND trdrka.kd_rek6 = jurnal.map_real
+                                        AND trdrka.kd_rek6 = jurnal.kd_rek6
                                         where group_id <= ?
                                         GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                         ORDER BY id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
@@ -103,7 +104,13 @@ public function cetakLra(Request $request)
                 
             }else{
                 $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
-            isnull(SUM(trdrka.nilai),0) AS anggaran, isnull(SUM(jurnal.realisasi),0) AS realisasi
+            isnull(SUM(trdrka.nilai),0) AS anggaran, CASE
+                                                WHEN LEFT(kd_rek, 1) = '4' THEN isnull((SUM(kredit) - SUM(debet)),0)
+                                                WHEN LEFT(kd_rek, 1) = '5' THEN isnull((SUM(debet) - SUM(kredit)),0)
+                                                WHEN LEFT(kd_rek, 2) = '61' THEN isnull((SUM(kredit) - SUM(debet)),0)
+                                                WHEN LEFT(kd_rek, 2) = '62' THEN isnull((SUM(debet) - SUM(kredit)),0)
+                                                ELSE 0
+                                            END AS realisasi
                                         FROM map_lra_2023
                                         LEFT JOIN (
                                             SELECT * FROM trdrka where jns_ang=?
@@ -111,25 +118,19 @@ public function cetakLra(Request $request)
                                         LEFT JOIN
                                         (
                                             SELECT
+                                            a.tgl_voucher,b.no_voucher,
                                             b.kd_unit,
                                             b.kd_sub_kegiatan,
-                                            b.map_real,
-                                            CASE
-                                                WHEN LEFT(b.map_real, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                                                WHEN LEFT(b.map_real, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                                                WHEN LEFT(b.map_real, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                                                WHEN LEFT(b.map_real, 2) = '62' THEN SUM(debet) - SUM(kredit)
-                                                ELSE 0
-                                            END AS realisasi
+                                            b.kd_rek6,b.debet,b.kredit
                                             FROM trhju_pkd a
                                             JOIN trdju_pkd b ON a.no_voucher = b.no_voucher 
                                                         AND a.kd_skpd = b.kd_unit
                                             WHERE b.kd_rek1_cmp IN ('4', '5', '6') 
                                             $skpd_clause AND MONTH(tgl_voucher) $operator ? 
-                                            GROUP BY b.kd_unit, b.kd_sub_kegiatan, b.map_real
+                                            GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6,b.debet,b.kredit
                                         ) jurnal
                                         ON trdrka.kd_skpd = jurnal.kd_unit AND trdrka.kd_sub_kegiatan = jurnal.kd_sub_kegiatan 
-                                        AND trdrka.kd_rek6 = jurnal.map_real
+                                        AND trdrka.kd_rek6 = jurnal.kd_rek6
                                         where group_id <= ?
                                         GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                         ORDER BY id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
