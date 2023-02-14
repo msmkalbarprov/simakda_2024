@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-
+use PDF;
 use function PHPUnit\Framework\isEmpty;
 
 class LPJController extends Controller
@@ -376,7 +376,17 @@ class LPJController extends Controller
             'daerah' => DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first()
         ];
 
-        return view('skpd.lpj.skpd_tanpa_unit.cetak.sptb')->with($data);
+        $view = view('skpd.lpj.skpd_tanpa_unit.cetak.sptb')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function rincianSkpdTanpaUnit(Request $request)
@@ -591,7 +601,17 @@ class LPJController extends Controller
             'kegiatan' => $kd_sub_kegiatan
         ];
 
-        return view('skpd.lpj.skpd_tanpa_unit.cetak.rincian')->with($data);
+        $view = view('skpd.lpj.skpd_tanpa_unit.cetak.rincian')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function rekapSkpdTanpaUnit(Request $request)
@@ -627,7 +647,17 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
         ];
 
-        return view('skpd.lpj.skpd_tanpa_unit.cetak.rekap')->with($data);
+        $view = view('skpd.lpj.skpd_tanpa_unit.cetak.rekap')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     // INPUT LPJ UP/GU SKPD + UNIT
@@ -1125,7 +1155,17 @@ class LPJController extends Controller
             'kegiatan' => $kd_sub_kegiatan
         ];
 
-        return view('skpd.lpj.skpd_dan_unit.cetak.rincian')->with($data);
+        $view = view('skpd.lpj.skpd_dan_unit.cetak.rincian')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     // INPUT LPJ UP/GU SKPD / UNIT
@@ -1622,7 +1662,17 @@ class LPJController extends Controller
             'kegiatan' => $kd_sub_kegiatan
         ];
 
-        return view('skpd.lpj.skpd_atau_unit.cetak.rincian')->with($data);
+        $view = view('skpd.lpj.skpd_atau_unit.cetak.rincian')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     // VALIDASI LPJ UP/GU UNIT
