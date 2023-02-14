@@ -106,7 +106,7 @@ class DaftarPengujiController extends Controller
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
             })
             ->where('is_verified', '1')
-            ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd')
+            ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd', 'bank')
             ->selectRaw("(SELECT nama from ms_bank a where bank=a.kode) as nama_bank")
             ->get();
         return response()->json($data);
