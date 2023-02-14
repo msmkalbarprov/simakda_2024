@@ -31,6 +31,11 @@
                     name: 'nilai',
                 },
                 {
+                    data: 'bank',
+                    name: 'bank',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -54,6 +59,7 @@
             let no_spm = $(this).find(':selected').data('no_spm');
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
+            let bank = $(this).find(':selected').data('bank');
 
             let tampungan = rincian_penguji.rows().data().toArray().map((value) => {
                 let result = {
@@ -61,6 +67,7 @@
                     tgl_sp2d: value.tgl_sp2d,
                     no_spm: value.no_spm,
                     tgl_spm: value.tgl_spm,
+                    bank: value.bank,
                 };
                 return result;
             });
@@ -68,9 +75,27 @@
                 if (data.no_sp2d == no_sp2d && data.no_spm == no_spm) {
                     return '1';
                 }
+                if (data.bank == '266' && bank != '266') {
+                    return '2';
+                }
+                if (data.bank != '266' && bank == '266') {
+                    return '3';
+                }
             });
             if (kondisi.includes("1")) {
                 alert('Nomor SP2D ini sudah ada di LIST!');
+                $("#no_sp2d").val(null).change();
+                return;
+            }
+
+            if (kondisi.includes("2")) {
+                alert('Dilist sudah ada Bank Kalbar Pontianak,Tidak boleh pakai Bank Lain!');
+                $("#no_sp2d").val(null).change();
+                return;
+            }
+
+            if (kondisi.includes("3")) {
+                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar Pontianak!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
@@ -83,6 +108,7 @@
                 'nilai': new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
                 }).format(nilai),
+                'bank': bank,
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_sp2d}','${tgl_sp2d}','${no_spm}','${tgl_spm}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             $("#no_sp2d").val(null).change();

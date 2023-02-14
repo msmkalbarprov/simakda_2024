@@ -42,6 +42,11 @@
                     name: 'nilai',
                 },
                 {
+                    data: 'bank',
+                    name: 'bank',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -72,6 +77,8 @@
             let no_spm = $(this).find(':selected').data('no_spm');
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
+            let bank = $(this).find(':selected').data('bank');
+
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
             if (!tanggal) {
@@ -86,6 +93,7 @@
                     tgl_sp2d: value.tgl_sp2d,
                     no_spm: value.no_spm,
                     tgl_spm: value.tgl_spm,
+                    bank: value.bank,
                 };
                 return result;
             });
@@ -93,12 +101,31 @@
                 if (data.no_sp2d == no_sp2d && data.no_spm == no_spm) {
                     return '1';
                 }
+                if (data.bank == '266' && bank != '266') {
+                    return '2';
+                }
+                if (data.bank != '266' && bank == '266') {
+                    return '3';
+                }
             });
+
             if (kondisi.includes("1")) {
                 alert('Nomor SP2D ini sudah ada di LIST!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
+            if (kondisi.includes("2")) {
+                alert('Dilist sudah ada Bank Kalbar Pontianak,Tidak boleh pakai Bank Lain!');
+                $("#no_sp2d").val(null).change();
+                return;
+            }
+
+            if (kondisi.includes("3")) {
+                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar Pontianak!');
+                $("#no_sp2d").val(null).change();
+                return;
+            }
+
             $.ajax({
                 url: "{{ route('daftar_penguji.tambah_rincian') }}",
                 type: "POST",
@@ -194,7 +221,7 @@
                     `<option value="0" disabled selected>Silahkan Pilih</option>`);
                 $.each(data, function(index, data) {
                     $('#no_sp2d').append(
-                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
+                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
                     );
                 })
             }
