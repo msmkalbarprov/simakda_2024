@@ -1115,6 +1115,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     // CETAKAN
                     Route::post('sub_kegiatan', [LPJController::class, 'subKegiatanSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.sub_kegiatan');
                     Route::get('cetak_sptb', [LPJController::class, 'sptbSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.cetak_sptb');
+                    Route::get('rincian', [LPJController::class, 'rincianSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.rincian');
+                    Route::get('rekap', [LPJController::class, 'rekapSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.rekap');
                 });
                 // LPJ UP/GU (SKPD + UNIT)
                 Route::group(['prefix' => 'skpd_dan_unit'], function () {

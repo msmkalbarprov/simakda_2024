@@ -23,8 +23,6 @@
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
                             </table>
                         </div>
                     </div>

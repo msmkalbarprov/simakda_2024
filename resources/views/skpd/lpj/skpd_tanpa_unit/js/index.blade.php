@@ -114,6 +114,76 @@
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
+
+        $('.rincian').on('click', function() {
+            let no_lpj = document.getElementById('no_lpj').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let pilihan = document.getElementById('pilihan').value;
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let jenis_print = $(this).data("jenis");
+
+
+            if (!bendahara) {
+                alert("Bendahara Pengeluaran tidak boleh kosong!");
+                return;
+            }
+
+            if (!pa_kpa) {
+                alert("Pengguna Anggaran tidak boleh kosong!");
+                return;
+            }
+
+            if (!pilihan) {
+                alert('Silahkan diisi Pilihan!');
+                return;
+            }
+
+            if (pilihan == '2' && !kd_sub_kegiatan) {
+                alert('Pilihan Rincian Perkegiatan, Sub Kegiatan wajib dipilih!');
+                return;
+            }
+
+            let url = new URL("{{ route('lpj.skpd_tanpa_unit.rincian') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_lpj", no_lpj);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("kd_sub_kegiatan", kd_sub_kegiatan);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.rekap').on('click', function() {
+            let no_lpj = document.getElementById('no_lpj').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let jenis_print = $(this).data("jenis");
+
+
+            if (!bendahara) {
+                alert("Bendahara Pengeluaran tidak boleh kosong!");
+                return;
+            }
+
+            if (!pa_kpa) {
+                alert("Pengguna Anggaran tidak boleh kosong!");
+                return;
+            }
+
+            let url = new URL("{{ route('lpj.skpd_tanpa_unit.rekap') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_lpj", no_lpj);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
     });
 
     function cetak(no_lpj, jenis, kd_skpd) {
