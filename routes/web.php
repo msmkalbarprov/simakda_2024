@@ -1128,6 +1128,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('edit/{no_lpj?}', [LPJController::class, 'editSkpdDanUnit'])->where('no_lpj', '(.*)')->name('lpj.skpd_dan_unit.edit');
                     Route::post('update', [LPJController::class, 'updateSkpdDanUnit'])->name('lpj.skpd_dan_unit.update');
                     Route::post('hapus', [LPJController::class, 'hapusSkpdDanUnit'])->name('lpj.skpd_dan_unit.hapus');
+
+                    // CETAKAN
+                    Route::get('rincian', [LPJController::class, 'rincianSkpdDanUnit'])->name('lpj.skpd_dan_unit.rincian');
                 });
                 // LPJ UP/GU (SKPD/UNIT)
                 Route::group(['prefix' => 'skpd_atau_unit'], function () {
