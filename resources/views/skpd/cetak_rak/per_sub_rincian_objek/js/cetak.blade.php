@@ -13,7 +13,7 @@
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
-        document.getElementById('baris_subkegiatan').hidden = true;
+        // document.getElementById('baris_subkegiatan').hidden = true;
         $('#kd_skpd').on('select2:select', function() {
             let kd_skpd = this.value;
             let nama = $(this).find(':selected').data('nama');
