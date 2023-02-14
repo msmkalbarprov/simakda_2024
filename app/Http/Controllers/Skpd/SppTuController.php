@@ -20,7 +20,7 @@ class SppTuController extends Controller
         $data = [
             'ttd1' => DB::table('ms_ttd')
                 ->where('kd_skpd', $kd_skpd)
-                ->whereIn('kode', ['KPA', 'BK'])
+                ->whereIn('kode', ['BPP', 'BK'])
                 ->get(),
             'ttd2' => DB::table('ms_ttd')
                 ->where('kd_skpd', $kd_skpd)
