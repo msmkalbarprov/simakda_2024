@@ -140,7 +140,7 @@ class ValidasiPanjarCMSController extends Controller
         $data = DB::select("SELECT a.*,c.no_upload ,d.no_bukti,d.tgl_bukti,d.no_voucher,d.tgl_validasi FROM tr_panjar_cmsbank a left join trdupload_cmsbank_panjar c on a.no_kas = c.no_bukti and a.kd_skpd = c.kd_skpd left join trvalidasi_cmsbank_panjar d on a.no_kas=d.no_voucher and a.kd_skpd = d.kd_skpd and a.tgl_kas=d.tgl_bukti where a.kd_skpd=? and a.status_upload='1' and a.status_validasi='1' order by cast(a.no_kas as int),a.kd_skpd", [$kd_skpd]);
 
         return Datatables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="batalValidasi(\'' . $row->no_voucher . '\',\'' . $row->no_bukti . '\',\'' . $row->kd_skpd . '\',\'' . $row->tgl_validasi . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="batalValidasi(\'' . $row->no_voucher . '\',\'' . $row->no_bukti . '\',\'' . $row->kd_skpd . '\',\'' . $row->tgl_kas . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -150,7 +150,7 @@ class ValidasiPanjarCMSController extends Controller
         $no_voucher = $request->no_voucher;
         $no_bukti = $request->no_bukti;
         $kd_skpd = $request->kd_skpd;
-        $tgl_validasi = $request->tgl_validasi;
+        $tgl_kas = $request->tgl_kas;
 
 
         DB::beginTransaction();
@@ -160,7 +160,7 @@ class ValidasiPanjarCMSController extends Controller
                 ->delete();
 
             DB::table('tr_panjar')
-                ->where(['no_kas' => $no_bukti, 'tgl_kas' => $tgl_validasi, 'kd_skpd' => $kd_skpd])
+                ->where(['no_kas' => $no_bukti, 'tgl_kas' => $tgl_kas, 'kd_skpd' => $kd_skpd])
                 ->delete();
 
             DB::update("update tr_panjar_cmsbank set status_validasi='0', tgl_validasi='' where no_kas=? and kd_skpd=?", [$no_voucher, $kd_skpd]);

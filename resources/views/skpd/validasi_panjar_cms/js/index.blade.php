@@ -608,7 +608,7 @@
 
     }
 
-    function batalValidasi(no_voucher, no_bukti, kd_skpd, tgl_validasi) {
+    function batalValidasi(no_voucher, no_bukti, kd_skpd, tgl_kas) {
         let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Bukti : ' + no_voucher);
         if (tanya == true) {
             $.ajax({
@@ -619,7 +619,7 @@
                     no_voucher: no_voucher,
                     no_bukti: no_bukti,
                     kd_skpd: kd_skpd,
-                    tgl_validasi: tgl_validasi,
+                    tgl_kas: tgl_kas,
                 },
                 success: function(data) {
                     if (data.message == '1') {
