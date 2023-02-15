@@ -64,21 +64,21 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="font-size:14px;text-align:center" width="93%"><strong>PEMERINTAH
+            <td style="font-size:18px;text-align:center" width="93%"><strong>PEMERINTAH
                     {{ strtoupper($header->nm_pemda) }}</strong></td>
         </tr>
         <tr>
-            <td style="font-size:14px;text-align:center">
+            <td style="font-size:18px;text-align:center">
                 <strong>
                     {{ $skpd->nm_skpd }}
                 </strong>
             </td>
         </tr>
         <tr>
-            <td style="font-size:14px;text-align:center"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+            <td style="font-size:18px;text-align:center"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
         </tr>
         <tr>
-            <td style="font-size:14px;text-align:center"><strong>&nbsp;</strong></td>
+            <td style="font-size:18px;text-align:center"><strong>&nbsp;</strong></td>
         </tr>
     </table>
     <hr>
@@ -87,9 +87,9 @@
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 50%;">
-                    <div><b>Tahun Anggaran</b></div>
+                    <div><b>Tahun Anggaran : {{ tahun_anggaran() }}</b></div>
                 </td>
-                <td style="vertical-align: top;"><b>No. SPM: {{ $no_spm }}</b></td>
+                <td style="vertical-align: top;text-align:center"><b>No. SPM : {{ $no_spm }}</b></td>
             </tr>
         </tbody>
     </table>
