@@ -24,7 +24,7 @@ class SppTuController extends Controller
                 ->get(),
             'ttd2' => DB::table('ms_ttd')
                 ->where('kd_skpd', $kd_skpd)
-                ->whereIn('kode', ['KPA', 'PPTK'])
+                ->whereIn('kode', ['PPTK'])
                 ->get(),
             'ttd3' => DB::table('ms_ttd')
                 ->where('kd_skpd', $kd_skpd)
@@ -820,7 +820,7 @@ class SppTuController extends Controller
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
             'spp' => $spp,
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'nama_bank' => $nama_bank,
             'peng' => $peng,
             'daerah' => $daerah,
@@ -912,7 +912,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1039,7 +1039,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1101,7 +1101,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1202,7 +1202,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1264,7 +1264,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1313,7 +1313,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
@@ -1370,7 +1370,7 @@ class SppTuController extends Controller
             'header' =>  DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
-            'bendahara' => DB::table('ms_ttd')->where(['kode' => 'BK', 'nip' => $bendahara, 'kd_skpd' => $kd_skpd])->first(),
+            'bendahara' => DB::table('ms_ttd')->where(['nip' => $bendahara, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['BK', 'BPP'])->first(),
             'daerah' => $daerah,
             'tanpa' => $tanpa,
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
