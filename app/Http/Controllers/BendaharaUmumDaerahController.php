@@ -892,7 +892,18 @@ class BendaharaUmumDaerahController extends Controller
             'saldo_awal' => $saldo_awal,
             'tanda_tangan' => $tanda_tangan
         ];
-        return view('bud.laporan_bendahara.cetak.bku_tanpa_tanggal')->with($data);
+
+        $view = view('bud.laporan_bendahara.cetak.bku_tanpa_tanggal')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function bkuDenganTanggal(Request $request)
@@ -1042,7 +1053,18 @@ class BendaharaUmumDaerahController extends Controller
             'data_bku' => $nilai,
             'tanda_tangan' => $tanda_tangan
         ];
-        return view('bud.laporan_bendahara.cetak.bku_dengan_tanggal')->with($data);
+
+        $view = view('bud.laporan_bendahara.cetak.bku_dengan_tanggal')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function bkuTanpaBlud(Request $request)
@@ -1192,7 +1214,18 @@ class BendaharaUmumDaerahController extends Controller
             'data_bku' => $nilai,
             'tanda_tangan' => $tanda_tangan
         ];
-        return view('bud.laporan_bendahara.cetak.bku_tanpa_blud')->with($data);
+
+        $view = view('bud.laporan_bendahara.cetak.bku_tanpa_blud')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function bkuRincian(Request $request)
@@ -1507,7 +1540,18 @@ class BendaharaUmumDaerahController extends Controller
             'saldo_awal' => $saldo_awal,
             'tanda_tangan' => $tanda_tangan
         ];
-        return view('bud.laporan_bendahara.cetak.bku_rincian')->with($data);
+
+        $view = view('bud.laporan_bendahara.cetak.bku_rincian')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
     }
 
     public function pajakDaerah(Request $request)
