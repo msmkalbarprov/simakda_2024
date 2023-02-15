@@ -67,6 +67,7 @@
             <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
         </tr>
     </table>
+
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -76,6 +77,7 @@
             <td style="text-align: center"><b>TAHUN ANGGARAN {{ tahun_anggaran() }}</b></td>
         </tr>
     </table>
+
     <table style="width: 100%" border="1" id="rincian">
         <thead>
             <tr>
@@ -139,7 +141,9 @@
             </tr>
         </tbody>
     </table>
+
     <br>
+
     <table>
         <tr>
             <td>Pada hari ini, tanggal {{ tanggal($tanggal) }}</td>
@@ -151,22 +155,23 @@
             <td><i>({{ terbilang($total_terima_akhir - $total_keluar_akhir) }})</i></td>
         </tr>
     </table>
+
     @if (isset($tanda_tangan))
-        <div style="padding-top:20px;padding-left:800px">
+        <div style="padding-top:20px">
             <table class="table" style="width:100%">
                 <tr>
+                    <td style="width: 50%"></td>
                     <td style="padding-bottom: 50px;text-align: center">
                         Kuasa Bendahara Umum Daerah
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">{{ $tanda_tangan->pangkat }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">NIP. {{ $tanda_tangan->nip }}</td>
+                    <td style="width: 50%"></td>
+                    <td style="text-align: center">
+                        <b><u>{{ $tanda_tangan->nama }}</u></b> <br>
+                        {{ $tanda_tangan->pangkat }} <br>
+                        NIP. {{ $tanda_tangan->nip }}
+                    </td>
                 </tr>
             </table>
         </div>

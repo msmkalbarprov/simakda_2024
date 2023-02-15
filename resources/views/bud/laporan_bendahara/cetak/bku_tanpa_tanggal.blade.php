@@ -54,6 +54,7 @@
         </tr>
 
     </table>
+
     <table style="width: 100%" border="1" id="rincian">
         <thead>
             <tr>
@@ -154,6 +155,7 @@
         </tbody>
     </table>
     <br>
+
     <table>
         <tr>
             <td>Pada hari ini,
@@ -179,22 +181,23 @@
             </td>
         </tr>
     </table>
+
     @if (isset($tanda_tangan))
-        <div style="padding-top:20px;padding-left:800px">
+        <div style="padding-top:20px">
             <table class="table" style="width:100%">
                 <tr>
+                    <td style="width: 50%"></td>
                     <td style="padding-bottom: 50px;text-align: center">
                         Kuasa Bendahara Umum Daerah
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">{{ $tanda_tangan->pangkat }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">NIP. {{ $tanda_tangan->nip }}</td>
+                    <td style="width: 50%"></td>
+                    <td style="text-align: center">
+                        <b><u>{{ $tanda_tangan->nama }}</u></b> <br>
+                        {{ $tanda_tangan->pangkat }} <br>
+                        NIP. {{ $tanda_tangan->nip }}
+                    </td>
                 </tr>
             </table>
         </div>

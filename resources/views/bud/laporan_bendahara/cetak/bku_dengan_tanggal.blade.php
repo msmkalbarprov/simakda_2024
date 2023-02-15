@@ -54,6 +54,7 @@
         </tr>
 
     </table>
+
     <table style="width: 100%" border="1" id="rincian">
         <thead>
             <tr>
