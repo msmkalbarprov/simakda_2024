@@ -50,7 +50,8 @@
                                 @foreach ($daftar_sp2d as $sp2d)
                                     <option value="{{ $sp2d->no_sp2d }}" data-tgl_sp2d="{{ $sp2d->tgl_sp2d }}"
                                         data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
-                                        data-nilai="{{ $sp2d->nilai }}" data-bank="{{ $sp2d->bank }}">
+                                        data-nilai="{{ $sp2d->nilai }}" data-bank="{{ $sp2d->bank }}"
+                                        data-bic="{{ $sp2d->bic }}">
                                         {{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }} |
                                         {{ nama_bank($sp2d->bank) }} | {{ $sp2d->nm_skpd }}
                                     </option>
@@ -84,6 +85,7 @@
                                 <th>Tanggal SPM</th>
                                 <th>Nilai</th>
                                 <th>Bank</th>
+                                <th>BIC</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

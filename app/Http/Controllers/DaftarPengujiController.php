@@ -57,6 +57,7 @@ class DaftarPengujiController extends Controller
             })
             ->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')
             ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'a.status')
+            ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
             ->where(['a.no_uji' => $no_advice])
             ->orderBy('a.no_sp2d')
             ->get();
@@ -108,6 +109,7 @@ class DaftarPengujiController extends Controller
             ->where('is_verified', '1')
             ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd', 'bank')
             ->selectRaw("(SELECT nama from ms_bank a where bank=a.kode) as nama_bank")
+            ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
             ->get();
         return response()->json($data);
     }
@@ -115,9 +117,15 @@ class DaftarPengujiController extends Controller
     public function create()
     {
         $data = [
-            'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
-                $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
-            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd')->get()
+            'daftar_sp2d' => DB::table('trhsp2d')
+                ->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
+                ->where(function ($query) {
+                    $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
+                })
+                ->where('is_verified', '1')
+                ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd')
+                ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
+                ->get()
         ];
 
         return view('penatausahaan.pengeluaran.daftar_penguji.create')->with($data);

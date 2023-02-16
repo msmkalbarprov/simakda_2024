@@ -75,6 +75,7 @@
                                 <th>Tanggal SPM</th>
                                 <th>Nilai</th>
                                 <th>Bank</th>
+                                <th>BIC</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

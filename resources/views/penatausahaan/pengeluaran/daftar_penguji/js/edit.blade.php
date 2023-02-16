@@ -47,6 +47,11 @@
                     visible: false
                 },
                 {
+                    data: 'bic',
+                    name: 'bic',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -78,6 +83,7 @@
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
             let bank = $(this).find(':selected').data('bank');
+            let bic = $(this).find(':selected').data('bic');
 
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
@@ -94,18 +100,25 @@
                     no_spm: value.no_spm,
                     tgl_spm: value.tgl_spm,
                     bank: value.bank,
+                    bic: value.bic,
                 };
                 return result;
             });
+
+            let daftar_bic = ["BSMDIDJA", "PDKBIDJ1", "SYKBIDJ1"];
+
             let kondisi = tampungan.map(function(data) {
                 if (data.no_sp2d == no_sp2d && data.no_spm == no_spm) {
                     return '1';
                 }
-                if (data.bank == '266' && bank != '266') {
+                // if (data.bank == '266' && bank != '266') {
+                //     return '2';
+                // }
+                // if (data.bank != '266' && bank == '266') {
+                //     return '3';
+                // }
+                if (daftar_bic.includes(bic) != true) {
                     return '2';
-                }
-                if (data.bank != '266' && bank == '266') {
-                    return '3';
                 }
             });
 
@@ -221,7 +234,7 @@
                     `<option value="0" disabled selected>Silahkan Pilih</option>`);
                 $.each(data, function(index, data) {
                     $('#no_sp2d').append(
-                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
+                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}" data-bic="${data.bic}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
                     );
                 })
             }

@@ -36,6 +36,11 @@
                     visible: false
                 },
                 {
+                    data: 'bic',
+                    name: 'bic',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -60,6 +65,7 @@
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
             let bank = $(this).find(':selected').data('bank');
+            let bic = $(this).find(':selected').data('bic');
 
             let tampungan = rincian_penguji.rows().data().toArray().map((value) => {
                 let result = {
@@ -68,19 +74,36 @@
                     no_spm: value.no_spm,
                     tgl_spm: value.tgl_spm,
                     bank: value.bank,
+                    bic: value.bic,
                 };
                 return result;
             });
+
+            let daftar_bic = ["BSMDIDJA", "PDKBIDJ1", "SYKBIDJ1"];
+
             let kondisi = tampungan.map(function(data) {
                 if (data.no_sp2d == no_sp2d && data.no_spm == no_spm) {
                     return '1';
                 }
-                if (data.bank == '266' && bank != '266') {
+                // if (data.bank == '266' && bank != '266') {
+                //     return '2';
+                // }
+                // if (data.bank != '266' && bank == '266') {
+                //     return '3';
+                // }
+                if (daftar_bic.includes(bic) != true) {
                     return '2';
                 }
-                if (data.bank != '266' && bank == '266') {
-                    return '3';
-                }
+                // if ((data.bic == 'BSMDIDJA' && data.bic == 'PDKBIDJ1' || data.bic ==
+                //         'SYKBIDJ1') && (bic != 'BSMDIDJA' || bic != 'PDKBIDJ1' || bic !=
+                //         'SYKBIDJ1')) {
+                //     return '2';
+                // }
+                // if ((data.bic != 'BSMDIDJA' || data.bic != 'PDKBIDJ1' || data.bic !=
+                //         'SYKBIDJ1') && (bic == 'BSMDIDJA' || bic == 'PDKBIDJ1' || bic ==
+                //         'SYKBIDJ1')) {
+                //     return '2';
+                // }
             });
             if (kondisi.includes("1")) {
                 alert('Nomor SP2D ini sudah ada di LIST!');
@@ -89,13 +112,13 @@
             }
 
             if (kondisi.includes("2")) {
-                alert('Dilist sudah ada Bank Kalbar Pontianak,Tidak boleh pakai Bank Lain!');
+                alert('Dilist sudah ada Bank Kalbar,Tidak boleh pakai Bank Lain!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
 
             if (kondisi.includes("3")) {
-                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar Pontianak!');
+                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
@@ -109,6 +132,7 @@
                     minimumFractionDigits: 2
                 }).format(nilai),
                 'bank': bank,
+                'bic': bic,
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_sp2d}','${tgl_sp2d}','${no_spm}','${tgl_spm}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             $("#no_sp2d").val(null).change();
