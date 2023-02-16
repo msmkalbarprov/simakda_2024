@@ -83,7 +83,7 @@
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
             let bank = $(this).find(':selected').data('bank');
-            let bic = $(this).find(':selected').data('bic');
+            let bic = $(this).find(':selected').data('bic').trim();
 
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
@@ -117,8 +117,18 @@
                 // if (data.bank != '266' && bank == '266') {
                 //     return '3';
                 // }
-                if (daftar_bic.includes(bic) != true) {
-                    return '2';
+                if (data.bic == 'BSMDIDJA' || data.bic == 'PDKBIDJ1' || data.bic ==
+                    'SYKBIDJ1') {
+                    if (daftar_bic.includes(bic) == false) {
+                        return '2';
+                    }
+                }
+
+                if (data.bic != 'BSMDIDJA' || data.bic != 'PDKBIDJ1' || data.bic !=
+                    'SYKBIDJ1') {
+                    if (daftar_bic.includes(bic) == true) {
+                        return '3';
+                    }
                 }
             });
 
@@ -128,13 +138,13 @@
                 return;
             }
             if (kondisi.includes("2")) {
-                alert('Dilist sudah ada Bank Kalbar Pontianak,Tidak boleh pakai Bank Lain!');
+                alert('Dilist sudah ada Bank Kalbar,Tidak boleh pakai Bank Lain!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
 
             if (kondisi.includes("3")) {
-                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar Pontianak!');
+                alert('Dilist sudah ada Selain Bank Kalbar,Tidak boleh pakai Bank Kalbar!');
                 $("#no_sp2d").val(null).change();
                 return;
             }
