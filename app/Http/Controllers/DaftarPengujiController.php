@@ -57,7 +57,7 @@ class DaftarPengujiController extends Controller
             })
             ->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')
             ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'a.status')
-            ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
+            ->selectRaw("(SELECT TRIM(bic) from ms_bank a where bank=a.kode) as bic")
             ->where(['a.no_uji' => $no_advice])
             ->orderBy('a.no_sp2d')
             ->get();
