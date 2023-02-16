@@ -1233,6 +1233,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('sp2d', [TransaksiLaluController::class, 'sp2d'])->name('transaksi_lalu.sp2d');
             Route::post('rekening', [TransaksiLaluController::class, 'rekening'])->name('transaksi_lalu.rekening');
             Route::post('angkas_spd', [TransaksiLaluController::class, 'angkasSpd'])->name('transaksi_lalu.angkas_spd');
+            Route::post('potongan', [TransaksiLaluController::class, 'potongan'])->name('transaksi_lalu.potongan');
             Route::post('sumber', [TransaksiLaluController::class, 'sumber'])->name('transaksi_lalu.sumber');
             Route::post('sumber_dana', [TransaksiLaluController::class, 'sumberDana'])->name('transaksi_lalu.sumber_dana');
             Route::post('load_data', [TransaksiLaluController::class, 'loadData'])->name('transaksi_lalu.load_data');
@@ -1389,7 +1390,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'pengesahan_spm_tu'], function () {
             Route::get('', [PengesahanController::class, 'indexPengesahanSpmTu'])->name('pengesahan_spm_tu.index');
             Route::post('load', [PengesahanController::class, 'loadPengesahanSpmTu'])->name('pengesahan_spm_tu.load');
-            Route::get('edit/{no_spp?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanSpmTu'])->name('pengesahan_spm_tu.edit');
+            Route::get('edit/{no_spm?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanSpmTu'])->name('pengesahan_spm_tu.edit');
             Route::post('detail', [PengesahanController::class, 'detailPengesahanSpmTu'])->name('pengesahan_spm_tu.detail');
             Route::post('setuju', [PengesahanController::class, 'setujuPengesahanSpmTu'])->name('pengesahan_spm_tu.setuju');
             Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanSpmTu'])->name('pengesahan_spm_tu.batal_setuju');
