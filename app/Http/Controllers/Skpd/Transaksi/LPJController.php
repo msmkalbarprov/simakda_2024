@@ -1800,7 +1800,22 @@ class LPJController extends Controller
     // INPUT LPJ TU
     public function indexLpjTu()
     {
-        return view('skpd.lpj.lpj_tu.index');
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'ttd1' => DB::table('ms_ttd')
+                ->select('nip', 'nama')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['BK', 'BPP'])
+                ->get(),
+            'ttd2' => DB::table('ms_ttd')
+                ->select('nip', 'nama')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->get(),
+        ];
+
+        return view('skpd.lpj.lpj_tu.index')->with($data);
     }
 
     public function loadLpjTu()
@@ -1819,7 +1834,7 @@ class LPJController extends Controller
                 $btn = '<a href="' . route("lpj_tu.edit", ['no_lpj' => Crypt::encrypt($row->no_lpj), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
-            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->jenis . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->jenis . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_sp2d . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -2063,6 +2078,152 @@ class LPJController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function sptbLpjTu(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $no_sp2d = $request->no_sp2d;
+        $tgl_ttd = $request->tgl_ttd;
+        $kd_skpd = $request->kd_skpd;
+        $bendahara = $request->bendahara;
+        $pa_kpa = $request->pa_kpa;
+        $jenis_print = $request->jenis_print;
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'tgl_ttd' => $tgl_ttd,
+            'dpa' => DB::table('trhrka')
+                ->select('no_dpa', 'tgl_dpa')
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => status_anggaran()])
+                ->first(),
+            'jumlah_belanja' => collect(DB::select("SELECT SUM(nilai) AS nilai
+                        FROM
+                            trlpj_tu c
+                        INNER JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj
+                        WHERE
+                        c.no_lpj =?", [$no_lpj]))->first(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'daerah' => DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first()
+        ];
+
+        $view = view('skpd.lpj.lpj_tu.cetak.sptb')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
+    public function rincianLpjTu(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $no_sp2d = $request->no_sp2d;
+        $tgl_ttd = $request->tgl_ttd;
+        $kd_skpd = $request->kd_skpd;
+        $bendahara = $request->bendahara;
+        $pa_kpa = $request->pa_kpa;
+        $jenis_print = $request->jenis_print;
+
+
+        $program = collect(DB::select("SELECT c.kd_program,c.kd_kegiatan,a.kd_sub_kegiatan FROM trdspp a INNER JOIN trhsp2d b ON a.no_spp = b.no_spp join trskpd c on a.kd_sub_kegiatan=c.kd_sub_kegiatan WHERE no_sp2d = ? group by c.kd_program,c.kd_kegiatan,a.kd_sub_kegiatan", [$no_sp2d]))->first();
+
+        $cek = collect(DB::select("SELECT
+                         COUNT (*) as tot
+                        FROM
+                            trlpj_tu c
+                        LEFT JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj AND c.kd_skpd=d.kd_skpd
+                        WHERE
+                        c.no_lpj = ? AND d.kd_skpd=?", [$no_lpj, $kd_skpd]))->first();
+
+        if ($cek->tot == 0) {
+            $data_rincian = DB::select("SELECT c.kd_rek6 ,c.nm_rek6,0 as nilai,'' tgl_bukti,'' no_bukti
+                FROM trhspp a INNER JOIN trhsp2d b ON a.no_spp = b.no_spp AND a.kd_skpd=b.kd_skpd
+                join trdspp c ON a.no_spp = c.no_spp AND a.kd_skpd=c.kd_skpd
+                WHERE no_sp2d = ? union all
+                        SELECT a.kd_rek6+'.1' as kd_rek6, c.ket+' \\ No BKU: '+a.no_bukti as nm_rek6, sum(a.nilai) as nilai,
+                        c.tgl_bukti,a.no_bukti
+                        FROM trlpj_tu a
+                        INNER JOIN trhlpj_tu b ON a.no_lpj=b.no_lpj AND a.kd_skpd=b.kd_skpd
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE a.no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY a.kd_sub_kegiatan, a.kd_rek6, nm_rek6,a.nilai,a.no_bukti, ket,tgl_bukti
+                        ORDER BY kd_rek6,tgl_bukti,no_bukti", [$no_sp2d, $no_lpj, $kd_skpd, $program->kd_sub_kegiatan]);
+        } else {
+            $data_rincian = DB::select("SELECT
+                        kd_rek6,nm_rek6,SUM(nilai) as nilai,'' tgl_bukti,'' no_bukti
+                        FROM
+                        trlpj_tu c
+                        LEFT JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj AND c.kd_skpd=d.kd_skpd
+                        WHERE
+                        c.no_lpj = ? AND d.kd_skpd=?
+                        GROUP BY kd_rek6,nm_rek6 union all
+                        SELECT a.kd_rek6+'.1' as kd_rek6, c.ket+' \\ No BKU: '+a.no_bukti as nm_rek6, sum(a.nilai) as nilai,
+                        c.tgl_bukti,a.no_bukti
+                        FROM trlpj_tu a
+                        INNER JOIN trhlpj_tu b ON a.no_lpj=b.no_lpj AND a.kd_skpd=b.kd_skpd
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE a.no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY a.kd_sub_kegiatan, a.kd_rek6, nm_rek6,a.nilai,a.no_bukti, ket,tgl_bukti
+                        ORDER BY kd_rek6,tgl_bukti,no_bukti", [$no_lpj, $kd_skpd, $no_lpj, $kd_skpd, $program->kd_sub_kegiatan]);
+        }
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'tgl_ttd' => $tgl_ttd,
+            'dpa' => DB::table('trhrka')
+                ->select('no_dpa', 'tgl_dpa')
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => status_anggaran()])
+                ->first(),
+            'jumlah_belanja' => collect(DB::select("SELECT SUM(nilai) AS nilai
+                        FROM
+                            trlpj_tu c
+                        INNER JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj
+                        WHERE
+                        c.no_lpj =?", [$no_lpj]))->first(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'daerah' => DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first(),
+            'program' => $program,
+            'no_sp2d' => $no_sp2d,
+            'data_rincian' => $data_rincian,
+            'total' => collect(DB::select("SELECT
+                        SUM(nilai) nilai
+                        FROM
+                            trlpj_tu c
+                        LEFT JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj
+                        WHERE
+                        c.no_lpj =?", [$no_lpj]))->first()->nilai,
+            'persediaan' => collect(DB::select("SELECT SUM(a.nilai) AS nilai FROM trdspp a LEFT JOIN trhsp2d b ON b.no_spp=a.no_spp
+                         WHERE b.kd_skpd=? AND b.jns_spp=3 AND  no_sp2d = ?", [$kd_skpd, $no_sp2d]))->first()->nilai,
+            'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $bendahara])->whereIn('kode', ['BK', 'BPP'])->first(),
+        ];
+
+        $view = view('skpd.lpj.lpj_tu.cetak.rincian')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 }

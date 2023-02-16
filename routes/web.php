@@ -1166,6 +1166,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('edit/{no_lpj?}/{kd_skpd?}', [LPJController::class, 'editLpjTu'])->name('lpj_tu.edit');
                 Route::post('update', [LPJController::class, 'updateLpjTu'])->name('lpj_tu.update');
                 Route::post('hapus', [LPJController::class, 'hapusLpjTu'])->name('lpj_tu.hapus');
+
+                // CETAKAN
+                Route::get('sptb', [LPJController::class, 'sptbLpjTu'])->name('lpj_tu.sptb');
+                Route::get('rincian', [LPJController::class, 'rincianLpjTu'])->name('lpj_tu.rincian');
             });
         });
         // SPP GU

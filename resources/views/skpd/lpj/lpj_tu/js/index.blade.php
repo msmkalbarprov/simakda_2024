@@ -96,29 +96,82 @@
 
         $('.sptb').on('click', function() {
             let no_lpj = document.getElementById('no_lpj').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
+            let tgl_ttd = document.getElementById('tgl_ttd').value;
+            let bendahara = document.getElementById('bendahara').value;
             let pa_kpa = document.getElementById('pa_kpa').value;
             let jenis_print = $(this).data("jenis");
+
+            if (!tgl_ttd) {
+                alert("Tanggal TTD tidak boleh kosong!");
+                return;
+            }
+
+            if (!bendahara) {
+                alert("Bendahara Pengeluaran tidak boleh kosong!");
+                return;
+            }
 
             if (!pa_kpa) {
                 alert("Pengguna Anggaran tidak boleh kosong!");
                 return;
             }
 
-            let url = new URL("{{ route('lpj.skpd_tanpa_unit.cetak_sptb') }}");
+            let url = new URL("{{ route('lpj_tu.sptb') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_lpj", no_lpj);
+            searchParams.append("no_sp2d", no_sp2d);
             searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tgl_ttd", tgl_ttd);
+            searchParams.append("bendahara", bendahara);
+            searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.rincian').on('click', function() {
+            let no_lpj = document.getElementById('no_lpj').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tgl_ttd = document.getElementById('tgl_ttd').value;
+            let bendahara = document.getElementById('bendahara').value;
+            let pa_kpa = document.getElementById('pa_kpa').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (!tgl_ttd) {
+                alert("Tanggal TTD tidak boleh kosong!");
+                return;
+            }
+
+            if (!bendahara) {
+                alert("Bendahara Pengeluaran tidak boleh kosong!");
+                return;
+            }
+
+            if (!pa_kpa) {
+                alert("Pengguna Anggaran tidak boleh kosong!");
+                return;
+            }
+
+            let url = new URL("{{ route('lpj_tu.rincian') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_lpj", no_lpj);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tgl_ttd", tgl_ttd);
+            searchParams.append("bendahara", bendahara);
             searchParams.append("pa_kpa", pa_kpa);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
     });
 
-    function cetak(no_lpj, jenis, kd_skpd) {
+    function cetak(no_lpj, jenis, kd_skpd, no_sp2d) {
         $('#no_lpj').val(no_lpj);
         $('#jenis').val(jenis);
         $('#kd_skpd').val(kd_skpd);
+        $('#no_sp2d').val(no_sp2d);
         $('#modal_cetak').modal('show');
     }
 
