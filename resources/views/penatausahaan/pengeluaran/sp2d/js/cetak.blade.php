@@ -15,12 +15,12 @@
                 "url": "{{ route('sp2d.load_data') }}",
                 "type": "POST",
             },
-            // createdRow: function(row, data, index) {
-            //     if (data.status == 1) {
-            //         $(row).css("background-color", "#4bbe68");
-            //         $(row).css("color", "white");
-            //     }
-            // },
+            createdRow: function(row, data, index) {
+                if (data.status_bud == '1') {
+                    $(row).css("background-color", "#4bbe68");
+                    $(row).css("color", "white");
+                }
+            },
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
