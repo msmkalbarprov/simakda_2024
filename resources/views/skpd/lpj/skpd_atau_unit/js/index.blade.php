@@ -106,7 +106,7 @@
                 return;
             }
 
-            let url = new URL("{{ route('lpj.skpd_tanpa_unit.cetak_sptb') }}");
+            let url = new URL("{{ route('lpj.skpd_atau_unit.cetak_sptb') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_lpj", no_lpj);
             searchParams.append("kd_skpd", kd_skpd);

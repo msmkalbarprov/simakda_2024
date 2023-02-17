@@ -1469,6 +1469,41 @@ class LPJController extends Controller
         }
     }
 
+    public function sptbSkpdAtauUnit(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $kd_skpd = $request->kd_skpd;
+        $pa_kpa = $request->pa_kpa;
+        $jenis_print = $request->jenis_print;
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'dpa' => DB::table('trhrka')
+                ->select('no_dpa', 'tgl_dpa')
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => status_anggaran()])
+                ->first(),
+            'jumlah_belanja' => collect(DB::select("SELECT sum(nilai) [nilai],b.tgl_lpj from trlpj a join trhlpj_unit b on a.no_lpj_unit=b.no_lpj and a.kd_skpd=b.kd_skpd
+                where a.no_lpj_unit=? and b.jenis=?  and  a.kd_skpd=? group by b.tgl_lpj", [$no_lpj, '1', $kd_skpd]))->first(),
+            'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['kd_skpd' => $kd_skpd, 'nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'daerah' => DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first()
+        ];
+
+        $view = view('skpd.lpj.skpd_atau_unit.cetak.sptb')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
     public function rincianSkpdAtauUnit(Request $request)
     {
         $no_lpj = $request->no_lpj;
