@@ -79,6 +79,10 @@ use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
 use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
 use App\Http\Controllers\Akuntansi\LraController;
+use App\Http\Controllers\Skpd\BOS\PenerimaanBosController;
+use App\Http\Controllers\Skpd\BOS\PengembalianBosController;
+use App\Http\Controllers\Skpd\BOS\Sp2bController;
+use App\Http\Controllers\Skpd\BOS\TransaksiBosController;
 use App\Http\Controllers\Skpd\Panjar\PembayaranPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PengembalianPanjarController;
 use App\Http\Controllers\Skpd\Panjar\PertanggungjawabanPanjarController;
@@ -1374,8 +1378,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load', [PengesahanController::class, 'loadPengesahanLpjUp'])->name('pengesahan_lpj_upgu.load');
             Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanLpjUp'])->name('pengesahan_lpj_upgu.edit');
             Route::post('detail', [PengesahanController::class, 'detailPengesahanLpjUp'])->name('pengesahan_lpj_upgu.detail');
+            Route::post('kegiatan', [PengesahanController::class, 'kegiatanPengesahanLpjUp'])->name('pengesahan_lpj_upgu.kegiatan');
             Route::post('setuju', [PengesahanController::class, 'setujuPengesahanLpjUp'])->name('pengesahan_lpj_upgu.setuju');
             Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanLpjUp'])->name('pengesahan_lpj_upgu.batal_setuju');
+
+            // CETAKAN
+            Route::get('cetak', [PengesahanController::class, 'cetakPengesahanLpjUp'])->name('pengesahan_lpj_upgu.cetak');
         });
         // Pengesahan LPJ TU
         Route::group(['prefix' => 'pengesahan_lpj_tu'], function () {
@@ -1400,6 +1408,49 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [PengesahanController::class, 'indexKendaliProteksi'])->name('kendali_proteksi_lpj.index');
             Route::post('load', [PengesahanController::class, 'loadKendaliProteksi'])->name('kendali_proteksi_lpj.load');
             Route::post('simpan', [PengesahanController::class, 'simpanKendaliProteksi'])->name('kendali_proteksi_lpj.simpan');
+        });
+    });
+
+    Route::group(['prefix' => 'transaksi_bos'], function () {
+        // Input Transaksi BOS
+        Route::group(['prefix' => 'input_transaksi_bos'], function () {
+            Route::get('', [TransaksiBosController::class, 'index'])->name('transaksi_bos.index');
+            Route::post('load', [TransaksiBosController::class, 'load'])->name('transaksi_bos.load');
+            Route::get('create', [TransaksiBosController::class, 'create'])->name('transaksi_bos.create');
+            Route::post('simpan', [TransaksiBosController::class, 'simpan'])->name('transaksi_bos.simpan');
+            Route::get('edit/{no_terima?}/{kd_skpd?}', [TransaksiBosController::class, 'edit'])->name('transaksi_bos.edit');
+            Route::post('update', [TransaksiBosController::class, 'update'])->name('transaksi_bos.update');
+            Route::post('hapus', [TransaksiBosController::class, 'hapus'])->name('transaksi_bos.hapus');
+        });
+        // SP2B
+        Route::group(['prefix' => 'sp2b'], function () {
+            Route::get('', [Sp2bController::class, 'index'])->name('sp2b.index');
+            Route::post('load', [Sp2bController::class, 'load'])->name('sp2b.load');
+            Route::get('create', [Sp2bController::class, 'create'])->name('sp2b.create');
+            Route::post('simpan', [Sp2bController::class, 'simpan'])->name('sp2b.simpan');
+            Route::get('edit/{no_lpj?}/{kd_skpd?}', [Sp2bController::class, 'edit'])->name('sp2b.edit');
+            Route::post('update', [Sp2bController::class, 'update'])->name('sp2b.update');
+            Route::post('hapus', [Sp2bController::class, 'hapus'])->name('sp2b.hapus');
+        });
+        // Penerimaan BOS
+        Route::group(['prefix' => 'penerimaan_bos'], function () {
+            Route::get('', [PenerimaanBosController::class, 'index'])->name('penerimaan_bos.index');
+            Route::post('load', [PenerimaanBosController::class, 'load'])->name('penerimaan_bos.load');
+            Route::get('create', [PenerimaanBosController::class, 'create'])->name('penerimaan_bos.create');
+            Route::post('simpan', [PenerimaanBosController::class, 'simpan'])->name('penerimaan_bos.simpan');
+            Route::get('edit/{no_terima?}/{kd_skpd?}', [PenerimaanBosController::class, 'edit'])->name('penerimaan_bos.edit');
+            Route::post('update', [PenerimaanBosController::class, 'update'])->name('penerimaan_bos.update');
+            Route::post('hapus', [PenerimaanBosController::class, 'hapus'])->name('penerimaan_bos.hapus');
+        });
+        // Pengembalian BOS
+        Route::group(['prefix' => 'pengembalian_bos'], function () {
+            Route::get('', [PengembalianBosController::class, 'index'])->name('pengembalian_bos.index');
+            Route::post('load', [PengembalianBosController::class, 'load'])->name('pengembalian_bos.load');
+            Route::get('create', [PengembalianBosController::class, 'create'])->name('pengembalian_bos.create');
+            Route::post('simpan', [PengembalianBosController::class, 'simpan'])->name('pengembalian_bos.simpan');
+            Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengembalianBosController::class, 'edit'])->name('pengembalian_bos.edit');
+            Route::post('update', [PengembalianBosController::class, 'update'])->name('pengembalian_bos.update');
+            Route::post('hapus', [PengembalianBosController::class, 'hapus'])->name('pengembalian_bos.hapus');
         });
     });
 

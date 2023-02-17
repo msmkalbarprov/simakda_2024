@@ -5,147 +5,234 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PENERIMAAN KAS</title>
+    <title>CETAK RINCIAN</title>
     <style>
-        table {
-            border-collapse: collapse
-        }
-
-        .t1 {
-            font-weight: normal
-        }
-
-        #rincian>thead>tr>th {
+        #header>thead>tr>th {
             background-color: #CCCCCC;
         }
 
-        .kanan {
-            border-right: 1px solid black
-        }
-
-        .kiri {
-            border-left: 1px solid black
-        }
-
-        .bawah {
-            border-bottom: 1px solid black
-        }
-
-        .angka {
-            text-align: right
+        .rincian>tbody>tr>td {
+            font-size: 16px;
         }
     </style>
 </head>
 
-{{-- <body onload="window.print()"> --}}
-
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%" align="center"
-        border="0" cellspacing="0" cellpadding="0">
-        <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">
-                {{ $header->nm_pemda }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">SURAT TANDA
-                SETORAN</td>
-        </tr>
-        <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">(STS)</td>
-        </tr>
-    </table>
+    <div style="text-align: center">
+        <table style="width: 100%;font-family:Open Sans;">
+            <tr>
+                <td style="font-size:18px"><b>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</b></td>
+            </tr>
+            <tr>
+                <td style="font-size:18px"><b>LAPORAN PERTANGGUNG JAWABAN UANG PERSEDIAAN</b></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="text-align: left;padding-top:20px">
+        <table style="width: 100%;font-family:Open Sans;" class="rincian">
+            <tr>
+                <td>OPD</td>
+                <td>:</td>
+                <td>{{ $kd_skpd }} - {{ nama_skpd($kd_skpd) }}</td>
+            </tr>
+            @if ($pilihan == '0' || $pilihan == '1')
+                <tr>
+                    <td>No. LPJ</td>
+                    <td>:</td>
+                    <td>{{ $no_lpj }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td>PERIODE</td>
+                    <td>:</td>
+                    <td>{{ tanggal($lpj->tgl_awal) }} s/d {{ tanggal($lpj->tgl_akhir) }}</td>
+                </tr>
+                <tr>
+                    <td>Kegiatan</td>
+                    <td>:</td>
+                    <td>{{ $kegiatan }} - {{ nama_kegiatan($kegiatan) }}</td>
+                </tr>
+            @endif
+        </table>
+    </div>
     <br>
-    <table style="width: 100%">
-        <tbody>
-            <tr>
-                <td style="width: 10%">No STS</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $no_sts }}</td>
-                <td style="width: 10%">Bank</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->nm_bank }}</td>
-            </tr>
-            <tr>
-                <td style="width: 10%">OPD</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->nm_skpd }}</td>
-                <td style="width: 10%">No Rekening</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->rek_bank }}</td>
-            </tr>
-            <tr>
-                <td colspan="3">Harap diterima uang sebesar <br>(dengan huruf)</td>
-                <td colspan="3"><i>({{ terbilang($data->total) }})</i></td>
-            </tr>
-            <tr>
-                <td colspan="6">Dengan rincian penerimaan sebagai berikut</td>
-            </tr>
-        </tbody>
-    </table>
-    <table style="width: 100%" border="1" id="rincian">
+    <table style="border-collapse:collapse;font-family: Open Sans;width:100%" id="header" border="1"
+        class="rincian">
         <thead>
             <tr>
-                <th>No</th>
-                <th colspan="5">Kode Rekening</th>
-                <th>Uraian Rincian Objek</th>
-                <th>Jumlah</th>
+                <th>NO</th>
+                <th>KODE REKENING</th>
+                <th>URAIAN</th>
+                <th>JUMLAH</th>
+            </tr>
+            <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
             </tr>
         </thead>
         <tbody>
             @php
+                $i = 0;
                 $total = 0;
             @endphp
-            @foreach ($detail as $data1)
-                @php
-                    $total += $data1->rupiah;
-                @endphp
-                <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 0, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 1, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 2, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 3, 2) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 5, 2) }}</td>
-                    <td>{{ $data1->nm_rek6 }}</td>
-                    <td style="text-align: right">{{ rupiah($data1->rupiah) }}</td>
-                </tr>
+            @foreach ($data_lpj as $data)
+                @if ($pilihan == '0')
+                    @if ($data->urut == 1)
+                        @php
+                            $i = $i + 1;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"><i><b>{{ $i }}</b></i></td>
+                            <td><i><b>{{ $data->kode }}</b></i></td>
+                            <td><i><b>{{ $data->uraian }}</b></i></td>
+                            <td style="text-align: right"><i><b>{{ rupiah($data->nilai) }}</b></i></td>
+                        </tr>
+                    @elseif ($data->urut == 2)
+                        <tr>
+                            <td style="text-align: center"><b></b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->uraian }}</b></td>
+                            <td style="text-align: right"><b>{{ rupiah($data->nilai) }}</b></td>
+                        </tr>
+                    @elseif ($data->urut == 7)
+                        @php
+                            $total += $data->nilai;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"></td>
+                            <td>{{ $data->kode }}</td>
+                            <td>{{ $data->uraian }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td style="text-align: center"></td>
+                            <td>{{ $data->kode }}</td>
+                            <td>{{ $data->uraian }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                        </tr>
+                    @endif
+                @elseif ($pilihan == '1')
+                    @if ($data->urut == 1)
+                        @php
+                            $i = $i + 1;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"><b>{{ $i }}</b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->uraian }}</b></td>
+                            <td style="text-align: right"><b>{{ rupiah($data->nilai) }}</b></td>
+                        </tr>
+                    @elseif ($data->urut == 2)
+                        @php
+                            $total += $data->nilai;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"><b></b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->uraian }}</b></td>
+                            <td style="text-align: right"><b>{{ rupiah($data->nilai) }}</b></td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td style="text-align: center"></td>
+                            <td>{{ $data->kode }}</td>
+                            <td>{{ $data->uraian }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                        </tr>
+                    @endif
+                @elseif ($pilihan == '2')
+                    @if ($data->urut == 1)
+                        @php
+                            $i = $i + 1;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"><i><b>{{ $i }}</b></i></td>
+                            <td><i><b>{{ $data->kode }}</b></i></td>
+                            <td><i><b>{{ $data->uraian }}</b></i></td>
+                            <td style="text-align: right"><i><b>{{ rupiah($data->nilai) }}</b></i></td>
+                        </tr>
+                    @elseif ($data->urut == 2)
+                        <tr>
+                            <td style="text-align: center"><b></b></td>
+                            <td><b>{{ $data->kode }}</b></td>
+                            <td><b>{{ $data->uraian }}</b></td>
+                            <td style="text-align: right"><b>{{ rupiah($data->nilai) }}</b></td>
+                        </tr>
+                    @else
+                        @php
+                            $total += $data->nilai;
+                        @endphp
+                        <tr>
+                            <td style="text-align: center"></td>
+                            <td>{{ $data->rek }}</td>
+                            <td>{{ $data->uraian }}</td>
+                            <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                        </tr>
+                    @endif
+                @endif
             @endforeach
             <tr>
-                <td colspan="7" style="text-align: right">Jumlah</td>
-                <td style="text-align: right">{{ rupiah($total) }}</td>
+                <td style="height: 15px"></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"><b>Total</b></td>
+                <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
+            </tr>
+            @if ($pilihan == '0' || $pilihan == '1')
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right"><b>Uang Persediaan Awal Periode</b></td>
+                    <td style="text-align: right"><b>{{ rupiah($persediaan) }}</b></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right"><b>Uang Persediaan Akhir Periode</b></td>
+                    <td style="text-align: right"><b>{{ rupiah($persediaan - $total) }}</b></td>
+                </tr>
+            @endif
         </tbody>
     </table>
-    <table style="width:100%">
-        <tr>
-            <td colspan="6" style="text-align: center">Uang tersebut diterima pada tanggal
-                {{ tanggal($data->tgl_sts) }}
-            </td>
-        </tr>
-    </table>
+
+    <br>
     <div style="padding-top:20px">
-        <table class="table" style="width:100%">
+        <table class="table" style="width: 100%;font-family:Open Sans;" class="rincian">
             <tr>
-                <td style="text-align: center"><b>Mengetahui</b></td>
+                <td style="text-align: center">Disetujui <br>Kuasa Bendahara Umum Daerah</td>
                 <td style="margin: 2px 0px;text-align: center">
-                    <b>Bendahara Penerimaan</b>
+                    {{ $daerah->daerah }},
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <br> Telah diverifikasi <br>Petugas
                 </td>
             </tr>
             <tr>
                 <td style="padding-bottom: 50px;text-align: center">
-                    <b>Pengguna Anggaran/Kuasa Pengguna Anggaran</b>
+
                 </td>
                 <td style="padding-bottom: 50px;text-align: center">
-                    <b>Bendahara Penerimaan Pembantu</b>
+
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center"><b>Nama Lengkap</b></td>
-                <td style="text-align: center"><b>Nama Lengkap</b></td>
-            </tr>
-            <tr>
-                <td style="text-align: center"><b>NIP.</b></td>
-                <td style="text-align: center"><b>NIP.</b></td>
+                <td style="text-align: center">
+                    <br>
+                    <b><u>{{ $ttd->nama }}</u></b> <br>
+                    {{ $ttd->pangkat }} <br>
+                    NIP. {{ $ttd->nip }}
+                </td>
+                <td style="text-align: center">
+                    ___________________
+                </td>
             </tr>
         </table>
     </div>

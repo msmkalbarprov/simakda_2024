@@ -9,12 +9,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class PengesahanController extends Controller
 {
     public function indexPengesahanLpjUp()
     {
-        return view('bud.pengesahan_lpj_up.index');
+        $data = [
+            'ttd1' => DB::select("SELECT nip,nama,jabatan FROM ms_ttd where kode='BUD' group by  nip,nama,jabatan")
+        ];
+
+        return view('bud.pengesahan_lpj_up.index')->with($data);
     }
 
     public function loadPengesahanLpjUp()
@@ -74,6 +79,21 @@ class PengesahanController extends Controller
         return DataTables::of($data)->addIndexColumn()->make(true);
     }
 
+    public function kegiatanPengesahanLpjUp(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+
+        $data = DB::select("SELECT a.kd_sub_kegiatan, c.nm_sub_kegiatan
+		from trlpj a
+		INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_skpd=b.kd_skpd
+		LEFT JOIN trskpd c ON a.kd_sub_kegiatan=c.kd_sub_kegiatan AND a.kd_skpd=c.kd_skpd
+		WHERE a.no_lpj = ?
+		GROUP BY a.kd_sub_kegiatan,c.nm_sub_kegiatan
+		ORDER BY a.kd_sub_kegiatan", [$no_lpj]);
+
+        return response()->json($data);
+    }
+
     public function setujuPengesahanLpjUp(Request $request)
     {
         $no_lpj = $request->no_lpj;
@@ -121,6 +141,226 @@ class PengesahanController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function cetakPengesahanLpjUp(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $kd_skpd = $request->kd_skpd;
+        $ttd = $request->ttd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $pilihan = $request->pilihan;
+        $jenis_print = $request->jenis_print;
+        $status_anggaran = status_anggaran();
+
+        if ($pilihan == '0') {
+            $data_lpj = DB::select("SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,7) as kode, b.nm_program as uraian, SUM(a.nilai) as nilai
+                                FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_program,nm_program,kd_skpd FROM trskpd  GROUP BY kd_program,nm_program,kd_skpd)b
+                                ON LEFT(a.kd_sub_kegiatan,7) =b.kd_program AND a.kd_skpd=b.kd_skpd
+                                WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY LEFT(a.kd_sub_kegiatan,7), b.nm_program
+                                UNION ALL
+
+                                SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,12) as kode, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
+                                FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_kegiatan,nm_kegiatan,kd_skpd FROM trskpd  GROUP BY kd_kegiatan,nm_kegiatan,kd_skpd)b
+                                ON LEFT(a.kd_sub_kegiatan,12) =b.kd_kegiatan AND a.kd_skpd=b.kd_skpd
+                                WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY LEFT(a.kd_sub_kegiatan,12), b.nm_kegiatan
+
+                                UNION ALL
+                                SELECT 2 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
+                                FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+                                WHERE no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY a.kd_sub_kegiatan, b.nm_sub_kegiatan
+                                UNION ALL
+                                SELECT 3 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,2) as kode, b.nm_rek2 as uraian, SUM(nilai) as nilai FROM trlpj a
+                                INNER JOIN ms_rek2 b ON LEFT(a.kd_rek6,2)=b.kd_rek2
+                                WHERE no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,2), b.nm_rek2
+                                UNION ALL
+                                SELECT 4 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,4) as kode, b.nm_rek3 as uraian, SUM(nilai) as nilai FROM trlpj a
+                                INNER JOIN ms_rek3 b ON LEFT(a.kd_rek6,4)=b.kd_rek3
+                                WHERE no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,4), b.nm_rek3
+                                UNION ALL
+
+                                SELECT 5 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,6) as kode, b.nm_rek4 as uraian, SUM(nilai) as nilai FROM trlpj a
+                                INNER JOIN ms_rek4 b ON LEFT(a.kd_rek6,6)=b.kd_rek4
+                                WHERE no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,6), b.nm_rek4
+                                UNION ALL
+
+                                SELECT 6 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,8) as kode, b.nm_rek5 as uraian, SUM(nilai) as nilai FROM trlpj a
+                                INNER JOIN ms_rek5 b ON LEFT(a.kd_rek6,8)=b.kd_rek5
+                                WHERE no_lpj=? AND a.kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,8), b.nm_rek5
+                                UNION ALL
+                                SELECT 7 as urut, kd_sub_kegiatan+'.'+kd_rek6 as kode, nm_rek6 as uraian, SUM(nilai) as nilai FROM trlpj
+                                WHERE no_lpj=? AND kd_bp_skpd=?
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
+                                GROUP BY kd_sub_kegiatan, kd_rek6, nm_rek6
+                                ORDER BY kode", [$no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd,]);
+        } elseif ($pilihan == '1') {
+            $data_lpj = DB::select("SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,7) as kode, b.nm_program as uraian, SUM(a.nilai) as nilai
+                    FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_program,nm_program,kd_skpd FROM trskpd  GROUP BY kd_program,nm_program,kd_skpd)b
+                    ON LEFT(a.kd_sub_kegiatan,7) =b.kd_program AND a.kd_skpd=b.kd_skpd
+                    WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+                    AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                    AND jns_spp IN ('1','2','3'))
+                    GROUP BY LEFT(a.kd_sub_kegiatan,7), b.nm_program
+                    UNION ALL
+
+                    SELECT 2 as urut, LEFT(a.kd_sub_kegiatan,12) as kode, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
+                    FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_kegiatan,nm_kegiatan,kd_skpd FROM trskpd  GROUP BY kd_kegiatan,nm_kegiatan,kd_skpd)b
+                    ON LEFT(a.kd_sub_kegiatan,12) =b.kd_kegiatan AND a.kd_skpd=b.kd_skpd
+                    WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+                    AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                    AND jns_spp IN ('1','2','3'))
+                    GROUP BY LEFT(a.kd_sub_kegiatan,12), b.nm_kegiatan
+
+                    UNION ALL
+                    SELECT 3 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
+                    FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+                    WHERE no_lpj=? AND a.kd_bp_skpd=?
+                    AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                    --AND (panjar NOT IN ('3') or panjar IS NULL)
+                    AND jns_spp IN ('1','2','3'))
+                    GROUP BY a.kd_sub_kegiatan, b.nm_sub_kegiatan
+                                ORDER BY kode", [$no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd]);
+        } elseif ($pilihan == '2') {
+            $data_lpj = DB::select("SELECT 1 as urut, a.kd_sub_kegiatan as kode, a.kd_sub_kegiatan as rek, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
+                        ,'' [tgl_bukti],0 [no_bukti]
+                        FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY a.kd_sub_kegiatan, b.nm_kegiatan
+                        UNION ALL
+                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,2) as kode, LEFT(a.kd_rek6,2) as rek,  nm_rek2 as uraian, SUM(nilai) as nilai,
+                        '' [tgl_bukti],0 [no_bukti] FROM trlpj a
+                        INNER JOIN ms_rek2 b ON LEFT(a.kd_rek6,2)=b.kd_rek2
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,2), nm_rek2
+                        UNION ALL
+                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,4) as kode, LEFT(a.kd_rek6,4) as rek,  nm_rek3 as uraian, SUM(nilai) as nilai,
+                        '' [tgl_bukti],0 [no_bukti] FROM trlpj a
+                        INNER JOIN ms_rek3 b ON LEFT(a.kd_rek6,4)=b.kd_rek3
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,4), nm_rek3
+                        UNION ALL
+                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,6) as kode, LEFT(a.kd_rek6,6) as rek,  nm_rek4 as uraian, SUM(nilai) as nilai
+                        ,'' [tgl_bukti],0 [no_bukti] FROM trlpj a
+                        INNER JOIN ms_rek4 b ON LEFT(a.kd_rek6,6)=b.kd_rek4
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,6), nm_rek4
+                        UNION ALL
+                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,8) as kode, LEFT(a.kd_rek6,8) as rek,  nm_rek5 as uraian, SUM(nilai) as nilai
+                        ,'' [tgl_bukti],0 [no_bukti] FROM trlpj a
+                        INNER JOIN ms_rek5 b ON LEFT(a.kd_rek6,8)=b.kd_rek5
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,8), nm_rek5
+                        UNION ALL
+                        SELECT 2 as urut, kd_sub_kegiatan+'.'+kd_rek6 as kode, kd_rek6 as rek,  nm_rek6 as uraian, SUM(nilai) as nilai
+                        ,'' [tgl_bukti],0 [no_bukti]
+                        FROM trlpj a
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE no_lpj=? AND a.kd_skpd=?
+                        AND kd_sub_kegiatan=?
+                        GROUP BY kd_sub_kegiatan, kd_rek6, nm_rek6
+                        UNION ALL
+                        SELECT 3 as urut, a.kd_sub_kegiatan+'.'+a.kd_rek6+'.1' as kode,'' as rek, c.ket+' \\ No BKU: '+a.no_bukti as uraian, sum(a.nilai) as nilai,
+                        c.tgl_bukti,a.no_bukti
+                        FROM trlpj a
+                        INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_skpd=b.kd_skpd
+                        INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
+                        AND (c.panjar NOT IN('3') or c.panjar IS NULL)
+                        WHERE a.no_lpj=? AND a.kd_skpd=?
+                        AND a.kd_sub_kegiatan=?
+                        GROUP BY a.kd_sub_kegiatan, a.kd_rek6,nm_rek6,a.no_bukti, ket,tgl_bukti
+                        ORDER BY kode,tgl_bukti,no_bukti", [$no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan]);
+        }
+
+        if ($pilihan == '2') {
+            $kd_sub_kegiatan = $kd_sub_kegiatan;
+        } else {
+            $kd_sub_kegiatan = '';
+        }
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'no_lpj' => $no_lpj,
+            'dpa' => DB::table('trhrka')
+                ->select('no_dpa', 'tgl_dpa')
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => status_anggaran()])
+                ->first(),
+            'jumlah_belanja' => DB::table('trlpj as a')
+                ->join('trhlpj as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("sum(nilai) as nilai,b.tgl_lpj")
+                ->whereRaw("a.no_lpj=? and b.jenis=? and left(a.kd_bp_skpd,17)=left(?,17)", [$no_lpj, '1', $kd_skpd])
+                ->groupBy('b.tgl_lpj')
+                ->first(),
+            'ttd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD'])->first(),
+            'daerah' => DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first(),
+            'lpj' => DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
+            'pilihan' => $pilihan,
+            'data_lpj' => $data_lpj,
+            'persediaan' => collect(DB::select("SELECT SUM(a.nilai) AS nilai FROM trdspp a LEFT JOIN trhsp2d b ON b.no_spp=a.no_spp
+						  WHERE b.kd_skpd=? AND (b.jns_spp=1)", [$kd_skpd]))->first()->nilai,
+            'kegiatan' => $kd_sub_kegiatan
+        ];
+
+        $view = view('bud.pengesahan_lpj_up.cetak')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 
