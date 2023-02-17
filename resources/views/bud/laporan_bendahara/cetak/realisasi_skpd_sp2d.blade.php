@@ -88,8 +88,8 @@
     <table style="width: 100%" border="1" class="rincian">
         <thead>
             <tr id="header3">
-                <th rowspan="2" style="width: 10%">KODE</th>
-                <th rowspan="2" style="width: 5%">Urusan Pemerintah Daerah</th>
+                <th rowspan="2" style="width: 1%">KODE</th>
+                <th rowspan="2" style="width: 20%">Urusan Pemerintah Daerah</th>
                 <th colspan="2" style="width: 5%">Belanja</th>
                 <th rowspan="2" style="width: 5%">Persen <br> tase</th>
             </tr>
