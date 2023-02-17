@@ -147,8 +147,8 @@ class PencairanSp2dController extends Controller
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
             // $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp]);
-            $kontrak = DB::table('trhspp')->selectRaw("ISNULL(no_kontrak, '') as no_kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
-            $kontrak = isset($kontrak) ? $kontrak->no_kontrak : '';
+            $kontrak = DB::table('trhspp')->selectRaw("ISNULL(kontrak, '') as kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
+            $kontrak = isset($kontrak) ? $kontrak->kontrak : '';
             $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $opd])->first();
 
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
