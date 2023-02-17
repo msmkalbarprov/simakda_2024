@@ -38,7 +38,7 @@
                     <div style="float: right;">
                         <button id="proses_upload" class="btn btn-primary btn-md"><i class="uil-search-alt"></i>Proses
                             Upload</button>
-                        <a href="{{ route('skpd.upload_cms.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                        <a href="{{ route('upload_panjarcms.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
 
