@@ -41,7 +41,7 @@ class PenerimaanController extends Controller
     public function tambahPenerimaanLalu()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -136,7 +136,7 @@ class PenerimaanController extends Controller
     {
         $no_terima = Crypt::decrypt($no_terima);
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -292,7 +292,7 @@ class PenerimaanController extends Controller
     public function tambahPenerimaanIni()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -427,7 +427,7 @@ class PenerimaanController extends Controller
     {
         $no_terima = Crypt::decrypt($no_terima);
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')

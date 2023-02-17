@@ -41,7 +41,7 @@ class PenetapanController extends Controller
     public function tambahPenetapanPendapatan()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -101,7 +101,7 @@ class PenetapanController extends Controller
     {
         $no_tetap = Crypt::decrypt($no_tetap);
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -212,7 +212,7 @@ class PenetapanController extends Controller
     public function tambahPenetapanPenerimaan()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
@@ -318,7 +318,7 @@ class PenetapanController extends Controller
     {
         $no_tetap = Crypt::decrypt($no_tetap);
         $kd_skpd = Auth::user()->kd_skpd;
-        $status_ang_pend = DB::table('trhrka_pend')
+        $status_ang_pend = DB::table('trhrka')
             ->select('jns_ang')
             ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
             ->orderByDesc('tgl_dpa')
