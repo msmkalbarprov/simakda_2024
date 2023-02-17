@@ -266,7 +266,7 @@
             let nilai = $(this).find(':selected').data('nilai');
             let lalu = $(this).find(':selected').data('lalu');
             let sp2d = $(this).find(':selected').data('sp2d');
-            let panjar_lalu = $(this).find(':selected').data('panjar_lalu');
+            let panjar_lalu = $(this).find(':selected').data('panjar_lalu') || 0;
 
             $('#transaksi_panjar').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
