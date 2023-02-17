@@ -75,7 +75,7 @@
                 // CARI KODE SUB KEGIATAN
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('lpj.skpd_tanpa_unit.sub_kegiatan') }}",
+                    url: "{{ route('lpj.skpd_atau_unit.sub_kegiatan') }}",
                     dataType: 'json',
                     data: {
                         no_lpj: document.getElementById('no_lpj').value

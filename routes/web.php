@@ -1148,6 +1148,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::post('hapus', [LPJController::class, 'hapusSkpdAtauUnit'])->name('lpj.skpd_atau_unit.hapus');
 
                     // CETAKAN
+                    Route::post('sub_kegiatan', [LPJController::class, 'subKegiatanSkpdAtauUnit'])->name('lpj.skpd_atau_unit.sub_kegiatan');
                     Route::get('rincian', [LPJController::class, 'rincianSkpdAtauUnit'])->name('lpj.skpd_atau_unit.rincian');
                 });
                 // Validasi LPJ UP/GU UNIT
