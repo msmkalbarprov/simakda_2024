@@ -143,6 +143,21 @@
                     </b>
                 </td>
             </tr>
+            <tr>
+                <td colspan="5"><b>PENGELUARAN PEMBIAYAAN DAERAH</b></td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>Penyertaan Modal/Investasi Pemerintah Daerah</b></td>
+                <td class="angka"><b>{{ rupiah($pembiayaan) }}</b></td>
+                <td class="angka"><b>{{ rupiah($realisasi_pembiayaan) }}</b></td>
+                <td class="angka"><b>{{ rupiah(($pembiayaan * 100) / $realisasi_pembiayaan) }}</b></td>
+            </tr>
+            <tr>
+                <td colspan="2">Penyertaan Modal</td>
+                <td class="angka">{{ rupiah($pembiayaan) }}</td>
+                <td class="angka">{{ rupiah($realisasi_pembiayaan) }}</td>
+                <td class="angka">{{ rupiah(($pembiayaan * 100) / $realisasi_pembiayaan) }}</td>
+            </tr>
         </tbody>
     </table>
     <br>

@@ -6153,6 +6153,29 @@ class BendaharaUmumDaerahController extends Controller
             ->groupBy('kd_skpd', 'nm_skpd')
             ->first();
 
+        $pembiayaan = DB::table('trdrka')
+            ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
+                    as anggaran,0 as realisasi ")
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan=?", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '5.02.00.0.06.62']])
+            ->groupBy('kd_skpd', 'nm_skpd')
+            ->first();
+
+        $realisasi_pembiayaan = DB::table('trhsp2d as a')
+            ->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->selectRaw("sum(b.nilai) as nilai")
+            ->whereRaw("(c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+                    and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
+            ->where(['a.jns_spp' => '5', 'a.jenis_beban' => '8'])
+            ->first();
+
+
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
@@ -6171,6 +6194,8 @@ class BendaharaUmumDaerahController extends Controller
             'bantuan_keuangan' => $bantuan_keuangan->anggaran,
             'btt' => $btt->anggaran,
             'bagi_hasil' => $bagi_hasil->anggaran,
+            'pembiayaan' => $pembiayaan->anggaran,
+            'realisasi_pembiayaan' => $realisasi_pembiayaan->nilai,
             'nama_anggaran' => DB::table('tb_status_anggaran')
                 ->select('nama')
                 ->where(['kode' => $req['anggaran']])
