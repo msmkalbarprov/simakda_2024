@@ -396,7 +396,7 @@ class UploadCmsController extends Controller
             'c.nm_rekening_tujuan',
             'c.rekening_tujuan',
             'c.nilai',
-            DB::raw("(REPLACE(b.ket_tujuan, '2022.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan"),
+            DB::raw("(REPLACE(b.ket_tujuan, '2023.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan"),
             'b.no_upload_tgl'
         );
 
