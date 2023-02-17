@@ -126,8 +126,8 @@ class Sp2dController extends Controller
                 $data1 = DB::table('trhspm as a')
                     ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
                     ->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')
-                    ->where(['a.status' => '0'])
-                    ->whereIn('a.jns_spp', ['5', '6'])
+                    ->where(['a.status' => '0', 'a.jns_spp' => $beban])
+                    // ->whereIn('a.jns_spp', ['5', '6'])
                     ->where(function ($query) {
                         $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
                     })
@@ -220,8 +220,9 @@ class Sp2dController extends Controller
                 $data1 = DB::table('trhspm as a')
                     ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
                     ->join('trhspp as c', 'a.no_spp', '=', 'c.no_spp')
-                    ->where(['a.status' => '0'])
-                    ->whereIn('a.jns_spp', ['5', '6'])->where(function ($query) {
+                    ->where(['a.status' => '0', 'a.jns_spp' => $beban])
+                    // ->whereIn('a.jns_spp', ['5', '6'])
+                    ->where(function ($query) {
                         $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
                     })
                     ->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN b.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban');
