@@ -6,6 +6,11 @@
             }
         });
 
+        $('.select-modal').select2({
+            dropdownParent: $('#modal_cetak .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         $('#pengesahan_lpj').DataTable({
             responsive: true,
             ordering: false,
@@ -62,6 +67,35 @@
                 },
             ],
         });
+
+        $('.cetak').on('click', function() {
+            let no_lpj = document.getElementById('no_lpj').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let tgl_ttd = document.getElementById('tgl_ttd').value;
+            let ttd = document.getElementById('ttd').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (!tgl_ttd) {
+                alert("Tanggal TTD tidak boleh kosong!");
+                return;
+            }
+
+            if (!ttd) {
+                alert("Penandatangan tidak boleh kosong!");
+                return;
+            }
+
+            let url = new URL("{{ route('pengesahan_lpj_tu.cetak') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_lpj", no_lpj);
+            searchParams.append("no_sp2d", no_sp2d);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("tgl_ttd", tgl_ttd);
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
     });
 
     function hapus(no_kas, no_sts, kd_skpd, tgl_kas) {
@@ -105,12 +139,10 @@
         }
     }
 
-    function cetak(no_kas, no_sts, kd_skpd) {
-        let url = new URL("{{ route('penerimaan_kas.cetak') }}");
-        let searchParams = url.searchParams;
-        searchParams.append("no_kas", no_kas);
-        searchParams.append("no_sts", no_sts);
-        searchParams.append("kd_skpd", kd_skpd);
-        window.open(url.toString(), "_blank");
+    function cetak(no_lpj, kd_skpd, no_sp2d) {
+        $('#no_lpj').val(no_lpj);
+        $('#kd_skpd').val(kd_skpd);
+        $('#no_sp2d').val(no_sp2d);
+        $('#modal_cetak').modal('show');
     }
 </script>

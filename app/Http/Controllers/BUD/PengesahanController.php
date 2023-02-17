@@ -367,7 +367,11 @@ class PengesahanController extends Controller
     // PENGESAHAN LPJ TU
     public function indexPengesahanLpjTu()
     {
-        return view('bud.pengesahan_lpj_tu.index');
+        $data = [
+            'ttd1' => DB::select("SELECT nip,nama,jabatan FROM ms_ttd where kode='BUD' group by  nip,nama,jabatan")
+        ];
+
+        return view('bud.pengesahan_lpj_tu.index')->with($data);
     }
 
     public function loadPengesahanLpjTu()
@@ -390,7 +394,7 @@ class PengesahanController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("pengesahan_lpj_tu.edit", ['no_lpj' => Crypt::encrypt($row->no_lpj), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_sp2d . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -474,6 +478,59 @@ class PengesahanController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function cetakPengesahanLpjTu(Request $request)
+    {
+        $no_lpj = $request->no_lpj;
+        $no_sp2d = $request->no_sp2d;
+        $kd_skpd = $request->kd_skpd;
+        $tgl_ttd = $request->tgl_ttd;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+        $status_anggaran = status_anggaran();
+
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $kd_skpd,
+            'no_sp2d' => $no_sp2d,
+            'no_lpj' => $no_lpj,
+            'ttd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD'])->first(),
+            'daerah' => DB::table('sclient')->where('kd_skpd', $kd_skpd)->first(),
+            'lpj' => collect(DB::select("SELECT LEFT(c.kd_sub_kegiatan,7) as kd_program,
+                (select nm_program from ms_program where LEFT(c.kd_sub_kegiatan,7)=kd_program)as nm_program,
+                LEFT(c.kd_sub_kegiatan,12) as kd_kegiatan,
+                (select nm_kegiatan from ms_kegiatan where LEFT(c.kd_sub_kegiatan,12)=kd_kegiatan)as nm_kegiatan,
+                c.kd_sub_kegiatan,c.nm_sub_kegiatan
+                FROM trhspp a INNER JOIN trhsp2d b ON a.no_spp = b.no_spp AND a.kd_skpd=b.kd_skpd
+                join trdspp c ON a.no_spp = c.no_spp AND a.kd_skpd=c.kd_skpd
+                WHERE no_sp2d = ? group by nm_program,c.kd_sub_kegiatan,
+                c.nm_sub_kegiatan,LEFT(c.kd_sub_kegiatan,18)", [$no_sp2d]))->first(),
+            'data_lpj' => DB::select("SELECT
+                        kd_rek6,nm_rek6,SUM(nilai) as nilai
+                        FROM
+                            trlpj_tu c
+                        LEFT JOIN trhlpj_tu d ON c.no_lpj = d.no_lpj AND c.kd_skpd=d.kd_skpd
+                        WHERE
+                        c.no_lpj = ? AND d.kd_skpd=?
+                        GROUP BY kd_rek6,nm_rek6 order by kd_rek6,nm_rek6", [$no_lpj, $kd_skpd]),
+            'persediaan' => collect(DB::select("SELECT SUM(a.nilai) AS nilai FROM trdspp a LEFT JOIN trhsp2d b ON b.no_spp=a.no_spp
+                         WHERE b.kd_skpd=? AND b.jns_spp=3 AND  no_sp2d = ?", [$kd_skpd, $no_sp2d]))->first()->nilai
+        ];
+
+        $view = view('bud.pengesahan_lpj_tu.cetak')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PENERIMAAN KAS</title>
+    <title>Cetak LPJ TU</title>
     <style>
         table {
             border-collapse: collapse
@@ -40,112 +40,126 @@
 {{-- <body onload="window.print()"> --}}
 
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%" align="center"
-        border="0" cellspacing="0" cellpadding="0">
+    <table style="width: 100%;font-family:Open Sans;text-align:center">
         <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">
-                {{ $header->nm_pemda }}</td>
+            <td style="font-size:18px"><b>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</b></td>
         </tr>
         <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">SURAT TANDA
-                SETORAN</td>
+            <td style="font-size:18px"><b>LAPORAN PERTANGGUNG JAWABAN TAMBAHAN UANG (TU)</b></td>
         </tr>
         <tr>
-            <td style="text-align: center;font-size:16px;border-bottom:solid 1px black;padding-bottom:4px">(STS)</td>
+            <td style="font-size:18px"><b>BENDAHARA PENGELUARAN</b></td>
         </tr>
     </table>
-    <br>
-    <table style="width: 100%">
+
+    <br><br>
+
+    <table style="width: 100%;font-family:Open Sans">
         <tbody>
             <tr>
-                <td style="width: 10%">No STS</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $no_sts }}</td>
-                <td style="width: 10%">Bank</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->nm_bank }}</td>
+                <td>OPD</td>
+                <td>:</td>
+                <td>{{ $kd_skpd }}, {{ nama_skpd($kd_skpd) }}</td>
             </tr>
             <tr>
-                <td style="width: 10%">OPD</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->nm_skpd }}</td>
-                <td style="width: 10%">No Rekening</td>
-                <td style="width: 1px">:</td>
-                <td style="width: 40%">{{ $data->rek_bank }}</td>
+                <td>Program</td>
+                <td>:</td>
+                <td>{{ $lpj->kd_program }}, {{ $lpj->nm_program }}</td>
             </tr>
             <tr>
-                <td colspan="3">Harap diterima uang sebesar <br>(dengan huruf)</td>
-                <td colspan="3"><i>({{ terbilang($data->total) }})</i></td>
+                <td>Kegiatan</td>
+                <td>:</td>
+                <td>{{ $lpj->kd_kegiatan }}, {{ $lpj->nm_kegiatan }}</td>
             </tr>
             <tr>
-                <td colspan="6">Dengan rincian penerimaan sebagai berikut</td>
+                <td>Sub Kegiatan</td>
+                <td>:</td>
+                <td>{{ $lpj->kd_sub_kegiatan }}, {{ $lpj->nm_sub_kegiatan }}</td>
+            </tr>
+            <tr>
+                <td>No SP2D</td>
+                <td>:</td>
+                <td>{{ $no_sp2d }}</td>
             </tr>
         </tbody>
     </table>
-    <table style="width: 100%" border="1" id="rincian">
+
+    <br>
+
+    <table style="width: 100%;font-family:Open Sans" border="1" id="rincian">
         <thead>
             <tr>
-                <th>No</th>
-                <th colspan="5">Kode Rekening</th>
-                <th>Uraian Rincian Objek</th>
-                <th>Jumlah</th>
+                <th>KODE REKENING</th>
+                <th>URAIAN</th>
+                <th>JUMLAH</th>
             </tr>
         </thead>
         <tbody>
             @php
                 $total = 0;
             @endphp
-            @foreach ($detail as $data1)
+            @foreach ($data_lpj as $data)
                 @php
-                    $total += $data1->rupiah;
+                    $total += $data->nilai;
                 @endphp
                 <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 0, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 1, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 2, 1) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 3, 2) }}</td>
-                    <td style="width: 3%">{{ Str::substr($data1->kd_rek6, 5, 2) }}</td>
-                    <td>{{ $data1->nm_rek6 }}</td>
-                    <td style="text-align: right">{{ rupiah($data1->rupiah) }}</td>
+                    <td>{{ $data->kd_rek6 }}</td>
+                    <td>{{ $data->nm_rek6 }}</td>
+                    <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                 </tr>
             @endforeach
             <tr>
-                <td colspan="7" style="text-align: right">Jumlah</td>
-                <td style="text-align: right">{{ rupiah($total) }}</td>
+                <td style="height: 15px"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><b>Total</b></td>
+                <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><b>Tambahan Uang Persediaan Awal Periode</b></td>
+                <td style="text-align: right"><b>{{ rupiah($persediaan) }}</b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><b>Tambahan Uang Persediaan Akhir Periode</b></td>
+                <td style="text-align: right"><b>{{ rupiah($persediaan - $total) }}</b></td>
             </tr>
         </tbody>
     </table>
-    <table style="width:100%">
-        <tr>
-            <td colspan="6" style="text-align: center">Uang tersebut diterima pada tanggal
-                {{ tanggal($data->tgl_sts) }}
-            </td>
-        </tr>
-    </table>
+
+    <br>
     <div style="padding-top:20px">
-        <table class="table" style="width:100%">
+        <table class="table" style="width: 100%;font-family:Open Sans;" class="rincian">
             <tr>
-                <td style="text-align: center"><b>Mengetahui</b></td>
+                <td style="text-align: center">Mengetahui <br>{{ $ttd->jabatan }}</td>
                 <td style="margin: 2px 0px;text-align: center">
-                    <b>Bendahara Penerimaan</b>
+                    {{ $daerah->daerah }},
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <br> Telah diverifikasi <br>Petugas
                 </td>
             </tr>
             <tr>
                 <td style="padding-bottom: 50px;text-align: center">
-                    <b>Pengguna Anggaran/Kuasa Pengguna Anggaran</b>
+
                 </td>
                 <td style="padding-bottom: 50px;text-align: center">
-                    <b>Bendahara Penerimaan Pembantu</b>
+
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center"><b>Nama Lengkap</b></td>
-                <td style="text-align: center"><b>Nama Lengkap</b></td>
-            </tr>
-            <tr>
-                <td style="text-align: center"><b>NIP.</b></td>
-                <td style="text-align: center"><b>NIP.</b></td>
+                <td style="text-align: center">
+                    <br>
+                    <b><u>{{ $ttd->nama }}</u></b> <br>
+                    {{ $ttd->pangkat }} <br>
+                    NIP. {{ $ttd->nip }}
+                </td>
+                <td style="text-align: center">
+                    ___________________
+                </td>
             </tr>
         </table>
     </div>

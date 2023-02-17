@@ -1393,6 +1393,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('detail', [PengesahanController::class, 'detailPengesahanLpjTu'])->name('pengesahan_lpj_tu.detail');
             Route::post('setuju', [PengesahanController::class, 'setujuPengesahanLpjTu'])->name('pengesahan_lpj_tu.setuju');
             Route::post('batal_setuju', [PengesahanController::class, 'batalSetujuPengesahanLpjTu'])->name('pengesahan_lpj_tu.batal_setuju');
+
+            // CETAKAN
+            Route::get('cetak', [PengesahanController::class, 'cetakPengesahanLpjTu'])->name('pengesahan_lpj_tu.cetak');
         });
         // Pengesahan SPM TU
         Route::group(['prefix' => 'pengesahan_spm_tu'], function () {
