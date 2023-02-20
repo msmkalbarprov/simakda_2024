@@ -94,21 +94,33 @@
                 //     return '3';
                 // }
                 // console.log(daftar_bic.includes(bic));
-                if (data.bic == 'BSMDIDJA' || data.bic == 'PDKBIDJ1' || data.bic ==
-                    'SYKBIDJ1') {
+                // if (data.bic == 'BSMDIDJA' || data.bic == 'PDKBIDJ1' || data.bic ==
+                //     'SYKBIDJ1') {
+                //     if (daftar_bic.includes(bic) == false) {
+                //         return '2';
+                //     }else{
+                //         return '0'; //boleh lanjut
+                //     }
+                // }
+
+                // if (data.bic != 'BSMDIDJA' || data.bic != 'PDKBIDJ1' || data.bic !=
+                //     'SYKBIDJ1') {
+                //     if (daftar_bic.includes(bic) == true) {
+                //         return '3';
+                //     }else{
+                //         return '0'; //boleh lanjut
+                //     }
+                // }
+                // Perbaikan terbaru
+                if (daftar_bic.includes(data.bic) == true) {
                     if (daftar_bic.includes(bic) == false) {
                         return '2';
-                    }else{
-                        return '0'; //boleh lanjut
                     }
                 }
 
-                if (data.bic != 'BSMDIDJA' || data.bic != 'PDKBIDJ1' || data.bic !=
-                    'SYKBIDJ1') {
+                if (daftar_bic.includes(data.bic) == false) {
                     if (daftar_bic.includes(bic) == true) {
                         return '3';
-                    }else{
-                        return '0'; //boleh lanjut
                     }
                 }
             });
