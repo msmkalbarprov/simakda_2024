@@ -16,11 +16,15 @@ class HomeController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         // dd(status_anggaran_dashboard());
-        if(status_anggaran_dashboard() == 0){
-            $status_anggaran='S';
-        }else{
-            $status_anggaran=status_anggaran_dashboard();
-        }
+        // if (status_anggaran_dashboard() == 0) {
+        //     $status_anggaran = 'S';
+        // } else {
+        //     $status_anggaran = status_anggaran_dashboard();
+        // }
+
+        $status = status_anggaran_dashboard();
+
+        $status_anggaran = isset($status) ? $status : 'S';
         // dd($status_anggaran);
         if (Auth::user()->is_admin == 1) {
             $data = [
@@ -220,6 +224,4 @@ class HomeController extends Controller
             ]);
         }
     }
-
-    
 }
