@@ -17,6 +17,7 @@
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
                                         <th style="width: 50px;text-align:center">Nomor Bukti</th>
+                                        <th style="width: 50px;text-align:center">Nomor Voucher</th>
                                         <th style="width: 50px;text-align:center">Tanggal Bukti</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th>Status</th>
@@ -25,8 +26,6 @@
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
                             </table>
                         </div>
                     </div>

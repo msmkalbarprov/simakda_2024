@@ -26,6 +26,11 @@
                     className: "text-center",
                 },
                 {
+                    data: 'no_voucher',
+                    name: 'no_voucher',
+                    className: "text-center",
+                },
+                {
                     data: 'tgl_bukti',
                     name: 'tgl_bukti'
                 },
