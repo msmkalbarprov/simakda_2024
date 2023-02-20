@@ -44,7 +44,7 @@ class PenyetoranController extends Controller
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
                 ->orderByRaw("cast(kd_pengirim as int)")
                 ->get(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get()
@@ -243,7 +243,7 @@ class PenyetoranController extends Controller
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
                 ->orderByRaw("cast(kd_pengirim as int)")
                 ->get(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get(),
@@ -591,7 +591,7 @@ class PenyetoranController extends Controller
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get()
@@ -797,7 +797,7 @@ class PenyetoranController extends Controller
         $spjbulan = cek_status_spj_pend($kd_skpd);
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
                 ->get(),
