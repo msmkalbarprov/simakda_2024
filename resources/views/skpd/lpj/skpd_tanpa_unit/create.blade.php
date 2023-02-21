@@ -174,6 +174,15 @@
             </div>
         </div>
     </div>
+
+    <div id="loading" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <img src='{{ asset('template/loading.gif') }}' width='100%' height='200px'>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     @include('skpd.lpj.skpd_tanpa_unit.js.create');

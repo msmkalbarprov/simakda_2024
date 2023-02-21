@@ -206,6 +206,10 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    // Show image container
+                    $("#loading").modal('show');
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
@@ -220,6 +224,10 @@
                         $('#simpan').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("#loading").modal('hide');
                 }
             })
         });
