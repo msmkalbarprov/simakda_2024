@@ -15,15 +15,13 @@
                         <label for="beban" class="col-md-2 col-form-label">Beban</label>
                         <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="beban" name="beban">
-                                <optgroup label="Daftar Beban">
-                                    <option value="" disabled selected>Silahkan Pilih</option>
-                                    <option value="1">UP</option>
-                                    <option value="2">GU</option>
-                                    <option value="3">TU</option>
-                                    <option value="4">LS GAJI</option>
-                                    <option value="5">LS Pihak Ketiga Lainnya</option>
-                                    <option value="6">LS Barang Jasa</option>
-                                </optgroup>
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">UP</option>
+                                <option value="2">GU</option>
+                                <option value="3">TU</option>
+                                <option value="4">LS GAJI</option>
+                                <option value="5">LS Pihak Ketiga Lainnya</option>
+                                <option value="6">LS Barang Jasa</option>
                             </select>
                         </div>
                     </div>
@@ -84,8 +82,7 @@
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="bulan" name="bulan" required readonly
                                 hidden>
-                            <input class="form-control" type="text" id="nama_bulan" name="nama_bulan" required
-                                readonly>
+                            <input class="form-control" type="text" id="nama_bulan" name="nama_bulan" required readonly>
                         </div>
                         <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
                         <div class="col-md-4">
