@@ -143,7 +143,7 @@
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let tahun_input = tgl_lpj.substr(0, 4);
 
-            let detail_lpj = detail.rows().data().toArray().map((value) => {
+            let detail_lpj1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
                     no_bukti: value.no_bukti,
@@ -154,6 +154,8 @@
                 };
                 return data;
             });
+
+            let detail_lpj = JSON.stringify(detail_lpj1);
 
             if (!no_lpj) {
                 alert('Nomor tidak boleh kosong');
@@ -209,6 +211,10 @@
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
                             "{{ route('lpj.skpd_tanpa_unit.index') }}";
+                    } else if (response.message == '2') {
+                        alert('No LPJ Telah Digunakan!');
+                        $('#simpan').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan').prop('disabled', false);

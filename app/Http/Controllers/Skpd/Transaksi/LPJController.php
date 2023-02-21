@@ -156,6 +156,7 @@ class LPJController extends Controller
 
     public function simpanSkpdTanpaUnit(Request $request)
     {
+        // ini_set('max_input_vars', '10000');
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
 
@@ -181,6 +182,8 @@ class LPJController extends Controller
                     'status' => '0',
                     'jenis' => '1',
                 ]);
+
+            $data['detail_lpj'] = json_decode($data['detail_lpj']);
 
             if (isset($data['detail_lpj'])) {
                 DB::table('trlpj')
