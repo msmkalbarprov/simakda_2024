@@ -14,6 +14,11 @@
                             SPP - SPM DALAM STATUS BATAL
                         </div>
                     @endif
+                    <div class="alert alert-warning alert-block">
+                        @if ($sppls->status == 1)
+                            <b style="font-size:16px">Sudah di Buat SPM!!</b>
+                        @endif
+                    </div>
                     {{-- No Tersimpan dan Tanggal SPP --}}
                     <div class="mb-3 row">
                         <label for="no_tersimpan" class="col-md-2 col-form-label">No. Tersimpan</label>

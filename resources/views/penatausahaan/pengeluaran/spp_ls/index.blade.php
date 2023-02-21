@@ -308,6 +308,10 @@
                         $(row).css("background-color", "#ff0000");
                         $(row).css("color", "white");
                     }
+                    if (data.status == 1) {
+                        $(row).css("background-color", "#4bbe68");
+                        $(row).css("color", "white");
+                    }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
