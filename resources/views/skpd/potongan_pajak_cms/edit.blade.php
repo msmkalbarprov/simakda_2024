@@ -115,14 +115,14 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="beban"
                                 name="beban">
                                 <option value="" disabled>Silahkan Pilih</option>
-                                <option value="1" {{ $data_potongan->jns_spp == '1' ? 'selected' : '' }}>UP</option>
-                                <option value='2' {{ $data_potongan->jns_spp == '2' ? 'selected' : '' }}>GU</option>
-                                <option value='3' {{ $data_potongan->jns_spp == '3' ? 'selected' : '' }}>TU</option>
-                                <option value='4' {{ $data_potongan->jns_spp == '4' ? 'selected' : '' }}>LS GAJI
+                                <option value="1" {{ $data_potongan->jns_spp == 1 ? 'selected' : '' }}>UP</option>
+                                <option value='2' {{ $data_potongan->jns_spp == 2 ? 'selected' : '' }}>GU</option>
+                                <option value='3' {{ $data_potongan->jns_spp == 3 ? 'selected' : '' }}>TU</option>
+                                <option value='4' {{ $data_potongan->jns_spp == 4 ? 'selected' : '' }}>LS GAJI
                                 </option>
-                                <option value='5' {{ $data_potongan->jns_spp == '5' ? 'selected' : '' }}>LS PPKD
+                                <option value='5' {{ $data_potongan->jns_spp == 5 ? 'selected' : '' }}>LS PPKD
                                 </option>
-                                <option value='6' {{ $data_potongan->jns_spp == '6' ? 'selected' : '' }}>LS Barang
+                                <option value='6' {{ $data_potongan->jns_spp == 6 ? 'selected' : '' }}>LS Barang
                                     Jasa</option>
                             </select>
                         </div>
