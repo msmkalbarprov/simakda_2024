@@ -96,12 +96,18 @@
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
+                    let total = rupiah(document.getElementById('total').value);
                     $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.spd));
                     $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.keluarspp));
+
+                    if (data.spd < total + data.keluarspp) {
+                        alert('Total SPD tidak mencukupi');
+                        return;
+                    }
                 }
             });
         });
@@ -171,6 +177,11 @@
 
             if (detail_lpj.length == 0) {
                 alert('Rincian tidak boleh kosong!');
+                return;
+            }
+
+            if (sisa_spd < total) {
+                alert('Sisa SPD Tidak cukup untuk Pengajuan GU');
                 return;
             }
 

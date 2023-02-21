@@ -35,7 +35,7 @@
                         <label for="nilai_min_gu" class="col-md-2 col-form-label">Nilai Minimal GU</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nilai_min_gu" name="nilai_min_gu"
-                                value="{{ rupiah($nilai_up->nilai) }}" required readonly style="text-align: right">
+                                value="{{ rupiah($nilai_up->nilai * 0.5) }}" required readonly style="text-align: right">
                         </div>
                     </div>
                     {{-- NO LPJ dan Nilai LPJ --}}
