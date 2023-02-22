@@ -192,9 +192,9 @@
                     <td>:</td>
                     <td colspan="4" class="kanan">
                         @if (($sp2d->jns_spp == '6' && $sp2d->jenis_beban == '6') || $sp2d->jns_spp == '5')
-                            {{ $sp2d->npwp }}
+                            {{ npwp($sp2d->npwp) }}
                         @else
-                            {{ $bank->npwp ? $bank->npwp : 0 }}
+                            {{ $bank->npwp ? npwp($bank->npwp) : 0 }}
                         @endif
                     </td>
                 </tr>
