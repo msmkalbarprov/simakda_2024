@@ -184,7 +184,7 @@
                                         <tr>
                                             <td style="vertical-align: text-top">
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td style="vertical-align: text-top">
+                                            <td style="vertical-align: text-top;word-wrap:break-word;width:200px">
                                                 {{ $rincian_beban->nama }}</td>
                                             <td style="vertical-align: text-top">Rp</td>
                                             <td style="text-align:right;vertical-align: text-top">
