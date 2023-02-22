@@ -170,25 +170,24 @@
                         <tbody>
                             @if (in_array($beban, ['1', '2']))
                                 <tr>
-                                    <td style="vertical-align: top">
+                                    <td>
                                         {{ $kd_skpd }}</td>
-                                    <td style="vertical-align: top">
+                                    <td>
                                         {{ $data_spm->nm_skpd }}</td>
-                                    <td style="border-top: 1px solid black;vertical-align: top">Rp</td>
-                                    <td style="border-top: 1px solid black;text-align:right;vertical-align: top">
+                                    <td style="border-top: 1px solid black">Rp</td>
+                                    <td style="border-top: 1px solid black;text-align:right">
                                         {{ rupiah($beban1->nilai) }}</td>
                                 </tr>
                             @else
                                 @if ($total_beban <= $baris)
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td style="vertical-align: top">
+                                            <td style="vertical-align: text-top">
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td style="vertical-align: top">
-                                                {{ Str::of(ucwords($rincian_beban->nama))->trim() }}
-                                            </td>
-                                            <td style="vertical-align: top">Rp</td>
-                                            <td style="text-align:right;vertical-align: top">
+                                            <td style="vertical-align: text-top">
+                                                {{ $rincian_beban->nama }}</td>
+                                            <td style="vertical-align: text-top">Rp</td>
+                                            <td style="text-align:right;vertical-align: text-top">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
@@ -196,12 +195,12 @@
                                 @else
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td style="vertical-align: top">
+                                            <td style="vertical-align: text-top">
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td style="vertical-align: top">
-                                                {{ ucwords($rincian_beban->nama) }}</td>
-                                            <td style="vertical-align: top">Rp</td>
-                                            <td style="text-align:right;vertical-align: top">
+                                            <td style="vertical-align: text-top">
+                                                {{ $rincian_beban->nama }}</td>
+                                            <td style="vertical-align: text-top">Rp</td>
+                                            <td style="text-align:right;vertical-align: text-top">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
@@ -305,7 +304,7 @@
                                     {{ rupiah($beban1->nilai - $total_potongan - $total_potongan1) }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4" style="height:32px;text-align:left">Uang Sejumlah :
+                                <td colspan="4" style="height:20px;text-align:left">Uang Sejumlah :
                                     <i>{{ terbilang($beban1->nilai - $total_potongan - $total_potongan1) }}</i>
                                 </td>
                             </tr>
