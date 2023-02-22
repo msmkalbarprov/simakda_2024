@@ -88,6 +88,11 @@ class Sp2dController extends Controller
                     ->where(function ($query) {
                         $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
                     })
+                    ->where(function ($query) use ($beban) {
+                        if ($beban == '3') {
+                            $query->where('c.sts_setuju', '1');
+                        }
+                    })
                     ->whereIn('a.kd_skpd', $list_skpd)
                     ->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN b.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')->get();
             } elseif ($beban == '4') {
@@ -181,6 +186,11 @@ class Sp2dController extends Controller
                     ->where(['a.status' => '0', 'a.jns_spp' => $beban])
                     ->where(function ($query) {
                         $query->where('c.sp2d_batal', '!=', '1')->orWhereNull('c.sp2d_batal');
+                    })
+                    ->where(function ($query) use ($beban) {
+                        if ($beban == '3') {
+                            $query->where('c.sts_setuju', '1');
+                        }
                     })
                     ->select('a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', DB::raw("(CASE WHEN b.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), 'a.jenis_beban')
                     ->get();
