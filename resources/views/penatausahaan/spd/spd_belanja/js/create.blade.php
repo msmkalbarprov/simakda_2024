@@ -637,7 +637,7 @@
                 return;
             }
 
-            let daftar_spd = daftarSpdTempTable.rows().data().toArray().map((value) => {
+            let daftar_spd1 = daftarSpdTempTable.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
                     kd_sub_kegiatan: value.kd_sub_kegiatan,
@@ -647,13 +647,16 @@
                 return data;
             });
 
-            if (daftar_spd.length == 0) {
+            if (daftar_spd1.length == 0) {
                 alert('Daftar Rincian Tidak Boleh Kosong');
                 return;
             }
 
-            const totalNilai = daftar_spd.reduce((prev, current) => prev + parseFloat(current.nilai),
+            const totalNilai = daftar_spd1.reduce((prev, current) => prev + parseFloat(current.nilai),
                 0);
+
+            let daftar_spd = JSON.stringify(daftar_spd1);
+
 
             if (!kd_skpd) {
                 alert('SKPD Tidak Boleh Kosong');
@@ -740,6 +743,10 @@
                 data: {
                     data: response
                 },
+                beforeSend: function() {
+                    // Show image container
+                    $("#loading").modal('show');
+                },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Data Berhasil Tersimpan!!!');
@@ -754,6 +761,10 @@
                         $('#simpan_spd').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("#loading").modal('hide');
                 }
             })
         });
