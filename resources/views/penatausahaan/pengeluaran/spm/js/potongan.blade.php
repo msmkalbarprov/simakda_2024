@@ -201,19 +201,34 @@
                     },
                     success: function(data) {
                         let data1 = $.parseJSON(data);
+                        console.log(data1);
                         if (data1.data[0].response_code == '00') {
                             alert(data1.data[0].message);
                             $("#npwp").attr("value", data1.data[0].data
                                 .nomorPokokWajibPajak);
+                            $("#nama_wajib_pajak").attr("value", data1.data[0].data
+                                .namaWajibPajak);
+                            $("#alamat_wajib_pajak").val(data1.data[0].data
+                                .alamatWajibPajak);
+                            $("#kota").attr("value", data1.data[0].data
+                                .kota);
+                            $("#kode_map").val(data1.data[0].data
+                                .kodeMap).trigger('change');
+                            $("#nama_map").attr("value", data1.data[0].data
+                                .keteranganKodeMap);
+                            $("#kode_setor").val(data1.data[0].data
+                                .kodeSetor).change();
+                            $("#nama_setor").attr("value", data1.data[0].data
+                                .keteranganKodeSetor);
                             $("#nama_wajib_pajak").prop('disabled', true);
                             $("#alamat_wajib_pajak").prop('disabled', true);
-                            $("#nama_wajib_pajak").val('');
-                            $("#alamat_wajib_pajak").val('');
+                            // $("#nama_wajib_pajak").val('');
+                            // $("#alamat_wajib_pajak").val('');
                             $('#modal_cek_npwp').modal('hide');
                         } else {
                             alert(data1.data[0].message);
-                            $("#nama_wajib_pajak").prop('disabled', false);
-                            $("#alamat_wajib_pajak").prop('disabled', false);
+                            $("#nama_wajib_pajak").prop('disabled', true);
+                            $("#alamat_wajib_pajak").prop('disabled', true);
                         }
                     }
                 });
@@ -358,7 +373,15 @@
                         $('#kode_setor_cek').append(
                             `<option value="${data.kd_setor}" data-nama="${data.nm_setor}">${data.kd_setor} | ${data.nm_setor}</option>`
                         );
-                    })
+                    });
+                    $('#kode_setor').empty();
+                    $('#kode_setor').append(
+                        `<option value="0">Pilih Kode Setor</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kode_setor').append(
+                            `<option value="${data.kd_setor}" data-nik_rekanan="${data.nik_rekanan}" data-npwp_rekanan="${data.npwp_rekanan}" data-nop="${data.butuh_nop}" data-npwp_nol="${data.npwp_nol}" data-nosk="${data.butuh_nosk}" data-nama="${data.nm_setor}" data-npwp_lain="${data.npwp_lain}" data-masa_bulan="${data.masa_bulan}" data-no_faktur="${data.no_faktur}">${data.kd_setor} | ${data.nm_setor}</option>`
+                        );
+                    });
                 }
             })
         });

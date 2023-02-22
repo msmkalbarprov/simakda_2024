@@ -573,7 +573,7 @@
                         <label for="npwp_cek" class="col-md-2 col-form-label">NPWP</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control @error('npwp_cek') is-invalid @enderror"
-                                id="npwp_cek" name="npwp_cek">
+                                id="npwp_cek" name="npwp_cek" value="{{ $spm->npwp }}">
                             @error('npwp_cek')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
