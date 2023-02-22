@@ -170,24 +170,25 @@
                         <tbody>
                             @if (in_array($beban, ['1', '2']))
                                 <tr>
-                                    <td>
+                                    <td style="vertical-align: top">
                                         {{ $kd_skpd }}</td>
-                                    <td>
+                                    <td style="vertical-align: top">
                                         {{ $data_spm->nm_skpd }}</td>
-                                    <td style="border-top: 1px solid black">Rp</td>
-                                    <td style="border-top: 1px solid black;text-align:right">
+                                    <td style="border-top: 1px solid black;vertical-align: top">Rp</td>
+                                    <td style="border-top: 1px solid black;text-align:right;vertical-align: top">
                                         {{ rupiah($beban1->nilai) }}</td>
                                 </tr>
                             @else
                                 @if ($total_beban <= $baris)
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td>
+                                            <td style="vertical-align: top">
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td>
-                                                {{ ucwords($rincian_beban->nama) }}</td>
-                                            <td style="">Rp</td>
-                                            <td style="text-align:right">
+                                            <td style="vertical-align: top">
+                                                {{ Str::of(ucwords($rincian_beban->nama))->trim() }}
+                                            </td>
+                                            <td style="vertical-align: top">Rp</td>
+                                            <td style="text-align:right;vertical-align: top">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
@@ -195,12 +196,12 @@
                                 @else
                                     @foreach ($data_beban as $rincian_beban)
                                         <tr>
-                                            <td>
+                                            <td style="vertical-align: top">
                                                 {{ $rincian_beban->kode }}</td>
-                                            <td>
+                                            <td style="vertical-align: top">
                                                 {{ ucwords($rincian_beban->nama) }}</td>
-                                            <td style="">Rp</td>
-                                            <td style="text-align:right">
+                                            <td style="vertical-align: top">Rp</td>
+                                            <td style="text-align:right;vertical-align: top">
                                                 {{ rupiah($rincian_beban->nilai) }}
                                             </td>
                                         </tr>
@@ -215,7 +216,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="height: 32px;border-top: 1px solid black;border-bottom: 1px solid black"
+                                <td style="height: 15px;border-top: 1px solid black;border-bottom: 1px solid black"
                                     colspan="4"></td>
                             </tr>
                             <tr>
@@ -285,10 +286,10 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="4" style="height:32px"></td>
+                                <td colspan="4" style="height:15px"></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left"><strong>SPM Yang Dibayarkan</strong></td>
+                                <td style="text-align: left" colspan="4"><strong>SPM Yang Dibayarkan</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="text-align: left">Jumlah Yang Diminta</td>
