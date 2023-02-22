@@ -200,6 +200,7 @@ class BankKalbarController extends Controller
         $response = curl_exec($curl);
         $potongan = json_decode($response);
         curl_close($curl);
+
         DB::beginTransaction();
         try {
             if ($potongan->data[0]->response_code == "00") {
@@ -208,6 +209,7 @@ class BankKalbarController extends Controller
                     'no_spm' => $no_spm,
                     'kd_skpd' => $kd_skpd,
                     'kd_rek6' => $kode_akun_potongan,
+                    'map_pot' => $kode_akun_potongan,
                     'nm_rek6' => $nama_akun_potongan,
                     'nilai' => $jumlah_bayar,
                     'kd_trans' => $kode_akun_transaksi,
@@ -229,10 +231,10 @@ class BankKalbarController extends Controller
                     'nomorPokokWajibPajakRekanan' => $npwp_rekanan,
                     'nikRekanan' => $nik_rekanan,
                     'nomorFakturPajak' => $no_faktur,
-                    // 'idBilling' => $potongan->data[0]->data->idBilling,
-                    'idBilling' => '12131',
-                    // 'tanggalExpiredBilling' => $inputtgl,
-                    'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
+                    'idBilling' => $potongan->data[0]->data->idBilling,
+                    // 'idBilling' => '12131',
+                    'tanggalExpiredBilling' => $inputtgl,
+                    // 'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
                     'jenis' => '2',
                     'username' => Auth::user()->nama,
                     'last_update' => date('Y-m-d H:i:s')
