@@ -580,12 +580,12 @@ class PengesahanController extends Controller
                     $join->on('a.no_spp', '=', 'b.no_spp');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })
-                ->selectRaw("a.no_spm,a.tgl_spm,a.no_spp,a.kd_skpd,a.nm_skpd,a.tgl_spp,a.no_spd,a.bulan,a.keperluan,a.jns_spp,a.bank,a.no_rek,b.status,b.sts_setuju")
+                ->selectRaw("a.no_spm,a.tgl_spm,a.no_spp,a.kd_skpd,a.nm_skpd,a.tgl_spp,a.no_spd,a.bulan,a.keperluan,a.jns_spp,a.bank,a.no_rek,a.status,b.sts_setuju")
                 ->whereRaw("a.jns_spp=? AND (sp2d_batal!=? or sp2d_batal is null)", ['3', '1'])
                 ->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])
                 ->first()
         ];
-
+        // dd($data['spm']);
         return view('bud.pengesahan_spm_tu.edit')->with($data);
     }
 
@@ -639,40 +639,46 @@ class PengesahanController extends Controller
 
         DB::beginTransaction();
         try {
+            // DB::table('trhspp')
+            //     ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
+            //     ->update([
+            //         'sp2d_batal' => '1',
+            //         'ket_batal' => $keterangan,
+            //         'user_batal' => Auth::user()->nama,
+            //         'user_batal' => Auth::user()->nama,
+            //         'tgl_batal' => date('d-m-y H:i:s')
+            //     ]);
+
+            // if ($beban == '6') {
+            //     $no_tagih = DB::table('trhspp')
+            //         ->selectRaw("ltrim(no_tagih) as no_tagih")
+            //         ->where(['no_spp' => $no_spp])
+            //         ->first();
+
+            //     if (isset($no_tagih)) {
+            //         DB::table('trhspp')
+            //             ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
+            //             ->update([
+            //                 'no_tagih' => '',
+            //                 'kontrak' => '',
+            //                 'sts_tagih' => '0',
+            //                 'nmrekan' => '',
+            //                 'pimpinan' => '',
+            //             ]);
+
+            //         DB::table('trhtagih')
+            //             ->where(['no_bukti' => $no_tagih->no_tagih])
+            //             ->update([
+            //                 'sts_tagih' => '0'
+            //             ]);
+            //     }
+            // }
+
             DB::table('trhspp')
                 ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
                 ->update([
-                    'sp2d_batal' => '1',
-                    'ket_batal' => $keterangan,
-                    'user_batal' => Auth::user()->nama,
-                    'user_batal' => Auth::user()->nama,
-                    'tgl_batal' => date('d-m-y H:i:s')
+                    'sts_setuju' => '0'
                 ]);
-
-            if ($beban == '6') {
-                $no_tagih = DB::table('trhspp')
-                    ->selectRaw("ltrim(no_tagih) as no_tagih")
-                    ->where(['no_spp' => $no_spp])
-                    ->first();
-
-                if (isset($no_tagih)) {
-                    DB::table('trhspp')
-                        ->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])
-                        ->update([
-                            'no_tagih' => '',
-                            'kontrak' => '',
-                            'sts_tagih' => '0',
-                            'nmrekan' => '',
-                            'pimpinan' => '',
-                        ]);
-
-                    DB::table('trhtagih')
-                        ->where(['no_bukti' => $no_tagih->no_tagih])
-                        ->update([
-                            'sts_tagih' => '0'
-                        ]);
-                }
-            }
 
             DB::commit();
             return response()->json([
