@@ -6491,7 +6491,12 @@ class BendaharaUmumDaerahController extends Controller
 
         $view = view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
         if ($req['jenis_print'] == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setOrientation('portrait')->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', $req['margin_kiri'])
+                ->setOption('margin-right', $req['margin_kanan'])
+                ->setOption('margin-top', $req['margin_atas'])
+                ->setOption('margin-bottom', $req['margin_bawah']);
             return $pdf->stream('laporan.pdf');
         } elseif ($req['jenis_print'] == 'layar') {
             return $view;
