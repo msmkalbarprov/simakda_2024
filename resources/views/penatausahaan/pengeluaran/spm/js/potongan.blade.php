@@ -269,47 +269,6 @@
             $("#kode_akun_transaksi").val(null).change();
             $("#kode_akun_potongan").val(null).change();
 
-
-        });
-
-        $('#kode_map_cek').on('select2:select', function() {
-            let kd_map = this.value;
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_map_cek').val(nama);
-            $.ajax({
-                type: "POST",
-                url: "{{ route('penerima.kodeSetor') }}",
-                dataType: 'json',
-                data: {
-                    kd_map: kd_map
-                },
-                dataType: "json",
-                success: function(data) {
-                    $('#kode_setor_cek').empty();
-                    $('#kode_setor_cek').append(
-                        `<option value="0">Pilih Kode Setor</option>`);
-                    $.each(data, function(index, data) {
-                        $('#kode_setor_cek').append(
-                            // `<option value="${data.kd_setor}" data-nama="${data.nm_setor}">${data.kd_setor} | ${data.nm_setor}</option>`
-                            `<option value="${data.kd_setor}" data-nik_rekanan="${data.nik_rekanan}" data-npwp_rekanan="${data.npwp_rekanan}" data-nop="${data.butuh_nop}" data-npwp_nol="${data.npwp_nol}" data-nosk="${data.butuh_nosk}" data-nama="${data.nm_setor}" data-npwp_lain="${data.npwp_lain}" data-masa_bulan="${data.masa_bulan}" data-no_faktur="${data.no_faktur}">${data.kd_setor} | ${data.nm_setor}</option>`
-                        );
-                    });
-                    $('#kode_setor').empty();
-                    $('#kode_setor').append(
-                        `<option value="0">Pilih Kode Setor</option>`);
-                    $.each(data, function(index, data) {
-                        $('#kode_setor').append(
-                            `<option value="${data.kd_setor}" data-nik_rekanan="${data.nik_rekanan}" data-npwp_rekanan="${data.npwp_rekanan}" data-nop="${data.butuh_nop}" data-npwp_nol="${data.npwp_nol}" data-nosk="${data.butuh_nosk}" data-nama="${data.nm_setor}" data-npwp_lain="${data.npwp_lain}" data-masa_bulan="${data.masa_bulan}" data-no_faktur="${data.no_faktur}">${data.kd_setor} | ${data.nm_setor}</option>`
-                        );
-                    });
-                }
-            })
-        });
-
-        $('#kode_setor_cek').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_setor_cek').val(nama);
-
             let nama = $(this).find(':selected').data('nama');
             let no_sk = $(this).find(':selected').data('nosk');
             let npwp_nol = $(this).find(':selected').data('npwp_nol');
@@ -392,6 +351,44 @@
                 $('#masa_pajak_akhir').prop('disabled', false);
                 $("#no_faktur").val('');
             }
+        });
+
+        $('#kode_map_cek').on('select2:select', function() {
+            let kd_map = this.value;
+            let nama = $(this).find(':selected').data('nama');
+            $('#nama_map_cek').val(nama);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('penerima.kodeSetor') }}",
+                dataType: 'json',
+                data: {
+                    kd_map: kd_map
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#kode_setor_cek').empty();
+                    $('#kode_setor_cek').append(
+                        `<option value="0">Pilih Kode Setor</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kode_setor_cek').append(
+                            `<option value="${data.kd_setor}" data-nama="${data.nm_setor}">${data.kd_setor} | ${data.nm_setor}</option>`
+                        );
+                    });
+                    $('#kode_setor').empty();
+                    $('#kode_setor').append(
+                        `<option value="0">Pilih Kode Setor</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kode_setor').append(
+                            `<option value="${data.kd_setor}" data-nik_rekanan="${data.nik_rekanan}" data-npwp_rekanan="${data.npwp_rekanan}" data-nop="${data.butuh_nop}" data-npwp_nol="${data.npwp_nol}" data-nosk="${data.butuh_nosk}" data-nama="${data.nm_setor}" data-npwp_lain="${data.npwp_lain}" data-masa_bulan="${data.masa_bulan}" data-no_faktur="${data.no_faktur}">${data.kd_setor} | ${data.nm_setor}</option>`
+                        );
+                    });
+                }
+            })
+        });
+
+        $('#kode_setor_cek').on('select2:select', function() {
+            let nama = $(this).find(':selected').data('nama');
+            $('#nama_setor_cek').val(nama);
         });
 
         $('#kode_akun_transaksi').on('select2:select', function() {
