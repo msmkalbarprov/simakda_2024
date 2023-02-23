@@ -1149,9 +1149,11 @@
                 alert("Isi Nomor SPD Terlebih Dahulu...!!!");
                 return;
             }
-            if (!npwp) {
-                alert("Isi NPWP Terlebih Dahulu...!!!");
-                return;
+            if ((beban == '5' && jenis == '3') || (beban == '5' && jenis == '5')) {} else {
+                if (!npwp) {
+                    alert("Isi NPWP Terlebih Dahulu...!!!");
+                    return;
+                }
             }
             if (!rekening) {
                 alert("Isi Rekening Terlebih Dahulu...!!!");
