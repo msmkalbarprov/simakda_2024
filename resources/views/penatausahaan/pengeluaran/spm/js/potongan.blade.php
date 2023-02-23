@@ -249,8 +249,9 @@
                             // $("#nama_wajib_pajak").val('');
                             // $("#alamat_wajib_pajak").val('');
                             $('#modal_cek_npwp').modal('hide');
-                        } else {
-                            alert(data1.data[0].message);
+                        }
+                        if (data1.status == 'false') {
+                            alert(data1.message);
                             $("#nama_wajib_pajak").prop('disabled', true);
                             $("#alamat_wajib_pajak").prop('disabled', true);
                         }
