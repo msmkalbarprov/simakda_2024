@@ -1611,7 +1611,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka , ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap, ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '2') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1643,7 +1644,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '32') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1675,7 +1677,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim, b.tgl_kas, ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=? AND a.kd_pengirim=?", ['4101', $req['pengirim']])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '31') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1707,7 +1710,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=? AND a.kd_pengirim=?", ['4101', $req['pengirim']])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '41') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1740,7 +1744,8 @@ class BendaharaUmumDaerahController extends Controller
                 })
                 ->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=? AND a.kd_pengirim IN ($data3)", ['4101'])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '42') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1772,7 +1777,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=? AND a.kd_pengirim IN ($data3)", ['4101'])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         } elseif ($req['pilihan'] == '5') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -1804,7 +1810,8 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap, ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
                 ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
-                ->orderByRaw("cast(a.kd_pengirim AS int)")
+                // ->orderByRaw("cast(a.kd_pengirim AS int)")
+                ->orderByRaw("kd_pengirim")
                 ->get();
         }
 
