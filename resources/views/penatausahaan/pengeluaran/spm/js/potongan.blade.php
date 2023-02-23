@@ -177,6 +177,11 @@
             let npwp = document.getElementById('npwp_cek').value;
             let kd_map = document.getElementById('kode_map_cek').value;
             let kd_setor = document.getElementById('kode_setor_cek').value;
+
+            let kode_setor_cek = $('#kode_setor_cek').find('option:selected');
+            let npwp_rekanan = kode_setor_cek.data('npwp_rekanan');
+            let npwp_lain = kode_setor_cek.data('npwp_lain');
+
             if (npwp.substr(0, 9) == '000000000') {
                 $('#modal_cek_npwp').modal('hide');
             } else {
@@ -209,8 +214,22 @@
                             alert(data1.data[0].message);
                             $("#npwp").attr("value", data1.data[0].data
                                 .nomorPokokWajibPajak);
-                            $("#npwp_setor").attr("value", data1.data[0].data
-                                .nomorPokokWajibPajak);
+
+                            if (npwp_rekanan == 1) {
+                                $("#npwp_rekanan").prop('disabled', false);
+                                $("#npwp_rekanan").val('');
+                                $("#npwp_setor").val(data1.data[0].data
+                                    .nomorPokokWajibPajak);
+                            } else {
+                                $("#npwp_rekanan").prop('disabled', true);
+                                $("#npwp_rekanan").val('');
+                            }
+
+                            if (npwp_lain == 0) {
+                                $("#npwp_setor").val(data1.data[0].data
+                                    .nomorPokokWajibPajak);
+                            }
+
                             $("#nama_wajib_pajak").attr("value", data1.data[0].data
                                 .namaWajibPajak);
                             $("#alamat_wajib_pajak").val(data1.data[0].data
