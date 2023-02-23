@@ -209,6 +209,8 @@
                             alert(data1.data[0].message);
                             $("#npwp").attr("value", data1.data[0].data
                                 .nomorPokokWajibPajak);
+                            $("#npwp_setor").attr("value", data1.data[0].data
+                                .nomorPokokWajibPajak);
                             $("#nama_wajib_pajak").attr("value", data1.data[0].data
                                 .namaWajibPajak);
                             $("#alamat_wajib_pajak").val(data1.data[0].data
