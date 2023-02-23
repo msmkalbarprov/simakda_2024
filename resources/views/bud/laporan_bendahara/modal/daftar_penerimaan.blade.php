@@ -119,8 +119,8 @@
                             data-jenis="pdf">PDF</button>
                         <button type="button" class="btn btn-dark btn-md cetak_daftar_penerimaan"
                             data-jenis="layar">Layar</button>
-                        <button type="button" class="btn btn-dark btn-md cetak_daftar_penerimaan"
-                            data-jenis="excel">Excel</button>
+                        {{-- <button type="button" class="btn btn-dark btn-md cetak_daftar_penerimaan"
+                            data-jenis="excel">Excel</button> --}}
                         <button type="button" class="btn btn-md btn-secondary"
                             data-bs-dismiss="modal">Tutup</button>
                     </div>

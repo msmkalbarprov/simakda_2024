@@ -129,8 +129,8 @@
                             PDF</button>
                         <button type="button" class="btn btn-dark btn-md cetak_daftar_pengeluaran"
                             data-jenis="layar">Layar</button>
-                        <button type="button" class="btn btn-dark btn-md cetak_daftar_pengeluaran"
-                            data-jenis="excel">Excel</button>
+                        {{-- <button type="button" class="btn btn-dark btn-md cetak_daftar_pengeluaran"
+                            data-jenis="excel">Excel</button> --}}
                     </div>
                 </div>
                 <div class="mb-3 row">
