@@ -85,7 +85,24 @@ class BendaharaUmumDaerahController extends Controller
             'periode' => $periode
         ];
 
-        return view('bud.laporan_bendahara.cetak.realisasi_pendapatan')->with($data);
+        $judul = 'REALISASI_PENDPATAN';
+
+        $view = view('bud.laporan_bendahara.cetak.realisasi_pendapatan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename= $judul.xls");
+            echo $view;
+        }
     }
 
     public function pembantuPenerimaan(Request $request)
@@ -2044,7 +2061,19 @@ class BendaharaUmumDaerahController extends Controller
             'total_pajak_sebelumnya' => $total_pajak_sebelumnya
         ];
 
-        return view('bud.laporan_bendahara.cetak.pajak_daerah')->with($data);
+        $view = view('bud.laporan_bendahara.cetak.pajak_daerah')->with($data);
+
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
+        } else {
+            return $view;
+        }
     }
 
     public function rekapGaji(Request $request)
