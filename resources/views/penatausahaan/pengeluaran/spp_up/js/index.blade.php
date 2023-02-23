@@ -10,7 +10,7 @@
             ordering: false,
             serverSide: true,
             processing: true,
-            lengthMenu: [5, 10],
+            lengthMenu: [10, 20, 50],
             ajax: {
                 "url": "{{ route('sppup.load_data') }}",
                 "type": "POST",
