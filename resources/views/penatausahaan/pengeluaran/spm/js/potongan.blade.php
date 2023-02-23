@@ -252,18 +252,18 @@
                                 $("#kota").prop('disabled', false);
                                 $("#kota").val('');
                                 $("#nama_wajib_pajak").prop('disabled', false);
-                                // $("#nama_wajib_pajak").val('');
+                                $("#nama_wajib_pajak").val('');
                                 $("#alamat_wajib_pajak").prop('disabled', false);
-                                // $("#alamat_wajib_pajak").val('');
+                                $("#alamat_wajib_pajak").val('');
                             } else {
                                 $("#nik").prop('disabled', true);
                                 $("#nik").val('');
                                 $("#kota").prop('disabled', true);
                                 $("#kota").val('');
                                 $("#nama_wajib_pajak").prop('disabled', true);
-                                // $("#nama_wajib_pajak").val('');
+                                $("#nama_wajib_pajak").val('');
                                 $("#alamat_wajib_pajak").prop('disabled', true);
-                                // $("#alamat_wajib_pajak").val('');
+                                $("#alamat_wajib_pajak").val('');
                             }
 
                             if (nop == 1) {
