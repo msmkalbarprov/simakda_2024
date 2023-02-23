@@ -181,6 +181,12 @@
             let kode_setor_cek = $('#kode_setor_cek').find('option:selected');
             let npwp_rekanan = kode_setor_cek.data('npwp_rekanan');
             let npwp_lain = kode_setor_cek.data('npwp_lain');
+            let no_sk = kode_setor_cek.data('nosk');
+            let npwp_nol = kode_setor_cek.data('npwp_nol');
+            let nop = kode_setor_cek.data('nop');
+            let nik_rekanan = kode_setor_cek.data('nik_rekanan');
+            let no_faktur = kode_setor_cek.data('no_faktur');
+            let masa_bulan = kode_setor_cek.data('masa_bulan');
 
             if (npwp.substr(0, 9) == '000000000') {
                 $('#modal_cek_npwp').modal('hide');
@@ -214,22 +220,6 @@
                             alert(data1.data[0].message);
                             $("#npwp").attr("value", data1.data[0].data
                                 .nomorPokokWajibPajak);
-
-                            if (npwp_rekanan == 1) {
-                                $("#npwp_rekanan").prop('disabled', false);
-                                $("#npwp_rekanan").val('');
-                                $("#npwp_setor").val(data1.data[0].data
-                                    .nomorPokokWajibPajak);
-                            } else {
-                                $("#npwp_rekanan").prop('disabled', true);
-                                $("#npwp_rekanan").val('');
-                            }
-
-                            if (npwp_lain == 0) {
-                                $("#npwp_setor").val(data1.data[0].data
-                                    .nomorPokokWajibPajak);
-                            }
-
                             $("#nama_wajib_pajak").attr("value", data1.data[0].data
                                 .namaWajibPajak);
                             $("#alamat_wajib_pajak").val(data1.data[0].data
@@ -246,6 +236,79 @@
                                 .keteranganKodeSetor);
                             $("#nama_wajib_pajak").prop('disabled', true);
                             $("#alamat_wajib_pajak").prop('disabled', true);
+
+                            $('#masa_pajak_akhir').prop('disabled', true);
+                            if (no_sk == '1') {
+                                $("#no_sk").prop('disabled', false);
+                                $("#no_sk").val('');
+                            } else {
+                                $("#no_sk").prop('disabled', true);
+                                $("#no_sk").val('');
+                            }
+
+                            if (npwp_nol != 0) {
+                                $("#nik").prop('disabled', false);
+                                $("#nik").val('');
+                                $("#kota").prop('disabled', false);
+                                $("#kota").val('');
+                                $("#nama_wajib_pajak").prop('disabled', false);
+                                // $("#nama_wajib_pajak").val('');
+                                $("#alamat_wajib_pajak").prop('disabled', false);
+                                // $("#alamat_wajib_pajak").val('');
+                            } else {
+                                $("#nik").prop('disabled', true);
+                                $("#nik").val('');
+                                $("#kota").prop('disabled', true);
+                                $("#kota").val('');
+                                $("#nama_wajib_pajak").prop('disabled', true);
+                                // $("#nama_wajib_pajak").val('');
+                                $("#alamat_wajib_pajak").prop('disabled', true);
+                                // $("#alamat_wajib_pajak").val('');
+                            }
+
+                            if (nop == 1) {
+                                $("#nop").prop('disabled', false);
+                                $("#nop").val('');
+                            } else {
+                                $("#nop").prop('disabled', true);
+                                $("#nop").val('');
+                            }
+
+                            if (npwp_rekanan == 1) {
+                                $("#npwp_rekanan").prop('disabled', false);
+                                $("#npwp_rekanan").val('');
+                                $("#npwp_setor").val(data1.data[0].data
+                                    .nomorPokokWajibPajak);
+                            } else {
+                                $("#npwp_rekanan").prop('disabled', true);
+                                $("#npwp_rekanan").val('');
+                            }
+
+                            if (nik_rekanan == 1) {
+                                $("#nik_rekanan").prop('disabled', false);
+                                $("#nik_rekanan").val('');
+                            } else {
+                                $("#nik_rekanan").prop('disabled', true);
+                                $("#nik_rekanan").val('');
+                            }
+
+                            if (no_faktur == 1) {
+                                $("#no_faktur").prop('disabled', false);
+                                $("#no_faktur").val('');
+                            } else {
+                                $("#no_faktur").prop('disabled', true);
+                                $("#no_faktur").val('');
+                            }
+
+                            if (npwp_lain == 0) {
+                                $("#npwp_setor").val(data1.data[0].data
+                                    .nomorPokokWajibPajak);
+                            }
+
+                            if (masa_bulan != '1') {
+                                $('#masa_pajak_akhir').prop('disabled', false);
+                                $("#no_faktur").val('');
+                            }
                             // $("#nama_wajib_pajak").val('');
                             // $("#alamat_wajib_pajak").val('');
                             $('#modal_cek_npwp').modal('hide');
