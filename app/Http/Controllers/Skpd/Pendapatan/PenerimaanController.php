@@ -345,7 +345,8 @@ class PenerimaanController extends Controller
                         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
                     }
                 })
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_penetapan' => $tetap
         ];
@@ -483,7 +484,8 @@ class PenerimaanController extends Controller
                         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
                     }
                 })
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_penetapan' => $tetap
         ];
@@ -625,7 +627,8 @@ class PenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->where(['kd_skpd' => $kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'no_urut' => DB::table('trhkasin_pkd')
                 ->selectRaw("count(no_sts)+1 as nomor")
@@ -745,7 +748,8 @@ class PenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->where(['kd_skpd' => $kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get()
         ];
         // dd($data['terima']);
@@ -885,7 +889,8 @@ class PenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->where(['kd_skpd' => $kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get()
         ];
 
