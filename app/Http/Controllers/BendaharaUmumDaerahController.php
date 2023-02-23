@@ -92,6 +92,7 @@ class BendaharaUmumDaerahController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOrientation('landscape')
                 ->setOption('margin-left', 15)
                 ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
