@@ -25,7 +25,8 @@ class BendaharaUmumDaerahController extends Controller
             'daftar_skpd' => DB::table('ms_skpd')->orderBy('kd_skpd')->get(),
             'daftar_pengirim' => DB::table('ms_pengirim')
                 ->selectRaw("kd_pengirim,nm_pengirim,kd_skpd")
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_wilayah' => DB::table('ms_wilayah')->selectRaw("kd_wilayah,nm_wilayah")->orderByRaw("cast(kd_wilayah as int)")->get(),
             'bud' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD', 'PA'])->get(),
