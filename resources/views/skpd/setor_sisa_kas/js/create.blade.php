@@ -182,11 +182,13 @@
             let jumlah = rupiah(document.getElementById('jumlah').value);
             let sisa_kas_tunai = rupiah(document.getElementById('sisa_kas_tunai').value);
 
+            let total = nilai + sisa_kas_tunai;
+
             if (!kd_rek6) {
                 alert('Silahkan pilih Rekening!');
                 return;
             }
-            if (jenis_transaksi == '1' && nilai > sisa_kas_tunai) {
+            if (jenis_transaksi == '1' && sisa_kas_tunai > total) {
                 alert('Melebihi Kas Tunai');
                 return;
             }
