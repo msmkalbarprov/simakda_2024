@@ -135,7 +135,7 @@
                             <tr>
                                 <td>NPWP</td>
                                 <td>: </td>
-                                <td>{{ empty($wp->npwp) ? 'Tidak ada NPWP' : npwp($wp->npwp) }}</td>
+                                <td>{{ empty($wp->npwp) ? '-' : npwp($wp->npwp) }}</td>
                             </tr>
                             <tr>
                                 <td>Dasar Pembayaran</td>
