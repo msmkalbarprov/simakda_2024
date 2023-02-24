@@ -170,9 +170,10 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Deskripsi Pekerjaan</td>
+                    <td style="vertical-align: top">Deskripsi Pekerjaan</td>
                     <td>
-                        <pre>: {{ $beban6->keperluan }}</pre>
+                        {{-- <pre>: {{ $beban6->keperluan }}</pre> --}}
+                        : {{ $beban6->keperluan }}
                     </td>
                 </tr>
             @endif
