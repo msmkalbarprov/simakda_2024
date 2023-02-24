@@ -2735,7 +2735,18 @@ class BendaharaUmumDaerahController extends Controller
             'rincian' =>  DB::select("exec kartu_kendali ?,?,?,?,?", array($jns_ang, $kd_skpd, $kd_sub_kegiatan, $periode_awal, $periode_akhir)),
             'jns_ang' => $jns_ang
         ];
-        return view('bud.kartu_kendali.cetak_per_sub_kegiatan')->with($data);
+
+        $view =  view('bud.kartu_kendali.cetak_per_sub_kegiatan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'layar') {
+            return $view;
+        }
     }
 
     public function cetakRekeningKartuKendali(Request $request)
@@ -2782,7 +2793,17 @@ class BendaharaUmumDaerahController extends Controller
             'jns_ang' => $jns_ang
         ];
         // return $data['nilai_ang'];
-        return view('bud.kartu_kendali.cetak_per_rekening')->with($data);
+        $view = view('bud.kartu_kendali.cetak_per_rekening')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'layar') {
+            return $view;
+        }
     }
 
     public function registerCp(Request $request)
