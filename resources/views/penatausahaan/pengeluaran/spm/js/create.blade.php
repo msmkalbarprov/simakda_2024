@@ -99,7 +99,7 @@
                     })
                     $('#total').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(total))
+                    }).format(total));
                 }
             });
 
@@ -175,6 +175,10 @@
             }
             if (keperluan.length > 1000) {
                 alert('Keterangan Tidak boleh lebih dari 1000 karakter');
+                return;
+            }
+            if (total == 0) {
+                alert('Total Rincian tidak boleh kosong!Silahkan refresh!');
                 return;
             }
             $('#simpan_spm').prop('disabled', true);
