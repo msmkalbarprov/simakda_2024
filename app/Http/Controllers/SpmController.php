@@ -753,7 +753,12 @@ class SpmController extends Controller
         $skpd = Auth::user()->kd_skpd;
         $beban = $request->beban;
 
-        $status_anggaran = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->select('jns_ang')->first();
+        $status_anggaran = DB::table('trhrka as a')
+            ->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')
+            ->where(['a.kd_skpd' => $skpd, 'status' => '1'])
+            ->select('jns_ang')
+            ->orderByDesc('a.tgl_dpa')
+            ->first();
         $no_spp = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm])->first();
         $sub_giat = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp->no_spp])->groupBy('kd_sub_kegiatan')->first();
         $kd_sub_kegiatan = $sub_giat->kd_sub_kegiatan;
