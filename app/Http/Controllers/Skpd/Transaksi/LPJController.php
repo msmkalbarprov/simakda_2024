@@ -1849,7 +1849,7 @@ class LPJController extends Controller
     {
         $no_lpj = $request->no_lpj;
         $kd_skpd = $request->kd_skpd;
-        dd($no_lpj, $kd_skpd);
+
 
         DB::beginTransaction();
         try {
