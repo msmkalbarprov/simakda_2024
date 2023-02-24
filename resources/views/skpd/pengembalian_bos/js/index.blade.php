@@ -69,6 +69,9 @@
                     no_sts: no_sts,
                     kd_skpd: kd_skpd,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Hapus Berhasil');
@@ -76,6 +79,9 @@
                     } else {
                         alert('Proses Hapus Gagal...!!!');
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         } else {
