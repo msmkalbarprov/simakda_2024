@@ -720,6 +720,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('load_upload', [UploadPanjarCMSController::class, 'loadUpload'])->name('upload_panjarcms.load_data');
                 Route::post('draft_upload', [UploadPanjarCMSController::class, 'draftUpload'])->name('upload_panjarcms.draft_upload');
                 Route::post('data_upload', [UploadPanjarCMSController::class, 'dataUpload'])->name('upload_panjarcms.data_upload');
+                Route::post('data_transaksi', [UploadPanjarCMSController::class, 'dataTransaksi'])->name('upload_panjarcms.data_transaksi');
                 Route::get('tambah', [UploadPanjarCMSController::class, 'create'])->name('upload_panjarcms.create');
                 Route::post('proses_upload', [UploadPanjarCMSController::class, 'prosesUpload'])->name('upload_panjarcms.proses_upload');
                 Route::post('batal_upload', [UploadPanjarCMSController::class, 'batalUpload'])->name('upload_panjarcms.batal_upload');

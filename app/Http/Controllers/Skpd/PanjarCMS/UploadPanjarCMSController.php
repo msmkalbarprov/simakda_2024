@@ -49,6 +49,44 @@ class UploadPanjarCMSController extends Controller
         })->rawColumns(['aksi'])->make(true);
     }
 
+    public function dataTransaksi(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_kas = $request->no_kas;
+
+        $no_bukti = array();
+        if (!empty($no_kas)) {
+            foreach ($no_kas as $voucher) {
+                $no_bukti[] = $voucher['no_kas'];
+            }
+        } else {
+            $no_bukti[] = '';
+        }
+
+        $kd_skpd = Auth::user()->kd_skpd;
+        $status_ang = status_anggaran_new();
+
+        // $data = DB::select("SELECT a.*,b.nm_sub_kegiatan,isnull((select sum(nilai) from trhtrmpot_cmsbank where no_voucher=a.no_panjar and kd_skpd=a.kd_skpd ),0) [pot],
+        //     isnull((select sum(nilai) from tr_panjar_transfercms where no_bukti=a.no_panjar and kd_skpd=a.kd_skpd),0) [bersih]
+        //     FROM tr_panjar_cmsbank a  join trskpd b on a.kd_sub_kegiatan=b.kd_sub_kegiatan and b.jns_ang=? and a.kd_skpd=b.kd_skpd
+        // where a.kd_skpd=? and a.status_upload='0'
+        // order by cast(a.no_kas as int),a.kd_skpd", [$status_ang->jns_ang, $kd_skpd]);
+
+        $data = DB::table('tr_panjar_cmsbank as a')
+            ->join('trskpd as b', function ($query) use ($status_ang) {
+                $query->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+                $query->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("a.*,b.nm_sub_kegiatan,isnull((select sum(nilai) from trhtrmpot_cmsbank where no_voucher=a.no_panjar and kd_skpd=a.kd_skpd ),0) [pot],
+            isnull((select sum(nilai) from tr_panjar_transfercms where no_bukti=a.no_panjar and kd_skpd=a.kd_skpd),0) [bersih]")
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '0', 'b.jns_ang' => $status_ang->jns_ang])
+            ->whereNotIn('a.no_kas', $no_bukti)
+            ->orderByRaw("cast(a.no_kas as int),a.kd_skpd")
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function rekeningTransaksi(Request $request)
     {
         $no_voucher = $request->nomor;
@@ -93,8 +131,6 @@ class UploadPanjarCMSController extends Controller
 
     public function create()
     {
-        $kd_skpd = Auth::user()->kd_skpd;
-
         $kd_skpd = Auth::user()->kd_skpd;
         $status_ang = status_anggaran_new();
 

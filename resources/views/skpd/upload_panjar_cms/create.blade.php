@@ -16,7 +16,7 @@
                         <div class="col-md-12">
                             <select name="data_transaksi" id="data_transaksi" class="form-control select2-multiple">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_transaksi as $data)
+                                {{-- @foreach ($daftar_transaksi as $data)
                                     <option value="{{ $data->no_kas }}" data-tgl="{{ $data->tgl_kas }}"
                                         data-kd_skpd="{{ $data->kd_skpd }}" data-keterangan="{{ $data->keterangan }}"
                                         data-tgl_upload="{{ $data->tgl_upload }}" data-nilai="{{ $data->nilai }}"
@@ -30,7 +30,7 @@
                                         {{ $data->no_kas }} |
                                         {{ $data->tgl_kas }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>

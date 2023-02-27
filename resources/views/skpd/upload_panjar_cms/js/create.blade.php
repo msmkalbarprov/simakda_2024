@@ -75,6 +75,8 @@
             ]
         });
 
+        load_transaksi();
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -128,6 +130,7 @@
                 minimumFractionDigits: 2
             }).format(total_transaksi + nilai));
             $("#data_transaksi").val(null).change();
+            load_transaksi();
         });
 
         $('#proses_upload').on('click', function() {
@@ -201,6 +204,36 @@
         return parseFloat(rupiah) || 0;
     }
 
+    function load_transaksi() {
+        $('#data_transaksi').empty();
+        let rincian_upload = $('#rincian_upload').DataTable();
+        let detail_rincian = rincian_upload.rows().data().toArray().map((value) => {
+            let data = {
+                no_kas: value.no_kas,
+            };
+            return data;
+        });
+
+        $.ajax({
+            url: "{{ route('upload_panjarcms.data_transaksi') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                no_kas: detail_rincian.length == 0 ? '0' : detail_rincian
+            },
+            success: function(data) {
+                $('#data_transaksi').empty();
+                $('#data_transaksi').append(
+                    `<option value="" disabled selected>Silahkan Pilih</option>`);
+                $.each(data, function(index, data) {
+                    $('#data_transaksi').append(
+                        `<option value="${data.no_kas}" data-tgl="${data.tgl_kas}" data-kd_skpd="${data.kd_skpd}" data-keterangan="${data.keterangan}" data-tgl_upload="${data.tgl_upload}" data-nilai="${data.nilai}" data-bersih="${data.bersih}" data-pot="${data.pot}" data-status_upload="${data.status_upload}" data-rekening_awal="${data.rekening_awal}" data-nm_rekening_tujuan="${data.nm_rekening_tujuan}" data-rekening_tujuan="${data.rekening_tujuan}" data-bank_tujuan="${data.bank_tujuan}" data-ket_tujuan="${data.ket_tujuan}">${data.no_kas} | ${data.tgl_kas}</option>`
+                    );
+                })
+            }
+        })
+    }
+
     function deleteData(no_kas, total) {
         let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor Transaksi : ' + no_kas);
         let tabel = $('#rincian_upload').DataTable();
@@ -212,6 +245,7 @@
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi - parseFloat(total)));
+            load_transaksi();
         } else {
             return false;
         }
