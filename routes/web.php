@@ -1531,7 +1531,7 @@ Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', 
 Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
 Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');
 Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
-Route::get('setting', [SettingController::class, 'index'])->name('setting');
+// Route::get('setting', [SettingController::class, 'index'])->name('setting');
 Route::post('backup_database', [SettingController::class, 'BackupDatabase'])->name('backup_database');
 Route::get('coba', [HomeController::class, 'coba'])->name('coba');
 Route::get('', [LoginController::class, 'index'])->name('login');
