@@ -90,28 +90,116 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_terima, kd_skpd) {
-        let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Terima : ' + no_terima);
-        if (tanya == true) {
-            $.ajax({
-                url: "{{ route('penerimaan_ini.hapus') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    no_terima: no_terima,
-                    kd_skpd: kd_skpd,
-                },
-                success: function(data) {
-                    if (data.message == '1') {
-                        alert('Proses Hapus Berhasil');
-                        window.location.reload();
-                    } else {
-                        alert('Proses Hapus Gagal...!!!');
+    function hapus(no_terima, no_tetap, kd_skpd) {
+        // let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Terima : ' + no_terima);
+        // if (tanya == true) {
+        //     let tanya1 = confirm('Apakah anda ingin menghapus hanya penerimaan atau penerimaan dengan penetapan?');
+        //     if (tanya1 == true) {
+        //         $.ajax({
+        //             url: "{{ route('penerimaan_ini.hapus') }}",
+        //             type: "POST",
+        //             dataType: 'json',
+        //             data: {
+        //                 no_terima: no_terima,
+        //                 kd_skpd: kd_skpd,
+        //             },
+        //             success: function(data) {
+        //                 if (data.message == '1') {
+        //                     alert('Proses Hapus Berhasil');
+        //                     window.location.reload();
+        //                 } else {
+        //                     alert('Proses Hapus Gagal...!!!');
+        //                 }
+        //             }
+        //         })
+        //     } else {
+        //         return false;
+        //     }
+        // } else {
+        //     return false;
+        // }
+        Swal.fire({
+            title: 'Apakah Anda yakin untuk menghapus data?',
+            text: "Data tidak dapat dikembalikan!",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya!',
+            cancelButtonText: 'Tidak',
+            confirmButtonClass: 'btn btn-success mt-2',
+            cancelButtonClass: 'btn btn-danger ms-2 mt-2',
+            buttonsStyling: false
+        }).then(function(result) {
+            if (result.value) {
+                Swal.fire({
+                    title: 'Apakah hanya menghapus penerimaan atau penerimaan dengan penetapan?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Hanya Penerimaan?',
+                    cancelButtonText: 'Penerimaan Dengan Penetapan?',
+                    confirmButtonClass: 'btn btn-warning mt-2',
+                    cancelButtonClass: 'btn btn-danger ms-2 mt-2',
+                    buttonsStyling: false
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('penerimaan_ini.hapus') }}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {
+                                no_terima: no_terima,
+                                no_tetap: no_tetap,
+                                kd_skpd: kd_skpd,
+                                jenis: '1'
+                            },
+                            beforeSend: function() {
+                                $("#overlay").fadeIn(100);
+                            },
+                            success: function(data) {
+                                if (data.message == '1') {
+                                    alert('Proses Hapus Berhasil');
+                                    window.location.reload();
+                                } else {
+                                    alert('Proses Hapus Gagal...!!!');
+                                }
+                            },
+                            complete: function(data) {
+                                $("#overlay").fadeOut(100);
+                            }
+                        })
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        $.ajax({
+                            url: "{{ route('penerimaan_ini.hapus') }}",
+                            type: "POST",
+                            dataType: 'json',
+                            data: {
+                                no_terima: no_terima,
+                                no_tetap: no_tetap,
+                                kd_skpd: kd_skpd,
+                                jenis: '2'
+                            },
+                            beforeSend: function() {
+                                $("#overlay").fadeIn(100);
+                            },
+                            success: function(data) {
+                                if (data.message == '1') {
+                                    alert('Proses Hapus Berhasil');
+                                    window.location.reload();
+                                } else {
+                                    alert('Proses Hapus Gagal...!!!');
+                                }
+                            },
+                            complete: function(data) {
+                                $("#overlay").fadeOut(100);
+                            }
+                        })
                     }
-                }
-            })
-        } else {
-            return false;
-        }
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    title: 'Hapus Dibatalkan!',
+                    icon: 'info'
+                })
+            }
+        });
     }
 </script>
