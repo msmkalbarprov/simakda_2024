@@ -49,12 +49,14 @@
         <tr>
             <td style="font-size: 16px">
                 <b>
-                    SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN <br>
                     @if ($beban == '4')
+                        SURAT PERMINTAAN PEMBAYARAN LANGSUNG GAJI DAN TUNJANGAN <br>
                         (SPP - {{ strtoupper($lcbeban) }})
                     @elseif ($beban == '5')
+                        SURAT PERMINTAAN PEMBAYARAN LANGSUNG PIHAK KETIGA LAINNYA <br>
                         (SPP - LS {{ strtoupper($lcbeban) }})
                     @else
+                        SURAT PERMINTAAN PEMBAYARAN LANGSUNG BARANG DAN JASA <br>
                         (SPP - LS {{ strtoupper($lcbeban) }})
                     @endif
                 </b>

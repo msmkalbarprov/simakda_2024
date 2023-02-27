@@ -14,6 +14,11 @@
                             SPP - SPM DALAM STATUS BATAL
                         </div>
                     @endif
+                    @if ($data_spm->status == 1)
+                        <div class="alert alert-warning alert-block">
+                            <b style="font-size:16px">Sudah di Buat SP2D!!</b>
+                        </div>
+                    @endif
                     @csrf
                     {{-- No SPP dan Tanggal SPP --}}
                     <div class="mb-3 row">

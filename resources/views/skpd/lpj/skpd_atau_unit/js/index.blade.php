@@ -121,6 +121,10 @@
             let bendahara = document.getElementById('bendahara').value;
             let pa_kpa = document.getElementById('pa_kpa').value;
             let pilihan = document.getElementById('pilihan').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let jenis_print = $(this).data("jenis");
 
@@ -153,6 +157,10 @@
             searchParams.append("bendahara", bendahara);
             searchParams.append("pilihan", pilihan);
             searchParams.append("kd_sub_kegiatan", kd_sub_kegiatan);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });

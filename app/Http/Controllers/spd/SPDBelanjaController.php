@@ -650,6 +650,10 @@ class SPDBelanjaController extends Controller
 
             $status1 = $status->jns_ang;
 
+            $data['daftar_spd'] = json_decode($data['daftar_spd'], true);
+
+            $rincian_data = $data['daftar_spd'];
+
             if ($nomorspd > 0) {
                 DB::rollBack();
                 return response()->json([
@@ -685,22 +689,38 @@ class SPDBelanjaController extends Controller
                     ]);
 
                     if ($data['jenis'] == '6') {
-                        if (isset($data['daftar_spd'])) {
-                            DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
-                                return [
-                                    'no_spd' => $value['nomor'],
-                                    'kd_program' => kd_Program($value['kd_sub_kegiatan'])->kd_program,
-                                    'nm_program' => kd_Program($value['kd_sub_kegiatan'])->nm_program,
-                                    'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->kd_kegiatan,
-                                    'nm_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_kegiatan,
-                                    'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                                    'nm_sub_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_sub_kegiatan,
-                                    'kd_rek6' => $value['kd_rek6'],
-                                    'nm_rek6' => kd_kegiatan($value['kd_rek6'])->nm_kegiatan,
-                                    'nilai' => $value['nilai'],
-                                    'kd_unit' => $value['kd_skpd'],
+                        if (isset($rincian_data)) {
+                            // DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                            //     return [
+                            //         'no_spd' => $value['nomor'],
+                            //         'kd_program' => kd_Program($value['kd_sub_kegiatan'])->kd_program,
+                            //         'nm_program' => kd_Program($value['kd_sub_kegiatan'])->nm_program,
+                            //         'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->kd_kegiatan,
+                            //         'nm_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_kegiatan,
+                            //         'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            //         'nm_sub_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan'])->nm_sub_kegiatan,
+                            //         'kd_rek6' => $value['kd_rek6'],
+                            //         'nm_rek6' => kd_kegiatan($value['kd_rek6'])->nm_kegiatan,
+                            //         'nilai' => $value['nilai'],
+                            //         'kd_unit' => $value['kd_skpd'],
+                            //     ];
+                            // }, $data['daftar_spd']));
+                            foreach ($rincian_data as $data => $value) {
+                                $data = [
+                                    'no_spd' => $rincian_data[$data]['no_spd'],
+                                    'kd_program' => kd_Program($rincian_data[$data]['kd_sub_kegiatan'])->kd_progam,
+                                    'nm_program' => kd_Program($rincian_data[$data]['kd_sub_kegiatan'])->nm_program,
+                                    'kd_kegiatan' => kd_kegiatan($rincian_data[$data]['kd_sub_kegiatan'])->kd_kegiatan,
+                                    'nm_kegiatan' => kd_kegiatan($rincian_data[$data]['kd_sub_kegiatan'])->nm_kegiatan,
+                                    'kd_sub_kegiatan' => $rincian_data[$data]['kd_sub_kegiatan'],
+                                    'nm_sub_kegiatan' => kd_kegiatan($rincian_data[$data]['kd_sub_kegiatan'])->nm_sub_kegiatan,
+                                    'kd_rek6' => $rincian_data[$data]['kd_rek6'],
+                                    'nm_rek6' => kd_kegiatan($rincian_data[$data]['kd_rek6'])->nm_kegiatan,
+                                    'nilai' => $rincian_data[$data]['nilai'],
+                                    'kd_unit' => $rincian_data[$data]['kd_skpd'],
                                 ];
-                            }, $data['daftar_spd']));
+                                DB::table('trdspd')->insert($data);
+                            }
                         }
                     } else {
                         DB::insert("INSERT trdspd
@@ -765,23 +785,41 @@ class SPDBelanjaController extends Controller
                         'jns_angkas' => $data['status_angkas'],
                     ]);
 
+                    $nomor1 = $data['nomor'];
+
                     if ($data['jenis'] == '6') {
-                        if (isset($data['daftar_spd'])) {
-                            DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
-                                return [
-                                    'no_spd' => $data['nomor'],
-                                    'kd_program' => kd_Program($value['kd_sub_kegiatan']),
-                                    'nm_program' => nm_Program($value['kd_sub_kegiatan']),
-                                    'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan']),
-                                    'nm_kegiatan' => nm_kegiatan($value['kd_sub_kegiatan']),
-                                    'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                                    'nm_sub_kegiatan' => kd_sub_kegiatan($value['kd_sub_kegiatan']),
-                                    'kd_rek6' => $value['kd_rek6'],
-                                    'nm_rek6' => kd_rek($value['kd_rek6']),
-                                    'nilai' => $value['nilai'],
-                                    'kd_unit' => $value['kd_skpd'],
+                        if (isset($rincian_data)) {
+                            // DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
+                            //     return [
+                            //         'no_spd' => $data['nomor'],
+                            //         'kd_program' => kd_Program($value['kd_sub_kegiatan']),
+                            //         'nm_program' => nm_Program($value['kd_sub_kegiatan']),
+                            //         'kd_kegiatan' => kd_kegiatan($value['kd_sub_kegiatan']),
+                            //         'nm_kegiatan' => nm_kegiatan($value['kd_sub_kegiatan']),
+                            //         'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            //         'nm_sub_kegiatan' => kd_sub_kegiatan($value['kd_sub_kegiatan']),
+                            //         'kd_rek6' => $value['kd_rek6'],
+                            //         'nm_rek6' => kd_rek($value['kd_rek6']),
+                            //         'nilai' => $value['nilai'],
+                            //         'kd_unit' => $value['kd_skpd'],
+                            //     ];
+                            // }, $data['daftar_spd']));
+                            foreach ($rincian_data as $data => $value) {
+                                $data = [
+                                    'no_spd' => $nomor1,
+                                    'kd_program' => kd_Program($rincian_data[$data]['kd_sub_kegiatan']),
+                                    'nm_program' => nm_Program($rincian_data[$data]['kd_sub_kegiatan']),
+                                    'kd_kegiatan' => kd_kegiatan($rincian_data[$data]['kd_sub_kegiatan']),
+                                    'nm_kegiatan' => nm_kegiatan($rincian_data[$data]['kd_sub_kegiatan']),
+                                    'kd_sub_kegiatan' => $rincian_data[$data]['kd_sub_kegiatan'],
+                                    'nm_sub_kegiatan' => kd_sub_kegiatan($rincian_data[$data]['kd_sub_kegiatan']),
+                                    'kd_rek6' => $rincian_data[$data]['kd_rek6'],
+                                    'nm_rek6' => kd_rek($rincian_data[$data]['kd_rek6']),
+                                    'nilai' => $rincian_data[$data]['nilai'],
+                                    'kd_unit' => $rincian_data[$data]['kd_skpd'],
                                 ];
-                            }, $data['daftar_spd']));
+                                DB::table('trdspd')->insert($data);
+                            }
                         }
                     } else {
                         DB::insert("INSERT trdspd

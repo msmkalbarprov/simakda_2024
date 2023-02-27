@@ -68,7 +68,7 @@
                     <div class="col-md-12 text-center">
                         <button type="button" class="btn btn-danger btn-md cetak_uyhd" data-jenis="pdf">PDF</button>
                         <button type="button" class="btn btn-dark btn-md cetak_uyhd" data-jenis="layar">Layar</button>
-                        <button type="button" class="btn btn-dark btn-md cetak_uyhd" data-jenis="excel">Excel</button>
+                        {{-- <button type="button" class="btn btn-dark btn-md cetak_uyhd" data-jenis="excel">Excel</button> --}}
                         <button type="button" class="btn btn-md btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     </div>
                 </div>

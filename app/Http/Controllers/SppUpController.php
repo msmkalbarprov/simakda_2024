@@ -32,7 +32,12 @@ class SppUpController extends Controller
     public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('trhspp')->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '1'])->orderBy('no_spp')->orderBy('kd_skpd')->get();
+        $data = DB::table('trhspp')
+            ->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '1'])
+            ->orderBy('no_spp')
+            ->orderBy('kd_skpd')
+            ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sppup.edit", Crypt::encryptString($row->no_spp)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';

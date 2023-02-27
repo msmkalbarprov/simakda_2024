@@ -237,7 +237,8 @@ class PenetapanController extends Controller
                         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
                     }
                 })
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get()
         ];
 
@@ -351,7 +352,8 @@ class PenetapanController extends Controller
                         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
                     }
                 })
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get()
         ];
 

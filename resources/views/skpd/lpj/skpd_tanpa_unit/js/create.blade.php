@@ -96,12 +96,18 @@
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
+                    let total = rupiah(document.getElementById('total').value);
                     $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.spd));
                     $('#realisasi_spd_spp').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.keluarspp));
+
+                    if (data.spd < total + data.keluarspp) {
+                        alert('Total SPD tidak mencukupi');
+                        return;
+                    }
                 }
             });
         });
@@ -137,7 +143,7 @@
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let tahun_input = tgl_lpj.substr(0, 4);
 
-            let detail_lpj = detail.rows().data().toArray().map((value) => {
+            let detail_lpj1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
                     no_bukti: value.no_bukti,
@@ -148,6 +154,8 @@
                 };
                 return data;
             });
+
+            let detail_lpj = JSON.stringify(detail_lpj1);
 
             if (!no_lpj) {
                 alert('Nomor tidak boleh kosong');
@@ -174,6 +182,11 @@
                 return;
             }
 
+            if (sisa_spd < total) {
+                alert('Sisa SPD Tidak cukup untuk Pengajuan GU');
+                return;
+            }
+
             let data = {
                 no_lpj,
                 tgl_lpj,
@@ -193,16 +206,28 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    // Show image container
+                    $("#loading").modal('show');
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
                             "{{ route('lpj.skpd_tanpa_unit.index') }}";
+                    } else if (response.message == '2') {
+                        alert('No LPJ Telah Digunakan!');
+                        $('#simpan').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    // Hide image container
+                    $("#loading").modal('hide');
                 }
             })
         });

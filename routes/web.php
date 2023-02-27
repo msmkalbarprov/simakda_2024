@@ -1454,8 +1454,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [PengembalianBosController::class, 'index'])->name('pengembalian_bos.index');
             Route::post('load', [PengembalianBosController::class, 'load'])->name('pengembalian_bos.load');
             Route::get('create', [PengembalianBosController::class, 'create'])->name('pengembalian_bos.create');
+            Route::post('kegiatan', [PengembalianBosController::class, 'kegiatan'])->name('pengembalian_bos.kegiatan');
+            Route::post('sisa_bos', [PengembalianBosController::class, 'sisaBos'])->name('pengembalian_bos.sisa_bos');
             Route::post('simpan', [PengembalianBosController::class, 'simpan'])->name('pengembalian_bos.simpan');
-            Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengembalianBosController::class, 'edit'])->name('pengembalian_bos.edit');
+            Route::get('edit/{no_sts?}/{kd_skpd?}', [PengembalianBosController::class, 'edit'])->name('pengembalian_bos.edit');
             Route::post('update', [PengembalianBosController::class, 'update'])->name('pengembalian_bos.update');
             Route::post('hapus', [PengembalianBosController::class, 'hapus'])->name('pengembalian_bos.hapus');
         });

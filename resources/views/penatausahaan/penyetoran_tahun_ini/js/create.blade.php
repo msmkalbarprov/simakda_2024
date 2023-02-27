@@ -152,6 +152,9 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil disimpan!');
@@ -169,6 +172,9 @@
                         alert('Data gagal disimpan!');
                         $('#simpan').prop('disabled', false);
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });

@@ -102,11 +102,11 @@
         $('#jenis_transaksi').on('select2:select', function() {
             let jenis_transaksi = this.value;
 
-            if (jenis_transaksi == '1') {
-                $('#kd_sub_kegiatan').prop('disabled', true);
-            } else if (jenis_transaksi == '5') {
-                $('#kd_sub_kegiatan').prop('disabled', false);
-            }
+            // if (jenis_transaksi == '1') {
+            //     $('#kd_sub_kegiatan').prop('disabled', true);
+            // } else if (jenis_transaksi == '5') {
+            //     $('#kd_sub_kegiatan').prop('disabled', false);
+            // }
             detail_sts.clear().draw();
             $('#jumlah').val(null);
             $('#kd_sub_kegiatan').empty();
@@ -182,11 +182,13 @@
             let jumlah = rupiah(document.getElementById('jumlah').value);
             let sisa_kas_tunai = rupiah(document.getElementById('sisa_kas_tunai').value);
 
+            let total = nilai + sisa_kas_tunai;
+
             if (!kd_rek6) {
                 alert('Silahkan pilih Rekening!');
                 return;
             }
-            if (jenis_transaksi == '1' && nilai > sisa_kas_tunai) {
+            if (jenis_transaksi == '1' && sisa_kas_tunai > total) {
                 alert('Melebihi Kas Tunai');
                 return;
             }

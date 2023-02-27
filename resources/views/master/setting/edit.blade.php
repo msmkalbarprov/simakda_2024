@@ -140,7 +140,7 @@
         });
         
 
-        $('.btn_backups').on("click", function() {
+        $('.btn_backup').on("click", function() {
                     Swal.fire({
                         title: 'Sabar Ya Guys!',
                         html: 'Backup database dalam Waktu : <strong></strong> detik.',

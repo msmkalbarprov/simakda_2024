@@ -37,6 +37,7 @@ class PenyetoranController extends Controller
     public function tambahPenyetoranLalu()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $status_anggaran = status_anggaran();
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -44,9 +45,10 @@ class PenyetoranController extends Controller
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
                 ->orderByRaw("cast(kd_pengirim as int)")
                 ->get(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
                 ->get()
         ];
 
@@ -236,6 +238,7 @@ class PenyetoranController extends Controller
     {
         $no_sts = Crypt::decrypt($no_sts);
         $kd_skpd = Auth::user()->kd_skpd;
+        $status_anggaran = status_anggaran();
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
@@ -243,9 +246,10 @@ class PenyetoranController extends Controller
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
                 ->orderByRaw("cast(kd_pengirim as int)")
                 ->get(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
                 ->get(),
             'setor' => DB::table('trhkasin_pkd as a')
                 ->join('trdkasin_pkd as b', function ($join) {
@@ -588,12 +592,14 @@ class PenyetoranController extends Controller
     public function tambahPenyetoranIni()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+        $status_anggaran = status_anggaran();
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
                 ->get()
         ];
 
@@ -795,11 +801,14 @@ class PenyetoranController extends Controller
         $no_sts = Crypt::decrypt($no_sts);
         $kd_skpd = Crypt::decrypt($kd_skpd);
         $spjbulan = cek_status_spj_pend($kd_skpd);
+        $status_anggaran = status_anggaran();
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_kegiatan' => DB::table('trskpd_pend as a')
+            'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'a.jns_sub_kegiatan' => '4'])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
                 ->get(),
             'sts' => DB::table('trhkasin_pkd as a')
                 ->leftJoin('trhkasin_ppkd as b', function ($join) {

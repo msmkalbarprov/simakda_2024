@@ -2566,6 +2566,11 @@
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
             let jenis_print = $(this).data("jenis");
 
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+
             if (keseluruhan || skpd) {
                 if (bulan) {
                     if (!bulan1) {
@@ -2638,6 +2643,10 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });

@@ -137,8 +137,9 @@
                         <div class="mb-3 row">
                             <label for="no_rekening" class="col-md-2 col-form-label">No Rekening</label>
                             <div class="col-md-10">
-                                <input type="text" readonly name="no_rekening" value="{{ $data_rekening->rekening }}"
-                                    id="no_rekening" class="form-control @error('no_rekening') is-invalid @enderror">
+                                <input type="text" readonly name="no_rekening"
+                                    value="{{ $data_kontrak->no_rekening }}" id="no_rekening"
+                                    class="form-control @error('no_rekening') is-invalid @enderror">
                                 @error('no_rekening')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

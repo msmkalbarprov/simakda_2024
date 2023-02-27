@@ -12,11 +12,11 @@
                     @csrf
                     @if ($spm->status == 1 && $spm->sts_setuju == 1)
                         <div class="alert alert-danger" role="alert">
-                            Sudah disahkan dan dibuat SPM...!!!
+                            Sudah disahkan dan dibuat SP2D...!!!
                         </div>
                     @elseif ($spm->status == 1 && ($spm->sts_setuju == 0 || $spm->sts_setuju == ''))
                         <div class="alert alert-danger" role="alert">
-                            Sudah dibuat SPM...!!!
+                            Sudah dibuat SP2D...!!!
                         </div>
                     @elseif (($spm->status == 0 || $spm->status == '') && $spm->sts_setuju == 1)
                         <div class="alert alert-danger" role="alert">

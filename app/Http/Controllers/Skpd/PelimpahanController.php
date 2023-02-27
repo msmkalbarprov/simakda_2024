@@ -221,7 +221,7 @@ class PelimpahanController extends Controller
     {
         $kd_skpd = $request->kd_skpd;
 
-        $data = DB::table('trhlpj_unit')->select('no_lpj', 'kd_skpd')->selectRaw("(SELECT sum(nilai) from trlpj_unit where no_lpj=trhlpj_unit.no_lpj and kd_skpd=?) as nilai", [$kd_skpd])->where(['kd_skpd' => $kd_skpd])->whereRaw("no_lpj not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")->get();
+        $data = DB::table('trhlpj_unit')->select('no_lpj', 'kd_skpd')->selectRaw("(SELECT sum(nilai) from trlpj where no_lpj_unit=trhlpj_unit.no_lpj and kd_skpd=?) as nilai", [$kd_skpd])->where(['kd_skpd' => $kd_skpd])->whereRaw("no_lpj not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")->get();
         return response()->json($data);
     }
 

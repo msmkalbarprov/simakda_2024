@@ -237,13 +237,14 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $no_spm = Crypt::decryptString($no_spm);
         $cari_spm = DB::table('trhspm as a')
-            ->select('a.no_spp')
+            ->select('a.*')
             ->where(['a.no_spm' => $no_spm])
             ->first();
 
         $data = [
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
             'no_spm' => $no_spm,
+            'spm' => $cari_spm,
             'daftar_transaksi' => DB::table('trdspp')->select('kd_rek6', 'nm_rek6')->where(['no_spp' => $cari_spm->no_spp, 'kd_skpd' => $kd_skpd])->groupBy('kd_rek6', 'nm_rek6')->get(),
             'daftar_potongan' => DB::table('ms_pot')->select('kd_rek6', 'map_pot', 'nm_pot as nm_rek6')->groupBy('kd_rek6', 'nm_pot', 'map_pot')->get(),
             'total_pajak' => DB::table('trspmpot')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spm' => $no_spm])->first(),
@@ -752,7 +753,12 @@ class SpmController extends Controller
         $skpd = Auth::user()->kd_skpd;
         $beban = $request->beban;
 
-        $status_anggaran = DB::table('trhrka as a')->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')->where(['a.kd_skpd' => $skpd, 'status' => '1'])->select('jns_ang')->first();
+        $status_anggaran = DB::table('trhrka as a')
+            ->join('tb_status_anggaran as b', 'a.jns_ang', '=', 'b.kode')
+            ->where(['a.kd_skpd' => $skpd, 'status' => '1'])
+            ->select('jns_ang')
+            ->orderByDesc('a.tgl_dpa')
+            ->first();
         $no_spp = DB::table('trhspm')->select('no_spp')->where(['no_spm' => $no_spm])->first();
         $sub_giat = DB::table('trdspp')->select('kd_sub_kegiatan')->where(['no_spp' => $no_spp->no_spp])->groupBy('kd_sub_kegiatan')->first();
         $kd_sub_kegiatan = $sub_giat->kd_sub_kegiatan;

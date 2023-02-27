@@ -298,7 +298,7 @@
                 ordering: false,
                 serverSide: true,
                 processing: true,
-                lengthMenu: [5, 10],
+                lengthMenu: [10, 20, 50],
                 ajax: {
                     "url": "{{ route('sppls.load_data') }}",
                     "type": "POST",
@@ -306,6 +306,10 @@
                 createdRow: function(row, data, index) {
                     if (data.sp2d_batal == "1") {
                         $(row).css("background-color", "#ff0000");
+                        $(row).css("color", "white");
+                    }
+                    if (data.status == 1) {
+                        $(row).css("background-color", "#4bbe68");
                         $(row).css("color", "white");
                     }
                 },

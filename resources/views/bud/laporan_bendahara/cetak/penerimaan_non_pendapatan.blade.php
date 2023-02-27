@@ -116,7 +116,6 @@
                     @endif
                 </td>
                 <td class="angka">{{ rupiah($total_periode_ini) }}</td>
-                <td></td>
             </tr>
             <tr>
                 <td style="border-top:hidden;"></td>
@@ -137,7 +136,6 @@
                     @endif
                 </td>
                 <td class="angka" style="border-top:hidden">{{ rupiah($penerimaan_lalu) }}</td>
-                <td style="border-top:hidden"></td>
             </tr>
             <tr>
                 <td style="border-top:hidden;"></td>
@@ -151,7 +149,6 @@
                 </td>
                 <td class="angka">{{ rupiah($total_periode_ini + $penerimaan_lalu) }}
                 </td>
-                <td style="border-top:hidden"></td>
             </tr>
         </tbody>
     </table>

@@ -104,7 +104,7 @@
                 <th>MURNI</th>
                 <th>UBAH</th>
                 <th>UP/GU</th>
-                <th>GU</th>
+                <th>TU</th>
                 <th>LS</th>
             </tr>
         </thead>

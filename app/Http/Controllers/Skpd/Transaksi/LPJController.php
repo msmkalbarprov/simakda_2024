@@ -112,9 +112,28 @@ class LPJController extends Controller
         $nospp = '';
         $no_bukti = '';
 
+        // $data = collect(DB::select("SELECT spd,keluar1 = keluar-terima,keluarspp  from(
+        //                 select sum(spd) as spd,sum(terima) as terima,sum(keluar) as keluar,sum(keluarspp) as keluarspp from(SELECT 'SPD' as ket,isnull(sum(nilai),0) as spd,0 as terima,0 as keluar,0 as keluarspp from trhspd d join trdspd e on d.no_spd=e.no_spd
+        //                     where d.kd_skpd=? and d.status='1' and d.jns_beban=? UNION ALL
+        //                     SELECT 'SPP' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+        //                     where LEFT(kd_rek6,1)=? and b.jns_spp in ('3','4','5','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1')
+        //                     union all
+        //                     select 'Trans UP/GU' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+        //                     where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and a.no_bukti<>?
+        //                     union all
+        //                     select 'Trans UP/GU CMS' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout_cmsbank a join trhtransout_cmsbank b on a.no_voucher=b.no_voucher
+        //                     and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1' union all
+        //                     select 'Panjar' as ket,0 as spd,0 as terima,ISNULL(sum(nilai),0) as keluar,0 as keluarspp from tr_panjar where jns='1' and left(kd_skpd,17)=left(?,17) and no_kas<>?
+        //                     union all
+        //                     select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>? union all
+        //                     select 'SPP' as ket,0 as spd,0 as terima,0 as keluar,isnull(sum(a.nilai),0) [keluarspp] from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+        //                     where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1') )as f
+        //             )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
+
         $data = collect(DB::select("SELECT spd,keluar1 = keluar-terima,keluarspp  from(
                         select sum(spd) as spd,sum(terima) as terima,sum(keluar) as keluar,sum(keluarspp) as keluarspp from(SELECT 'SPD' as ket,isnull(sum(nilai),0) as spd,0 as terima,0 as keluar,0 as keluarspp from trhspd d join trdspd e on d.no_spd=e.no_spd
-                            where d.kd_skpd=? and d.status='1' and d.jns_beban=? UNION ALL
+                            where d.kd_skpd=? and d.status='1' and d.jns_beban=?
+                            UNION ALL
                             SELECT 'SPP' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
                             where LEFT(kd_rek6,1)=? and b.jns_spp in ('3','4','5','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1')
                             union all
@@ -122,12 +141,14 @@ class LPJController extends Controller
                             where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and a.no_bukti<>?
                             union all
                             select 'Trans UP/GU CMS' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout_cmsbank a join trhtransout_cmsbank b on a.no_voucher=b.no_voucher
-                            and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1' union all
+                            and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1'
+                            union all
                             select 'Panjar' as ket,0 as spd,0 as terima,ISNULL(sum(nilai),0) as keluar,0 as keluarspp from tr_panjar where jns='1' and left(kd_skpd,17)=left(?,17) and no_kas<>?
                             union all
-                            select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>? union all
+                            select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>?
+                            union all
                             select 'SPP' as ket,0 as spd,0 as terima,0 as keluar,isnull(sum(a.nilai),0) [keluarspp] from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-                            where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1') )as f
+                            where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1'))as f
                     )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
 
         return response()->json($data);
@@ -135,8 +156,11 @@ class LPJController extends Controller
 
     public function simpanSkpdTanpaUnit(Request $request)
     {
+        // ini_set('max_input_vars', '10000');
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
+
+        // $data['detail_lpj'] = json_decode($data['detail_lpj'], true);
 
         DB::beginTransaction();
         try {
@@ -161,22 +185,43 @@ class LPJController extends Controller
                     'jenis' => '1',
                 ]);
 
-            if (isset($data['detail_lpj'])) {
-                DB::table('trlpj')
-                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
-                        return [
-                            'no_lpj' => $no_lpj,
-                            'kd_skpd' => $value['kd_skpd'],
-                            'no_bukti' => $value['no_bukti'],
-                            'tgl_lpj' => $data['tgl_lpj'],
-                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                            'kd_rek6' => $value['kdrek6'],
-                            'nm_rek6' => $value['nmrek6'],
-                            'nilai' => $value['nilai'],
-                            'kd_bp_skpd' => $data['kd_skpd'],
-                            'no_lpj_unit' => $no_lpj,
-                        ];
-                    }, $data['detail_lpj']));
+            $data['detail_lpj'] = json_decode($data['detail_lpj'], true);
+
+            $rincian_data = $data['detail_lpj'];
+            $tgl_lpj = $data['tgl_lpj'];
+            $kd_skpd = $data['kd_skpd'];
+
+            if (isset($rincian_data)) {
+                // DB::table('trlpj')
+                //     ->insert(array_map(function ($value) use ($no_lpj, $data) {
+                //         return [
+                //             'no_lpj' => $no_lpj,
+                //             'kd_skpd' => $value['kd_skpd'],
+                //             'no_bukti' => $value['no_bukti'],
+                //             'tgl_lpj' => $data['tgl_lpj'],
+                //             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                //             'kd_rek6' => $value['kdrek6'],
+                //             'nm_rek6' => $value['nmrek6'],
+                //             'nilai' => $value['nilai'],
+                //             'kd_bp_skpd' => $data['kd_skpd'],
+                //             'no_lpj_unit' => $no_lpj,
+                //         ];
+                //     }, $data['detail_lpj']));
+                foreach ($rincian_data as $data => $value) {
+                    $data = [
+                        'no_lpj' => $no_lpj,
+                        'kd_skpd' => $rincian_data[$data]['kd_skpd'],
+                        'no_bukti' => $rincian_data[$data]['no_bukti'],
+                        'tgl_lpj' => $tgl_lpj,
+                        'kd_sub_kegiatan' => $rincian_data[$data]['kd_sub_kegiatan'],
+                        'kd_rek6' => $rincian_data[$data]['kdrek6'],
+                        'nm_rek6' => $rincian_data[$data]['nmrek6'],
+                        'nilai' => $rincian_data[$data]['nilai'],
+                        'kd_bp_skpd' => $kd_skpd,
+                        'no_lpj_unit' => $no_lpj,
+                    ];
+                    DB::table('trlpj')->insert($data);
+                }
             }
 
             DB::commit();
@@ -1230,27 +1275,37 @@ class LPJController extends Controller
         $tgl_akhir = $request->tgl_akhir;
         $kd_skpd = $request->kd_skpd;
 
-        $data1 = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
-            ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar not in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd]);
+        // $data1 = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
+        //     ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar not in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd]);
 
-        $data2 = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
-            ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd])
-            ->unionAll($data1);
+        // $data2 = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
+        //     ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd])
+        //     ->unionAll($data1);
 
-        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
-            ->mergeBindings($data2)
-            ->orderByRaw("kd_skpd,tgl_bukti,kd_sub_kegiatan, kd_rek6, cast(no_bukti as int)")
-            ->get();
+        // $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+        //     ->mergeBindings($data2)
+        //     ->orderByRaw("kd_skpd,tgl_bukti,kd_sub_kegiatan, kd_rek6, cast(no_bukti as int)")
+        //     ->get();
+
+        $data = DB::select("SELECT * FROM (SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1 FROM trdtransout a inner join trhtransout b on
+                   a.no_bukti=b.no_bukti AND a.kd_skpd = b.kd_skpd WHERE (a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj_unit) AND b.panjar not in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?
+
+                   UNION ALL
+
+                   SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1 FROM trdtransout a inner join trhtransout b on
+                   a.no_bukti=b.no_bukti AND a.kd_skpd = b.kd_skpd WHERE (a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj_unit) AND b.panjar in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?
+                   )z
+                   ORDER BY  kd_skpd,tgl_bukti,kd_sub_kegiatan, kd_rek6, cast(no_bukti as int)", [$tgl_awal, $tgl_akhir, $kd_skpd, $tgl_awal, $tgl_akhir, $kd_skpd]);
 
         return response()->json($data);
     }
@@ -1513,6 +1568,10 @@ class LPJController extends Controller
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
         $pilihan = $request->pilihan;
         $jenis_print = $request->jenis_print;
+        $margin_kiri = $request->margin_kiri;
+        $margin_kanan = $request->margin_kanan;
+        $margin_atas = $request->margin_atas;
+        $margin_bawah = $request->margin_bawah;
         $status_anggaran = status_anggaran();
 
         if ($pilihan == '0') {
@@ -1717,9 +1776,12 @@ class LPJController extends Controller
 
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
-                ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan)
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -1787,6 +1849,7 @@ class LPJController extends Controller
     {
         $no_lpj = $request->no_lpj;
         $kd_skpd = $request->kd_skpd;
+
 
         DB::beginTransaction();
         try {
