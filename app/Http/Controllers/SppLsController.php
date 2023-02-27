@@ -1368,7 +1368,36 @@ class SppLsController extends Controller
 
             $tanggal = $cari_data->tgl_spp;
 
-            $lcbeban = "LS PIHAK KETIGA LAINNYA";
+            // $lcbeban = "LS PIHAK KETIGA LAINNYA";
+            switch ($jenis) {
+                case '1': //UP
+                    $lcbeban = "Hibah";
+                    break;
+                case '2': //GU
+                    $lcbeban = "Bantuan Sosial";
+                    break;
+                case '3': //TU
+                    $lcbeban = " Bantuan Keuangan";
+                    break;
+                case '4': //TU
+                    $lcbeban = "  Subsidi";
+                    break;
+                case '5': //TU
+                    $lcbeban = " Bagi Hasil";
+                    break;
+                case '6': //TU
+                    $lcbeban = " Belanja Tidak Terduga";
+                    break;
+                case '7': //TU
+                    $lcbeban = " Pihak Ketiga Lainnya";
+                    break;
+                case '8': //TU
+                    $lcbeban = " Pengeluaran Pembiayaan";
+                    break;
+                case '9': //TU
+                    $lcbeban = " Barang yang diserahkan ke masyarakat";
+                    break;
+            }
         } else if ($beban == '6') {
             $cari_data = DB::table('trhspp as a')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'a.jns_beban', 'a.no_rek', 'a.npwp', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.bank', 'no_rek', 'a.bank', 'a.npwp', 'a.no_spd', 'a.nilai', DB::raw("(SELECT nama FROM ms_bank WHERE kode = a.bank) as nama_bank_rek"), DB::raw("(SELECT SUM(a.nilai) FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5' AND LEFT ( b.kd_skpd, 17 ) = LEFT ( '$kd_skpd', 17 ) AND b.tgl_spd <='$cari_spd->tgl_spd' AND a.kd_sub_kegiatan= '$sub_kegiatan') as spd"), DB::raw("(SELECT SUM(b.nilai) FROM trdspp b INNER JOIN trhspp a ON b.no_spp= a.no_spp AND b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE LEFT ( a.kd_skpd, 17 ) = LEFT ( '$kd_skpd', 17 ) AND b.kd_sub_kegiatan= '$sub_kegiatan' AND a.jns_spp IN ( '1', '2', '3', '6' ) AND a.no_spp != '$no_spp'
 		    AND c.tgl_sp2d <= '$cari_spp->tgl_spp') as spp"))->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd])->first();
