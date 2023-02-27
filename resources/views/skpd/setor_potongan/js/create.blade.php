@@ -222,6 +222,7 @@
         });
 
         $('#simpan_potongan').on('click', function() {
+            let no_bukti = document.getElementById('no_bukti').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
             let ntpn = document.getElementById('ntpn').value;
             let beban = document.getElementById('beban').value;
@@ -244,6 +245,10 @@
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let tahun_input = tgl_bukti.substring(0, 4);
 
+            if (!no_bukti) {
+                alert('Nomor Tidak Boleh kosong');
+                return;
+            }
             if (!tgl_bukti) {
                 alert('Tanggal Tidak Boleh kosong');
                 return;
@@ -276,6 +281,7 @@
             }
 
             let data = {
+                no_bukti,
                 tgl_bukti,
                 keterangan,
                 kd_skpd,
@@ -304,6 +310,9 @@
                 data: {
                     data: data,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Potongan berhasil disimpan, dengan Nomor Bukti : ' +
@@ -315,6 +324,9 @@
                         $('#simpan_potongan').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });

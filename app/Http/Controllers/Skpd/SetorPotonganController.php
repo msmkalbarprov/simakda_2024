@@ -26,7 +26,6 @@ class SetorPotonganController extends Controller
             $btn .= '<a href="javascript:void(0);" onclick="hapusPotongan(\'' . $row->no_bukti . '\', \'' . $row->no_terima . '\', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
-        return view('skpd.setor_potongan.index');
     }
 
     public function loadPotongan(Request $request)
@@ -39,7 +38,6 @@ class SetorPotonganController extends Controller
             $btn = '<a href="javascript:void(0);" onclick="tambahNtpn(' . $row->id . ',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->npwp . '\',\'' . $row->nilai . '\',\'' . $row->ntpn . '\',\'' . $row->ebilling . '\');" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
-        return view('skpd.setor_potongan.create');
     }
 
     public function totalPotongan(Request $request)
@@ -57,7 +55,8 @@ class SetorPotonganController extends Controller
 
         $data = [
             'daftar_terima' => DB::table('trhtrmpot')->where(['kd_skpd' => $kd_skpd, 'status' => '0'])->orderBy('no_bukti')->get(),
-            'tahun_anggaran' => tahun_anggaran()
+            'tahun_anggaran' => tahun_anggaran(),
+            'no_urut' => no_urut($kd_skpd)
         ];
 
         return view('skpd.setor_potongan.create')->with($data);
@@ -101,7 +100,8 @@ class SetorPotonganController extends Controller
         DB::beginTransaction();
         try {
             // NOMOR BUKTI
-            $no_bukti = no_urut($kd_skpd);
+            // $no_bukti = no_urut($kd_skpd);
+            $no_bukti = $data['no_bukti'];
 
             // TRHSTRPOT
             DB::table('trhstrpot')->where(['kd_skpd' => $data['kd_skpd'], 'no_bukti' => $no_bukti])->delete();
