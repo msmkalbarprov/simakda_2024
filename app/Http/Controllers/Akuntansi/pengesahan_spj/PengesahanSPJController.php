@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Akuntansi;
+namespace App\Http\Controllers\Akuntansi\pengesahan_spj;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
