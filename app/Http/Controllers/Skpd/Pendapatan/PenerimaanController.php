@@ -630,13 +630,21 @@ class PenerimaanController extends Controller
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
-            'no_urut' => DB::table('trhkasin_pkd')
-                ->selectRaw("count(no_sts)+1 as nomor")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
-                ->first()
         ];
 
         return view('skpd.penerimaan_lain_ppkd.create')->with($data);
+    }
+
+    public function urutPenerimaanPpkd(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = DB::table('trhkasin_pkd')
+            ->selectRaw("count(no_sts)+1 as nomor")
+            ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
+            ->first();
+
+        return response()->json($data);
     }
 
     public function simpanPenerimaanPpkd(Request $request)

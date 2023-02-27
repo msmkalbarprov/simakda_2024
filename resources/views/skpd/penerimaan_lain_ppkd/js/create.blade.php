@@ -6,6 +6,8 @@
             }
         });
 
+        nomor_urut()
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -80,12 +82,19 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan, Nomor Baru yang tersimpan adalah: ' +
                             response.nomor);
-                        window.location.href =
-                            "{{ route('penerimaan_ppkd.index') }}";
+                        // window.location.href =
+                        //     "{{ route('penerimaan_ppkd.index') }}";
+                        $('#nilai').val(null);
+                        $('#keterangan').val(null);
+                        nomor_urut();
+                        $('#simpan').prop('disabled', false);
                     } else if (response.message == '2') {
                         alert('Nomor telah digunakan!');
                         $('#simpan').prop('disabled', false);
@@ -93,6 +102,9 @@
                         alert('Data gagal disimpan!');
                         $('#simpan').prop('disabled', false);
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
@@ -106,6 +118,17 @@
             }
         });
     });
+
+    function nomor_urut() {
+        $.ajax({
+            url: "{{ route('penerimaan_ppkd.urut') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                $('#no_kas').val(data.nomor);
+            }
+        })
+    }
 
     function formatNumber(n) {
         // format number 1000000 to 1,234,567

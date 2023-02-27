@@ -1261,6 +1261,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [PenerimaanController::class, 'indexPenerimaanPpkd'])->name('penerimaan_ppkd.index');
             Route::post('load_data', [PenerimaanController::class, 'loadDataPenerimaanPpkd'])->name('penerimaan_ppkd.load_data');
             Route::get('tambah', [PenerimaanController::class, 'tambahPenerimaanPpkd'])->name('penerimaan_ppkd.tambah');
+            Route::post('urut', [PenerimaanController::class, 'urutPenerimaanPpkd'])->name('penerimaan_ppkd.urut');
             Route::post('simpan', [PenerimaanController::class, 'simpanPenerimaanPpkd'])->name('penerimaan_ppkd.simpan');
             Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanPpkd'])->where('no_kas', '(.*)')->name('penerimaan_ppkd.edit');
             Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanPpkd'])->name('penerimaan_ppkd.simpan_edit');
