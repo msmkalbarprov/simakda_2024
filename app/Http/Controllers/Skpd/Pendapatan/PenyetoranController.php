@@ -43,7 +43,8 @@ class PenyetoranController extends Controller
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
@@ -244,7 +245,8 @@ class PenyetoranController extends Controller
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
-                ->orderByRaw("cast(kd_pengirim as int)")
+                // ->orderByRaw("cast(kd_pengirim as int)")
+                ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
