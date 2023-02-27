@@ -100,6 +100,7 @@ use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 //akuntansi
 use App\Http\Controllers\Akuntansi\LraperdaController;
+use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1506,17 +1507,13 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         });
     });
     // Pengesahan SPJ
-    // Route::group(['prefix' => 'laporan_akuntansi'], function () {
-    //     Route::get('', [LaporanAkuntansiController::class, 'index'])->name('pengesahan_spj.index');
-    //     Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
-    //     Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
+    Route::group(['prefix' => 'pengesahan_spj'], function () {
+         Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
+         Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
+         Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
 
-    //     Route::group(['prefix' => 'konsolidasi'], function () {
-    //         Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
-    //         // LRA
-    //         Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
-    //     });
-    // });
+         
+     });
 });
 
 
