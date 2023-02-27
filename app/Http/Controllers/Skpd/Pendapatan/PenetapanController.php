@@ -18,6 +18,7 @@ class PenetapanController extends Controller
         return view('skpd.penetapan_pendapatan.index');
     }
 
+    // load penetapan
     public function loadDataPenetapanPendapatan()
     {
         $kd_skpd = Auth::user()->kd_skpd;
