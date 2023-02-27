@@ -281,10 +281,11 @@ class PenerimaanController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->kunci != '1') {
                 $btn = '<a href="' . route("penerimaan_ini.edit", Crypt::encrypt($row->no_terima)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_terima . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_terima . '\',\'' . $row->no_tetap . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             } else {
                 $btn = '';
             }
+            return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
 
@@ -573,13 +574,20 @@ class PenerimaanController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('tr_terima')
-                ->where(['no_terima' => $no_terima, 'kd_skpd' => $kd_skpd])
-                ->delete();
+            if ($jenis == '1') {
+                DB::table('tr_terima')
+                    ->where(['no_terima' => $no_terima, 'kd_skpd' => $kd_skpd])
+                    ->delete();
+            }
+            if ($jenis == '2') {
+                DB::table('tr_terima')
+                    ->where(['no_terima' => $no_terima, 'kd_skpd' => $kd_skpd])
+                    ->delete();
 
-            DB::table('tr_tetap')
-                ->where(['no_tetap' => $no_tetap, 'kd_skpd' => $kd_skpd])
-                ->delete();
+                DB::table('tr_tetap')
+                    ->where(['no_tetap' => $no_tetap, 'kd_skpd' => $kd_skpd])
+                    ->delete();
+            }
 
             DB::commit();
             return response()->json([
