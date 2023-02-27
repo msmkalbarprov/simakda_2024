@@ -133,6 +133,33 @@ class ValidasiPanjarCMSController extends Controller
         }
     }
 
+    public function dataTransaksi(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_kas = $request->no_kas;
+
+        $no_bukti = array();
+        if (!empty($no_kas)) {
+            foreach ($no_kas as $voucher) {
+                $no_bukti[] = $voucher['no_kas'];
+            }
+        } else {
+            $no_bukti[] = '';
+        }
+
+        $data = DB::table('tr_panjar_cmsbank as a')
+            ->leftJoin('trdupload_cmsbank_panjar as c', function ($query) {
+                $query->on('a.no_kas', '=', 'c.no_bukti');
+                $query->on('a.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.status_upload' => '1', 'a.status_validasi' => '0'])
+            ->orderByRaw("cast(a.no_kas as int),a.kd_skpd")
+            ->whereNotIn('a.no_kas', $no_bukti)
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function draftValidasi()
     {
         $kd_skpd = Auth::user()->kd_skpd;

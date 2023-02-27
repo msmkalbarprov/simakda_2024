@@ -735,6 +735,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('load_data', [ValidasiPanjarCMSController::class, 'loadData'])->name('validasi_panjarcms.load_data');
                 Route::post('draft_validasi', [ValidasiPanjarCMSController::class, 'draftValidasi'])->name('validasi_panjarcms.draft_validasi');
                 Route::post('data_upload', [ValidasiPanjarCMSController::class, 'dataUpload'])->name('validasi_panjarcms.data_upload');
+                Route::post('data_transaksi', [ValidasiPanjarCMSController::class, 'dataTransaksi'])->name('validasi_panjarcms.data_transaksi');
                 Route::get('tambah', [ValidasiPanjarCMSController::class, 'create'])->name('validasi_panjarcms.create');
                 Route::post('proses_validasi', [ValidasiPanjarCMSController::class, 'prosesValidasi'])->name('validasi_panjarcms.proses_validasi');
                 Route::post('batal_validasi', [ValidasiPanjarCMSController::class, 'batalValidasi'])->name('validasi_panjarcms.batal_validasi');
@@ -1426,6 +1427,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load', [TransaksiBosController::class, 'load'])->name('transaksi_bos.load');
             Route::get('create', [TransaksiBosController::class, 'create'])->name('transaksi_bos.create');
             Route::post('simpan', [TransaksiBosController::class, 'simpan'])->name('transaksi_bos.simpan');
+            Route::post('kegiatan', [TransaksiBosController::class, 'kegiatan'])->name('transaksi_bos.kegiatan');
+            Route::post('rekening', [TransaksiBosController::class, 'rekening'])->name('transaksi_bos.rekening');
+            Route::post('spd', [TransaksiBosController::class, 'spd'])->name('transaksi_bos.spd');
+            Route::post('sumber', [TransaksiBosController::class, 'sumber'])->name('transaksi_bos.sumber');
+            Route::post('status', [TransaksiBosController::class, 'status'])->name('transaksi_bos.status');
             Route::get('edit/{no_terima?}/{kd_skpd?}', [TransaksiBosController::class, 'edit'])->name('transaksi_bos.edit');
             Route::post('update', [TransaksiBosController::class, 'update'])->name('transaksi_bos.update');
             Route::post('hapus', [TransaksiBosController::class, 'hapus'])->name('transaksi_bos.hapus');
@@ -1508,12 +1514,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     });
     // Pengesahan SPJ
     Route::group(['prefix' => 'pengesahan_spj'], function () {
-         Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
-         Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
-         Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
-
-         
-     });
+        Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
+        Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
+        Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
+    });
 });
 
 
