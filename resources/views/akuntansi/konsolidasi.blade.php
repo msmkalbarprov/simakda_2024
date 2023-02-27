@@ -34,8 +34,8 @@
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="lraperda">
                 <div class="card-body">
-                    {{ 'LRA PERDA' }}
-                    <a class="card-block stretched-link" href="#">
+                    {{ 'Laporan Perda' }}
+                    <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.perda') }}">
 
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>
@@ -144,12 +144,21 @@
                 dropdownParent: $('#modal_cetak_semester .modal-content'),
                 
             });
+            $(".select_neraca").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_neraca .modal-content'),
+                
+            });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
             document.getElementById('baris_periode1').hidden = true; // Hide
             document.getElementById('baris_periode2').hidden = true; // Hide
             document.getElementById('baris_bulan').hidden = true; // Hide
-            tambahclass()
+            // tambahclass()
+
+            // hidden
+            document.getElementById('baris_skpd_neraca').hidden = true; // Hide
+            // tambahclass()
         });
 
     // function tambahclass(){
@@ -174,6 +183,13 @@
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
+        $('#neraca').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_neraca').modal('show');
+            $("#labelcetak_semester").html("Cetak NERACA");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
 
     // onclick card end
 
@@ -189,6 +205,20 @@
             } else {
                 cari_skpd('unit')
                 document.getElementById('baris_skpd').hidden = false; // show
+            }
+        });
+
+        $('input:radio[name="pilihan_neraca"]').change(function() {
+
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_neraca').hidden = true; // Hide
+            }else if ($(this).val() == 'skpd') {
+                cari_skpd('skpd')
+                document.getElementById('baris_skpd_neraca').hidden = false; // show
+            } else {
+                cari_skpd('unit')
+                document.getElementById('baris_skpd_neraca').hidden = false; // show
             }
         });
 
@@ -223,6 +253,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_neraca').empty();
+                    $('#kd_skpd_neraca').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_neraca').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -310,6 +348,25 @@
 
             // SET CETAKAN
             if (labelcetak_semester == 'Cetak LRA') {
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("format", format);
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("ttd", ttd);
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_data", jenis_data);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("skpdunit", skpdunit);
+                searchParams.append("pilihakumulsai", pilihakumulsai);
+                searchParams.append("jns_rincian", jns_rincian);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("periodebulan", periodebulan);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak NERACA') {
                 let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("format", format);
