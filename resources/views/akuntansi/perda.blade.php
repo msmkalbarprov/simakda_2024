@@ -230,7 +230,7 @@
             let jns_anggaran             = document.getElementById('jns_anggaran').value;
             let jenis                    = document.getElementById('jenis').value;
             let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
-            alert(labelcetak_semester)
+            // alert(labelcetak_semester)
             // PERINGATAN
                 if (!tgl_ttd) {
                     alert('Tanggal Tanda Tangan tidak boleh kosong!');

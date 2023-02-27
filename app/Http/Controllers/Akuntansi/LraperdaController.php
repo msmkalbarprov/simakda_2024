@@ -30,12 +30,44 @@ class LraperdaController extends Controller
 
 
             // rincian
-
+        if ($jenis=="1") {
+            
         $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,ang_bankeu,ang_btt,real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
             FROM [perda_lampI.3_rinci2]($bulan,'$jns_ang',$tahun_anggaran)
                     where len(kd_skpd)='22'
                     ORDER BY kd_skpd,kd_sub_kegiatan"
                 );
+        }else if($jenis=="2"){
+            $rincian = DB::select("SELECT kd_skpd kode,nm_skpd nm_rek,ang_peg,ang_brng,ang_modal ang_mod,ang_hibah,ang_bansos,ang_bghasil,
+            ang_bankeu,ang_btt,
+          real_peg,real_brng,real_modal real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
+          FROM [perda_lampI.3_skpd_spj]($bulan,'$jns_ang',$tahun_anggaran)
+          where len(kd_skpd)='22'
+          ORDER BY kd_skpd"
+                );
+        }else if($jenis=="3"){
+            $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,
+                        ang_bankeu,ang_btt,
+                    real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
+                    FROM [perda_lampI.3_rinci2]($bulan,'$jns_ang',$tahun_anggaran)
+                    where len(kd_skpd)<='22'
+                    ORDER BY kd_skpd,kd_sub_kegiatan"
+                );
+        }else if($jenis=="4"){
+            $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,
+                        ang_bankeu,ang_btt,
+                    real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
+                    FROM [perda_lampI.3_rinci2]($bulan,'$jns_ang',$tahun_anggaran) ORDER BY kd_skpd,kd_sub_kegiatan"
+                );
+        }else if($jenis=="5"){
+            $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,
+                        ang_bankeu,ang_btt,
+                    real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
+                    FROM [perda_lampI.3_rinci2]($bulan,'$jns_ang',$tahun_anggaran)
+                    where len(kd_skpd)='17'
+                    ORDER BY kd_skpd,kd_sub_kegiatan"
+                );
+        }
         
         $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
 
@@ -64,7 +96,7 @@ class LraperdaController extends Controller
         // }elseif($format=='p77'){
         //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
         // }elseif($format=='sng'){
-            $view =  view('akuntansi.cetakan.perda_i4_urusan')->with($data);
+            $view =  view('akuntansi.cetakan.perda.i_4_urusan.perda_i4_urusan')->with($data);
         // }
         
         if ($cetak == '1') {

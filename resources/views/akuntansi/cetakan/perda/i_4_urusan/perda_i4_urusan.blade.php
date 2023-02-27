@@ -163,7 +163,7 @@
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_mod)}}</b></td>
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_hibah)}}</b></td>
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bansos)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{rupiah($ang_bghasil)}</b></td>
+                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bghasil)}}</b></td>
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bankeu)}}</b></td>
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_btt)}}</b></td> 
                                <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($tot_ang)}}</b></td> 
