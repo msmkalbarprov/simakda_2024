@@ -153,9 +153,9 @@
                                 <td>:</td>
                                 <td colspan="4" class="kanan">
                                     @if (($data_sp2d->jns_spp == '6' && $data_sp2d->jenis_beban == '6') || $data_sp2d->jns_spp == '5')
-                                        {{ $bank->bank ? bank($bank->bank) : 'Belum Pilih Bank' }}
+                                        {{ $sp2d->bank ? bank($sp2d->bank) : 'Belum Pilih Bank' }}
                                     @else
-                                        {{ $bank->bank ? bank($bank->bank) : 'Belum Pilih Bank' }}
+                                        {{ $sp2d->bank ? bank($sp2d->bank) : 'Belum Pilih Bank' }}
                                     @endif
                                 </td>
                             </tr>
