@@ -132,7 +132,7 @@
                 $('#simpan').prop('disabled', true);
                 return;
             }
-
+            // IKUT PERATURAN PERMENDAGRI 77
             $.ajax({
                 url: "{{ route('lpj.skpd_tanpa_unit.cek_kendali') }}",
                 type: "POST",
@@ -143,7 +143,7 @@
                 success: function(response) {
                     if (response.status != 1 || response.status != '1') {
                         if (total < nilai_min_gu) {
-                            alert('LPJ Belum Mencapai 65%');
+                            alert('LPJ Belum Mencapai 50%');
                             return;
                         }
                     }
