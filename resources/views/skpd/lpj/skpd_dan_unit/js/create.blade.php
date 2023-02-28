@@ -125,12 +125,30 @@
             let total = rupiah(document.getElementById('total').value);
             let spd = rupiah(document.getElementById('jumlah_spd').value);
             let keluarspp = rupiah(document.getElementById('realisasi_spd_spp').value);
+            let nilai_min_gu = rupiah(document.getElementById('nilai_min_gu').value);
 
             if (spd < total + keluarspp) {
                 alert("Total SPD tidak mencukupi...!!!");
                 $('#simpan').prop('disabled', true);
                 return;
             }
+
+            $.ajax({
+                url: "{{ route('lpj.skpd_tanpa_unit.cek_kendali') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: document.getElementById('kd_skpd').value
+                },
+                success: function(response) {
+                    if (response.status != 1 || response.status != '1') {
+                        if (total < nilai_min_gu) {
+                            alert('LPJ Belum Mencapai 65%');
+                            return;
+                        }
+                    }
+                }
+            })
 
             let kd_skpd = document.getElementById('kd_skpd').value;
 
@@ -144,7 +162,6 @@
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
             let nilai_up = rupiah(document.getElementById('nilai_up').value);
-            let nilai_min_gu = rupiah(document.getElementById('nilai_min_gu').value);
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let tahun_input = tgl_lpj.substr(0, 4);
 
