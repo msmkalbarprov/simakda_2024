@@ -343,6 +343,15 @@ class LPJController extends Controller
         }
     }
 
+    public function cekSkpdTanpaUnit(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+
+        $data = collect(DB::select("SELECT * from tb_kendali_lpj where kd_skpd=?", [$kd_skpd]))->first();
+
+        return response()->json($data);
+    }
+
     public function hapusSkpdTanpaUnit(Request $request)
     {
         $no_lpj = $request->no_lpj;

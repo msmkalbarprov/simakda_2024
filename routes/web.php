@@ -1114,6 +1114,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                     Route::get('', [LPJController::class, 'indexSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.index');
                     Route::post('load_data', [LPJController::class, 'loadSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.load_data');
                     Route::get('tambah', [LPJController::class, 'tambahSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.tambah');
+                    Route::post('cek', [LPJController::class, 'cekSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.cek_kendali');
                     Route::post('detail', [LPJController::class, 'detailSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.detail');
                     Route::post('total_spd', [LPJController::class, 'totalspdSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.total_spd');
                     Route::post('simpan', [LPJController::class, 'simpanSkpdTanpaUnit'])->name('lpj.skpd_tanpa_unit.simpan');
@@ -1434,7 +1435,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('spd', [TransaksiBosController::class, 'spd'])->name('transaksi_bos.spd');
             Route::post('sumber', [TransaksiBosController::class, 'sumber'])->name('transaksi_bos.sumber');
             Route::post('status', [TransaksiBosController::class, 'status'])->name('transaksi_bos.status');
-            Route::get('edit/{no_terima?}/{kd_skpd?}', [TransaksiBosController::class, 'edit'])->name('transaksi_bos.edit');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [TransaksiBosController::class, 'edit'])->name('transaksi_bos.edit');
             Route::post('update', [TransaksiBosController::class, 'update'])->name('transaksi_bos.update');
             Route::post('hapus', [TransaksiBosController::class, 'hapus'])->name('transaksi_bos.hapus');
         });
