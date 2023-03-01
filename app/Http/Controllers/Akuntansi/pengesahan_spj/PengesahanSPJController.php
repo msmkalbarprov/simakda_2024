@@ -49,6 +49,22 @@ class PengesahanSPJController extends Controller
 
         return view('akuntansi.pengesahan_spj.penerimaan')->with($data);
     }
+    public function pengeluaran()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'ttd' => DB::table('ms_ttd')
+                ->whereIn('kode', ['1'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
+            'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
+            'jns_anggaran' => jenis_anggaran(),
+            'jns_anggaran2' => jenis_anggaran()
+        ];
+
+        return view('akuntansi.pengesahan_spj.pengeluaran')->with($data);
+    }
 
     public function load_penerimaan(Request $request)
     {
@@ -64,6 +80,24 @@ class PengesahanSPJController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             
             $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->kd_skpd . '\',\'' . $row->nm_skpd . '\',\'' . $row->tgl_terima . '\',\'' . $row->real_terima . '\',\'' . $row->real_setor . '\',\'' . $row->sisa . '\',\'' . $row->spj . '\',\'' . $row->bku . '\',\'' . $row->koran . '\',\'' . $row->sts . '\',\'' . $row->ket . '\',\'' . $row->cek . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function load_pengeluaran(Request $request)
+    {
+        $id = Auth::user()->id;
+        $bulan   = $request->bulan;
+        // dd($id);
+        $data = DB::table('trhspj_ppkd as a')
+            ->selectRaw("a.*,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
+            ->where(['bulan' => $bulan])
+            ->whereRaw("kd_skpd IN (SELECT kd_skpd FROM user_akt WHERE user_id='$id')")
+            ->orderBy('kd_skpd')
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            
+            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->kd_skpd . '\',\'' . $row->nm_skpd . '\',\'' . $row->tgl_terima . '\',\'' . $row->real_up . '\',\'' . $row->real_gj . '\',\'' . $row->real_brg . '\',\'' . $row->spj . '\',\'' . $row->bku . '\',\'' . $row->koran . '\',\'' . $row->pajak . '\',\'' . $row->sts . '\',\'' . $row->ket . '\',\'' . $row->cek . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -117,6 +151,57 @@ class PengesahanSPJController extends Controller
             header('Content-Disposition: attachement; filename="Penerimaan Spj.xls"');
             return $view;
         }
+    }
+
+    public function cetak_pengeluaran_spj(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $cetak          = $request->cetak;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        
+        $tahun_anggaran = tahun_anggaran();
+
+
+
+            // rincian
+
+            
+        $rincian = DB::select("SELECT a.nm_skpd, b.kd_skpd
+                ,ISNULL(real_up,0) real_up
+                ,ISNULL(real_gj,0) real_gj
+                ,ISNULL(real_brg,0) real_brg
+                ,ISNULL(tgl_terima,'') tgl_terima
+                ,spj,bku,koran,pajak,sts,ket,cek
+                 FROM ms_skpd a 
+                LEFT JOIN trhspj_ppkd b ON a.kd_skpd=b.kd_skpd
+                WHERE bulan='$bulan' ORDER BY kd_skpd"
+                );
+
+
+        $data = [
+
+            'rincian'           => $rincian,
+            'bulan'             => $bulan,
+            'tahun_anggaran'    => $tahun_anggaran
+        ];
+
+        $view =  view('akuntansi.cetakan.pengesahan_spj.cetak_pengeluaran')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('Pengeluaran Spj.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Pengeluaran Spj.xls"');
+            return $view;
+        }
     } 
 
     public function simpan_penerimaan_spj (Request $request){
@@ -136,6 +221,27 @@ class PengesahanSPJController extends Controller
         $username       = Auth::user()->nama;
         $asg = DB::update("UPDATE trhspj_terima_ppkd SET tgl_terima='$tgl_terima',real_setor='$real_setor',
         real_terima='$real_terima',sisa='$sisa',spj='$spj',bku='$bku',koran='$koran',
+        sts='$sts',ket='$ket',cek='$cek',username='$username',tgl_update='$update' WHERE kd_skpd='$kdskpd' AND bulan='$bulan'");
+    }
+
+    public function simpan_pengeluaran_spj (Request $request){
+        $kdskpd         = $request->kdskpd;
+        $tgl_terima     = $request->tgl_terima;
+        $real_up    = $request->real_up;
+        $real_gj     = $request->real_gj;
+        $real_brg           = $request->real_brg;
+        $spj            = $request->spj;
+        $bku            = $request->bku;
+        $koran          = $request->koran;
+        $pajak          = $request->pajak;
+        $sts            = $request->sts;
+        $ket            = $request->ket;
+        $cek            = $request->cek;
+        $bulan          = $request->bulan;
+        $update         = date('Y-m-d');
+        $username       = Auth::user()->nama;
+        $asg = DB::update("UPDATE trhspj_ppkd SET tgl_terima='$tgl_terima',real_up='$real_up',
+        real_gj='$real_gj',real_brg='$real_brg',spj='$spj',bku='$bku',koran='$koran',pajak='$pajak',
         sts='$sts',ket='$ket',cek='$cek',username='$username',tgl_update='$update' WHERE kd_skpd='$kdskpd' AND bulan='$bulan'");
     }
 

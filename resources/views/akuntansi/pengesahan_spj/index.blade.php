@@ -35,7 +35,7 @@
             <div class="card card-info collapsed-card card-outline" id="pengeluaran">
                 <div class="card-body">
                     {{ 'SPJ PENGELUARAN' }}
-                    <a class="card-block stretched-link" href="#">
+                    <a class="card-block stretched-link" href="{{ route('pengesahan_spj.pengeluaran') }}">
 
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>

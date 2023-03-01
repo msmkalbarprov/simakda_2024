@@ -1518,6 +1518,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     // Pengesahan SPJ
     Route::group(['prefix' => 'pengesahan_spj'], function () {
          Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
+         Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
+         Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
          //penerimaan
          Route::get('penerimaan_spj', [PengesahanSPJController::class, 'penerimaan'])->name('pengesahan_spj.penerimaan');
          Route::post('load_penerimaan_spj', [PengesahanSPJController::class, 'load_penerimaan'])->name('pengesahan_spj.load_penerimaan');
@@ -1525,8 +1527,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
          Route::post('simpan_penerimaan_spj', [PengesahanSPJController::class, 'simpan_penerimaan_spj'])->name('pengesahan_spj.simpan_penerimaan_spj');
          //pengeluaran
          Route::get('pengeluaran_spj', [PengesahanSPJController::class, 'pengeluaran'])->name('pengesahan_spj.pengeluaran');
-         Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
-         Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
+         Route::post('load_pengeluaran_spj', [PengesahanSPJController::class, 'load_pengeluaran'])->name('pengesahan_spj.load_pengeluaran');
+         Route::get('cetak_pengeluaran_spj', [PengesahanSPJController::class, 'cetak_pengeluaran_spj'])->name('pengesahan_spj.cetak_pengeluaran_spj');
+         Route::post('simpan_pengeluaran_spj', [PengesahanSPJController::class, 'simpan_pengeluaran_spj'])->name('pengesahan_spj.simpan_pengeluaran_spj');
 
          
      });
