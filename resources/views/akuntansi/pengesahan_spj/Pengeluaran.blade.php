@@ -48,9 +48,9 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">Kode SKPD</th>
-                                        <th style="width: 50px;text-align:center">Terima</th>
-                                        <th style="width: 50px;text-align:center">Setor</th>
-                                        <th style="width: 50px;text-align:center">Sisa</th>
+                                        <th style="width: 50px;text-align:center">UP/GU/TU</th>
+                                        <th style="width: 50px;text-align:center">HAJI</th>
+                                        <th style="width: 50px;text-align:center">LS BARJAS</th>
                                         <th style="width: 50px;text-align:center">Tanggal Terima</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th style="width: 50px;text-align:center">cek</th>
