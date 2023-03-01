@@ -114,11 +114,7 @@
             })
         });
 
-        function deleteData(no_bukti, status) {
-            if (status != '1') {
-                alert('Status Bayar Belum Selesai');
-                exit();
-            }
+        function deleteData(no_bukti) {
             let r = confirm('Yakin Ingin Menghapus Data, Nomor Penagihan : ' + no_bukti);
             if (r == true) {
                 $.ajax({

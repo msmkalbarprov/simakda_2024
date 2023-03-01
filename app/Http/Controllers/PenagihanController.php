@@ -33,7 +33,7 @@ class PenagihanController extends Controller
             if ($row->jumlah_spp > 0) {
                 $btn .= '';
             } else {
-                $btn .= '<a href="javascript:void(0);" onclick="deleteData( \'' . $row->no_bukti . '\', \'' . $row->status . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_bukti . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
