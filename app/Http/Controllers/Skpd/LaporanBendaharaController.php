@@ -245,7 +245,7 @@ class LaporanBendaharaController extends Controller
             $keluar += $sekarang->keluar;
         }
         // KAS BANK
-        $kas_bank = sisa_bank_by_bulan($bulan);
+        $kas_bank = sisa_bank_by_bulan($kd_skpd, $bulan);
 
         // KAS SALDO BERHARGA
 

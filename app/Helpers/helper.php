@@ -2571,9 +2571,9 @@ function sisa_bank()
 }
 
 
-function sisa_bank_by_bulan($bulan)
+function sisa_bank_by_bulan($kd_skpd, $bulan)
 {
-    $kd_skpd = Auth::user()->kd_skpd;
+    // $kd_skpd = Auth::user()->kd_skpd;
     // $data1 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode');
 
     // $data2 = DB::table('TRHINLAIN')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['pay' => 'BANK'])->unionAll($data1);
