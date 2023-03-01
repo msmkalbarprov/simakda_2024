@@ -52,12 +52,13 @@ class PengesahanSPJController extends Controller
 
     public function load_penerimaan(Request $request)
     {
-        $kd_skpd = Auth::user()->kd_skpd;
+        $id = Auth::user()->id;
         $bulan   = $request->bulan;
-        // dd($bulan);
+        // dd($id);
         $data = DB::table('trhspj_terima_ppkd as a')
             ->selectRaw("a.*,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
             ->where(['bulan' => $bulan])
+            ->whereRaw("kd_skpd IN (SELECT kd_skpd FROM user_akt WHERE user_id='$id')")
             ->orderBy('kd_skpd')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
