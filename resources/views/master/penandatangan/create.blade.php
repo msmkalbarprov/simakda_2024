@@ -78,9 +78,9 @@
                         </div>
                         <!-- pangkat -->
                         <div class="mb-3 row">
-                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat</label>
+                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat <small>Tanpa Golongan</small></label>
                             <div class="col-md-10">
-                                <input type="text" placeholder="Isi pangkat Penandatangan"
+                                <input type="text" placeholder="Isi pangkat Penandatangan tanpa golongan (Pembina Tingkat I)"
                                     class="form-control @error('pangkat') is-invalid @enderror"
                                     value="{{ old('pangkat') }}" id="pangkat" name="pangkat">
                                 @error('pangkat')

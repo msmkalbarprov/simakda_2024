@@ -64,7 +64,7 @@ class SpmController extends Controller
                 $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->where('jns_spp', '!=', '3')->where(function ($query) {
                     $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
                 })->whereNotIn('no_spp', $data2);
-                $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '3', 'sts_setuju' => '1'])->where(function ($query) {
+                $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '3'])->where(function ($query) {
                     $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
                 })->whereNotIn('no_spp', $data2)->unionAll($data_spp1);
                 $data_spp = DB::table(DB::raw("({$data_spp2->toSql()}) AS sub"))

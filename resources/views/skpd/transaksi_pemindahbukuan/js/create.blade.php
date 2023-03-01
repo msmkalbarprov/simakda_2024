@@ -680,6 +680,11 @@
             let hasil_akumulasi = total_belanja - nilai_potongan;
             let akumulasi = total_transfer + nilai_transfer;
 
+            if (!no_bukti) {
+                alert("No Bukti harus diisi!");
+                return;
+            }
+
             if (nilai_transfer == 0) {
                 alert("Nilai Tidak Boleh Nol");
                 return;
@@ -786,6 +791,10 @@
                 return data;
             });
 
+            if (!no_bukti) {
+                alert('No bukti harus diisi!');
+                return;
+            }
             // if (beban == '1') {
             //     alert(
             //         'Pada transaski UP/GU hanya boleh 1 Rekening Belanja, Info lebih lanjut silahkan hubungi bidang Perbendaharaan'

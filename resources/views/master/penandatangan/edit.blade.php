@@ -88,10 +88,10 @@
                         </div>
                         <!-- Pangkat -->
                         <div class="mb-3 row">
-                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat</label>
+                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat (Tanpa Golongan)</label>
                             <div class="col-md-10">
                                 <input class="form-control @error('pangkat') is-invalid @enderror" type="text"
-                                    placeholder="Silahkan isi dengan nama pangkat" value="{{ $data_tandatangan->pangkat }}"
+                                    placeholder="Silahkan isi dengan nama pangkat tanpa golongan (Pembina Tingkat I)" value="{{ $data_tandatangan->pangkat }}"
                                     id="pangkat" name="pangkat">
                                 @error('pangkat')
                                     <div class="invalid-feedback">{{ $message }}</div>
