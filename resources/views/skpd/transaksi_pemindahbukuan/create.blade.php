@@ -33,7 +33,8 @@
                     <div class="mb-3 row">
                         <label for="no_bukti" class="col-md-2 col-form-label">No Bukti</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required readonly>
+                            <input class="form-control" type="text" id="no_bukti" name="no_bukti" required
+                                value="{{ $no_urut }}">
                         </div>
                         <label for="beban" class="col-md-2 col-form-label">Jenis Beban</label>
                         <div class="col-md-4">

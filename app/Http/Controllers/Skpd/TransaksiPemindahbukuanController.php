@@ -47,6 +47,7 @@ class TransaksiPemindahbukuanController extends Controller
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
             'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
+            'no_urut' => no_urut($kd_skpd)
         ];
         return view('skpd.transaksi_pemindahbukuan.create')->with($data);
     }
@@ -58,7 +59,8 @@ class TransaksiPemindahbukuanController extends Controller
 
         DB::beginTransaction();
         try {
-            $no_urut = no_urut($kd_skpd);
+            // $no_urut = no_urut($kd_skpd);
+            $no_urut = $data['no_bukti'];
 
             // TRHTRANSOUT
             DB::table('trhtransout')->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])->delete();
