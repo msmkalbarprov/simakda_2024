@@ -189,7 +189,7 @@ class LaporanRegPajakController extends Controller
         $rincian = DB::select("SELECT * FROM(
                                     SELECT
                                     a.no_bukti,tgl_bukti, ket
-                                    ,CASE WHEN b.map_pot= '210108010001' THEN b.nilai ELSE 0 END AS iwp
+                                    ,CASE WHEN b.kd_rek6='210108010001' THEN b.nilai ELSE 0 END AS iwp
                                     ,CASE WHEN b.map_pot='210107010001' THEN b.nilai ELSE 0 END AS taperum
                                     ,CASE WHEN b.map_pot='210102010001c' THEN b.nilai ELSE 0 END AS ppnpn1persen
                                     ,CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END AS ppnpn4persen
@@ -199,7 +199,7 @@ class LaporanRegPajakController extends Controller
                                     b.nilai as terima,
                                     0 as setor
                                     FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
                                     UNION ALL
                                     SELECT
                                     a.no_bukti,tgl_bukti, ket
@@ -217,6 +217,7 @@ class LaporanRegPajakController extends Controller
                                     ORDER BY CAST(a.no_bukti as int)", [$kd_skpd, $bulan, $kd_skpd, $bulan]);
 
         // KIRIM KE VIEW
+
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
