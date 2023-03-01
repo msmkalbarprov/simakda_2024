@@ -1,7 +1,7 @@
 {{-- modal cetak PERDA --}}
 
 
-<div id="modal_penerimaan_spj" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+<div id="modal_pengeluaran_spj" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
