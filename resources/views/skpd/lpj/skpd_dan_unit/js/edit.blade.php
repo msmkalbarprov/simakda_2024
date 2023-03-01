@@ -102,7 +102,7 @@
             }
 
             let lpj = no_lpj +
-                "/LPJ/UPGU/" + kd_skpd +
+                "/LPJ/GLOBAL/UPGU/" + kd_skpd +
                 "/" + tahun_anggaran;
 
             detail.row.add({

@@ -817,7 +817,7 @@ class LPJController extends Controller
                 $list_lpj[] = '';
             }
 
-            $no_lpj = $data['no_lpj'] . "/LPJ/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
+            $no_lpj = $data['no_lpj'] . "/LPJ/GLOBAL/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
 
             $cek_lpj = DB::table('trhlpj')
                 ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
@@ -908,7 +908,7 @@ class LPJController extends Controller
 
         DB::beginTransaction();
         try {
-            $no_lpj = $data['no_lpj'] . "/LPJ/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
+            $no_lpj = $data['no_lpj'] . "/LPJ/GLOBAL/UPGU/" . $data['kd_skpd'] . "/" . tahun_anggaran();
 
             $cek_terima = DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $data['kd_skpd']])->count();
             if ($cek_terima > 0 && $no_lpj != $data['no_lpj_simpan']) {

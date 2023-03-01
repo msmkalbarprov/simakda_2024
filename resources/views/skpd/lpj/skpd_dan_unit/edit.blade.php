@@ -46,7 +46,8 @@
                                 <input type="number" id="no_lpj" class="form-control" min="0"
                                     value="{{ $nomor }}">
                                 <div class="input-group-prepend">
-                                    <input type="text" value="/LPJ/UPGU/{{ $skpd->kd_skpd }}/{{ tahun_anggaran() }}"
+                                    <input type="text"
+                                        value="/LPJ/GLOBAL/UPGU/{{ $skpd->kd_skpd }}/{{ tahun_anggaran() }}"
                                         class="form-control" readonly>
                                 </div>
                             </div>
