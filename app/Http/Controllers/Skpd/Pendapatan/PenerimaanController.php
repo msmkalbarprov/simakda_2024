@@ -925,40 +925,105 @@ class PenerimaanController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_kas = $request->tgl_kas;
 
+        // if ($kd_skpd == '1.02.0.00.0.00.01.0000') {
+        //     $data1 = DB::table('trhkasin_pkd')
+        //         ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
+        //         ->whereRaw("no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) and kd_skpd=? and tgl_sts=? and jns_trans=4", [$kd_skpd, $kd_skpd, $tgl_kas]);
+
+        //     $data2 = DB::table('trhkasin_pkd')
+        //         ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
+        //         ->whereRaw("no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3)) and kd_skpd=? and tgl_sts=? and jns_trans NOT IN (4,3)", [$kd_skpd, $kd_skpd, $tgl_kas])
+        //         ->unionAll($data1);
+
+        //     $data3 = DB::table('TRHOUTLAIN')
+        //         ->selectRaw("NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
+        // 		'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total")
+        //         ->whereRaw("KD_SKPD=? AND TGL_BUKTI=? AND jns_beban<>7 AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $tgl_kas])
+        //         ->unionAll($data2);
+        // } else {
+        //     $data1 = DB::table('trhkasin_pkd')
+        //         ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
+        //         ->whereRaw("no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) and kd_skpd=? and tgl_sts=? and jns_trans=4", [$kd_skpd, $kd_skpd, $tgl_kas]);
+
+        //     $data2 = DB::table('trhkasin_pkd')
+        //         ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
+        //         ->whereRaw("no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3)) and kd_skpd=? and tgl_sts=? and jns_trans NOT IN (4,3)", [$kd_skpd, $kd_skpd, $tgl_kas])
+        //         ->unionAll($data1);
+
+        //     $data3 = DB::table('TRHOUTLAIN')
+        //         ->selectRaw("NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
+        // 		'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total")
+        //         ->whereRaw("KD_SKPD=? AND TGL_BUKTI=? AND jns_beban<>7 AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $tgl_kas])
+        //         ->unionAll($data2);
+        // }
+        // $data = DB::table(DB::raw("({$data3->toSql()}) AS sub"))
+        //     ->mergeBindings($data3)
+        //     ->get();
+
         if ($kd_skpd == '1.02.0.00.0.00.01.0000') {
-            $data1 = DB::table('trhkasin_pkd')
-                ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
-                ->whereRaw("no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) and kd_skpd=? and tgl_sts=? and jns_trans=4", [$kd_skpd, $kd_skpd, $tgl_kas]);
-
-            $data2 = DB::table('trhkasin_pkd')
-                ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
-                ->whereRaw("no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3)) and kd_skpd=? and tgl_sts=? and jns_trans NOT IN (4,3)", [$kd_skpd, $kd_skpd, $tgl_kas])
-                ->unionAll($data1);
-
-            $data3 = DB::table('TRHOUTLAIN')
-                ->selectRaw("NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
-				'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total")
-                ->whereRaw("KD_SKPD=? AND TGL_BUKTI=? AND jns_beban<>7 AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $tgl_kas])
-                ->unionAll($data2);
+            $data = DB::select("SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) AND no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd_sumber+jns_trans FROM trhkasin_ppkd a where kd_skpd_sumber=? and a.jns_trans=4 )
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans=4 --AND status=1
+				UNION ALL
+				SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3))
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans NOT IN (4,3)
+				UNION ALL
+				SELECT NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
+				'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total
+				FROM TRHOUTLAIN
+				WHERE KD_SKPD=? AND TGL_BUKTI=?
+				AND jns_beban<>7
+				AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')
+                UNION ALL
+                SELECT a.no_bukti, b.tgl_bukti,a.kd_skpd, ket,''sumber,kd_sub_kegiatan,'5'jns_spp,''jns_cp,a.nilai FROM trdstrpot a
+                inner join trhstrpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                WHERE a.kd_skpd=? and tgl_bukti=? and a.kd_rek6='210601010007' AND a.no_bukti NOT IN (
+                select no_sts from trhkasin_ppkd
+                where kd_skpd=? )", [$kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas]);
+        } elseif ($kd_skpd == '1.02.0.00.0.00.01.0000' || $kd_skpd == '1.03.0.00.0.00.01.0000') {
+            $data = DB::select("SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? OR kd_skpd_sumber=? and a.jns_trans=4 )
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans=4 --AND status=1
+				UNION ALL
+				SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? OR kd_skpd_sumber=? and a.jns_trans NOT IN (4,3))
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans NOT IN (4,3)
+				UNION ALL
+				SELECT NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
+				'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total
+				FROM TRHOUTLAIN
+				WHERE KD_SKPD=? AND TGL_BUKTI=?
+				AND jns_beban<>7
+				AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas]);
         } else {
-            $data1 = DB::table('trhkasin_pkd')
-                ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
-                ->whereRaw("no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) and kd_skpd=? and tgl_sts=? and jns_trans=4", [$kd_skpd, $kd_skpd, $tgl_kas]);
-
-            $data2 = DB::table('trhkasin_pkd')
-                ->selectRaw("no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total")
-                ->whereRaw("no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3)) and kd_skpd=? and tgl_sts=? and jns_trans NOT IN (4,3)", [$kd_skpd, $kd_skpd, $tgl_kas])
-                ->unionAll($data1);
-
-            $data3 = DB::table('TRHOUTLAIN')
-                ->selectRaw("NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
-				'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total")
-                ->whereRaw("KD_SKPD=? AND TGL_BUKTI=? AND jns_beban<>7 AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $tgl_kas])
-                ->unionAll($data2);
+            $data = DB::select("SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) AND no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd_sumber+jns_trans FROM trhkasin_ppkd a where kd_skpd_sumber=? and a.jns_trans=4 )
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans=4 --AND status=1
+				UNION ALL
+				SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
+				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3))
+                and kd_skpd=?
+				and tgl_sts=?
+				and jns_trans NOT IN (4,3)
+				UNION ALL
+				SELECT NO_BUKTI no_sts, TGL_BUKTI tgl_sts, KD_SKPD, KET keterangan, (CASE WHEN thnlalu='1' THEN 'y' ELSE 'n' END) sumber,
+				'' kd_sub_kegiatan, '' jns_trans,'' jns_cp ,nilai as total
+				FROM TRHOUTLAIN
+				WHERE KD_SKPD=? AND TGL_BUKTI=?
+				AND jns_beban<>7
+				AND NO_BUKTI NOT IN (select no_sts from trhkasin_ppkd where  sumber='y')", [$kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas]);
         }
-        $data = DB::table(DB::raw("({$data3->toSql()}) AS sub"))
-            ->mergeBindings($data3)
-            ->get();
 
         return response()->json($data);
     }
