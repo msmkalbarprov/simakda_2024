@@ -11,6 +11,8 @@ use phpDocumentor\Reflection\Types\Static_;
 use PhpParser\ErrorHandler\Collecting;
 use PDF;
 use Knp\Snappy\Pdf as SnappyPdf;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class PengesahanSPJController extends Controller
 {
@@ -31,7 +33,7 @@ class PengesahanSPJController extends Controller
         return view('akuntansi.pengesahan_spj.index')->with($data);
     }
 
-    public function konsolidasi()
+    public function penerimaan()
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
@@ -45,9 +47,96 @@ class PengesahanSPJController extends Controller
             'jns_anggaran2' => jenis_anggaran()
         ];
 
-        return view('akuntansi.konsolidasi')->with($data);
+        return view('akuntansi.pengesahan_spj.penerimaan')->with($data);
     }
 
+    public function load_penerimaan(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $bulan   = $request->bulan;
+        // dd($bulan);
+        $data = DB::table('trhspj_terima_ppkd as a')
+            ->selectRaw("a.*,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
+            ->where(['bulan' => $bulan])
+            ->orderBy('kd_skpd')
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            
+            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->kd_skpd . '\',\'' . $row->nm_skpd . '\',\'' . $row->tgl_terima . '\',\'' . $row->real_terima . '\',\'' . $row->real_setor . '\',\'' . $row->sisa . '\',\'' . $row->spj . '\',\'' . $row->bku . '\',\'' . $row->koran . '\',\'' . $row->sts . '\',\'' . $row->ket . '\',\'' . $row->cek . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+    
+    public function cetak_penerimaan_spj(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $cetak          = $request->cetak;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        
+        $tahun_anggaran = tahun_anggaran();
+
+
+
+            // rincian
+
+            
+        $rincian = DB::select("SELECT a.nm_skpd, b.kd_skpd
+                ,ISNULL(real_terima,0) real_terima
+                ,ISNULL(real_setor,0) real_setor
+                ,ISNULL(sisa,0) sisa
+                ,ISNULL(tgl_terima,'') tgl_terima
+                ,spj,bku,koran,sts,ket,cek
+                 FROM ms_skpd a 
+                LEFT JOIN trhspj_terima_ppkd b ON a.kd_skpd=b.kd_skpd
+                WHERE bulan='$bulan' ORDER BY kd_skpd"
+                );
+
+
+        $data = [
+
+            'rincian'           => $rincian,
+            'bulan'             => $bulan,
+            'tahun_anggaran'    => $tahun_anggaran
+        ];
+
+        $view =  view('akuntansi.cetakan.pengesahan_spj.cetak_penerimaan')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('Penerimaan Spj.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Penerimaan Spj.xls"');
+            return $view;
+        }
+    } 
+
+    public function simpan_penerimaan_spj (Request $request){
+        $kdskpd         = $request->kdskpd;
+        $tgl_terima     = $request->tgl_terima;
+        $real_terima    = $request->real_terima;
+        $real_setor     = $request->real_setor;
+        $sisa           = $request->sisa;
+        $spj            = $request->spj;
+        $bku            = $request->bku;
+        $koran          = $request->koran;
+        $sts            = $request->sts;
+        $ket            = $request->ket;
+        $cek            = $request->cek;
+        $bulan          = $request->bulan;
+        $update         = date('Y-m-d');
+        $username       = Auth::user()->nama;
+        $asg = DB::update("UPDATE trhspj_terima_ppkd SET tgl_terima='$tgl_terima',real_setor='$real_setor',
+        real_terima='$real_terima',sisa='$sisa',spj='$spj',bku='$bku',koran='$koran',
+        sts='$sts',ket='$ket',cek='$cek',username='$username',tgl_update='$update' WHERE kd_skpd='$kdskpd' AND bulan='$bulan'");
+    }
 
     // get skpd by radio
     public function cariSkpd(Request $request)

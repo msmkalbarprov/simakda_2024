@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Laporan Keuangan | SIMAKDA')
+@section('title', 'Pengesahan SPJ | SIMAKDA')
 @section('content')
     <!-- start page title -->
     <div class="row">
@@ -20,10 +20,10 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="i1">
+            <div class="card card-info collapsed-card card-outline" id="penerimaan">
                 <div class="card-body">
                     {{ 'SPJ PENERIMAAN' }}
-                    <a class="card-block stretched-link" href="#">
+                    <a class="card-block stretched-link" href="{{ route('pengesahan_spj.penerimaan') }}">
 
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="i1_ringkasan">
+            <div class="card card-info collapsed-card card-outline" id="pengeluaran">
                 <div class="card-body">
                     {{ 'SPJ PENGELUARAN' }}
                     <a class="card-block stretched-link" href="#">
