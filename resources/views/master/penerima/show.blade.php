@@ -66,14 +66,16 @@
                     <div class="mb-3 row">
                         <label for="kode_akun" class="col-md-2 col-form-label">Kode Akun</label>
                         <div class="col-md-10">
-                            <input type="text" value="{{ $billing->nm_map }}" readonly class="form-control">
+                            <input type="text" value="{{ isset($billing->nm_map) ? $billing->nm_map : '' }}" readonly
+                                class="form-control">
                         </div>
                     </div>
                     <!-- Kode Setor -->
                     <div class="mb-3 row">
                         <label for="kode_setor" class="col-md-2 col-form-label">Kode Setor</label>
                         <div class="col-md-10">
-                            <input type="text" value="{{ $billing->nm_setor }}" readonly class="form-control">
+                            <input type="text" value="{{ isset($billing->nm_setor) ? $billing->nm_setor : '' }}" readonly
+                                class="form-control">
                         </div>
                     </div>
                     <!-- NPWP -->

@@ -78,7 +78,7 @@
                     <div class="mb-3 row">
                         <label for="tgl_transaksi" class="col-md-12 col-form-label">Tanggal Transaksi</label>
                         <div class="col-md-2">
-                            <input type="date" class="form-control" id="tgl_awal" value="{{ tambah_tanggal_unit() }}">
+                            <input type="date" class="form-control" id="tgl_awal" value="{{ $tanggal_awal }}">
                         </div>
                         <div class="col-md-2">
                             <input type="date" class="form-control" id="tgl_akhir">

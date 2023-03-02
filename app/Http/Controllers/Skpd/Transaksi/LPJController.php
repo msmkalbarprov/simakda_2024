@@ -30,6 +30,7 @@ class LPJController extends Controller
                 ->whereIn('kode', ['PA', 'KPA'])
                 ->get(),
         ];
+
         return view('skpd.lpj.skpd_tanpa_unit.index')->with($data);
     }
 
@@ -43,10 +44,10 @@ class LPJController extends Controller
             ->orderBy('a.no_lpj')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             if ($row->status == '1' || $row->status == '2') {
-                $btn = "";
+                $btn .= "";
             } else {
-                $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->jenis . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
@@ -69,6 +70,7 @@ class LPJController extends Controller
                 ->first(),
             'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
                 select 1 as nomor, SUM(nilai) as nilai_spd from trhspd a INNER JOIN trdspd b ON a.no_spd=b.no_spd WHERE kd_skpd = ? AND (RIGHT(kd_sub_kegiatan,10) !='01.1.02.01' OR kd_sub_kegiatan !='4.01.01.1.11.01') AND status='1') a LEFT JOIN (SELECT 1 as nomor, SUM(b.nilai) as transaksi FROM trhspp a INNER JOIN trdspp b ON a.kd_skpd=b.kd_skpd AND a.no_spp=b.no_spp WHERE a.kd_skpd = ? AND (RIGHT(b.kd_sub_kegiatan,10) !='01.1.02.01' OR b.kd_sub_kegiatan !='4.01.01.1.11.01') and (sp2d_batal is null or sp2d_batal<>'1')) b ON a.nomor=b.nomor", [$kd_skpd, $kd_skpd]))->first(),
+            'tanggal_awal' => collect(DB::select("SELECT DATEADD(DAY,1,MAX(tgl_akhir)) as tanggal_awal FROM trhlpj WHERE jenis=? AND kd_skpd = ?", ['1', $kd_skpd]))->first()->tanggal_awal
         ];
 
         return view('skpd.lpj.skpd_tanpa_unit.create')->with($data);
@@ -1273,6 +1275,7 @@ class LPJController extends Controller
                 ->select('kd_skpd', 'nm_skpd')
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
+            'tanggal_awal' => collect(DB::select("SELECT DATEADD(DAY,1,MAX(tgl_akhir)) as tanggal_awal FROM trhlpj_unit WHERE jenis=? AND kd_skpd = ?", ['1', $kd_skpd]))->first()->tanggal_awal
         ];
 
         return view('skpd.lpj.skpd_atau_unit.create')->with($data);
