@@ -46,7 +46,8 @@ class BukuPenerimaanPenyetoranController extends Controller
 
         // rincian
         if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000') {    //ada kondisi BLUD
-            $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no,cast(left(a.no_terima, charindex('/', a.no_terima) - 1) as int) as urut,
+            $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no,
+            -- cast(left(a.no_terima, charindex('/', a.no_terima) - 1) as int) as urut,
                 case when a.tgl_terima >= ? and a.tgl_terima <= ? then cast (a.tgl_terima as varchar(25)) else '' end tgl_terima,
                 case when a.tgl_terima >= ? and a.tgl_terima <= ? then a.no_terima else '' end no_terima,
                 a.kd_rek5 as kd_rek6,b.nm_rek6,
@@ -62,18 +63,21 @@ class BukuPenerimaanPenyetoranController extends Controller
                 where ((a.tgl_terima >= ? and a.tgl_terima <= ?) or (c.tgl_sts >= ? and c.tgl_sts <= ?))
                 and left(a.kd_skpd,len(?)) = ?
                 union all
-                select x.tgl_sts tgl, x.no_sts no, '' tgl_terima, '' no_terima, kd_rek5 as kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek5) nm_rek6, '' urut,
+                select x.tgl_sts tgl, x.no_sts no, '' tgl_terima, '' no_terima, kd_rek5 as kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek5) nm_rek6,
+                -- '' urut,
                 0 nilai, cast (x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah total, x.keterangan,	''status
                 FROM trhkasin_blud x INNER JOIN trdkasin_blud y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='2'
                 union all
-                select x.tgl_sts tgl, x.no_sts no, cast(x.tgl_sts as varchar(25)) tgl_terima, x.no_sts no_terima, kd_rek5 as kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek5) nm_rek6, '' urut,
+                select x.tgl_sts tgl, x.no_sts no, cast(x.tgl_sts as varchar(25)) tgl_terima, x.no_sts no_terima, kd_rek5 as kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek5) nm_rek6,
+                -- '' urut,
                 y.rupiah*-1 nilai, cast(x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah*-1 total, x.keterangan, ''status
                 FROM trhkasin_blud x INNER JOIN trdkasin_blud y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='3'
-                order by tgl, urut", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
+                order by tgl, no", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         } else {
-            $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no, cast(left(a.no_terima, charindex('/', a.no_terima) - 1) as int) as urut,
+            $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no,
+            -- cast(left(a.no_terima, charindex('/', a.no_terima) - 1) as int) as urut,
                 case when a.tgl_terima >= ? and a.tgl_terima <= ? then cast (a.tgl_terima as varchar(25)) else '' end tgl_terima,
                 case when a.tgl_terima >= ? and a.tgl_terima <= ? then a.no_terima else '' end no_terima,
                 a.kd_rek6,b.nm_rek6,
@@ -89,16 +93,18 @@ class BukuPenerimaanPenyetoranController extends Controller
                 where ((a.tgl_terima >= ? and a.tgl_terima <= ?) or (c.tgl_sts >= ? and c.tgl_sts <= ?))
                 and left(a.kd_skpd,len(?)) = ?
                 union all
-                select x.tgl_sts tgl, x.no_sts no, '' tgl_terima, '' no_terima, kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek6) nm_rek6,'' urut,
+                select x.tgl_sts tgl, x.no_sts no, '' tgl_terima, '' no_terima, kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek6) nm_rek6,
+                -- '' urut,
                 0 nilai, cast (x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah total, x.keterangan,	x.status
                 FROM trhkasin_pkd x INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='2'
                 union all
-                select x.tgl_sts tgl, x.no_sts no, cast(x.tgl_sts as varchar(25)) tgl_terima, x.no_sts no_terima, kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek6) nm_rek6, '' urut,
+                select x.tgl_sts tgl, x.no_sts no, cast(x.tgl_sts as varchar(25)) tgl_terima, x.no_sts no_terima, kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=y.kd_rek6) nm_rek6,
+                -- '' urut,
                 y.rupiah*-1 nilai, cast(x.tgl_sts as varchar(25)) tgl_sts, x.no_sts, y.rupiah*-1 total, x.keterangan, x.status
                 FROM trhkasin_pkd x INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
                 where x.tgl_sts >= ? and x.tgl_sts <= ? and left(x.kd_skpd,len(?)) = ? and jns_trans='3'
-                order by tgl, urut", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
+                order by tgl, no", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         }
 
 
