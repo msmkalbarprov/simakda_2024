@@ -85,12 +85,20 @@
 
             let total = 0;
             if (minus == false) {
-                total = nilai;
+                if (nilai < 0) {
+                    total = nilai * -1;
+                } else {
+                    total = nilai;
+                }
             } else {
-                total = nilai * -1;
+                if (nilai < 0) {
+                    total = nilai;
+                } else {
+                    total = nilai * -1;
+                }
             }
 
-            let ngaruh;
+            let ngaruh = '';
             if (pengaruh_realisasi == false) {
                 ngaruh = 0;
             } else {
@@ -150,8 +158,7 @@
                 },
                 success: function(response) {
                     if (response.message == '1') {
-                        alert('Data berhasil ditambahkan, Nomor Baru yang tersimpan adalah: ' +
-                            response.nomor);
+                        alert('Data berhasil diubah');
                         window.location.href =
                             "{{ route('koreksi_pendapatan.index') }}";
                     } else {
