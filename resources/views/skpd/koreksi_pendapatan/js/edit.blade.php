@@ -12,6 +12,7 @@
         });
 
         let jenis_sementara = document.getElementById('jenis_sementara').value;
+
         $.ajax({
             url: "{{ route('koreksi_pendapatan.jenis') }}",
             type: "POST",
@@ -30,7 +31,7 @@
                         );
                     } else {
                         $('#jenis').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" selected>${data.kd_rek6} | ${data.nm_rek6}</option>`
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
                         );
                     }
                 })
