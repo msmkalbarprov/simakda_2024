@@ -91,7 +91,7 @@
             }
 
             let ngaruh;
-            if (minus == false) {
+            if (pengaruh_realisasi == false) {
                 ngaruh = 0;
             } else {
                 ngaruh = 1;
