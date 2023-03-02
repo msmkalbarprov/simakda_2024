@@ -30,6 +30,7 @@ class LPJController extends Controller
                 ->whereIn('kode', ['PA', 'KPA'])
                 ->get(),
         ];
+
         return view('skpd.lpj.skpd_tanpa_unit.index')->with($data);
     }
 
@@ -43,10 +44,10 @@ class LPJController extends Controller
             ->orderBy('a.no_lpj')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             if ($row->status == '1' || $row->status == '2') {
-                $btn = "";
+                $btn .= "";
             } else {
-                $btn = '<a href="' . route("lpj.skpd_tanpa_unit.edit", Crypt::encrypt($row->no_lpj)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->jenis . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
