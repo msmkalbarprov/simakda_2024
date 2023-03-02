@@ -23,20 +23,20 @@
                 <td><input type="date" id="tgl_terima" name="tgl_terima" class="form-control"></td>  
             </tr>
             <tr>
-                <td width="30%">Realisasi Peneriman</td>
+                <td width="30%">Realisasi UP/GU/TU</td>
                 <td width="1%">:</td>
                 <td><input type="text" class="form-control" name="real_up" id="real_up"
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right">
                 </td>  
             </tr>
             <tr>
-                <td width="30%">Realisasi Penyetoran</td>
+                <td width="30%">Realisasi Gaji</td>
                 <td width="1%">:</td>
                 <td><input type="text" class="form-control" name="real_gj" id="real_gj"
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"></td>  
             </tr>
             <tr>
-                <td width="30%">Sisa</td>
+                <td width="30%">Realisasi Barang</td>
                 <td width="1%">:</td>
                 <td><input type="text" class="form-control" name="real_brg" id="real_brg"
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"></td>  
