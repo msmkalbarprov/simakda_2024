@@ -92,10 +92,10 @@ class SppLsController extends Controller
                     "id"   => 1,
                     "text" => " Gaji & Tunjangan"
                 ],
-                [
-                    "id"   => 2,
-                    "text" => " Kespeg"
-                ],
+                // [
+                //     "id"   => 2,
+                //     "text" => " Kespeg"
+                // ],
                 [
                     "id"   => 3,
                     "text" => " Uang Makan"
