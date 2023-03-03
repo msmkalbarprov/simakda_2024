@@ -120,8 +120,24 @@
             </thead>
                 @php
                     
-					$total_terima   = 0;
-					$total_keluar   = 0;
+					$tot_apeg       = 0;
+					$tot_abarjas    = 0;
+                    $tot_amod       = 0;
+                    $tot_ahibah     = 0;
+                    $tot_abansos    = 0;
+                    $tot_abghasil   = 0;
+                    $tot_abankeu    = 0;
+                    $tot_abtt       = 0;
+                    $tot_aja        = 0;
+                    $tot_rpeg       = 0;
+                    $tot_rbarjas    = 0;
+                    $tot_rmod       = 0;
+                    $tot_rhibah     = 0;
+                    $tot_rbansos    = 0;
+                    $tot_rbghasil   = 0;
+                    $tot_rbankeu    = 0;
+                    $tot_rbtt       = 0;
+                    $tot_rja        = 0;
 					$nomor          = 0;
                 @endphp
                     @foreach ($rincian as $row)
@@ -147,7 +163,26 @@
                                
                                $tot_ang=$ang_peg+$ang_brng+$ang_mod+$ang_hibah+$ang_bansos+$ang_bghasil+$ang_bankeu+$ang_btt;
                                $tot_real=$real_peg+$real_brng+$real_mod+$real_hibah+$real_bansos+$real_bghasil+$real_bankeu+$real_btt;
-                      
+                            
+                            $tot_apeg       = $tot_apeg+$ang_peg;
+                            $tot_abarjas    = $tot_abarjas+$ang_brng;
+                            $tot_amod       = $tot_amod+$ang_mod;
+                            $tot_ahibah     = $tot_ahibah+$ang_hibah;
+                            $tot_abansos    = $tot_abansos+$ang_bansos;
+                            $tot_abghasil   = $tot_abghasil+$ang_bghasil;
+                            $tot_abankeu    = $tot_abankeu+$ang_bankeu;
+                            $tot_abtt       = $tot_abtt+$ang_btt;
+                            $tot_aja        = $tot_aja+$tot_ang;
+                            $tot_rpeg       = $tot_rpeg+$real_peg;
+                            $tot_rbarjas    = $tot_rbarjas+$real_brng;
+                            $tot_rmod       = $tot_rmod+$real_mod;
+                            $tot_rhibah     = $tot_rhibah+$real_hibah;
+                            $tot_rbansos    = $tot_rbansos+$real_bansos;
+                            $tot_rbghasil   = $tot_rbghasil+$real_bghasil;
+                            $tot_rbankeu    = $tot_rbankeu+$real_bankeu;
+                            $tot_rbtt       = $tot_rbtt+$real_btt;
+                            $tot_rja        = $tot_rja+$tot_real;
+                            $nomor          = 0;
                       $len = strlen($kode); 
 
                         @endphp
@@ -211,6 +246,34 @@
                         @endif
                     
                 @endforeach
+                <tr>
+                               <td colspan="2" align="center" valign="top" style="font-size:12px">TOTAL</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_apeg)}}</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_abarjas)}}</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_amod)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_ahibah)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_abansos)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_abghasil)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_abankeu)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_abtt)}}
+                               </td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_aja)}}</td> 
+
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rpeg)}}</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rbarjas)}}</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rmod)}}</td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rhibah)}}</td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rbansos)}}</td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rbghasil)}}</td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rbankeu)}}</td>
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rbtt)}}</td> 
+                               <td align="right" valign="top" style="font-size:12px">{{rupiah($tot_rja)}}</td> 
+                            </tr>     
 
     </table>
     {{-- isi --}}
