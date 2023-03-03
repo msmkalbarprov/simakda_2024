@@ -48,14 +48,9 @@
             <td><input type="checkbox" id="spj" /></td>
             </tr>
             <tr>
-            <td width="30%">BKU</td>
+            <td width="30%">Buku Kas Penerimaan</td>
             <td width="1%">:</td>
             <td><input type="checkbox" id="bku" /></td>
-            </tr>
-            <tr>
-            <td width="30%">Rek Koran</td>
-            <td width="1%">:</td>
-            <td><input type="checkbox" id="koran"  /></td>
             </tr>
             <tr>
             <td width="30%">STS</td>

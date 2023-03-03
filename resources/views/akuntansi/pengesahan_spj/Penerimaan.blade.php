@@ -355,7 +355,7 @@
             cbku=1;
         }
 
-        let ckoran = document.getElementById('koran').checked;
+        let ckoran = 0;
         if (ckoran==false){
            ckoran=0;
         }else{
