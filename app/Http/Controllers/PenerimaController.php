@@ -67,7 +67,8 @@ class PenerimaController extends Controller
 
     public function store(PenerimaRequest $request)
     {
-        $input = array_map('htmlentities', $request->validated());
+        // $input = array_map('htmlentities', $request->validated());
+        $input = $request->validated();
         // $input = $request->all();
         $cek = DB::table('ms_rekening_bank_online')
             ->where([
@@ -159,7 +160,8 @@ class PenerimaController extends Controller
         $rekening = Crypt::decryptString($rekening);
         $kd_skpd = Crypt::decryptString($kd_skpd);
 
-        $input = array_map('htmlentities', $request->validated());
+        // $input = array_map('htmlentities', $request->validated());
+        $input = $request->validated();
 
         DB::table('ms_rekening_bank_online')
             ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
