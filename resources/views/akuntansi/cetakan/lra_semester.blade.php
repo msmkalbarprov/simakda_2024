@@ -101,18 +101,24 @@
                 
                             $realisasi   = $row->realisasi;
                             $sisa           = $nil_ang - $realisasi;
-                            $persen         = empty($nil_ang) || $nil_ang == 0 ? 0 : ($realisasi / $nil_ang) * 100;
+                            $persen         = !empty($nil_ang) || $nil_ang == 0 ? 0 : ($realisasi / $nil_ang) * 100;
                             $sisa1          = $sisa < 0 ? $sisa * -1 : $sisa;
                             $a              = $sisa < 0 ? '(' : '';
                             $b              = $sisa < 0 ? ')' : '';
                             $leng           = strlen($kd_rek);
                         
-                         if ($group_id==5 and $kd_rek==4) {
+                        if ($group_id==5 and $kd_rek==4) {
+                            $nanggaran_pendapatan = $nil_ang;
+                            $nrealisasi_pendapatan = $realisasi;
+                        }else{
                             $nanggaran_pendapatan = $nil_ang;
                             $nrealisasi_pendapatan = $realisasi;
                         }
                         
                         if ($group_id==5 and $kd_rek==5) {
+                            $nanggaran_belanja = $nil_ang;
+                            $nrealisasi_belanja = $realisasi;
+                        }else{
                             $nanggaran_belanja = $nil_ang;
                             $nrealisasi_belanja = $realisasi;
                         }
@@ -122,12 +128,23 @@
                             $apenerimaan_pembiayaan = $nil_ang;
                             $bpenerimaan_pembiayaan = $realisasi;
                             
+                        }else{
+                            $apenerimaan_pembiayaan = $nil_ang;
+                            $bpenerimaan_pembiayaan = $realisasi;
+                            
                         }
                         
                         if ($group_id==2 and $row->kd_rek==62) {
                             $apengeluaran_pembiayaan=$nil_ang;
                             $bpengeluaran_pembiayaan=$realisasi;
+                        }else{
+                            $apengeluaran_pembiayaan=$nil_ang;
+                            $bpengeluaran_pembiayaan=$realisasi;
                         }
+
+                        $persenj         = !empty($nanggaran_pendapatan-$nanggaran_belanja) || ($nanggaran_pendapatan-$nanggaran_belanja) == 0 ? 0 : (($nrealisasi_pendapatan-$nrealisasi_belanja)/($nanggaran_pendapatan-$nanggaran_belanja)) * 100;
+
+                        $persenpem         = !empty($apenerimaan_pembiayaan-$apengeluaran_pembiayaan) || ($apenerimaan_pembiayaan-$apengeluaran_pembiayaan) == 0 ? 0 : (($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan)/($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)) * 100;
 
                     @endphp
                     @if ($show_kd_rek==1)
@@ -155,7 +172,7 @@
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($nrealisasi_pendapatan-$nrealisasi_belanja, "2", ",", ".")}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($nanggaran_pendapatan-$nanggaran_belanja)-($nrealisasi_pendapatan-$nrealisasi_belanja), "2", ",", ".")}} {{$b}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($nanggaran_pendapatan-$nanggaran_belanja)-($nrealisasi_pendapatan-$nrealisasi_belanja), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format(($nrealisasi_pendapatan-$nrealisasi_belanja)/($nanggaran_pendapatan-$nanggaran_belanja)*100, "2", ",", ".")}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persenj, "2", ",", ".")}}</b></td> 
                             </tr>
                         @elseif ($row->kd_rek == 6263)
                             <tr>
@@ -165,7 +182,7 @@
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)-($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan), "2", ",", ".")}} {{$b}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)-($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format(($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan)/($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)*100, "2", ",", ".")}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persenpem, "2", ",", ".")}}</b></td> 
                             </tr>        
                         @else
                         <tr>
