@@ -6376,9 +6376,9 @@ class BendaharaUmumDaerahController extends Controller
                     }
                 } elseif (substr($req['pilihan'], -1) == '2') {
                     if ($req['status'] == '2') {
-                        $query->whereRaw("MONTH(tgl_kas_bud)=?)", [$req['bulan']]);
+                        $query->whereRaw("MONTH(tgl_kas_bud)=?", [$req['bulan']]);
                     } else {
-                        $query->whereRaw("MONTH(tgl_sp2d)=?)", [$req['bulan']]);
+                        $query->whereRaw("MONTH(tgl_sp2d)=?", [$req['bulan']]);
                     }
                 } elseif (substr($req['pilihan'], -1) == '3') {
                     if ($req['status'] == '2') {
@@ -6390,7 +6390,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->groupBy('b.kd_bidang')
             ->union($realisasi1);
-        // dd($realisasi2->get());
+
         $realisasi = DB::table(DB::raw("({$realisasi2->toSql()}) AS sub"))
             ->selectRaw("kd_skpd as kode,nm_skpd as nama,sum(anggaran)as ang,sum(realisasi)as bel")
             ->mergeBindings($realisasi2)
