@@ -165,7 +165,7 @@ class LraController extends Controller
                                             
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                            ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
+                                            ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
         
                     
                 }else{
