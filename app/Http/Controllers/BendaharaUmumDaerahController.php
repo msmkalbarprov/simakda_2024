@@ -6244,10 +6244,10 @@ class BendaharaUmumDaerahController extends Controller
             ->selectRaw("no_spp, sum(nilai) [nilai]")
             ->groupBy('no_spp');
 
-        $register = DB::table('trhspm as a')
+        $register_sp2d = DB::table('trhspm as a')
             ->join('trhsp2d as b', function ($join) {
                 $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                // $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->joinSub($join1, 'c', function ($join) {
                 $join->on('a.no_spp', '=', 'c.no_spp');
@@ -6300,15 +6300,32 @@ class BendaharaUmumDaerahController extends Controller
                 }
             })
             ->get();
-        dd($register);
+
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
             'data_awal' => $req,
-            'rekap_gaji' => $rekap_gaji
+            'register_sp2d' => $register_sp2d
         ];
 
-        return view('bud.laporan_bendahara.cetak.register_sp2d')->with($data);
+        $view = view('bud.laporan_bendahara.cetak.register_sp2d')->with($data);
+
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', $req['margin_kiri'])
+                ->setOption('margin-right', $req['margin_kanan'])
+                ->setOption('margin-top', $req['margin_atas'])
+                ->setOption('margin-bottom', $req['margin_bawah']);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
+            return $view;
+        }
     }
 
     public function realisasiSkpdSp2d(Request $request)
