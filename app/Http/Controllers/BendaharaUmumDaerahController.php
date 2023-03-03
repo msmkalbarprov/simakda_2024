@@ -6328,6 +6328,388 @@ class BendaharaUmumDaerahController extends Controller
         }
     }
 
+    public function realisasiSp2d(Request $request)
+    {
+        $req = $request->all();
+
+        if (substr($req['pilihan'], -1) == '2') {
+            if ($req['status'] == '2') {
+                $where3 = "and MONTH(tgl_kas_bud)=?";
+            } else {
+                $where3 = "and MONTH(tgl_sp2d)=?";
+            }
+        } elseif (substr($req['pilihan'], -1) == '3') {
+            if ($req['status'] == '2') {
+                $where3 = "and ( tgl_kas_bud between ? and ?)";
+            } else {
+                $where3 = "and ( tgl_sp2d between ? and ?)";
+            }
+        }
+
+        if (substr($req['pilihan'], -1) == '2') {
+            $realisasi_sp2d = DB::select("SELECT a.kd_skpd as kode ,a.nm_skpd as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_skpd a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT a.kd_skpd, a.nm_skpd
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY a.kd_skpd, a.nm_skpd)a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY a.kd_skpd)b
+				ON a.kd_skpd=b.kd_skpd)c
+				ON a.kd_skpd=c.kd_skpd
+				UNION ALL
+				SELECT a.kd_org as kode ,a.nm_org as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_organisasi a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY  LEFT(a.kd_skpd,17))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,17))b
+				ON a.kode=b.kode)c
+				ON a.kd_org=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_bidang_urusan as kode ,a.nm_bidang_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_bidang_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,4))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,4))b
+				ON a.kode=b.kode)c
+				ON a.kd_bidang_urusan=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_urusan as kode ,a.nm_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,1))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,1))b
+				ON a.kode=b.kode)c
+				ON a.kd_urusan=c.kode
+				ORDER BY kode", [$req['anggaran'], $req['bulan'], $req['anggaran'], $req['bulan'], $req['anggaran'], $req['bulan'], $req['anggaran'], $req['bulan']]);
+        } elseif (substr($req['pilihan'], -1) == '3') {
+            $realisasi_sp2d = DB::select("SELECT a.kd_skpd as kode ,a.nm_skpd as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_skpd a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT a.kd_skpd, a.nm_skpd
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY a.kd_skpd, a.nm_skpd)a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY a.kd_skpd)b
+				ON a.kd_skpd=b.kd_skpd)c
+				ON a.kd_skpd=c.kd_skpd
+				UNION ALL
+				SELECT a.kd_org as kode ,a.nm_org as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_organisasi a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY  LEFT(a.kd_skpd,17))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,17))b
+				ON a.kode=b.kode)c
+				ON a.kd_org=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_bidang_urusan as kode ,a.nm_bidang_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_bidang_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,4))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,4))b
+				ON a.kode=b.kode)c
+				ON a.kd_bidang_urusan=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_urusan as kode ,a.nm_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,1))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				$where3
+				GROUP BY LEFT(a.kd_skpd,1))b
+				ON a.kode=b.kode)c
+				ON a.kd_urusan=c.kode
+				ORDER BY kode", [$req['anggaran'], $req['periode1'], $req['periode2'], $req['anggaran'], $req['periode1'], $req['periode2'], $req['anggaran'], $req['periode1'], $req['periode2'], $req['anggaran'], $req['periode1'], $req['periode2']]);
+        } elseif (substr($req['pilihan'], -1) == '1') {
+            $realisasi_sp2d = DB::select("SELECT a.kd_skpd as kode ,a.nm_skpd as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_skpd a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT a.kd_skpd, a.nm_skpd
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY a.kd_skpd, a.nm_skpd)a
+				LEFT JOIN
+				(SELECT a.kd_skpd
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				GROUP BY a.kd_skpd)b
+				ON a.kd_skpd=b.kd_skpd)c
+				ON a.kd_skpd=c.kd_skpd
+				UNION ALL
+				SELECT a.kd_org as kode ,a.nm_org as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_organisasi a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY  LEFT(a.kd_skpd,17))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,17) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				GROUP BY LEFT(a.kd_skpd,17))b
+				ON a.kode=b.kode)c
+				ON a.kd_org=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_bidang_urusan as kode ,a.nm_bidang_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_bidang_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,4))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,4) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				GROUP BY LEFT(a.kd_skpd,4))b
+				ON a.kode=b.kode)c
+				ON a.kd_bidang_urusan=c.kode
+
+				UNION ALL
+
+				SELECT a.kd_urusan as kode ,a.nm_urusan as nama
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM ms_urusan a
+				LEFT JOIN
+				(SELECT a.kode
+				,ISNULL(ang,0) as ang
+				,ISNULL(bel,0) as bel
+				FROM
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(a.kd_rek6,1) in ('5','1') THEN a.nilai ELSE 0 END) AS ang
+				FROM trdrka a where a.jns_ang=?
+				GROUP BY LEFT(a.kd_skpd,1))a
+				LEFT JOIN
+				(SELECT LEFT(a.kd_skpd,1) as kode
+				,SUM(CASE WHEN LEFT(d.kd_rek6,1) in ('5','1') THEN d.nilai ELSE 0 END) AS bel
+				FROM trhsp2d a
+				INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd = b.kd_skpd
+				INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd = c.kd_skpd
+				INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd = d.kd_skpd
+				WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+				and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+				GROUP BY LEFT(a.kd_skpd,1))b
+				ON a.kode=b.kode)c
+				ON a.kd_urusan=c.kode
+				ORDER BY kode", [$req['anggaran'], $req['anggaran'], $req['anggaran'], $req['anggaran']]);
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $req['pilihan'],
+            'data_awal' => $req,
+            'register_sp2d' => $realisasi_sp2d,
+        ];
+
+        $view = view('bud.laporan_bendahara.cetak.realisasi_sp2d')->with($data);
+
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', $req['margin_kiri'])
+                ->setOption('margin-right', $req['margin_kanan'])
+                ->setOption('margin-top', $req['margin_atas'])
+                ->setOption('margin-bottom', $req['margin_bawah']);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
+            return $view;
+        }
+    }
+
     public function realisasiSkpdSp2d(Request $request)
     {
         $req = $request->all();
