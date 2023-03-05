@@ -6787,6 +6787,27 @@ class BendaharaUmumDaerahController extends Controller
                     }
                 }
             })
+            ->whereRaw("
+            b.kd_rek6 != (
+             CASE WHEN c.kd_skpd=? THEN ('540203010001')
+                  ELSE ('') END
+            )
+            AND
+            b.kd_rek6 != (
+                    CASE WHEN c.kd_skpd=? THEN ('530101010001')
+                        ELSE ('') END
+                    )
+            AND
+            b.kd_rek6 != (
+                    CASE WHEN c.kd_skpd=? THEN ('540101020001')
+                        ELSE ('') END
+                    )
+            AND
+            b.kd_rek6 != (
+                    CASE WHEN c.kd_skpd=? THEN ('540101010001')
+                        ELSE ('')
+            END
+            )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000'])
             ->groupBy('b.kd_bidang')
             ->union($realisasi1);
 
