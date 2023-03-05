@@ -215,7 +215,12 @@
                 
                             $realisasi   = $row->realisasi;
                             $sisa           = $nil_ang - $realisasi;
-                            $persen         = !empty($nil_ang) || $nil_ang == 0 ? 0 : ($realisasi / $nil_ang) * 100;
+                            
+                            if (($nil_ang == 0) || ($nil_ang == '')) {
+                            $persen = 0;
+                            } else {
+                                $persen = $realisasi / $nil_ang * 100;
+                            }
                             $sisa1          = $sisa < 0 ? $sisa * -1 : $sisa;
                             $a              = $sisa < 0 ? '(' : '';
                             $b              = $sisa < 0 ? ')' : '';
