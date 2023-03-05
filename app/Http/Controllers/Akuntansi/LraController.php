@@ -95,6 +95,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
+                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
         
                     
                 }else{
@@ -129,6 +130,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
+                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_sinergi_oyoy(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
 
                 }
         }else{
@@ -167,7 +169,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
-                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
         
                     
                 }else{
@@ -263,7 +265,7 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
-                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
 
                 } else {
                     # code...
@@ -388,7 +390,7 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
-                            $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+                            $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
 
                 } else {
                     # code...
@@ -517,7 +519,7 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
-                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
 
                 } else {
                     # code...
@@ -643,7 +645,7 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
-                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
 
                 } else {
                     # code...

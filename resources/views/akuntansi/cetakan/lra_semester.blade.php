@@ -112,12 +112,12 @@
 
                         if ($ang_surplus < 0) {
                             $ang_surplus = $ang_surplus * -1;
-                            $a = '(';
-                            $b = ')';
+                            $aa = '(';
+                            $bb = ')';
                         }else {
                             $ang_surplus = $ang_surplus;
-                            $a = '';
-                            $b = '';
+                            $aa = '';
+                            $bb = '';
                         }
 
                         if ($nil_surplus < 0) {
@@ -286,17 +286,17 @@
                             <tr>
                                 <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right"  valign="top" style="padding-left: 10px"><b>{{$nm_rek}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}}{{ rupiah($ang_surplus) }}{{$b}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$aa}}{{ rupiah($ang_surplus) }}{{$bb}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$c}}{{ rupiah($nil_surplus) }}{{$d}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$e}}{{ rupiah($sisa_surplus) }}{{$f}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$e}}{{ rupiah($sisa_surplus) }}{{$f}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$i}}{{ rupiah($sisa_surplus) }}{{$j}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$i}}{{ rupiah($sisa_surplus) }}{{$j}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_surplus, "2", ",", ".")}}</b></td> 
                             </tr>
                         @elseif ($row->kd_rek == 6263)
                             <tr>
                                 <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right"  valign="top" style="padding-left: 10px"><b>{{$nm_rek}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$g}}{{ rupiah($ang_neto) }}{{$h}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$e}}{{ rupiah($ang_neto) }}{{$f}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$i}}{{ rupiah($nil_neto) }}{{$j}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
@@ -448,9 +448,9 @@
                     <td style="font-size:14px;font-family:Open Sans" align="left"  valign="top" style="padding-left: 50px"><b>SISA LEBIH PEMBIYAAN ANGGARAN TAHUN BERKENAAN (SILPA)</b></td> 
                     <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$m}}{{ rupiah($ang_silpa) }}{{$n}}</b></td> 
                     <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$o}}{{ rupiah($nil_silpa) }}{{$p}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($nil_silpa) }}{{$r}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($nil_silpa) }}{{$r}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_silpa, "2", ",", ".")}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($sisa_silpa) }}{{$r}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($sisa_silpa) }}{{$r}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{rupiah($persen_silpa)}}</b></td> 
                 </tr>
 
     </table>
