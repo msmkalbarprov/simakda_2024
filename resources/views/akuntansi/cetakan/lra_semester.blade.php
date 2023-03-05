@@ -84,7 +84,121 @@
             </tr>
             </thead>
                 @php
-                    
+                    $ang_surplus = $sus->ang_surplus;
+                    $nil_surplus = $sus->nil_surplus;
+                    $ang_neto    = $sus->ang_neto;
+                    $nil_neto    = $sus->nil_neto;
+                    $sisa_surplus = $ang_surplus - $nil_surplus;
+                    $sisa_neto = $ang_neto - $nil_neto;
+                    $ang_silpa = $ang_surplus+$ang_neto;
+                    $nil_silpa = $nil_surplus+$nil_neto;
+                    $sisa_silpa = $ang_silpa - $nil_silpa;
+
+                        if (($ang_surplus == 0) || ($ang_surplus == '')) {
+                            $persen_surplus = 0;
+                        } else {
+                            $persen_surplus = $nil_surplus / $ang_surplus * 100;
+                        }
+                        if (($ang_neto == 0) || ($ang_neto == '')) {
+                            $persen_neto = 0;
+                        }else {
+                            $persen_neto = $nil_neto / $ang_neto * 100;
+                        }
+                        if (($ang_silpa == 0) || ($ang_silpa == '')) {
+                            $persen_silpa = 0;
+                        }else {
+                            $persen_silpa = ($nil_silpa / $ang_silpa) * 100;
+                        }
+
+                        if ($ang_surplus < 0) {
+                            $ang_surplus = $ang_surplus * -1;
+                            $a = '(';
+                            $b = ')';
+                        }else {
+                            $ang_surplus = $ang_surplus;
+                            $a = '';
+                            $b = '';
+                        }
+
+                        if ($nil_surplus < 0) {
+                            $nil_surplus = $nil_surplus * -1;
+                            $c = '(';
+                            $d = ')';
+                        } else {
+                            $nil_surplus = $nil_surplus;
+                            $c = '';
+                            $d = '';
+                        }
+
+                        if ($ang_neto < 0) {
+                            $ang_neto = $ang_neto * -1;
+                            $e = '(';
+                            $f = ')';
+                        }else {
+                            $ang_neto = $ang_neto;
+                            $e = '';
+                            $f = '';
+                        }
+
+                        if ($nil_neto < 0) {
+                            $nil_neto = $nil_neto * -1;
+                            $g = '(';
+                            $h = ')';
+                        } else {
+                            $nil_neto = $nil_neto;
+                            $g = '';
+                            $h = '';
+                        }
+
+                        if ($sisa_surplus < 0) {
+                            $sisa_surplus = $sisa_surplus * -1;
+                            $i = '(';
+                            $j = ')';
+                        }else {
+                            $sisa_surplus = $sisa_surplus;
+                            $i = '';
+                            $j = '';
+                        }
+
+                        if ($sisa_neto < 0) {
+                            $sisa_neto = $sisa_neto * -1;
+                            $k = '(';
+                            $l = ')';
+                        } else {
+                            $sisa_neto = $sisa_neto;
+                            $k = '';
+                            $l = '';
+                        }
+
+                        if ($ang_silpa < 0) {
+                            $ang_silpa = $ang_silpa * -1;
+                            $m = '(';
+                            $n = ')';
+                        } else {
+                            $ang_silpa = $ang_silpa;
+                            $m = '';
+                            $n = '';
+                        }
+
+                        if ($nil_silpa < 0) {
+                            $nil_silpa = $nil_silpa * -1;
+                            $o = '(';
+                            $p = ')';
+                        } else {
+                            $nil_silpa = $nil_silpa;
+                            $o = '';
+                            $p = '';
+                        }
+
+                        if ($sisa_silpa < 0) {
+                            $sisa_silpa = $sisa_silpa * -1;
+                            $q = '(';
+                            $r = ')';
+                        } else {
+                            $sisa_silpa = $sisa_silpa;
+                            $q = '';
+                            $r = '';
+                        }
 					$total_terima   = 0;
 					$total_keluar   = 0;
 					$nomor          = 0;
@@ -107,7 +221,7 @@
                             $b              = $sisa < 0 ? ')' : '';
                             $leng           = strlen($kd_rek);
                         
-                        if ($group_id==5 and $kd_rek==4) {
+                        if ($group_id==1 and $kd_rek==4) {
                             $nanggaran_pendapatan = $nil_ang;
                             $nrealisasi_pendapatan = $realisasi;
                         }else{
@@ -115,7 +229,7 @@
                             $nrealisasi_pendapatan = $realisasi;
                         }
                         
-                        if ($group_id==5 and $kd_rek==5) {
+                        if ($group_id==1 and $kd_rek==5) {
                             $nanggaran_belanja = $nil_ang;
                             $nrealisasi_belanja = $realisasi;
                         }else{
@@ -146,6 +260,10 @@
 
                         $persenpem         = !empty($apenerimaan_pembiayaan-$apengeluaran_pembiayaan) || ($apenerimaan_pembiayaan-$apengeluaran_pembiayaan) == 0 ? 0 : (($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan)/($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)) * 100;
 
+
+
+
+
                     @endphp
                     @if ($show_kd_rek==1)
                         @php
@@ -168,21 +286,21 @@
                             <tr>
                                 <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right"  valign="top" style="padding-left: 10px"><b>{{$nm_rek}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($nanggaran_pendapatan-$nanggaran_belanja, "2", ",", ".")}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($nrealisasi_pendapatan-$nrealisasi_belanja, "2", ",", ".")}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($nanggaran_pendapatan-$nanggaran_belanja)-($nrealisasi_pendapatan-$nrealisasi_belanja), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($nanggaran_pendapatan-$nanggaran_belanja)-($nrealisasi_pendapatan-$nrealisasi_belanja), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persenj, "2", ",", ".")}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}}{{ rupiah($ang_surplus) }}{{$b}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$c}}{{ rupiah($nil_surplus) }}{{$d}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$e}}{{ rupiah($sisa_surplus) }}{{$f}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$e}}{{ rupiah($sisa_surplus) }}{{$f}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_surplus, "2", ",", ".")}}</b></td> 
                             </tr>
                         @elseif ($row->kd_rek == 6263)
                             <tr>
                                 <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right"  valign="top" style="padding-left: 10px"><b>{{$nm_rek}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($apenerimaan_pembiayaan-$apengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan, "2", ",", ".")}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)-($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format(($apenerimaan_pembiayaan-$apengeluaran_pembiayaan)-($bpenerimaan_pembiayaan-$bpengeluaran_pembiayaan), "2", ",", ".")}} {{$b}}</b></td> 
-                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persenpem, "2", ",", ".")}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$g}}{{ rupiah($ang_neto) }}{{$h}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$i}}{{ rupiah($nil_neto) }}{{$j}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_neto, "2", ",", ".")}}</b></td> 
                             </tr>        
                         @else
                         <tr>
@@ -328,11 +446,11 @@
                 <tr>
                     <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"></td> 
                     <td style="font-size:14px;font-family:Open Sans" align="left"  valign="top" style="padding-left: 50px"><b>SISA LEBIH PEMBIYAAN ANGGARAN TAHUN BERKENAAN (SILPA)</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($silpa_anggaran, "2", ",", ".")}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($silpa_belanja, "2", ",", ".")}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format($silpa_anggaran-$silpa_belanja, "2", ",", ".")}} {{$b}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format($silpa_anggaran-$silpa_belanja, "2", ",", ".")}} {{$b}}</b></td> 
-                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persensilpa, "2", ",", ".")}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$m}}{{ rupiah($ang_silpa) }}{{$n}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$o}}{{ rupiah($nil_silpa) }}{{$p}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($nil_silpa) }}{{$r}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$q}}{{ rupiah($nil_silpa) }}{{$r}}</b></td> 
+                    <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_silpa, "2", ",", ".")}}</b></td> 
                 </tr>
 
     </table>

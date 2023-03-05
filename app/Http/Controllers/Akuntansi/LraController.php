@@ -129,6 +129,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
+
                 }
         }else{
                 
@@ -166,6 +167,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
         
                     
                 }else{
@@ -200,6 +202,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
+                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_oyoy(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
                 }
             }else if ($jenis_data==4){
                 if ($periodebulan=='periode') {
@@ -260,6 +263,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+
                 } else {
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
@@ -318,6 +323,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+
                 }
                 
             }else if ($jenis_data==3){ // SP2D LUNAS
@@ -381,6 +388,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+                            $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+
                 } else {
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
@@ -441,6 +450,10 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+
+                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+                                
+
                 }
                 
             }else if ($jenis_data==2){ // SP2D Advis
@@ -504,6 +517,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+
                 } else {
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
@@ -564,6 +579,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+            
                 }
                 
             }else if ($jenis_data==1){ // SP2D terbit
@@ -626,6 +643,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal1,$jns_ang]))->first();
+
                 } else {
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
@@ -685,6 +704,8 @@ class LraController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+
                 }
                 
             }
@@ -695,7 +716,7 @@ class LraController extends Controller
 
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-            
+            // dd($sus);
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'rincian'           => $rincian,
@@ -706,7 +727,8 @@ class LraController extends Controller
             'judul'             => $bulan,
             'pilih'             => $pilih,
             'jenis_ttd'         => $ttd,
-            'jenis'             => $jns_rincian
+            'jenis'             => $jns_rincian,
+            'sus'               => $sus            
         ];
         if($format=='sap'){
             $view =  view('akuntansi.cetakan.lra_semester')->with($data);

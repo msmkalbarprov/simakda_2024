@@ -32,7 +32,7 @@ class LraperdaController extends Controller
             // rincian
         if ($jenis=="1") {
             
-        $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,ang_bankeu,ang_btt,real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
+            $rincian = DB::select("SELECT kd_skpd,kd_sub_kegiatan kode ,nm_rek,ang_peg,ang_brng,ang_mod,ang_hibah,ang_bansos,ang_bghasil,ang_bankeu,ang_btt,real_peg,real_brng,real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
             FROM [perda_lampI.3_rinci2]($bulan,'$jns_ang',$tahun_anggaran)
                     where len(kd_skpd)='22'
                     ORDER BY kd_skpd,kd_sub_kegiatan"
