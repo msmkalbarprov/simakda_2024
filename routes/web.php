@@ -1007,6 +1007,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             // Cek Buku Setoran
             Route::get('cetak_buku_setoran', [BukuSetoranPenerimaanController::class, 'cetakBukuSetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_setoran');
             Route::get('cetak_bp_sub_rincian_objek', [BukuSetoranPenerimaanController::class, 'cetakRincianObjek'])->name('skpd.laporan_bendahara_penerimaan.cetak_bp_sub_rincian_objek');
+            Route::get('berdasarkan_skpd', [LaporanBendaharaPenerimaanController::class, 'berdasarkanSkpd'])->name('skpd.laporan_bendahara_penerimaan.berdasarkan_skpd');
+            Route::get('berdasarkan_kasda', [LaporanBendaharaPenerimaanController::class, 'berdasarkanKasda'])->name('skpd.laporan_bendahara_penerimaan.berdasarkan_kasda');
+            Route::get('detail_penerimaan', [LaporanBendaharaPenerimaanController::class, 'detailPenerimaan'])->name('skpd.laporan_bendahara_penerimaan.detail_penerimaan');
         });
         // Jurnal Koreksi
         Route::group(['prefix' => 'jurnal_koreksi'], function () {
