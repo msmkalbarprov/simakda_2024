@@ -376,7 +376,7 @@
         }
          tot=cspj+cbku+csts;
          
-         if((tot!=4) && (ccek==1)){
+         if((tot!=3) && (ccek==1)){
             alert('Persyaratan belum lengkap. Tidak bisa mencentang Cek');
             exit(); 
          }
