@@ -5,6 +5,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
+                    <button class="btn btn-md btn-success">Hijau : CAIR SP2D</button>
+                    <button class="btn btn-md btn-danger">Merah : BATAL SP2D</button>
                     <a href="{{ route('sp2d.create') }}" id="tambah_sp2d" class="btn btn-primary"
                         style="float: right;">Tambah</a>
                 </div>
