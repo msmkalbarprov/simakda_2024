@@ -213,7 +213,7 @@ class LaporanRegPajakController extends Controller
                                     ,0 as terima,
                                     b.nilai as setor
                                     FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                    AND MONTH(a.tgl_bukti)= ? AND b.map_pot IN ('210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')) a
+                                    AND MONTH(a.tgl_bukti)= ? AND b.map_pot IN ('210108010001b','210108010001a','210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')) a
                                     ORDER BY CAST(a.no_bukti as int)", [$kd_skpd, $bulan, $kd_skpd, $bulan]);
 
         // KIRIM KE VIEW
