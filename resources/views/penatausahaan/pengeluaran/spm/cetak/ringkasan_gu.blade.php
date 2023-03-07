@@ -125,7 +125,13 @@
                 <tr>
                     <td>5.</td>
                     <td>Bentuk Perusahaan</td>
-                    <td colspan="2">: {{ Str::substr($beban6->nmrekan, 0, 2) }}</td>
+                    <td colspan="2">
+                        @if (substr($beban6->nmrekan, 0, 2) == 'PT' || substr($beban6->nmrekan, 0, 2) == 'CV')
+                            : {{ substr($beban6->nmrekan, 0, 2) }}
+                        @else
+                            : -
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td>6.</td>
@@ -165,7 +171,8 @@
                 <tr>
                     <td>13.</td>
                     <td>Waktu Pelaksanaan Kegiatan</td>
-                    <td colspan="2">: {{ tanggal($beban6->tgl_mulai) }} s/d {{ tanggal($beban6->tgl_akhir) }}
+                    <td colspan="2">: {{ isset($beban6->tgl_mulai) ? tanggal($beban6->tgl_mulai) : '-' }} s/d
+                        {{ isset($beban6->tgl_akhir) ? tanggal($beban6->tgl_akhir) : '-' }}
                     </td>
                 </tr>
                 <tr>
