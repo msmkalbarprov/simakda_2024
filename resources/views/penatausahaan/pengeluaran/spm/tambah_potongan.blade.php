@@ -13,15 +13,23 @@
                 <div class="card-body" id="form_potongan">
                     @csrf
                     {{-- CATATAN --}}
-                    <div class="mb-3 row">
+                    <div class="row">
                         <label for="catatan" class="col-md-12 col-form-label" style="color:red">CATATAN!!!</label>
-                        <label for="catatan" class="col-md-12 col-form-label" style="color:red">Input Potongan Digunakan
+                    </div>
+                    <div class="mb-1 row">
+                        <button class="btn btn-primary btn-md col-md-1">Biru</button>
+                        <label for="catatan" class="col-md-11 col-form-label" style="color:red">Input Potongan
+                            Digunakan
                             Untuk Yang
                             Menggunakan ID Billing dari luar SIMAKDA (PPH/PPN)</label>
-                        <label for="catatan" class="col-md-12 col-form-label" style="color:red">Input Pajak Digunakan Untuk
+                    </div>
+                    <div class="mb-3 row">
+                        <button class="btn btn-success btn-md col-md-1">Hijau</button>
+                        <label for="catatan" class="col-md-11 col-form-label" style="color:red">Input Pajak Digunakan Untuk
                             Membuat ID
                             BILLING</label>
                     </div>
+
                     {{-- No SPM --}}
                     <div class="mb-3 row">
                         <label for="no_spm_potongan" class="col-md-2 col-form-label">No SPM</label>
