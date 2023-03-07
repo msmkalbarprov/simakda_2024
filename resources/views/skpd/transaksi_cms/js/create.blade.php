@@ -974,6 +974,9 @@
                 data: {
                     data: response
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Data Gagal Tersimpan...!!!');
@@ -990,6 +993,9 @@
                             window.location.href = "{{ route('skpd.transaksi_cms.index') }}";
                         }
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
