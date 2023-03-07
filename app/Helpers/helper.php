@@ -1330,20 +1330,102 @@ function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan)
             $data_beban = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'a.kd_unit' => $kd_skpd, 'b.status' => '1'])->groupBy('a.no_spd', 'b.tgl_spd')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->get();
         }
     } elseif ($beban == '3') {
-        $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi3"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi4"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])->where('tgl_spd', '<=', $tgl_spd)->first();
+        // $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])->where('tgl_spd', '<=', $tgl_spd)->first();
+        // $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])->where('tgl_spd', '<=', $tgl_spd)->first();
+        // $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi3"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])->where('tgl_spd', '<=', $tgl_spd)->first();
+        // $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi4"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])->where('tgl_spd', '<=', $tgl_spd)->first();
 
-        $beban1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi1->revisi1, 'bulan_akhir' => '3', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan');
-        $beban2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi2->revisi2, 'bulan_akhir' => '6', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban1);
-        $beban3 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi3->revisi3, 'bulan_akhir' => '9', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban2);
-        $beban4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi4->revisi4, 'bulan_akhir' => '12', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban3);
-        $data_beban = DB::table(DB::raw("({$beban4->toSql()}) AS sub"))
-            ->select('no_spd', 'tgl_spd', 'nilai', 'kd_sub_kegiatan')
-            ->mergeBindings($beban4)
-            ->orderBy('nilai')
-            ->get();
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='3' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='6' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='9' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                left(kd_skpd,17)=left(?,17)
+                                and bulan_akhir='12' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
+
+        if (substr($kd_skpd, 18, 4) == '0000') {
+            $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and left(a.kd_unit,17)=left(?,17)
+                                and b.tgl_spd <=?
+                                and bulan_akhir='3'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                    UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and left(a.kd_unit,17)=left(?,17)
+                                and b.tgl_spd <=?
+                                and bulan_akhir='6'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                                UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and left(a.kd_unit,17)=left(?,17)
+                                and b.tgl_spd <=?
+                                and bulan_akhir='9'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                                UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and left(a.kd_unit,17)=left(?,17)
+                                and b.tgl_spd <=?
+                                and bulan_akhir='12'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
+        } else {
+            $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and a.kd_unit=?
+                                and b.tgl_spd <=?
+                                and bulan_akhir='3'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                    UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and a.kd_unit=?
+                                and b.tgl_spd <=?
+                                and bulan_akhir='6'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                                UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and a.kd_unit=?
+                                and b.tgl_spd <=?
+                                and bulan_akhir='9'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+                                UNION ALL
+                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+                                AND a.kd_sub_kegiatan=?
+                                and a.kd_unit=?
+                                and b.tgl_spd <=?
+                                and bulan_akhir='12'
+                                and revisi_ke=?
+                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
+        }
+
+        // $beban1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi1->revisi1, 'bulan_akhir' => '3', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan');
+        // $beban2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi2->revisi2, 'bulan_akhir' => '6', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban1);
+        // $beban3 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi3->revisi3, 'bulan_akhir' => '9', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban2);
+        // $beban4 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi4->revisi4, 'bulan_akhir' => '12', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban3);
+        // $data_beban = DB::table(DB::raw("({$beban4->toSql()}) AS sub"))
+        //     ->select('no_spd', 'tgl_spd', 'nilai', 'kd_sub_kegiatan')
+        //     ->mergeBindings($beban4)
+        //     ->orderBy('nilai')
+        //     ->get();
     } elseif ($beban == '4') {
         $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3', 'status' => '1'])->first();
         $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6', 'status' => '1'])->first();
