@@ -145,7 +145,7 @@
             <TD width="15%" align="left" >{{$tgl_voucher}}</TD>
             <TD width="35%" align="left" >{{$ket}}</TD>
             <TD width="5%" align="left" >{{$ref}}</TD>
-            <TD width="15%" align="right" >{{$c}}rupiah($debet1)}}{{$d}}</TD>
+            <TD width="15%" align="right" >{{$c}}{{rupiah($debet1)}}{{$d}}</TD>
             <TD width="15%" align="right" >{{$e}}{{rupiah($kredit1)}}{{$f}}</TD>
             <TD width="15%" align="right" >{{$i}}{{rupiah($saldo1)}}{{$j}}</TD>
         </TR>
