@@ -620,17 +620,20 @@ class TransaksiCmsController extends Controller
             //     }, $data['rincian_rek_tujuan']));
             // }
 
+            $no_bukti = $data['no_bukti'];
+            $tgl_voucher = $data['tgl_voucher'];
+
             if (isset($rincian_data)) {
                 foreach ($rincian_data as $data => $value) {
                     $data = [
-                        'no_voucher' => $rincian_data[$data]['no_bukti'],
-                        'tgl_voucher' => $rincian_data[$data]['tgl_voucher'],
+                        'no_voucher' => $no_bukti,
+                        'tgl_voucher' => $tgl_voucher,
                         'rekening_awal' => $rincian_data[$data]['rekening_awal'],
                         'nm_rekening_tujuan' => $rincian_data[$data]['nm_rekening_tujuan'],
                         'rekening_tujuan' => $rincian_data[$data]['rekening_tujuan'],
                         'bank_tujuan' => $rincian_data[$data]['bank_tujuan'],
-                        'nilai' => $rincian_data[$data]['kd_skpd'],
-                        'kd_rek6' => $rincian_data[$data]['nilai'],
+                        'kd_skpd' => $rincian_data[$data]['kd_skpd'],
+                        'nilai' => $rincian_data[$data]['nilai'],
                     ];
                     DB::table('trdtransout_transfercms')->insert($data);
                 }
