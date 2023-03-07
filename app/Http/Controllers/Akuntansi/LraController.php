@@ -33,9 +33,11 @@ class LraController extends Controller
         if($request->kd_skpd==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
+            $skpd_clauses= "";
         }else{
             $kd_skpd        = $request->kd_skpd;
-            $skpd_clause = "AND a.kd_skpd='$kd_skpd'";
+            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
         
         $tahun_anggaran = tahun_anggaran();
@@ -95,7 +97,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
-                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
+                    $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
         
                     
                 }else{
@@ -130,7 +132,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
-                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_sinergi_oyoy(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+                    $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_sinergi_oyoy(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
 
                 }
         }else{
@@ -169,7 +171,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
-                        $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
+                        $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
         
                     
                 }else{
@@ -204,7 +206,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan,$jns_rincian]);
-                    $sus=collect(DB::select("SELECT * FROM data_jurnal_n_surnet_oyoy(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+                    $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_oyoy(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
                 }
             }else if ($jenis_data==4){
                 if ($periodebulan=='periode') {
