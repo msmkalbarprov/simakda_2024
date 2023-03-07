@@ -827,7 +827,7 @@
             });
             let sp2d = no_sp2d[0]['no_sp2d'];
 
-            let rincian_rek_tujuan = tabel_tujuan.rows().data().toArray().map((value) => {
+            let rincian_rek_tujuan1 = tabel_tujuan.rows().data().toArray().map((value) => {
                 let data = {
                     no_bukti: value.no_bukti,
                     rekening_awal: value.rekening_awal,
@@ -839,6 +839,8 @@
                 };
                 return data;
             });
+
+            let rincian_rek_tujuan = JSON.stringify(rincian_rek_tujuan1);
 
             let tahun_input = tgl_voucher.substr(0, 4);
 

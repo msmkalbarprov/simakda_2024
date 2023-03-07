@@ -579,8 +579,14 @@ class TransaksiCmsController extends Controller
 
         DB::beginTransaction();
         try {
+            $data['rincian_rek_tujuan'] = json_decode($data['rincian_rek_tujuan'], true);
+
+            $rincian_data = $data['rincian_rek_tujuan'];
+
             DB::table('trdtransout_cmsbank')->where(['no_voucher' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
             DB::table('trdtransout_transfercms')->where(['no_voucher' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
+
             if (isset($data['rincian_rekening'])) {
                 DB::table('trdtransout_cmsbank')->insert(array_map(function ($value) use ($data, $kd_skpd) {
                     return [
@@ -598,19 +604,36 @@ class TransaksiCmsController extends Controller
                     ];
                 }, $data['rincian_rekening']));
             }
-            if (isset($data['rincian_rek_tujuan'])) {
-                DB::table('trdtransout_transfercms')->insert(array_map(function ($value) use ($data, $kd_skpd) {
-                    return [
-                        'no_voucher' => $data['no_bukti'],
-                        'tgl_voucher' => $data['tgl_voucher'],
-                        'rekening_awal' => $value['rekening_awal'],
-                        'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
-                        'rekening_tujuan' => $value['rekening_tujuan'],
-                        'bank_tujuan' => $value['bank_tujuan'],
-                        'kd_skpd' => $value['kd_skpd'],
-                        'nilai' => $value['nilai'],
+
+            // if (isset($data['rincian_rek_tujuan'])) {
+            //     DB::table('trdtransout_transfercms')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+            //         return [
+            //             'no_voucher' => $data['no_bukti'],
+            //             'tgl_voucher' => $data['tgl_voucher'],
+            //             'rekening_awal' => $value['rekening_awal'],
+            //             'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
+            //             'rekening_tujuan' => $value['rekening_tujuan'],
+            //             'bank_tujuan' => $value['bank_tujuan'],
+            //             'kd_skpd' => $value['kd_skpd'],
+            //             'nilai' => $value['nilai'],
+            //         ];
+            //     }, $data['rincian_rek_tujuan']));
+            // }
+
+            if (isset($rincian_data)) {
+                foreach ($rincian_data as $data => $value) {
+                    $data = [
+                        'no_voucher' => $rincian_data[$data]['no_bukti'],
+                        'tgl_voucher' => $rincian_data[$data]['tgl_voucher'],
+                        'rekening_awal' => $rincian_data[$data]['rekening_awal'],
+                        'nm_rekening_tujuan' => $rincian_data[$data]['nm_rekening_tujuan'],
+                        'rekening_tujuan' => $rincian_data[$data]['rekening_tujuan'],
+                        'bank_tujuan' => $rincian_data[$data]['bank_tujuan'],
+                        'nilai' => $rincian_data[$data]['kd_skpd'],
+                        'kd_rek6' => $rincian_data[$data]['nilai'],
                     ];
-                }, $data['rincian_rek_tujuan']));
+                    DB::table('trdtransout_transfercms')->insert($data);
+                }
             }
             DB::commit();
             return response()->json([
