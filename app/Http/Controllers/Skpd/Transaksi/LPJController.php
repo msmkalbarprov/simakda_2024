@@ -386,19 +386,27 @@ class LPJController extends Controller
         $no_lpj = $request->no_lpj;
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $data = DB::table('trlpj as a')
-            ->join('trhlpj as b', function ($join) {
-                $join->on('a.no_lpj', '=', 'b.no_lpj');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->leftJoin('trskpd as c', function ($join) {
-                $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
-            })
-            ->select('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
-            ->whereRaw("a.no_lpj = ? AND left(a.kd_skpd,17)=left(?,17)", [$no_lpj, $kd_skpd])
-            ->groupBy('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
-            ->orderBy('a.kd_sub_kegiatan')
-            ->get();
+        // $data = DB::table('trlpj as a')
+        //     ->join('trhlpj as b', function ($join) {
+        //         $join->on('a.no_lpj', '=', 'b.no_lpj');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->leftJoin('trskpd as c', function ($join) {
+        //         $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
+        //     })
+        //     ->select('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
+        //     ->whereRaw("a.no_lpj = ? AND left(a.kd_skpd,17)=left(?,17)", [$no_lpj, $kd_skpd])
+        //     ->groupBy('a.kd_sub_kegiatan', 'c.nm_sub_kegiatan')
+        //     ->orderBy('a.kd_sub_kegiatan')
+        //     ->get();
+
+        $data = DB::select("SELECT a.kd_sub_kegiatan, c.nm_sub_kegiatan
+		from trlpj a
+		INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_bp_skpd=b.kd_skpd
+		LEFT JOIN trskpd c ON a.kd_sub_kegiatan=c.kd_sub_kegiatan
+		WHERE a.no_lpj = ? AND left(a.kd_skpd,17)=left(?,17)
+		GROUP BY a.kd_sub_kegiatan,c.nm_sub_kegiatan
+		ORDER BY a.kd_sub_kegiatan", [$no_lpj, $kd_skpd]);
 
         return response()->json($data);
     }
