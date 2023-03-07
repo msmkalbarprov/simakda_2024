@@ -1409,9 +1409,9 @@
             $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai_sementara - nilai_rekening));
-            $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(0));
+            // $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(0));
         } else {
             return false;
         }
@@ -1428,9 +1428,9 @@
             tabel.rows(function(idx, data, node) {
                 return data.no_bukti == no_bukti && data.rekening_tujuan == rek_tujuan
             }).remove().draw();
-            $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(0));
+            // $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
+            //     minimumFractionDigits: 2
+            // }).format(0));
             $('#total_transfer').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(transfer_sementara - nilai_transfer));
