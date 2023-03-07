@@ -1509,6 +1509,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
         Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
+        Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
+        Route::post('cari_skpdbb', [LaporanAkuntansiController::class, 'cariskpdbb'])->name('laporan_akuntansi.skpdbb');
+        Route::get('cetak_bb', [LaporanAkuntansiController::class, 'cetak_bb'])->name('laporan_akuntansi.cbb');
 
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');

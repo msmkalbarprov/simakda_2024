@@ -12,6 +12,13 @@ function tahun_anggaran()
     $data = DB::table('config_app')->select('thn_ang')->first();
     return $data->thn_ang;
 }
+// rama
+function tgl_format_oyoy($tgl){
+    $tanggal  = explode('-', $tgl);
+    $bulan  = MSbulan($tanggal[1]);
+    $tahun  =  $tanggal[0];
+    return  $tanggal[2] . ' ' . $bulan . ' ' . $tahun;
+}
 
 // hendra
 if (!function_exists('MSbulan')) {

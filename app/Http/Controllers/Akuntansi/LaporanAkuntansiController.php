@@ -120,6 +120,24 @@ class LaporanAkuntansiController extends Controller
         return response()->json($data);
     }
 
+    public function carirek6(Request $request)
+    {
+        
+        $data           = DB::table('ms_rek6')
+                        ->orderBy('kd_rek6')->get();
+        return response()->json($data);
+
+    }
+
+    public function cariskpdbb(Request $request)
+    {
+        
+        $data           = DB::table('ms_skpd')
+                        ->orderBy('kd_skpd')->get();
+        return response()->json($data);
+
+    }
+
 
     // Cetak List
     public function cetakbku(Request $request)
@@ -576,5 +594,113 @@ class LaporanAkuntansiController extends Controller
         ];
 
         return view('skpd.laporan_bendahara.cetak.bku13')->with($data);
+    }
+
+    public function cetak_bb(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $dcetak    = $request->tanggal1;
+        $dcetak2    = $request->tanggal2;
+        $cetak          = $request->cetak;
+        $skpd        = $request->kd_skpd;
+        $rek6          = $request->rek6;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        
+        $thn_ang = tahun_anggaran();
+
+        if ((substr($rek6,0,1)=='9') or (substr($rek6,0,1)=='8') or (substr($rek6,0,1)=='4') or (substr($rek6,0,1)=='5') or (substr($rek6,0,1)=='7')){
+        $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and b.tgl_voucher < '$dcetak'   AND YEAR(b.tgl_voucher)='$thn_ang'"))->first();
+        } else if ($rek6=='310101010001'){
+        $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit from (
+                    
+                    select sum(debet) debet, sum(kredit) kredit 
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                    where kd_rek6='310101010001' and reev='0' and kd_skpd='$skpd' and tgl_voucher < '$dcetak'
+                    union all
+                    select sum(debet) debet, sum(kredit) kredit 
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                    where kd_rek6='310101010001' and reev not in ('0') and kd_skpd='$skpd' and tgl_voucher < '$dcetak'
+                    ) a "))->first();
+
+        }else if ($rek6=='310102010001') {
+            $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit from (
+                    select sum(debet) debet, sum(kredit) kredit 
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                    where left(kd_rek6,1) in ('7','8') and kd_skpd='$skpd' and tgl_voucher < '$dcetak'
+                    
+                    ) a "))->first();
+        }
+        else {
+         $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and b.tgl_voucher < '$dcetak'   "))->first();
+        }
+
+        
+        $idx=1;
+        if($rek6=='310101010001'){
+                $query = DB::select("SELECT kd_rek6, debet, kredit, tgl_voucher, ket, no_voucher FROM (
+                                           SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='310101010001' AND b.kd_skpd='$skpd' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'  
+                                           ) a
+                                           ORDER BY tgl_voucher, debet-kredit");  
+
+        }else if ($rek6=='310102010001') {
+                    $query = DB::select("SELECT kd_rek6, debet, kredit, tgl_voucher, ket, no_voucher FROM (
+                                           
+                                           SELECT '310102010001' kd_rek6, SUM(a.debet) debet, SUM(a.kredit) kredit, b.tgl_voucher, 'SURPLUS/DEFISIT LO ('+b.ket+' )' ket, 'SURPLUS/DEFISIT LO - '+b.no_voucher as no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE LEFT(a.kd_rek6,1) IN ('7','8') AND b.kd_skpd='$skpd' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'
+                                           GROUP BY b.tgl_voucher, b.no_voucher, b.ket) a
+                                           ORDER BY tgl_voucher, debet-kredit");
+
+        }else{
+                $query = DB::select("SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'  ORDER BY b.tgl_voucher, 
+                                           case when left('$rek6',1) in (1,5,6,9) then kredit-debet else debet-kredit end");  
+                //$query = $this->db->query("SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and b.tgl_voucher>='$dcetak' and b.tgl_voucher<='$dcetak2' and a.pos='1' ORDER by b.tgl_voucher, convert(b.no_voucher,unsigned)");  
+        }
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'csql3'     => $csql3,
+            'query'     => $query,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'dcetak'    => $dcetak,
+            'dcetak2'   => $dcetak2,
+            'thn_ang'   => $thn_ang,
+            'skpd'      => $skpd,
+            'rek6'      => $rek6
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.buku_besar')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('BUKU BESAR.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BUKU BESAR.xls"');
+            return $view;
+        }
     }
 }
