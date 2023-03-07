@@ -118,6 +118,7 @@ class PenerimaanController extends Controller
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
                 'jenis' => '2',
+                'kanal' => ''
             ]);
 
             DB::commit();
@@ -222,6 +223,7 @@ class PenerimaanController extends Controller
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
                 'jenis' => '2',
+                'kanal' => ''
             ]);
 
             DB::commit();
@@ -410,6 +412,7 @@ class PenerimaanController extends Controller
                 'keterangan' => $data['keterangan'],
                 'jenis' => '1',
                 'sumber' => $data['kode_pengirim'],
+                'kanal' => ''
             ]);
 
             DB::commit();
@@ -551,6 +554,7 @@ class PenerimaanController extends Controller
                 'keterangan' => $data['keterangan'],
                 'jenis' => '1',
                 'sumber' => $data['kode_pengirim'],
+                'kanal' => ''
             ]);
 
             DB::commit();

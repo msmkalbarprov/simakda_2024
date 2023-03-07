@@ -72,9 +72,119 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="register_kasda">
+                <div class="card-body">
+                    {{ 'Register Kasda' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @include('skpd.laporan_bendahara_penerimaan.modal1')
     @include('skpd.laporan_bendahara_penerimaan.modal2')
+
+    <div id="modal_register_kasda" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><label for="labelcetak" id="labelcetak">REGISTER KASDA</label></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- Pilihan --}}
+                    <div class="mb-3 row" id="row-hidden">
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                    id="pilihan_keseluruhan_register" value="2">
+                                <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                    id="pilihan_skpd_register" value="3">
+                                <label class="form-check-label" for="pilihan">SKPD</label>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- SKPD --}}
+                    <div class="mb-3 row" id="pilih_skpd_register">
+                        <label for="" class="form-label">SKPD</label>
+                        <div class="col-md-6">
+                            <select class="form-control select2-register_kasda" style=" width: 100%;" id="skpd_register">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                @foreach ($daftar_skpd as $skpd)
+                                    <option value="{{ $skpd->kd_skpd }}">{{ $skpd->kd_skpd }} | {{ $skpd->nm_skpd }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    {{-- PERIODE --}}
+                    <div class="mb-3 row">
+                        <label for="" class="form-label">PERIODE</label>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" id="periode1_register">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" id="periode2_register">
+                        </div>
+                    </div>
+                    {{-- BERDASARKAN SKPD --}}
+                    <div class="mb-3 row">
+                        <label for="" class="form-label" style="text-align: center">Berdasarkan SKPD</label>
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-danger btn-md berdasarkan_skpd"
+                                data-jenis="pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md berdasarkan_skpd"
+                                data-jenis="layar">Layar</button>
+                            <button type="button" class="btn btn-success btn-md berdasarkan_skpd"
+                                data-jenis="excel">Excel</button>
+                        </div>
+                    </div>
+                    {{-- BERDASARKAN KASDA --}}
+                    <div class="mb-3 row">
+                        <label for="" class="form-label" style="text-align: center">Berdasarkan KASDA</label>
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-danger btn-md berdasarkan_kasda"
+                                data-jenis="pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md berdasarkan_kasda"
+                                data-jenis="layar">Layar</button>
+                            <button type="button" class="btn btn-success btn-md berdasarkan_kasda"
+                                data-jenis="excel">Excel</button>
+                        </div>
+                    </div>
+                    {{-- CETAKAN DETAIL PENERIMAAN --}}
+                    <div class="mb-3 row">
+                        <label for="" class="form-label" style="text-align: center">CETAKAN DETAIL
+                            PENERIMAAN</label>
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-danger btn-md detail_penerimaan"
+                                data-jenis="pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md detail_penerimaan"
+                                data-jenis="layar">Layar</button>
+                            <button type="button" class="btn btn-success btn-md detail_penerimaan"
+                                data-jenis="excel">Excel</button>
+                        </div>
+                    </div>
+                    <div class="mb-3 row" style="float: right;">
+                        <div class="col-md-12" style="text-align: center">
+                            <button type="button" style="float:right" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <script>
@@ -95,6 +205,11 @@
                 theme: 'bootstrap-5'
             });
 
+            $('.select2-register_kasda').select2({
+                dropdownParent: $('#modal_register_kasda .modal-content'),
+                theme: 'bootstrap-5'
+            });
+
 
         });
         let jenis_skpd = "{{ substr(Auth::user()->kd_skpd, 18, 4) }}";
@@ -111,6 +226,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
             $('#modal_cetak2').modal('hide');
+            $('#modal_register_kasda').modal('hide');
             $("#labelcetak").html("Buku Penerimaan dan Pengeluaran");
             document.getElementById('jenisanggaran').hidden = true; // Hide
             document.getElementById('jenis1').hidden = false; // Hide
@@ -126,6 +242,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak').modal('show');
             $('#modal_cetak2').modal('hide');
+            $('#modal_register_kasda').modal('hide');
             $("#labelcetak").html("SPJ Pendapatan");
             cari_skpd(kd_skpd, jenis);
             document.getElementById('jenisanggaran').hidden = false; // Hide
@@ -141,6 +258,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak2').modal('show');
             $('#modal_cetak').modal('hide');
+            $('#modal_register_kasda').modal('hide');
             $("#labelcetak2").html("Cek Buku Setoran");
             cari_skpd2(kd_skpd, jenis);
             document.getElementById('jenisanggaran2').hidden = true; // Hide
@@ -159,6 +277,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak2').modal('show');
             $('#modal_cetak').modal('hide');
+            $('#modal_register_kasda').modal('hide');
             $("#labelcetak2").html("BP Sub Rincian Objek");
             cari_skpd2(kd_skpd, jenis);
 
@@ -173,6 +292,30 @@
             modal = 2;
 
         });
+
+        $('#register_kasda').on('click', function() {
+            $('#modal_register_kasda').modal('show');
+            $('#pilih_skpd_register').hide();
+            // $("#labelcetak").html("Buku Penerimaan dan Pengeluaran");
+            // document.getElementById('jenisanggaran').hidden = true; // Hide
+            // document.getElementById('jenis1').hidden = false; // Hide
+            // document.getElementById('spasi1').hidden = false; // Hide
+            // document.getElementById('tgl_ttd1').hidden = false; // Hide
+            // document.getElementById('bendahara1').hidden = false; // Hide
+            // document.getElementById('pa_kpa1').hidden = false; // Hide
+            // cari_skpd(kd_skpd, jenis);
+            // modal = 1;
+        });
+
+        $('#pilihan_keseluruhan_register').on('click', function() {
+            $('#pilih_skpd_register').hide();
+        });
+
+        $('#pilihan_skpd_register').on('click', function() {
+            $('#pilih_skpd_register').show();
+        });
+
+
 
         $('input:radio[name="inlineRadioOptions"]').change(function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
@@ -554,5 +697,137 @@
 
             }
         }
+
+        $('.berdasarkan_skpd').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register').checked;
+
+            if (keseluruhan == false && skpd == false) {
+                alert('Silahkan Pilih Keseluruhan atau SKPD');
+                return;
+            }
+
+            let kd_skpd = document.getElementById('skpd_register').value;
+            let periode1 = document.getElementById('periode1_register').value;
+            let periode2 = document.getElementById('periode2_register').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                pilihan = '1';
+            } else if (skpd) {
+                pilihan = '2';
+            }
+
+            if (!periode1 && !periode2) {
+                alert('Periode tidak boleh kosong!');
+                return;
+            }
+
+            let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.berdasarkan_skpd') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.berdasarkan_kasda').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register').checked;
+
+            if (keseluruhan == false && skpd == false) {
+                alert('Silahkan Pilih Keseluruhan atau SKPD');
+                return;
+            }
+
+            let kd_skpd = document.getElementById('skpd_register').value;
+            let periode1 = document.getElementById('periode1_register').value;
+            let periode2 = document.getElementById('periode2_register').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                pilihan = '1';
+            } else if (skpd) {
+                pilihan = '2';
+            }
+
+            if (!periode1 && !periode2) {
+                alert('Periode tidak boleh kosong!');
+                return;
+            }
+
+            let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.berdasarkan_kasda') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
+
+        $('.detail_penerimaan').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register').checked;
+
+            if (keseluruhan == false && skpd == false) {
+                alert('Silahkan Pilih Keseluruhan atau SKPD');
+                return;
+            }
+
+            let kd_skpd = document.getElementById('skpd_register').value;
+            let periode1 = document.getElementById('periode1_register').value;
+            let periode2 = document.getElementById('periode2_register').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                pilihan = '1';
+            } else if (skpd) {
+                pilihan = '2';
+            }
+
+            if (!periode1 && !periode2) {
+                alert('Periode tidak boleh kosong!');
+                return;
+            }
+
+            let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.detail_penerimaan') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
     </script>
 @endsection

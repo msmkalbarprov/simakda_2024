@@ -283,6 +283,10 @@
                 alert('Isi No Billing Terlebih Dahulu!');
                 return;
             }
+            if (no_billing.length != 15) {
+                alert('No Billing harus 15 angka!');
+                return;
+            }
             if (nilai == 0) {
                 alert('Isi Nilai Terlebih Dahulu!');
                 return;
