@@ -908,6 +908,14 @@
                 return;
             }
 
+            let hasil = total_belanja - total_potongan;
+            if (hasil != total_transfer) {
+                alert(
+                    'Total Daftar Rekening tidak sama dengan Total Belanja, Silakan periksa kembali!'
+                );
+                return;
+            }
+
             if (!rekening) {
                 alert('Isian Rekening Belum Lengkap!');
                 return;

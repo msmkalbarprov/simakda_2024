@@ -897,6 +897,14 @@
                 return;
             }
 
+            let hasil = total_belanja - total_potongan;
+            if (hasil != total_transfer) {
+                alert(
+                    'Total Daftar Rekening tidak sama dengan Total Belanja, Silakan periksa kembali!'
+                );
+                return;
+            }
+
             if (!rekening) {
                 alert('Isian Rekening Belum Lengkap!');
                 return;
@@ -1413,9 +1421,9 @@
             tabel.rows(function(idx, data, node) {
                 return data.no_bukti == no_bukti && data.rekening_tujuan == rek_tujuan
             }).remove().draw();
-            // $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
-            //     minimumFractionDigits: 2
-            // }).format(potongan_sementara - nilai_potongan));
+            $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(potongan_sementara - nilai_potongan));
             $('#total_transfer').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(transfer_sementara - nilai_transfer));
