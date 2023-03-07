@@ -84,6 +84,7 @@ class PenetapanController extends Controller
                 'kd_rek_lo' => $data['kode_rek'],
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
+                'kanal' => ''
             ]);
 
             DB::commit();
@@ -149,6 +150,7 @@ class PenetapanController extends Controller
                 'kd_rek_lo' => $data['kode_rek'],
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
+                'kanal' => ''
             ]);
 
             DB::commit();
@@ -274,6 +276,7 @@ class PenetapanController extends Controller
                     'keterangan' => $data['keterangan'],
                     'jenis' => '1',
                     'sumber' => $data['kode_pengirim'],
+                    'kanal' => ''
                 ]);
             } else {
                 DB::table('tr_tetap')->insert([
@@ -285,6 +288,7 @@ class PenetapanController extends Controller
                     'kd_rek_lo' => $data['kode_rek'],
                     'nilai' => $data['nilai'],
                     'keterangan' => $data['keterangan'],
+                    'kanal' => ''
                 ]);
 
                 DB::table('tr_terima')->insert([
@@ -301,6 +305,7 @@ class PenetapanController extends Controller
                     'keterangan' => $data['keterangan'],
                     'jenis' => '1',
                     'sumber' => $data['kode_pengirim'],
+                    'kanal' => ''
                 ]);
             }
 
@@ -393,6 +398,7 @@ class PenetapanController extends Controller
                     'kd_rek_lo' => $data['kode_rek'],
                     'nilai' => $data['nilai'],
                     'keterangan' => $data['keterangan'],
+                    'kanal' => ''
                 ]);
 
                 DB::table('trhkasin_pkd')->where(['no_sts' => $data['nomor'] . '/STS', 'kd_skpd' => $data['kd_skpd']])->delete();
@@ -443,6 +449,7 @@ class PenetapanController extends Controller
                     'nilai' => $data['nilai'],
                     'keterangan' => $data['keterangan'],
                     'jenis' => '1',
+                    'kanal' => ''
                 ]);
             }
             DB::commit();
