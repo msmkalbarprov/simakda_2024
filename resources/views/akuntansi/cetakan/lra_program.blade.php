@@ -106,7 +106,7 @@
                             }
 
                         @endphp
-                        @if(strlen($kd_rek)<=2)
+                        @if(strlen($kd_rek)<=2 && $kd_sub_kegiatan!='')
                             <tr>
                                <td align="left" valign="top"><b>{{$kd_sub_kegiatan}}.{{dotrek($kd_rek)}} </b></td> 
                                <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
@@ -128,7 +128,7 @@
                             </tr>
                         @elseif($kd_sub_kegiatan=='' && $nm_rek!='')
                             <tr>
-                               <td align="left" valign="top"><b></b></td> 
+                               <td align="left" valign="top"> </td> 
                                <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($anggaran)}} </b></td> 
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
@@ -138,13 +138,13 @@
                             </tr>
                         @elseif ($nm_rek=='')
                             <tr>
-                               <td align="left" valign="top"><b></b></td> 
-                               <td align="left"  valign="top"><b></b></td> 
-                               <td align="right" valign="top"><b></b></td> 
-                               <td align="right" valign="top"><b></b></td> 
-                               <td align="right" valign="top"><b></b></td> 
-                               <td align="right" valign="top"><b></b></td> 
-                               <td align="right" valign="top"><b></b></td> 
+                               <td align="left" valign="top">&nbsp; </td> 
+                               <td align="left"  valign="top">&nbsp; </td> 
+                               <td align="right" valign="top">&nbsp; </td> 
+                               <td align="right" valign="top">&nbsp; </td> 
+                               <td align="right" valign="top">&nbsp; </td> 
+                               <td align="right" valign="top">&nbsp; </td> 
+                               <td align="right" valign="top">&nbsp; </td> 
                             </tr>
                         @else
                             <tr>
