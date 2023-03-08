@@ -10,6 +10,13 @@
                 </div>
                 <div class="card-body">
                     @csrf
+                    <div class="mb-3 row">
+                        @if ($lpj->status == '1')
+                            <p style="font-size: x-large;color: red;">LPJ sudah disetujui!</p>
+                        @elseif ($lpj->status == '2')
+                            <p style="font-size: x-large;color: red;">LPJ sudah dibuat SPP!</p>
+                        @endif
+                    </div>
                     {{-- SKPD dan Nama SKPD --}}
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">SKPD</label>
@@ -62,7 +69,9 @@
                     <!-- SIMPAN -->
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            @if ($lpj->status == '0')
+                                <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            @endif
                             <a href="{{ route('lpj.skpd_atau_unit.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
@@ -88,7 +97,8 @@
                         <div class="col-md-8">
                             <button class="btn btn-success" id="tampilkan" disabled><i class="uil-eye"></i>
                                 Tampilkan</button>
-                            <button href="#" class="btn btn-success" id="kosongkan" disabled><i class="uil-trash"></i>
+                            <button href="#" class="btn btn-success" id="kosongkan" disabled><i
+                                    class="uil-trash"></i>
                                 Kosongkan</button>
                         </div>
                     </div>
