@@ -137,7 +137,40 @@ class LraController extends Controller
                 }
         }else if($format=='prog'){
             if($periodebulan=='periode'){
-                $rincian = DB::select("");
+                $rincian = DB::select("SELECT *,(anggaran-sd_bulan_ini) sisa
+                                        from
+                                        (SELECT '1'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND 
+                                                            kd_sub_kegiatan<>'' 
+                                        union all
+                                        SELECT '2' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+                                        
+                                        union all
+                                        SELECT '3' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Pendapatan'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl_oyoy($tanggal1,$tanggal2,?)
+                                        WHERE $skpd_clause_prog LEN(kd_rek)=$jns_rincian 
+
+                                        union all
+                                        SELECT '4' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+
+                                        union all
+                                        SELECT '5' urut,''kd_sub_kegiatan,''kd_rek,'Belanja Daerah'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
+                                        FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+
+                                        union all
+                                        SELECT '6' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+
+                                        union all
+                                        SELECT '7'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' 
+
+                                        union all
+                                        SELECT '8' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+                                        
+                                        union all
+                                        SELECT '9' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Belanja'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
+                                        FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+                                        ) a
+
+                                        ORDER BY urut,kd_sub_kegiatan,kd_rek", [$jns_ang,$jns_ang,$jns_ang,$jns_ang,$jns_ang]
+                                    );
             }else{
                 $rincian = DB::select("SELECT *,(anggaran-sd_bulan_ini) sisa
                                         from
