@@ -1505,22 +1505,46 @@ class LPJController extends Controller
                 ->where(['no_lpj_unit' => $data['no_lpj_simpan'], 'kd_skpd' => $data['kd_skpd']])
                 ->delete();
 
-            if (isset($data['detail_lpj'])) {
-                DB::table('trlpj')
-                    ->insert(array_map(function ($value) use ($no_lpj, $data) {
-                        return [
-                            'no_lpj' => '',
-                            'kd_skpd' => $value['kd_skpd'],
-                            'no_bukti' => $value['no_bukti'],
-                            'tgl_lpj' => $data['tgl_lpj'],
-                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
-                            'kd_rek6' => $value['kdrek6'],
-                            'nm_rek6' => $value['nmrek6'],
-                            'nilai' => $value['nilai'],
-                            'kd_bp_skpd' => '',
-                            'no_lpj_unit' => $no_lpj,
-                        ];
-                    }, $data['detail_lpj']));
+            // if (isset($data['detail_lpj'])) {
+            //     DB::table('trlpj')
+            //         ->insert(array_map(function ($value) use ($no_lpj, $data) {
+            //             return [
+            //                 'no_lpj' => '',
+            //                 'kd_skpd' => $value['kd_skpd'],
+            //                 'no_bukti' => $value['no_bukti'],
+            //                 'tgl_lpj' => $data['tgl_lpj'],
+            //                 'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+            //                 'kd_rek6' => $value['kdrek6'],
+            //                 'nm_rek6' => $value['nmrek6'],
+            //                 'nilai' => $value['nilai'],
+            //                 'kd_bp_skpd' => '',
+            //                 'no_lpj_unit' => $no_lpj,
+            //             ];
+            //         }, $data['detail_lpj']));
+            // }
+
+            $data['detail_lpj'] = json_decode($data['detail_lpj'], true);
+
+            $rincian_data = $data['detail_lpj'];
+
+            $tgl_lpj = $data['tgl_lpj'];
+
+            if (isset($rincian_data)) {
+                foreach ($rincian_data as $data => $value) {
+                    $data = [
+                        'no_lpj' => '',
+                        'kd_skpd' => $rincian_data[$data]['kd_skpd'],
+                        'no_bukti' => $rincian_data[$data]['no_bukti'],
+                        'tgl_lpj' => $tgl_lpj,
+                        'kd_sub_kegiatan' => $rincian_data[$data]['kd_sub_kegiatan'],
+                        'kd_rek6' => $rincian_data[$data]['kdrek6'],
+                        'nm_rek6' => $rincian_data[$data]['nmrek6'],
+                        'nilai' => $rincian_data[$data]['nilai'],
+                        'kd_bp_skpd' => '',
+                        'no_lpj_unit' => $no_lpj,
+                    ];
+                    DB::table('trlpj')->insert($data);
+                }
             }
 
             DB::commit();

@@ -114,7 +114,7 @@
             let keterangan = document.getElementById('keterangan').value;
             let tahun_input = tgl_lpj.substr(0, 4);
 
-            let detail_lpj = detail.rows().data().toArray().map((value) => {
+            let detail_lpj1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
                     no_bukti: value.no_bukti,
@@ -125,6 +125,8 @@
                 };
                 return data;
             });
+
+            let detail_lpj = JSON.stringify(detail_lpj1);
 
             if (!no_lpj) {
                 alert('Nomor tidak boleh kosong');
@@ -146,7 +148,7 @@
                 return;
             }
 
-            if (detail_lpj.length == 0) {
+            if (detail_lpj1.length == 0) {
                 alert('Rincian tidak boleh kosong!');
                 return;
             }
@@ -171,6 +173,9 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
@@ -185,6 +190,9 @@
                         $('#simpan').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
