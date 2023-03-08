@@ -154,6 +154,18 @@
             document.getElementById('baris_periode1').hidden = true; // Hide
             document.getElementById('baris_periode2').hidden = true; // Hide
             document.getElementById('baris_bulan').hidden = true; // Hide
+            let typeu = "{{Auth::user()->is_admin}}";
+            if (typeu == '1') {
+                 document.getElementById('pilihan0').hidden = false;
+                 document.getElementById('lraperda').hidden = false;
+                 document.getElementById('lpsal').hidden = false;
+                 document.getElementById('lak').hidden = false;
+            }else{
+                document.getElementById('pilihan0').hidden = true;
+                document.getElementById('lraperda').hidden = true;
+                 document.getElementById('lpsal').hidden = true;
+                 document.getElementById('lak').hidden = true;
+            }
             // tambahclass()
 
             // hidden

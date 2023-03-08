@@ -1508,6 +1508,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     Route::group(['prefix' => 'laporan_akuntansi'], function () {
         Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
         Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
+        Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
         Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
         Route::post('cari_skpdbb', [LaporanAkuntansiController::class, 'cariskpdbb'])->name('laporan_akuntansi.skpdbb');

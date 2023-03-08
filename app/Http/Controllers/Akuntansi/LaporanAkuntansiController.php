@@ -68,17 +68,74 @@ class LaporanAkuntansiController extends Controller
     // get skpd by radio
     public function cariSkpd(Request $request)
     {
+        // $type       = Auth::user()->is_admin;
+        // $jenis      = $request->jenis;
+        //     // echo $jenis;
+        //     // return;
+        //     if ($jenis == 'skpd') {
+        //         $data   = DB::table('ms_organisasi')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
+        //     } else {
+        //         $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
+        //     }
+
         $type       = Auth::user()->is_admin;
-        $jenis      = $request->jenis;
-            // echo $jenis;
-            // return;
+        // $jenis      = $request->jenis;
+        $jenis_skpd = substr(Auth::user()->kd_skpd, 18, 4);
+        if ($jenis_skpd=='0000') {
+            $jenis  = 'skpd';
+        }else{
+            $jenis  = 'unit';
+        }
+        $kd_skpd    = Auth::user()->kd_skpd;
+        $kd_org     = substr($kd_skpd, 0, 17);
+        if ($type == '1') {
             if ($jenis == 'skpd') {
-                $data   = DB::table('ms_organisasi')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
+                $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_org')->get();
             } else {
                 $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
             }
+        } else {
+            if ($jenis == 'skpd') {
+                // select kd_org AS kd_skpd, nm_org AS nm_skpd from [ms_skpd] where LEFT(kd_org) = 5.02.0.00.0.00.01)
+                $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select(DB::raw("kd_skpd AS kd_skpd"), DB::raw("nm_skpd AS nm_skpd"))->get();
+            } else {
+                $data   = DB::table('ms_skpd')->where(DB::raw("kd_skpd"), '=', $kd_skpd)->select('kd_skpd', 'nm_skpd')->get();
+            }
+        }
+        // dd($kd_skpd);
+        return response()->json($data);
 
 
+        return response()->json($data);
+    }
+
+    public function cariSkpd2(Request $request)
+    {
+        $type       = Auth::user()->is_admin;
+        // $jenis      = $request->jenis;
+        $jenis_skpd = substr(Auth::user()->kd_skpd, 18, 4);
+        if ($jenis_skpd=='0000') {
+            $jenis  = 'skpd';
+        }else{
+            $jenis  = 'unit';
+        }
+        $kd_skpd    = Auth::user()->kd_skpd;
+        $kd_org     = substr($kd_skpd, 0, 17);
+        if ($type == '1') {
+            if ($jenis == 'skpd') {
+                $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_org')->get();
+            } else {
+                $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
+            }
+        } else {
+            if ($jenis == 'skpd') {
+                // select kd_org AS kd_skpd, nm_org AS nm_skpd from [ms_skpd] where LEFT(kd_org) = 5.02.0.00.0.00.01)
+                $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select(DB::raw("kd_skpd AS kd_skpd"), DB::raw("nm_skpd AS nm_skpd"))->get();
+            } else {
+                $data   = DB::table('ms_skpd')->where(DB::raw("kd_skpd"), '=', $kd_skpd)->select('kd_skpd', 'nm_skpd')->get();
+            }
+        }
+        // dd($kd_skpd);
         return response()->json($data);
     }
 

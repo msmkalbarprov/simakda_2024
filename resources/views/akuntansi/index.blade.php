@@ -92,6 +92,15 @@
             });
 
         });
+
+        let jenis_skpd = "{{ substr(Auth::user()->kd_skpd, 18, 4) }}";
+        let jenis
+        if (jenis_skpd == '0000') {
+            jenis = 'skpd';
+        } else {
+            jenis = 'unit';
+        }
+
          // onclick card start
         $('#lbb').on('click', function() {
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
@@ -117,11 +126,15 @@
                 }
             })
         }
-        function cari_skpdbb() {
+        function cari_skpdbb(kd_skpd, jenis) {
             $.ajax({
-                url: "{{ route('laporan_akuntansi.skpdbb') }}",
+                url: "{{ route('laporan_akuntansi.skpd2') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd,
+                    jenis: jenis
+                },
                 success: function(data) {
                     $('#kd_skpd').empty();
                     $('#kd_skpd').append(
