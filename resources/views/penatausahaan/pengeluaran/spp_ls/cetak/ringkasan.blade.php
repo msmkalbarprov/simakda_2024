@@ -185,7 +185,9 @@
                 <tr>
                     <td style="width: 400px">5. Bentuk Perusahaan</td>
                     <td>:</td>
-                    <td>{{ substr($data_spp->nmrekan, 0, 2) }}</td>
+                    <td>
+                        {{ substr($data_spp->nmrekan, 0, 2) == 'CV' || substr($data_spp->nmrekan, 0, 2) == 'PT' ? substr($data_spp->nmrekan, 0, 2) : '' }}
+                    </td>
                 </tr>
                 <tr>
                     <td style="width: 400px">6. Alamat Perusahaan</td>
@@ -215,8 +217,9 @@
                 <tr>
                     <td style="width: 400px">11. Waktu Pelaksanaan Kegiatan</td>
                     <td>:</td>
-                    <td>{{ \Carbon\Carbon::parse($data_spp->tgl_mulai)->locale('id')->isoFormat('DD MMMM Y') }} s/d
-                        {{ \Carbon\Carbon::parse($data_spp->tgl_akhir)->locale('id')->isoFormat('DD MMMM Y') }}
+                    <td>
+                        {{ isset($data_spp->tgl_mulai) ? tanggal($data_spp->tgl_mulai) : '-' }} s/d
+                        {{ isset($data_spp->tgl_akhir) ? tanggal($data_spp->tgl_akhir) : '-' }}
                     </td>
                 </tr>
                 <tr>
@@ -334,7 +337,9 @@
                 <tr>
                     <td style="width: 400px">5. Bentuk Perusahaan</td>
                     <td>:</td>
-                    <td>{{ substr($data_spp->nmrekan, 0, 2) }}</td>
+                    <td>
+                        {{ substr($data_spp->nmrekan, 0, 2) == 'CV' || substr($data_spp->nmrekan, 0, 2) == 'PT' ? substr($data_spp->nmrekan, 0, 2) : '' }}
+                    </td>
                 </tr>
                 <tr>
                     <td style="width: 400px">6. Alamat Perusahaan</td>
@@ -364,8 +369,9 @@
                 <tr>
                     <td style="width: 400px">11. Waktu Pelaksanaan Kegiatan</td>
                     <td>:</td>
-                    <td>{{ \Carbon\Carbon::parse($data_spp->tgl_mulai)->locale('id')->isoFormat('DD MMMM Y') }} s/d
-                        {{ \Carbon\Carbon::parse($data_spp->tgl_akhir)->locale('id')->isoFormat('DD MMMM Y') }}
+                    <td>
+                        {{ isset($data_spp->tgl_mulai) ? tanggal($data_spp->tgl_mulai) : '' }} s/d
+                        {{ isset($data_spp->tgl_akhir) ? tanggal($data_spp->tgl_akhir) : '' }}
                     </td>
                 </tr>
                 <tr>
