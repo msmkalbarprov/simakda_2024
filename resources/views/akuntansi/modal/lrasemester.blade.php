@@ -147,6 +147,7 @@
                             <option value="djpk">DJPK</option>
                             <option value="p77">Permendagri 77</option>
                             <option value="sng">Sinergi</option>
+                            <option value="prog">Program</option>
                         </select>
                     </div>
                     <div class="col-md-3">

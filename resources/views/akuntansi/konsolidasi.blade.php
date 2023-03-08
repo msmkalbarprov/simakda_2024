@@ -158,11 +158,13 @@
             if (typeu == '1') {
                  document.getElementById('pilihan0').hidden = false;
                  document.getElementById('lraperda').hidden = false;
+                 document.getElementById('lraperkada').hidden = false;
                  document.getElementById('lpsal').hidden = false;
                  document.getElementById('lak').hidden = false;
             }else{
                 document.getElementById('pilihan0').hidden = true;
                 document.getElementById('lraperda').hidden = true;
+                 document.getElementById('lraperkada').hidden = true;
                  document.getElementById('lpsal').hidden = true;
                  document.getElementById('lak').hidden = true;
             }

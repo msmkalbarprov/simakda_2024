@@ -34,10 +34,12 @@ class LraController extends Controller
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
             $skpd_clauses= "";
+            $skpd_clause_prog= "";
         }else{
             $kd_skpd        = $request->kd_skpd;
             $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
         }
         
         $tahun_anggaran = tahun_anggaran();
@@ -65,8 +67,8 @@ class LraController extends Controller
                 }
 
         if ($format=='sng') {
-                 if($periodebulan=='periode'){
-                    $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
+                if($periodebulan=='periode'){
+                        $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                             -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka 
                                                     where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
@@ -97,9 +99,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
-                    $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
-        
-                    
+                        $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first(); 
                 }else{
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka 
@@ -135,6 +135,47 @@ class LraController extends Controller
                     $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_sinergi_oyoy(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
 
                 }
+        }else if($format=='prog'){
+            if($periodebulan=='periode'){
+                $rincian = DB::select("");
+            }else{
+                $rincian = DB::select("SELECT *,(anggaran-sd_bulan_ini) sisa
+                                        from
+                                        (SELECT '1'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_pend_n($bulan,?,$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND 
+                                                            kd_sub_kegiatan<>'' 
+                                        union all
+                                        SELECT '2' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+                                        
+                                        union all
+                                        SELECT '3' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Pendapatan'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n($bulan,?,$tahun_anggaran) 
+                                        WHERE $skpd_clause_prog LEN(kd_rek)=$jns_rincian 
+
+                                        union all
+                                        SELECT '4' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+
+                                        union all
+                                        SELECT '5' urut,''kd_sub_kegiatan,''kd_rek,'Belanja Daerah'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
+                                        FROM realisasi_jurnal_rinci_n($bulan,?,$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+
+                                        union all
+                                        SELECT '6' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+
+                                        union all
+                                        SELECT '7'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n($bulan,?,$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' 
+
+                                        union all
+                                        SELECT '8' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
+                                        
+                                        union all
+                                        SELECT '9' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Belanja'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
+                                        FROM realisasi_jurnal_rinci_n($bulan,?,$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+                                        ) a
+
+                                        ORDER BY urut,kd_sub_kegiatan,kd_rek", [$jns_ang,$jns_ang,$jns_ang,$jns_ang,$jns_ang]
+                                    );
+
+            }
+        
         }else{
                 
             // rincian
@@ -721,7 +762,8 @@ class LraController extends Controller
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
             // dd($sus);
-        $data = [
+        if ($format=='prog') {
+            $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'rincian'           => $rincian,
             'enter'             => $enter,
@@ -731,9 +773,24 @@ class LraController extends Controller
             'judul'             => $bulan,
             'pilih'             => $pilih,
             'jenis_ttd'         => $ttd,
-            'jenis'             => $jns_rincian,
-            'sus'               => $sus            
-        ];
+            'jenis'             => $jns_rincian           
+            ];
+        }else{
+
+            $data = [
+                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                'rincian'           => $rincian,
+                'enter'             => $enter,
+                'daerah'            => $daerah,
+                'tanggal_ttd'       => $tanggal_ttd,
+                'tandatangan'       => $tandatangan,
+                'judul'             => $bulan,
+                'pilih'             => $pilih,
+                'jenis_ttd'         => $ttd,
+                'jenis'             => $jns_rincian,
+                'sus'               => $sus            
+            ];
+        }
         if($format=='sap'){
             $view =  view('akuntansi.cetakan.lra_semester')->with($data);
         }elseif($format=='djpk'){
@@ -742,6 +799,8 @@ class LraController extends Controller
             $view =  view('akuntansi.cetakan.lra_77')->with($data);
         }elseif($format=='sng'){
             $view =  view('akuntansi.cetakan.lra_sinergi')->with($data);
+        }elseif($format=='prog'){
+            $view =  view('akuntansi.cetakan.lra_program')->with($data);
         }
         
         if ($cetak == '1') {
