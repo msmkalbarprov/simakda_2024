@@ -699,7 +699,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('load', [PemberianPanjarController::class, 'load'])->name('pemberian_panjarcms.load');
                 Route::get('tambah', [PemberianPanjarController::class, 'tambah'])->name('pemberian_panjarcms.tambah');
                 Route::post('simpan', [PemberianPanjarController::class, 'simpan'])->name('pemberian_panjarcms.simpan');
-                Route::get('edit/{no_kas?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
+                Route::get('edit/{no_panjar?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
                 Route::post('update', [PemberianPanjarController::class, 'update'])->name('pemberian_panjarcms.update');
                 Route::post('hapus', [PemberianPanjarController::class, 'hapus'])->name('pemberian_panjarcms.hapus');
             });
