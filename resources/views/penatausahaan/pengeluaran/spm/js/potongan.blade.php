@@ -712,7 +712,7 @@
                             if (data1.data[0].response_code == '00') {
                                 alert(data1.data[0].message);
                                 if (nilai_pot != data1.data[0].data.jumlahBayar){
-                                    alert('Nilai inputan tidak sesuai dengan nominal di Billing, Nilai otomatis diganti sesuai billing');
+                                    alert('Nilai inputan tidak sesuai dengan nominal di Billing');
                                     return;
                                 }
                                 
