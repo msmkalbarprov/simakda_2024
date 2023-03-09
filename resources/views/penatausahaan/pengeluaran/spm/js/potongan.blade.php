@@ -711,9 +711,10 @@
                         if (data1.status == 'true' || data1.status == true) {
                             if (data1.data[0].response_code == '00') {
                                 alert(data1.data[0].message);
-                                // if (nilai_pot != data1.data[0].data.nominal){
-                                //     alert('Nilai inputan tidak sesuai dengan nominal di Billing, Nilai otomatis diganti sesuai billing');
-                                // }
+                                if (nilai_pot != data1.data[0].data.jumlahBayar){
+                                    alert('Nilai inputan tidak sesuai dengan nominal di Billing, Nilai otomatis diganti sesuai billing');
+                                    return;
+                                }
                                 
                                 tambah_list_potongan(rekening_transaksi, rekening_potongan,
                                     map_pot, nm_rek_pot, data1.data[0].data.idBilling, nilai_pot, no_spm,
