@@ -1069,6 +1069,10 @@
                 alert("Isi Nomor SPD Terlebih Dahulu...!!!");
                 return;
             }
+            if (!jenis) {
+                alert("Isi Beban Terlebih Dahulu...!!!");
+                return;
+            }
             if ((beban == '5' && jenis == '3') || (beban == '5' && jenis == '5')) {} else {
                 if (!npwp) {
                     alert("Isi NPWP Terlebih Dahulu...!!!");
