@@ -114,10 +114,15 @@ class UserController extends Controller
     {
         $input = array_map('htmlentities', $request->validated());
 
+       
+        if ($input['password'] != $input['confirmation_password']) {
+            return redirect()->back()->withInput();
+        }
         DB::beginTransaction();
         try {
             DB::table('pengguna')->where('id', $id)->update([
                 'username' => $input['username'],
+                'password' => Hash::make($input['password']),
                 'nama' => $input['nama'],
                 'kd_skpd' => $input['kd_skpd'],
                 'is_admin' => $input['tipe'],

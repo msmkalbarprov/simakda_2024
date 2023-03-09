@@ -87,6 +87,18 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Password -->
+                        <div class="mb-3 row">
+                            <label for="peran" class="col-md-2 col-form-label">Password</label>
+                            <div class="col-md-4">
+                                <input type="password" name="password" class="form-control">
+                            </div>
+                            <label for="peran" class="col-md-2 col-form-label">Konfirmasi Password</label>
+                            <div class="col-md-4">
+                                <input type="password" name="confirmation_password"  class="form-control">
+                            </div>
+                        </div>
+  
                         <div style="float: right;">
                             <button type="submit" class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('user.index') }}" class="btn btn-warning btn-md">Kembali</a>
