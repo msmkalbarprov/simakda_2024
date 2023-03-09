@@ -16,11 +16,11 @@
                     {{-- PERIODE --}}
                         
 
-                        <div id="baris_periode1" class="col-md-3">
+                        <div id="baris_periode1bb" class="col-md-3">
                             <label for="periode1" class="form-label">Periode</label>
                             <input type="date" id="tanggal1" name="tanggal1" class="form-control">
                         </div>
-                        <div id="baris_periode2" class="col-md-3">
+                        <div id="baris_periode2bb" class="col-md-3">
                             <label for="periode2" class="form-label">&nbsp;</label>
                             <input type="date" id="tanggal2" name="tanggal2" class="form-control">
                             

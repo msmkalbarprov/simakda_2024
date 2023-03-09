@@ -186,6 +186,15 @@ class LaporanAkuntansiController extends Controller
 
     }
 
+    public function carirek1(Request $request)
+    {
+        
+        $data           = DB::table('ms_rek1')
+                        ->orderBy('kd_rek1')->get();
+        return response()->json($data);
+
+    }
+
     public function cariskpdbb(Request $request)
     {
         
@@ -760,4 +769,132 @@ class LaporanAkuntansiController extends Controller
             return $view;
         }
     }
+
+    public function cetak_ns(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tgl1    = $request->tanggal1_ns;
+        $tgl2    = $request->tanggal2_ns;
+        $bulan    = $request->bulan_ns;
+        $cetak          = $request->cetak;
+        $skpd        = $request->kd_skpd_ns;
+        $rek1          = $request->rek1;
+        $thn_ang = tahun_anggaran();
+        $thn_ang1 = $thn_ang-1;
+        $thn_ang2 = $thn_ang1-1;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+        if ($bulan=='') {
+            $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
+            $periode1= "year (tgl_voucher)='$thn_ang1' and ";
+            $nm_bln = tgl_format_oyoy($tgl1);
+        }else{
+            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
+            $periode1= "year (tgl_voucher)='$thn_ang1' and ";
+            $modtahun= $thn_ang%4;
+        
+             if ($modtahun = 0){
+                $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+                    else {
+                $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+         
+         $arraybulan=explode(".",$nilaibulan);
+         $nm_bln = $arraybulan[$bulan];
+        }
+        // dd($nm_bln);
+
+        if($request->kd_skpd==''){
+            $kd_skpd        = Auth::user()->kd_skpd;
+            $skpd_clause="";
+        }else{
+            $kd_skpd        = $request->kd_skpd_ns;
+            $skpd_clause = "and kd_skpd='$skpd'";
+        }
+
+        
+
+                $query = DB::select("SELECT kd_rek, (SELECT nm_rek6 from ms_rek6 where kd_rek6=x.kd_rek)nm_rek, SaldoAwal,debet,kredit,
+
+                                        SUM(case when left(kd_rek,1)='1' then SaldoAwal+debet-kredit 
+                                                 when left(kd_rek,1) in ('2','3') then SaldoAwal+kredit-debet
+                                                 when left(kd_rek,1) in ('4','7') then kredit-debet
+                                                 when left(kd_rek,1) in ('5','6','8') then debet-kredit else 0 end ) as saldoakhir
+                         from
+
+                                    (select kd_rek,
+                                    SUM(case when left(kd_rek,1)='1' then debetaw-kreditaw 
+                                             when left(kd_rek,1) in ('2','3') then kreditaw-debetaw
+                                             when left(kd_rek,1) in ('4','7') then kreditaw-debetaw
+                                             when left(kd_rek,1) in ('5','6','8') then debetaw-kreditaw else 0 end ) as SaldoAwal,SUM(debet) AS debet,SUM(kredit) AS kredit,(SUM(debet)-SUM(kredit)) as saldoakhir
+                                                                from (
+
+                                    Select kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd) nm_skpd,
+                                    kd_rek6 as kd_rek,SUM(b.debet) AS debet,SUM(b.kredit) AS kredit,0 as debetaw, 0 as kreditaw from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
+                                                      and b.kd_unit=a.kd_skpd where $periode
+                                                        (left(kd_rek6,1) in ('$rek1')) $skpd_clause
+                                            group by            kd_skpd,kd_rek6
+                                            union
+                                    Select kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd) nm_skpd,
+                                    kd_rek6 as kd_rek,0 as debet, 0 as kredit,SUM(b.debet) AS debetaw,SUM(b.kredit) AS kreditaw from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
+                                                      and b.kd_unit=a.kd_skpd where $periode1
+                                                        (left(kd_rek6,1) in ('$rek1')) $skpd_clause
+
+                                            group by            kd_skpd,kd_rek6
+                                  )a 
+                                        group by            kd_rek
+                                        )x
+                                        group by kd_rek,SaldoAwal,debet, kredit
+                                        order by kd_rek");  
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'     => $query,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'dcetak'    => $tgl1,
+            'dcetak2'   => $tgl2,
+            'thn_ang'   => $thn_ang,
+            'thn_ang1'   => $thn_ang1,
+            'skpd'      => $skpd,
+            'rek1'      => $rek1,
+            'nm_bln'      => $nm_bln,
+            'bulan'      => $bulan
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.neraca_saldo')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('NERACA SALDO.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="NERACA SALDO.xls"');
+            return $view;
+        }
+    }
+
 }
