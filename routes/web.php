@@ -699,7 +699,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('load', [PemberianPanjarController::class, 'load'])->name('pemberian_panjarcms.load');
                 Route::get('tambah', [PemberianPanjarController::class, 'tambah'])->name('pemberian_panjarcms.tambah');
                 Route::post('simpan', [PemberianPanjarController::class, 'simpan'])->name('pemberian_panjarcms.simpan');
-                Route::get('edit/{no_kas?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
+                Route::get('edit/{no_panjar?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
                 Route::post('update', [PemberianPanjarController::class, 'update'])->name('pemberian_panjarcms.update');
                 Route::post('hapus', [PemberianPanjarController::class, 'hapus'])->name('pemberian_panjarcms.hapus');
             });
@@ -710,7 +710,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('tambah', [TambahPanjarCMSController::class, 'tambah'])->name('tambah_panjarcms.tambah');
                 Route::post('kegiatan', [TambahPanjarCMSController::class, 'kegiatan'])->name('tambah_panjarcms.kegiatan');
                 Route::post('simpan', [TambahPanjarCMSController::class, 'simpan'])->name('tambah_panjarcms.simpan');
-                Route::get('edit/{no_kas?}/{kd_skpd?}', [TambahPanjarCMSController::class, 'edit'])->name('tambah_panjarcms.edit');
+                Route::get('edit/{no_panjar?}/{kd_skpd?}', [TambahPanjarCMSController::class, 'edit'])->name('tambah_panjarcms.edit');
                 Route::post('update', [TambahPanjarCMSController::class, 'update'])->name('tambah_panjarcms.update');
                 Route::post('hapus', [TambahPanjarCMSController::class, 'hapus'])->name('tambah_panjarcms.hapus');
             });

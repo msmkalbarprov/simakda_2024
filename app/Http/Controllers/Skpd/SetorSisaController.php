@@ -104,7 +104,7 @@ class SetorSisaController extends Controller
             $kd_rek6 = [];
         }
 
-        if ($jenis_transaksi == '5') {
+        if (isset($kd_sub_kegiatan)) {
             $data1 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
                 $join->on('a.no_spp', '=', 'b.no_spp');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -117,7 +117,7 @@ class SetorSisaController extends Controller
                 ->select('sub.*', DB::raw("nilai - isnull(transaksi,0) - isnull(cp,0) as sisa"))
                 ->mergeBindings($data1)
                 ->get();
-        } else if ($jenis_transaksi == '1') {
+        } else {
             $data = DB::table('ms_rek6')->select('kd_rek6', 'nm_rek6')->whereRaw("LEFT(kd_rek6,4)=?", ['1101'])->whereNotIn('kd_rek6', $kd_rek6)->get();
         }
 
