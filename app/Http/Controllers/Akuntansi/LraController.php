@@ -301,17 +301,17 @@ class LraController extends Controller
 
                                                 UNION ALL
                                                 -- CP
-                                                SELECT
-                                                CASE 
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
-                                                ELSE 0
-                                                END as realisasi
-                                                from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
-                                                WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
-                                                AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by b.jns_trans,b.jns_cp,b.pot_khusus
-                                                UNION ALL
+                                                -- SELECT
+                                                -- CASE 
+                                                --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                                -- ELSE 0
+                                                -- END as realisasi
+                                                -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                                -- WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                                -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                -- group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                                -- UNION ALL
                                                 -- PENDAPATAN													
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
@@ -361,17 +361,17 @@ class LraController extends Controller
 
                                                 UNION ALL
                                                 -- CP
-                                                SELECT
-                                                CASE 
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
-                                                    WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
-                                                ELSE 0
-                                                END as realisasi
-                                                from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
-                                                WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
-                                                AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by b.jns_trans,b.jns_cp,b.pot_khusus
-                                                UNION ALL
+                                                -- SELECT
+                                                -- CASE 
+                                                --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                                -- ELSE 0
+                                                -- END as realisasi
+                                                -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                                -- WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
+                                                -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                -- group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                                -- UNION ALL
                                                 -- PENDAPATAN													
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
@@ -790,6 +790,126 @@ class LraController extends Controller
         
         }
         
+        
+
+
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            // dd($sus);
+        if ($format=='prog') {
+            $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'rincian'           => $rincian,
+            'enter'             => $enter,
+            'daerah'            => $daerah,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'tandatangan'       => $tandatangan,
+            'judul'             => $bulan,
+            'pilih'             => $pilih,
+            'jenis_ttd'         => $ttd,
+            'jenis'             => $jns_rincian           
+            ];
+        }else{
+
+            $data = [
+                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                'rincian'           => $rincian,
+                'enter'             => $enter,
+                'daerah'            => $daerah,
+                'tanggal_ttd'       => $tanggal_ttd,
+                'tandatangan'       => $tandatangan,
+                'judul'             => $bulan,
+                'pilih'             => $pilih,
+                'jenis_ttd'         => $ttd,
+                'jenis'             => $jns_rincian,
+                'sus'               => $sus            
+            ];
+        }
+        if($format=='sap'){
+            $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        }elseif($format=='djpk'){
+            $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        }elseif($format=='p77'){
+            $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.lra_sinergi')->with($data);
+        }elseif($format=='prog'){
+            $view =  view('akuntansi.cetakan.lra_program')->with($data);
+        }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LRA 77.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LRA 77.xls"');
+            return $view;
+        }
+    }
+
+    public function cetakneraca(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $format          = $request->format;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        if($request->kd_skpd==''){
+            $kd_skpd        = Auth::user()->kd_skpd;
+            $skpd_clause="";
+            $skpd_clauses= "";
+            $skpd_clause_prog= "";
+        }else{
+            $kd_skpd        = $request->kd_skpd;
+            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+        }
+        
+        $thn_ang    = tahun_anggaran();
+        $thn_ang1   = $thn_ang-1;
+
+        // TANDA TANGAN
+        if($ttd == '0'){
+            $tandatangan="";
+        }else{
+            $tandatangan = DB::table('ms_ttd')
+                            ->select('nama', 'nip', 'jabatan', 'pangkat')
+                            ->where('nip', $ttd)
+                            ->whereIn('kode', ['1'])
+                            ->first();
+        }
+            if($akumulasi=='akum'){
+                    $isi    = "sd_bulan_ini";
+                    $pilih  = "S/D";
+                    $judul  = BULAN($bulan);
+                    $operator="<=";
+                }else{
+                    $isi = "bulan_ini";
+                    $pilih = "BULAN";
+                    $judul  = BULAN($bulan);
+                    $operator="=";
+                }
+
+        if ($format=='1') {
+                
+                        $ekuitas = DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,thn_ang,thn_ang1)");
+                        $map_neraca = DB::select("SELECT kode, uraian, seq, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+                                        isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
+                                        isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+                                        isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
+                                        FROM map_neraca_permen_77 ORDER BY seq");
+                
+        }else if($format=='2'){
+            
+        }else if($format=='3'){
+
+        }
+        
+                        $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first(); 
         
 
 
