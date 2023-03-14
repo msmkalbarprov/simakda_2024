@@ -57,9 +57,9 @@
                     <!-- SETUJU ATAU BATAL SETUJU -->
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
-                            @if ($lpj->status == '1')
+                            @if ($lpj->status == '1' && $lpj->status_validasi == 1)
                                 <button id="batal_setuju" class="btn btn-danger btn-md">BATAL SETUJU</button>
-                            @elseif ($lpj->status == '2')
+                            @elseif ($lpj->status == '2' && $lpj->status_validasi == 1)
                                 <button id="batal_setuju" class="btn btn-danger btn-md" disabled>BATAL SETUJU</button>
                             @else
                                 <button id="setuju" class="btn btn-primary btn-md">SETUJU</button>

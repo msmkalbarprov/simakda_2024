@@ -349,7 +349,7 @@ class PengesahanController extends Controller
             'data_lpj' => $data_lpj,
             'persediaan' => collect(DB::select("SELECT SUM(a.nilai) AS nilai FROM trdspp a LEFT JOIN trhsp2d b ON b.no_spp=a.no_spp
 						  WHERE b.kd_skpd=? AND (b.jns_spp=1)", [$kd_skpd]))->first()->nilai,
-            'kegiatan' => $kd_sub_kegiatan
+            'kegiatan' => $kd_sub_kegiatan,
         ];
 
         $view = view('bud.pengesahan_lpj_up.cetak')->with($data);
@@ -357,8 +357,10 @@ class PengesahanController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $request->atas)
+                ->setOption('margin-left', $request->kiri)
+                ->setOption('margin-right', $request->kanan)
+                ->setOption('margin-bottom', $request->bawah);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;

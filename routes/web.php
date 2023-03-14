@@ -699,7 +699,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('load', [PemberianPanjarController::class, 'load'])->name('pemberian_panjarcms.load');
                 Route::get('tambah', [PemberianPanjarController::class, 'tambah'])->name('pemberian_panjarcms.tambah');
                 Route::post('simpan', [PemberianPanjarController::class, 'simpan'])->name('pemberian_panjarcms.simpan');
-                Route::get('edit/{no_kas?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
+                Route::get('edit/{no_panjar?}/{kd_skpd?}', [PemberianPanjarController::class, 'edit'])->name('pemberian_panjarcms.edit');
                 Route::post('update', [PemberianPanjarController::class, 'update'])->name('pemberian_panjarcms.update');
                 Route::post('hapus', [PemberianPanjarController::class, 'hapus'])->name('pemberian_panjarcms.hapus');
             });
@@ -710,7 +710,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('tambah', [TambahPanjarCMSController::class, 'tambah'])->name('tambah_panjarcms.tambah');
                 Route::post('kegiatan', [TambahPanjarCMSController::class, 'kegiatan'])->name('tambah_panjarcms.kegiatan');
                 Route::post('simpan', [TambahPanjarCMSController::class, 'simpan'])->name('tambah_panjarcms.simpan');
-                Route::get('edit/{no_kas?}/{kd_skpd?}', [TambahPanjarCMSController::class, 'edit'])->name('tambah_panjarcms.edit');
+                Route::get('edit/{no_panjar?}/{kd_skpd?}', [TambahPanjarCMSController::class, 'edit'])->name('tambah_panjarcms.edit');
                 Route::post('update', [TambahPanjarCMSController::class, 'update'])->name('tambah_panjarcms.update');
                 Route::post('hapus', [TambahPanjarCMSController::class, 'hapus'])->name('tambah_panjarcms.hapus');
             });
@@ -1449,10 +1449,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [Sp2bController::class, 'index'])->name('sp2b.index');
             Route::post('load', [Sp2bController::class, 'load'])->name('sp2b.load');
             Route::get('create', [Sp2bController::class, 'create'])->name('sp2b.create');
+            Route::post('detail', [Sp2bController::class, 'detail'])->name('sp2b.detail');
             Route::post('simpan', [Sp2bController::class, 'simpan'])->name('sp2b.simpan');
-            Route::get('edit/{no_lpj?}/{kd_skpd?}', [Sp2bController::class, 'edit'])->name('sp2b.edit');
+            Route::get('edit/{no_sp2b?}/{kd_skpd?}', [Sp2bController::class, 'edit'])->name('sp2b.edit');
             Route::post('update', [Sp2bController::class, 'update'])->name('sp2b.update');
             Route::post('hapus', [Sp2bController::class, 'hapus'])->name('sp2b.hapus');
+            Route::get('cetak', [Sp2bController::class, 'cetak'])->name('sp2b.cetak');
         });
         // Penerimaan BOS
         Route::group(['prefix' => 'penerimaan_bos'], function () {
@@ -1511,8 +1513,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
         Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
+        Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
         Route::post('cari_skpdbb', [LaporanAkuntansiController::class, 'cariskpdbb'])->name('laporan_akuntansi.skpdbb');
         Route::get('cetak_bb', [LaporanAkuntansiController::class, 'cetak_bb'])->name('laporan_akuntansi.cbb');
+        Route::get('cetak_ns', [LaporanAkuntansiController::class, 'cetak_ns'])->name('laporan_akuntansi.cns');
 
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
@@ -1522,6 +1526,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
             // LRA
             Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
+            // NERACA
+            Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
         });
     });
     // Pengesahan SPJ

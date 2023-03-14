@@ -84,6 +84,29 @@
                             </select>
                         </div>
                     </div>
+                    {{-- Margin --}}
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="kiri" name="kiri" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="kanan" name="kanan" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="atas" name="atas" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="bawah" name="bawah" value="15">
+                        </div>
+                    </div>
                     {{-- Cetak --}}
                     <div class="mb-3 row">
                         <label for="cetak" class="col-md-2 col-form-label">Cetak</label>

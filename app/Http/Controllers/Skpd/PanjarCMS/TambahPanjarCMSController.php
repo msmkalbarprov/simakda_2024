@@ -27,8 +27,8 @@ class TambahPanjarCMSController extends Controller
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            // $btn = '<a href="' . route("bayarpanjar.edit", ['no_panjar' => Crypt::encrypt($row->no_panjar), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("tambah_panjarcms.edit", ['no_panjar' => Crypt::encrypt($row->no_panjar), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -201,6 +201,18 @@ class TambahPanjarCMSController extends Controller
 
         $status_anggaran = status_anggaran();
 
+        $data_transfer = DB::table('tr_panjar_transfercms')->where(['no_bukti' => $no_panjar, 'kd_skpd' => $kd_skpd])->get();
+
+        $total = 0;
+
+        foreach ($data_transfer as $transfer) {
+            $total += $transfer->nilai;
+        }
+
+        $data_panjar = DB::table('tr_panjar_cmsbank')
+            ->where(['no_panjar' => $no_panjar, 'kd_skpd' => $kd_skpd])
+            ->first();
+
         $data = [
             'daftar_kegiatan' => DB::select("SELECT a.kd_sub_kegiatan,a.nm_sub_kegiatan, (SELECT SUM(nilai) FROM trdrka WHERE kd_sub_kegiatan = a.kd_sub_kegiatan AND kd_skpd=? and jns_ang=?) AS anggaran,
                 (select  nilai=trans-kembali_pjr from (
@@ -255,19 +267,31 @@ class TambahPanjarCMSController extends Controller
 						)r
                     ) z) as transaksi
 				FROM trskpd a where a.kd_skpd=? AND a.status_sub_kegiatan='1' and a.jns_ang=? order by a.kd_sub_kegiatan", [$kd_skpd, $status_anggaran, $kd_skpd, $status_anggaran]),
-            'no_urut' => no_urut($kd_skpd),
+            'no_urut' => no_urut_cms(),
+            'daftar_rekening_bank' => DB::table('ms_skpd')
+                ->select('rekening')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->orderBy('kd_skpd')
+                ->get(),
             'sisa_tunai' => load_sisa_tunai(),
             'sisa_bank' => sisa_bank()->sisa,
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
-            'panjar' => DB::table('tr_panjar')
-                ->where(['no_kas' => $no_panjar, 'kd_skpd' => $kd_skpd])
-                ->first()
+            'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
+            'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
+            'daftar_panjar' => DB::table('tr_panjar')
+                ->where(['status' => '1', 'jns' => '1', 'kd_skpd' => $kd_skpd])
+                ->orderBy('no_panjar')
+                ->get(),
+            'data_panjar' => $data_panjar,
+            'data_transfer' => $data_transfer,
+            'total_transfer' => $total,
+            'total_panjar' => collect(DB::select("SELECT sum(nilai) as rektotal from tr_panjar where no_panjar_lalu=? AND kd_skpd=?", [$data_panjar->no_panjar_lalu, $kd_skpd]))->first()->rektotal
         ];
 
-        return view('skpd.pembayaran_panjar.edit')->with($data);
+        return view('skpd.tambah_panjar_cms.edit')->with($data);
     }
 
     public function update(Request $request)
@@ -277,22 +301,22 @@ class TambahPanjarCMSController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek_panjar = DB::table('tr_panjar')->where(['no_panjar' => $data['no_panjar'], 'kd_skpd' => $kd_skpd])->count();
+            $cek_panjar = DB::table('tr_panjar_cmsbank')->where(['no_panjar' => $data['no_panjar'], 'kd_skpd' => $kd_skpd])->count();
             if ($cek_panjar > 0 && $data['no_panjar'] != $data['no_simpan']) {
                 return response()->json([
                     'message' => '4'
                 ]);
             }
 
-            DB::table('tr_panjar')
+            DB::table('tr_panjar_cmsbank')
                 ->where(['kd_skpd' => $kd_skpd, 'no_panjar' => $data['no_simpan']])
                 ->delete();
 
-            DB::table('tr_panjar')
+            DB::table('tr_panjar_cmsbank')
                 ->insert([
-                    'no_kas' => $data['no_panjar'],
+                    'no_kas' => $data['nomor_panjar'],
                     'tgl_kas' => $data['tgl_panjar'],
-                    'no_panjar' => $data['no_panjar'],
+                    'no_panjar' => $data['nomor_panjar'],
                     'tgl_panjar' => $data['tgl_panjar'],
                     'kd_skpd' => $data['kd_skpd'],
                     'pengguna' => Auth::user()->nama,
@@ -302,9 +326,32 @@ class TambahPanjarCMSController extends Controller
                     'rek_bank' => '',
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
                     'status' => '0',
-                    'jns' => '1',
+                    'jns' => '2',
                     'no_panjar_lalu' => $data['no_panjar'],
+                    'rekening_awal' => $data['rekening'],
+                    'ket_tujuan' => $data['ket_tujuan'],
+                    'status_validasi' => '0',
+                    'status_upload' => '0',
                 ]);
+
+            DB::table('tr_panjar_transfercms')
+                ->where(['no_bukti' => $data['no_simpan'], 'kd_skpd' => $data['kd_skpd']])
+                ->delete();
+
+            if (isset($data['rincian_rek_tujuan'])) {
+                DB::table('tr_panjar_transfercms')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_bukti' => $data['nomor_panjar'],
+                        'tgl_bukti' => $data['tgl_panjar'],
+                        'rekening_awal' => $value['rekening_awal'],
+                        'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
+                        'rekening_tujuan' => $value['rekening_tujuan'],
+                        'bank_tujuan' => $value['bank_tujuan'],
+                        'kd_skpd' => $value['kd_skpd'],
+                        'nilai' => $value['nilai'],
+                    ];
+                }, $data['rincian_rek_tujuan']));
+            }
 
             DB::commit();
             return response()->json([

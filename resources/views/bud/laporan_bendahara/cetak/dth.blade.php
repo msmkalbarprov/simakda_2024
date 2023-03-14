@@ -91,6 +91,7 @@
                 <th rowspan="2">NPWP</th>
                 <th rowspan="2">Nama Rekanan</th>
                 <th rowspan="2">NTPN</th>
+                <th rowspan="2">No Billing</th>
                 <th rowspan="2">Ket</th>
             </tr>
             <tr>
@@ -131,6 +132,7 @@
                         <td></td>
                         <td>{{ $data->npwp }}</td>
                         <td>{{ $data->nmrekan }}</td>
+                        <td></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -180,6 +182,7 @@
                         <td style="border-top:hidden">{{ $data->npwp }}</td>
                         <td style="border-top:hidden">{{ $data->nmrekan }}</td>
                         <td style="border-top:hidden">{{ $data->ntpn }}</td>
+                        <td style="border-top:hidden">{{ $data->ebilling }}</td>
                         <td style="border-top:hidden">{{ $data->ket }}</td>
                     </tr>
                 @endif
@@ -196,6 +199,7 @@
                 <td></td>
                 <td></td>
                 <td class="angka">{{ rupiah($total_potongan) }}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
