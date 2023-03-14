@@ -56,7 +56,9 @@
             @endif
         </table>
     </div>
+
     <br>
+
     <table style="border-collapse:collapse;font-family: Open Sans;width:100%" id="header" border="1"
         class="rincian">
         <thead>
@@ -205,6 +207,7 @@
     </table>
 
     <br>
+
     <div style="padding-top:20px">
         <table class="table" style="width: 100%;font-family:Open Sans;" class="rincian">
             <tr>

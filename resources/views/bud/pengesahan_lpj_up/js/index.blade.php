@@ -106,6 +106,10 @@
             let ttd = document.getElementById('ttd').value;
             let pilihan = document.getElementById('pilihan').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let atas = document.getElementById('atas').value;
+            let kiri = document.getElementById('kiri').value;
+            let kanan = document.getElementById('kanan').value;
+            let bawah = document.getElementById('bawah').value;
             let jenis_print = $(this).data("jenis");
 
             if (!ttd) {
@@ -130,6 +134,10 @@
             searchParams.append("ttd", ttd);
             searchParams.append("pilihan", pilihan);
             searchParams.append("kd_sub_kegiatan", kd_sub_kegiatan);
+            searchParams.append("atas", atas);
+            searchParams.append("kiri", kiri);
+            searchParams.append("kanan", kanan);
+            searchParams.append("bawah", bawah);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
