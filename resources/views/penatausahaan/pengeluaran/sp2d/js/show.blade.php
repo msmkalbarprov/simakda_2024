@@ -74,6 +74,10 @@
                     name: 'nm_rek6',
                 },
                 {
+                    data: 'idBilling',
+                    name: 'idBilling',
+                },
+                {
                     data: null,
                     name: 'nilai',
                     className: 'text-right',

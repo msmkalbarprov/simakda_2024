@@ -173,6 +173,7 @@
                             <tr>
                                 <th>Rekening</th>
                                 <th>Nama Rekening</th>
+                                <th>IdBilling</th>
                                 <th>Nilai</th>
                                 <th>Keterangan</th>
                             </tr>
