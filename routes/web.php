@@ -1449,10 +1449,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [Sp2bController::class, 'index'])->name('sp2b.index');
             Route::post('load', [Sp2bController::class, 'load'])->name('sp2b.load');
             Route::get('create', [Sp2bController::class, 'create'])->name('sp2b.create');
+            Route::post('detail', [Sp2bController::class, 'detail'])->name('sp2b.detail');
             Route::post('simpan', [Sp2bController::class, 'simpan'])->name('sp2b.simpan');
-            Route::get('edit/{no_lpj?}/{kd_skpd?}', [Sp2bController::class, 'edit'])->name('sp2b.edit');
+            Route::get('edit/{no_sp2b?}/{kd_skpd?}', [Sp2bController::class, 'edit'])->name('sp2b.edit');
             Route::post('update', [Sp2bController::class, 'update'])->name('sp2b.update');
             Route::post('hapus', [Sp2bController::class, 'hapus'])->name('sp2b.hapus');
+            Route::get('cetak', [Sp2bController::class, 'cetak'])->name('sp2b.cetak');
         });
         // Penerimaan BOS
         Route::group(['prefix' => 'penerimaan_bos'], function () {
