@@ -44,8 +44,20 @@
                     <div class="card">
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
-                                <h5 class="text-primary">{{ $daerah->nm_pemda }}</h5>
-                                <p class="text-muted">{{ $daerah->nm_badan }}</p>
+                                <table width="100%" border="0">
+                                    <tr>
+                                        <td width="25%" align="center">
+                                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="70"
+                                class="logo logo-dark">
+                                        </td>
+                                        <td width="75%" align="left">
+                                            <br>
+                                            <h5 class="text-primary">{{ $daerah->nm_pemda }}</h5>
+                                            <p class="text-muted">{{ $daerah->nm_badan }}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
                             </div>
                             @if ($errors->any())
                                 <div class="alert alert-danger" role="alert">
