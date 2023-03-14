@@ -174,12 +174,11 @@ class PengesahanController extends Controller
 
                                 UNION ALL
                                 SELECT 2 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
-                                FROM trlpj a INNER JOIN trdtransout b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan 
-                                AND a.kd_skpd=b.kd_skpd and a.kd_rek6=b.kd_rek6 and a.no_bukti=b.no_bukti
+                                FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
                                 WHERE no_lpj=? AND a.kd_bp_skpd=?
-                                -- AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
-                                -- --AND (panjar NOT IN ('3') or panjar IS NULL)
-                                -- AND jns_spp IN ('1','2','3'))
+                                AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+                                --AND (panjar NOT IN ('3') or panjar IS NULL)
+                                AND jns_spp IN ('1','2','3'))
                                 GROUP BY a.kd_sub_kegiatan, b.nm_sub_kegiatan
                                 UNION ALL
                                 SELECT 3 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,2) as kode, b.nm_rek2 as uraian, SUM(nilai) as nilai FROM trlpj a
@@ -349,7 +348,7 @@ class PengesahanController extends Controller
             'data_lpj' => $data_lpj,
             'persediaan' => collect(DB::select("SELECT SUM(a.nilai) AS nilai FROM trdspp a LEFT JOIN trhsp2d b ON b.no_spp=a.no_spp
 						  WHERE b.kd_skpd=? AND (b.jns_spp=1)", [$kd_skpd]))->first()->nilai,
-            'kegiatan' => $kd_sub_kegiatan,
+            'kegiatan' => $kd_sub_kegiatan
         ];
 
         $view = view('bud.pengesahan_lpj_up.cetak')->with($data);
@@ -357,10 +356,8 @@ class PengesahanController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-top', $request->atas)
-                ->setOption('margin-left', $request->kiri)
-                ->setOption('margin-right', $request->kanan)
-                ->setOption('margin-bottom', $request->bawah);
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
