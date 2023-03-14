@@ -13,7 +13,8 @@ function tahun_anggaran()
     return $data->thn_ang;
 }
 // rama
-function tgl_format_oyoy($tgl){
+function tgl_format_oyoy($tgl)
+{
     $tanggal  = explode('-', $tgl);
     $bulan  = MSbulan($tanggal[1]);
     $tahun  =  $tanggal[0];
@@ -3754,4 +3755,13 @@ function nama_keg($kd_kegiatan)
     $data = collect(DB::select("SELECT nm_kegiatan FROM ms_kegiatan WHERE kd_kegiatan=?", [$kd_kegiatan]))->first();
 
     return $data->nm_kegiatan;
+}
+
+function total_skpd()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = DB::table('ms_skpd')->whereRaw("left(kd_skpd,17)=left(?,17)", [$kd_skpd])->count();
+
+    return $data;
 }
