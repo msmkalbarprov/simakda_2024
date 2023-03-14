@@ -226,12 +226,12 @@
                     {{-- Bulan --}}
                     <div class="col-md-6" >
                         <div id="baris_skpd_neraca">
-                            <label for="kd_skpd" class="form-label">Kode SKPD</label>
+                            <label for="kd_skpd_neraca" class="form-label">Kode SKPD</label>
                             <select class="form-control select_neraca  @error('kd_skpd') is-invalid @enderror"
-                                style=" width: 100%;" id="kd_skpd_neraca" name="kd_skpd">
+                                style=" width: 100%;" id="kd_skpd_neraca" name="kd_skpd_neraca">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
-                            @error('kd_skpd')
+                            @error('kd_skpd_neraca')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -245,8 +245,8 @@
                         
 
                         <div id="baris_bulan" class="col-md-6">
-                            <label for="bulan" class="form-label">Bulan</label>
-                            <select name="bulan" class="form-control select_neraca" id="bulan">
+                            <label for="bulan_neraca" class="form-label">Bulan</label>
+                            <select name="bulan_neraca" class="form-control select_neraca" id="bulan_neraca">
                                 <option value="">Silahkan Pilih</option>
                                 <option value="1">Januari</option>
                                 <option value="2">Februari</option>
@@ -260,6 +260,15 @@
                                 <option value="10">Oktober</option>
                                 <option value="11">November</option>
                                 <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cetakan" class="form-label">Jenis Cetakan</label>
+                            <select name="cetakan" class="form-control select_neraca" id="cetakan">
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">Cetak Biasa</option>
+                                <option value="2">Cetak Per Obyek</option>
+                                <option value="3">Cetak Per Obyek Aset Tetap</option>
                             </select>
                         </div>
                 </div>

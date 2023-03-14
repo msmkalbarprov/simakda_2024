@@ -318,23 +318,30 @@
         function Cetak(jns_cetak) {
 
             // GET DATA
-            let kd_skpd                  = document.getElementById('kd_skpd').value;
-            let bulan                    = document.getElementById('bulan').value;
-            let tanggal1                 = document.getElementById('tanggal1').value;
-            let tanggal2                 = document.getElementById('tanggal2').value;
-            let tgl_ttd                  = document.getElementById('tgl_ttd').value;
-            let ttd                      = document.getElementById('ttd').value;
-            let jns_anggaran             = document.getElementById('jns_anggaran').value;
-            let jenis_data               = document.getElementById('jenis_data').value;
-            let jns_rincian              = document.getElementById('jns_rincian').value;
-            // let pilihkonversi            = document.getElementById('pilihkonversi').value;
-            let pilihakumulsai           = document.getElementById('pilihakumulsai').value;
-            let format                   = document.getElementById('format').value;
-            let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
-            let periodebulan             = $('input:radio[name="pilihanperiode"]:checked').val();
-            let skpdunit                 = $('input:radio[name="inlineRadioOptions"]:checked').val();
             
-            // PERINGATAN
+            let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
+            
+            
+            
+
+            // SET CETAKAN
+            if (labelcetak_semester == 'Cetak LRA') {
+                let kd_skpd                  = document.getElementById('kd_skpd').value;
+                let bulan                    = document.getElementById('bulan').value;
+                let tanggal1                 = document.getElementById('tanggal1').value;
+                let tanggal2                 = document.getElementById('tanggal2').value;
+                let tgl_ttd                  = document.getElementById('tgl_ttd').value;
+                let ttd                      = document.getElementById('ttd').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran').value;
+                let jenis_data               = document.getElementById('jenis_data').value;
+                let jns_rincian              = document.getElementById('jns_rincian').value;
+                // let pilihkonversi            = document.getElementById('pilihkonversi').value;
+                let pilihakumulsai           = document.getElementById('pilihakumulsai').value;
+                let format                   = document.getElementById('format').value;
+                let periodebulan             = $('input:radio[name="pilihanperiode"]:checked').val();
+                let skpdunit                 = $('input:radio[name="inlineRadioOptions"]:checked').val();
+
+                // PERINGATAN
                 if (!ttd) {
                     alert('Tanda Tangan tidak boleh kosong!');
                     return;
@@ -360,8 +367,6 @@
                     return;
                 }
 
-            // SET CETAKAN
-            if (labelcetak_semester == 'Cetak LRA') {
                 let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("format", format);
@@ -381,22 +386,21 @@
                 window.open(url.toString(), "_blank");
             
             }else if (labelcetak_semester == 'Cetak NERACA') {
-                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lra') }}");
+                let kd_skpd           = document.getElementById('kd_skpd_neraca').value;
+                let bulan             = document.getElementById('bulan_neraca').value;
+                let format             = document.getElementById('cetakan').value;
+
+                if (!format) {
+                    alert('Jenis Cetakan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_neraca') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("format", format);
-                searchParams.append("tanggal1", tanggal1);
-                searchParams.append("tanggal2", tanggal2);
-                searchParams.append("ttd", ttd);
                 searchParams.append("bulan", bulan);
                 searchParams.append("kd_skpd", kd_skpd);
-                searchParams.append("tgl_ttd", tgl_ttd);
-                searchParams.append("jenis_data", jenis_data);
-                searchParams.append("jenis_anggaran", jns_anggaran);
-                searchParams.append("skpdunit", skpdunit);
-                searchParams.append("pilihakumulsai", pilihakumulsai);
-                searchParams.append("jns_rincian", jns_rincian);
                 searchParams.append("cetak", jns_cetak);
-                searchParams.append("periodebulan", periodebulan);
                 window.open(url.toString(), "_blank");
             
             }else{
