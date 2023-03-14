@@ -59,6 +59,11 @@ class LPJController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $total_skpd = total_skpd();
+
+        if ($total_skpd > 1) {
+            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+        }
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
@@ -770,6 +775,12 @@ class LPJController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $total_skpd = total_skpd();
+
+        if ($total_skpd == 1) {
+            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+        }
+
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
@@ -1277,6 +1288,12 @@ class LPJController extends Controller
     public function tambahSkpdAtauUnit()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+
+        $total_skpd = total_skpd();
+
+        if ($total_skpd == 1) {
+            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+        }
 
         $data = [
             'skpd' => DB::table('ms_skpd')
@@ -1886,6 +1903,10 @@ class LPJController extends Controller
     {
         $no_lpj = Crypt::decrypt($no_lpj);
         $kd_skpd = Crypt::decrypt($kd_skpd);
+
+        if (substr($kd_skpd, 18, 4) != '0000') {
+            return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh melakukan validasi LPJ!', 'alert' => 'alert-danger']);
+        }
 
         $data = [
             'lpj' => DB::table('trhlpj_unit as a')
