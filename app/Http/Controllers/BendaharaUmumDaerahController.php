@@ -5110,190 +5110,334 @@ class BendaharaUmumDaerahController extends Controller
         $bulan = $request->bulan;
         $jenis_print = $request->jenis_print;
 
+        // VERSI LAMA
+        // if ($pilihan == '1' && $jenis_print == 'keseluruhan') {
+        //     $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+        //     FROM (
+        //                             SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+        //                             SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE MONTH(a.tgl_bukti)=?
+        //                             GROUP BY b.kd_skpd, a.no_sp2d ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             UNION ALL
+
+        //                             SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+        //                                                 p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+        //                                                 rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+        //                             'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+        //                             FROM (
+        //                             SELECT x.*, y.keperluan FROM (
+        //                             SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+        //                                    RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE MONTH(a.tgl_bukti)=? ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+        //                             ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $bulan]);
+        // } elseif ($pilihan == '2' && $jenis_print == 'keseluruhan') {
+        //     $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+        //     FROM (
+        //                             SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+        //                             SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?)
+        //                             GROUP BY b.kd_skpd, a.no_sp2d ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             UNION ALL
+
+        //                             SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+        //                                                 p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+        //                                                 rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+        //                             'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+        //                             FROM (
+        //                             SELECT x.*, y.keperluan FROM (
+        //                             SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+        //                                    RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+        //                             ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $periode1, $periode2]);
+        // } elseif ($pilihan == '1') {
+        //     $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+        //     FROM (
+        //                             SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+        //                             SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=?
+        //                             GROUP BY b.kd_skpd, a.no_sp2d ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             UNION ALL
+
+        //                             SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+        //                                                 p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+        //                                                 rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+        //                             'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+        //                             FROM (
+        //                             SELECT x.*, y.keperluan FROM (
+        //                             SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+        //                                    RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=? ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+        //                             ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $skpd, $bulan, $skpd]);
+        // } elseif ($pilihan == '2') {
+        //     $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
+        //     FROM (
+        //                             SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
+        //                             SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=?
+        //                             GROUP BY b.kd_skpd, a.no_sp2d ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             UNION ALL
+
+        //                             SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
+        //                                                 p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
+        //                                                 rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
+        //                             'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
+        //                             FROM (
+        //                             SELECT x.*, y.keperluan FROM (
+        //                             SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
+        //                                    RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
+        //                             FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+        //                             WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=? ) x
+        //                             LEFT JOIN
+        //                             (
+        //                             SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
+        //                             FROM trdspp a INNER JOIN trhspp b
+        //                             ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
+        //                             INNER JOIN trhspm c
+        //                             ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
+        //                             INNER JOIN trhsp2d d
+        //                             on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
+        //                             WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
+        //                             GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
+        //                             ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
+        //                             where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
+        //                             ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $skpd, $periode1, $periode2, $skpd]);
+        // }
+
         if ($pilihan == '1' && $jenis_print == 'keseluruhan') {
-            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
-            FROM (
-                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
-                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE MONTH(a.tgl_bukti)=?
-                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    UNION ALL
-
-                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
-                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
-                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
-                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
-                                    FROM (
-                                    SELECT x.*, y.keperluan FROM (
-                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
-                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE MONTH(a.tgl_bukti)=? ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
-                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $bulan]);
+            $dth = DB::select("SELECT 1 urut, c.no_spm,c.nilai,a.no_sp2d,x.nil_trans as nilai_belanja,'' no_bukti,'' kode_belanja,
+            '' as kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
+            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan
+            FROM trhstrpot a
+            INNER JOIN trdstrpot b
+            ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c
+            ON left(a.kd_skpd,17)=left(c.kd_skpd,17) AND a.no_sp2d=c.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd, a.no_sp2d, SUM(a.nilai) as nil_trans FROM trdtransout a
+            INNER JOIN trhtransout b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+            -- WHERE b.kd_skpd= ?
+            GROUP BY b.kd_skpd, a.no_sp2d) x
+            ON a.kd_skpd=x.kd_skpd AND a.no_sp2d=x.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd,b.no_sp2d, COUNT(b.no_sp2d) as banyak
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE month(b.tgl_bukti)= ?
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY b.kd_skpd,b.no_sp2d)z
+            ON a.kd_skpd=z.kd_skpd and a.no_sp2d=z.no_sp2d
+            WHERE month(a.tgl_bukti)= ?
+            AND b.kd_rek6 IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY c.no_spm,c.nilai,a.no_sp2d,x.nil_trans,z.banyak,c.jns_spp
+            UNION ALL
+            SELECT 2 as urut, '' as no_spm,0 as nilai,b.no_sp2d as no_sp2d,0 as nilai_belanja,
+            a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek_trans as kode_belanja,RTRIM(a.kd_rek6),'' as jenis_pajak,a.nilai as nilai_pot,b.npwp,
+            b.nmrekan,0 banyak,
+            'No Set: '+a.no_bukti as ket,
+            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE month(b.tgl_bukti)= ?
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $bulan]);
         } elseif ($pilihan == '2' && $jenis_print == 'keseluruhan') {
-            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
-            FROM (
-                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
-                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?)
-                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    UNION ALL
-
-                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
-                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
-                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
-                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
-                                    FROM (
-                                    SELECT x.*, y.keperluan FROM (
-                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
-                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
-                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $periode1, $periode2]);
+            $dth = DB::select("SELECT 1 urut, c.no_spm,c.nilai,a.no_sp2d,x.nil_trans as nilai_belanja,'' no_bukti,'' kode_belanja,
+            '' as kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
+            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan
+            FROM trhstrpot a
+            INNER JOIN trdstrpot b
+            ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c
+            ON left(a.kd_skpd,17)=left(c.kd_skpd,17) AND a.no_sp2d=c.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd, a.no_sp2d, SUM(a.nilai) as nil_trans FROM trdtransout a
+            INNER JOIN trhtransout b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+            GROUP BY b.kd_skpd, a.no_sp2d) x
+            ON a.kd_skpd=x.kd_skpd AND a.no_sp2d=x.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd,b.no_sp2d, COUNT(b.no_sp2d) as banyak
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE (b.tgl_bukti>=? and b.tgl_bukti <=?)
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY b.kd_skpd,b.no_sp2d)z
+            ON a.kd_skpd=z.kd_skpd and a.no_sp2d=z.no_sp2d
+            WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?)
+            AND b.kd_rek6 IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY c.no_spm,c.nilai,a.no_sp2d,x.nil_trans,z.banyak,c.jns_spp
+            UNION ALL
+            SELECT 2 as urut, '' as no_spm,0 as nilai,b.no_sp2d as no_sp2d,0 as nilai_belanja,
+            a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek_trans as kode_belanja,RTRIM(a.kd_rek6),'' as jenis_pajak,a.nilai as nilai_pot,b.npwp,
+            b.nmrekan,0 banyak,
+            'No Set: '+a.no_bukti as ket,
+            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE (b.tgl_bukti>=? and b.tgl_bukti <=?)
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $periode1, $periode2, $periode1, $periode2]);
         } elseif ($pilihan == '1') {
-            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
-            FROM (
-                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
-                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=?
-                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    UNION ALL
-
-                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
-                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
-                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
-                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
-                                    FROM (
-                                    SELECT x.*, y.keperluan FROM (
-                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
-                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE MONTH(a.tgl_bukti)=? and b.kd_skpd=? ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
-                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$bulan, $skpd, $bulan, $skpd]);
+            $dth =
+                DB::select("SELECT 1 urut, c.no_spm,c.nilai,a.no_sp2d,x.nil_trans as nilai_belanja,'' no_bukti,'' kode_belanja,
+            '' as kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
+            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan
+            FROM trhstrpot a
+            INNER JOIN trdstrpot b
+            ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c
+            ON left(a.kd_skpd,17)=left(c.kd_skpd,17) AND a.no_sp2d=c.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd, a.no_sp2d, SUM(a.nilai) as nil_trans FROM trdtransout a
+            INNER JOIN trhtransout b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+            WHERE b.kd_skpd= ?
+            GROUP BY b.kd_skpd, a.no_sp2d) x
+            ON a.kd_skpd=x.kd_skpd AND a.no_sp2d=x.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd,b.no_sp2d, COUNT(b.no_sp2d) as banyak
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE b.kd_skpd =  ? AND month(b.tgl_bukti)= ?
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY b.kd_skpd,b.no_sp2d)z
+            ON a.kd_skpd=z.kd_skpd and a.no_sp2d=z.no_sp2d
+            WHERE a.kd_skpd =  ? AND month(a.tgl_bukti)= ?
+            AND b.kd_rek6 IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY c.no_spm,c.nilai,a.no_sp2d,x.nil_trans,z.banyak,c.jns_spp
+            UNION ALL
+            SELECT 2 as urut, '' as no_spm,0 as nilai,b.no_sp2d as no_sp2d,0 as nilai_belanja,
+            a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek_trans as kode_belanja,RTRIM(a.kd_rek6),'' as jenis_pajak,a.nilai as nilai_pot,b.npwp,
+            b.nmrekan,0 banyak,
+            'No Set: '+a.no_bukti as ket,
+            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE b.kd_skpd =  ? AND month(b.tgl_bukti)= ?
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6 ", [$skpd, $skpd, $bulan, $skpd, $bulan, $skpd, $bulan]);
         } elseif ($pilihan == '2') {
-            $dth = DB::select("SELECT 1 urut, p.no_spm, p.nil_spm nilai, p.no_sp2d, p.nil_sp2d nilai_belanja, '' no_bukti, '' kode_belanja, '' kd_rek6, '' as jenis_pajak,0 as nilai_pot, (select npwp from trhspm WHERE no_spm=p.no_spm) npwp, p.nmrekan as nmrekan, '' ket,p.jns_spp, '' ntpn
-            FROM (
-                                    SELECT x.kd_skpd, x.no_sp2d, y.no_spm, x.pot, y.nil_spm, y.nil_sp2d, y.jns_spp,y.nmrekan FROM (
-                                    SELECT b.kd_skpd, a.no_sp2d, SUM(b.nilai) pot
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=?
-                                    GROUP BY b.kd_skpd, a.no_sp2d ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, c.nmrekan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,c.nmrekan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    UNION ALL
-
-                                    SELECT 2 as urut, '' as no_spm,0 as nilai,p.no_sp2d,0 as nilai_belanja,
-                                                        p.no_bukti, p.kode_belanja,p.kd_rek6,'' as jenis_pajak,p.pot as nilai_pot,p.npwp,
-                                                        rekanan nmrekan,    case when p.jns_spp='6' or p.jns_spp='5' or  p.jns_spp='4' then p.keperluan else
-                                    'No Set: ' + p.no_bukti end AS ket, p.jns_spp, p.ntpn
-                                    FROM (
-                                    SELECT x.*, y.keperluan FROM (
-                                    SELECT b.kd_skpd, b.no_bukti, a.kd_sub_kegiatan+'.'+b.kd_rek_trans kode_belanja,
-                                           RTRIM(b.kd_rek6) kd_rek6, a.no_sp2d, b.nilai pot, b.rekanan, b.npwp, b.ntpn, a.jns_spp
-                                    FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
-                                    WHERE (a.tgl_bukti>=? and a.tgl_bukti <=?) and b.kd_skpd=? ) x
-                                    LEFT JOIN
-                                    (
-                                    SELECT d.kd_skpd, d.no_spm, c.nilai nil_spm, d.no_sp2d, d.nilai nil_sp2d, d.jns_spp, b.keperluan
-                                    FROM trdspp a INNER JOIN trhspp b
-                                    ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
-                                    INNER JOIN trhspm c
-                                    ON b.no_spp = c.no_spp AND a.kd_skpd = c.kd_skpd
-                                    INNER JOIN trhsp2d d
-                                    on c.no_spm = d.no_spm AND c.kd_skpd=d.kd_skpd
-                                    WHERE (d.sp2d_batal=0 OR d.sp2d_batal is NULL) and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)
-                                    GROUP BY d.kd_skpd,d.no_spm, d.no_sp2d, c.nilai, d.nilai, d.jns_spp,b.keperluan) y
-                                    ON x.kd_skpd=y.kd_skpd AND x.no_sp2d=y.no_sp2d ) p
-                                    where p.kd_rek6 in ('2110301','2130101','2130201','2130301','2130401','2130501')
-                                    ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6", [$periode1, $periode2, $skpd, $periode1, $periode2, $skpd]);
+            $dth =
+                DB::select("SELECT 1 urut, c.no_spm,c.nilai,a.no_sp2d,x.nil_trans as nilai_belanja,'' no_bukti,'' kode_belanja,
+            '' as kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
+            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan
+            FROM trhstrpot a
+            INNER JOIN trdstrpot b
+            ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+            LEFT JOIN trhsp2d c
+            ON left(a.kd_skpd,17)=left(c.kd_skpd,17) AND a.no_sp2d=c.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd, a.no_sp2d, SUM(a.nilai) as nil_trans FROM trdtransout a
+            INNER JOIN trhtransout b ON a.kd_skpd=b.kd_skpd AND a.no_bukti=b.no_bukti
+            WHERE b.kd_skpd= ?
+            GROUP BY b.kd_skpd, a.no_sp2d) x
+            ON a.kd_skpd=x.kd_skpd AND a.no_sp2d=x.no_sp2d
+            LEFT JOIN
+            (SELECT b.kd_skpd,b.no_sp2d, COUNT(b.no_sp2d) as banyak
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE b.kd_skpd =  ? AND (b.tgl_bukti>=? and b.tgl_bukti <=?)
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY b.kd_skpd,b.no_sp2d)z
+            ON a.kd_skpd=z.kd_skpd and a.no_sp2d=z.no_sp2d
+            WHERE a.kd_skpd =  ? AND (a.tgl_bukti>=? and a.tgl_bukti <=?)
+            AND b.kd_rek6 IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            GROUP BY c.no_spm,c.nilai,a.no_sp2d,x.nil_trans,z.banyak,c.jns_spp
+            UNION ALL
+            SELECT 2 as urut, '' as no_spm,0 as nilai,b.no_sp2d as no_sp2d,0 as nilai_belanja,
+            a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek_trans as kode_belanja,RTRIM(a.kd_rek6),'' as jenis_pajak,a.nilai as nilai_pot,b.npwp,
+            b.nmrekan,0 banyak,
+            'No Set: '+a.no_bukti as ket,
+            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan
+            FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE b.kd_skpd =  ? AND (b.tgl_bukti>=? and b.tgl_bukti <=?)
+            AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
+            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6 ", [$skpd, $skpd, $periode1, $periode2, $skpd, $periode1, $periode2, $skpd, $periode1, $periode2]);
         }
 
         $data = [
