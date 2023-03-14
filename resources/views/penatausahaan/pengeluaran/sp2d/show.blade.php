@@ -193,5 +193,5 @@
     </div>
 @endsection
 @section('js')
-    @include('penatausahaan.pengeluaran.sp2d.js.create');
+    @include('penatausahaan.pengeluaran.sp2d.js.show');
 @endsection
