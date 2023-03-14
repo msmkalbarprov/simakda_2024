@@ -867,12 +867,9 @@ class SpmController extends Controller
                 }
             }
 
-            if ($beban == '1' || $beban == '2' || $beban == '3') {
-                DB::table('trhlpj_unit as a')->join('trlpj_unit_temp as b', 'a.no_lpj', '=', 'b.no_lpj')->where(['b.no_lpj_global' => $no_lpj, 'kd_bp_skpd' => $kd_skpd])->update([
-                    'a.status' => '1',
-                ]);
+            if ($beban == '1' || $beban == '2') {
                 DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->update([
-                    'status' => '2',
+                    'status' => '1',
                 ]);
             }
             // }

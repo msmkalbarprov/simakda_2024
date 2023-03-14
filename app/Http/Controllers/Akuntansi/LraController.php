@@ -858,114 +858,82 @@ class LraController extends Controller
         $enter          = $request->spasi;
         $cetak          = $request->cetak;
         if($request->kd_skpd==''){
-            $kd_skpd        = Auth::user()->kd_skpd;
-            $skpd_clause="";
-            $skpd_clauses= "";
-            $skpd_clause_prog= "";
+            $kd_skpd        = "";
+            $skpd_clause    = "";
+            $skpd_clauses    = "";
         }else{
             $kd_skpd        = $request->kd_skpd;
-            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
-            $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
-            $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+            $skpd_clause    = "where left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses    = "and left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
         
         $thn_ang    = tahun_anggaran();
         $thn_ang1   = $thn_ang-1;
 
-        // TANDA TANGAN
-        if($ttd == '0'){
-            $tandatangan="";
-        }else{
-            $tandatangan = DB::table('ms_ttd')
-                            ->select('nama', 'nip', 'jabatan', 'pangkat')
-                            ->where('nip', $ttd)
-                            ->whereIn('kode', ['1'])
-                            ->first();
-        }
-            if($akumulasi=='akum'){
-                    $isi    = "sd_bulan_ini";
-                    $pilih  = "S/D";
-                    $judul  = BULAN($bulan);
-                    $operator="<=";
-                }else{
-                    $isi = "bulan_ini";
-                    $pilih = "BULAN";
-                    $judul  = BULAN($bulan);
-                    $operator="=";
-                }
+        $modtahun= $thn_ang%4;
+        
+            if ($modtahun = 0){
+                $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }else {
+                $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+         
+         $arraybulan=explode(".",$nilaibulan);
+         $nm_bln = $arraybulan[$bulan];
+
+        
 
         if ($format=='1') {
                 
-                        $ekuitas = DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,thn_ang,thn_ang1)");
-                        $map_neraca = DB::select("SELECT kode, uraian, seq, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+                        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+                        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+                        $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
                                         isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
                                         isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
                                         isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
                                         FROM map_neraca_permen_77 ORDER BY seq");
-                
+
         }else if($format=='2'){
             
         }else if($format=='3'){
 
         }
         
-                        $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first(); 
+                        
         
 
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
             // dd($sus);
-        if ($format=='prog') {
+        
             $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'rincian'           => $rincian,
+            'ekuitas'           => $ekuitas,
+            'ekuitas_lalu'      => $ekuitas_lalu,
+            'map_neraca'        => $map_neraca,
             'enter'             => $enter,
             'daerah'            => $daerah,
-            'tanggal_ttd'       => $tanggal_ttd,
-            'tandatangan'       => $tandatangan,
-            'judul'             => $bulan,
-            'pilih'             => $pilih,
-            'jenis_ttd'         => $ttd,
-            'jenis'             => $jns_rincian           
+            'bulan'             => $bulan,
+            'skpd_clauses'      => $skpd_clauses,
+            'kd_skpd'           => $kd_skpd,
+            'nm_bln'            => $nm_bln,
+            'thn_ang'           => $thn_ang,
+            'thn_ang1'         => $thn_ang1         
             ];
-        }else{
+      
+            $view =  view('akuntansi.cetakan.neraca')->with($data);
 
-            $data = [
-                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-                'rincian'           => $rincian,
-                'enter'             => $enter,
-                'daerah'            => $daerah,
-                'tanggal_ttd'       => $tanggal_ttd,
-                'tandatangan'       => $tandatangan,
-                'judul'             => $bulan,
-                'pilih'             => $pilih,
-                'jenis_ttd'         => $ttd,
-                'jenis'             => $jns_rincian,
-                'sus'               => $sus            
-            ];
-        }
-        if($format=='sap'){
-            $view =  view('akuntansi.cetakan.lra_semester')->with($data);
-        }elseif($format=='djpk'){
-            $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
-        }elseif($format=='p77'){
-            $view =  view('akuntansi.cetakan.lra_77')->with($data);
-        }elseif($format=='sng'){
-            $view =  view('akuntansi.cetakan.lra_sinergi')->with($data);
-        }elseif($format=='prog'){
-            $view =  view('akuntansi.cetakan.lra_program')->with($data);
-        }
         
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
             $pdf = PDF::loadHtml($view)->setPaper('legal');
-            return $pdf->stream('LRA 77.pdf');
+            return $pdf->stream('Neraca.pdf');
         } else {
 
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachement; filename="LRA 77.xls"');
+            header('Content-Disposition: attachement; filename="Neraca.xls"');
             return $view;
         }
     }

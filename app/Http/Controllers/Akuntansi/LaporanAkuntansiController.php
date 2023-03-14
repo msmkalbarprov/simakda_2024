@@ -809,7 +809,7 @@ class LaporanAkuntansiController extends Controller
             $skpd_clause="";
         }else{
             $kd_skpd        = $request->kd_skpd_ns;
-            $skpd_clause = "and kd_skpd='$skpd'";
+            $skpd_clause = "and left(kd_skpd,len($skpd))='$skpd'";
         }
 
         
