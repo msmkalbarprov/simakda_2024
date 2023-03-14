@@ -1904,7 +1904,8 @@ class LPJController extends Controller
         $no_lpj = Crypt::decrypt($no_lpj);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
-        if (substr($kd_skpd, 18, 4) != '0000') {
+        $skpd = Auth::user()->kd_skpd;
+        if (substr($skpd, 18, 4) != '0000') {
             return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh melakukan validasi LPJ!', 'alert' => 'alert-danger']);
         }
 
