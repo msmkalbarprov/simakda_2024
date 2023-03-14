@@ -175,7 +175,8 @@ class PengesahanController extends Controller
                                 UNION ALL
                                 
                                 SELECT 2 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
-                                FROM trlpj a INNER JOIN trdrka b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd and a.kd_rek6=b.kd_rek6
+                                FROM trlpj a INNER JOIN trdtransout b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan 
+AND a.kd_skpd=b.kd_skpd and a.kd_rek6=b.kd_rek6 and a.no_bukti=b.no_bukti
                                 WHERE no_lpj=? AND a.kd_bp_skpd=?
                                 AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
                                 --AND (panjar NOT IN ('3') or panjar IS NULL)
