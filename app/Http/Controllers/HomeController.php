@@ -50,14 +50,14 @@ class HomeController extends Controller
                     ->where(DB::raw('left(kd_rek6,2)'), 62)
                     ->first(),
                 'data_penagihan' => DB::table('trhtagih')
-                    ->select(DB::raw("isnull(sum(total),0) as penagihan"))
+                    ->select(DB::raw("isnull(sum(total),0) as penagihan,count(*) as totaltagih"))
                     ->first(),
                 'data_spp' => DB::table('trhspp')
-                    ->select(DB::raw("isnull(sum(nilai),0) as spp"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as spp,count(*) as total"))
                     ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first(),
                 'data_spm' => DB::table('trhspm as a')
-                    ->select(DB::raw("isnull(sum(b.nilai),0) as spm"))
+                    ->select(DB::raw("isnull(sum(b.nilai),0) as spm,count(*) as total"))
                     ->join('trhspp as b', function ($join) {
                         $join->on('a.no_spp', '=', 'b.no_spp');
                         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -65,7 +65,7 @@ class HomeController extends Controller
                     ->whereRaw("sp2d_batal is null OR sp2d_batal <> 1")
                     ->first(),
                 'data_sp2d' => DB::table('trhsp2d')
-                    ->select(DB::raw("isnull(sum(nilai),0) as sp2d"))
+                    ->select(DB::raw("isnull(sum(nilai),0) as sp2d,count(*) as total"))
                     ->whereRaw("(sp2d_batal is null OR sp2d_batal <> 1)")
                     ->first()
             ];

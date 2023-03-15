@@ -4,8 +4,14 @@
 @include('template.head')
 
 @if (Auth::user()->is_admin == 1)
-
-    <body data-sidebar='light'>
+    @if (Auth::user()->role==1006)
+        <body data-sidebar='wibowo'>
+    @elseif (Auth::user()->role==1022)
+        <body data-sidebar='wasis'>
+    @else
+        <body data-sidebar='colored'>    
+    @endif
+    
     @else
 
         <body data-sidebar="dark">
