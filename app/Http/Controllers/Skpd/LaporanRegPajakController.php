@@ -166,7 +166,7 @@ class LaporanRegPajakController extends Controller
                                 ,SUM(CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END) AS ppnpn4persen
                                 ,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS jkk
                                 ,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS jkm
-                                ,SUM(CASE WHEN b.map_pot='210102010001' THEN b.nilai ELSE 0 END) AS bpjs
+                                ,SUM(CASE WHEN b.map_pot IN ('210102010001','210102010001a','210102010001b') THEN b.nilai ELSE 0 END) AS bpjs
                                 ,SUM(b.nilai) as terima,
                                 0 as setor
                                 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
