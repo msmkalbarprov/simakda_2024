@@ -2434,10 +2434,10 @@
             let kasda = document.getElementById('kasda_register_sp2d').checked;
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
-            let margin_kiri = document.getElementById('margin_kiri').checked;
-            let margin_kanan = document.getElementById('margin_kanan').checked;
-            let margin_atas = document.getElementById('margin_atas').checked;
-            let margin_bawah = document.getElementById('margin_bawah').checked;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
             let jenis_print = $(this).data("jenis");
 
             if (keseluruhan || skpd) {
@@ -2572,10 +2572,10 @@
             let kasda = document.getElementById('kasda_register_sp2d').checked;
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
-            let margin_kiri = document.getElementById('margin_kiri').checked;
-            let margin_kanan = document.getElementById('margin_kanan').checked;
-            let margin_atas = document.getElementById('margin_atas').checked;
-            let margin_bawah = document.getElementById('margin_bawah').checked;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
             let jenis_print = $(this).data("jenis");
 
             if (keseluruhan || skpd) {
