@@ -23,6 +23,9 @@
                             <button id="cetak_cms" class="btn btn-dark btn-md">Cetak List</button>
                         </div>
                     </div>
+                    <div class="mb-1 row">
+                        <label for="catatan" style="color: red">Silahkan Cetak Sebelum Divalidasi</label>
+                    </div>
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="transaksi_cms" class="table" style="width: 100%">

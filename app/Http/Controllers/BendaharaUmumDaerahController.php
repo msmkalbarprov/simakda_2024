@@ -6457,6 +6457,7 @@ class BendaharaUmumDaerahController extends Controller
         if ($req['jenis_print'] == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOrientation('landscape')
                 ->setOption('margin-left', $req['margin_kiri'])
                 ->setOption('margin-right', $req['margin_kanan'])
                 ->setOption('margin-top', $req['margin_atas'])
@@ -6839,6 +6840,7 @@ class BendaharaUmumDaerahController extends Controller
         if ($req['jenis_print'] == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOrientation('landscape')
                 ->setOption('margin-left', $req['margin_kiri'])
                 ->setOption('margin-right', $req['margin_kanan'])
                 ->setOption('margin-top', $req['margin_atas'])
@@ -6857,7 +6859,7 @@ class BendaharaUmumDaerahController extends Controller
     public function realisasiSkpdSp2d(Request $request)
     {
         $req = $request->all();
-        // dd($req);
+
         // return $req['dengan'];
         $realisasi1 = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
