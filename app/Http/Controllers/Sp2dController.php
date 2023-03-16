@@ -528,6 +528,11 @@ class Sp2dController extends Controller
         $keterangan = $request->keterangan;
         $beban = $request->beban;
 
+        $user = Auth::user()->nama;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $lpj = DB::table('trhspp')->select('no_lpj')->where(['no_spp' => $no_spp])->first();
+        $no_lpj = $lpj->no_lpj;
+
         DB::beginTransaction();
         try {
             DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
@@ -536,9 +541,33 @@ class Sp2dController extends Controller
                 'user_batal' => Auth::user()->nama,
                 'tgl_batal' => date('Y-m-d H:i:s')
             ]);
+
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
                 'sp2d_batal' => '1'
             ]);
+
+            if ($beban == '6') {
+                $no_tagih = DB::table('trhspp')->select('no_tagih')->where(['no_spp' => $no_spp])->first();
+                if ($no_tagih->no_tagih) {
+                    DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
+                        'no_tagih' => '',
+                        'kontrak' => '',
+                        'sts_tagih' => '0',
+                        'nmrekan' => '',
+                        'pimpinan' => '',
+                    ]);
+                    DB::table('trhtagih')->where(['no_bukti' => $no_tagih->no_tagih])->update([
+                        'sts_tagih' => '0',
+                    ]);
+                }
+            }
+
+            if ($beban == '1' || $beban == '2') {
+                DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->update([
+                    'status' => '1',
+                ]);
+            }
+
             DB::commit();
             return response()->json([
                 'message' => '1'
