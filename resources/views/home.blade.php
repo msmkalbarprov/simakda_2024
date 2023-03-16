@@ -151,6 +151,53 @@
     let pem_terima  = parseFloat("{{ $data_pem_terima->pem_terima }}");
     let pem_keluar  = parseFloat("{{ $data_pem_keluar->pem_keluar }}");
     
+
+    // get day
+    const d = new Date();
+    let day = d.getDay()
+    if(day == 0){//merah ok
+      warna4="#fdd7d2";
+      warna3="#f48e8a";
+      warna2="#b91f26";
+      warna1="#961b1e";
+      warna5="#f48e8a";
+    }else if(day == 1){//orange
+      warna1="#d80b8c";
+      warna2="#da6fab";
+      warna3="#e796c1";
+      warna4="#fde9f1";
+      warna5="#da6fab";
+    }else if(day == 2){//biru ok
+      warna4="#b0cbdc";
+      warna3="#2a9df4";
+      warna2="#1167b1";
+      warna1="#03254c";
+      warna5="#1167b1";
+    }else if(day == 3){//ungu
+      warna4="#e0cde0";
+      warna3="#c6aadb";
+      warna2="#c587d0";
+      warna1="#872a92";
+      warna5="#c587d0";
+    }else if(day == 4){//green
+      warna1="#18723f";
+      warna2="#3b9a56";
+      warna3="#6fbf76";
+      warna4="#eff8b9";
+      warna5="#3b9a56";
+    }else if(day == 5){//pink
+      warna1="#a73300";
+      warna2="#ff9565";
+      warna3="#ffd0bc";
+      warna4="#ffefe8";
+      warna5="#ff9565";
+    }else{//yellow
+      warna1="#e5b045";
+      warna2="#ffc44d";
+      warna3="#ffd071";
+      warna4="#f6e9cd";
+      warna5="#ffc44d";
+    }
     
   
     am4core.useTheme(am4themes_animated);
@@ -163,19 +210,19 @@ var chart = am4core.create("chartdiv", am4charts.PieChart);
 chart.data = [{
   "Akun": "Pendapatan",
   "nilai": pendapatan,
-  "color": am4core.color("#18723f")
+  "color": am4core.color(warna1)
 }, {
   "Akun": "Belanja",
   "nilai": belanja,
-  "color": am4core.color("#3b9a56")
+  "color": am4core.color(warna2)
 }, {
   "Akun": "Penerimaan Pembiayaan",
   "nilai": pem_terima,
-  "color": am4core.color("#6fbf76")
+  "color": am4core.color(warna3)
 }, {
   "Akun": "Pengeluaran Pembiayaan",
   "nilai": pem_keluar,
-  "color": am4core.color("#eff8b9")
+  "color": am4core.color(warna4)
 }];
 
 // Add and configure Series
@@ -283,7 +330,7 @@ series2.tooltipText = "{name}: Rp[bold]{valueY}[/]";
 series2.strokeWidth = 3;
 series2.yAxis = valueAxis2;
 
-series.columns.template.fill = am4core.color("#3b9a56");
+series.columns.template.fill = am4core.color(warna5);
 
 // Add legend
 chart.legend = new am4charts.Legend();
