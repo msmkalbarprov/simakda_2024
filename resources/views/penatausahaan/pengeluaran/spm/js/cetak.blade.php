@@ -21,7 +21,7 @@
                 "type": "POST",
             },
             createdRow: function(row, data, index) {
-                if (data.status == 1) {
+                if (data.status == 1 && data.sp2d_batal != '1') {
                     $(row).css("background-color", "#4bbe68");
                     $(row).css("color", "white");
                 } else if (data.sp2d_batal == '1') {
