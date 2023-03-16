@@ -427,6 +427,7 @@ class UploadCmsController extends Controller
 
     public function cetakCsvLuarKalbar(Request $request)
     {
+        ob_start();
         $no_upload = $request->no_upload;
         $kd_skpd = Auth::user()->kd_skpd;
 
