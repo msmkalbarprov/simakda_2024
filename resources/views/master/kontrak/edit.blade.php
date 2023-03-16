@@ -118,13 +118,13 @@
                                     style="width: 100%;" id="nm_rekening" name="nm_rekening" required>
                                     <optgroup label="Nama Rekening | No Rekening | NPWP">
                                         <option value="" disabled selected>Silahkan Pilih Rekening</option>
-                                        @foreach ($daftar_rekening as $data_rekening)
-                                            <option value="{{ $data_rekening->nm_rekening }}"
-                                                data-npwp="{{ $data_rekening->npwp }}"
-                                                data-rekening="{{ $data_rekening->rekening }}"
-                                                {{ $data_kontrak->rekening == $data_rekening->rekening ? 'selected' : '' }}>
-                                                {{ $data_rekening->nm_rekening }} | {{ $data_rekening->rekening }} |
-                                                {{ $data_rekening->npwp }}</option>
+                                        @foreach ($daftar_rekening as $data_rekening1)
+                                            <option value="{{ $data_rekening1->nm_rekening }}"
+                                                data-npwp="{{ $data_rekening1->npwp }}"
+                                                data-rekening="{{ $data_rekening1->rekening }}"
+                                                {{ $data_kontrak->rekening == $data_rekening1->rekening ? 'selected' : '' }}>
+                                                {{ $data_rekening1->nm_rekening }} | {{ $data_rekening1->rekening }} |
+                                                {{ $data_rekening1->npwp }}</option>
                                         @endforeach
                                     </optgroup>
                                 </select>
