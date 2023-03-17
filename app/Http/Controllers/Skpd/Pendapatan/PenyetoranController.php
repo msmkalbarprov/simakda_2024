@@ -29,10 +29,10 @@ class PenyetoranController extends Controller
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penyetoran_lalu.edit", Crypt::encrypt($row->no_sts)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            if($row->status != 1 || $row->status == null || $row->status== '' || $row->status == 0){
+            if ($row->status != 1 || $row->status == null || $row->status == '' || $row->status == 0) {
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
-            
+
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -588,14 +588,14 @@ class PenyetoranController extends Controller
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            
-            if($row->status != 1 || $row->status == null || $row->status== '' || $row->status == 0){
+
+            if ($row->no_cek != 1 || $row->no_cek == null || $row->no_cek == '' || $row->no_cek == 0) {
                 $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($row->no_sts), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
-            }else{
+            } else {
                 $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($row->no_sts), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
             }
-            
+
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
