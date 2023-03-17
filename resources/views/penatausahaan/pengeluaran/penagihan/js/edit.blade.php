@@ -616,6 +616,12 @@
             let ctagih = '';
             let ctgltagih = '2016-12-1';
             let jns_trs = '1';
+
+            if (rincian_penagihan.length == 0) {
+                alert('Rincian Penagihan tidak boleh kosong!');
+                exit();
+            }
+
             if (!no_bukti) {
                 alert('No. BAST/Penagihan harus diisi!');
                 return;
