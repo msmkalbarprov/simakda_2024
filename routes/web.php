@@ -100,6 +100,7 @@ use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 //akuntansi
 use App\Http\Controllers\Akuntansi\LraperdaController;
+use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
 
 // Route::get('/simakda_2023', function () {
@@ -1526,6 +1527,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
             // LRA
             Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
+            //perkada
+            Route::get('perkada', [LaporanAkuntansiController::class, 'perkada'])->name('laporan_akuntansi.perkada');
+            Route::get('cetak_lamp1', [LraperkadaController::class, 'cetak_lamp1'])->name('laporan_akuntansi.perkada.cetak_lamp1');
             // NERACA
             Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
         });

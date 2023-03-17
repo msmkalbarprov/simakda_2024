@@ -62,7 +62,7 @@
             <div class="card card-info collapsed-card card-outline" id="lraperkada">
                 <div class="card-body">
                     {{ 'LRA PERKDA' }}
-                    <a class="card-block stretched-link" href="#">
+                    <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.perkada') }}">
 
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>
