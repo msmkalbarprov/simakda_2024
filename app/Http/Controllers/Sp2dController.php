@@ -407,9 +407,12 @@ class Sp2dController extends Controller
         }
 
         $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])
-        ->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), 
-                        DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), 
-                        DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
+            ->select(
+                'a.*',
+                DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"),
+                DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"),
+                DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat")
+            )->first();
         $data_sp2d = cari_sp2d($sp2d, $baris, $kd_skpd);
 
         $data = [
@@ -471,7 +474,10 @@ class Sp2dController extends Controller
             'total' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp, 'kd_skpd' => $sp2d->kd_skpd])->first(),
             'data_sp2d' => $data_sp2d,
         ];
-        return view('penatausahaan.pengeluaran.sp2d.cetak.lampiran')->with($data);
+        $view = view('penatausahaan.pengeluaran.sp2d.cetak.lampiran')->with($data);
+
+        $pdf = PDF::loadHtml($view);
+        return $pdf->stream('laporan.pdf');
     }
 
     // cetak lampiran lama
@@ -497,7 +503,10 @@ class Sp2dController extends Controller
             'total' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp, 'kd_skpd' => $sp2d->kd_skpd])->first(),
             'data_sp2d' => $data_sp2d,
         ];
-        return view('penatausahaan.pengeluaran.sp2d.cetak.lampiran_lama')->with($data);
+        $view = view('penatausahaan.pengeluaran.sp2d.cetak.lampiran_lama')->with($data);
+
+        $pdf = PDF::loadHtml($view);
+        return $pdf->stream('laporan.pdf');
     }
 
     // cetak kelengkapan
@@ -519,7 +528,10 @@ class Sp2dController extends Controller
             'ttd2' => DB::table('ms_ttd')->where(['nip' => $ttd2])->first(),
             'beban' => $beban
         ];
-        return view('penatausahaan.pengeluaran.sp2d.cetak.kelengkapan')->with($data);
+        $view = view('penatausahaan.pengeluaran.sp2d.cetak.kelengkapan')->with($data);
+
+        $pdf = PDF::loadHtml($view);
+        return $pdf->stream('laporan.pdf');
     }
 
     // batal sp2d
