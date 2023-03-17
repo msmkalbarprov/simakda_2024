@@ -276,7 +276,7 @@
                                 <td style="border-right:1px solid black"><b>{{ $item->kd_rek }}</b></td>
                                 <td style="border-right:1px solid black"><b>{{ $item->nm_rek }}</b></td>
                                 <td style="text-align: right;border-right:1px solid black">
-                                    <b>{{ rupiah($item->nilai) }}</b>
+                                    <b>{{ $item->nilai > 0 ? rupiah($item->nilai) : '' }}</b>
                                 </td>
                             </tr>
                         @endif

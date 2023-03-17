@@ -2032,7 +2032,10 @@ function cari_sp2d($sp2d, $baris, $kd_skpd)
             ->orderBy('kd_rek')
             ->get();
     } else {
-        $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $sp2d->no_spp, 'a.kd_skpd' => $sp2d->kd_skpd, 'b.jns_ang' => $status_ang->jns_ang])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
+        $data1 = DB::table('trdspp as a')->join('trskpd as b', function ($join) {
+            $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where(['a.no_spp' => $sp2d->no_spp, 'a.kd_skpd' => $sp2d->kd_skpd, 'b.jns_ang' => $status_ang->jns_ang])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
         $data2 = DB::query()->select(DB::raw("'2' as urut"), DB::raw("' ' as kd_sub_kegiatan"), DB::raw("' ' as kd_rek"), DB::raw("'(Rincian Terlampir)' as nm_rek"), DB::raw("0 as nilai"))->unionAll($data1);
         $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
             ->mergeBindings($data2)
