@@ -1018,6 +1018,7 @@ class SppLsController extends Controller
                         'nm_rek6' => $value['nm_rek6'],
                         'nilai' => $value['nilai'],
                         'kd_skpd' => $kd_skpd,
+                        'nm_skpd' => nama_skpd($kd_skpd),
                         'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
                         'nm_sub_kegiatan' => $data['nm_sub_kegiatan'],
                         'no_spd' => $data['nomor_spd'],
