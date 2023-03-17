@@ -2710,6 +2710,7 @@
             let kasda = document.getElementById('kasda_register_sp2d').checked;
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let dengan_skpkd = document.getElementById('dengan_skpkd_register_sp2d').checked;
             let jenis_print = $(this).data("jenis");
 
             let margin_kiri = document.getElementById('margin_kiri').value;
@@ -2789,6 +2790,7 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("dengan_skpkd", dengan_skpkd);
             searchParams.append("margin_kiri", margin_kiri);
             searchParams.append("margin_kanan", margin_kanan);
             searchParams.append("margin_atas", margin_atas);

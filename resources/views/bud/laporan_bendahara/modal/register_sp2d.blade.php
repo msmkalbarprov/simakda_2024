@@ -234,7 +234,9 @@
                         <input type="radio" id="dengan_register_sp2d" name="up" checked>
                         <label for="dengan_register_sp2d">Dengan UP</label>
                         <input type="radio" id="tanpa_register_sp2d" name="up">
-                        <label for="tanpa_register_sp2d">Tanpa UP</label>
+                        <label for="tanpa_register_sp2d">Tanpa UP (Tanpa SKPKD)</label>
+                        <input type="radio" id="dengan_skpkd_register_sp2d" name="up">
+                        <label for="tanpa_register_sp2d">Tanpa UP (Dengan SKPKD)</label>
                     </div>
                 </div>
                 {{-- Realisasi Per SKPD --}}

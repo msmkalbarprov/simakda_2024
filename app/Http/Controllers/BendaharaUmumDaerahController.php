@@ -6860,7 +6860,6 @@ class BendaharaUmumDaerahController extends Controller
     {
         $req = $request->all();
 
-        // return $req['dengan'];
         $realisasi1 = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
@@ -6872,27 +6871,33 @@ class BendaharaUmumDaerahController extends Controller
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
             //     }
             // })
-            ->whereRaw("
-            kd_rek6 != (
-             CASE WHEN kd_skpd=? THEN ('540203010001')
-                  ELSE ('') END
-            )
-            AND
-            kd_rek6 != (
-                    CASE WHEN kd_skpd=? THEN ('530101010001')
-                        ELSE ('') END
-                    )
-            AND
-            kd_rek6 != (
-                    CASE WHEN kd_skpd=? THEN ('540101020001')
-                        ELSE ('') END
-                    )
-            AND
-            kd_rek6 != (
-                    CASE WHEN kd_skpd=? THEN ('540101010001')
-                        ELSE ('')
-            END
-            )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000'])
+            ->where(function ($query) use ($req) {
+                if ($req['dengan_skpkd'] == 'true') {
+                } else {
+                    $query->whereRaw("
+                        kd_rek6 != (
+                        CASE WHEN kd_skpd=? THEN ('540203010001')
+                            ELSE ('') END
+                        )
+                        AND
+                        kd_rek6 != (
+                                CASE WHEN kd_skpd=? THEN ('530101010001')
+                                    ELSE ('') END
+                                )
+                        AND
+                        kd_rek6 != (
+                                CASE WHEN kd_skpd=? THEN ('540101020001')
+                                    ELSE ('') END
+                                )
+                        AND
+                        kd_rek6 != (
+                                CASE WHEN kd_skpd=? THEN ('540101010001')
+                                    ELSE ('')
+                        END
+                        )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
+                }
+            })
+
             ->groupBy('kd_skpd', 'nm_skpd');
 
         $realisasi2 = DB::table('trhsp2d as a')
@@ -6933,27 +6938,33 @@ class BendaharaUmumDaerahController extends Controller
                     }
                 }
             })
-            ->whereRaw("
-            b.kd_rek6 != (
-             CASE WHEN c.kd_skpd=? THEN ('540203010001')
-                  ELSE ('') END
-            )
-            AND
-            b.kd_rek6 != (
-                    CASE WHEN c.kd_skpd=? THEN ('530101010001')
-                        ELSE ('') END
-                    )
-            AND
-            b.kd_rek6 != (
-                    CASE WHEN c.kd_skpd=? THEN ('540101020001')
-                        ELSE ('') END
-                    )
-            AND
-            b.kd_rek6 != (
-                    CASE WHEN c.kd_skpd=? THEN ('540101010001')
-                        ELSE ('')
-            END
-            )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000'])
+            ->where(function ($query) use ($req) {
+                if ($req['dengan_skpkd'] == 'true') {
+                } else {
+                    $query->whereRaw("
+                        b.kd_rek6 != (
+                        CASE WHEN c.kd_skpd=? THEN ('540203010001')
+                            ELSE ('') END
+                        )
+                        AND
+                        b.kd_rek6 != (
+                                CASE WHEN c.kd_skpd=? THEN ('530101010001')
+                                    ELSE ('') END
+                                )
+                        AND
+                        b.kd_rek6 != (
+                                CASE WHEN c.kd_skpd=? THEN ('540101020001')
+                                    ELSE ('') END
+                                )
+                        AND
+                        b.kd_rek6 != (
+                                CASE WHEN c.kd_skpd=? THEN ('540101010001')
+                                    ELSE ('')
+                        END
+                        )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
+                }
+            })
+
             ->groupBy('b.kd_bidang')
             ->union($realisasi1);
 
@@ -7065,6 +7076,8 @@ class BendaharaUmumDaerahController extends Controller
                 ->first(),
             'tanggal' => now(),
             'dengan' => $req['dengan'],
+            'tanpa' => $req['tanpa'],
+            'dengan_skpkd' => $req['dengan_skpkd'],
             'blud_soedarso' => $blud_soedarso->anggaran,
             'blud_rsj' => $blud_rsj->anggaran,
             'bos_dikbud' => $bos_dikbud->anggaran,

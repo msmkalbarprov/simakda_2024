@@ -180,22 +180,25 @@
             <td>3.</td>
             <td>Plafond Anggaran Dinas Pendidikan telah dikurangi BOS sebesar Rp. {{ rupiah($bos_dikbud) }}</td>
         </tr>
-        <tr>
-            <td>4.</td>
-            <td>Plafond Anggaran Badan Keuangan dan Aset Daerah dikurangi :</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>- Bantuan Keuangan sebesar Rp. {{ rupiah($bantuan_keuangan) }}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>- BTT sebesar Rp. {{ rupiah($btt) }}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>- Dana Bagi Hasil Provinsi sebesar Rp. {{ rupiah($bagi_hasil) }}</td>
-        </tr>
+        @if ($dengan_skpkd == 'true')
+        @else
+            <tr>
+                <td>4.</td>
+                <td>Plafond Anggaran Badan Keuangan dan Aset Daerah dikurangi :</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>- Bantuan Keuangan sebesar Rp. {{ rupiah($bantuan_keuangan) }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>- BTT sebesar Rp. {{ rupiah($btt) }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>- Dana Bagi Hasil Provinsi sebesar Rp. {{ rupiah($bagi_hasil) }}</td>
+            </tr>
+        @endif
         <tr>
             <td style="height: 20px"></td>
         </tr>
@@ -206,8 +209,10 @@
             <td colspan="2">
                 @if ($dengan == 'true')
                     * Dengan UP
-                @else
-                    * Tanpa UP
+                @elseif($tanpa == 'true')
+                    * Tanpa UP (Tanpa SKPKD)
+                @elseif($dengan_skpkd == 'true')
+                    * Tanpa UP (Dengan SKPKD)
                 @endif
             </td>
         </tr>
