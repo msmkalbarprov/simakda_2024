@@ -149,6 +149,11 @@
                 dropdownParent: $('#modal_cetak_neraca .modal-content'),
                 
             });
+            $(".select_lo").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_lo .modal-content'),
+                
+            });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
             document.getElementById('baris_periode1').hidden = true; // Hide
@@ -172,6 +177,9 @@
 
             // hidden
             document.getElementById('baris_skpd_neraca').hidden = true; // Hide
+            // tambahclass()
+            // hidden
+            document.getElementById('baris_skpd_lo').hidden = true; // Hide
             // tambahclass()
         });
 
@@ -204,6 +212,13 @@
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
+        $('#lo').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_lo').modal('show');
+            $("#labelcetak_semester").html("Cetak LO");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
 
     // onclick card end
 
@@ -233,6 +248,20 @@
             } else {
                 cari_skpd('unit')
                 document.getElementById('baris_skpd_neraca').hidden = false; // show
+            }
+        });
+
+        $('input:radio[name="pilihan_lo"]').change(function() {
+
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_lo').hidden = true; // Hide
+            }else if ($(this).val() == 'skpd') {
+                cari_skpd('skpd')
+                document.getElementById('baris_skpd_lo').hidden = false; // show
+            } else {
+                cari_skpd('unit')
+                document.getElementById('baris_skpd_lo').hidden = false; // show
             }
         });
 
@@ -275,6 +304,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd_neraca').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_lo').empty();
+                    $('#kd_skpd_lo').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_lo').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -389,6 +426,7 @@
                 let kd_skpd           = document.getElementById('kd_skpd_neraca').value;
                 let bulan             = document.getElementById('bulan_neraca').value;
                 let format             = document.getElementById('cetakan').value;
+                let skpdunit                 = $('input:radio[name="pilihan_neraca"]:checked').val();
 
                 if (!format) {
                     alert('Jenis Cetakan tidak boleh kosong!');
@@ -400,6 +438,31 @@
                 searchParams.append("format", format);
                 searchParams.append("bulan", bulan);
                 searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("skpdunit", skpdunit);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak LO') {
+                let kd_skpd           = document.getElementById('kd_skpd_lo').value;
+                let bulan             = document.getElementById('bulan_lo').value;
+                let format             = document.getElementById('cetakan_lo').value;
+                let skpdunit                 = $('input:radio[name="pilihan_lo"]:checked').val();
+
+                if (!format) {
+                    alert('Jenis Cetakan tidak boleh kosong!');
+                    return;
+                }
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lo') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("format", format);
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("skpdunit", skpdunit);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             
