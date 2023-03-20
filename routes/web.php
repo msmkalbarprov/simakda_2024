@@ -1533,6 +1533,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             //perkada
             Route::get('perkada', [LaporanAkuntansiController::class, 'perkada'])->name('laporan_akuntansi.perkada');
             Route::get('cetak_lamp1', [LraperkadaController::class, 'cetak_lamp1'])->name('laporan_akuntansi.perkada.cetak_lamp1');
+            Route::get('cetak_lamp2', [LraperkadaController::class, 'cetak_lamp2'])->name('laporan_akuntansi.perkada.cetak_lamp2');
             // NERACA
             Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
         });

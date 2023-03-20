@@ -67,7 +67,12 @@
                 dropdownParent: $('#modal_cetak_lamp1 .modal-content'),
                 
             });
-            // hidden
+            $(".select_lamp2").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_lamp2 .modal-content'),
+                
+            });
+            // hidden lamp1
             document.getElementById('baris_skpd').hidden = true; // Hide
             let typeu = "{{Auth::user()->is_admin}}";
             if (typeu == '1') {
@@ -75,6 +80,7 @@
             }else{
                 document.getElementById('pilihan0').hidden = true;
             }
+            
             
         });
 
@@ -96,6 +102,23 @@
                 document.getElementById('baris_skpd').hidden = false; // show
             }
         });
+        $('#lamp2').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_lamp2').modal('show');
+            $("#labelcetak_semester").html("Cetak Lamp II");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('input:radio[name="pilih_lamp2"]').change(function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'skpd') {
+                cari_skpd('skpd')
+                document.getElementById('baris_skpd_lamp2').hidden = false; // show
+            } else {
+                cari_skpd('unit')
+                document.getElementById('baris_skpd_lamp2').hidden = false; // show
+            }
+        });
 
 
         function cari_skpd(jenis) {
@@ -112,6 +135,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_lamp2').empty();
+                    $('#kd_skpd_lamp2').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_lamp2').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -173,6 +204,42 @@
                 searchParams.append("jenis", jenis);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak Lamp II') {
+                // GET DATA
+                let kd_skpd                  = document.getElementById('kd_skpd_lamp2').value;
+                let bulan                    = document.getElementById('bulan_lamp2').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_lamp2').value;
+                let jenis                    = document.getElementById('jns_rincian').value;
+                let tgl_ttd                    = document.getElementById('tgl_ttd').value;
+                let skpdunit                 = $('input:radio[name="pilih_lamp2"]:checked').val();
+
+                if (!jenis) {
+                    alert('jenis Data tidak boleh kosong!');
+                    return;
+                }
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perkada.cetak_lamp2') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("jenis", jenis);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("skpdunit", skpdunit);
                 window.open(url.toString(), "_blank");
             
             }else{
