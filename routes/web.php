@@ -1385,6 +1385,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('realisasi_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSp2d'])->name('laporan_bendahara_umum.realisasi_sp2d');
         // REGISTER SP2D (REALISASI PER SKPD)
         Route::get('realisasiskpd_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSkpdSp2d'])->name('laporan_bendahara_umum.realisasiskpd_sp2d');
+        // REGISTER SP2D FORMAT BPK
+        Route::get('format_bpk', [BendaharaUmumDaerahController::class, 'formatBpk'])->name('laporan_bendahara_umum.format_bpk');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {

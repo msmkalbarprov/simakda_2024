@@ -2798,6 +2798,31 @@
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
+
+        $('.format_bpk').on('click', function() {
+            let ttd = document.getElementById('ttd_register_sp2d').value;
+            let jenis_print = $(this).data("jenis");
+
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+
+            if (!ttd) {
+                alert('Silahkan Pilih Penandatangan!');
+                return;
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.format_bpk') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("ttd", ttd);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
         // CETAKAN REGISTER SP2D
     });
 </script>
