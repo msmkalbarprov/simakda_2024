@@ -31,7 +31,7 @@ class LraController extends Controller
         $jenis_data     = $request->jenis_data;
         $jns_rincian    = $request->jns_rincian;
         $skpdunit    = $request->skpdunit;
-        dd($skpdunit);
+        // dd($skpdunit);
         if($request->kd_skpd==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
