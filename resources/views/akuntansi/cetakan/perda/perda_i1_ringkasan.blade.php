@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LRA PERDA I.4 URUSAN</title>
+    <title>LRA PERDA I.1 RINGKASAN</title>
     <style>
         table {
             border-collapse: collapse
@@ -37,7 +37,7 @@
 {{-- <body> --}}
     <table style="border-collapse:collapse;font-size:11px;font-family:Arial" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
         <TR>
-            <TD colspan="3" width="100%" valign="top" align="left" >LAMPIRAN I.4 &nbsp;{{ strtoupper($nogub->ket_perda) }}</TD>
+            <TD colspan="3" width="100%" valign="top" align="left" >LAMPIRAN I.1 &nbsp;{{ strtoupper($nogub->ket_perda) }}</TD>
         </TR>
         <TR>
             <TD  colspan="3" width="100%" valign="top" align="left" >NOMOR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ strtoupper($nogub->ket_perda_no) }}</TD>
