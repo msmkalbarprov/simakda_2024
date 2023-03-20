@@ -306,27 +306,27 @@ categoryAxis.title.text = "Berkas";
 
 // First value axis
 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-valueAxis.title.text = "jumlah Berkas";
+valueAxis.title.text = "Realisasi";
 
 // Second value axis
 var valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
-valueAxis2.title.text = "Nilai";
+valueAxis2.title.text = "jumlah berkas";
 valueAxis2.renderer.opposite = true;
 
 
 // First series
 var series = chart.series.push(new am4charts.ColumnSeries());
-series.dataFields.valueY = "jumlah";
+series.dataFields.valueY = "nilai";
 series.dataFields.categoryX = "jenis";
-series.name = "Jumlah";
-series.tooltipText = "{name}: [bold]{valueY}[/] Berkas";
+series.name = "nilai";
+series.tooltipText = "{name}: [bold]Rp{valueY}[/]";
 
 // Second series
 var series2 = chart.series.push(new am4charts.LineSeries());
-series2.dataFields.valueY = "nilai";
+series2.dataFields.valueY = "jumlah";
 series2.dataFields.categoryX = "jenis";
-series2.name = "Nilai";
-series2.tooltipText = "{name}: Rp[bold]{valueY}[/]";
+series2.name = "jumlah";
+series2.tooltipText = "{name}: [bold]{valueY}[/] Berkas";
 series2.strokeWidth = 3;
 series2.yAxis = valueAxis2;
 
