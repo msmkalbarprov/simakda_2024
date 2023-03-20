@@ -102,6 +102,7 @@ use App\Http\Controllers\Utility\KunciPengeluaranController;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
+use App\Http\Controllers\SPB\BosController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1549,6 +1550,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('load_pengeluaran_spj', [PengesahanSPJController::class, 'load_pengeluaran'])->name('pengesahan_spj.load_pengeluaran');
         Route::get('cetak_pengeluaran_spj', [PengesahanSPJController::class, 'cetak_pengeluaran_spj'])->name('pengesahan_spj.cetak_pengeluaran_spj');
         Route::post('simpan_pengeluaran_spj', [PengesahanSPJController::class, 'simpan_pengeluaran_spj'])->name('pengesahan_spj.simpan_pengeluaran_spj');
+    });
+
+    Route::group(['prefix' => 'spb'], function () {
+        // SPB BOS
+        Route::group(['prefix' => 'bos'], function () {
+            Route::get('', [BosController::class, 'index'])->name('spb_bos.index');
+            Route::post('load', [BosController::class, 'load'])->name('spb_bos.load');
+            Route::get('edit/{no_sp2b?}/{kd_skpd?}', [BosController::class, 'edit'])->name('spb_bos.edit');
+            Route::post('simpan', [BosController::class, 'simpan'])->name('spb_bos.simpan');
+            Route::post('hapus', [BosController::class, 'hapus'])->name('spb_bos.hapus');
+            Route::get('cetak', [BosController::class, 'cetak'])->name('spb_bos.cetak');
+        });
     });
 });
 
