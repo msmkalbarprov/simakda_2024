@@ -65,6 +65,23 @@ class LaporanAkuntansiController extends Controller
         return view('akuntansi.perda')->with($data);
     }
 
+    public function perkada()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'ttd' => DB::table('ms_ttd')
+                ->whereIn('kode', ['1'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
+            'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
+            'jns_anggaran' => jenis_anggaran(),
+            'jns_anggaran2' => jenis_anggaran()
+        ];
+
+        return view('akuntansi.perkada')->with($data);
+    }
+
     // get skpd by radio
     public function cariSkpd(Request $request)
     {
@@ -792,7 +809,7 @@ class LaporanAkuntansiController extends Controller
             $periode1= "year (tgl_voucher)='$thn_ang1' and ";
             $modtahun= $thn_ang%4;
         
-             if ($modtahun = 0){
+            if ($modtahun = 0){
                 $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
             }
                     else {

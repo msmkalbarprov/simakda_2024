@@ -1,54 +1,56 @@
 @extends('template.app')
-@section('title', 'Ubah SP2B | SIMAKDA')
+@section('title', 'Input SPB | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input SP2B
+                    Input SPB
                 </div>
                 <div class="card-body">
                     @csrf
+                    {{-- NO SPB dan Tanggal SPB --}}
+                    <div class="mb-3 row">
+                        <label for="no_spb" class="col-md-2 col-form-label">No. SPB</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="no_spb" name="no_spb" required readonly
+                                value="{{ $spb->status == 1 || $spb->status ? $spb->no_spb : $no_spb }}">
+                            <input class="form-control" type="text" id="no_urut" name="no_urut" required readonly
+                                hidden value="{{ $no_urut }}">
+                        </div>
+                        <label for="tgl_spb" class="col-md-2 col-form-label">Tanggal SPB</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="date" id="tgl_spb" name="tgl_spb" required
+                                value="{{ $spb->status == 1 || $spb->status ? $spb->tgl_spb : '' }}">
+                        </div>
+                    </div>
                     {{-- SKPD dan Nama SKPD --}}
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">SKPD</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="kd_skpd" name="kd_skpd" required readonly
-                                value="{{ $sp2b->kd_skpd }}">
+                                value="{{ $spb->kd_skpd }}">
                         </div>
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nm_skpd" name="nm_skpd" required readonly
-                                value="{{ nama_skpd($sp2b->kd_skpd) }}">
+                                value="{{ nama_skpd($spb->kd_skpd) }}">
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ tahun_anggaran() }}">
-                        </div>
-                    </div>
-                    {{-- No. Kas dan No SP2B Tersimpan --}}
-                    <div class="mb-3 row">
-                        <label for="no_kas" class="col-md-2 col-form-label">No. Kas</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_kas" name="no_kas" required readonly
-                                value="{{ $sp2b->no_kas }}">
-                        </div>
-                        <label for="no_simpan" class="col-md-2 col-form-label">No. SP2B Tersimpan</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_simpan" name="no_simpan" required readonly
-                                style="text-align: right" value="{{ $sp2b->no_sp2b }}">
                         </div>
                     </div>
                     {{-- NO SP2B dan Tanggal SP2B --}}
                     <div class="mb-3 row">
                         <label for="no_sp2b" class="col-md-2 col-form-label">No. SP2B</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_sp2b" name="no_sp2b" required
-                                placeholder="No SP2B tanpa spasi" value="{{ $sp2b->no_sp2b }}">
+                            <input class="form-control" type="text" id="no_sp2b" name="no_sp2b" required readonly
+                                value="{{ $spb->no_sp2b }}">
                         </div>
                         <label for="tgl_sp2b" class="col-md-2 col-form-label">Tanggal SP2B</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="date" id="tgl_sp2b" name="tgl_sp2b" required
-                                value="{{ $sp2b->tgl_sp2b }}">
+                            <input class="form-control" type="date" id="tgl_sp2b" name="tgl_sp2b" required readonly
+                                value="{{ $spb->tgl_sp2b }}">
                         </div>
                     </div>
                     {{-- Sub Kegiatan --}}
@@ -61,7 +63,7 @@
                                 @foreach ($daftar_kegiatan as $kegiatan)
                                     <option value="{{ $kegiatan->kd_sub_kegiatan }}"
                                         data-nama="{{ $kegiatan->nm_sub_kegiatan }}"
-                                        {{ $sp2b->kd_sub_kegiatan == $kegiatan->kd_sub_kegiatan ? 'selected' : '' }}>
+                                        {{ $spb->kd_sub_kegiatan == $kegiatan->kd_sub_kegiatan ? 'selected' : '' }}>
                                         {{ $kegiatan->kd_sub_kegiatan }} |
                                         {{ $kegiatan->nm_sub_kegiatan }}</option>
                                 @endforeach
@@ -83,15 +85,15 @@
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
                         <div class="col-md-10">
-                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan">{{ $sp2b->keterangan }}</textarea>
+                            <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan" readonly>{{ $spb->keterangan }}</textarea>
                         </div>
                     </div>
                     <!-- SIMPAN -->
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan" class="btn btn-primary btn-md"
-                                {{ $sp2b->status == 1 ? 'hidden' : '' }}>Simpan</button>
-                            <a href="{{ route('sp2b.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                                {{ $spb->status == 1 || $spb->status == 2 ? 'hidden' : '' }}>Simpan</button>
+                            <a href="{{ route('spb_bos.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
                 </div>
@@ -108,19 +110,12 @@
                     <div class="mb-3 row">
                         <label for="tgl_transaksi" class="col-md-12 col-form-label">Tanggal Transaksi</label>
                         <div class="col-md-2">
-                            <input type="date" class="form-control" id="tgl_awal" value="{{ $sp2b->tgl_awal }}"
+                            <input type="date" class="form-control" id="tgl_awal" value="{{ $spb->tgl_awal }}"
                                 readonly>
                         </div>
                         <div class="col-md-2">
-                            <input type="date" class="form-control" id="tgl_akhir" value="{{ $sp2b->tgl_akhir }}"
+                            <input type="date" class="form-control" id="tgl_akhir" value="{{ $spb->tgl_akhir }}"
                                 readonly>
-                        </div>
-                        <div class="col-md-8">
-                            <button class="btn btn-success" id="tampilkan" disabled><i class="uil-eye"></i>
-                                Tampilkan</button>
-                            <button href="#" class="btn btn-success" id="kosongkan" disabled><i
-                                    class="uil-trash"></i>
-                                Kosongkan</button>
                         </div>
                     </div>
                 </div>
@@ -135,7 +130,6 @@
                                 <th>Rekening</th>
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
-                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -154,11 +148,6 @@
                                     <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->nm_rek6 }}</td>
                                     <td>{{ rupiah($detail->nilai) }}</td>
-                                    <td>
-                                        {{-- <a href="javascript:void(0);"
-                                            onclick="hapus('{{ $detail->no_bukti }}','{{ $detail->kd_rek6 }}','{{ $detail->nilai }}')"
-                                            class="btn btn-danger btn-sm"><i class="uil-trash"></i></a> --}}
-                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -176,5 +165,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.sp2b.js.edit');
+    @include('bud.spb_bos.js.show');
 @endsection

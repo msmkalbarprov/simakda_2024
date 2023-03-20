@@ -7111,4 +7111,67 @@ class BendaharaUmumDaerahController extends Controller
         }
         // return view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
     }
+
+    public function formatBpk(Request $request)
+    {
+        $req = $request->all();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'data_awal' => DB::select("SELECT cast(SUBSTRING(no_sp2d,0,(len(no_sp2d)-7)) as int) as urut,b.nm_skpd,
+                    (SELECT nm_rek2 from ms_rek2 where left(kd_rek6,2)=kd_rek2)as jenis,
+                    (SELECT nm_rek3 from ms_rek3 where left(kd_rek6,4)=kd_rek3)as kelompok,
+                    (SELECT nm_rek4 from ms_rek4 where left(kd_rek6,6)=kd_rek4)as objek,
+                    (SELECT nm_rek5 from ms_rek5 where left(kd_rek6,8)=kd_rek5)as rincianobjek,
+                    nm_rek6 as subrincianobjek,
+                    no_sp2d,
+                    tgl_sp2d,
+                    keperluan,
+                    nmrekan,
+                    npwp,
+                    sum(a.nilai) as nilai_sp2d,
+                    (select sum(nilai) from trspmpot c where b.no_spm=c.no_spm and c.kd_rek6='210105010001' and kd_trans=a.kd_rek6)as pph21,
+                    (select sum(nilai) from trspmpot c where b.no_spm=c.no_spm and c.kd_rek6='210105020001' and kd_trans=a.kd_rek6)as pph22,
+                    (select sum(nilai) from trspmpot c where b.no_spm=c.no_spm and c.kd_rek6='210105030001' and kd_trans=a.kd_rek6)as pph23,
+                    (select sum(nilai) from trspmpot c where b.no_spm=c.no_spm and c.kd_rek6='210109010001' and kd_trans=a.kd_rek6)as pph4ayat2,
+                    (select sum(nilai) from trspmpot c where b.no_spm=c.no_spm and c.kd_rek6='210106010001' and kd_trans=a.kd_rek6)as ppn
+                    from trdspp a INNER JOIN trhsp2d b
+                    on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                    where (sp2d_batal<>1 OR sp2d_batal is null) and status_bud = 1
+                    GROUP BY
+                    b.nm_skpd,
+                    kd_rek6,
+                    nm_rek6,
+                    no_sp2d,
+                    no_spm,
+                    tgl_sp2d,
+                    keperluan,
+                    nmrekan,
+                    npwp
+                    ORDER BY urut asc"),
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['nip' => $req['ttd']])
+                ->whereIn('kode', ['BUD'])
+                ->first()
+        ];
+
+        $view = view('bud.laporan_bendahara.cetak.format_bpk')->with($data);
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOrientation('landscape')
+                ->setOption('margin-left', $req['margin_kiri'])
+                ->setOption('margin-right', $req['margin_kanan'])
+                ->setOption('margin-top', $req['margin_atas'])
+                ->setOption('margin-bottom', $req['margin_bawah']);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
+            return $view;
+        }
+    }
 }

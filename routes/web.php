@@ -100,7 +100,9 @@ use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 //akuntansi
 use App\Http\Controllers\Akuntansi\LraperdaController;
+use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
+use App\Http\Controllers\SPB\BosController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1383,6 +1385,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('realisasi_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSp2d'])->name('laporan_bendahara_umum.realisasi_sp2d');
         // REGISTER SP2D (REALISASI PER SKPD)
         Route::get('realisasiskpd_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSkpdSp2d'])->name('laporan_bendahara_umum.realisasiskpd_sp2d');
+        // REGISTER SP2D FORMAT BPK
+        Route::get('format_bpk', [BendaharaUmumDaerahController::class, 'formatBpk'])->name('laporan_bendahara_umum.format_bpk');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
@@ -1526,6 +1530,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
             // LRA
             Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
+            //perkada
+            Route::get('perkada', [LaporanAkuntansiController::class, 'perkada'])->name('laporan_akuntansi.perkada');
+            Route::get('cetak_lamp1', [LraperkadaController::class, 'cetak_lamp1'])->name('laporan_akuntansi.perkada.cetak_lamp1');
+            Route::get('cetak_lamp2', [LraperkadaController::class, 'cetak_lamp2'])->name('laporan_akuntansi.perkada.cetak_lamp2');
             // NERACA
             Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
         });
@@ -1545,6 +1553,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('load_pengeluaran_spj', [PengesahanSPJController::class, 'load_pengeluaran'])->name('pengesahan_spj.load_pengeluaran');
         Route::get('cetak_pengeluaran_spj', [PengesahanSPJController::class, 'cetak_pengeluaran_spj'])->name('pengesahan_spj.cetak_pengeluaran_spj');
         Route::post('simpan_pengeluaran_spj', [PengesahanSPJController::class, 'simpan_pengeluaran_spj'])->name('pengesahan_spj.simpan_pengeluaran_spj');
+    });
+
+    Route::group(['prefix' => 'spb'], function () {
+        // SPB BOS
+        Route::group(['prefix' => 'bos'], function () {
+            Route::get('', [BosController::class, 'index'])->name('spb_bos.index');
+            Route::post('load', [BosController::class, 'load'])->name('spb_bos.load');
+            Route::get('edit/{no_sp2b?}/{kd_skpd?}', [BosController::class, 'edit'])->name('spb_bos.edit');
+            Route::post('simpan', [BosController::class, 'simpan'])->name('spb_bos.simpan');
+            Route::post('hapus', [BosController::class, 'hapus'])->name('spb_bos.hapus');
+            Route::get('cetak', [BosController::class, 'cetak'])->name('spb_bos.cetak');
+        });
     });
 });
 

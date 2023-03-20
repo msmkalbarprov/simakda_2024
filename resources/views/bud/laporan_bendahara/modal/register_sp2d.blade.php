@@ -254,6 +254,20 @@
                             data-jenis="excel">Excel</button>
                     </div>
                 </div>
+                {{-- Format BPK --}}
+                <div class="mb-3 row">
+                    <div class="col-md-2">
+                        <label for="urutan" class="form-label">Format BPK</label>
+                    </div>
+                    <div class="col-md-10">
+                        <button type="button" class="btn btn-danger btn-md format_bpk" data-jenis="pdf">
+                            PDF</button>
+                        <button type="button" class="btn btn-dark btn-md format_bpk"
+                            data-jenis="layar">Layar</button>
+                        <button type="button" class="btn btn-success btn-md format_bpk"
+                            data-jenis="excel">Excel</button>
+                    </div>
+                </div>
                 <div class="mb-3 row">
                     <div class="col-md-12 text-right">
                         <button type="button" class="btn btn-md btn-secondary"

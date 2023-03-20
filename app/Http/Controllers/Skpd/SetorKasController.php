@@ -596,7 +596,7 @@ class SetorKasController extends Controller
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17) AND right(kd_skpd,2)=?", [$kd_skpd, '00'])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
             'tahun_anggaran' => tahun_anggaran(),
             'kd_skpd' => $kd_skpd,
-            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
             'sisa_tunai' => load_sisa_tunai(),
         ];
 
@@ -660,7 +660,7 @@ class SetorKasController extends Controller
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->whereRaw("left(kd_skpd,17)=left(?,17) AND right(kd_skpd,2)=?", [$kd_skpd, '00'])->whereNotIn('kd_skpd', [$kd_skpd])->get(),
             'tahun_anggaran' => tahun_anggaran(),
             'kd_skpd' => $kd_skpd,
-            'rekening_tujuan' => DB::table('ms_rekening_bank as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"), 'a.keterangan', 'a.kd_skpd', 'a.jenis')->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
             'sisa_tunai' => load_sisa_tunai(),
             'setor' => DB::table('tr_setorpelimpahan_tunai')->where(['no_kas' => $no_kas, 'kd_skpd_sumber' => $kd_skpd])->first()
         ];

@@ -3685,6 +3685,28 @@ function nama_org($org)
     return $data->nm_org;
 }
 
+//Rama
+function nama_bidang($bidang)
+{
+    $data = DB::table('ms_bidang_urusan')
+        ->select('nm_bidang_urusan')
+        ->where(['kd_bidang_urusan' => $bidang])
+        ->first();
+
+    return $data->nm_bidang_urusan;
+}
+
+//Rama
+function nama_urusan($urusan)
+{
+    $data = DB::table('ms_urusan')
+        ->select('nm_urusan')
+        ->where(['kd_urusan' => $urusan])
+        ->first();
+
+    return $data->nm_urusan;
+}
+
 function no_urut_cms()
 {
     $kd_skpd = Auth::user()->kd_skpd;
