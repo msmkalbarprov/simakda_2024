@@ -181,6 +181,12 @@
             $("#labelcetak_semester").html("Cetak I.4 URUSAN");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
+        $('#i1').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_i1').modal('show');
+            $("#labelcetak_semester").html("Cetak I.1");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
 
         
 
@@ -224,12 +230,15 @@
 
         function Cetak(jns_cetak) {
 
+            let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
+
+            // SET CETAKAN
+            if (labelcetak_semester == 'Cetak I.4 URUSAN') {
             // GET DATA
             let bulan                    = document.getElementById('bulan').value;
             let tgl_ttd                  = document.getElementById('tgl_ttd').value;
             let jns_anggaran             = document.getElementById('jns_anggaran').value;
             let jenis                    = document.getElementById('jenis').value;
-            let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
             // alert(labelcetak_semester)
             // PERINGATAN
                 if (!tgl_ttd) {
@@ -248,14 +257,32 @@
                     alert('Jenis Anggaran tidak boleh kosong!');
                     return;
                 }
-
-            // SET CETAKAN
-            if (labelcetak_semester == 'Cetak I.4 URUSAN') {
                 let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i4_urusan') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("bulan", bulan);
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis", jenis);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak I.1') {
+            // GET DATA
+            let tgl_ttd                  = document.getElementById('tgl_ttd_i1').value;
+            let jns_anggaran             = document.getElementById('jns_anggaran_i1').value;
+            // alert(labelcetak_semester)
+            // PERINGATAN
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i1') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");

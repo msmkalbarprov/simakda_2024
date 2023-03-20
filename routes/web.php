@@ -1526,8 +1526,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
             //perda
             Route::get('perda', [LaporanAkuntansiController::class, 'perda'])->name('laporan_akuntansi.perda');
-            // LRA
+            // LRA perda
             Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
+            Route::get('cetak_i1', [LraperdaController::class, 'cetak_i1'])->name('laporan_akuntansi.perda.cetak_i1');
             // LRA
             Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
             //perkada
