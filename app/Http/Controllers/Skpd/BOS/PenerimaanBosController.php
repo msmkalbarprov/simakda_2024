@@ -21,11 +21,13 @@ class PenerimaanBosController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $data = DB::select("SELECT * from tr_terima_bos WHERE kd_skpd=? order by no_terima", [$kd_skpd]);
+        $data = DB::select("SELECT a.*,(SELECT COUNT(*) from trdsp2b z where z.no_bukti = a.no_terima and z.kd_skpd = a.kd_skpd) ketlpj,(SELECT COUNT(*) from trdsp2h x where x.no_bukti = a.no_terima and x.kd_skpd = a.kd_skpd) total_sp2h from tr_terima_bos a WHERE kd_skpd=? order by no_terima", [$kd_skpd]);
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penerimaan_bos.edit", ['no_terima' => Crypt::encrypt($row->no_terima), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            if ($row->status == '0') {
+            if ($row->ketlpj == 1 || $row->total_sp2h == 1) {
+                $btn .= "";
+            } else {
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_terima . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
             return $btn;
@@ -99,7 +101,7 @@ class PenerimaanBosController extends Controller
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
         $data = [
-            'terima' => DB::table('tr_terima_bos')->where(['no_terima' => $no_terima, 'kd_skpd' => $kd_skpd])->first(),
+            'terima' => collect(DB::select("SELECT a.*,(SELECT COUNT(*) from trdsp2b z where z.no_bukti = a.no_terima and z.kd_skpd = a.kd_skpd) ketlpj,(SELECT COUNT(*) from trdsp2h x where x.no_bukti = a.no_terima and x.kd_skpd = a.kd_skpd) total_sp2h from tr_terima_bos a WHERE a.kd_skpd=? AND a.no_terima=?", [$kd_skpd, $no_terima]))->first(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::select("SELECT * FROM (
                 SELECT '1.01.2.22.0.00.01.0000'as kd_skpd,'1.01.00.0.00.04' as kd_sub_kegiatan,'PENDAPATAN'as nm_sub_kegiatan

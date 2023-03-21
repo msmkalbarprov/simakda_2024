@@ -121,7 +121,8 @@
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            <button id="simpan" class="btn btn-primary btn-md"
+                                {{ $cek->ketlpj == 1 || $cek->total_sp2h == 1 || $cek->ketspj == 1 ? 'hidden' : '' }}>Simpan</button>
                             <a href="{{ route('transaksi_bos.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
