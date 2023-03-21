@@ -937,59 +937,84 @@ class SppLsController extends Controller
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
-        $cek = DB::table('trhspp')->where('no_spp', $data['no_spp'])->count();
+
         DB::beginTransaction();
         try {
+            $cek = DB::table('trhspp')->where('no_spp', $data['no_spp'])->count();
+
             if ($cek > 0) {
                 return response()->json([
                     'message' => '2'
                 ]);
-            } else {
-                // input trhspp
-                DB::table('trhspp')->insert([
-                    'no_spp' => $data['no_spp'],
-                    'kd_skpd' => $data['kd_skpd'],
-                    'keperluan' => $data['keperluan'],
-                    'bulan' => $data['bulan'],
-                    'no_spd' => $data['nomor_spd'],
-                    'jns_spp' => $data['beban'],
-                    'jns_beban' => $data['jenis'],
-                    'bank' => $data['bank'],
-                    'nmrekan' => $data['rekanan'],
-                    'no_rek' => $data['rekening'],
-                    'npwp' => $data['npwp'],
-                    'nm_skpd' => $data['nm_skpd'],
-                    'tgl_spp' => $data['tgl_spp'],
-                    'status' => '0',
-                    'username' => Auth::user()->nama,
-                    'nilai' => $data['total'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'nm_sub_kegiatan' => $data['nm_sub_kegiatan'],
-                    'kd_program' => $data['kd_program'],
-                    'nm_program' => $data['nm_program'],
-                    'pimpinan' => $data['pimpinan'],
-                    'no_tagih' => $data['no_penagihan'],
-                    'tgl_tagih' => $data['tgl_penagihan'],
-                    'sts_tagih' => $data['sts_tagih'],
-                    'alamat' => $data['alamat'],
-                    'kontrak' => $data['no_kontrak'],
-                    'lanjut' => $data['lanjut'],
-                    'tgl_mulai' => $data['tgl_awal'],
-                    'tgl_akhir' => $data['tgl_akhir'],
-                    'urut' => $data['no_urut'],
-                    'penerima' => $data['nm_penerima'],
-                ]);
-                // set status trhtagih
-                if ($data['no_penagihan']) {
-                    DB::table('trhtagih')->where(['no_bukti' => $data['no_penagihan'], 'kd_skpd' => $kd_skpd])->update([
-                        'sts_tagih' => '1',
-                    ]);
-                }
-                DB::table('trhspp')->where(['no_spp' => $data['no_spp'], 'kd_skpd' => $kd_skpd])->update([
-                    'username' => $nama,
-                    'last_update' => date('Y-m-d H:i:s'),
+            }
+
+            DB::table('trhspp')->insert([
+                'no_spp' => $data['no_spp'],
+                'kd_skpd' => $data['kd_skpd'],
+                'keperluan' => $data['keperluan'],
+                'bulan' => $data['bulan'],
+                'no_spd' => $data['nomor_spd'],
+                'jns_spp' => $data['beban'],
+                'jns_beban' => $data['jenis'],
+                'bank' => $data['bank'],
+                'nmrekan' => $data['rekanan'],
+                'no_rek' => $data['rekening'],
+                'npwp' => $data['npwp'],
+                'nm_skpd' => $data['nm_skpd'],
+                'tgl_spp' => $data['tgl_spp'],
+                'status' => '0',
+                'username' => Auth::user()->nama,
+                'nilai' => $data['total'],
+                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                'nm_sub_kegiatan' => $data['nm_sub_kegiatan'],
+                'kd_program' => $data['kd_program'],
+                'nm_program' => $data['nm_program'],
+                'pimpinan' => $data['pimpinan'],
+                'no_tagih' => $data['no_penagihan'],
+                'tgl_tagih' => $data['tgl_penagihan'],
+                'sts_tagih' => $data['sts_tagih'],
+                'alamat' => $data['alamat'],
+                'kontrak' => $data['no_kontrak'],
+                'lanjut' => $data['lanjut'],
+                'tgl_mulai' => $data['tgl_awal'],
+                'tgl_akhir' => $data['tgl_akhir'],
+                'urut' => $data['no_urut'],
+                'penerima' => $data['nm_penerima'],
+            ]);
+            // set status trhtagih
+            if ($data['no_penagihan']) {
+                DB::table('trhtagih')->where(['no_bukti' => $data['no_penagihan'], 'kd_skpd' => $kd_skpd])->update([
+                    'sts_tagih' => '1',
                 ]);
             }
+
+            DB::table('trdspp')->where(['no_spp' => $data['no_spp'], 'kd_skpd' => $kd_skpd])->delete();
+
+            if (isset($data['rincian_rekening'])) {
+                DB::table('trdspp')->insert(array_map(function ($value) use ($data, $kd_skpd) {
+                    return [
+                        'no_spp' => $data['no_spp'],
+                        'kd_rek6' => $value['kd_rek6'],
+                        'nm_rek6' => $value['nm_rek6'],
+                        'nilai' => $value['nilai'],
+                        'kd_skpd' => $kd_skpd,
+                        'nm_skpd' => nama_skpd($kd_skpd),
+                        'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                        'nm_sub_kegiatan' => $data['nm_sub_kegiatan'],
+                        'no_spd' => $data['nomor_spd'],
+                        'kd_bidang' => $data['bidang'],
+                        'sumber' => $value['sumber'],
+                        'volume' => $value['volume_output'],
+                        'satuan' => $value['satuan_output'],
+                    ];
+                }, $data['rincian_rekening']));
+            }
+            DB::table('tb_transaksi')->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $data['no_spp'], 'username' => $nama])->delete();
+            DB::table('trhspp')->where(['kd_skpd' => $kd_skpd, 'no_spp' => $data['no_spp']])->whereNull('username')->update([
+                'username'  => $nama,
+                'last_update' => date('Y-m-d H:i:s')
+            ]);
+
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -1054,7 +1079,8 @@ class SppLsController extends Controller
             $join->on('a.no_spp', '=', 'b.no_spp');
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where('a.no_spp', $no_spp)->select('a.*')->first();
-
+        dd($no_spp);
+        dd($data_sppls);
         $data = [
             'sppls' => $data_sppls,
             'tgl_spd' => DB::table('trhspd')->select('tgl_spd')->where('no_spd', $data_sppls->no_spd)->first(),
