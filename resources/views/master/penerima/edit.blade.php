@@ -546,12 +546,13 @@
                                 $("#loading").hide();
                             } else {
                                 // alert(data1.message);
-                                
+                                let pesan = data1.message.replaceAll(" ", "\u00A0");
+
                                 Swal.fire({
                                         type:"error",
                                         icon:"error",
                                         title:"Oops...",
-                                        text:data1.message,
+                                        text:pesan,
                                         confirmButtonClass:"btn btn-confirm mt-2",
                                     })
 

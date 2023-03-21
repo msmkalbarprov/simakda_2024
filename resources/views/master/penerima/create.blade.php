@@ -493,7 +493,7 @@
                                             confirmButtonColor: '#5b73e8',
                                         }
                                     )
-                                    
+
                                 $("#no_rekening_validasi").val(data1.data[0].data
                                     .nomorRekening);
                                 $("#nm_rekening_validasi").val(data1.data[0].data
@@ -504,11 +504,12 @@
                                 }
                                 document.getElementById("save").disabled = false;
                             } else {
+                                let pesan = data1.message.replaceAll(" ", "\u00A0");
                                 Swal.fire({
                                         type:"error",
                                         icon:"error",
                                         title:"Oops...",
-                                        text:data1.message,
+                                        text:pesan,
                                         confirmButtonClass:"btn btn-confirm mt-2",
                                     })
                                 document.getElementById("save").disabled = true;

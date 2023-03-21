@@ -102,6 +102,7 @@ use App\Http\Controllers\Utility\KunciPengeluaranController;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\SPB\BosController;
 
 // Route::get('/simakda_2023', function () {
@@ -134,6 +135,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::resource('kontrak', KontrakController::class);
         Route::post('hapus_kontrak', [KontrakController::class, 'hapus'])->name('kontrak.hapus');
         Route::post('load_kontrak', [KontrakController::class, 'loadData'])->name('kontrak.load_data');
+        // pengumuman
+        Route::resource('pengumuman', PengumumanController::class);
+        Route::post('hapus_pengumuman', [PengumumanController::class, 'hapus'])->name('pengumuman.hapus');
+        Route::post('load_pengumuman', [PengumumanController::class, 'loadData'])->name('pengumuman.load_data');
         // penandatangan
         Route::resource('tandatangan', PenandatanganController::class);
         Route::post('hapus_tandatangan', [PenandatanganController::class, 'hapus'])->name('tandatangan.hapus');
