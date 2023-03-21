@@ -26,93 +26,80 @@
                     <a href="{{ route('kontrak.index') }}" class="btn btn-warning btn-md" style="float: right;">Kembali</a>
                 </div>
                 <div class="card-body">
-                    <!-- Kode SKPD -->
                     <div class="mb-3 row">
-                        <label for="kd_skpd" class="col-md-2 col-form-label">Kode SKPD/Unit</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly class="form-control" name="kd_skpd" id="kd_skpd"
-                                value="{{ $data->kd_skpd }}">
+                        <label for="judul" class="col-md-3 col-form-label">Judul</label>
+                        <div class="col-md-9">
+                            <input type="text" placeholder="Judul Pengumuman"
+                                class="form-control @error('judul') is-invalid @enderror"
+                                value="{{ $data_pengumuman->judul }}" id="judul" name="judul" readonly>
+                            @error('judul')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <!-- Nama SKPD -->
+                    <!-- Tanggal pengumuman -->
                     <div class="mb-3 row">
-                        <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD/Unit</label>
-                        <div class="col-md-10">
-                            <input class="form-control" readonly type="text" value="{{ $skpd->nm_skpd }}" id="nm_skpd"
-                                name="nm_skpd" readonly required>
+                        <label for="tanggal" class="col-md-3 col-form-label">Tanggal pengumuman</label>
+                        <div class="col-md-9">
+                            <input type="date" name="tanggal" id="tanggal" value="{{ $data_pengumuman->tanggal }}"
+                                class="form-control @error('tanggal') is-invalid @enderror" readonly>
+                            @error('tanggal')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <!-- No Kontrak -->
+                    <!-- Isi pengumuman -->
                     <div class="mb-3 row">
-                        <label for="no_kontrak" class="col-md-2 col-form-label">No Kontrak</label>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" readonly value="{{ $data->no_kontrak }}"
-                                id="no_kontrak" name="no_kontrak">
+                        <label for="isi" class="col-md-3 col-form-label">Isi pengumuman</label>
+                        <div class="col-md-9">
+                            <textarea class="form-control @error('isi') is-invalid @enderror" value="{{ old('isi') }}"
+                                type="text" rows="5" placeholder="Silahkan isi" id="isi"
+                                name="isi" readonly>{{ $data_pengumuman->isi }}</textarea>
+                            @error('isi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <!-- Tanggal Kontrak -->
+                    <!-- File -->
                     <div class="mb-3 row">
-                        <label for="tgl_kerja" class="col-md-2 col-form-label">Tanggal Kontrak</label>
-                        <div class="col-md-10">
-                            <input type="text" name="tgl_kerja" id="tgl_kerja" readonly
-                                value="{{ \Carbon\Carbon::parse($data->tgl_kerja)->locale('id')->isoFormat('D MMMM Y') }}"
-                                class="form-control">
+                        <label for="dokumen" class="col-md-3 col-form-label">File</label>
+                       
+                        <div class="col-md-9">
+                            <input type="text" name="dokumenasli" id="dokumenasli" value="{{ $data_pengumuman->file }}"
+                                class="form-control @error('dokumenasli') is-invalid @enderror" readonly>
+                            @error('dokumenasli')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <!-- Pelaksana Pekerjaan/Rekanan -->
                     <div class="mb-3 row">
-                        <label for="nmpel" class="col-md-2 col-form-label">Pelaksana Pekerjaan/Rekanan</label>
-                        <div class="col-md-10">
-                            <input class="form-control" readonly value="{{ $data->nmpel }}" type="text" id="nmpel"
-                                name="nmpel">
+                        <label for="aktif" class="col-md-3 col-form-label">Aktif/Tidak Aktif</label>
+                        <div class="col-md-9">
+                            <select class="form-control select2-multiple @error('aktif') is-invalid @enderror"
+                                name="aktif" readonly>
+                                    <option value="" selected disabled>Silahkan Pilih</option>
+                                    <option value="1" {{ $data_pengumuman->aktif == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ $data_pengumuman->aktif == '0' ? 'selected' : '' }}>Tidak Aktif
+                                    </option>
+                            </select>
+                            @error('aktif')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <!-- Pimpinan -->
                     <div class="mb-3 row">
-                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
-                        <div class="col-md-10">
-                            <input class="form-control" readonly type="text" value="{{ $data->pimpinan }}" id="pimpinan"
-                                name="pimpinan">
-                        </div>
-                    </div>
-                    <!-- Nama Pekerjaan -->
-                    <div class="mb-3 row">
-                        <label for="nm_kerja" class="col-md-2 col-form-label">Nama Pekerjaan</label>
-                        <div class="col-md-10">
-                            <input class="form-control" readonly type="text" value="{{ $data->nm_kerja }}" id="nm_kerja"
-                                name="nm_kerja">
-                        </div>
-                    </div>
-                    <!-- Rekanan -->
-                    <div class="mb-3 row">
-                        <label for="nm_rekening" class="col-md-2 col-form-label">(Rekanan) Nama Pemilik Rekening</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly name="no_rekening" value="{{ $data->nm_rekening }}"
-                                id="no_rekening" class="form-control">
-                        </div>
-                    </div>
-                    <!-- No Rekening -->
-                    <div class="mb-3 row">
-                        <label for="no_rekening" class="col-md-2 col-form-label">No Rekening</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly name="no_rekening" value="{{ $data_rekening->rekening }}"
-                                id="no_rekening" class="form-control">
-                        </div>
-                    </div>
-                    <!-- NPWP -->
-                    <div class="mb-3 row">
-                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly name="npwp" value="{{ $data_rekening->npwp }}" id="npwp"
-                                class="form-control">
-                        </div>
-                    </div>
-                    <!-- Nilai Kontrak -->
-                    <div class="mb-3 row">
-                        <label for="nilai" class="col-md-2 col-form-label">Nilai Kontrak</label>
-                        <div class="col-md-10">
-                            <input type="text" readonly value="{{ $data->nilai }}" name="nilai" id="nilai"
-                                class="form-control">
+                        <label for="status" class="col-md-3 col-form-label">Muncul di beranda</label>
+                        <div class="col-md-9">
+                            <select class="form-control select2-multiple @error('status') is-invalid @enderror"
+                                name="status" @readonly('true')>
+                                    <option value="" selected disabled>Silahkan Pilih</option>
+                                    <option value="1" {{ $data_pengumuman->status == '1' ? 'selected' : '' }}>Muncul</option>
+                                    <option value="0" {{ $data_pengumuman->status == '0' ? 'selected' : '' }}>Tidak Muncul
+                                    </option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>

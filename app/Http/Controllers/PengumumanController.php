@@ -61,7 +61,7 @@ class PengumumanController extends Controller
         $data_awal = DB::table('ms_pengumuman')->where(['id' => $id])->first();
 
         $data = [
-            'data' => $data_awal,
+            'data_pengumuman' => $data_awal,
             'tanggal' => date('d M Y', strtotime($data_awal->tanggal))
         ];
         return view('master.pengumuman.show')->with($data);
