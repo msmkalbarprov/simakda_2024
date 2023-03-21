@@ -83,11 +83,24 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="ped">
+                <div class="card-body">
+                    {{ 'PED' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
         
     </div>
 
 @include('akuntansi.modal.bukubesar')
 @include('akuntansi.modal.neraca_saldo')
+@include('akuntansi.modal.ped')
 @endsection
 @section('js')
     <script>
@@ -101,6 +114,7 @@
             cari_rek6();
             cari_skpdbb();
             cari_rek1();
+            ttd_bud();
 
             $(".select_lbb").select2({
                 theme: 'bootstrap-5',
@@ -111,6 +125,12 @@
             $(".select_ns").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ns .modal-content'),
+                
+            });
+
+            $(".select_ped").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_ped .modal-content'),
                 
             });
             // hidden
@@ -142,6 +162,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_ns').modal('show');
             $("#labelcetak_semester").html("Cetak Neraca Saldo");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#ped').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_ped').modal('show');
+            $("#labelcetak_semester").html("Cetak PED");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -195,6 +222,26 @@
                 }
             })
         }
+
+        function ttd_bud() {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.cari_ttd_bud') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    // console.log(data);
+                    $('#ttd_bud').empty();
+                    $('#ttd_bud').append(
+                        `<option value="" disabled selected>Pilih Rekening</option>`);
+                    $.each(data, function(index, data) {
+                        $('#ttd_bud').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
+
         function cari_rek1() {
             $.ajax({
                 url: "{{ route('laporan_akuntansi.rek1') }}",
@@ -315,6 +362,38 @@
                 searchParams.append("bulan_ns", bulan_ns);
                 searchParams.append("kd_skpd_ns", kd_skpd_ns);
                 searchParams.append("rek1", rek1);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak PED') {
+                let tanggal1_ped                    = document.getElementById('tanggal1_ped').value;
+                let tanggal2_ped                    = document.getElementById('tanggal2_ped').value;
+                let ttd_bud             = document.getElementById('ttd_bud').value;
+                let jns_ang             = document.getElementById('jns_anggaran').value;
+
+                if (!jns_ang) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal1_ped) {
+                    alert('Tanggal Awal tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal2_ped) {
+                    alert('Tanggal Akhir tidak boleh kosong!');
+                    return;
+                }
+                if (!ttd_bud) {
+                    alert('Penandatangan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.cped') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tanggal1_ped", tanggal1_ped);
+                searchParams.append("tanggal2_ped", tanggal2_ped);
+                searchParams.append("jns_ang", jns_ang);
+                searchParams.append("ttd_bud", ttd_bud);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

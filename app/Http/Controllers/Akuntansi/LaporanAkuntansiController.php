@@ -177,6 +177,12 @@ class LaporanAkuntansiController extends Controller
         $data       = DB::table('ms_ttd')->where(['kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->orderBy('nip')->orderBy('nama')->get();
         return response()->json($data);
     }
+    function cari_ttd_bud(Request $request)
+    {
+        
+        $data       = DB::table('ms_ttd')->where(['kode' => 'bud'])->orderBy('nip')->orderBy('nama')->get();
+        return response()->json($data);
+    }
 
     function cariSubkegiatan(Request $request)
     {
@@ -910,6 +916,80 @@ class LaporanAkuntansiController extends Controller
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachement; filename="NERACA SALDO.xls"');
+            return $view;
+        }
+    }
+
+    public function cetak_ped(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tgl1    = $request->tanggal1_ped;
+        $tgl2    = $request->tanggal2_ped;
+        $ttd_bud    = $request->ttd_bud;
+        $cetak          = $request->cetak;
+        $jns_ang        = $request->jns_ang;
+
+        $thn_ang = tahun_anggaran();
+        $thn_ang1 = $thn_ang-1;
+        $thn_ang2 = $thn_ang1-1;
+        
+        // dd($nm_bln);
+
+
+
+        
+
+        $map1 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu_oyoy where bagian='1'"))->first();
+        $map2 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu_oyoy where bagian='2'"))->first();
+
+        $ttd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where (kode='bud' OR kode='GUB') and nip like '%$ttd_bud%'"))->first();
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'map1'     => $map1,
+            'map2'     => $map2,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'tgl1'    => $tgl1,
+            'tgl2'   => $tgl2,
+            'ttd_bud'   => $ttd_bud,
+            'ttd'   => $ttd,
+            'jns_ang'   => $jns_ang,
+            'thn_ang'   => $thn_ang,
+            'thn_ang1'   => $thn_ang1
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.ped')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PED.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PED.xls"');
             return $view;
         }
     }
