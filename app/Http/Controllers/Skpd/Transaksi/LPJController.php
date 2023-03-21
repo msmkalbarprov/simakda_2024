@@ -422,6 +422,10 @@ class LPJController extends Controller
         $kd_skpd = $request->kd_skpd;
         $pa_kpa = $request->pa_kpa;
         $jenis_print = $request->jenis_print;
+        $margin_atas = $request->margin_atas;
+        $margin_bawah = $request->margin_bawah;
+        $margin_kiri = $request->margin_kiri;
+        $margin_kanan = $request->margin_kanan;
 
         $data = [
             'header' => DB::table('config_app')
@@ -450,8 +454,10 @@ class LPJController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -468,6 +474,10 @@ class LPJController extends Controller
         $pilihan = $request->pilihan;
         $jenis_print = $request->jenis_print;
         $status_anggaran = status_anggaran();
+        $margin_atas = $request->margin_atas;
+        $margin_bawah = $request->margin_bawah;
+        $margin_kiri = $request->margin_kiri;
+        $margin_kanan = $request->margin_kanan;
 
         if ($pilihan == '0') {
             $data_lpj = DB::select("SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,7) as kode, b.nm_program as uraian, SUM(a.nilai) as nilai
@@ -675,8 +685,10 @@ class LPJController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -690,6 +702,11 @@ class LPJController extends Controller
         $pa_kpa = $request->pa_kpa;
         $bendahara = $request->bendahara;
         $jenis_print = $request->jenis_print;
+
+        $margin_atas = $request->margin_atas;
+        $margin_bawah = $request->margin_bawah;
+        $margin_kiri = $request->margin_kiri;
+        $margin_kanan = $request->margin_kanan;
 
         $data = [
             'header' => DB::table('config_app')
@@ -721,8 +738,10 @@ class LPJController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
