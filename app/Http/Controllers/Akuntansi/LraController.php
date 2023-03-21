@@ -31,14 +31,19 @@ class LraController extends Controller
         $jenis_data     = $request->jenis_data;
         $jns_rincian    = $request->jns_rincian;
         $skpdunit    = $request->skpdunit;
-        dd($skpdunit);
+        $kd_skpd        = $request->kd_skpd;
+        // dd($skpdunit);
         if($request->kd_skpd==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
             $skpd_clauses= "";
             $skpd_clause_prog= "";
         }else{
-            $kd_skpd        = $request->kd_skpd;
+            if ($skpdunit=="unit") {
+                $kd_skpd=$kd_skpd;
+            }else if ($skpdunit=="skpd") {
+                $kd_skpd=substr($kd_skpd,0,17);
+            }
             $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
@@ -859,12 +864,18 @@ class LraController extends Controller
         $format          = $request->format;
         $enter          = $request->spasi;
         $cetak          = $request->cetak;
+        $skpdunit    = $request->skpdunit;
+        $kd_skpd        = $request->kd_skpd;
         if($request->kd_skpd==''){
             $kd_skpd        = "";
             $skpd_clause    = "";
             $skpd_clauses    = "";
         }else{
-            $kd_skpd        = $request->kd_skpd;
+            if ($skpdunit=="unit") {
+                $kd_skpd=$kd_skpd;
+            }else if ($skpdunit=="skpd") {
+                $kd_skpd=substr($kd_skpd,0,17);
+            }
             $skpd_clause    = "where left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clauses    = "and left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
@@ -936,6 +947,94 @@ class LraController extends Controller
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachement; filename="Neraca.xls"');
+            return $view;
+        }
+    }
+
+    public function cetaklo(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $format          = $request->format;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        $kd_skpd        = $request->kd_skpd;
+        $skpdunit    = $request->skpdunit;
+        if($request->kd_skpd==''){
+            $kd_skpd        = "";
+            $skpd_clause    = "";
+            $skpd_clauses    = "";
+        }else{
+            if ($skpdunit=="unit") {
+                $kd_skpd=$kd_skpd;
+            }else if ($skpdunit=="skpd") {
+                $kd_skpd=substr($kd_skpd,0,17);
+            }
+            $skpd_clause    = "where left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses    = "and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+        }
+        
+        $thn_ang    = tahun_anggaran();
+        $thn_ang1   = $thn_ang-1;
+
+        $modtahun= $thn_ang%4;
+        
+            if ($modtahun = 0){
+                $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }else {
+                $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+         
+         $arraybulan=explode(".",$nilaibulan);
+         $nm_bln = $arraybulan[$bulan];
+
+        
+
+        if ($format=='1') {
+            $map_lo = DB::select("SELECT seq,bold, nor, uraian, isnull(kode_1ja,'-') as kode_1ja, isnull(kode,'-') as kode, isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak 
+                , isnull(kurangi_1,'-') kurangi_1, isnull(kurangi,'-') kurangi, isnull(c_kurangi,0) as c_kurangi
+                FROM map_lo_prov_permen_77_oyoy 
+                GROUP BY seq,bold, nor, uraian, isnull(kode_1ja,'-'), isnull(kode,'-'), isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet') , 
+                isnull(kurangi_1,'-') , isnull(kurangi,'-') , isnull(c_kurangi,0) 
+                ORDER BY nor");
+
+        }else if($format=='2'){
+            
+        }
+        
+                        
+        
+
+
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            // dd($sus);
+        
+            $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'map_lo'        => $map_lo,
+            'enter'             => $enter,
+            'daerah'            => $daerah,
+            'bulan'             => $bulan,
+            'skpd_clauses'      => $skpd_clauses,
+            'kd_skpd'           => $kd_skpd,
+            'nm_bln'            => $nm_bln,
+            'thn_ang'           => $thn_ang,
+            'thn_ang_1'         => $thn_ang1         
+            ];
+      
+            $view =  view('akuntansi.cetakan.lo')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LO.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LO.xls"');
             return $view;
         }
     }

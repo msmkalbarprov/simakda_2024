@@ -18,6 +18,7 @@ function tgl_format_oyoy($tgl)
     $tanggal  = explode('-', $tgl);
     $bulan  = MSbulan($tanggal[1]);
     $tahun  =  $tanggal[0];
+    // dd($tanggal);
     return  $tanggal[2] . ' ' . $bulan . ' ' . $tahun;
 }
 

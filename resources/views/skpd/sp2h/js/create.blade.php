@@ -6,14 +6,12 @@
             }
         });
 
-        $('#kd_sub_kegiatan').prop('disabled', true);
-
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
 
-        let detail = $('#detail_sp2b').DataTable({
+        let detail = $('#detail_sp2h').DataTable({
             responsive: true,
             ordering: false,
             columns: [{
@@ -53,13 +51,75 @@
             ]
         });
 
+        $('#tampilkan').on('click', function() {
+            let tgl_awal = document.getElementById('tgl_awal').value;
+            let tgl_akhir = document.getElementById('tgl_akhir').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let satdik = document.getElementById('satdik').value;
+
+            if (!kd_sub_kegiatan) {
+                alert('Pilih Kode Sub Kegiatan Terlebih Dahulu..!!!');
+                return;
+            }
+
+            if (!kd_sub_kegiatan) {
+                alert('Pilih Satuan Pendidikan Terlebih Dahulu..!!!');
+                return;
+            }
+
+            if (!tgl_awal || !tgl_akhir) {
+                alert('Silahkan pilih tanggal!');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('sp2h.detail') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    tgl_awal: tgl_awal,
+                    tgl_akhir: tgl_akhir,
+                    kd_skpd: kd_skpd,
+                    kd_sub_kegiatan: kd_sub_kegiatan,
+                    satdik: satdik,
+                },
+                success: function(data) {
+                    let total = rupiah(document.getElementById('total').value);
+                    $.each(data, function(index, data) {
+                        detail.row.add({
+                            'kd_skpd': data.kd_skpd,
+                            'no_bukti': data.no_bukti,
+                            'kd_sub_kegiatan': data.kd_sub_kegiatan,
+                            'nm_sub_kegiatan': data.nm_sub_kegiatan,
+                            'kd_rek6': data.kd_rek6,
+                            'nm_rek6': data.nm_rek6,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(data.nilai),
+                            'aksi': `<a href="javascript:void(0);" onclick="hapus('${data.no_bukti}','${data.kd_rek6}','${data.nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
+                        }).draw();
+                        total += parseFloat(data.nilai);
+                    })
+                    $('#total').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total));
+                }
+            });
+        });
+
+        $('#kosongkan').on('click', function() {
+            $('#total').val(null);
+            detail.clear().draw();
+        });
+
         $('#simpan').on('click', function() {
             let no_simpan = document.getElementById('no_simpan').value;
-            let no_sp2b = document.getElementById('no_sp2b').value;
+            let no_sp2h = document.getElementById('no_sp2h').value;
             let no_kas = document.getElementById('no_kas').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
-            let tgl_sp2b = document.getElementById('tgl_sp2b').value;
+            let tgl_sp2h = document.getElementById('tgl_sp2h').value;
             let tgl_awal = document.getElementById('tgl_awal').value;
             let tgl_akhir = document.getElementById('tgl_akhir').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
@@ -69,10 +129,14 @@
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let nm_sub_kegiatan = sub_kegiatan.data('nama');
 
-            let total = rupiah(document.getElementById('total').value);
-            let tahun_input = tgl_sp2b.substr(0, 4);
+            let kd_satdik = $('#satdik').find('option:selected');
+            let satdik = document.getElementById('satdik').value;
+            let nama_satdik = kd_satdik.data('nama');
 
-            let detail_sp2b1 = detail.rows().data().toArray().map((value) => {
+            let total = rupiah(document.getElementById('total').value);
+            let tahun_input = tgl_sp2h.substr(0, 4);
+
+            let detail_sp2h1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     kd_skpd: value.kd_skpd,
                     no_bukti: value.no_bukti,
@@ -85,14 +149,14 @@
                 return data;
             });
 
-            let detail_sp2b = JSON.stringify(detail_sp2b1);
+            let detail_sp2h = JSON.stringify(detail_sp2h1);
 
-            if (!no_sp2b) {
+            if (!no_sp2h) {
                 alert('Nomor tidak boleh kosong');
                 return;
             }
 
-            if (!tgl_sp2b) {
+            if (!tgl_sp2h) {
                 alert('Tanggal tidak boleh kosong!');
                 return;
             }
@@ -107,16 +171,15 @@
                 return;
             }
 
-            if (detail_sp2b.length == 0) {
+            if (detail_sp2h.length == 0) {
                 alert('Rincian tidak boleh kosong!');
                 return;
             }
 
             let data = {
-                no_simpan,
-                no_sp2b,
+                no_sp2h,
                 no_kas,
-                tgl_sp2b,
+                tgl_sp2h,
                 tgl_awal,
                 tgl_akhir,
                 kd_skpd,
@@ -124,13 +187,15 @@
                 keterangan,
                 kd_sub_kegiatan,
                 nm_sub_kegiatan,
+                satdik,
+                nama_satdik,
                 total,
-                detail_sp2b
+                detail_sp2h
             };
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('sp2b.update') }}",
+                url: "{{ route('sp2h.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -143,7 +208,7 @@
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan!');
                         window.location.href =
-                            "{{ route('sp2b.index') }}";
+                            "{{ route('sp2h.index') }}";
                     } else if (response.message == '2') {
                         alert('No SP2B Telah Digunakan!');
                         $('#simpan').prop('disabled', false);
@@ -255,23 +320,16 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function hapus(no_bukti, kd_rek6, nilai, status) {
-        if (status == 1) {
-            alert('Sudah disetujui,tidak dapat dihapus!');
-            return
-        }
-
+    function hapus(no_bukti, kd_rek6, nilai) {
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai :  ' + nilai +
             ' ?');
         let total = rupiah(document.getElementById('total').value);
-        let tabel = $('#detail_sp2b').DataTable();
+        let tabel = $('#detail_lpj').DataTable();
 
         if (hapus == true) {
             tabel.rows(function(idx, data, node) {
-                return data.no_bukti == no_bukti && data.kd_rek6 == kd_rek6 && rupiah(data.nilai) == parseFloat(
-                    nilai)
+                return data.no_bukti == no_bukti && data.kdrek6 == kd_rek6
             }).remove().draw();
-
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total - parseFloat(nilai)));

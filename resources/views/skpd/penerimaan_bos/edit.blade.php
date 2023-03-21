@@ -10,6 +10,13 @@
                 </div>
                 <div class="card-body">
                     @csrf
+                    <div class="mb-3 row">
+                        @if ($terima->ketlpj == 1)
+                            <p style="font-size: x-large;color: red;">Sudah dibuat SP2B!!</p>
+                        @elseif ($terima->total_sp2h == 1)
+                            <p style="font-size: x-large;color: red;">Sudah dibuat SP2H!!</p>
+                        @endif
+                    </div>
                     {{-- Kode dan Nama SKPD --}}
                     <div class="mb-3 row">
                         <label for="kd_skpd" class="col-md-2 col-form-label">Kode SKPD</label>
@@ -108,7 +115,8 @@
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            <button id="simpan" class="btn btn-primary btn-md"
+                                {{ $terima->ketlpj == 1 || $terima->total_sp2h == 1 ? 'hidden' : '' }}>Simpan</button>
                             <a href="{{ route('penerimaan_bos.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 {{-- modal cetak SPJ --}}
 
+{{-- lra --}}
 <div id="modal_cetak_semester" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -195,6 +196,7 @@
     </div>
 </div>
 
+{{-- neraca --}}
 <div id="modal_cetak_neraca" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -269,6 +271,103 @@
                                 <option value="1">Cetak Biasa</option>
                                 <option value="2">Cetak Per Obyek</option>
                                 <option value="3">Cetak Per Obyek Aset Tetap</option>
+                            </select>
+                        </div>
+                </div>
+
+                
+
+                
+
+                <div class="mb-3 row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"
+                            name="bku_pdf"> PDF</button>
+                        <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
+                            name="bku_layar">Layar</button>
+                        <button type="button" class="btn btn-success btn-md bku_excel" data-jenis="excel"
+                            name="bku_excel">Excel</button>
+                        <button type="button" class="btn btn-md btn-secondary"
+                            data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- lo --}}
+<div id="modal_cetak_lo" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{-- Pilihan SKPD/Unit --}}
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="kd_skpd" class="form-label">Pilih</label><br>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_lo" id="pilihan0"
+                                value="keseluruhan">
+                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                        </div>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_lo" id="pilihan1"
+                                value="skpd">
+                            <label class="form-check-label" for="pilihan">SKPD</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_lo" id="pilihan2"
+                                value="unit">
+                            <label class="form-check-label" for="pilihan">Unit</label>
+                        </div>
+                    </div>
+                    {{-- Bulan --}}
+                    <div class="col-md-6" >
+                        <div id="baris_skpd_lo">
+                            <label for="kd_skpd_lo" class="form-label">Kode SKPD</label>
+                            <select class="form-control select_lo  @error('kd_skpd') is-invalid @enderror"
+                                style=" width: 100%;" id="kd_skpd_lo" name="kd_skpd_lo">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('kd_skpd_lo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    
+
+                        <div id="baris_bulan" class="col-md-6">
+                            <label for="bulan_lo" class="form-label">Bulan</label>
+                            <select name="bulan_lo" class="form-control select_lo" id="bulan_lo">
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cetakan_lo" class="form-label">Jenis Cetakan</label>
+                            <select name="cetakan_lo" class="form-control select_lo" id="cetakan_lo">
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">LO</option>
+                                <option value="2">LO Rincian</option>
                             </select>
                         </div>
                 </div>

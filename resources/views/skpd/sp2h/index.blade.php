@@ -1,23 +1,22 @@
 @extends('template.app')
-@section('title', 'SPB BOS | SIMAKDA')
+@section('title', 'SP2H | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    List SPB BOS
+                    List SP2H
+                    <a href="{{ route('sp2h.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="spb" class="table" style="width: 100%">
+                            <table id="sp2h" class="table" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 50px;text-align:center">No SPB</th>
-                                        <th style="width: 100px;text-align:center">Tanggal SPB</th>
                                         <th style="width: 50px;text-align:center">No SP2B</th>
-                                        <th style="width: 100px;text-align:center">Tanggal SP2B</th>
+                                        <th style="width: 100px;text-align:center">Tanggal</th>
                                         <th style="width: 50px;text-align:center">SKPD</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>
@@ -36,28 +35,28 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Cetak SPB</h5>
+                    <h5 class="modal-title">Cetak SP2H</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{-- No. SPB --}}
+                    {{-- No. SP2H --}}
                     <div class="mb-3 row">
-                        <label for="no_spb" class="col-md-12 col-form-label">No. SPB</label>
+                        <label for="no_sp2h" class="col-md-12 col-form-label">No. SP2H</label>
                         <div class="col-md-12">
-                            <input type="text" readonly class="form-control" id="no_spb" name="no_spb">
+                            <input type="text" readonly class="form-control" id="no_sp2h" name="no_sp2h">
                             <input type="text" hidden class="form-control" id="jenis" name="jenis">
                             <input type="text" hidden class="form-control" id="kd_skpd" name="kd_skpd">
                         </div>
                     </div>
-                    {{-- Kuasa BUD --}}
+                    {{-- Pengguna Anggaran --}}
                     <div class="mb-3 row">
-                        <label for="bud" class="col-md-12 col-form-label">Kuasa BUD</label>
+                        <label for="pa_kpa" class="col-md-12 col-form-label">Pengguna Anggaran</label>
                         <div class="col-md-12">
-                            <select name="bud" class="form-control select-modal" id="bud">
+                            <select name="pa_kpa" class="form-control select-modal" id="pa_kpa">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                @foreach ($ttd1 as $bud)
-                                    <option value="{{ $bud->nip }}">
-                                        {{ $bud->nip }} | {{ $bud->nama }}</option>
+                                @foreach ($ttd1 as $pa)
+                                    <option value="{{ $pa->nip }}">
+                                        {{ $pa->nip }} | {{ $pa->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -100,5 +99,5 @@
     </div>
 @endsection
 @section('js')
-    @include('bud.spb_bos.js.index')
+    @include('skpd.sp2h.js.index')
 @endsection
