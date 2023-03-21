@@ -92,14 +92,40 @@
                     {
                         data: 'file',
                         name: 'file',
-                    },
-                    {
+                    },{
                         data: 'aktif',
-                        name: 'aktif',
-                    },
-                    {
+                        className: "text-center",
+                        render: function (data, type) {
+                            if (type === 'display') {
+                                let link = '<i class="fa fa-times text-danger"></i>';
+                                if (data === '1') {
+                                    link = '<i class="fa fa-check text-success"></i>';
+                                }else{
+                                    link = '<i class="fa fa-times text-danger"></i>';
+                                }
+
+                                return link;
+                            }
+
+                            return data;
+                        },
+                    },{
                         data: 'status',
-                        name: 'status',
+                        className: "text-center",
+                        render: function (data, type) {
+                            if (type === 'display') {
+                                let link = '<i class="fa fa-times text-danger"></i>';
+                                if (data === '1') {
+                                    link = '<i class="fa fa-check text-success"></i>';
+                                }else{
+                                    link = '<i class="fa fa-times text-danger"></i>';
+                                }
+
+                                return link;
+                            }
+
+                            return data;
+                        },
                     },
                     {
                         data: 'aksi',
