@@ -10,6 +10,11 @@
                 </div>
                 <div class="card-body">
                     @csrf
+                    <div class="mb-3 row">
+                        @if ($bos->total_spb > 0)
+                            <p style="font-size: x-large;color: red;">Sudah dibuat SP2B/SP2H!!</p>
+                        @endif
+                    </div>
                     {{-- No dan Tanggal Kas --}}
                     <div class="mb-3 row">
                         <label for="no_kas" class="col-md-2 col-form-label">No. Kas</label>

@@ -23,13 +23,13 @@ class TransaksiBosController extends Controller
 
         $tgl_terima = collect(DB::select("SELECT ISNULL(MAX(tgl_terima),'2016-01-01') as tgl_terima FROM trhspj_ppkd WHERE cek='1' AND kd_skpd=?", [$kd_skpd]))->first()->tgl_terima;
 
-        $data = DB::select("SELECT a.*,'' AS nokas_pot,'' AS tgl_pot,'' AS kete,(SELECT COUNT(*) from trdsp2b z where z.no_bukti = a.no_bukti and z.kd_skpd = a.kd_skpd) ketlpj,
+        $data = DB::select("SELECT a.*,'' AS nokas_pot,'' AS tgl_pot,'' AS kete,(SELECT COUNT(*) from trdsp2b z where z.no_bukti = a.no_bukti and z.kd_skpd = a.kd_skpd) ketlpj,(SELECT COUNT(*) from trdsp2h x where x.no_bukti = a.no_bukti and x.kd_skpd = a.kd_skpd) total_sp2h,
         (CASE WHEN a.tgl_bukti<? THEN 1 ELSE 0 END ) ketspj FROM trhtransout_blud a
         WHERE   a.kd_skpd=? order by a.no_bukti,kd_skpd", [$tgl_terima, $kd_skpd]);
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("transaksi_bos.edit", ['no_kas' => Crypt::encrypt($row->no_kas), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            if ($row->ketlpj == 1 || $row->ketspj == 1) {
+            if ($row->ketlpj == 1 || $row->ketspj == 1 || $row->total_sp2h == 1) {
                 $btn .= '';
             } else {
                 $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
@@ -571,6 +571,8 @@ class TransaksiBosController extends Controller
         $no_kas = Crypt::decrypt($no_kas);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
+        $tgl_terima = collect(DB::select("SELECT ISNULL(MAX(tgl_terima),'2016-01-01') as tgl_terima FROM trhspj_ppkd WHERE cek='1' AND kd_skpd=?", [$kd_skpd]))->first()->tgl_terima;
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_rekening' => DB::select("SELECT kd_rek6,nm_rek6 from ms_rek6 where left(kd_rek6,4)=?", ['1101']),
@@ -581,7 +583,10 @@ class TransaksiBosController extends Controller
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })
                 ->select('a.*')
-                ->where(['b.no_kas' => $no_kas, 'b.kd_skpd' => $kd_skpd])->get()
+                ->where(['b.no_kas' => $no_kas, 'b.kd_skpd' => $kd_skpd])->get(),
+            'cek' => collect(DB::select("SELECT (SELECT COUNT(*) from trdsp2b z where z.no_bukti = a.no_bukti and z.kd_skpd = a.kd_skpd) ketlpj,(SELECT COUNT(*) from trdsp2h x where x.no_bukti = a.no_bukti and x.kd_skpd = a.kd_skpd) total_sp2h,
+            (CASE WHEN a.tgl_bukti<? THEN 1 ELSE 0 END ) ketspj FROM trhtransout_blud a
+            WHERE   a.kd_skpd=? order by a.no_bukti,kd_skpd", [$tgl_terima, $kd_skpd]))->first()
         ];
 
         return view('skpd.transaksi_bos.edit')->with($data);

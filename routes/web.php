@@ -102,6 +102,7 @@ use App\Http\Controllers\Utility\KunciPengeluaranController;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
+use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
 
 // Route::get('/simakda_2023', function () {
@@ -1459,6 +1460,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('update', [Sp2bController::class, 'update'])->name('sp2b.update');
             Route::post('hapus', [Sp2bController::class, 'hapus'])->name('sp2b.hapus');
             Route::get('cetak', [Sp2bController::class, 'cetak'])->name('sp2b.cetak');
+        });
+        // SP2H
+        Route::group(['prefix' => 'sp2h'], function () {
+            Route::get('', [Sp2hController::class, 'index'])->name('sp2h.index');
+            Route::post('load', [Sp2hController::class, 'load'])->name('sp2h.load');
+            Route::get('create', [Sp2hController::class, 'create'])->name('sp2h.create');
+            Route::post('detail', [Sp2hController::class, 'detail'])->name('sp2h.detail');
+            Route::post('simpan', [Sp2hController::class, 'simpan'])->name('sp2h.simpan');
+            Route::get('edit/{no_sp2h?}/{kd_skpd?}', [Sp2hController::class, 'edit'])->name('sp2h.edit');
+            Route::post('update', [Sp2hController::class, 'update'])->name('sp2h.update');
+            Route::post('hapus', [Sp2hController::class, 'hapus'])->name('sp2h.hapus');
+            Route::get('cetak', [Sp2hController::class, 'cetak'])->name('sp2h.cetak');
         });
         // Penerimaan BOS
         Route::group(['prefix' => 'penerimaan_bos'], function () {

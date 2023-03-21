@@ -37,11 +37,7 @@ class BosController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("spb_bos.edit", ['no_sp2b' => Crypt::encrypt($row->no_sp2b), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            if ($row->status == 1 || $row->status == 2) {
-                $btn .= "";
-            } else {
-                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_spb . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
-            }
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_spb . '\',\'' . $row->no_sp2b . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spb . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -138,18 +134,21 @@ class BosController extends Controller
 
     public function hapus(Request $request)
     {
+        $no_spb = $request->no_spb;
         $no_sp2b = $request->no_sp2b;
         $kd_skpd = $request->kd_skpd;
 
         DB::beginTransaction();
         try {
-            DB::table('trhsp2b')
-                ->where(['no_sp2b' => $no_sp2b, 'kd_skpd' => $kd_skpd])
+            DB::table('trspb')
+                ->where(['no_spb' => $no_spb, 'kd_skpd' => $kd_skpd])
                 ->delete();
 
-            DB::table('trdsp2b')
-                ->where(['no_sp2b' => $no_sp2b, 'kd_skpd' => $kd_skpd])
-                ->delete();
+            DB::table('trhsp2b')
+                ->where(['no_sp2b' => $no_sp2b])
+                ->update([
+                    'status' => '0'
+                ]);
 
             DB::commit();
             return response()->json([

@@ -17,7 +17,7 @@
                 "type": "POST",
             },
             createdRow: function(row, data, index) {
-                if (data.ketlpj == 1 || data.ketspj == 1) {
+                if (data.ketlpj == 1 || data.ketspj == 1 || data.total_sp2h == 1) {
                     $(row).css("color", "#02087f");
                 }
             },

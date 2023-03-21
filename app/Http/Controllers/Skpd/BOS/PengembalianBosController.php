@@ -167,7 +167,7 @@ class PengembalianBosController extends Controller
             'detail_bos' => DB::select("SELECT a.* from trdkasin_pkd_bos a INNER JOIN trhkasin_pkd_bos b ON a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd WHERE b.no_sts=? and b.kd_skpd=?", [$no_sts, $kd_skpd])
         ];
 
-        return view('skpd.pengembalian_bos.edit ')->with($data);
+        return view('skpd.pengembalian_bos.edit')->with($data);
     }
 
     public function update(Request $request)
