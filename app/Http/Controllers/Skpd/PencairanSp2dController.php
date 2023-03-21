@@ -57,7 +57,10 @@ class PencairanSp2dController extends Controller
         DB::beginTransaction();
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
-            $kontrak = DB::table('trhspp')->select('kontrak')->where(['no_spp' => $no_spp->no_spp])->first();
+
+            $kontrak = DB::table('trhspp')->selectRaw("ISNULL(kontrak, '') as kontrak")->where(['no_spp' => $no_spp->no_spp])->first();
+            $kontrak = isset($kontrak) ? $kontrak->kontrak : '';
+
             $total_data = DB::table('trspmpot as a')->join('trhsp2d as b', function ($join) {
                 $join->on('a.no_spm', '=', 'b.no_spm');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -80,7 +83,7 @@ class PencairanSp2dController extends Controller
                 $no_setor = "$setor";
             }
 
-            if (($beban < 5) || ($beban == 6 && !isset($kontrak))) {
+            if (($beban < 5) || ($beban == 6 && $kontrak == '')) {
                 $total_data2 = DB::table('tr_setorsimpanan')->where(['kd_skpd' => $kd_skpd, 'no_sp2d' => $no_sp2d])->count();
                 if ($total_data2 > 0) {
                     DB::table('tr_setorsimpanan')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
@@ -102,7 +105,7 @@ class PencairanSp2dController extends Controller
                 DB::table('trhtransout')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
             }
 
-            if (($beban == '6' && isset($kontrak)) || $beban == '5') {
+            if (($beban == '6' && $kontrak <> '') || $beban == '5') {
                 DB::table('trdtransout')->where(['kd_skpd' => $kd_skpd, 'no_sp2d' => $no_sp2d])->delete();
                 DB::table('trhtransout')->where(['no_sp2d' => $no_sp2d, 'kd_skpd' => $kd_skpd])->delete();
             }
