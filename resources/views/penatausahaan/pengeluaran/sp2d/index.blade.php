@@ -17,40 +17,16 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">No.</th>
-                                        <th style="width: 100px;text-align:center">Nomor SP2D</th>
-                                        <th style="width: 50px;text-align:center">Nomor SPM</th>
+                                        <th style="width: 100px;text-align:center">No.SP2D</th>
+                                        <th style="width: 50px;text-align:center">No.Penguji</th>
+                                        <th style="width: 50px;text-align:center">No.SPM</th>
                                         <th style="width: 150px;text-align:center">Tanggal</th>
                                         <th style="width: 150px;text-align:center">SKPD</th>
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @php
-                                        $no = 1;
-                                    @endphp
-                                    @foreach ($data_sp2d->chunk(5) as $data)
-                                        @foreach ($data as $sp2d)
-                                            <tr>
-                                                <td>{{ $no++ }}</td>
-                                                <td>{{ $sp2d->no_sp2d }}</td>
-                                                <td>{{ $sp2d->no_spm }}</td>
-                                                <td>{{ tanggal($sp2d->tgl_sp2d) }}</td>
-                                                <td>{{ $sp2d->kd_skpd }}</td>
-                                                <td style="text-align: center">
-                                                    <a href="{{ route('sp2d.tampil', $sp2d->no_sp2d) }}"
-                                                        class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
-                                                    <button type="button"
-                                                        onclick="cetak('{{ $sp2d->no_sp2d }}', '{{ $sp2d->jns_spp }}', '{{ $sp2d->kd_skpd }}')"
-                                                        class="btn btn-success btn-sm"><i class="uil-print"></i></button>
-                                                    @if ($sp2d->status_bud != '1' || !$sp2d->no_advice)
-                                                        <button type="button"
-                                                            onclick="batal_sp2d('{{ $sp2d->no_sp2d }}', '{{ $sp2d->jns_spp }}', '{{ $sp2d->kd_skpd }}', '{{ $sp2d->no_spm }}','{{ $sp2d->no_spp }}','{{ $sp2d->status_bud }}')"
-                                                            class="btn btn-danger btn-sm"><i class="uil-ban"></i></button>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endforeach --}}
+                                   
                                 </tbody>
                             </table>
                         </div>

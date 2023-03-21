@@ -34,6 +34,11 @@
                     className: "text-center",
                 },
                 {
+                    data: 'no_uji',
+                    name: 'no_uji',
+                    // className: "text-center",
+                },
+                {
                     data: 'no_spm',
                     name: 'no_spm',
                     // className: "text-center",
