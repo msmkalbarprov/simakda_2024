@@ -83,8 +83,16 @@ class PenagihanController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
-        $status_anggaran = DB::table('trhrka')->select('jns_ang')->where(['kd_skpd' => $kd_skpd, 'status' => 1])->orderBy('tgl_dpa', 'DESC')->first();
-        $daftar_rekening = DB::table('trdrka as a')->select('a.kd_rek6', 'a.nm_rek6', 'e.map_lo', DB::raw("(SELECT SUM(nilai) FROM
+        $status_anggaran = DB::table('trhrka')
+            ->select('jns_ang')
+            ->where(['kd_skpd' => $kd_skpd, 'status' => 1])
+            ->orderBy('tgl_dpa', 'DESC')
+            ->first();
+
+        $daftar_rekening = DB::table('trdrka as a')
+            ->leftJoin('ms_rek6 as e', 'a.kd_rek6', '=', 'e.kd_rek6')
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.jns_ang' => $status_anggaran->jns_ang, 'a.kd_skpd' => $kd_skpd, 'a.status_aktif' => '1'])
+            ->selectRaw("a.kd_rek6,a.nm_rek6,e.map_lo,(SELECT SUM(nilai) FROM
                         (SELECT
                             SUM (c.nilai) as nilai
                         FROM
@@ -116,7 +124,7 @@ class PenagihanController extends Controller
                         AND u.kd_skpd = a.kd_skpd
                         AND t.kd_rek = a.kd_rek6
                         AND u.no_bukti
-                        NOT IN (select no_tagih FROM trhspp WHERE kd_skpd='$kd_skpd' )
+                        NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
 
                         -- tambahan tampungan
                         UNION ALL
@@ -127,7 +135,9 @@ class PenagihanController extends Controller
                         AND kd_rek6 = a.kd_rek6
                         -- tambahan tampungan
                         )r) AS lalu,
-                    0 AS sp2d,a.nilai AS anggaran"))->leftJoin('ms_rek6 as e', 'a.kd_rek6', '=', 'e.kd_rek6')->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.jns_ang' => $status_anggaran->jns_ang, 'a.kd_skpd' => $kd_skpd, 'a.status_aktif' => '1'])->get();
+                    0 AS sp2d,a.nilai AS anggaran", [$kd_skpd])
+            ->get();
+
         return response()->json($daftar_rekening);
     }
 

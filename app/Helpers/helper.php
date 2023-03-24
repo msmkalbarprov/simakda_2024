@@ -3093,26 +3093,26 @@ function nomor_tukd()
 {
     $data1 = DB::table('trhkasin_ppkd')
         ->selectRaw("no_kas nomor,'Terima STS' ket")
-        ->whereRaw("isnumeric(no_kas)=1");
+        ->whereRaw("isnumeric(no_kas)=?", ['1']);
 
     $data2 = DB::table('trhrestitusi')
         ->selectRaw("no_kas nomor,'Terima STS' ket")
-        ->whereRaw("isnumeric(no_kas)=1")
+        ->whereRaw("isnumeric(no_kas)=?", ['1'])
         ->unionAll($data1);
 
     $data3 = DB::table('penerimaan_non_sp2d')
         ->selectRaw("nomor,'Terima non SP2D' ket")
-        ->whereRaw("isnumeric(nomor)=1")
+        ->whereRaw("isnumeric(nomor)=?", ['1'])
         ->unionAll($data2);
 
     $data4 = DB::table('pengeluaran_non_sp2d')
         ->selectRaw("nomor,'keluar non SP2D' ket")
-        ->whereRaw("isnumeric(nomor)=1")
+        ->whereRaw("isnumeric(nomor)=?", ['1'])
         ->unionAll($data3);
 
     $data5 = DB::table('trkasout_ppkd')
         ->selectRaw("no as nomor,'koreksi' ket")
-        ->whereRaw("isnumeric(no)=1")
+        ->whereRaw("isnumeric(no)=?", ['1'])
         ->unionAll($data4);
 
     $data = DB::table(DB::raw("({$data5->toSql()}) AS sub"))
@@ -3486,31 +3486,31 @@ function nomor_urut_ppkd()
 {
     $data1 = DB::table('trhkasin_ppkd')
         ->selectRaw("no_kas nomor,'Terima STS' ket")
-        ->whereRaw("isnumeric(no_kas)=1");
+        ->whereRaw("isnumeric(no_kas)=?", ['1']);
 
     $data2 = DB::table('trhrestitusi')
         ->selectRaw("no_kas nomor,'Terima STS' ket")
-        ->whereRaw("isnumeric(no_kas)=1")
+        ->whereRaw("isnumeric(no_kas)=?", ['1'])
         ->unionAll($data1);
 
     $data3 = DB::table('penerimaan_non_sp2d')
         ->selectRaw("nomor,'Terima non SP2D' ket")
-        ->whereRaw("isnumeric(nomor)=1")
+        ->whereRaw("isnumeric(nomor)=?", ['1'])
         ->unionAll($data2);
 
     $data4 = DB::table('pengeluaran_non_sp2d')
         ->selectRaw("nomor,'keluar non SP2D' ket")
-        ->whereRaw("isnumeric(nomor)=1")
+        ->whereRaw("isnumeric(nomor)=?", ['1'])
         ->unionAll($data3);
 
     $data5 = DB::table('trkasout_ppkd')
         ->selectRaw("no as nomor,'koreksi' ket")
-        ->whereRaw("isnumeric(no)=1")
+        ->whereRaw("isnumeric(no)=?", ['1'])
         ->unionAll($data4);
 
     $data6 = DB::table('trkoreksi_pengeluaran')
         ->selectRaw("no as nomor,'koreksi pengeluaran' ket")
-        ->whereRaw("isnumeric(no)=1")
+        ->whereRaw("isnumeric(no)=?", ['1'])
         ->unionAll($data5);
 
     $data = DB::table(DB::raw("({$data6->toSql()}) AS sub"))

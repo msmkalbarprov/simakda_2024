@@ -139,7 +139,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->selectRaw("1 as urut,''no_sts,''kd_skpd,e.nm_skpd,''kd_sub_kegiatan,''kd_rek6,b.no_kas,''tgl_kas,ISNULL(d.nm_pengirim, '') nm_pengirim,''nm_rek6,0 rupiah")
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) NOT IN ('4101','4301','4104','4201') AND a.kd_rek6 NOT IN ('420101040001')")
+            ->whereRaw("left(a.kd_rek6,4) NOT IN (?,?,?,?) AND a.kd_rek6 NOT IN (?)", ['4101', '4301', '4104', '4201', '420101040001'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -161,7 +161,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->selectRaw("2 as urut,b.no_sts,a.kd_skpd,'' nm_skpd,a.kd_sub_kegiatan,a.kd_rek6,b.no_kas,b.tgl_kas,'' nm_pengirim,c.nm_rek6,a.rupiah")
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) NOT IN ('4101','4301','4104','4201') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')")
+            ->whereRaw("left(a.kd_rek6,4) NOT IN (?,?,?,?) AND a.kd_rek6 NOT IN (?,?,?)", ['4101', '4301', '4104', '4201', '420101040001', '420101040002', '420101040003'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -184,7 +184,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->selectRaw("1 as urut,''no_sts,''kd_skpd,e.nm_skpd,''kd_sub_kegiatan,''kd_rek6,b.no_kas,''tgl_kas,'' nm_pengirim,''nm_rek6,0 rupiah")
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) IN ('4101','4301','4104','4201') AND a.kd_rek6 !='410416010001' AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')")
+            ->whereRaw("left(a.kd_rek6,4) IN (?,?,?,?) AND a.kd_rek6 !='410416010001' AND a.kd_rek6 NOT IN (?,?,?)", ['4101', '4301', '4104', '4201', '420101040001', '420101040002', '420101040003'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -206,7 +206,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->selectRaw("2 as urut,b.no_sts,a.kd_skpd,'' nm_skpd,a.kd_sub_kegiatan,a.kd_rek6,b.no_kas,b.tgl_kas,ISNULL(d.nm_pengirim, '') nm_pengirim,c.nm_rek6,a.rupiah")
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) IN ('4101','4301','4104','4201') AND a.kd_rek6!='410416010001' AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')")
+            ->whereRaw("left(a.kd_rek6,4) IN (?,?,?,?) AND a.kd_rek6!='410416010001' AND a.kd_rek6 NOT IN (?,?,?)", ['4101', '4301', '4104', '4201', '420101040001', '420101040002', '420101040003'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -330,7 +330,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->select(DB::raw("SUM(a.rupiah) as nilai"))
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) NOT IN ('4101','4301','4104','4201') AND a.kd_rek6 NOT IN ('420101040001')")
+            ->whereRaw("left(a.kd_rek6,4) NOT IN (?,?,?,?) AND a.kd_rek6 NOT IN (?)", ['4101', '4301', '4104', '4201', '420101040001'])
             ->where(function ($query) use ($pilihan, $tgl, $periode1) {
                 if ($pilihan == '1') {
                     $query->whereRaw("b.tgl_kas<?", [$tgl]);
@@ -351,7 +351,7 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->select(DB::raw("SUM(a.rupiah) as nilai"))
             ->where('a.kd_skpd', '!=', '4.02.02.02')
-            ->whereRaw("left(a.kd_rek6,4) IN ('4101','4301','4104','4201') AND a.kd_rek6 !='410416010001' AND a.kd_rek6 NOT IN ('420101040001')")
+            ->whereRaw("left(a.kd_rek6,4) IN (?,?,?,?) AND a.kd_rek6 !=? AND a.kd_rek6 NOT IN (?)", ['4101', '4301', '4104', '4201', '410416010001', '420101040001'])
             ->where(function ($query) use ($pilihan, $tgl, $periode1) {
                 if ($pilihan == '1') {
                     $query->whereRaw("b.tgl_kas<?", [$tgl]);
@@ -498,7 +498,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001','410409010001')")
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?,?,?,?)", ['4', '420101040001', '420101040002', '420101040003', '410416010001', '410409010001'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -516,7 +516,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("b.kd_rek6 in ('410409010001') and b.sumber<>'y'")
+            ->whereRaw("b.kd_rek6 in (?) and b.sumber<>?", ['410409010001', 'y'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -533,7 +533,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("LEFT(b.kd_rek6,4) as kd_rek, 'UYHD' as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("b.kd_rek6 in ('410409010001','410412010010') and a.keterangan like '%(UYHD)%'")
+            ->whereRaw("b.kd_rek6 in (?,?) and a.keterangan like '%(UYHD)%'", ['410409010001', '410412010010'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -550,7 +550,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("'414' as kd_rek, 'LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH' as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=?", ['3'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?,?) and pot_khusus=?", ['5', '1', '3'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -567,7 +567,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("510 as kd_rek, 'CONTRA POST' as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>?", ['3'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?,?,?) and pot_khusus<>?", ['5', '1', '2', '3'])
             ->where(function ($query) use ($pilihan, $where, $tgl, $periode1, $periode2) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where, [$tgl]);
@@ -731,7 +731,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN ('4') and b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001')")
+            ->whereRaw("LEFT(b.kd_rek6,1) IN () and b.kd_rek6 not in (?,?,?,?)", ['4', '420101040001', '420101040002', '420101040003', '410416010001'])
             ->where(function ($query) use ($pilihan, $where5, $tgl, $periode1) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where5, [$tgl]);
@@ -747,7 +747,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,1) as kd_rek, 'CONTRA POST' as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN ('5','1','2')")
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?,?,?)", ['5', '1', '2'])
             ->where(function ($query) use ($pilihan, $where5, $tgl, $periode1) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where5, [$tgl]);
@@ -1127,7 +1127,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,3)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("a.tgl_kas, SUM ( rupiah ) AS nilai,1 jenis")
-            ->whereRaw("LEFT( b.kd_rek6, 1 ) IN ( ? ) AND a.tgl_kas BETWEEN ? AND ? and b.kd_rek6 not in ('420101040001','410416010001')", ['4', $periode1, $periode2])
+            ->whereRaw("LEFT( b.kd_rek6, 1 ) IN ( ? ) AND a.tgl_kas BETWEEN ? AND ? and b.kd_rek6 not in (?,?)", ['4', $periode1, $periode2, '420101040001', '410416010001'])
             ->groupByRaw("a.tgl_kas");
 
         $terima2 = DB::table('trhkasin_ppkd as a')
@@ -1314,7 +1314,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("a.no_kas,a.no_kas as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6,0 as terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in ('420101040001','410416010001') and a.tgl_kas=?", ['4', $tgl])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', $tgl, '420101040001', '410416010001'])
             ->groupByRaw("a.no_kas,keterangan");
 
         $bku2 = DB::table('trhkasin_ppkd as a')
@@ -1326,7 +1326,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('b.kd_rek6', '=', 'c.kd_rek6');
             })
             ->selectRaw("'' as no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, ''as sp")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in ('420101040001','410416010001') and a.tgl_kas=?", ['4', $tgl])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', $tgl, '420101040001', '410416010001'])
             ->groupByRaw("a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6")
             ->unionAll($bku1);
 
@@ -1462,7 +1462,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in ('420101040001','410416010001') and a.tgl_kas<?", ['4', $tgl])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?) and a.tgl_kas<?", ['4', $tgl, '420101040001', '410416010001'])
             ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,4),c.nm_rek3");
 
         $total_bku2 = DB::table('trhkasin_ppkd as a')
@@ -6863,7 +6863,7 @@ class BendaharaUmumDaerahController extends Controller
         $realisasi1 = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52') and jns_ang=? ", [$req['anggaran']])
+            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN (?,?,?) and jns_ang=? ", [$req['anggaran'], '1.01.02.1.01.53', '1.01.02.1.02.46', '1.01.02.1.03.52'])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
@@ -6914,9 +6914,9 @@ class BendaharaUmumDaerahController extends Controller
                     and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
             ->where(function ($query) use ($req) {
                 if ($req['dengan'] == 'true') {
-                    $query->whereRaw("LEFT(b.kd_rek6,1) in ('5','1') and right(b.kd_rek6,7) not in ('9999999','8888888')");
+                    $query->whereRaw("LEFT(b.kd_rek6,1) in (?,?) and right(b.kd_rek6,7) not in (?,?)", ['5', '1', '9999999', '8888888']);
                 } elseif ($req['tanpa'] == 'true') {
-                    $query->whereRaw("LEFT(b.kd_rek6,1) in ('5') and right(b.kd_rek6,7) not in ('9999999','8888888')");
+                    $query->whereRaw("LEFT(b.kd_rek6,1) in (?) and right(b.kd_rek6,7) not in (?,?)", ['5', '9999999', '8888888']);
                 }
             })
             ->where(function ($query) use ($req) {
@@ -6992,7 +6992,7 @@ class BendaharaUmumDaerahController extends Controller
         $blud_rsj = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("left(kd_rek6,1)='5' and right(kd_rek6,7) in ('9999999') and jns_ang=? and kd_skpd=?", [$req['anggaran'], ['1.02.0.00.0.00.03.0000']])
+            ->whereRaw("left(kd_rek6,1)=? and right(kd_rek6,7) in (?) and jns_ang=? and kd_skpd=?", ['5', '9999999', $req['anggaran'], ['1.02.0.00.0.00.03.0000']])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
@@ -7006,7 +7006,7 @@ class BendaharaUmumDaerahController extends Controller
         $bos_dikbud = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan IN ('1.01.02.1.01.53','1.01.02.1.02.46','1.01.02.1.03.52')", [$req['anggaran'], ['1.01.2.22.0.00.01.0000']])
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan IN (?,?,?)", [$req['anggaran'], '1.01.2.22.0.00.01.0000', '1.01.02.1.01.53', '1.01.02.1.02.46', '1.01.02.1.03.52'])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
