@@ -938,11 +938,18 @@ class SppLsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
 
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
+
+            DB::raw("LOCK TABLES trhspp WRITE");
+
             $cek = DB::table('trhspp')->where('no_spp', $data['no_spp'])->count();
 
-            if ($cek > 0) {
+            $cek2 = DB::table('trhspp')
+                ->where(['urut' => $data['no_urut'], 'kd_skpd' => $data['kd_skpd']])
+                ->count();
+
+            if ($cek > 0 || $cek2 > 0) {
                 return response()->json([
                     'message' => '2'
                 ]);
@@ -1014,6 +1021,8 @@ class SppLsController extends Controller
                 'username'  => $nama,
                 'last_update' => date('Y-m-d H:i:s')
             ]);
+
+            DB::raw("UNLOCK TABLES");
 
             DB::commit();
             return response()->json([
