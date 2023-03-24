@@ -941,8 +941,8 @@ class SppLsController extends Controller
         try {
             DB::beginTransaction();
 
-            // DB::statement(DB::raw('LOCK TABLES trhspp WRITE'));
-            // DB::statement(DB::raw('LOCK TABLES trdspp WRITE'));
+            DB::raw('LOCK TABLES trhspp WRITE');
+            DB::raw('LOCK TABLES trdspp WRITE');
 
             $cek = DB::table('trhspp')->where('no_spp', $data['no_spp'])->count();
 
@@ -1023,7 +1023,7 @@ class SppLsController extends Controller
                 'last_update' => date('Y-m-d H:i:s')
             ]);
 
-            // DB::raw("UNLOCK TABLES");
+            DB::raw("UNLOCK TABLES");
 
             DB::commit();
             return response()->json([
