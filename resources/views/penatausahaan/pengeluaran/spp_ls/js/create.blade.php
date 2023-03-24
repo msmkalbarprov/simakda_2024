@@ -1149,6 +1149,17 @@
                 alert("Nomor Penagihan Tidak Boleh Kosong...!!!");
                 return;
             }
+
+            if (beban == '6' && jenis == '6' && !tgl_awal) {
+                alert("Tanggal Awal Tidak Boleh Kosong...!!!");
+                return;
+            }
+
+            if (beban == '6' && jenis == '6' && !tgl_akhir) {
+                alert("Tanggal Akhir Tidak Boleh Kosong...!!!");
+                return;
+            }
+
             if (keperluan.length > 1000) {
                 alert('Keterangan Tidak boleh lebih dari 1000 karakter');
                 return;
