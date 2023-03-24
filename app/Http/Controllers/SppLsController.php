@@ -1089,8 +1089,7 @@ class SppLsController extends Controller
             $join->on('a.no_spp', '=', 'b.no_spp');
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where('a.no_spp', $no_spp)->select('a.*')->first();
-        dd($no_spp);
-        dd($data_sppls);
+
         $data = [
             'sppls' => $data_sppls,
             'tgl_spd' => DB::table('trhspd')->select('tgl_spd')->where('no_spd', $data_sppls->no_spd)->first(),

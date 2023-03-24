@@ -342,8 +342,7 @@
                         <label for="tgl_akhir" class="col-md-2 col-form-label">Tanggal Akhir</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control @error('tgl_akhir') is-invalid @enderror"
-                                value="{{ old('tgl_akhir') }}" id="tgl_akhir" name="tgl_akhir"
-                                value="{{ $sppls->tgl_akhir }}">
+                                id="tgl_akhir" name="tgl_akhir" value="{{ $sppls->tgl_akhir }}">
                             @error('tgl_akhir')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
