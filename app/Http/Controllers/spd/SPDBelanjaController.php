@@ -688,7 +688,7 @@ class SPDBelanjaController extends Controller
                         'jns_angkas' => $data['status_angkas'],
                     ]);
 
-                    if ($data['jenis'] == '6') {
+                    if ($data['jenis'] == '6' || $data['pilihan'] != 1) {
                         if (isset($rincian_data)) {
                             // DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
                             //     return [
@@ -787,7 +787,7 @@ class SPDBelanjaController extends Controller
 
                     $nomor1 = $data['nomor'];
 
-                    if ($data['jenis'] == '6') {
+                    if ($data['jenis'] == '6' || $data['pilihan'] != 1) {
                         if (isset($rincian_data)) {
                             // DB::table('trdspd')->insert(array_map(function ($value) use ($data) {
                             //     return [
