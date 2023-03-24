@@ -941,7 +941,8 @@ class SppLsController extends Controller
         try {
             DB::beginTransaction();
 
-            DB::raw("LOCK TABLES trhspp WRITE");
+            DB::raw('LOCK TABLES trhspp WRITE');
+            DB::raw('LOCK TABLES trdspp WRITE');
 
             $cek = DB::table('trhspp')->where('no_spp', $data['no_spp'])->count();
 
