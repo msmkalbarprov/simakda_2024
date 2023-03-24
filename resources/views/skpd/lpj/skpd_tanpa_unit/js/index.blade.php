@@ -99,6 +99,10 @@
             let no_lpj = document.getElementById('no_lpj').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let pa_kpa = document.getElementById('pa_kpa').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
             let jenis_print = $(this).data("jenis");
 
             if (!pa_kpa) {
@@ -111,6 +115,10 @@
             searchParams.append("no_lpj", no_lpj);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("pa_kpa", pa_kpa);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
@@ -124,6 +132,10 @@
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let jenis_print = $(this).data("jenis");
 
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
 
             if (!bendahara) {
                 alert("Bendahara Pengeluaran tidak boleh kosong!");
@@ -154,6 +166,10 @@
             searchParams.append("pilihan", pilihan);
             searchParams.append("kd_sub_kegiatan", kd_sub_kegiatan);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
 
@@ -164,6 +180,10 @@
             let pa_kpa = document.getElementById('pa_kpa').value;
             let jenis_print = $(this).data("jenis");
 
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
 
             if (!bendahara) {
                 alert("Bendahara Pengeluaran tidak boleh kosong!");
@@ -182,6 +202,10 @@
             searchParams.append("pa_kpa", pa_kpa);
             searchParams.append("bendahara", bendahara);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
     });

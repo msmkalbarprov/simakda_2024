@@ -1043,10 +1043,10 @@
                 {{ rupiah($sub_trm_uptu_ini - $sub_str_uptu_ini - $tahun_lalu_uyhd_ini - $tahun_lalu_uyhd_pjk_ini) }}
             </td>
             <td align='right' style='font-size:12px'>
-                {{ rupiah($sub_trm_uptu_sini - $sub_str_uptu_sini + $saldo_uyhd->sld_awal + $saldo_uyhd->sld_awalpajak - $tahun_lalu_uyhd_ini - $tahun_lalu_uyhd_pjk_ini) }}
+                {{ rupiah($sub_trm_uptu_sini - $sub_str_uptu_sini + $saldo_uyhd->sld_awal + $saldo_uyhd->sld_awalpajak - ($tahun_lalu_uyhd_ini + $tahun_lalu_uyhd) - ($tahun_lalu_uyhd_pjk_ini + $tahun_lalu_uyhd_pjk)) }}
             </td>
             <td align='right' style='font-size:12px'>
-                {{ rupiah($sub_trm_gaji_sini - $sub_str_gaji_sini + $sub_trm_barjas_sini - $sub_str_barjas_sini + $sub_trm_uptu_sini - $sub_str_uptu_sini + $saldo_uyhd->sld_awal + $saldo_uyhd->sld_awalpajak - $tahun_lalu_uyhd_ini - $tahun_lalu_uyhd_pjk_ini) }}
+                {{ rupiah($sub_trm_gaji_sini - $sub_str_gaji_sini + $sub_trm_barjas_sini - $sub_str_barjas_sini + $sub_trm_uptu_sini - $sub_str_uptu_sini + $saldo_uyhd->sld_awal + $saldo_uyhd->sld_awalpajak - ($tahun_lalu_uyhd_ini + $tahun_lalu_uyhd) - ($tahun_lalu_uyhd_pjk_ini + $tahun_lalu_uyhd_pjk)) }}
             </td>
             <td align='left' style='font-size:12px;border-top:hidden;'>&ensp;&ensp;</td>
         </tr>

@@ -1560,6 +1560,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
             // LO
             Route::get('cetak_lo', [LraController::class, 'cetaklo'])->name('laporan_akuntansi.konsolidasi.cetak_lo');
+            // LPE
+            Route::get('cetak_lpe', [LraController::class, 'cetaklpe'])->name('laporan_akuntansi.konsolidasi.cetak_lpe');
         });
     });
     // Pengesahan SPJ

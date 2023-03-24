@@ -1200,20 +1200,29 @@
             // proses simpan
             $('#simpan_penagihan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('sppls.cek_simpan') }}",
+                url: "{{ route('sppls.simpan_sppls') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp,
+                    data: data,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(response) {
-                    if (response == 1) {
-                        alert("Nomor Telah Dipakai!");
+                    if (response.message == '1') {
+                        alert('Data Berhasil Tersimpan...!!!');
+                        window.location.href = "{{ route('sppls.index') }}";
+                    } else if (response.message == '2') {
+                        alert('Nomor telah dipakai...!!!');
                         $('#simpan_penagihan').prop('disabled', false);
                     } else {
-                        alert("Nomor Bisa dipakai");
-                        simpan_spp(data);
+                        alert('Data Gagal Tersimpan...!!!');
+                        $('#simpan_penagihan').prop('disabled', false);
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });

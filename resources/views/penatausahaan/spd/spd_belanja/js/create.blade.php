@@ -6,6 +6,8 @@
             }
         });
 
+        let pilihan = 0;
+
         let tabelBelanja = $('#spd_belanja').DataTable({
             responsive: true,
             processing: true,
@@ -532,6 +534,8 @@
                 revisi = '0';
             }
 
+            pilihan = 1;
+
             let data = {
                 page: page,
                 kd_skpd: kd_skpd,
@@ -579,6 +583,8 @@
             } else {
                 revisi = '0';
             }
+
+            pilihan = 0;
 
             let data = {
                 page: page,
@@ -732,7 +738,8 @@
                 status_angkas,
                 keterangan,
                 totalNilai,
-                daftar_spd
+                daftar_spd,
+                pilihan
             };
 
             $('#simpan_spd').prop('disabled', true);

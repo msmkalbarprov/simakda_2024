@@ -56,6 +56,7 @@
         <thead>
             <tr>
                 <td align="center" bgcolor="#CCCCCC" width="2%" >No</td>
+                <td align="center" bgcolor="#CCCCCC" width="10%"  >Kode SKPD</td>
                 <td align="center" bgcolor="#CCCCCC" width="25%"  >Uraian</td>
                 <td align="center" bgcolor="#CCCCCC" width="10%"  >Tanggal Terima</td>
                 <td align="center" bgcolor="#CCCCCC" width="10%"  >Realisasi Terima</td>
@@ -103,6 +104,7 @@
                         
                         <tr>
                             <td align='center' >{{$no}}</td>
+                            <td>{{$kd_skpd}}</td>
                             <td>{{$nm_skpd}}</td>
                             <td align='center' >{{$tanggal}}</td>
                             <td align='right' >{{rupiah($real_terima)}}</td>

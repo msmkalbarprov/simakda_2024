@@ -2239,21 +2239,37 @@ function cair_sp2d($data_sp2d)
 {
     $kd_skpd = Auth::user()->kd_skpd;
 
-    $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
-    $data2 = DB::table('trdspp as a')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->select(DB::raw("'2' as urut"), 'kd_sub_kegiatan', 'kd_sub_kegiatan as kd_rek', 'a.nm_sub_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"))->unionAll($data1);
-    $data3 = DB::table('trdspp as a')->join('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupBy('a.kd_rek6', 'b.nm_rek6', 'kd_sub_kegiatan')->select(DB::raw("'3' as urut"), 'kd_sub_kegiatan', 'a.kd_rek6 as kd_rek', 'b.nm_rek6 as nm_rek', DB::raw("SUM(nilai) as nilai"))->unionAll($data2);
+    // $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
+    // $data2 = DB::table('trdspp as a')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->select(DB::raw("'2' as urut"), 'kd_sub_kegiatan', 'kd_sub_kegiatan as kd_rek', 'a.nm_sub_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"))->unionAll($data1);
+    // $data3 = DB::table('trdspp as a')->join('ms_rek6 as b', 'a.kd_rek6', '=', 'b.kd_rek6')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupBy('a.kd_rek6', 'b.nm_rek6', 'kd_sub_kegiatan')->select(DB::raw("'3' as urut"), 'kd_sub_kegiatan', 'a.kd_rek6 as kd_rek', 'b.nm_rek6 as nm_rek', DB::raw("SUM(nilai) as nilai"))->unionAll($data2);
 
-    $result = DB::table(DB::raw("({$data3->toSql()}) AS sub"))
-        ->mergeBindings($data3)
-        ->count();
+    // $result = DB::table(DB::raw("({$data3->toSql()}) AS sub"))
+    //     ->mergeBindings($data3)
+    //     ->count();
 
-    $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
-    $data2 = DB::query()->select(DB::raw("'2' as urut"), DB::raw("' ' as kd_sub_kegiatan"), DB::raw("' ' as kd_rek"), DB::raw("'(Rincian Terlampir)' as nm_rek"), DB::raw("0 as nilai"))->unionAll($data1);
-    $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
-        ->mergeBindings($data2)
-        ->orderBy('urut')
-        ->orderBy('kd_rek')
-        ->get();
+    // $data1 = DB::table('trdspp as a')->join('trskpd as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd])->groupByRaw("LEFT(a.kd_sub_kegiatan,12), nm_kegiatan")->select(DB::raw("'1' as urut"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_sub_kegiatan"), DB::raw("LEFT(a.kd_sub_kegiatan,12) as kd_rek"), 'b.nm_kegiatan as nm_rek', DB::raw("SUM(nilai) as nilai"));
+    // $data2 = DB::query()->select(DB::raw("'2' as urut"), DB::raw("' ' as kd_sub_kegiatan"), DB::raw("' ' as kd_rek"), DB::raw("'(Rincian Terlampir)' as nm_rek"), DB::raw("0 as nilai"))->unionAll($data1);
+    // $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+    //     ->mergeBindings($data2)
+    //     ->orderBy('urut')
+    //     ->orderBy('kd_rek')
+    //     ->get();
+    // return $data;
+
+    $data = DB::select("SELECT * from (
+
+                                select '1'as urut,left(a.kd_sub_kegiatan,12)as kd_sub_kegiatan,left(a.kd_sub_kegiatan,12) kd_rek,b.nm_kegiatan as nm_rek,sum(nilai)nilai from trdspp a inner join
+                                trskpd b on a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_skpd=b.kd_skpd where no_spp=? AND a.kd_skpd=?
+                                group by left(a.kd_sub_kegiatan,12),nm_kegiatan
+                                union all
+                                select '2'as urut,kd_sub_kegiatan,kd_sub_kegiatan kd_rek,a.nm_sub_kegiatan as nm_rek,sum(nilai)nilai from trdspp a where no_spp=? AND a.kd_skpd=?
+                                group by kd_sub_kegiatan,nm_sub_kegiatan
+                                union all
+                                select '3'as urut,kd_sub_kegiatan,a.kd_rek6 kd_rek,b.nm_rek6 as nm_rek,sum(nilai)nilai from trdspp a inner join
+                                ms_rek6 b on a.kd_rek6=b.kd_rek6 where no_spp=? AND a.kd_skpd=?
+                                group by a.kd_rek6,b.nm_rek6,kd_sub_kegiatan
+                                ) tox order by urut,kd_rek", [$data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->no_spp, $data_sp2d->kd_skpd]);
+
     return $data;
 }
 

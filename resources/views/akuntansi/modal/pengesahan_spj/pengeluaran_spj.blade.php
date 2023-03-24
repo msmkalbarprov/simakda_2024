@@ -29,17 +29,17 @@
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"></td>  
             </tr>
             <tr>
+                <td width="30%">Realisasi Barang</td>
+                <td width="1%">:</td>
+                <td><input type="text" class="form-control" name="real_brg" id="real_brg"
+                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"></td>  
+            </tr>
+            <tr>
                 <td width="30%">Realisasi UP/GU/TU</td>
                 <td width="1%">:</td>
                 <td><input type="text" class="form-control" name="real_up" id="real_up"
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right">
                 </td>  
-            </tr>
-            <tr>
-                <td width="30%">Realisasi Barang</td>
-                <td width="1%">:</td>
-                <td><input type="text" class="form-control" name="real_brg" id="real_brg"
-                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right"></td>  
             </tr>
             
             <tr>

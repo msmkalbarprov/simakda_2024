@@ -109,7 +109,16 @@ class TerimaSp2dController extends Controller
                 ->first();
         }
 
-        $sp2d = cair_sp2d($data_sp2d);
+        // $sp2d = cair_sp2d($data_sp2d);
+        $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])
+            ->select(
+                'a.*',
+                DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"),
+                DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"),
+                DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat")
+            )->first();
+
+        $sp2d = cari_sp2d($sp2d, '10', $kd_skpd);
 
         $data = [
             'sp2d' => DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->first(),
@@ -133,6 +142,7 @@ class TerimaSp2dController extends Controller
             'potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),
             'kd_skpd' => $kd_skpd
         ];
+
         return view('skpd.terima_sp2d.show')->with($data);
     }
 

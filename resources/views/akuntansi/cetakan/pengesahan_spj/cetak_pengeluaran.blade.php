@@ -56,11 +56,12 @@
         <thead>
             <tr>
                 <td align="center" bgcolor="#CCCCCC" width="2%" >No</td>
+                <td align="center" bgcolor="#CCCCCC" width="10%"  >Kode SKPD</td>
                 <td align="center" bgcolor="#CCCCCC" width="25%"  >Uraian</td>
                 <td align="center" bgcolor="#CCCCCC" width="10%"  >Tanggal Terima</td>
-                <td align="center" bgcolor="#CCCCCC" width="10%"  >UP/GU/TU</td>
                 <td align="center" bgcolor="#CCCCCC" width="10%"  >Gaji</td>
                 <td align="center" bgcolor="#CCCCCC" width="10%"  >LS</td>
+                <td align="center" bgcolor="#CCCCCC" width="10%"  >UP/GU/TU</td>
                 <td align="center" bgcolor="#CCCCCC" width="5%"  >SPJ</td>
                 <td align="center" bgcolor="#CCCCCC" width="5%"  >BKU</td>
                 <td align="center" bgcolor="#CCCCCC" width="5%"  >Rek. Koran</td>
@@ -104,11 +105,12 @@
                         
                         <tr>
                             <td align='center' >{{$no}}</td>
+                            <td>{{$kd_skpd}}</td>
                             <td>{{$nm_skpd}}</td>
                             <td align='center' >{{$tanggal}}</td>
-                            <td align='right' >{{rupiah($real_up)}}</td>
                             <td align='right' >{{rupiah($real_gj)}}</td>
                             <td align='right' >{{rupiah($real_brg)}}</td>
+                            <td align='right' >{{rupiah($real_up)}}</td>
                             <td align='center' ><?= $spj ?></td>
                             <td align='center' ><?=$bku ?></td>
                             <td align='center' ><?=$koran?></td>
