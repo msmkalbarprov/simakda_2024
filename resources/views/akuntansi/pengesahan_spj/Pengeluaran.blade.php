@@ -48,9 +48,9 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 25px;text-align:center">Kode SKPD</th>
-                                        <th style="width: 50px;text-align:center">UP/GU/TU</th>
                                         <th style="width: 50px;text-align:center">GAJI</th>
                                         <th style="width: 50px;text-align:center">LS BARJAS</th>
+                                        <th style="width: 50px;text-align:center">UP/GU/TU</th>
                                         <th style="width: 50px;text-align:center">Tanggal Terima</th>
                                         <th style="width: 50px;text-align:center">Keterangan</th>
                                         <th style="width: 50px;text-align:center">cek</th>
@@ -110,16 +110,6 @@
                 },
                 {
                     data: null,
-                    name: 'real_up',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.real_up)
-                    }
-                }, 
-                {
-                    data: null,
                     name: 'real_gj',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
@@ -138,6 +128,16 @@
                         }).format(data.real_brg)
                     }
                 },
+                {
+                    data: null,
+                    name: 'real_up',
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.real_up)
+                    }
+                }, 
                 {
                     data: 'tgl_terima',
                     name: 'tgl_terima',
