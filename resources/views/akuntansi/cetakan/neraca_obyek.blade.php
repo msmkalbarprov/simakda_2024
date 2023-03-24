@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Neraca</title>
+    <title>Neraca Obyek</title>
     <style>
         table {
             border-collapse: collapse
@@ -86,6 +86,7 @@
             </tr>
     @php
     $ekuitas = $ekuitas->ekuitas;
+    $ekuitas_tanpa_rkppkd = $ekuitas_tanpa_rkppkd->ekuitas_tanpa_rkppkd;
     $ekuitas_lalu = $ekuitas_lalu->ekuitas_lalu;
     $no     = 0;
     @endphp
@@ -208,34 +209,24 @@
                 }else {
                     $k=""; $l="";
                 }
+                if ($ekuitas_tanpa_rkppkd < 0){
+                    $m="("; $ekuitas_tanpa_rkppkd=$ekuitas_tanpa_rkppkd*-1; $n=")";
+                }else {
+                    $m=""; $n="";
+                }
 
                 $no=$no+1;
             @endphp
 
 
             @if ($bold==1)
-                @if ($seq==425)
-                <tr>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitas)}}{{$f}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_lalu)}}{{$h}}</td>
-                </tr>
-                @elseif($seq==430)
-                <tr>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
-                </tr>
-                @else
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
                 </tr>
-                @endif
+
             @elseif($bold==3)
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
@@ -244,12 +235,65 @@
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
                 </tr>
             @elseif($bold==4)
+                @if($seq==1585)
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$m}}{{rupiah($ekuitas_tanpa_rkppkd)}}{{$n}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_lalu)}}{{$h}}</td>
+                    </tr>
+                @elseif($seq==1595)
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah(0)}}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
+                    </tr>
+                @endif
+            @elseif($bold==5)
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
                 </tr>
+            @elseif($bold==6)
+                <tr>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
+                </tr>
+            @elseif($bold==7)
+                @if($seq==1600)
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitas)}}{{$f}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_lalu)}}{{$h}}</td>
+                    </tr>
+                @elseif($seq==1605)
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
+                    </tr>
+                @endif
             @elseif($bold==10)
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     

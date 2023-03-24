@@ -898,15 +898,24 @@ class LraController extends Controller
 
         if ($format=='1') {
                 
-                        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
-                        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
-                        $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
-                                        isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
-                                        isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
-                                        isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
-                                        FROM map_neraca_permen_77 ORDER BY seq");
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+                isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
+                    isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+                    isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
+                FROM map_neraca_permen_77_oyoy ORDER BY seq");
 
         }else if($format=='2'){
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause"))->first();
+            $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+                isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
+                    isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+                    isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
+                FROM map_neraca_permen_77_obyek_oyoy ORDER BY seq");
             
         }else if($format=='3'){
 
@@ -918,23 +927,47 @@ class LraController extends Controller
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
             // dd($sus);
-        
+        if ($format=='1') {
             $data = [
-            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'ekuitas'           => $ekuitas,
-            'ekuitas_lalu'      => $ekuitas_lalu,
-            'map_neraca'        => $map_neraca,
-            'enter'             => $enter,
-            'daerah'            => $daerah,
-            'bulan'             => $bulan,
-            'skpd_clauses'      => $skpd_clauses,
-            'kd_skpd'           => $kd_skpd,
-            'nm_bln'            => $nm_bln,
-            'thn_ang'           => $thn_ang,
-            'thn_ang1'         => $thn_ang1         
+            'header'                => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'ekuitas'               => $ekuitas,
+            'ekuitas_tanpa_rkppkd'  => $ekuitas_tanpa_rkppkd,
+            'ekuitas_lalu'          => $ekuitas_lalu,
+            'map_neraca'            => $map_neraca,
+            'enter'                 => $enter,
+            'daerah'                => $daerah,
+            'bulan'                 => $bulan,
+            'skpd_clauses'          => $skpd_clauses,
+            'kd_skpd'               => $kd_skpd,
+            'nm_bln'                => $nm_bln,
+            'thn_ang'               => $thn_ang,
+            'thn_ang1'              => $thn_ang1         
             ];
       
             $view =  view('akuntansi.cetakan.neraca')->with($data);
+        }else if($format=='2'){
+            $data = [
+            'header'                => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'ekuitas'               => $ekuitas,
+            'ekuitas_tanpa_rkppkd'  => $ekuitas_tanpa_rkppkd,
+            'ekuitas_lalu'          => $ekuitas_lalu,
+            'map_neraca'            => $map_neraca,
+            'enter'                 => $enter,
+            'daerah'                => $daerah,
+            'bulan'                 => $bulan,
+            'skpd_clauses'          => $skpd_clauses,
+            'kd_skpd'               => $kd_skpd,
+            'nm_bln'                => $nm_bln,
+            'thn_ang'               => $thn_ang,
+            'thn_ang1'              => $thn_ang1         
+            ];
+      
+            $view =  view('akuntansi.cetakan.neraca_obyek')->with($data);
+
+        }else if($format=='3'){
+
+        }
+        
 
         
         if ($cetak == '1') {
