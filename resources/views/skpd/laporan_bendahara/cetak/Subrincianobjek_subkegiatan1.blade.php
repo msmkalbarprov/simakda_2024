@@ -231,8 +231,8 @@
                     <td>{{ $cari_bendahara->jabatan }}</td>
                 </tr>
                 <tr>
-                    <td style="height: 20px"></td>
-                    <td style="height: 20px"></td>
+                    <td style="height: 60px"></td>
+                    <td style="height: 60px"></td>
                 </tr>
                 <tr>
                     <td><u><b>{{ $cari_pa_kpa->nama }}</b></u> <br> {{ $cari_pa_kpa->pangkat }} <br>
