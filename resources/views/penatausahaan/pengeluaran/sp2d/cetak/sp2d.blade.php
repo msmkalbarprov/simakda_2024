@@ -453,25 +453,15 @@
                     <td colspan="6" class="kanan kiri" style="height: 20px"></td>
                 </tr>
                 <tr>
-                    <td class="kiri"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: center" class="kanan"><b><u>{{ $ttd1->nama }}</u></b></td>
-                </tr>
-                <tr>
-                    <td class="kiri"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->pangkat }}</b></td>
-                </tr>
-                <tr>
                     <td class="kiri bottom"></td>
                     <td class="bottom"></td>
                     <td class="bottom"></td>
                     <td class="bottom"></td>
-                    <td style="text-align: center" class="kanan bottom"><b>NIP. {{ $ttd1->nip }}</b></td>
+                    <td style="text-align: center" class="kanan bottom">
+                        <b><u>{{ $ttd1->nama }}</u></b> <br>
+                        <b>{{ $ttd1->pangkat }}</b> <br>
+                        <b>NIP. {{ $ttd1->nip }}</b>
+                    </td>
                 </tr>
             </table>
         </table>
