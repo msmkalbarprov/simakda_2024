@@ -85,7 +85,7 @@ class PengumumanController extends Controller
         $id = Crypt::decryptString($id);
         $input = array_map('htmlentities', $request->validated());
         $file = $request->file('dokumen');
-        if($file->getClientOriginalName()!=null || $file->getClientOriginalName()!=''){
+        if($file !=null || $file !=''){
             DB::table('ms_pengumuman')->where('id', $id)->update([
                 'judul'     => $input['judul'],
                 'isi'       => $input['isi'],
