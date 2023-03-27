@@ -155,7 +155,8 @@
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},
-                    {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
+                    {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }} <br>
+                    Disiapkan oleh,
                 </td>
             </tr>
             <tr>
