@@ -731,7 +731,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN () and b.kd_rek6 not in (?,?,?,?)", ['4', '420101040001', '420101040002', '420101040003', '410416010001'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?,?,?)", ['4', '420101040001', '420101040002', '420101040003', '410416010001'])
             ->where(function ($query) use ($pilihan, $where5, $tgl, $periode1) {
                 if ($pilihan == '1') {
                     $query->whereRaw($where5, [$tgl]);
