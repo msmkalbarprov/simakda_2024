@@ -45,7 +45,7 @@ class SpjPendapatanController extends Controller
 
 
           // rincian
-          if ($kd_skpd == '5.02.0.00.0.00.02.0000') {     //ada kondisi BKAD
+        if ($kd_skpd == '5.02.0.00.0.00.02.0000') {     //ada kondisi BKAD
                $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
                 a.anggaran, isnull(terima_ini,0) as terima_ini,
                 isnull(terima_lalu,0) terima_lalu, isnull(keluar_ini,0) keluar_ini,
@@ -418,7 +418,7 @@ class SpjPendapatanController extends Controller
          )zzz group by kd_skpd,left(kd_skpd,len(?)),kd_sub_kegiatan,kode,nama
 
                      order by kd_skpd,kode", [$kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org]);
-          } else {
+        }else {
                $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
                 a.anggaran, isnull(terima_ini,0) as terima_ini,
                 isnull(terima_lalu,0) terima_lalu, isnull(keluar_ini,0) keluar_ini,
@@ -462,7 +462,7 @@ class SpjPendapatanController extends Controller
 
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,2)=left(z.kd_rek6,2) and a.kd_skpd=z.kd_skpd and
             (a.tgl_sts >= ? AND a.tgl_sts <= ?)) AS keluar_ini,
@@ -475,7 +475,7 @@ class SpjPendapatanController extends Controller
             and (a.tgl_sts < ?) and kd_rek6<>'410411010001')
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,2)=left(z.kd_rek6,2) and a.kd_skpd=z.kd_skpd
             and (a.tgl_sts < ?)) AS keluar_lalu
@@ -529,7 +529,7 @@ class SpjPendapatanController extends Controller
 
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,4)=left(z.kd_rek6,4) and a.kd_skpd=z.kd_skpd and
             (a.tgl_sts >= ? AND a.tgl_sts <= ?)) AS keluar_ini,
@@ -542,7 +542,7 @@ class SpjPendapatanController extends Controller
             and (a.tgl_sts < ?) and kd_rek6<>'410411010001')
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,4)=left(z.kd_rek6,4) and a.kd_skpd=z.kd_skpd
             and (a.tgl_sts < ?)) AS keluar_lalu
@@ -597,7 +597,7 @@ class SpjPendapatanController extends Controller
 
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,6)=left(z.kd_rek6,6) and a.kd_skpd=z.kd_skpd and
             (a.tgl_sts >= ? AND a.tgl_sts <= ?)) AS keluar_ini,
@@ -610,7 +610,7 @@ class SpjPendapatanController extends Controller
             and (a.tgl_sts < ?) and kd_rek6<>'410411010001')
             +
 
-            (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+            (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
             ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
             WHERE left(b.kd_rek5,6)=left(z.kd_rek6,6) and a.kd_skpd=z.kd_skpd
             and (a.tgl_sts < ?)) AS keluar_lalu
@@ -655,7 +655,7 @@ class SpjPendapatanController extends Controller
                 (SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek6,8)=left(z.kd_rek6,8) and a.kd_skpd=z.kd_skpd and (a.tgl_sts >= ? AND a.tgl_sts <= ?))
-                     + (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                     + (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek5,8)=left(z.kd_rek6,8) and a.kd_skpd=z.kd_skpd and (a.tgl_sts >= ? AND a.tgl_sts <= ?))  AS keluar_ini,
 
@@ -663,7 +663,7 @@ class SpjPendapatanController extends Controller
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek6,8)=left(z.kd_rek6,8) and a.kd_skpd=z.kd_skpd
                      and (a.tgl_sts < ?))+
-                     (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                     (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek5,8)=left(z.kd_rek6,8) and a.kd_skpd=z.kd_skpd
                      and (a.tgl_sts < ?)) AS keluar_lalu
@@ -712,7 +712,7 @@ class SpjPendapatanController extends Controller
                 (SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE b.kd_rek6=z.kd_rek6 and a.kd_skpd=z.kd_skpd and (a.tgl_sts >= ? AND a.tgl_sts <= ?))
-                     +(SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                     +(SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek5,12)=z.kd_rek6 and a.kd_skpd=z.kd_skpd and (a.tgl_sts >= ? AND a.tgl_sts <= ?)) AS keluar_ini,
 
@@ -723,7 +723,7 @@ class SpjPendapatanController extends Controller
                      and (a.tgl_sts < ?))
                      +
 
-                     (SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                     (SELECT isnull(SUM(case when jns_trans in ('2','4') then b.rupiah*-1 else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
                      ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                      WHERE left(b.kd_rek5,12)=z.kd_rek6 and a.kd_skpd=z.kd_skpd
                      and (a.tgl_sts < ?)) AS keluar_lalu
