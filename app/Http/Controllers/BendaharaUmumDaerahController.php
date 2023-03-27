@@ -2785,7 +2785,7 @@ class BendaharaUmumDaerahController extends Controller
                 ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])
                 ->first(),
             'rekening' => DB::table('ms_rek6')
-                ->select('nm_rek6', DB::raw("'$kd_sub_kegiatan' as kd_rek6"))
+                ->select('nm_rek6', 'kd_rek6')
                 ->where(['kd_rek6' => $kd_rek])
                 ->first(),
             'periode_awal' => $periode_awal,
@@ -2793,7 +2793,7 @@ class BendaharaUmumDaerahController extends Controller
             'rincian' =>  DB::select("exec kartu_kendali_rek ?,?,?,?,?", array($kd_rek, $kd_skpd, $kd_sub_kegiatan, $periode_awal, $periode_akhir)),
             'jns_ang' => $jns_ang
         ];
-        // return $data['nilai_ang'];
+        // dd($data['rincian']);
         $view = view('bud.kartu_kendali.cetak_per_rekening')->with($data);
 
         if ($jenis_print == 'pdf') {
