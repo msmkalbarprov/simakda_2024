@@ -213,16 +213,13 @@ class SppLsController extends Controller
         $bulan = date('m', strtotime($tgl_spp));
         if ($beban == '4') {
             $beban = ['5'];
-            $bln = $bulan+1;
         } elseif ($beban == '5') {
             $beban = ['5', '6'];
-            $bln    = $bulan;
         } elseif ($beban == '6') {
             $beban = ['5'];
-            $bln = $bulan;
         }
 
-        $data = DB::table('trhspd')->select('no_spd', 'tgl_spd', 'total')->whereRaw('LEFT(kd_skpd,17) = ?', [$skpd])->where('status', '1')->where('tgl_spd', '<=', $tgl_spp)->where('bulan_awal', '<=', $bln)->whereIn('jns_beban', $beban)->get();
+        $data = DB::table('trhspd')->select('no_spd', 'tgl_spd', 'total')->whereRaw('LEFT(kd_skpd,17) = ?', [$skpd])->where('status', '1')->where('tgl_spd', '<=', $tgl_spp)->where('bulan_awal', '<=', $bulan)->whereIn('jns_beban', $beban)->get();
         return response()->json($data);
     }
 
