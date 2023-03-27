@@ -105,6 +105,7 @@ use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
+use App\Http\Controllers\SPB\HibahController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1590,6 +1591,19 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('simpan', [BosController::class, 'simpan'])->name('spb_bos.simpan');
             Route::post('hapus', [BosController::class, 'hapus'])->name('spb_bos.hapus');
             Route::get('cetak', [BosController::class, 'cetak'])->name('spb_bos.cetak');
+        });
+        // SPB HIBAH
+        Route::group(['prefix' => 'hibah'], function () {
+            Route::get('', [HibahController::class, 'index'])->name('spb_hibah.index');
+            Route::post('load', [HibahController::class, 'load'])->name('spb_hibah.load');
+            Route::get('create', [HibahController::class, 'create'])->name('spb_hibah.create');
+            Route::post('kegiatan', [HibahController::class, 'kegiatan'])->name('spb_hibah.kegiatan');
+            Route::post('nomor', [HibahController::class, 'nomor'])->name('spb_hibah.nomor');
+            Route::post('simpan', [HibahController::class, 'simpan'])->name('spb_hibah.simpan');
+            Route::get('edit/{no_spb_hibah?}/{kd_skpd?}', [HibahController::class, 'edit'])->name('spb_hibah.edit');
+            Route::post('update', [HibahController::class, 'update'])->name('spb_hibah.update');
+            Route::post('hapus', [HibahController::class, 'hapus'])->name('spb_hibah.hapus');
+            Route::get('cetak', [HibahController::class, 'cetak'])->name('spb_hibah.cetak');
         });
     });
 });
