@@ -52,8 +52,8 @@
         <table style="width: 100%;text-align:center">
             <tr>
                 <td>
-                    <b>CETAK BUKU RINCIAN OBJEK</b> <br>
-                    <b>KEGIATAN {{ strtoupper($nm_subkegiatan) }}</b> <br>
+                    <b>CETAK BUKU SUB RINCIAN OBJEK</b> <br>
+                    <b>{{ $skpd->nm_skpd }}</b> <br>
                     <b>{{ strtoupper(tanggal($tanggal1)) }} s/d {{ strtoupper(tanggal($tanggal2)) }}</b>
                 </td>
             </tr>
@@ -70,7 +70,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: center">
-                        <b>BUKU PEMBANTU RINCIAN OBJEK</b>
+                        <b>BUKU PEMBANTU SUB RINCIAN OBJEK</b>
                     </td>
                 </tr>
                 <tr>
@@ -85,7 +85,7 @@
                 </tr>
                 <tr>
                     <td>Sub Kegiatan</td>
-                    <td>: {{ $kd_subkegiatan }} {{ $nm_subkegiatan }}</td>
+                    <td>: {{ $item->kd_sub_kegiatan }} {{ nama_sub_kegiatan($item->kd_sub_kegiatan) }}</td>
                 </tr>
                 <tr>
                     <td>Rekening</td>
@@ -128,7 +128,7 @@
 												and b.tgl_bukti<=?
 												GROUP BY a.no_bukti, b.tgl_bukti,a.no_sp2d
 												ORDER BY b.tgl_bukti,a.no_bukti",
-                        [$kd_subkegiatan, $item->kd_rek6, $skpd->kd_skpd, $tanggal1, $tanggal2],
+                        [$item->kd_sub_kegiatan, $item->kd_rek6, $skpd->kd_skpd, $tanggal1, $tanggal2],
                     );
                 @endphp
 
@@ -189,7 +189,7 @@
 												and a.kd_rek6=?
 												AND b.kd_skpd=?
 												and b.tgl_bukti<?",
-                        [$kd_subkegiatan, $item->kd_rek6, $skpd->kd_skpd, $tanggal1],
+                        [$item->kd_sub_kegiatan, $item->kd_rek6, $skpd->kd_skpd, $tanggal1],
                     );
                     
                     foreach ($data_lalu as $value) {

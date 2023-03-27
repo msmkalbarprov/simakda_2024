@@ -438,96 +438,103 @@ class SubRincianObjekController extends Controller
             ->first();
         $nm_skpd        = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
 
-        $headers       = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->select(
-                'a.kd_rek6',
-                'a.kd_sub_kegiatan'
-            )
-            ->where('b.kd_skpd', $kd_skpd)
-            ->whereRaw('b.tgl_bukti <= ?', $tanggal2)
-            ->orderBy('kd_sub_kegiatan')
-            ->orderBy('kd_rek6')
-            ->distinct()->get();
-        $header        = array();
-        foreach ($headers as $rek) {
-            $header[] =  $rek->kd_sub_kegiatan . '.' . $rek->kd_rek6;
-        }
+        // $headers       = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->select(
+        //         'a.kd_rek6',
+        //         'a.kd_sub_kegiatan'
+        //     )
+        //     ->where('b.kd_skpd', $kd_skpd)
+        //     ->whereRaw('b.tgl_bukti <= ?', $tanggal2)
+        //     ->orderBy('kd_sub_kegiatan')
+        //     ->orderBy('kd_rek6')
+        //     ->distinct()->get();
+        // $header        = array();
+        // foreach ($headers as $rek) {
+        //     $header[] =  $rek->kd_sub_kegiatan . '.' . $rek->kd_rek6;
+        // }
 
-        $rincian       = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->select(
-                'a.kd_rek6',
-                'a.kd_sub_kegiatan',
-                DB::raw("ISNULL(a.no_sp2d,'') as no_sp2d"),
-                DB::raw("ISNULL(a.no_bukti,'') as no_bukti"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls"),
-                'b.tgl_bukti',
-                'ket'
-            )
-            ->where('b.kd_skpd', $kd_skpd)
-            ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
-            ->whereBetween('tgl_bukti', [$tanggal1, $tanggal2])
-            ->groupBy('a.no_bukti', 'b.tgl_bukti', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.no_sp2d', 'ket')
-            ->orderBy('tgl_bukti')
-            ->orderBy('no_bukti')
-            ->distinct()->get();
+        // $rincian       = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->select(
+        //         'a.kd_rek6',
+        //         'a.kd_sub_kegiatan',
+        //         DB::raw("ISNULL(a.no_sp2d,'') as no_sp2d"),
+        //         DB::raw("ISNULL(a.no_bukti,'') as no_bukti"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls"),
+        //         'b.tgl_bukti',
+        //         'ket'
+        //     )
+        //     ->where('b.kd_skpd', $kd_skpd)
+        //     ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
+        //     ->whereBetween('tgl_bukti', [$tanggal1, $tanggal2])
+        //     ->groupBy('a.no_bukti', 'b.tgl_bukti', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.no_sp2d', 'ket')
+        //     ->orderBy('tgl_bukti')
+        //     ->orderBy('no_bukti')
+        //     ->distinct()->get();
 
-        $lalu       = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->select(
-                'a.kd_sub_kegiatan',
-                'a.kd_rek6',
-                DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls")
-            )
-            ->where('b.kd_skpd', $kd_skpd)
-            ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
-            ->whereRaw("b.tgl_bukti < ?", [$tanggal1])
-            ->groupBy('a.kd_sub_kegiatan', 'a.kd_rek6')
-            ->get();
+        // $lalu       = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->select(
+        //         'a.kd_sub_kegiatan',
+        //         'a.kd_rek6',
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls")
+        //     )
+        //     ->where('b.kd_skpd', $kd_skpd)
+        //     ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
+        //     ->whereRaw("b.tgl_bukti < ?", [$tanggal1])
+        //     ->groupBy('a.kd_sub_kegiatan', 'a.kd_rek6')
+        //     ->get();
 
-        $sd_ini       = DB::table('trdtransout as a')
-            ->join('trhtransout as b', function ($join) {
-                $join->on('a.no_bukti', '=', 'b.no_bukti');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->select(
-                'a.kd_sub_kegiatan',
-                'a.kd_rek6',
-                DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
-                DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls")
-            )
-            ->where('b.kd_skpd', $kd_skpd)
-            ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
-            ->whereRaw("b.tgl_bukti <= ?", [$tanggal2])
-            ->groupBy('a.kd_sub_kegiatan', 'a.kd_rek6')
-            ->get();
+        // $sd_ini       = DB::table('trdtransout as a')
+        //     ->join('trhtransout as b', function ($join) {
+        //         $join->on('a.no_bukti', '=', 'b.no_bukti');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->select(
+        //         'a.kd_sub_kegiatan',
+        //         'a.kd_rek6',
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('1','2') THEN a.nilai ELSE 0 END) AS up"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('3') THEN a.nilai ELSE 0 END) AS gu"),
+        //         DB::raw("SUM(CASE WHEN jns_spp IN ('4','5','6') THEN a.nilai ELSE 0 END) AS ls")
+        //     )
+        //     ->where('b.kd_skpd', $kd_skpd)
+        //     ->whereIn(DB::raw("a.kd_sub_kegiatan+'.'+a.kd_rek6"), $header) //kd_rek6 dari array
+        //     ->whereRaw("b.tgl_bukti <= ?", [$tanggal2])
+        //     ->groupBy('a.kd_sub_kegiatan', 'a.kd_rek6')
+        //     ->get();
+
+        $rekening = DB::select("SELECT b.kd_sub_kegiatan,b.kd_rek6 FROM trhtransout a INNER JOIN trdtransout b ON a.no_bukti=b.no_bukti
+			AND a.kd_skpd = b.kd_skpd
+			WHERE a.tgl_bukti<=?
+			AND a.kd_skpd=?
+			GROUP BY b.kd_sub_kegiatan,b.kd_rek6 ORDER BY b.kd_sub_kegiatan,b.kd_rek6", [$tanggal2, $kd_skpd]);
 
         // KIRIM KE VIEW
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'skpd'              => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'tanggal1'          => $tanggal1,
             'tanggal2'          => $tanggal2,
             'nm_skpd'           => $nm_skpd,
-            'headers'           => $headers,
-            'lalu'              => $lalu,
-            'sd_ini'            => $sd_ini,
-            'rincian'           => $rincian,
+            // 'headers'           => $headers,
+            // 'lalu'              => $lalu,
+            // 'sd_ini'            => $sd_ini,
+            // 'rincian'           => $rincian,
+            'rekening'             => $rekening,
             'enter'             => $enter,
             'daerah'            => $daerah,
             'tanggal_ttd'       => $tanggal_ttd,
@@ -535,7 +542,7 @@ class SubRincianObjekController extends Controller
             'cari_bendahara'    => $cari_bendahara
         ];
 
-        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_skpd')->with($data);
+        $view =  view('skpd.laporan_bendahara.cetak.Subrincianobjek_skpd1')->with($data);
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
