@@ -86,6 +86,7 @@
             $('#kd_sub_kegiatan').val(null);
             $('#nm_sub_kegiatan').val(null);
             $('#jenis').val(null).change();
+            $('#rkud').val(null).change();
             $('#keterangan').val(null);
             detail.ajax.reload();
         });
@@ -156,6 +157,7 @@
 
         $('#simpan').on('click', function() {
             let no_kas = document.getElementById('no_kas').value;
+            let rkud = document.getElementById('rkud').value;
             let tgl_kas = document.getElementById('tgl_kas').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
@@ -193,6 +195,11 @@
                 return;
             }
 
+            if (!rkud){
+                alert('RKUD Tidak Boleh Kosong');
+                return;
+            }
+
             if (tahun_input != tahun_anggaran) {
                 alert('Tahun tidak sama dengan tahun Anggaran');
                 return;
@@ -219,6 +226,7 @@
                 jenis,
                 kd_sub_kegiatan,
                 jns_cp,
+                rkud,
                 sumber,
                 detail_sts
             };

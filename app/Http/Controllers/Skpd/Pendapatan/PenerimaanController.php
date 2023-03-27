@@ -892,7 +892,7 @@ class PenerimaanController extends Controller
             ->orderBy('a.no_kas')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("penerimaan_kas.edit", [Crypt::encrypt($row->no_kas), Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn = '<a href="' . route("penerimaan_kas.edit", [Crypt::encrypt($row->no_kas), Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\',\'' . $row->tgl_kas . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_kas . '\',\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
@@ -907,6 +907,8 @@ class PenerimaanController extends Controller
             'daftar_skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd', 'jns')
                 ->orderBy('kd_skpd')
+                ->get(),
+            'daftar_rkud' => DB::table('ms_rek_kasda')
                 ->get(),
             'daftar_jenis' => DB::table('trdrka as a')
                 ->select('kd_rek6', 'nm_rek6')
@@ -1113,6 +1115,7 @@ class PenerimaanController extends Controller
                     'total' => $data['total'],
                     'kd_sub_kegiatan' => $giat,
                     'jns_trans' => $data['jenis'],
+                    'rek_bank' => $data['rkud'],
                     'sumber' => $data['sumber'],
                     'kd_bank' => '',
                     'kd_skpd_sumber' => $data['kd_skpd'],
@@ -1190,7 +1193,7 @@ class PenerimaanController extends Controller
 
         $data = [
             'terima' => $data = DB::table('trhkasin_ppkd as a')
-                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd,(SELECT nm_rek_bank FROM ms_rek_kasda WHERE rek_bank = a.rek_bank) AS nm_rek_kasda")
                 ->where(['no_kas' => $no_kas, 'kd_skpd' => $skpd])
                 ->first(),
         ];
@@ -1219,6 +1222,7 @@ class PenerimaanController extends Controller
                     'keterangan' => $data['keterangan'],
                     'total' => $data['nilai'],
                     'tgl_kas' => $data['tgl_kas'],
+                    'rek_bank' => $data['rkud'],
                     'sumber' => $data['pengirim'],
                 ]);
 

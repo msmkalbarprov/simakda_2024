@@ -78,7 +78,7 @@
                     {{-- Jenis Transaksi --}}
                     <div class="mb-3 row">
                         <label for="jenis" class="col-md-2 col-form-label">Jenis Transaksi</label>
-                        <div class="col-md-10">
+                        <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis" name="jenis">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="4">Pendapatan</option>
@@ -86,6 +86,18 @@
                                 <option value="61">Penerimaan Pembiayaan</option>
                                 <option value="62">Pengeluaran Pembiayaan</option>
                                 <option value="1">Rekening Kas</option>
+                                </option>
+                            </select>
+                        </div>
+                        <label for="rkud" class="col-md-2 col-form-label">RKUD</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="rkud" name="rkud">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                @foreach ($daftar_rkud as $rkud)
+                                    <option value="{{ $rkud->rek_bank}}" data-nama="{{ $rkud->nm_rek_bank }}">
+                                        {{ $rkud->rek_bank }} | {{ $rkud->nm_rek_bank }}
+                                    </option>
+                                @endforeach
                                 </option>
                             </select>
                         </div>

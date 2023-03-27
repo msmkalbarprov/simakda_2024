@@ -71,7 +71,7 @@
                     {{-- Jenis Transaksi --}}
                     <div class="mb-3 row">
                         <label for="jenis" class="col-md-2 col-form-label">Jenis Transaksi</label>
-                        <div class="col-md-10">
+                        <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis" name="jenis">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="4" {{ Str::of($terima->jns_trans)->trim() == '4' ? 'selected' : '' }}>
@@ -90,6 +90,11 @@
                                 </option>
                                 </option>
                             </select>
+                        </div>
+                        <label for="rkud" class="col-md-2 col-form-label">RKUD</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="rkud" name="rkud" required readonly
+                                value="{{ str_replace(' ','',$terima->rek_bank).' | '.$terima->nm_rek_kasda }}">
                         </div>
                     </div>
                     {{-- Keterangan --}}
