@@ -205,7 +205,9 @@
                                     <tr>
                                         <th style="width: 100px;text-align:center">Kode Unit</th>
                                         <th style="width: 100px;text-align:center">Kode Sub Kegiatan</th>
+                                        <th style="width: 100px;text-align:center">Nama Sub Kegiatan</th>
                                         <th style="width: 100px;text-align:center">Kode Rekening</th>
+                                        <th style="width: 100px;text-align:center">Nama Rekening</th>
                                         <th style="width: 100px;text-align:center">SPD Ini</th>
                                         <th style="width: 100px;text-align:center">SPD Lalu</th>
                                         <th style="width: 100px;text-align:center">Anggaran</th>
