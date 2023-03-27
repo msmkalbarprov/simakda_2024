@@ -44,8 +44,16 @@
                     name: 'kd_sub_kegiatan',
                 },
                 {
+                    data: 'nm_sub_kegiatan',
+                    name: 'nm_sub_kegiatan',
+                },
+                {
                     data: 'kd_rek6',
                     name: 'kd_rek6',
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6',
                 },
                 {
                     data: null,
@@ -124,8 +132,16 @@
                     name: 'kd_sub_kegiatan',
                 },
                 {
+                    data: 'nm_sub_kegiatan',
+                    name: 'nm_sub_kegiatan',
+                },
+                {
                     data: 'kd_rek6',
                     name: 'kd_rek6',
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6',
                 },
                 {
                     data: null,
