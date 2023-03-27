@@ -120,7 +120,7 @@
             <tr>
                 <td>TAHUN ANGGARAN</td>
                 <td>:</td>
-                <td>2022</td>
+                <td>{{tahun_anggaran()}}</td>
             </tr>
             <tr>
                 <td>NOMOR DPA-SKPD</td>
