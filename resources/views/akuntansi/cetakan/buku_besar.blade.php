@@ -182,7 +182,7 @@
         <TD width="5%" align="left" ></TD>
         <TD width="15%" align="right" >{{$k}} {{rupiah($jdebet1)}} {{$l}}</TD>
         <TD width="15%" align="right" >{{$m}} {{rupiah($jkredit1)}} {{$n}}</TD>
-        <TD width="15%" align="right" >  </TD>
+        <TD width="15%" align="right" > {{$i}} {{rupiah($saldo1)}} {{$j}} </TD>
     </TR>
     </TABLE>
     

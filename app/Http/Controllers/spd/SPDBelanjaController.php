@@ -237,8 +237,16 @@ class SPDBelanjaController extends Controller
                             WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '6'
                             GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6
                         )
-                        AND NOT EXISTS (
-                            SELECT * FROM spd_temp where
+                        -- AND NOT EXISTS (
+                        --     SELECT * FROM spd_temp where
+                        --     left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17)
+                        --     AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan
+                        --     AND a.kd_rek6 = spd_temp.kd_rek6
+                        --     AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                        --     AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                        -- )
+                        AND a.kd_unit + a.kd_sub_kegiatan + a.kd_rek6 NOT IN (
+                            SELECT kd_skpd + kd_sub_kegiatan + kd_rek6 FROM spd_temp where
                             left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17)
                             AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan
                             AND a.kd_rek6 = spd_temp.kd_rek6
@@ -320,7 +328,9 @@ class SPDBelanjaController extends Controller
                 ->insert([
                     'kd_skpd' => $data['kd_skpd'],
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'nm_sub_kegiatan' => nama_sub_kegiatan($data['kd_sub_kegiatan']),
                     'kd_rek6' => $data['kd_rek6'],
+                    'nm_rek6' => nama_rekening($data['kd_rek6']),
                     'bulan_awal' => $data['bln_awal'],
                     'bulan_akhir' => $data['bln_akhir'],
                     'nilai' => is_null($data['nilai']) ? '0' : $data['nilai'],
