@@ -237,22 +237,23 @@ class SPDBelanjaController extends Controller
                             WHERE LEFT(b.kd_skpd, 17) = ? AND c.jns_sub_kegiatan= '6'
                             GROUP BY b.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6
                         )
-                        -- AND NOT EXISTS (
-                        --     SELECT * FROM spd_temp where
+                        AND NOT EXISTS (
+                            SELECT * FROM spd_temp where
+                            -- left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17)
+                            a.kd_unit = spd_temp.kd_skpd
+                            AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan
+                            AND a.kd_rek6 = spd_temp.kd_rek6
+                            AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
+                            AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
+                        )
+                        -- AND a.kd_unit + a.kd_sub_kegiatan + a.kd_rek6 NOT IN (
+                        --     SELECT kd_skpd + kd_sub_kegiatan + kd_rek6 FROM spd_temp where
                         --     left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17)
                         --     AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan
                         --     AND a.kd_rek6 = spd_temp.kd_rek6
                         --     AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
                         --     AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
                         -- )
-                        AND a.kd_unit + a.kd_sub_kegiatan + a.kd_rek6 NOT IN (
-                            SELECT kd_skpd + kd_sub_kegiatan + kd_rek6 FROM spd_temp where
-                            left(a.kd_unit, 17) = left(spd_temp.kd_skpd, 17)
-                            AND a.kd_sub_kegiatan = spd_temp.kd_sub_kegiatan
-                            AND a.kd_rek6 = spd_temp.kd_rek6
-                            AND spd_temp.bulan_awal = ? AND spd_temp.bulan_akhir = ? AND spd_temp.jns_ang = ?
-                            AND spd_temp.jns_angkas = ? AND spd_temp.jns_beban = ? and spd_temp.page_id = ?
-                        )
                     ORDER BY a.kd_unit, a.kd_sub_kegiatan",
                     [
                         $kd_skpd, $jns_ang, $bulanAwal, $bulanAkhir, $kd_skpd, $kd_skpd, $nomor, $tgl, $kd_skpd,

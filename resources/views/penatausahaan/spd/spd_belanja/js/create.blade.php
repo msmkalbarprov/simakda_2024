@@ -428,7 +428,8 @@
         $('#spd_belanja tbody').on('click', 'tr', function() {
             let tabel = tabelBelanja.row(this).data();
             if (!tabel) return
-            let kd_skpd = document.getElementById('kd_skpd').value;
+            // let kd_skpd = document.getElementById('kd_skpd').value;
+            let kd_skpd = tabel.kd_unit;
             let tanggal = document.getElementById('tanggal').value;
             let bln_awal = document.getElementById('bulan_awal').value;
             let bln_akhir = document.getElementById('bulan_akhir').value;
