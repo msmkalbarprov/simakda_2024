@@ -33,11 +33,12 @@
                 {
                     data: null,
                     name: 'total',
-                    className: 'text-right',
+                    className: 'dt-right',
                     render: function(data, type, row, meta) {
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(data.total)
+                        
                     }
                 },
                 {
