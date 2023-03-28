@@ -68,6 +68,20 @@
                                 readonly value="{{ nama_sumber($terima->sumber) }}">
                         </div>
                     </div>
+                    {{-- RKUD --}}
+                    <div class="mb-3 row">
+                        <label for="rkud" class="col-md-2 col-form-label">RKUD</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style="width: 100%" id="rkud" name="rkud">
+                                @foreach ($daftar_rkud as $rkud)
+                                    <option value="{{ $rkud->rek_bank }}" data-nama="{{ $rkud->nm_rek_bank }}">
+                                        {{ $rkud->rek_bank }} | {{ $rkud->nm_rek_bank }}
+                                    </option>
+                                @endforeach
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- Nilai --}}
                     <div class="mb-3 row">
                         <label for="nilai" class="col-md-2 col-form-label">Nilai</label>

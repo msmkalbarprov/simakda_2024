@@ -31,6 +31,7 @@
             let pengirim = document.getElementById('pengirim').value;
             let nama_pengirim = document.getElementById('nama_pengirim').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
+            let rkud = document.getElementById('rkud').value;
             let keterangan = document.getElementById('keterangan').value;
             let nilai = angka(document.getElementById('nilai').value);
             let tahun_input = tgl_kas.substr(0, 4);
@@ -70,6 +71,7 @@
                 tgl_kas,
                 jenis,
                 pengirim,
+                rkud,
                 keterangan,
                 nilai,
             };
@@ -89,8 +91,6 @@
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan, Nomor Baru yang tersimpan adalah: ' +
                             response.nomor);
-                        // window.location.href =
-                        //     "{{ route('penerimaan_ppkd.index') }}";
                         $('#nilai').val(null);
                         $('#keterangan').val(null);
                         nomor_urut();

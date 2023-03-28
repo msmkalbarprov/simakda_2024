@@ -649,6 +649,8 @@ class PenerimaanController extends Controller
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
+            'daftar_rkud' => DB::table('ms_rek_kasda')
+                ->get(),
         ];
 
         return view('skpd.penerimaan_lain_ppkd.create')->with($data);
@@ -678,7 +680,10 @@ class PenerimaanController extends Controller
             //     ->where(['kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
             //     ->first();
             // $nomor = $no_urut->nomor;
-            $cek_terima = DB::table('trhkasin_pkd')->where(['no_sts' => $data['no_kas'] . '/BP', 'kd_skpd' => '5.02.0.00.0.00.02.0000'])->count();
+            $cek_terima = DB::table('trhkasin_pkd')
+                ->where(['no_sts' => $data['no_kas'] . '/BP', 'kd_skpd' => '5.02.0.00.0.00.02.0000'])
+                ->count();
+
             if ($cek_terima > 0) {
                 return response()->json([
                     'message' => '2'
@@ -723,7 +728,7 @@ class PenerimaanController extends Controller
                 'kd_bank' => '1',
                 'kd_sub_kegiatan' => '5.02.00.0.00.04',
                 'jns_trans' => '4',
-                'rek_bank' => '',
+                'rek_bank' => $data['rkud'],
                 'sumber' => $data['pengirim'],
                 'pot_khusus' => '0',
                 'no_sp2d' => '',
@@ -777,7 +782,9 @@ class PenerimaanController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
-                ->get()
+                ->get(),
+            'daftar_rkud' => DB::table('ms_rek_kasda')
+                ->get(),
         ];
         // dd($data['terima']);
         return view('skpd.penerimaan_lain_ppkd.edit')->with($data);
