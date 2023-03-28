@@ -320,7 +320,9 @@ class SPDBelanjaController extends Controller
                 ->insert([
                     'kd_skpd' => $data['kd_skpd'],
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'nm_sub_kegiatan' => nama_sub_kegiatan($data['kd_sub_kegiatan']),
                     'kd_rek6' => $data['kd_rek6'],
+                    'nm_rek6' => nama_rekening($data['kd_rek6']),
                     'bulan_awal' => $data['bln_awal'],
                     'bulan_akhir' => $data['bln_akhir'],
                     'nilai' => is_null($data['nilai']) ? '0' : $data['nilai'],
