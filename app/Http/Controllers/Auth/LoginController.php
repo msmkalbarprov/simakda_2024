@@ -47,10 +47,22 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            Auth::logoutOtherDevices($request->password);
-            return redirect()->route('home');
+
+            $user = DB::table('pengguna')
+                ->where(['username' => $request->username])
+                ->first();
+
+            if ($user->status == 1) {
+                Auth::logoutOtherDevices($request->password);
+                return redirect()->route('home');
+            } else {
+                Auth::logout();
+                request()->session()->invalidate();
+                request()->session()->regenerateToken();
+                return back()->withErrors(['msg' => 'Akun Anda Tidak Aktif, Hubungi Perben!']);
+            }
         } else {
-            return Redirect::back()->withErrors(['msg' => 'Username atau Password Anda Salah!']);
+            return back()->withErrors(['msg' => 'Username atau Password Anda Salah!']);
         }
     }
 
