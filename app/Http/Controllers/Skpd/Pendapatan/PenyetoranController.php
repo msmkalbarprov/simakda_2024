@@ -528,8 +528,13 @@ class PenyetoranController extends Controller
 						AND a.status=1) x
 						WHERE kd_skpd = ? AND no_sts+kd_skpd not in (select b.no_sts+b.kd_skpd from trhkasin_ppkd b where (tgl_sts BETWEEN ? and ?) AND b.kd_skpd=? AND jns_trans IN ('4','2'))", [$tgl_awal, $tgl_akhir, $kd_skpd, $tgl_awal, $tgl_akhir, $kd_skpd]);
 
-                DB::insert("INSERT into trhkasin_ppkd(no_kas,tgl_kas,no_sts,kd_skpd,tgl_sts,keterangan,total,kd_sub_kegiatan,jns_trans,sumber,kd_skpd_sumber)
-						select $nomor+ROW_NUMBER() OVER (ORDER BY tgl_kas) AS no_kas, tgl_sts, no_sts, kd_skpd, tgl_sts, keterangan, total, kd_sub_kegiatan, jns_trans, sumber,kd_skpd
+                $datarkud = DB::table('ms_rek_kasda')
+                    ->first();
+
+                $rkud = $datarkud->rek_bank;
+
+                DB::insert("INSERT into trhkasin_ppkd(no_kas,tgl_kas,no_sts,kd_skpd,tgl_sts,keterangan,total,kd_sub_kegiatan,jns_trans,sumber,kd_skpd_sumber,rek_bank)
+						select $nomor+ROW_NUMBER() OVER (ORDER BY tgl_kas) AS no_kas, tgl_sts, no_sts, kd_skpd, tgl_sts, keterangan, total, kd_sub_kegiatan, jns_trans, sumber,kd_skpd, '$rkud' as rek_bank
 						FROM (
 						SELECT a.*,(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) nm_skpd
 										FROM trhkasin_pkd a
@@ -1148,8 +1153,13 @@ class PenyetoranController extends Controller
 						AND a.status=1) x
 						WHERE kd_skpd = ? AND no_sts+kd_skpd not in (select b.no_sts+b.kd_skpd from trhkasin_ppkd b where (tgl_sts BETWEEN ? and ?) AND b.kd_skpd=? AND jns_trans IN ('4','2'))", [$tgl_awal, $tgl_akhir, $kd_skpd, $tgl_awal, $tgl_akhir, $kd_skpd]);
 
-                DB::insert("INSERT into trhkasin_ppkd(no_kas,tgl_kas,no_sts,kd_skpd,tgl_sts,keterangan,total,kd_sub_kegiatan,jns_trans,sumber,kd_skpd_sumber)
-						select $nomor+ROW_NUMBER() OVER (ORDER BY tgl_kas) AS no_kas, tgl_sts, no_sts, kd_skpd, tgl_sts, keterangan, total, kd_sub_kegiatan, jns_trans, sumber,kd_skpd
+                $datarkud = DB::table('ms_rek_kasda')
+                    ->first();
+
+                $rkud = $datarkud->rek_bank;
+
+                DB::insert("INSERT into trhkasin_ppkd(no_kas,tgl_kas,no_sts,kd_skpd,tgl_sts,keterangan,total,kd_sub_kegiatan,jns_trans,sumber,kd_skpd_sumber,rek_bank)
+						select $nomor+ROW_NUMBER() OVER (ORDER BY tgl_kas) AS no_kas, tgl_sts, no_sts, kd_skpd, tgl_sts, keterangan, total, kd_sub_kegiatan, jns_trans, sumber,kd_skpd, '$rkud' as rek_bank
 						FROM (
 						SELECT a.*,(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd) nm_skpd
 										FROM trhkasin_pkd a
