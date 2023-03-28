@@ -92,7 +92,7 @@
     @endphp
     <i class="fa fa-info-circle"> {{$pengumuman1->judul}}</i>
     
-    <p>{!!strip_tags($pengumuman1->isi,'<ul><ul/><li></li>')!!}</p>
+    <p>{!! html_entity_decode($pengumuman1->isi, ENT_QUOTES, 'UTF-8') !!}</p>
     <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{-- ALERT END --}}

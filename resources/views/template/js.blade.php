@@ -30,6 +30,16 @@
 <!-- Sweet alert init js-->
 <script src="{{ asset('template/assets/js/pages/sweet-alerts.init.js') }}"></script>
 
+{{-- CK EDITOR --}}
+<script src="{{ asset('template/assets/libs/%40ckeditor/ckeditor5-build-classic/build/ckeditor.js') }}"></script>
+
+<!--tinymce js-->
+<script src="{{ asset('template/assets/libs/tinymce/tinymce.min.js') }}"></script>
+
+<!-- init js -->
+<script src="{{ asset('template/assets/js/pages/form-editor.init.js') }}"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @yield('js')

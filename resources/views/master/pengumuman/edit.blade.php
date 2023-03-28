@@ -127,6 +127,7 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5',
             });
+           
         });
         $('#nm_rekening').on("change", function() {
             let rekening = $(this).find(':selected').data('rekening');
@@ -135,4 +136,11 @@
             $("#npwp").val(npwp);
         });
     </script>
+     <script>
+        ClassicEditor
+        .create( document.querySelector( '#isi' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+        </script>
 @endsection

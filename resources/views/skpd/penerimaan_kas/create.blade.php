@@ -92,7 +92,6 @@
                         <label for="rkud" class="col-md-2 col-form-label">RKUD</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="rkud" name="rkud">
-                                <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_rkud as $rkud)
                                     <option value="{{ $rkud->rek_bank}}" data-nama="{{ $rkud->nm_rek_bank }}">
                                         {{ $rkud->rek_bank }} | {{ $rkud->nm_rek_bank }}
