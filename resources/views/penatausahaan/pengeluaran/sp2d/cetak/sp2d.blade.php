@@ -265,7 +265,9 @@
                                 <td style="border-top: hidden;text-align:right;border-left:1px solid black">&nbsp;</td>
                                 <td style="border-top: hidden;border-left:1px solid black"></td>
                                 <td style="border-top: hidden;border-left:1px solid black"></td>
-                                <td style="border-top: hidden;text-align:right;border-left:1px solid black"></td>
+                                <td
+                                    style="border-top: hidden;text-align:right;border-left:1px solid black;border-right:1px solid black">
+                                </td>
                                 </td>
                             </tr>
                         @endfor
