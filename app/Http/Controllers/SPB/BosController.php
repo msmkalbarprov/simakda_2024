@@ -56,7 +56,7 @@ class BosController extends Controller
         ) z"))->first()->nomor;
 
         $angka = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
+        //dasdasdas
         if (in_array($urut, $angka)) {
             $no_spb = '0' . $urut . '/SPB-BOS' . '/' . tahun_anggaran();
         } else {
