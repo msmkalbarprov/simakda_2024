@@ -2244,7 +2244,8 @@ class SppLsController extends Controller
             } else {
                 // $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
 
-                $data_nilai = collect(DB::select("SELECT SUM(nilai) as nilai FROM trdrka WHERE kd_skpd=? AND kd_sub_kegiatan=? AND jns_ang=?", [$kd_skpd, $sub_kegiatan, $status_anggaran]));
+                $data_nilai = collect(DB::select("SELECT SUM(nilai) as nilai FROM trdrka WHERE kd_skpd=? AND kd_sub_kegiatan=? AND jns_ang=?", [$kd_skpd, $sub_kegiatan, $status_anggaran]))->first();
+                dd($data_nilai);
             }
             $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
             $tglspd = $cari_spp->tgl_spp;
