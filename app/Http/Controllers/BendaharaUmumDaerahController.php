@@ -1285,6 +1285,7 @@ class BendaharaUmumDaerahController extends Controller
         }
 
         $cek_pengeluaran = DB::table('pengeluaran_non_sp2d')->where(['tanggal' => $tgl])->count();
+
         if ($cek_pengeluaran > 0) {
             $keluar_non_sp2d = DB::table('pengeluaran_non_sp2d as x')
                 ->selectRaw("CAST(nomor as VARCHAR) as no_kas,nomor as urut, '' as uraian,keterangan+'. Rp. ','' kode, 'PENGELUARAN NON SP2D' nm_rek6,0 as terima,isnull(SUM(x.nilai), 0) AS keluar, 2 jenis, isnull(SUM(x.nilai), 0) as netto, ''sp")
@@ -1314,7 +1315,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("a.no_kas,a.no_kas as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6,0 as terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', $tgl, '420101040001', '410416010001'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', '420101040001', '410416010001', $tgl])
             ->groupByRaw("a.no_kas,keterangan");
 
         $bku2 = DB::table('trhkasin_ppkd as a')
@@ -1326,7 +1327,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('b.kd_rek6', '=', 'c.kd_rek6');
             })
             ->selectRaw("'' as no_kas,a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, ''as sp")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', $tgl, '420101040001', '410416010001'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and  b.kd_rek6 not in (?,?) and a.tgl_kas=?", ['4', '420101040001', '410416010001', $tgl])
             ->groupByRaw("a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6")
             ->unionAll($bku1);
 
@@ -1462,7 +1463,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
             })
             ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?) and a.tgl_kas<?", ['4', $tgl, '420101040001', '410416010001'])
+            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?) and a.tgl_kas<?", ['4', '420101040001', '410416010001', $tgl])
             ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,4),c.nm_rek3");
 
         $total_bku2 = DB::table('trhkasin_ppkd as a')
