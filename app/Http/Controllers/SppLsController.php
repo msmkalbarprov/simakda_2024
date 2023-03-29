@@ -606,10 +606,10 @@ class SppLsController extends Controller
                 INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
                 AND t.kd_skpd= u.kd_skpd
             WHERE
-                t.kd_sub_kegiatan = '$giat'
-                AND u.kd_skpd = '$kode'
-                AND t.kd_rek6 = '$rek'
-                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+                t.kd_sub_kegiatan = ?
+                AND u.kd_skpd = ?
+                AND t.kd_rek6 = ?
+                AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? )
                 AND sumber = z.sumber1
             ) AS tagihlalu,
             (
@@ -618,9 +618,9 @@ class SppLsController extends Controller
             FROM
                 tb_transaksi
             WHERE
-                kd_sub_kegiatan = '$giat'
-                AND kd_skpd = '$kode'
-                AND kd_rek6 = '$rek'
+                kd_sub_kegiatan = ?
+                AND kd_skpd = ?
+                AND kd_rek6 = ?
                 AND sumber = z.sumber1
             ) AS tampungan,
             (
@@ -631,9 +631,9 @@ class SppLsController extends Controller
                 INNER JOIN trdspp b ON a.no_spp= b.no_spp
                 AND a.kd_skpd= b.kd_skpd
             WHERE
-                b.kd_skpd= '$kode'
-                AND b.kd_Sub_kegiatan= '$giat'
-                AND b.kd_rek6= '$rek'
+                b.kd_skpd= ?
+                AND b.kd_Sub_kegiatan= ?
+                AND b.kd_rek6= ?
                 AND sumber = sumber1
                 AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
                 AND jns_spp NOT IN ( '1', '2' )
@@ -646,9 +646,9 @@ class SppLsController extends Controller
                 INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
                 AND f.kd_skpd= g.kd_skpd
             WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
+                g.kd_skpd = ?
+                AND g.kd_sub_kegiatan= ?
+                AND g.kd_rek6= ?
                 AND f.jns_spp IN ( '1' )
                 AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
                 AND sumber = z.sumber1
@@ -661,19 +661,19 @@ class SppLsController extends Controller
                 INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
                 AND f.kd_skpd= g.kd_skpd
             WHERE
-                g.kd_skpd = '$kode'
-                AND g.kd_sub_kegiatan= '$giat'
-                AND g.kd_rek6= '$rek'
+                g.kd_skpd = ?
+                AND g.kd_sub_kegiatan= ?
+                AND g.kd_rek6= ?
                 AND f.jns_spp IN ( '1' )
                 AND sumber = z.sumber1
             ) upgulalu
             FROM
                 trdrka z
             WHERE
-                z.kd_skpd= '$kode'
-                AND z.kd_sub_kegiatan= '$giat'
-                AND jns_ang = '$status_anggaran'
-                AND z.kd_rek6= '$rek' UNION ALL
+                z.kd_skpd= ?
+                AND z.kd_sub_kegiatan= ?
+                AND jns_ang = ?
+                AND z.kd_rek6= ? UNION ALL
             SELECT
                 sumber2 AS sumber_dana,
                 isnull( nsumber2, 0 ) AS nilai,
@@ -685,10 +685,10 @@ class SppLsController extends Controller
                     INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    t.kd_sub_kegiatan = '$giat'
-                    AND u.kd_skpd = '$kode'
-                    AND t.kd_rek6 = '$rek'
-                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+                    t.kd_sub_kegiatan = ?
+                    AND u.kd_skpd = ?
+                    AND t.kd_rek6 = ?
+                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? )
                     AND sumber = z.sumber2
                 ) AS tagihlalu,
                 (
@@ -697,9 +697,9 @@ class SppLsController extends Controller
                 FROM
                     tb_transaksi
                 WHERE
-                    kd_sub_kegiatan = '$giat'
-                    AND kd_skpd = '$kode'
-                    AND kd_rek6 = '$rek'
+                    kd_sub_kegiatan = ?
+                    AND kd_skpd = ?
+                    AND kd_rek6 = ?
                     AND sumber = z.sumber2
                 ) AS tampungan,
                 (
@@ -710,9 +710,9 @@ class SppLsController extends Controller
                     INNER JOIN trdspp u ON t.no_spp= u.no_spp
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    u.kd_sub_kegiatan = '$giat'
-                    AND u.kd_skpd = '$kode'
-                    AND u.kd_rek6 = '$rek'
+                    u.kd_sub_kegiatan = ?
+                    AND u.kd_skpd = ?
+                    AND u.kd_rek6 = ?
                     AND sumber = z.sumber2
                     AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
                     AND jns_spp NOT IN ( '1', '2' )
@@ -725,9 +725,9 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
                     AND sumber = z.sumber2
@@ -740,19 +740,19 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND sumber = z.sumber2
                 ) upgulalu
             FROM
                 trdrka z
             WHERE
-                z.kd_sub_kegiatan= '$giat'
-                AND z.kd_rek6= '$rek'
-                AND jns_ang = '$status_anggaran'
-                AND z.kd_skpd= '$kode' UNION ALL
+                z.kd_sub_kegiatan= ?
+                AND z.kd_rek6= ?
+                AND jns_ang = ?
+                AND z.kd_skpd= ? UNION ALL
             SELECT
                 sumber3 AS sumber_dana,
                 isnull( nsumber3, 0 ) AS nilai,
@@ -764,10 +764,10 @@ class SppLsController extends Controller
                     INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    t.kd_sub_kegiatan = '$giat'
-                    AND u.kd_skpd = '$kode'
-                    AND t.kd_rek6 = '$rek'
-                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+                    t.kd_sub_kegiatan = ?
+                    AND u.kd_skpd = ?
+                    AND t.kd_rek6 = ?
+                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? )
                     AND sumber = sumber3
                 ) AS tagihlalu,
                 (
@@ -776,9 +776,9 @@ class SppLsController extends Controller
                 FROM
                     tb_transaksi
                 WHERE
-                    kd_sub_kegiatan = '$giat'
-                    AND kd_skpd = '$kode'
-                    AND kd_rek6 = '$rek'
+                    kd_sub_kegiatan = ?
+                    AND kd_skpd = ?
+                    AND kd_rek6 = ?
                     AND sumber = a.sumber3
                 ) AS tampungan,
                 (
@@ -789,9 +789,9 @@ class SppLsController extends Controller
                     INNER JOIN trhspp u ON t.no_spp= u.no_spp
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    t.kd_sub_kegiatan = '$giat'
-                    AND t.kd_skpd = '$kode'
-                    AND t.kd_rek6 = '$rek'
+                    t.kd_sub_kegiatan = ?
+                    AND t.kd_skpd = ?
+                    AND t.kd_rek6 = ?
                     AND sumber = sumber3
                     AND jns_spp NOT IN ( '1', '2' )
                     AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
@@ -804,9 +804,9 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
                     AND sumber = sumber3
@@ -819,19 +819,19 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND sumber = sumber3
                 ) upgulalu
             FROM
                 trdrka a
             WHERE
-                a.kd_sub_kegiatan= '$giat'
-                AND a.kd_rek6= '$rek'
-                AND jns_ang = '$status_anggaran'
-                AND a.kd_skpd= '$kode' UNION ALL
+                a.kd_sub_kegiatan= ?
+                AND a.kd_rek6= ?
+                AND jns_ang = ?
+                AND a.kd_skpd= ? UNION ALL
             SELECT
                 sumber4 AS sumber_dana,
                 isnull( nsumber4, 0 ) AS nilai,
@@ -843,10 +843,10 @@ class SppLsController extends Controller
                     INNER JOIN trhtagih u ON t.no_bukti= u.no_bukti
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    t.kd_sub_kegiatan = '$giat'
-                    AND u.kd_skpd = '$kode'
-                    AND t.kd_rek6 = '$rek'
-                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = '$kode' )
+                    t.kd_sub_kegiatan = ?
+                    AND u.kd_skpd = ?
+                    AND t.kd_rek6 = ?
+                    AND u.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd = ? )
                     AND sumber = sumber4
                 ) AS lalu,
                 (
@@ -855,9 +855,9 @@ class SppLsController extends Controller
                 FROM
                     tb_transaksi
                 WHERE
-                    kd_sub_kegiatan = '$giat'
-                    AND kd_skpd = '$kode'
-                    AND kd_rek6 = '$rek'
+                    kd_sub_kegiatan = ?
+                    AND kd_skpd = ?
+                    AND kd_rek6 = ?
                     AND sumber = a.sumber4
                 ) AS tampungan,
                 (
@@ -868,9 +868,9 @@ class SppLsController extends Controller
                     INNER JOIN trhspp u ON t.no_spp= u.no_spp
                     AND t.kd_skpd= u.kd_skpd
                 WHERE
-                    t.kd_sub_kegiatan = '$giat'
-                    AND t.kd_skpd = '$kode'
-                    AND t.kd_rek6 = '$rek'
+                    t.kd_sub_kegiatan = ?
+                    AND t.kd_skpd = ?
+                    AND t.kd_rek6 = ?
                     AND jns_spp NOT IN ( '1', '2' )
                     AND sumber = sumber4
                     AND ( sp2d_batal <> '1' OR sp2d_batal IS NULL )
@@ -883,9 +883,9 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout_cmsbank g ON f.no_voucher= g.no_voucher
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND ( f.status_validasi= '0' OR f.status_validasi IS NULL )
                     AND sumber = sumber4
@@ -898,22 +898,22 @@ class SppLsController extends Controller
                     INNER JOIN trdtransout g ON f.no_bukti= g.no_bukti
                     AND f.kd_skpd= g.kd_skpd
                 WHERE
-                    g.kd_skpd = '$kode'
-                    AND g.kd_sub_kegiatan= '$giat'
-                    AND g.kd_rek6= '$rek'
+                    g.kd_skpd = ?
+                    AND g.kd_sub_kegiatan= ?
+                    AND g.kd_rek6= ?
                     AND f.jns_spp IN ( '1' )
                     AND sumber = sumber4
                 ) upgulalu
             FROM
                 trdrka a
             WHERE
-                a.kd_sub_kegiatan= '$giat'
-                AND a.kd_rek6= '$rek'
-                AND jns_ang = '$status_anggaran'
-                AND a.kd_skpd= '$kode'
+                a.kd_sub_kegiatan= ?
+                AND a.kd_rek6= ?
+                AND jns_ang = ?
+                AND a.kd_skpd= ?
             ) z
             WHERE
-            z.nilai<>0"));
+            z.nilai<>0", [$giat, $kode, $rek, $kode, $giat, $kode, $rek, $kode, $giat, $rek, $kode, $giat, $rek, $kode, $giat, $rek, $kode, $giat, $status_anggaran, $rek, $giat, $kode, $rek, $kode, $giat, $kode, $rek, $giat, $kode, $rek, $kode, $giat, $rek, $kode, $giat, $rek, $giat, $rek, $status_anggaran, $kode, $giat, $kode, $rek, $kode, $giat, $kode, $rek, $giat, $kode, $rek, $kode, $giat, $rek, $kode, $giat, $rek, $giat, $rek, $status_anggaran, $kode, $giat, $kode, $rek, $kode, $giat, $kode, $rek, $giat, $kode, $rek, $kode, $giat, $rek, $kode, $giat, $rek, $giat, $rek, $status_anggaran, $kode]));
         return response()->json($data);
     }
 
@@ -2242,7 +2242,9 @@ class SppLsController extends Controller
                     $data_nilai = collect(DB::select("SELECT SUM(nilai) as nilai FROM trdrka where left(kd_rek6,1)='5' and left(kd_skpd,17)=left(?,17) and kd_sub_kegiatan=? and jns_ang=?", [$kd_skpd, $sub_kegiatan, $status_anggaran]))->first();
                 }
             } else {
-                $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
+                // $data_nilai = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'jns_ang' => $status_anggaran])->first();
+
+                $data_nilai = collect(DB::select("SELECT SUM(nilai) as nilai FROM trdrka WHERE kd_skpd=? AND kd_sub_kegiatan=? AND jns_ang=?", [$kd_skpd, $sub_kegiatan, $status_anggaran]));
             }
             $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
             $tglspd = $cari_spp->tgl_spp;
