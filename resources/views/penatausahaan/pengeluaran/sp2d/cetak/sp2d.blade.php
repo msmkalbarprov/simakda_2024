@@ -250,17 +250,32 @@
                     <td class="center">4</td>
                 </tr>
                 @if (in_array($sp2d->jns_spp, ['1', '2']))
+                    @php
+                        $lcno = 0;
+                    @endphp
                     <tr>
                         <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">1</td>
                         <td style="border-right:1px solid black">{{ $sp2d->kd_skpd }}</td>
                         <td style="border-right:1px solid black">{{ $sp2d->nm_skpd }}</td>
                         <td style="text-align: right;border-right:1px solid black">{{ rupiah($total->nilai) }}</td>
                     </tr>
+                    @if ($lcno <= $baris)
+                        @for ($i = $lcno; $i <= $baris; $i++)
+                            <tr>
+                                <td style="border-top: hidden;text-align:right;border-left:1px solid black">&nbsp;</td>
+                                <td style="border-top: hidden;border-left:1px solid black"></td>
+                                <td style="border-top: hidden;border-left:1px solid black"></td>
+                                <td style="border-top: hidden;text-align:right;border-left:1px solid black"></td>
+                                </td>
+                            </tr>
+                        @endfor
+                    @endif
                 @else
                     @foreach ($data_sp2d as $item)
                         @if ($item->urut == '3')
                             <tr>
-                                <td style="text-align: center;border-left:1px solid black;border-right:1px solid black">
+                                <td
+                                    style="text-align: center;border-left:1px solid black;border-right:1px solid black">
                                     {{ $loop->iteration }}</td>
                                 <td style="border-right:1px solid black">{{ dotrek($item->kd_rek) }}</td>
                                 <td style="border-right:1px solid black">{{ $item->nm_rek }}</td>
