@@ -242,12 +242,13 @@ class SpjFungsionalController extends Controller
         $terima_blud = DB::select("SELECT SUM(CASE WHEN MONTH(tgl_kas)< ? THEN b.nilai ELSE 0 END) as blud_bln_lalu,
         SUM(CASE WHEN MONTH(tgl_kas)= ? THEN b.nilai ELSE 0 END) as blud_bln_ini
         from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
-        where a.kd_skpd= ? and left(b.kd_rek6,1)='5' and b.sumber='BLUD'", [$bulan, $bulan, $bulan, $kd_skpd]);
+        where a.kd_skpd= ? and left(b.kd_rek6,1)='5' and b.sumber='BLUD'", [$bulan, $bulan, $kd_skpd]);
 
         foreach ($terima_blud as $trm_blud) {
             $blud_bln_lalu      = $trm_blud->blud_bln_lalu;
             $blud_bln_ini       = $trm_blud->blud_bln_ini;
         }
+        // dd($blud_bln_ini);
 
         // Terima lain-lain
         $terima_lain = DB::select("SELECT
