@@ -420,7 +420,20 @@ class JurnalKoreksiController extends Controller
     // KOREKSI TRANSAKSI NOMINAL
     public function indexNominal()
     {
-        return view('skpd.koreksi_nominal.index');
+        $akses = Auth::user()->koreksi;
+        $role = Auth::user()->role;
+        if ($role=='1107') {
+            if ($akses=='1') {
+                return view('skpd.koreksi_nominal.index');
+                
+            }else{
+                return view('akses_koreksi');
+            }
+        
+        }else{
+            return view('skpd.koreksi_nominal.index');
+        }
+        
     }
 
     public function loadDataNominal()
