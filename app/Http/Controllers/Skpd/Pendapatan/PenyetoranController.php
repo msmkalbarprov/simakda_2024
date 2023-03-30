@@ -741,6 +741,8 @@ class PenyetoranController extends Controller
                 ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_sts']])
                 ->delete();
 
+            $data['detail_sts'] = json_decode($data['detail_sts'], true);
+
             if (isset($data['detail_sts'])) {
                 DB::table('trdkasin_pkd')
                     ->insert(array_map(

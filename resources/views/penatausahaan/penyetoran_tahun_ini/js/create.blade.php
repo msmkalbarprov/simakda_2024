@@ -117,7 +117,7 @@
             //     return;
             // }
 
-            let detail_sts = detail.rows().data().toArray().map((value) => {
+            let detail_sts1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
                     kd_rek6: value.kd_rek6,
@@ -128,7 +128,9 @@
                 return data;
             });
 
-            if (detail_sts.length == 0) {
+            let detail_sts = JSON.stringify(detail_sts1);
+
+            if (detail_sts1.length == 0) {
                 alert('Detail STS tidak boleh kosong!');
                 return;
             }
