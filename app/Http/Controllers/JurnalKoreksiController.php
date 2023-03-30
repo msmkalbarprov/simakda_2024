@@ -16,7 +16,13 @@ class JurnalKoreksiController extends Controller
     // KOREKSI TRANSAKSI REKENING
     public function indexRekening()
     {
-        return view('skpd.koreksi_rekening.index');
+        $akses = Auth::user()->koreksi;
+        if ($akses=='1') {
+            return view('skpd.koreksi_rekening.index');
+            
+        }else{
+            return view('akses_koreksi');
+        }
     }
 
     public function loadDataRekening()
