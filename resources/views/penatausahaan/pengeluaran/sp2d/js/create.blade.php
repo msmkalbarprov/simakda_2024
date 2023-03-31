@@ -303,6 +303,8 @@
             let no_spm = document.getElementById('no_spm').value;
             let no_spp = document.getElementById('no_spp').value;
             let tgl_sp2d = document.getElementById('tgl_sp2d').value;
+            let tgl_spm = document.getElementById('tgl_spm').value;
+
             if (!beban) {
                 alert('Silahkan pilih jenis beban!');
                 return;
@@ -325,7 +327,10 @@
                     return;
                 }
             }
-
+            if (tgl_spm > tgl_sp2d) {
+                alert('Tanggal SP2D tidak boleh lebih kecil dari tanggal SPM!');
+                return;
+            }
             // simpan sp2d
             $('#simpan_sp2d').prop('disabled', true);
             $.ajax({
