@@ -120,7 +120,7 @@
             <tr>
                 <td>TAHUN ANGGARAN</td>
                 <td>:</td>
-                <td>{{tahun_anggaran()}}</td>
+                <td>{{ tahun_anggaran() }}</td>
             </tr>
             <tr>
                 <td>NOMOR DPA-SKPD</td>
@@ -155,7 +155,7 @@
                 $total_spd = 0;
                 $total_spd_lalu = 0;
             @endphp
-            @foreach ($datalamp as $key => $value)
+            {{-- @foreach ($datalamp as $key => $value)
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     @if ($value->jenis == 'rekening')
@@ -178,6 +178,46 @@
                         {{ number_format($value->nilai, 2, ',', '.') }}</td>
                     <td class="number{{ $value->jenis == 'rekening' ? '' : ' text-bold' }}">
                         {{ number_format($value->anggaran - $value->nilai - $value->nilai_lalu, 2, ',', '.') }}</td>
+                </tr>
+            @endforeach --}}
+            @foreach ($datalamp as $item)
+                @php
+                    if (strlen($item->no_urut) == 44) {
+                        $total_anggaran += $item->anggaran;
+                        $total_spd_lalu += $item->spd_lalu;
+                        $total_spd += $item->nilai;
+                    }
+                    
+                    if (strlen($item->no_urut) <= 32) {
+                        $bold = 'bold';
+                        $fontr = '16';
+                    } else {
+                        $bold = '';
+                        $fontr = '14';
+                    }
+                @endphp
+                <tr>
+                    <td style="text-align: center;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ $loop->iteration }}
+                    </td>
+                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ $item->kode }}
+                    </td>
+                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ $item->uraian }}
+                    </td>
+                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ rupiah($item->anggaran) }}
+                    </td>
+                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ rupiah($item->spd_lalu) }}
+                    </td>
+                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ rupiah($item->nilai) }}
+                    </td>
+                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                        {{ rupiah($item->anggaran - $item->spd_lalu - $item->nilai) }}
+                    </td>
                 </tr>
             @endforeach
             <tr>
