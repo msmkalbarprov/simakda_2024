@@ -507,6 +507,8 @@
                     if (data.message == '1') {
                         alert('Proses Batal Berhasil');
                         window.location.href = "{{ route('skpd.validasi_cms.index') }}";
+                    } else if (data.message == '3') {
+                        alert('Nomor Telah di LPJ atau SPJ Kan');
                     } else {
                         alert('Proses Batal Gagal...!!!');
                     }
