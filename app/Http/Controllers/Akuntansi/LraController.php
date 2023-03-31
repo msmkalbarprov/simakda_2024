@@ -253,8 +253,7 @@ class LraController extends Controller
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang,$tanggal1,$tanggal2,$jns_rincian]);
                         $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
-        
-                    
+
                 }else{
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka 
@@ -306,19 +305,29 @@ class LraController extends Controller
                                                 WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
                                                 AND (b.tgl_kas between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
 
+                                                union all 
+
+                                                SELECT
+                                                SUM(a.nilai) realisasi
+                                                FROM trdtransout a
+                                                JOIN trhtransout b ON a.no_bukti = b.no_bukti
+                                                AND b.kd_skpd = a.kd_skpd
+                                                WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                                AND (b.tgl_kas between ? and ? ) and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
                                                 UNION ALL
                                                 -- CP
-                                                -- SELECT
-                                                -- CASE 
-                                                --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
-                                                --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
-                                                -- ELSE 0
-                                                -- END as realisasi
-                                                -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
-                                                -- WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
-                                                -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                -- group by b.jns_trans,b.jns_cp,b.pot_khusus
-                                                -- UNION ALL
+                                                SELECT
+                                                CASE 
+                                                    WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                    WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                                ELSE 0
+                                                END as realisasi
+                                                from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                                WHERE (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                                AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                                UNION ALL
                                                 -- PENDAPATAN													
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
@@ -347,7 +356,7 @@ class LraController extends Controller
                                                             FROM map_lra_2023
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
+                                                            ORDER BY id,group_id, nama",[$jns_ang,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$tanggal1,$tanggal2,$jns_rincian]);
                         $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)",[$tanggal1,$tanggal2,$jns_ang]))->first();
 
                 } else {
@@ -366,19 +375,29 @@ class LraController extends Controller
                                                 WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
                                                 AND MONTH(b.tgl_bukti) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
 
+                                                union all 
+
+                                                SELECT
+                                                SUM(a.nilai) realisasi
+                                                FROM trdtransout_blud a
+                                                JOIN trhtransout_blud b ON a.no_bukti = b.no_bukti
+                                                AND b.kd_skpd = a.kd_skpd
+                                                WHERE left(a.kd_rek6,1) IN ('5', '6')  $skpd_clause
+                                                AND MONTH(b.tgl_bukti) $operator ? and  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+
                                                 UNION ALL
                                                 -- CP
-                                                -- SELECT
-                                                -- CASE 
-                                                --     WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
-                                                --     WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
-                                                -- ELSE 0
-                                                -- END as realisasi
-                                                -- from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
-                                                -- WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
-                                                -- AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                -- group by b.jns_trans,b.jns_cp,b.pot_khusus
-                                                -- UNION ALL
+                                                SELECT
+                                                CASE 
+                                                    WHEN b.jns_trans=5 and b.jns_cp in (1) and b.pot_khusus<>0 THEN sum(a.rupiah)*-1
+                                                    WHEN b.jns_trans=5 and b.jns_cp in (2)THEN sum(a.rupiah)*-1
+                                                ELSE 0
+                                                END as realisasi
+                                                from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd
+                                                WHERE MONTH(b.tgl_sts) $operator ? and left(a.kd_rek6,1)='5'  $skpd_clause
+                                                AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                group by b.jns_trans,b.jns_cp,b.pot_khusus
+                                                UNION ALL
                                                 -- PENDAPATAN													
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) 
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
@@ -407,7 +426,7 @@ class LraController extends Controller
                                                             FROM map_lra_2023
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
+                                                            ORDER BY id,group_id, nama",[$jns_ang,$bulan,$bulan,$bulan,$bulan,$bulan,$bulan,$jns_rincian]);
                         $sus=collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)",[$bulan,$jns_ang,$tahun_anggaran]))->first();
 
                 }
@@ -1120,6 +1139,147 @@ class LraController extends Controller
                         select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause
                         )a"))->first();
         // dd($ekuitas_awal);
+        $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                        --2 surplus lo
+                        select sum(nilai_pen-nilai_bel) nilai,0 nilai_lalu
+                        from(
+                            select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') $skpd_clauses
+                            union all
+                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('8') $skpd_clauses
+                            )a
+                            union all
+                            -- 2 surplus lo lalu
+                            select 0 nilai,isnull(sum(nilai_pen-nilai_bel),0) nilai_lalu
+                            from(
+                            select sum(kredit-debet) as nilai_pen,0 nilai_bel 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('7') $skpd_clauses
+                            union all
+                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('8') $skpd_clauses
+                            )a
+                        )a"))->first();
+
+        $koreksi = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --5 nilai lpe 1
+                            select isnull(sum(kredit-debet),0) nilai , 0 nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$bulan $skpd_clauses
+                            union all
+                            --5 nilai lpe 1 lalu
+                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang1 $skpd_clauses
+                        )a"))->first();
+
+        $selisih = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --6 nilai dr
+                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                            where  reev='1' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan
+                            union all
+                            --6 nilai dr lalu
+                            select 0 nilai, isnull(sum(kredit-debet),0) nilai_lalu 
+                            from trhju a inner join trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit 
+                            where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang1
+                        )a"))->first();
+
+        $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --7 nilai lpe2
+                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan $skpd_clauses
+                            union all
+                            --7 nilai lpe2 lalu
+                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu 
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang1 $skpd_clauses
+                        )a"))->first();
+
+        
+                        
+        
+
+
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            // dd($sus);
+        
+            $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            // 'ekuitas_awal'      => $ekuitas_awal,
+            'ekuitas_awal'      => $ekuitas_awal->nilai,
+            'ekuitas_awal_lalu'      => $ekuitas_awal->nilai_lalu,
+            'surdef'            => $surdef->nilai,
+            'surdef_lalu'            => $surdef->nilai_lalu,
+            'koreksi'           => $koreksi->nilai,
+            'koreksi_lalu'           => $koreksi->nilai_lalu,
+            'selisih'           => $selisih->nilai,
+            'selisih_lalu'           => $selisih->nilai_lalu,
+            'lain'              => $lain->nilai,
+            'lain_lalu'              => $lain->nilai_lalu,
+            'enter'             => $enter,
+            'daerah'            => $daerah,
+            'bulan'             => $bulan,
+            'kd_skpd'           => $kd_skpd,
+            'nm_bln'            => $nm_bln,
+            'thn_ang'           => $thn_ang,
+            'thn_ang1'         => $thn_ang1         
+            ];
+        // dd($data['ekuitas_awal']->nilai);
+            $view =  view('akuntansi.cetakan.lpe')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LPE.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LPE.xls"');
+            return $view;
+        }
+    }
+
+    public function cetaklak(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        $kd_skpd        = Auth::user()->kd_skpd;
+        
+        // dd($kd_skpd);
+        
+        $thn_ang    = tahun_anggaran();
+        $thn_ang1   = $thn_ang-1;
+
+        $modtahun= $thn_ang%4;
+        
+            if ($modtahun = 0){
+                $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }else {
+                $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+         
+         $arraybulan=explode(".",$nilaibulan);
+         $nm_bln = $arraybulan[$bulan];
+
+        
+
+
+        $anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd='$kd_skpd' and status=1 order by tgl_dpa DESC"))->first();
+        
+        
         $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
                         from(
                         --2 surplus lo
