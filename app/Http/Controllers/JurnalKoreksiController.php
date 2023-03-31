@@ -18,18 +18,15 @@ class JurnalKoreksiController extends Controller
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
-        if ($role=='1107') {
-            if ($akses=='1') {
+        if ($role == '1107') {
+            if ($akses == '1') {
                 return view('skpd.koreksi_rekening.index');
-                
-            }else{
+            } else {
                 return view('akses_koreksi');
             }
-        
-        }else{
+        } else {
             return view('skpd.koreksi_rekening.index');
         }
-
     }
 
     public function loadDataRekening()
@@ -213,30 +210,65 @@ class JurnalKoreksiController extends Controller
 
     public function sumberKoreksi(Request $request)
     {
-        $req = $request->all();
+        $kd_skpd = $request->kd_skpd;
+        $kd_rek6 = $request->kd_rek6;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
         $jns_ang = status_anggaran();
 
-        $data1 = DB::table('trdrka')
-            ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber1)) as sumber,nsumber1 as nilai_sumber")
-            ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
-            ->whereRaw("rtrim(ltrim(sumber1))<>''");
-        $data2 = DB::table('trdrka')
-            ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber2)) as sumber,nsumber2 as nilai_sumber")
-            ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
-            ->whereRaw("rtrim(ltrim(sumber2))<>''")
-            ->unionAll($data1);
-        $data3 = DB::table('trdrka')
-            ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber3)) as sumber,nsumber3 as nilai_sumber")
-            ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
-            ->whereRaw("rtrim(ltrim(sumber3))<>''")
-            ->unionAll($data2);
-        $data4 = DB::table('trdrka')
-            ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber4)) as sumber,nsumber4 as nilai_sumber")
-            ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
-            ->whereRaw("rtrim(ltrim(sumber4))<>''")
-            ->unionAll($data3);
-        $data = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
-            ->mergeBindings($data4)
+        // $data1 = DB::table('trdrka')
+        //     ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber1)) as sumber,nsumber1 as nilai_sumber")
+        //     ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
+        //     ->whereRaw("rtrim(ltrim(sumber1))<>''");
+        // $data2 = DB::table('trdrka')
+        //     ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber2)) as sumber,nsumber2 as nilai_sumber")
+        //     ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
+        //     ->whereRaw("rtrim(ltrim(sumber2))<>''")
+        //     ->unionAll($data1);
+        // $data3 = DB::table('trdrka')
+        //     ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber3)) as sumber,nsumber3 as nilai_sumber")
+        //     ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
+        //     ->whereRaw("rtrim(ltrim(sumber3))<>''")
+        //     ->unionAll($data2);
+        // $data4 = DB::table('trdrka')
+        //     ->selectRaw("kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber4)) as sumber,nsumber4 as nilai_sumber")
+        //     ->where(['kd_skpd' => $req['kd_skpd'], 'kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'kd_rek6' => $req['kd_rek6'], 'jns_ang' => $jns_ang])
+        //     ->whereRaw("rtrim(ltrim(sumber4))<>''")
+        //     ->unionAll($data3);
+        // $data = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
+        //     ->mergeBindings($data4)
+        //     ->get();
+
+        // $data = DB::select("SELECT kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber1)) [sumber],nsumber1 [nilai_sumber]
+        //         from trdrka  where kd_skpd=? and kd_sub_kegiatan=? and kd_rek6=? and rtrim(ltrim(sumber1))<>'' and jns_ang=?
+        //         union all
+        //         select kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber2)) [sumber],nsumber2 [nilai_sumber]
+        //         from trdrka  where kd_skpd=? and kd_sub_kegiatan=? and kd_rek6=? and rtrim(ltrim(sumber2))<>'' and jns_ang=?
+        //         union all
+        //         select kd_sub_kegiatan,kd_rek6,ltrim(sumber3) [sumber],nsumber3 [nilai_sumber]
+        //         from trdrka  where kd_skpd=? and kd_sub_kegiatan=? and kd_rek6=? and rtrim(ltrim(sumber3))<>'' and jns_ang=?
+        //         union all
+        //         select kd_sub_kegiatan,kd_rek6,rtrim(ltrim(sumber4)) [sumber],nsumber4 [nilai_sumber]
+        //         from trdrka  where kd_skpd=? and kd_sub_kegiatan=? and kd_rek6=? and ltrim(ltrim(sumber4))<>'' and jns_ang=?", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jns_ang, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jns_ang, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jns_ang, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $jns_ang]);
+
+        $no_trdrka = $kd_skpd . '.' . $kd_sub_kegiatan . '.' . $kd_rek6;
+
+        $data1 = DB::table('trdpo')
+            ->select('sumber', 'nm_sumber', DB::raw("SUM(total) as nilai_sumber"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $jns_ang])
+            ->whereNotNull('sumber')
+            ->groupBy('sumber', 'nm_sumber');
+
+        $data2 = DB::table('trdpo')
+            ->select('sumber', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai_sumber"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $jns_ang])
+            ->where(function ($query) {
+                $query->where('sumber', '')->orWhereNull('sumber');
+            })
+            ->groupBy('sumber', 'nm_sumber')
+            ->union($data1);
+
+        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+            ->mergeBindings($data2)
             ->get();
 
         return response()->json($data);
@@ -422,18 +454,15 @@ class JurnalKoreksiController extends Controller
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
-        if ($role=='1107') {
-            if ($akses=='1') {
+        if ($role == '1107') {
+            if ($akses == '1') {
                 return view('skpd.koreksi_nominal.index');
-                
-            }else{
+            } else {
                 return view('akses_koreksi');
             }
-        
-        }else{
+        } else {
             return view('skpd.koreksi_nominal.index');
         }
-        
     }
 
     public function loadDataNominal()
