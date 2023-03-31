@@ -65,6 +65,11 @@
                 alert("Isi BANK Terlebih Dahulu...!!!");
                 return;
             }
+            if (Number.isInteger(nilai_up) == false) {
+                alert('Nilai UP tidak boleh ada koma');
+                return;
+            };
+
             $('#simpan_spp').prop('disabled', true);
             $.ajax({
                 url: "{{ route('sppup.edit_spp') }}",
