@@ -463,6 +463,10 @@
                 alert('Nilai Melebihi Sisa Dana SPD...!!!, Cek Lagi...!!!');
                 return;
             }
+            if (Number.isInteger(nilai_tagih) == false) {
+                alert('Nilai Penagihan tidak boleh ada koma');
+                return;
+            };
             // kondisi ketika kode sub kegiatan dan rekening tidak sama dengan tampungan
             let tampungan = tabel.rows().data().toArray().map((value) => {
                 let result = {
