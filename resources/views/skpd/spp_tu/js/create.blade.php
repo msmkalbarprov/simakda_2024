@@ -329,7 +329,10 @@
                 alert('Nilai Nol.....!!!, Cek Lagi...!!!');
                 return;
             }
-
+            if (Number.isInteger(nilai) == false) {
+                alert('Nilai Rincian tidak boleh ada koma');
+                return;
+            };
             if (!kode_rekening) {
                 alert("Rekening kosong");
                 return;

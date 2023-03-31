@@ -897,7 +897,10 @@
                 alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
                 return;
             }
-
+            if (Number.isInteger(nilai_rincian) == false) {
+                alert('Nilai Rincian tidak boleh ada koma');
+                return;
+            };
             // cek data di detail spp dan inputan
             let tampungan = tabel.rows().data().toArray().map((value) => {
                 let result = {

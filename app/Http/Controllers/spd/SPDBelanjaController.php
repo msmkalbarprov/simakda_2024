@@ -20,7 +20,9 @@ class SPDBelanjaController extends Controller
     {
         $data = [
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where(['kode' => 'PPKD'])->get(),
+            'daftar_anggaran' => DB::select("SELECT * from tb_status_anggaran where status_aktif=?", ['1'])
         ];
+
         return view('penatausahaan.spd.spd_belanja.index')->with($data);
     }
 
@@ -923,6 +925,8 @@ class SPDBelanjaController extends Controller
         $nip = $request->nip;
         $tambahan = $request->tambahan;
         $jenispr = $request->jenis;
+        $jns_ang = $request->jns_ang;
+
         $total_ingat = count_ingat();
 
         $tambahanbln = $tambahan ? "Tambahan" : "";
@@ -934,16 +938,206 @@ class SPDBelanjaController extends Controller
             ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
             ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
 
-        $spd_lalu = array_column(DB::select(
-            "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking
-			        FROM trhspd
-			        WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= ?
-			        ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC)",
-            [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
-        ), 'no_spd');
-        if (count($spd_lalu) == 0) $spd_lalu = [null];
+        // $spd_lalu = array_column(DB::select(
+        //     "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking
+        // 	        FROM trhspd
+        // 	        WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang = ?
+        // 	        ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC)",
+        //     [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
+        // ), 'no_spd');
+        // if (count($spd_lalu) == 0) $spd_lalu = [null];
 
-        $total_spd_lalu = DB::table('trhspd')->wherein('no_spd', $spd_lalu)->sum('total');
+        // $total_spd_lalu = DB::table('trhspd')->wherein('no_spd', $spd_lalu)->sum('total');
+
+        $kd_skpd = $jenis->kd_skpd;
+        $tgl_spd = $jenis->tgl_spd;
+        $jns_beban = $jenis->jns_beban;
+
+        $tw = collect(DB::select("SELECT bulan_akhir FROM trhspd WHERE no_spd=?", [$nospd]))->first();
+
+        $tw = $tw->bulan_akhir;
+
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '3', '1', $tgl_spd]))->first();
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '6', '1', $tgl_spd]))->first();
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '9', '1', $tgl_spd]))->first();
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '12', '1', $tgl_spd]))->first();
+
+        switch ($tw) {
+            case '3':
+                $total_spd_lalu = collect(DB::select("SELECT sum(nilai)as jm_spd_l from (
+                        SELECT
+                        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                        FROM
+                        trdspd a
+                        JOIN trhspd b ON a.no_spd = b.no_spd
+                        WHERE
+                        left(a.kd_unit,17) = left(?,17)
+                        AND b.jns_beban=?
+                        AND b.status = ?
+                        and bulan_akhir=?
+                        and revisi_ke=?
+                        and tgl_spd<=?
+                        and a.no_spd<>?
+                    )zz", [$kd_skpd, $jns_beban, '1', '3', $revisi1->revisi, $tgl_spd, $nospd]))->first()->jm_spd_l;
+                break;
+            case '6':
+                $total_spd_lalu = collect(DB::select("SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_akhir=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status =?
+                    and bulan_akhir=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    )zz", [$kd_skpd, $jns_beban, '1', '3', $revisi1->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '6', $revisi2->revisi, $tgl_spd, $nospd]))->first()->jm_spd_l;
+                break;
+            case '9':
+                $total_spd_lalu = collect(DB::select("SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_akhir=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_akhir=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_akhir=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    )zz", [$kd_skpd, $jns_beban, '1', '3', $revisi1->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '6', $revisi2->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '9', $revisi3->revisi, $tgl_spd, $nospd]))->first()->jm_spd_l;
+                break;
+            case '12':
+                $total_spd_lalu = collect(DB::select("SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_awal = ?
+                    and bulan_akhir<=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_awal = ?
+                    and bulan_akhir<=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_awal = ?
+                    and bulan_akhir<=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    UNION ALL
+                    SELECT
+                    'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left(?,17)
+                    AND b.jns_beban=?
+                    AND b.status = ?
+                    and bulan_awal = ?
+                    and bulan_akhir<=?
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and a.no_spd<>?
+                    )zz", [$kd_skpd, $jns_beban, '1', '3', $revisi1->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '6', $revisi2->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '9', $revisi3->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '12', $revisi4->revisi, $tgl_spd, $nospd]))->first()->jm_spd_l;
+                break;
+        }
+
+
         $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
 
         $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-otori', array(
@@ -994,100 +1188,1654 @@ class SPDBelanjaController extends Controller
 
         $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
 
-        $spd_lalu = array_column(DB::select(
-            "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking
-                FROM trhspd
-                WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= ?
-                ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC)",
-            [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
-        ), 'no_spd');
+        // $spd_lalu = array_column(DB::select(
+        //     "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking
+        //         FROM trhspd
+        //         WHERE kd_skpd = ? AND bulan_awal < ? AND bulan_akhir < ? AND jns_ang <= ?
+        //         ORDER BY RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC)",
+        //     [$jenis->kd_skpd, $jenis->bulan_awal, $jenis->bulan_akhir, $jenis->jns_ang]
+        // ), 'no_spd');
 
-        if (count($spd_lalu) == 0) $spd_lalu = [null];
-        $arr = implode("','", $spd_lalu);
+        // if (count($spd_lalu) == 0) $spd_lalu = [null];
+        // $arr = implode("','", $spd_lalu);
 
-        $datalamp = DB::select(
-            "SELECT * FROM (
-				SELECT spd.kd_program as urutan, spd.kd_program AS kode, spd.nm_program AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'program' AS jenis
-				FROM (
-					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
-					FROM trhspd
-					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
-					WHERE trhspd.no_spd = '$nospd'
-				) spd
-				LEFT JOIN (
-					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
-					JOIN trdspd d ON h.no_spd = d.no_spd
-					WHERE h.no_spd IN ('$arr')
-					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
-				) spd_lalu
-				ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
-				JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
-				GROUP BY spd.kd_program, spd.nm_program, spd.kd_skpd
+        // $datalamp = DB::select(
+        //     "SELECT * FROM (
+        // 		SELECT spd.kd_program as urutan, spd.kd_program AS kode, spd.nm_program AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'program' AS jenis
+        // 		FROM (
+        // 			SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+        // 			FROM trhspd
+        // 			JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+        // 			WHERE trhspd.no_spd = '$nospd'
+        // 		) spd
+        // 		LEFT JOIN (
+        // 			SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+        // 			JOIN trdspd d ON h.no_spd = d.no_spd
+        // 			WHERE h.no_spd IN ('$arr')
+        // 			GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+        // 		) spd_lalu
+        // 		ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+        // 		JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+        // 		GROUP BY spd.kd_program, spd.nm_program, spd.kd_skpd
 
-				UNION ALL
+        // 		UNION ALL
 
-				SELECT spd.kd_program+'.'+spd.kd_kegiatan as urutan,  spd.kd_kegiatan AS kode, spd.nm_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'kegiatan' AS jenis
-				FROM (
-					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
-					FROM trhspd
-					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
-					WHERE trhspd.no_spd = '$nospd'
-				) spd
-				LEFT JOIN (
-					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
-					JOIN trdspd d ON h.no_spd = d.no_spd
-					WHERE h.no_spd in ('$arr')
-					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
-				) spd_lalu
-				ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
-				JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
-				GROUP BY spd.kd_kegiatan, spd.nm_kegiatan, spd.kd_skpd, spd.kd_program
+        // 		SELECT spd.kd_program+'.'+spd.kd_kegiatan as urutan,  spd.kd_kegiatan AS kode, spd.nm_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'kegiatan' AS jenis
+        // 		FROM (
+        // 			SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+        // 			FROM trhspd
+        // 			JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+        // 			WHERE trhspd.no_spd = '$nospd'
+        // 		) spd
+        // 		LEFT JOIN (
+        // 			SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+        // 			JOIN trdspd d ON h.no_spd = d.no_spd
+        // 			WHERE h.no_spd in ('$arr')
+        // 			GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+        // 		) spd_lalu
+        // 		ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+        // 		JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+        // 		GROUP BY spd.kd_kegiatan, spd.nm_kegiatan, spd.kd_skpd, spd.kd_program
 
-				UNION ALL
+        // 		UNION ALL
 
-				SELECT spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'sub_kegiatan' AS jenis
-				FROM (
-					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
-					FROM trhspd
-					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
-					WHERE trhspd.no_spd = '$nospd'
-				) spd
-				LEFT JOIN (
-					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
-					JOIN trdspd d ON h.no_spd = d.no_spd
-					WHERE h.no_spd in ('$arr')
-					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
-				) spd_lalu
-				ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
-				JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd,17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
-				GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_program, spd.kd_kegiatan
+        // 		SELECT spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, '' AS kd_rek, '' AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'sub_kegiatan' AS jenis
+        // 		FROM (
+        // 			SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+        // 			FROM trhspd
+        // 			JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+        // 			WHERE trhspd.no_spd = '$nospd'
+        // 		) spd
+        // 		LEFT JOIN (
+        // 			SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+        // 			JOIN trdspd d ON h.no_spd = d.no_spd
+        // 			WHERE h.no_spd in ('$arr')
+        // 			GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+        // 		) spd_lalu
+        // 		ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+        // 		JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd,17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+        // 		GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_program, spd.kd_kegiatan
 
-				UNION ALL
+        // 		UNION ALL
 
-				SELECT  spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan+'.'+spd.kd_rek6 as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, spd.kd_rek6 AS kd_rek, spd.nm_rek6 AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'rekening' AS jenis
-				FROM (
-					SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
-					FROM trhspd
-					JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
-					WHERE trhspd.no_spd = '$nospd'
-				) spd
-				LEFT JOIN (
-					SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
-					JOIN trdspd d ON h.no_spd = d.no_spd
-					WHERE h.no_spd in ('$arr')
-					GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
-				) spd_lalu
-				ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
-				JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
-				GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_rek6, spd.nm_rek6, spd.kd_program, spd.kd_kegiatan
-			) spd ORDER BY urutan"
-        );
+        // 		SELECT  spd.kd_program+'.'+spd.kd_kegiatan+'.'+spd.kd_sub_kegiatan+'.'+spd.kd_rek6 as urutan, spd.kd_sub_kegiatan AS kode, spd.nm_sub_kegiatan AS nama, spd.kd_rek6 AS kd_rek, spd.nm_rek6 AS nm_rek, SUM(trdrka.nilai) AS anggaran, SUM(spd.nilai) nilai, SUM(ISNULL(spd_lalu.nilai, 0)) AS nilai_lalu, 'rekening' AS jenis
+        // 		FROM (
+        // 			SELECT trhspd.no_spd, kd_skpd, kd_program, nm_program, kd_kegiatan, nm_kegiatan, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, bulan_awal, bulan_akhir, nilai, jns_ang
+        // 			FROM trhspd
+        // 			JOIN trdspd ON trhspd.no_spd = trdspd.no_spd
+        // 			WHERE trhspd.no_spd = '$nospd'
+        // 		) spd
+        // 		LEFT JOIN (
+        // 			SELECT h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, SUM(d.nilai) AS nilai FROM trhspd h
+        // 			JOIN trdspd d ON h.no_spd = d.no_spd
+        // 			WHERE h.no_spd in ('$arr')
+        // 			GROUP BY h.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+        // 		) spd_lalu
+        // 		ON left(spd.kd_skpd, 17) = left(spd_lalu.kd_skpd, 17) AND spd.kd_sub_kegiatan = spd_lalu.kd_sub_kegiatan AND spd.kd_rek6 = spd_lalu.kd_rek6
+        // 		JOIN trdrka ON left(trdrka.kd_skpd, 17) = left(spd.kd_skpd, 17) AND trdrka.kd_sub_kegiatan = spd.kd_sub_kegiatan AND trdrka.kd_rek6 = spd.kd_rek6 AND trdrka.jns_ang = spd.jns_ang
+        // 		GROUP BY spd.kd_sub_kegiatan, spd.nm_sub_kegiatan, spd.kd_skpd, spd.kd_rek6, spd.nm_rek6, spd.kd_program, spd.kd_kegiatan
+        // 	) spd ORDER BY urutan"
+        // );
+
+        $kd_skpd = $jenis->kd_skpd;
+        $tgl_spd = $jenis->tgl_spd;
+        $bulan_akhir = $jenis->bulan_akhir;
+        $jns_beban = $jenis->jns_beban;
+        $jns_ang = $jenis->jns_ang;
+
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '3', '1', $tgl_spd]))->first();
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '6', '1', $tgl_spd]))->first();
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '9', '1', $tgl_spd]))->first();
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where
+                                kd_skpd=?
+                                and bulan_akhir=? and [status] =?
+                                and tgl_spd<=?", [$kd_skpd, '12', '1', $tgl_spd]))->first();
+
+        if ($bulan_akhir == '3') {
+            $spdlalu = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu6 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+
+            $spdlalu2 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and b.status = '1'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu26 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='5'
+        and b.status = '1'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+
+            $spdlalu3 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and b.status = '1'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu36 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and b.status = '1'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu4 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and b.status = '1'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu46 = "SELECT sum(nilai)as jm_spd_l from (
+            SELECT
+            'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+            FROM
+            trdspd a
+            JOIN trhspd b ON a.no_spd = b.no_spd
+            WHERE
+            left(a.kd_unit,17) = left('$kd_skpd',17)
+            AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+            AND a.kd_rek6=z.kd_rek6
+            AND b.jns_beban='6'
+            and b.status = '1'
+            and bulan_akhir<='$bulan_akhir'
+            and bulan_awal='1'
+            and revisi_ke='$revisi1->revisi'
+            and tgl_spd<='$tgl_spd'
+            and a.no_spd<>'$nospd'
+        )zz";
+        } else if ($bulan_akhir == '6') {
+            $spdlalu = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu6 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu2 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu26 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu3 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu36 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu4 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu46 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='6'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='6'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+        } else if ($bulan_akhir == '9') {
+            $spdlalu = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu6 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+    )zz";
+            $spdlalu2 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu26 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+    )zz";
+            $spdlalu3 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu36 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,15)=left(z.kd_sub_kegiatan,15)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+    )zz";
+            $spdlalu4 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and revisi_ke='$revisi1->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and revisi_ke='$revisi2->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                )zz";
+            $spdlalu46 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+    )zz";
+        } else {
+            $spdlalu = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and b.status = '1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and b.status = '1'
+                    and revisi_ke='$revisi3->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='10'
+                    and b.status = '1'
+                    and revisi_ke='$revisi4->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu6 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and b.status = '1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and b.status = '1'
+        and revisi_ke='$revisi2->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,7)=left(z.kd_sub_kegiatan,7)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='10'
+        and b.status = '1'
+        and revisi_ke='$revisi4->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu2 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and b.status = '1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and b.status = '1'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='10'
+                    and b.status = '1'
+                    and revisi_ke='$revisi4->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu26 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and b.status = '1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and b.status = '1'
+        and revisi_ke='$revisi2->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND left(a.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='10'
+        and b.status = '1'
+        and revisi_ke='$revisi4->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu3 = "SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and b.status = '1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and b.status = '1'
+                    and revisi_ke='$revisi3->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='10'
+                    and b.status = '1'
+                    and revisi_ke='$revisi4->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu36 = "SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and b.status = '1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and b.status = '1'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and b.status = '1'
+        and revisi_ke='$revisi3->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND b.jns_beban='6'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='10'
+        and b.status = '1'
+        and revisi_ke='$revisi4->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        )zz";
+            $spdlalu4 = "     SELECT sum(nilai)as jm_spd_l from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='1'
+                    and b.status = '1'
+                    and revisi_ke='$revisi1->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='4'
+                    and b.status = '1'
+                    and revisi_ke='$revisi2->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    left(a.kd_unit,17) = left('$kd_skpd',17)
+                    AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    AND a.kd_rek6=z.kd_rek6
+                    AND b.jns_beban='5'
+                    and b.status = '1'
+                    and bulan_akhir<='$bulan_akhir'
+                    and bulan_awal='7'
+                    and revisi_ke='$revisi3->revisi'
+                    and tgl_spd<='$tgl_spd'
+                    and a.no_spd<>'$nospd'
+                    -- UNION ALL
+                    -- SELECT
+                    -- 'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    -- FROM
+                    -- trdspd a
+                    -- JOIN trhspd b ON a.no_spd = b.no_spd
+                    -- WHERE
+                    -- left(a.kd_unit,17) = left('$kd_skpd',17)
+                    -- AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+                    -- AND a.kd_rek6=z.kd_rek6
+                    -- AND b.jns_beban='5'
+                    -- AND b.status = '1'
+                    -- and bulan_akhir<='$bulan_akhir'
+                    -- and bulan_awal='10'
+                    -- and revisi_ke='$revisi4->revisi'
+                    -- -- and tgl_spd<='$tgl_spd'
+                    -- and a.no_spd<>'$nospd'
+                    )zz";
+            $spdlalu46 = "     SELECT sum(nilai)as jm_spd_l from (
+        SELECT
+        'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and b.status = '1'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='1'
+        and revisi_ke='$revisi1->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and b.status = '1'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='4'
+        and revisi_ke='$revisi2->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        UNION ALL
+        SELECT
+        'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+        FROM
+        trdspd a
+        JOIN trhspd b ON a.no_spd = b.no_spd
+        WHERE
+        left(a.kd_unit,17) = left('$kd_skpd',17)
+        AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        AND a.kd_rek6=z.kd_rek6
+        AND b.jns_beban='6'
+        and b.status = '1'
+        and bulan_akhir<='$bulan_akhir'
+        and bulan_awal='7'
+        and revisi_ke='$revisi3->revisi'
+        and tgl_spd<='$tgl_spd'
+        and a.no_spd<>'$nospd'
+        -- UNION ALL
+        -- SELECT
+        -- 'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+        -- FROM
+        -- trdspd a
+        -- JOIN trhspd b ON a.no_spd = b.no_spd
+        -- WHERE
+        -- left(a.kd_unit,17) = left('$kd_skpd',17)
+        -- AND a.kd_sub_kegiatan=z.kd_sub_kegiatan
+        -- AND a.kd_rek6=z.kd_rek6
+        -- AND b.jns_beban='5'
+        -- AND b.status = '1'
+        -- and bulan_akhir<='$bulan_akhir'
+        -- and bulan_awal='10'
+        -- and revisi_ke='$revisi4->revisi'
+        -- -- and tgl_spd<='$tgl_spd'
+        -- and a.no_spd<>'$nospd'
+        )zz";
+        }
+
+        if ($jns_beban == '5') {
+            $datalamp = DB::select("SELECT
+left(kd_skpd,17)+left(kd_sub_kegiatan,7) as no_urut,
+left(kd_skpd,17) kd_skpd,
+left(kd_sub_kegiatan,7)as kode,
+left(kd_sub_kegiatan,7)as kode1,
+(select nm_program from ms_program a where a.kd_program= left(z.kd_sub_kegiatan,7))as uraian,
+isnull(sum(nilai),0)as anggaran,
+
+(
+
+    $spdlalu
+
+
+)as spd_lalu,
+
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and e.kd_program=left(z.kd_sub_kegiatan,7)
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='5')as nilai
+from trdrka z where left(kd_rek6,1)='5' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+
+
+group by left(kd_skpd,17),left(kd_sub_kegiatan,7)
+
+UNION ALL
+
+select
+left(kd_skpd,17)+left(kd_sub_kegiatan,12) as no_urut,
+left(kd_skpd,17),
+left(kd_sub_kegiatan,12)as kd_kegiatan,
+left(kd_sub_kegiatan,12)as kode1,
+(select nm_kegiatan from ms_kegiatan a where a.kd_kegiatan= left(z.kd_sub_kegiatan,12))as uraian,
+isnull(sum(nilai),0)as anggaran,
+(
+
+    $spdlalu2
+
+
+)as spd_lalu,
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and left(e.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='5')as nilai
+from trdrka z where left(kd_rek6,1)='5' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),left(kd_sub_kegiatan,12)
+
+
+UNION ALL
+
+select
+left(kd_skpd,17)+kd_sub_kegiatan as no_urut,
+left(kd_skpd,17) kd_skpd,
+kd_sub_kegiatan as kd_kegiatan,
+kd_sub_kegiatan as kode1,
+nm_sub_kegiatan as uraian,
+isnull(sum(nilai),0)as anggaran,
+(
+
+ $spdlalu3
+
+
+)as spd_lalu,
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and e.kd_sub_kegiatan=z.kd_sub_kegiatan
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='5')as nilai
+from trdrka z where left(kd_rek6,1)='5' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),kd_sub_kegiatan,nm_sub_kegiatan
+
+UNION ALL
+
+select
+left(kd_skpd,17)+kd_sub_kegiatan+kd_rek6 as no_urut,
+left(kd_skpd,17),
+kd_rek6 as kd_kegiatan,
+kd_sub_kegiatan as kode ,
+nm_rek6 as uraian,
+isnull(sum(nilai),0)as anggaran,
+
+(
+$spdlalu4
+
+
+)as spd_lalu,
+
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd'
+and e.kd_sub_kegiatan=z.kd_sub_kegiatan and e.kd_rek6=z.kd_rek6
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='5')as nilai
+from trdrka z where left(kd_rek6,1)='5' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),kd_sub_kegiatan,kd_rek6,nm_rek6
+
+
+
+order by no_urut");
+        } else {
+            $datalamp = DB::select("SELECT
+left(kd_skpd,17)+left(kd_sub_kegiatan,7) as no_urut,
+left(kd_skpd,17) kd_skpd,
+left(kd_sub_kegiatan,7)as kode,
+left(kd_sub_kegiatan,7)as kode1,
+(select nm_program from ms_program a where a.kd_program= left(z.kd_sub_kegiatan,7))as uraian,
+isnull(sum(nilai),0)as anggaran,
+
+(
+
+    $spdlalu6
+
+
+)as spd_lalu,
+
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and e.kd_program=left(z.kd_sub_kegiatan,7)
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='6')as nilai
+from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),left(kd_sub_kegiatan,7)
+
+UNION ALL
+
+select
+left(kd_skpd,17)+left(kd_sub_kegiatan,12) as no_urut,
+left(kd_skpd,17),
+left(kd_sub_kegiatan,12)as kd_kegiatan,
+left(kd_sub_kegiatan,12)as kode1,
+(select nm_kegiatan from ms_kegiatan a where a.kd_kegiatan= left(z.kd_sub_kegiatan,12))as uraian,
+isnull(sum(nilai),0)as anggaran,
+(
+
+    $spdlalu26
+
+
+)as spd_lalu,
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and left(e.kd_sub_kegiatan,12)=left(z.kd_sub_kegiatan,12)
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='6')as nilai
+from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),left(kd_sub_kegiatan,12)
+
+
+UNION ALL
+
+select
+left(kd_skpd,17)+kd_sub_kegiatan as no_urut,
+left(kd_skpd,17) kd_skpd,
+kd_sub_kegiatan as kd_kegiatan,
+kd_sub_kegiatan as kode1,
+nm_sub_kegiatan as uraian,
+isnull(sum(nilai),0)as anggaran,
+(
+
+ $spdlalu36
+
+
+)as spd_lalu,
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd' and e.kd_sub_kegiatan=z.kd_sub_kegiatan
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='6')as nilai
+from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
+group by left(kd_skpd,17),kd_sub_kegiatan,nm_sub_kegiatan
+
+UNION ALL
+
+select
+left(kd_skpd,17)+kd_sub_kegiatan+kd_rek6 as no_urut,
+left(kd_skpd,17),
+kd_rek6 as kd_kegiatan,
+kd_sub_kegiatan as kode ,
+nm_rek6 as uraian,
+isnull(sum(nilai),0)as anggaran,
+
+(
+$spdlalu46
+
+
+)as spd_lalu,
+
+(select isnull(sum(e.nilai),0) from trhspd d inner join trdspd e on d.no_spd=e.no_spd where
+d.no_spd='$nospd'
+and e.kd_sub_kegiatan=z.kd_sub_kegiatan and e.kd_rek6=z.kd_rek6
+and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='6')as nilai
+from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$field'
+group by left(kd_skpd,17),kd_sub_kegiatan,kd_rek6,nm_rek6
+
+
+
+order by no_urut");
+        }
+
 
 
         $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-lampiran', array(
             'jsprint' => $jsprint,
             'nospd' => $nospd,
             'konfig' => $konfig,
+            'jns_beban' => $jns_beban,
             'no_dpa' => $no_dpa,
             'datalamp' => $datalamp,
             'data' => $jenis,
