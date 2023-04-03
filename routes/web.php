@@ -106,6 +106,7 @@ use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
+use App\Http\Controllers\Akuntansi\m_user\MuserController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1529,58 +1530,66 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     });
 
     // AKUNTANSI
-    // laporan Keuangan
-    Route::group(['prefix' => 'laporan_akuntansi'], function () {
-        Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
-        Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
-        Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
-        Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
-        Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
-        Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
-        Route::post('cari_ttd_bud', [LaporanAkuntansiController::class, 'cari_ttd_bud'])->name('laporan_akuntansi.cari_ttd_bud');
-        Route::post('cari_skpdbb', [LaporanAkuntansiController::class, 'cariskpdbb'])->name('laporan_akuntansi.skpdbb');
-        Route::get('cetak_bb', [LaporanAkuntansiController::class, 'cetak_bb'])->name('laporan_akuntansi.cbb');
-        Route::get('cetak_ns', [LaporanAkuntansiController::class, 'cetak_ns'])->name('laporan_akuntansi.cns');
-        Route::get('cetak_ped', [LaporanAkuntansiController::class, 'cetak_ped'])->name('laporan_akuntansi.cped');
+        // laporan Keuangan
+        Route::group(['prefix' => 'laporan_akuntansi'], function () {
+            Route::get('', [LaporanAkuntansiController::class, 'index'])->name('laporan_akuntansi.index');
+            Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
+            Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
+            Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
+            Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
+            Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
+            Route::post('cari_ttd_bud', [LaporanAkuntansiController::class, 'cari_ttd_bud'])->name('laporan_akuntansi.cari_ttd_bud');
+            Route::post('cari_skpdbb', [LaporanAkuntansiController::class, 'cariskpdbb'])->name('laporan_akuntansi.skpdbb');
+            Route::get('cetak_bb', [LaporanAkuntansiController::class, 'cetak_bb'])->name('laporan_akuntansi.cbb');
+            Route::get('cetak_ns', [LaporanAkuntansiController::class, 'cetak_ns'])->name('laporan_akuntansi.cns');
+            Route::get('cetak_ped', [LaporanAkuntansiController::class, 'cetak_ped'])->name('laporan_akuntansi.cped');
 
-        Route::group(['prefix' => 'konsolidasi'], function () {
-            Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
-            //perda
-            Route::get('perda', [LaporanAkuntansiController::class, 'perda'])->name('laporan_akuntansi.perda');
-            // LRA perda
-            Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
-            Route::get('cetak_i1', [LraperdaController::class, 'cetak_i1'])->name('laporan_akuntansi.perda.cetak_i1');
-            Route::get('cetak_i1_ringkasan', [LraperdaController::class, 'cetak_i1_ringkasan'])->name('laporan_akuntansi.perda.cetak_i1_ringkasan');
-            // LRA
-            Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
-            //perkada
-            Route::get('perkada', [LaporanAkuntansiController::class, 'perkada'])->name('laporan_akuntansi.perkada');
-            Route::get('cetak_lamp1', [LraperkadaController::class, 'cetak_lamp1'])->name('laporan_akuntansi.perkada.cetak_lamp1');
-            Route::get('cetak_lamp2', [LraperkadaController::class, 'cetak_lamp2'])->name('laporan_akuntansi.perkada.cetak_lamp2');
-            // NERACA
-            Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
-            // LO
-            Route::get('cetak_lo', [LraController::class, 'cetaklo'])->name('laporan_akuntansi.konsolidasi.cetak_lo');
-            // LPE
-            Route::get('cetak_lpe', [LraController::class, 'cetaklpe'])->name('laporan_akuntansi.konsolidasi.cetak_lpe');
+            Route::group(['prefix' => 'konsolidasi'], function () {
+                Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
+                //perda
+                Route::get('perda', [LaporanAkuntansiController::class, 'perda'])->name('laporan_akuntansi.perda');
+                // LRA perda
+                Route::get('cetak_i4_urusan', [LraperdaController::class, 'cetak_i4_urusan'])->name('laporan_akuntansi.perda.cetak_i4_urusan');
+                Route::get('cetak_i1', [LraperdaController::class, 'cetak_i1'])->name('laporan_akuntansi.perda.cetak_i1');
+                Route::get('cetak_i1_ringkasan', [LraperdaController::class, 'cetak_i1_ringkasan'])->name('laporan_akuntansi.perda.cetak_i1_ringkasan');
+                // LRA
+                Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
+                //perkada
+                Route::get('perkada', [LaporanAkuntansiController::class, 'perkada'])->name('laporan_akuntansi.perkada');
+                Route::get('cetak_lamp1', [LraperkadaController::class, 'cetak_lamp1'])->name('laporan_akuntansi.perkada.cetak_lamp1');
+                Route::get('cetak_lamp2', [LraperkadaController::class, 'cetak_lamp2'])->name('laporan_akuntansi.perkada.cetak_lamp2');
+                // NERACA
+                Route::get('cetak_neraca', [LraController::class, 'cetakneraca'])->name('laporan_akuntansi.konsolidasi.cetak_neraca');
+                // LO
+                Route::get('cetak_lo', [LraController::class, 'cetaklo'])->name('laporan_akuntansi.konsolidasi.cetak_lo');
+                // LPE
+                Route::get('cetak_lpe', [LraController::class, 'cetaklpe'])->name('laporan_akuntansi.konsolidasi.cetak_lpe');
+                // LAK
+                Route::get('cetak_lak', [LraController::class, 'cetaklak'])->name('laporan_akuntansi.konsolidasi.cetak_lak');
+            });
         });
-    });
-    // Pengesahan SPJ
-    Route::group(['prefix' => 'pengesahan_spj'], function () {
-        Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
-        Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
-        Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
-        //penerimaan
-        Route::get('penerimaan_spj', [PengesahanSPJController::class, 'penerimaan'])->name('pengesahan_spj.penerimaan');
-        Route::post('load_penerimaan_spj', [PengesahanSPJController::class, 'load_penerimaan'])->name('pengesahan_spj.load_penerimaan');
-        Route::get('cetak_penerimaan_spj', [PengesahanSPJController::class, 'cetak_penerimaan_spj'])->name('pengesahan_spj.cetak_penerimaan_spj');
-        Route::post('simpan_penerimaan_spj', [PengesahanSPJController::class, 'simpan_penerimaan_spj'])->name('pengesahan_spj.simpan_penerimaan_spj');
-        //pengeluaran
-        Route::get('pengeluaran_spj', [PengesahanSPJController::class, 'pengeluaran'])->name('pengesahan_spj.pengeluaran');
-        Route::post('load_pengeluaran_spj', [PengesahanSPJController::class, 'load_pengeluaran'])->name('pengesahan_spj.load_pengeluaran');
-        Route::get('cetak_pengeluaran_spj', [PengesahanSPJController::class, 'cetak_pengeluaran_spj'])->name('pengesahan_spj.cetak_pengeluaran_spj');
-        Route::post('simpan_pengeluaran_spj', [PengesahanSPJController::class, 'simpan_pengeluaran_spj'])->name('pengesahan_spj.simpan_pengeluaran_spj');
-    });
+        // Pengesahan SPJ
+        Route::group(['prefix' => 'pengesahan_spj'], function () {
+            Route::get('', [PengesahanSPJController::class, 'index'])->name('pengesahan_spj.index');
+            Route::post('cari_skpd', [PengesahanSPJController::class, 'cariSkpd'])->name('pengesahan_spj.skpd');
+            Route::post('cari_ttd', [PengesahanSPJController::class, 'cariTtd'])->name('pengesahan_spj.ttd');
+            //penerimaan
+            Route::get('penerimaan_spj', [PengesahanSPJController::class, 'penerimaan'])->name('pengesahan_spj.penerimaan');
+            Route::post('load_penerimaan_spj', [PengesahanSPJController::class, 'load_penerimaan'])->name('pengesahan_spj.load_penerimaan');
+            Route::get('cetak_penerimaan_spj', [PengesahanSPJController::class, 'cetak_penerimaan_spj'])->name('pengesahan_spj.cetak_penerimaan_spj');
+            Route::post('simpan_penerimaan_spj', [PengesahanSPJController::class, 'simpan_penerimaan_spj'])->name('pengesahan_spj.simpan_penerimaan_spj');
+            //pengeluaran
+            Route::get('pengeluaran_spj', [PengesahanSPJController::class, 'pengeluaran'])->name('pengesahan_spj.pengeluaran');
+            Route::post('load_pengeluaran_spj', [PengesahanSPJController::class, 'load_pengeluaran'])->name('pengesahan_spj.load_pengeluaran');
+            Route::get('cetak_pengeluaran_spj', [PengesahanSPJController::class, 'cetak_pengeluaran_spj'])->name('pengesahan_spj.cetak_pengeluaran_spj');
+            Route::post('simpan_pengeluaran_spj', [PengesahanSPJController::class, 'simpan_pengeluaran_spj'])->name('pengesahan_spj.simpan_pengeluaran_spj');
+        });
+        // Manajemen user khusus akuntansi
+        Route::group(['prefix' => 'manajemen_user'], function () {
+            Route::get('', [MuserController::class, 'index'])->name('muser.index');
+            Route::post('cari_skpd', [MuserController::class, 'cariSkpd'])->name('muser.skpd');
+            
+        });
 
     Route::group(['prefix' => 'spb'], function () {
         // SPB BOS
