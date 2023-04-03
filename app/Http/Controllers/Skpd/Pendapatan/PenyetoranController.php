@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
+use function PHPUnit\Framework\isNull;
+
 class PenyetoranController extends Controller
 {
     // Penyetoran Atas Penerimaan Tahun Lalu
@@ -658,7 +660,7 @@ class PenyetoranController extends Controller
     {
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
-
+        // dd($data['detail_sts']);
         DB::beginTransaction();
         try {
             $cek1 = DB::table('tr_kunci')
@@ -744,22 +746,35 @@ class PenyetoranController extends Controller
             $data['detail_sts'] = json_decode($data['detail_sts'], true);
 
             if (isset($data['detail_sts'])) {
-                DB::table('trdkasin_pkd')
-                    ->insert(array_map(
-                        function ($value) use ($data) {
-                            return [
-                                'no_sts' => $data['no_sts'],
-                                'kd_skpd' => $data['kd_skpd'],
-                                'kd_rek6' => $value['kd_rek6'],
-                                'rupiah' => $value['nilai'],
-                                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                                'no_terima' => $value['no_sts'],
-                                'sumber' => $value['sumber'],
-                                'kanal' => !isset($value['kanal']) ? '' : $value['kanal'],
-                            ];
-                        },
-                        $data['detail_sts']
-                    ));
+                // DB::table('trdkasin_pkd')
+                //     ->insert(array_map(
+                //         function ($value) use ($data) {
+                //             return [
+                //                 'no_sts' => $data['no_sts'],
+                //                 'kd_skpd' => $data['kd_skpd'],
+                //                 'kd_rek6' => $value['kd_rek6'],
+                //                 'rupiah' => $value['nilai'],
+                //                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                //                 'no_terima' => $value['no_sts'],
+                //                 'sumber' => $value['sumber'],
+                //                 'kanal' => $value['kanal'] == "" ? '' : $value['kanal'],
+                //             ];
+                //         },
+                //         $data['detail_sts']
+                //     ));
+                foreach ($data['detail_sts'] as $detail) {
+                    $data = [
+                        'no_sts' => $data['no_sts'],
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_rek6' => $detail['kd_rek6'],
+                        'rupiah' => $detail['nilai'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'no_terima' => $detail['no_sts'],
+                        'sumber' => $detail['sumber'],
+                        'kanal' => $detail['kanal'],
+                    ];
+                    DB::table('trdkasin_pkd')->insert($data);
+                }
             }
 
             DB::table('tr_terima as a')
@@ -775,19 +790,32 @@ class PenyetoranController extends Controller
 
             if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
                 if (isset($data['detail_sts'])) {
-                    DB::table('trdkasin_ppkd')
-                        ->insert(array_map(function ($value) use ($data) {
-                            return [
-                                'no_sts' => $data['no_sts'],
-                                'kd_skpd' => $data['kd_skpd'],
-                                'kd_rek6' => $value['kd_rek6'],
-                                'rupiah' => $value['nilai'],
-                                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                                'no_kas' => $value['no_sts'],
-                                'sumber' => $value['sumber'],
-                                'kanal' => $value['kanal'],
-                            ];
-                        }, $data['detail_sts']));
+                    // DB::table('trdkasin_ppkd')
+                    //     ->insert(array_map(function ($value) use ($data) {
+                    //         return [
+                    //             'no_sts' => $data['no_sts'],
+                    //             'kd_skpd' => $data['kd_skpd'],
+                    //             'kd_rek6' => $value['kd_rek6'],
+                    //             'rupiah' => $value['nilai'],
+                    //             'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    //             'no_kas' => $value['no_sts'],
+                    //             'sumber' => $value['sumber'],
+                    //             'kanal' => $value['kanal'] == "" ? '' : $value['kanal'],
+                    //         ];
+                    //     }, $data['detail_sts']));
+                    foreach ($data['detail_sts'] as $detail) {
+                        $data = [
+                            'no_sts' => $data['no_sts'],
+                            'kd_skpd' => $data['kd_skpd'],
+                            'kd_rek6' => $detail['kd_rek6'],
+                            'rupiah' => $detail['nilai'],
+                            'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                            'no_terima' => $detail['no_sts'],
+                            'sumber' => $detail['sumber'],
+                            'kanal' => $detail['kanal'],
+                        ];
+                        DB::table('trdkasin_ppkd')->insert($data);
+                    }
                 }
 
                 DB::table('trdkasin_ppkd as a')
