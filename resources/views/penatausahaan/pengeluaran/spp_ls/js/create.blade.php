@@ -1076,7 +1076,8 @@
                 alert("Isi Beban Terlebih Dahulu...!!!");
                 return;
             }
-            if ((beban == '5' && jenis == '3') || (beban == '5' && jenis == '5')) {} else {
+            if ((beban == '5' && jenis == '1') || (beban == '5' && jenis == '3') || (beban == '5' &&
+                    jenis == '5')) {} else {
                 if (!npwp) {
                     alert("Isi NPWP Terlebih Dahulu...!!!");
                     return;
