@@ -25,6 +25,10 @@ class LaporanDthController extends Controller
         $enter          = $request->spasi;
         $kd_skpd        = $request->kd_skpd;
         $cetak          = $request->cetak;
+        $margin_atas          = $request->margin_atas;
+        $margin_bawah          = $request->margin_bawah;
+        $margin_kiri          = $request->margin_kiri;
+        $margin_kanan          = $request->margin_kanan;
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
@@ -94,7 +98,11 @@ class LaporanDthController extends Controller
             $pdf = PDF::loadHtml($view)
                 ->setOrientation('landscape')
                 ->setOption('page-width', 215)
-                ->setOption('page-height', 330);
+                ->setOption('page-height', 330)
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('DTH.pdf');
         } else {
 

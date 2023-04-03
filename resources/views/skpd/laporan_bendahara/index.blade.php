@@ -408,7 +408,33 @@
                             </select>
                         </div>
                     </div>
-
+                    {{-- Margin --}}
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kiri" name="margin_kiri"
+                                value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kanan" name="margin_kanan"
+                                value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_atas" name="margin_atas"
+                                value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_bawah" name="margin_bawah"
+                                value="15">
+                        </div>
+                    </div>
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">
                             <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"
@@ -1228,6 +1254,10 @@
             let subkegiatan = document.getElementById('subkegiatan').value;
             let akunbelanja = document.getElementById('akunbelanja').value;
             let jns_anggaran2 = document.getElementById('jns_anggaran2').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
 
 
             if (jenis_cetak2 == 'Cetak Buku Sub Rincian Objek') {
@@ -1450,6 +1480,10 @@
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak Register Pajak') {
                 let url
