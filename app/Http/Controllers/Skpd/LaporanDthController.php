@@ -91,7 +91,10 @@ class LaporanDthController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setOrientation('landscape')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330);
             return $pdf->stream('DTH.pdf');
         } else {
 
