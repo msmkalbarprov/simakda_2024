@@ -9,14 +9,11 @@
                 </div>
                 <div class="card-body">
                     @csrf
-                    @if ($sppls->sp2d_batal == '1')
-                        <div class="alert alert-danger" role="alert">
-                            SPP - SPM DALAM STATUS BATAL
-                        </div>
-                    @endif
                     <div class="alert alert-warning alert-block">
-                        @if ($sppls->status == 1)
+                        @if ($sppls->status == 1 && $sppls->sp2d_batal != '1')
                             <b style="font-size:16px">Sudah di Buat SPM!!</b>
+                        @elseif ($sppls->sp2d_batal == '1')
+                            <b style="font-size:16px">SPP - SPM DALAM STATUS BATAL</b>
                         @endif
                     </div>
                     {{-- No Tersimpan dan Tanggal SPP --}}
