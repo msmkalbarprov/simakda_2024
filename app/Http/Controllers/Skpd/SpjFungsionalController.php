@@ -524,8 +524,8 @@ class SpjFungsionalController extends Controller
         foreach ($setor_cp as $str_cp) {
             $str_cp_gaji_ll    = $str_cp->gj_cp_lalu;
             $str_cp_gaji_ini   = $str_cp->gj_cp_ini;
-            $str_cp_brjs_ini   = $str_cp->ls_cp_lalu;
-            $str_cp_brjs_ll    = $str_cp->ls_cp_ini;
+            $str_cp_brjs_ini   = $str_cp->ls_cp_ini;
+            $str_cp_brjs_ll    = $str_cp->ls_cp_lalu;
             $str_cp_up_ll      = $str_cp->up_cp_lalu;
             $str_cp_up_ini     = $str_cp->up_cp_ini;
         }
