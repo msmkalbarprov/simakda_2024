@@ -62,18 +62,35 @@
     <table style="border-collapse:collapse;font-family: Open Sans;width:100%" id="header" border="1"
         class="rincian">
         <thead>
-            <tr>
-                <th>NO</th>
-                <th>KODE REKENING</th>
-                <th>URAIAN</th>
-                <th>JUMLAH</th>
-            </tr>
-            <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-            </tr>
+            @if ($pilihan == '2')
+                <tr>
+                    <th>NO</th>
+                    <th>KODE REKENING</th>
+                    <th>SKPD</th>
+                    <th>URAIAN</th>
+                    <th>JUMLAH</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                </tr>
+            @else
+                <tr>
+                    <th>NO</th>
+                    <th>KODE REKENING</th>
+                    <th>URAIAN</th>
+                    <th>JUMLAH</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                </tr>
+            @endif
         </thead>
         <tbody>
             @php
@@ -154,6 +171,7 @@
                         <tr>
                             <td style="text-align: center"><i><b>{{ $i }}</b></i></td>
                             <td><i><b>{{ $data->kode }}</b></i></td>
+                            <td></td>
                             <td><i><b>{{ $data->uraian }}</b></i></td>
                             <td style="text-align: right"><i><b>{{ rupiah($data->nilai) }}</b></i></td>
                         </tr>
@@ -161,6 +179,7 @@
                         <tr>
                             <td style="text-align: center"><b></b></td>
                             <td><b>{{ $data->kode }}</b></td>
+                            <td></td>
                             <td><b>{{ $data->uraian }}</b></td>
                             <td style="text-align: right"><b>{{ rupiah($data->nilai) }}</b></td>
                         </tr>
@@ -171,24 +190,42 @@
                         <tr>
                             <td style="text-align: center"></td>
                             <td>{{ $data->rek }}</td>
+                            <td>{{ $data->kd_skpd }}</td>
                             <td>{{ $data->uraian }}</td>
                             <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                         </tr>
                     @endif
                 @endif
             @endforeach
-            <tr>
-                <td style="height: 15px"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td style="text-align: right"><b>Total</b></td>
-                <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
-            </tr>
+            @if ($pilihan == '2')
+                <tr>
+                    <td style="height: 15px"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right"><b>Total</b></td>
+                    <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
+                </tr>
+            @else
+                <tr>
+                    <td style="height: 15px"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right"><b>Total</b></td>
+                    <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
+                </tr>
+            @endif
             @if ($pilihan == '0' || $pilihan == '1')
                 <tr>
                     <td></td>

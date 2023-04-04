@@ -257,7 +257,7 @@ class PengesahanController extends Controller
                     GROUP BY a.kd_sub_kegiatan, b.nm_sub_kegiatan
                                 ORDER BY kode", [$no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd]);
         } elseif ($pilihan == '2') {
-            $data_lpj = DB::select("SELECT 1 as urut, a.kd_sub_kegiatan as kode, a.kd_sub_kegiatan as rek, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
+            $data_lpj = DB::select("SELECT 1 as urut,'' as kd_skpd, a.kd_sub_kegiatan as kode, a.kd_sub_kegiatan as rek, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
                         ,'' [tgl_bukti],0 [no_bukti]
                         FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -266,7 +266,7 @@ class PengesahanController extends Controller
                         AND a.kd_sub_kegiatan=?
                         GROUP BY a.kd_sub_kegiatan, b.nm_kegiatan
                         UNION ALL
-                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,2) as kode, LEFT(a.kd_rek6,2) as rek,  nm_rek2 as uraian, SUM(nilai) as nilai,
+                        SELECT 2 as urut,'' as kd_skpd, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,2) as kode, LEFT(a.kd_rek6,2) as rek,  nm_rek2 as uraian, SUM(nilai) as nilai,
                         '' [tgl_bukti],0 [no_bukti] FROM trlpj a
                         INNER JOIN ms_rek2 b ON LEFT(a.kd_rek6,2)=b.kd_rek2
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -275,7 +275,7 @@ class PengesahanController extends Controller
                         AND a.kd_sub_kegiatan=?
                         GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,2), nm_rek2
                         UNION ALL
-                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,4) as kode, LEFT(a.kd_rek6,4) as rek,  nm_rek3 as uraian, SUM(nilai) as nilai,
+                        SELECT 2 as urut,'' as kd_skpd, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,4) as kode, LEFT(a.kd_rek6,4) as rek,  nm_rek3 as uraian, SUM(nilai) as nilai,
                         '' [tgl_bukti],0 [no_bukti] FROM trlpj a
                         INNER JOIN ms_rek3 b ON LEFT(a.kd_rek6,4)=b.kd_rek3
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -284,7 +284,7 @@ class PengesahanController extends Controller
                         AND a.kd_sub_kegiatan=?
                         GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,4), nm_rek3
                         UNION ALL
-                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,6) as kode, LEFT(a.kd_rek6,6) as rek,  nm_rek4 as uraian, SUM(nilai) as nilai
+                        SELECT 2 as urut,'' as kd_skpd, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,6) as kode, LEFT(a.kd_rek6,6) as rek,  nm_rek4 as uraian, SUM(nilai) as nilai
                         ,'' [tgl_bukti],0 [no_bukti] FROM trlpj a
                         INNER JOIN ms_rek4 b ON LEFT(a.kd_rek6,6)=b.kd_rek4
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -293,7 +293,7 @@ class PengesahanController extends Controller
                         AND a.kd_sub_kegiatan=?
                         GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,6), nm_rek4
                         UNION ALL
-                        SELECT 2 as urut, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,8) as kode, LEFT(a.kd_rek6,8) as rek,  nm_rek5 as uraian, SUM(nilai) as nilai
+                        SELECT 2 as urut,'' as kd_skpd, kd_sub_kegiatan+'.'+LEFT(a.kd_rek6,8) as kode, LEFT(a.kd_rek6,8) as rek,  nm_rek5 as uraian, SUM(nilai) as nilai
                         ,'' [tgl_bukti],0 [no_bukti] FROM trlpj a
                         INNER JOIN ms_rek5 b ON LEFT(a.kd_rek6,8)=b.kd_rek5
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -302,7 +302,7 @@ class PengesahanController extends Controller
                         AND a.kd_sub_kegiatan=?
                         GROUP BY kd_sub_kegiatan, LEFT(a.kd_rek6,8), nm_rek5
                         UNION ALL
-                        SELECT 2 as urut, kd_sub_kegiatan+'.'+kd_rek6 as kode, kd_rek6 as rek,  nm_rek6 as uraian, SUM(nilai) as nilai
+                        SELECT 2 as urut,'' as kd_skpd, kd_sub_kegiatan+'.'+kd_rek6 as kode, kd_rek6 as rek,  nm_rek6 as uraian, SUM(nilai) as nilai
                         ,'' [tgl_bukti],0 [no_bukti]
                         FROM trlpj a
                         INNER JOIN trhtransout c ON a.no_bukti=c.no_bukti AND a.kd_skpd=c.kd_skpd
@@ -311,7 +311,7 @@ class PengesahanController extends Controller
                         AND kd_sub_kegiatan=?
                         GROUP BY kd_sub_kegiatan, kd_rek6, nm_rek6
                         UNION ALL
-                        SELECT 3 as urut, a.kd_sub_kegiatan+'.'+a.kd_rek6+'.1' as kode,'' as rek, c.ket+' \\ No BKU: '+a.no_bukti as uraian, sum(a.nilai) as nilai,
+                        SELECT 3 as urut,c.kd_skpd as kd_skpd, a.kd_sub_kegiatan+'.'+a.kd_rek6+'.1' as kode,'' as rek, c.ket+' \\ No BKU: '+a.no_bukti as uraian, sum(a.nilai) as nilai,
                         c.tgl_bukti,a.no_bukti
                         FROM trlpj a
                         INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_bp_skpd=b.kd_skpd
@@ -319,7 +319,7 @@ class PengesahanController extends Controller
                         AND (c.panjar NOT IN('3') or c.panjar IS NULL)
                         WHERE a.no_lpj=? AND a.kd_bp_skpd=?
                         AND a.kd_sub_kegiatan=?
-                        GROUP BY a.kd_sub_kegiatan, a.kd_rek6,nm_rek6,a.no_bukti, ket,tgl_bukti
+                        GROUP BY a.kd_sub_kegiatan, a.kd_rek6,nm_rek6,a.no_bukti, ket,tgl_bukti,c.kd_skpd
                         ORDER BY kode,tgl_bukti,no_bukti", [$no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan, $no_lpj, $kd_skpd, $kd_sub_kegiatan]);
         }
 
