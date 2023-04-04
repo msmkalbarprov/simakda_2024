@@ -84,7 +84,7 @@
                 <div class="col-md-4">
                     <input type="date" class="form-control" id="periode_akhir" name="periode_akhir">
                 </div>
-                <small style="padding-left: 185px">(Silahkan isi periode pertama dengan 2021-01-01 jika ingin menampilkan
+                <small style="padding-left: 185px">(Silahkan isi periode pertama dengan 2023-01-02 jika ingin menampilkan
                     data dari januari)</small>
             </div>
             {{-- Penandatangan --}}
