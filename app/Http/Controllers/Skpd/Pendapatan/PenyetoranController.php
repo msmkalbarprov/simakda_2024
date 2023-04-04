@@ -660,7 +660,7 @@ class PenyetoranController extends Controller
     {
         $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
-        // dd($data['detail_sts']);
+
         DB::beginTransaction();
         try {
             $cek1 = DB::table('tr_kunci')
@@ -695,7 +695,7 @@ class PenyetoranController extends Controller
                     'no_sts' => $data['no_sts'],
                     'tgl_sts' => $data['tgl_sts'],
                     'kd_skpd' => $data['kd_skpd'],
-                    'keterangan' => $data['keterangan'],
+                    'keterangan' => isset($data['keterangan']) ? $data['keterangan'] : '',
                     'total' => $data['total'],
                     'kd_bank' => '',
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
@@ -718,7 +718,7 @@ class PenyetoranController extends Controller
                         'no_sts' => $data['no_sts'],
                         'tgl_sts' => $data['tgl_sts'],
                         'kd_skpd' => $data['kd_skpd'],
-                        'keterangan' => $data['keterangan'],
+                        'keterangan' => isset($data['keterangan']) ? $data['keterangan'] : '',
                         'total' => $data['total'],
                         'kd_bank' => '',
                         'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
@@ -915,7 +915,7 @@ class PenyetoranController extends Controller
                     'no_sts' => $data['no_sts'],
                     'tgl_sts' => $data['tgl_sts'],
                     'kd_skpd' => $data['kd_skpd'],
-                    'keterangan' => $data['keterangan'],
+                    'keterangan' => isset($data['keterangan']) ? $data['keterangan'] : '',
                     'total' => $data['total'],
                     'kd_bank' => '',
                     'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
@@ -944,7 +944,7 @@ class PenyetoranController extends Controller
                         'no_sts' => $data['no_sts'],
                         'tgl_sts' => $data['tgl_sts'],
                         'kd_skpd' => $data['kd_skpd'],
-                        'keterangan' => $data['keterangan'],
+                        'keterangan' => isset($data['keterangan']) ? $data['keterangan'] : '',
                         'total' => $data['total'],
                         'kd_bank' => '',
                         'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
