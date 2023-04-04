@@ -85,7 +85,7 @@ class PengesahanController extends Controller
 
         $data = DB::select("SELECT a.kd_sub_kegiatan, c.nm_sub_kegiatan
 		from trlpj a
-		INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_skpd=b.kd_skpd
+		INNER JOIN trhlpj b ON a.no_lpj=b.no_lpj AND a.kd_bp_skpd=b.kd_skpd
 		LEFT JOIN trskpd c ON a.kd_sub_kegiatan=c.kd_sub_kegiatan AND a.kd_skpd=c.kd_skpd
 		WHERE a.no_lpj = ?
 		GROUP BY a.kd_sub_kegiatan,c.nm_sub_kegiatan
