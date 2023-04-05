@@ -6,6 +6,8 @@
             }
         });
         $('#kd_rekening_koreksi').prop('disabled', true);
+        $('#sumber_koreksi').prop('disabled', true);
+
         let rincian = $('#rincian').DataTable({
             responsive: true,
             processing: true,
@@ -222,6 +224,7 @@
 
         $('#kd_rekening_awal').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
+            let no_bukti = parseFloat($(this).find(':selected').data('no_bukti'));
             // let sp2d = parseFloat($(this).find(':selected').data('sp2d')) || 0;
             // let anggaran = parseFloat($(this).find(':selected').data('anggaran')) || 0;
             // let lalu = parseFloat($(this).find(':selected').data('lalu')) || 0;
@@ -278,13 +281,19 @@
                 minimumFractionDigits: 2
             }).format(sisa));
             load_angkas();
-            cari_sumber_koreksi(kd_rek6);
+            cari_sumber_koreksi(kd_rek6, no_bukti);
         });
 
         $('#sumber_awal').on('select2:select', function() {
             let sumber = this.value;
             let nilai = $(this).find(':selected').data('nilai');
-            $('#sumber_koreksi').val(sumber);
+
+            $('#sumber_koreksi').val(sumber).change();
+
+            let sumber1 = $('#sumber_koreksi').find('option:selected');
+            let nilai_sumber = sumber1.data('nilai_sumber');
+
+            // $('#sumber_koreksi').val(sumber);
             $('#nilai_sumber_awal').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai));
@@ -303,7 +312,7 @@
 
             $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(nilai));
+            }).format(nilai_sumber));
             $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
             load_dana(sumber);
@@ -765,9 +774,7 @@
                         `<option value="" disabled selected>Pilih Rekening</option>`);
                     $.each(rekening_awal, function(index, rekening_awal) {
                         $('#kd_rekening_awal').append(
-                            `<option value="${rekening_awal.kd_rek6}" data-nama="${rekening_awal.nm_rek6}"
-
-                            >${rekening_awal.no_bukti} | ${rekening_awal.kd_rek6} | ${rekening_awal.nm_rek6} | ${rekening_awal.nilai}</option>`
+                            `<option value="${rekening_awal.kd_rek6}" data-nama="${rekening_awal.nm_rek6}" data-no_bukti="${rekening_awal.no_bukti}">${rekening_awal.no_bukti} | ${rekening_awal.kd_rek6} | ${rekening_awal.nm_rek6} | ${rekening_awal.nilai}</option>`
                         );
                     });
                     $.each(rekening_koreksi, function(index, rekening_koreksi) {
@@ -781,13 +788,14 @@
             })
         }
 
-        function cari_sumber_koreksi(kd_rek6) {
+        function cari_sumber_koreksi(kd_rek6, no_bukti) {
             $.ajax({
                 url: "{{ route('koreksi_rekening.sumber_koreksi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     kd_rek6: kd_rek6,
+                    no_bukti: no_bukti,
                     kd_skpd: document.getElementById('kd_skpd').value,
                     tgl_koreksi: document.getElementById('tgl_koreksi').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan_koreksi').value,
@@ -795,12 +803,20 @@
                     beban: document.getElementById('beban').value,
                 },
                 success: function(data) {
+                    let sumber_awal = data.sumber_awal;
+                    let sumber_koreksi = data.sumber_koreksi;
+
                     $('#sumber_awal').empty();
                     $('#sumber_awal').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(sumber_awal, function(index, sumber_awal) {
                         $('#sumber_awal').append(
-                            `<option value="${data.sumber}" data-nilai="${data.nilai_sumber}">${data.sumber} | ${data.nilai_sumber}</option>`
+                            `<option value="${sumber_awal.sumber}" data-nilai="${sumber_awal.nilai}">${sumber_awal.sumber} | ${sumber_awal.nilai}</option>`
+                        );
+                    })
+                    $.each(sumber_koreksi, function(index, sumber_koreksi) {
+                        $('#sumber_koreksi').append(
+                            `<option value="${sumber_koreksi.sumber}" data-nilai_sumber="${sumber_koreksi.nilai_sumber}">${sumber_koreksi.sumber} | ${sumber_koreksi.nilai_sumber}</option>`
                         );
                     })
                 }

@@ -213,6 +213,14 @@ class JurnalKoreksiController extends Controller
             ->groupBy('sumber')
             ->orderBy('sumber')
             ->get();
+
+        // $data = DB::select("SELECT * from (
+        // SELECT sumber,(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=b.sumber) as nmsumber,
+        // 		sum(nilai) as nilai FROM trhtransout a INNER JOIN trdtransout b ON
+        //         a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+        //         where b.no_bukti=? and a.no_sp2d=? and  b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+        //         GROUP BY sumber)zz order by  sumber", [$req['no_bukti'], $req['no_sp2d'], $req['kd_skpd'], $req['kd_sub_kegiatan'], $req['kd_rek6']]);
+
         return response()->json($data);
     }
 
@@ -221,6 +229,8 @@ class JurnalKoreksiController extends Controller
         $kd_skpd = $request->kd_skpd;
         $kd_rek6 = $request->kd_rek6;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $no_bukti = $request->no_bukti;
+        $no_sp2d = $request->no_sp2d;
         $jns_ang = status_anggaran();
 
         // $data1 = DB::table('trdrka')
@@ -275,11 +285,21 @@ class JurnalKoreksiController extends Controller
             ->groupBy('sumber', 'nm_sumber')
             ->union($data1);
 
-        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+        $data_koreksi = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
             ->mergeBindings($data2)
             ->get();
 
-        return response()->json($data);
+        $data = DB::select("SELECT * from (
+        SELECT sumber,(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=b.sumber) as nmsumber,
+        		sum(nilai) as nilai FROM trhtransout a INNER JOIN trdtransout b ON
+                a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                where b.no_bukti=? and a.no_sp2d=? and  b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+                GROUP BY sumber)zz order by  sumber", [$no_bukti, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6]);
+
+        return response()->json([
+            'sumber_awal' => $data,
+            'sumber_koreksi' => $data_koreksi,
+        ]);
     }
 
     public function simpanKoreksi(Request $request)
