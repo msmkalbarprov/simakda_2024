@@ -1588,6 +1588,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'manajemen_user'], function () {
             Route::get('', [MuserController::class, 'index'])->name('muser.index');
             Route::post('cari_skpd', [MuserController::class, 'cariSkpd'])->name('muser.skpd');
+            //Jurnal Koreksi
+            Route::get('j_koreksi', [MuserController::class, 'j_koreksi'])->name('muser.j_koreksi');
+            Route::post('load_jkoreksi', [MuserController::class, 'load_jkoreksi'])->name('muser.load_jkoreksi');
+            Route::post('simpan_j_koreksi', [MuserController::class, 'simpan_j_koreksi'])->name('muser.simpan_j_koreksi');
             
         });
 
