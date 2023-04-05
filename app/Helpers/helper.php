@@ -3685,7 +3685,7 @@ function harian_kasda_bukan_ketiga($nomor)
         ->first();
 
     $data = DB::table('ms_ttd as a')
-        ->selectRaw("a.*,(select nm_skpd from ms_skpd where kd_skpd=ms_ttd.kd_skpd)as nm_skpd")
+        ->selectRaw("a.*,(select nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)as nm_skpd")
         ->where(['kd_skpd' => $skpd->kd_skpd])
         ->first();
 
