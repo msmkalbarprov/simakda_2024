@@ -257,8 +257,12 @@
                                     <label for="kd_rekening_koreksi" class="col-md-2 col-form-label">Rekening
                                         Belanja</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="kd_rekening_koreksi" readonly
-                                            name="kd_rekening_koreksi">
+                                        {{-- <input type="text" class="form-control" id="kd_rekening_koreksi" readonly
+                                            name="kd_rekening_koreksi"> --}}
+                                        <select class="form-control select2-modal" style=" width: 100%;"
+                                            id="kd_rekening_koreksi" name="kd_rekening_koreksi">
+                                            <option value="" disabled selected>Silahkan Pilih</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-4">
                                         <input type="text" class="form-control" id="nm_rekening_koreksi" readonly
@@ -269,8 +273,12 @@
                                 <div class="mb-3 row">
                                     <label for="sumber_koreksi" class="col-md-2 col-form-label">Sumber Dana</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="sumber_koreksi" readonly
-                                            name="sumber_koreksi">
+                                        {{-- <input type="text" class="form-control" id="sumber_koreksi" readonly
+                                            name="sumber_koreksi"> --}}
+                                        <select class="form-control select2-modal" style=" width: 100%;"
+                                            id="sumber_koreksi" name="sumber_koreksi">
+                                            <option value="" disabled selected>Silahkan Pilih</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-4">
                                         <input type="text" class="form-control" id="nm_sumber_koreksi" readonly
