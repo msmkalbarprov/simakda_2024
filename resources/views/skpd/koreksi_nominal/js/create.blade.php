@@ -423,6 +423,9 @@
             $('#total').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total + nilai * -1));
+            $('#nilai_atas').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(nilai));
             $('#kd_sub_kegiatan_awal').val(null).change();
             $('#no_sp2d_awal').empty();
             $('#kd_rekening_awal').empty();
@@ -458,6 +461,7 @@
             let realisasi_anggaran = rupiah(document.getElementById('realisasi_anggaran').value);
             let total_sumber = rupiah(document.getElementById('total_sumber').value);
             let realisasi_sumber = rupiah(document.getElementById('realisasi_sumber').value);
+            let nilai_atas = rupiah(document.getElementById('nilai_atas').value);
 
             let akumulasi = nilai + total_input_rekening;
             let sisa_ang = total_anggaran - (realisasi_anggaran + nilai);
@@ -523,12 +527,12 @@
                 return;
             }
 
-            if (nilai > sisa_angkas) {
+            if (nilai > (sisa_angkas + nilai_atas)) {
                 alert('Nilai Koreksi melebihi Sisa Anggaran Kas');
                 return;
             }
 
-            if (nilai > sisa_spd) {
+            if (nilai > (sisa_spd + nilai_atas)) {
                 alert('Nilai koreksi melebihi sisa SPD!');
                 return;
             }

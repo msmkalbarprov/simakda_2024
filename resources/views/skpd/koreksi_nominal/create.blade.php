@@ -395,12 +395,17 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="total_input_rekening" style="text-align: right" class="col-md-9 col-form-label">Total
+                    <label for="total_input_rekening" style="text-align: right" class="col-md-6 col-form-label">Total
                         :</label>
                     <div class="col-md-3" style="padding-right: 30px">
                         <input type="text" width="100%" class="form-control"
                             style="border:none;background-color:white;text-align:right" readonly
                             name="total_input_rekening" id="total_input_rekening">
+                    </div>
+                    <div class="col-md-3" style="padding-right: 30px">
+                        <input type="text" width="100%" class="form-control"
+                            style="border:none;background-color:white;text-align:right" readonly name="nilai_atas"
+                            id="nilai_atas">
                     </div>
                 </div>
                 <div class="modal-body">
