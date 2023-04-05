@@ -18,7 +18,7 @@ class JurnalKoreksiController extends Controller
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
-        if ($role == '1107') {
+        if ($role == '1007') {
             if ($akses == '1') {
                 return view('skpd.koreksi_rekening.index');
             } else {
@@ -454,7 +454,7 @@ class JurnalKoreksiController extends Controller
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
-        if ($role == '1107') {
+        if ($role == '1007') {
             if ($akses == '1') {
                 return view('skpd.koreksi_nominal.index');
             } else {
