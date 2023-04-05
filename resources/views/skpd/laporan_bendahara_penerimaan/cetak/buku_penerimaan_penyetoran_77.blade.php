@@ -183,26 +183,50 @@
                         {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
                 </td>
             </tr>
-            <tr>
-                <td style="padding-bottom: 50px;text-align: center;">
-                    {{ ucwords(strtolower($cari_pa_kpa->jabatan)) }}
-                </td>
-                <td style="padding-bottom: 50px;text-align: center;">
-                    {{ ucwords(strtolower($cari_bendahara->jabatan)) }}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center;"><b><u>{{ $cari_pa_kpa->nama }}</u></b></td>
-                <td style="text-align: center;"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
-            </tr>
-            <tr>
-                <td style="text-align: center;">{{ $cari_pa_kpa->pangkat }}</td>
-                <td style="text-align: center;">{{ $cari_bendahara->pangkat }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;">NIP. {{ $cari_pa_kpa->nip }}</td>
-                <td style="text-align: center;">NIP. {{ $cari_bendahara->nip }}</td>
-            </tr>
+            @if($role=='1022')
+
+                <tr>
+                    <td style="padding-bottom: 50px;text-align: center;">
+                        
+                    </td>
+                    <td style="padding-bottom: 50px;text-align: center;">
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"><b><u></u></b></td>
+                    <td style="text-align: center;"><b><u></u></b></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                </tr>
+            @else
+                <tr>
+                    <td style="padding-bottom: 50px;text-align: center;">
+                        {{ ucwords(strtolower($cari_pa_kpa->jabatan)) }}
+                    </td>
+                    <td style="padding-bottom: 50px;text-align: center;">
+                        {{ ucwords(strtolower($cari_bendahara->jabatan)) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"><b><u>{{ $cari_pa_kpa->nama }}</u></b></td>
+                    <td style="text-align: center;"><b><u>{{ $cari_bendahara->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">{{ $cari_pa_kpa->pangkat }}</td>
+                    <td style="text-align: center;">{{ $cari_bendahara->pangkat }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">NIP. {{ $cari_pa_kpa->nip }}</td>
+                    <td style="text-align: center;">NIP. {{ $cari_bendahara->nip }}</td>
+                </tr>
+            @endif
 
         </table>
     </div>

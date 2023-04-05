@@ -18,6 +18,7 @@ class BukuPenerimaanPenyetoranController extends Controller
     // Cetak List
     public function cetakBukuPenerimaanPenyetoran(Request $request)
     {
+        $role           = Auth::user()->role;
         $tanggal_ttd    = $request->tgl_ttd;
         $pa_kpa         = $request->pa_kpa;
         $bendahara      = $request->bendahara;
@@ -107,7 +108,7 @@ class BukuPenerimaanPenyetoranController extends Controller
                 order by tgl, no", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         }
 
-
+        
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
@@ -122,6 +123,7 @@ class BukuPenerimaanPenyetoranController extends Controller
             'daerah'            => $daerah,
             'tanggal_ttd'       => $tanggal_ttd,
             'cari_pa_kpa'       => $cari_pakpa,
+            'role'       => $role,
             'cari_bendahara'    => $cari_bendahara
         ];
 

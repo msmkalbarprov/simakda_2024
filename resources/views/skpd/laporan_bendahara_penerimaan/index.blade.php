@@ -224,16 +224,27 @@
 
         $('#lapbku').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            let role = "{{ Auth::user()->role }}";
             $('#modal_cetak').modal('show');
             $('#modal_cetak2').modal('hide');
             $('#modal_register_kasda').modal('hide');
             $("#labelcetak").html("Buku Penerimaan dan Pengeluaran");
-            document.getElementById('jenisanggaran').hidden = true; // Hide
-            document.getElementById('jenis1').hidden = false; // Hide
-            document.getElementById('spasi1').hidden = false; // Hide
-            document.getElementById('tgl_ttd1').hidden = false; // Hide
-            document.getElementById('bendahara1').hidden = false; // Hide
-            document.getElementById('pa_kpa1').hidden = false; // Hide
+            if (role=='1022') {
+                document.getElementById('jenisanggaran').hidden = true; // Hide
+                document.getElementById('jenis1').hidden = false; // Hide
+                document.getElementById('spasi1').hidden = false; // Hide
+                document.getElementById('tgl_ttd1').hidden = false; // Hide
+                document.getElementById('bendahara1').hidden = true; // Hide
+                document.getElementById('pa_kpa1').hidden = true; // Hide
+            }else{
+
+                document.getElementById('jenisanggaran').hidden = true; // Hide
+                document.getElementById('jenis1').hidden = false; // Hide
+                document.getElementById('spasi1').hidden = false; // Hide
+                document.getElementById('tgl_ttd1').hidden = false; // Hide
+                document.getElementById('bendahara1').hidden = false; // Hide
+                document.getElementById('pa_kpa1').hidden = false; // Hide
+            }
             cari_skpd(kd_skpd, jenis);
             modal = 1;
         });
@@ -501,6 +512,7 @@
         });
 
         function Cetak(jns_cetak) {
+            let role = "{{ Auth::user()->role }}";
             let jenis_cetak
             let jenis_print
             let spasi
@@ -534,13 +546,15 @@
                     alert('SKPD tidak boleh kosong!');
                     return;
                 }
-                if (!bendahara) {
-                    alert('Bendahara Pengeluaran tidak boleh kosong!');
-                    return;
-                }
-                if (!pa_kpa) {
-                    alert("PA/KPA tidak boleh kosong!");
-                    return;
+                if (role!='1022') {
+                    if (!bendahara) {
+                        alert('Bendahara Pengeluaran tidak boleh kosong!');
+                        return;
+                    }
+                    if (!pa_kpa) {
+                        alert("PA/KPA tidak boleh kosong!");
+                        return;
+                    }
                 }
                 if (!tanggal1) {
                     alert("Periode 1 tidak boleh kosong!");
@@ -581,13 +595,15 @@
                     alert('SKPD tidak boleh kosong!');
                     return;
                 }
-                if (!bendahara) {
-                    alert('Bendahara Pengeluaran tidak boleh kosong!');
-                    return;
-                }
-                if (!pa_kpa) {
-                    alert("PA/KPA tidak boleh kosong!");
-                    return;
+                if (role!='1022') {
+                    if (!bendahara) {
+                        alert('Bendahara Pengeluaran tidak boleh kosong!');
+                        return;
+                    }
+                    if (!pa_kpa) {
+                        alert("PA/KPA tidak boleh kosong!");
+                        return;
+                    }
                 }
                 if (!tanggal1) {
                     alert("Periode 1 tidak boleh kosong!");
