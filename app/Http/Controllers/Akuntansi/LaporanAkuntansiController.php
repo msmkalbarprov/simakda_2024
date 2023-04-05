@@ -805,6 +805,7 @@ class LaporanAkuntansiController extends Controller
         $thn_ang = tahun_anggaran();
         $thn_ang1 = $thn_ang-1;
         $thn_ang2 = $thn_ang1-1;
+        $kd_skpd        = $request->kd_skpd_ns;
         // $kd_skpd        = Auth::user()->kd_skpd;
         if ($bulan=='') {
             $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
@@ -827,15 +828,15 @@ class LaporanAkuntansiController extends Controller
         }
         // dd($nm_bln);
 
-        if($request->kd_skpd==''){
+        if($request->kd_skpd_ns==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
         }else{
             $kd_skpd        = $request->kd_skpd_ns;
-            $skpd_clause = "and left(kd_skpd,len($skpd))='$skpd'";
+            $skpd_clause = "and left(kd_skpd,len('$skpd'))='$skpd'";
         }
 
-        
+        // dd($skpd_clause);
 
                 $query = DB::select("SELECT kd_rek, (SELECT nm_rek6 from ms_rek6 where kd_rek6=x.kd_rek)nm_rek, SaldoAwal,debet,kredit,
 
