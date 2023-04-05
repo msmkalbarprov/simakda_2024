@@ -107,6 +107,7 @@ use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
+use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\Skpd\RestitusiController;
 
 // Route::get('/simakda_2023', function () {
@@ -1451,6 +1452,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load', [PengesahanController::class, 'loadKendaliProteksi'])->name('kendali_proteksi_lpj.load');
             Route::post('simpan', [PengesahanController::class, 'simpanKendaliProteksi'])->name('kendali_proteksi_lpj.simpan');
         });
+    });
+
+    // List Restitusi
+    Route::group(['prefix' => 'list_restitusi'], function () {
+        Route::get('', [ListRestitusiController::class, 'index'])->name('list_restitusi.index');
+        Route::post('load', [ListRestitusiController::class, 'load'])->name('list_restitusi.load');
+        Route::get('edit/{no_kas?}/{kd_skpd?}', [ListRestitusiController::class, 'edit'])->name('list_restitusi.edit');
+        Route::post('hapus', [ListRestitusiController::class, 'hapus'])->name('list_restitusi.hapus');
+        Route::get('cetak', [ListRestitusiController::class, 'cetak'])->name('list_restitusi.cetak');
     });
 
     Route::group(['prefix' => 'transaksi_bos'], function () {
