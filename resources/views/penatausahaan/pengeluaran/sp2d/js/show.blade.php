@@ -91,6 +91,10 @@
                     data: 'pot',
                     name: 'pot',
                 },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                },
             ]
         });
 
@@ -98,5 +102,37 @@
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
+
+        $('.cetak_billing').on('click', function() {
+            let id_billing = document.getElementById('id_billing_cetak').value;
+            let jnsreport = $(this).data("cetak");
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.create_report') }}",
+                dataType: 'json',
+                data: {
+                    id_billing: id_billing,
+                    jnsreport: jnsreport,
+                },
+                dataType: "json",
+                success: function(data) {
+                    let data1 = $.parseJSON(data);
+                    console.table(data1);
+                    if (data1.data[0].response_code == '00') {
+                        alert(data1.data[0].message);
+                        $("#link1").attr("value", data1.data[0].data.linkDownload);
+                        window.open(data1.data[0].data.linkDownload);
+                    } else {
+                        alert(data1.data[0].message);
+                    }
+                }
+            })
+        });
     });
+
+    function cetakPajak(no_spm, kd_rek6, nm_rek6, nilai, idBilling) {
+        $("#id_billing_cetak").val(idBilling);
+        $('#modal_cetak').modal('show');
+    }
 </script>

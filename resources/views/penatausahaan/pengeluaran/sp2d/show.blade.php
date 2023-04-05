@@ -176,6 +176,7 @@
                                 <th>IdBilling</th>
                                 <th>Nilai</th>
                                 <th>Keterangan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -186,6 +187,42 @@
                         <div class="col-md-4">
                             <input type="text" style="text-align: right" readonly class="form-control"
                                 value="{{ rupiah($total_potongan->nilai) }}" id="total_potongan" name="total">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cetak</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--  -->
+                    <div class="mb-3 row">
+                        <label for="cetak_billing" class="col-md-6 col-form-label">Cetak Bukti Create Id Billing</label>
+                        <div class="col-md-6">
+                            <button type="button" data-cetak="ReportCreateBilling"
+                                class="btn btn-md btn-success cetak_billing" style="float:center">Download</button>
+                            <input type="text" hidden id="id_billing_cetak">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="cetak_pembayaran" class="col-md-6 col-form-label">Cetak Bukti pembayaran Pajak</label>
+                        <div class="col-md-6">
+                            <button type="button" data-cetak="ReportBPN" class="btn btn-md btn-success cetak_billing"
+                                style="float:center">Download</button>
+                        </div>
+                    </div>
+                    <hr style="border: 1px solid black">
+                    <div class="mb-3 row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-md btn-warning" data-bs-dismiss="modal"
+                                style="float: right">Kembali</button>
                         </div>
                     </div>
                 </div>
