@@ -97,10 +97,25 @@
         </div>
         
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="inflasi">
+                <div class="card-body">
+                    {{ 'Inflasi Daerah' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>        
+    </div>
 
 @include('akuntansi.modal.bukubesar')
 @include('akuntansi.modal.neraca_saldo')
 @include('akuntansi.modal.ped')
+@include('akuntansi.modal.inflasi')
 @endsection
 @section('js')
     <script>
@@ -131,6 +146,11 @@
             $(".select_ped").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ped .modal-content'),
+                
+            });
+            $(".select_inflasi").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_inflasi .modal-content'),
                 
             });
             // hidden
@@ -169,6 +189,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_ped').modal('show');
             $("#labelcetak_semester").html("Cetak PED");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#inflasi').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_inflasi').modal('show');
+            $("#labelcetak_semester").html("Cetak INFLASI");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -232,9 +259,17 @@
                     // console.log(data);
                     $('#ttd_bud').empty();
                     $('#ttd_bud').append(
-                        `<option value="" disabled selected>Pilih Rekening</option>`);
+                        `<option value="" disabled selected>Pilih Penandatanganan</option>`);
                     $.each(data, function(index, data) {
                         $('#ttd_bud').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                    $('#ttd_bud_inflasi').empty();
+                    $('#ttd_bud_inflasi').append(
+                        `<option value="" disabled selected>Pilih Penandatanganan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#ttd_bud_inflasi').append(
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
@@ -392,6 +427,38 @@
                 let searchParams    = url.searchParams;
                 searchParams.append("tanggal1_ped", tanggal1_ped);
                 searchParams.append("tanggal2_ped", tanggal2_ped);
+                searchParams.append("jns_ang", jns_ang);
+                searchParams.append("ttd_bud", ttd_bud);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak INFLASI') {
+                let tanggal1_inflasi                    = document.getElementById('tanggal1_inflasi').value;
+                let tanggal2_inflasi                    = document.getElementById('tanggal2_inflasi').value;
+                let ttd_bud             = document.getElementById('ttd_bud_inflasi').value;
+                let jns_ang             = document.getElementById('jns_anggaran_inflasi').value;
+
+                if (!jns_ang) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal1_ped) {
+                    alert('Tanggal Awal tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal2_ped) {
+                    alert('Tanggal Akhir tidak boleh kosong!');
+                    return;
+                }
+                if (!ttd_bud) {
+                    alert('Penandatangan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.cinflasi') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tanggal1_inflasi", tanggal1_inflasi);
+                searchParams.append("tanggal2_inflasi", tanggal2_inflasi);
                 searchParams.append("jns_ang", jns_ang);
                 searchParams.append("ttd_bud", ttd_bud);
                 searchParams.append("cetak", jns_cetak);

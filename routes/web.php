@@ -1556,6 +1556,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_bb', [LaporanAkuntansiController::class, 'cetak_bb'])->name('laporan_akuntansi.cbb');
         Route::get('cetak_ns', [LaporanAkuntansiController::class, 'cetak_ns'])->name('laporan_akuntansi.cns');
         Route::get('cetak_ped', [LaporanAkuntansiController::class, 'cetak_ped'])->name('laporan_akuntansi.cped');
+        Route::get('cetak_inflasi', [LaporanAkuntansiController::class, 'cetak_inflasi'])->name('laporan_akuntansi.cinflasi');
 
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');

@@ -994,4 +994,194 @@ class LaporanAkuntansiController extends Controller
         }
     }
 
+    public function cetak_inflasi(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tgl1    = $request->tanggal1_inflasi;
+        $tgl2    = $request->tanggal2_inflasi;
+        $ttd_bud    = $request->ttd_bud;
+        $cetak          = $request->cetak;
+        $jns_ang        = $request->jns_ang;
+
+        $thn_ang = tahun_anggaran();
+        $thn_ang1 = $thn_ang-1;
+        $thn_ang2 = $thn_ang1-1;
+        
+        // dd($nm_bln);
+
+
+
+        
+
+        $map1 = DB::select(" SELECT 1 as urut, '1' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.29.3.30.3.31.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('3.29.3.30.3.31.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map2 = DB::select(" SELECT 1 as urut , '2' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('2.09.0.00.0.00.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('2.09.0.00.0.00.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map3 = DB::select(" SELECT 1 as urut , '3' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.25.0.00.0.00.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('3.25.0.00.0.00.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map4 = DB::select(" SELECT 1 as urut , '4' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('3.27.0.00.0.00.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map5 = DB::select(" SELECT 1 as urut , '5' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.01.0002')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('3.27.0.00.0.00.01.0002')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map6 = DB::select(" SELECT 1 as urut , '6' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.02.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('3.27.0.00.0.00.02.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map7 = DB::select(" SELECT 1 as urut , '7' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('2.15.0.00.0.00.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('2.15.0.00.0.00.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+        $map8 = DB::select(" SELECT 1 as urut , '8' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('1.03.0.00.0.00.01.0000')
+                            union all
+                            select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
+                            kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
+                            sum(nilai) as anggaran,
+                            (select isnull(sum(nilai),0) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and z.kd_sub_kegiatan=a.kd_sub_kegiatan 
+                                and z.kd_rek6=a.kd_rek6
+                                and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
+                            from trdrka z
+                            where kd_skpd in('1.03.0.00.0.00.01.0000')
+                            and  z.jns_ang='$jns_ang'
+                            group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
+                            order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
+                ");
+
+        $ttd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where (kode='bud' OR kode='GUB') and nip like '%$ttd_bud%'"))->first();
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'map1'     => $map1,
+            'map2'     => $map2,
+            'map3'     => $map3,
+            'map4'     => $map4,
+            'map5'     => $map5,
+            'map6'     => $map6,
+            'map7'     => $map7,
+            'map8'     => $map8,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'tgl1'    => $tgl1,
+            'tgl2'   => $tgl2,
+            'ttd_bud'   => $ttd_bud,
+            'ttd'   => $ttd,
+            'jns_ang'   => $jns_ang,
+            'thn_ang'   => $thn_ang,
+            'thn_ang1'   => $thn_ang1
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.inflasi')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PED.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PED.xls"');
+            return $view;
+        }
+    }
+
 }
