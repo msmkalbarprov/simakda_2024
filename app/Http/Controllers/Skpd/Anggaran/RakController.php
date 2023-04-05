@@ -106,8 +106,594 @@ class RakController extends Controller
         $kd_rek6 = $request->kd_rek6;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
 
-        $data = DB::table('trdskpd_ro')->select("bulan", "$jenis as nilai")->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd])->orderBy('bulan')->get();
-        return response()->json($data);
+        $data_rak = DB::table('trdskpd_ro')
+            ->select("bulan", "$jenis as nilai")
+            ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6, 'kd_skpd' => $kd_skpd])
+            ->orderBy('bulan')
+            ->get();
+        // return response()->json($data);
+
+        // TRIWULAN I
+
+        // TRANSAKSI UP/GU
+        $data1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti) BETWEEN 1 AND 3");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $data2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher) BETWEEN 1 AND 3")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($data1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $data3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp) BETWEEN 1 AND 3")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($data2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $data4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti) BETWEEN 1 AND 3")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($data3);
+
+        // TRIWULAN II
+
+        // TRANSAKSI UP/GU
+        $data5 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti) BETWEEN 4 AND 6");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $data6 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher) BETWEEN 4 AND 6")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($data5);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $data7 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp) BETWEEN 4 AND 6")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($data6);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $data8 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti) BETWEEN 4 AND 6")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($data7);
+
+        // TRIWULAN III
+
+        // TRANSAKSI UP/GU
+        $data9 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti) BETWEEN 7 AND 9");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $data10 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher) BETWEEN 7 AND 9")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($data9);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $data11 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp) BETWEEN 7 AND 9")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($data10);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $data12 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti) BETWEEN 7 AND 9")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($data11);
+
+        // TRIWULAN IV
+
+        // TRANSAKSI UP/GU
+        $data13 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti) BETWEEN 10 AND 12");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $data14 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher) BETWEEN 10 AND 12")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($data13);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $data15 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp) BETWEEN 10 AND 12")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($data14);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $data16 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti) BETWEEN 10 AND 12")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($data15);
+
+        // TRIWULAN I
+        $tw1 = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($data4)
+            ->first();
+        // TRIWULAN II
+        $tw2 = DB::table(DB::raw("({$data8->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($data8)
+            ->first();
+        // TRIWULAN III
+        $tw3 = DB::table(DB::raw("({$data12->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($data12)
+            ->first();
+        // TRIWULAN IV
+        $tw4 = DB::table(DB::raw("({$data16->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($data16)
+            ->first();
+
+        // BULAN JANUARI
+
+        // TRANSAKSI UP/GU
+        $januari1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='1'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $januari2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='1'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($januari1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $januari3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='1'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($januari2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $januari4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='1'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($januari3);
+
+        // BULAN FEBRUARI
+
+        // TRANSAKSI UP/GU
+        $februari1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='2'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $februari2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='2'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($februari1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $februari3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='2'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($februari2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $februari4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='2'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($februari3);
+
+        // BULAN MARET
+
+        // TRANSAKSI UP/GU
+        $maret1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='3'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $maret2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='3'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($maret1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $maret3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='3'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($maret2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $maret4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='3'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($maret3);
+
+        // BULAN APRIL
+
+        // TRANSAKSI UP/GU
+        $april1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='4'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $april2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='4'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($april1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $april3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='4'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($april2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $april4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='4'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($april3);
+
+        // BULAN MEI
+
+        // TRANSAKSI UP/GU
+        $mei1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='5'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $mei2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='5'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($mei1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $mei3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='5'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($mei2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $mei4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='5'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($mei3);
+
+        // BULAN JUNI
+
+        // TRANSAKSI UP/GU
+        $juni1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='6'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $juni2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='6'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($juni1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $juni3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='6'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($juni2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $juni4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='6'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($juni3);
+
+        // BULAN JULI
+
+        // TRANSAKSI UP/GU
+        $juli1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='7'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $juli2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='7'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($juli1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $juli3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='7'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($juli2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $juli4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='7'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($juli3);
+
+        // BULAN AGUSTUS
+
+        // TRANSAKSI UP/GU
+        $agustus1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='8'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $agustus2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='8'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($agustus1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $agustus3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='8'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($agustus2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $agustus4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='8'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($agustus3);
+
+        // BULAN SEPTEMBER
+
+        // TRANSAKSI UP/GU
+        $september1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='9'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $september2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='9'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($september1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $september3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='9'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($september2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $september4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='9'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($september3);
+
+        // BULAN OKTOBER
+
+        // TRANSAKSI UP/GU
+        $oktober1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='10'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $oktober2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='10'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($oktober1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $oktober3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='10'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($oktober2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $oktober4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='10'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($oktober3);
+
+        // BULAN NOVEMBER
+
+        // TRANSAKSI UP/GU
+        $november1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='11'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $november2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='11'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($november1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $november3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='11'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($november2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $november4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='11'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($november3);
+
+        // BULAN DESEMBER
+
+        // TRANSAKSI UP/GU
+        $desember1 = DB::table('trdtransout as a')->leftJoin('trhtransout as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_bukti)='12'");
+
+        // TRANSAKSI UP/GU CMS BANK BELUM VALIDASI
+        $desember2 = DB::table('trdtransout_cmsbank as a')->leftJoin('trhtransout_cmsbank as b', function ($join) {
+            $join->on('a.no_voucher', '=', 'b.no_voucher');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'b.jns_spp' => '1'])->whereRaw("month(b.tgl_voucher)='12'")->where(function ($query) {
+            $query->where('b.status_validasi', '0')->orWhereNull('b.status_validasi');
+        })->unionAll($desember1);
+
+        // TRANSAKSI SPP SELAIN UP/GU
+        $desember3 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_spp)='12'")->whereIn('b.jns_spp', ['3', '4', '5', '6'])->where(function ($query) {
+            $query->where('b.sp2d_batal', '0')->orWhere('b.sp2d_batal', '')->orWhereNull('b.sp2d_batal');
+        })->unionAll($desember2);
+
+        // PENAGIHAN YANG BELUM JADI SPP
+        $desember4 = DB::table('trdtagih as a')->join('trhtagih as b', function ($join) {
+            $join->on('a.no_bukti', '=', 'b.no_bukti');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->select(DB::raw("SUM(ISNULL(a.nilai,0)) as nilai"))->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6])->whereRaw("month(b.tgl_bukti)='12'")->whereRaw("b.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)", [$kd_skpd])->unionAll($desember3);
+
+        // Bulan Januari
+        $januari = DB::table(DB::raw("({$januari4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($januari4)
+            ->first();
+        // Bulan Februari
+        $februari = DB::table(DB::raw("({$februari4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($februari4)
+            ->first();
+        // Bulan Maret
+        $maret = DB::table(DB::raw("({$maret4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($maret4)
+            ->first();
+        // Bulan April
+        $april = DB::table(DB::raw("({$april4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($april4)
+            ->first();
+        // Bulan MEI
+        $mei = DB::table(DB::raw("({$mei4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($mei4)
+            ->first();
+        // Bulan JUNI
+        $juni = DB::table(DB::raw("({$juni4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($juni4)
+            ->first();
+        // Bulan JULI
+        $juli = DB::table(DB::raw("({$juli4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($juli4)
+            ->first();
+        // Bulan AGUSTUS
+        $agustus = DB::table(DB::raw("({$agustus4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($agustus4)
+            ->first();
+        // Bulan SEPTEMBER
+        $september = DB::table(DB::raw("({$september4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($september4)
+            ->first();
+        // Bulan OKTOBER
+        $oktober = DB::table(DB::raw("({$oktober4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($oktober4)
+            ->first();
+        // Bulan NOVEMBER
+        $november = DB::table(DB::raw("({$november4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($november4)
+            ->first();
+        // Bulan DESEMBER
+        $desember = DB::table(DB::raw("({$desember4->toSql()}) AS sub"))
+            ->select(DB::raw("SUM(nilai) as nilai"))
+            ->mergeBindings($desember4)
+            ->first();
+
+        return response()->json([
+            'rak' => $data_rak,
+            'tw1' => $tw1,
+            'tw2' => $tw2,
+            'tw3' => $tw3,
+            'tw4' => $tw4,
+            'januari' => $januari,
+            'februari' => $februari,
+            'maret' => $maret,
+            'april' => $april,
+            'mei' => $mei,
+            'juni' => $juni,
+            'juli' => $juli,
+            'agustus' => $agustus,
+            'september' => $september,
+            'oktober' => $oktober,
+            'november' => $november,
+            'desember' => $desember,
+        ]);
     }
     // REALISASI TOTAL TRIWULAN 1-4
     public function nilaiRealisasi(Request $request)
@@ -3350,13 +3936,11 @@ class RakController extends Controller
             'daftar_ttd2' => DB::table('ms_ttd')->select('nip', 'nama', 'id')->where(['kode' => 'bud'])->get(),
         ];
 
-        if(Auth::user()->is_admin==1){
+        if (Auth::user()->is_admin == 1) {
             return view('skpd.cetak_rak.per_sub_rincian_objek.cetak_seluruh')->with($data);
-        }else{
+        } else {
             return view('skpd.cetak_rak.per_sub_rincian_objek.cetak')->with($data);
         }
-
-        
     }
 
     public function cetakRakPerObjek(Request $request)
@@ -3455,22 +4039,22 @@ class RakController extends Controller
         }
         $jenis      = "nilai_" . $jenis_rak;
 
-        $anggaran   = DB::select("SELECT kd_skpd+kd_sub_kegiatan as urut, 
+        $anggaran   = DB::select("SELECT kd_skpd+kd_sub_kegiatan as urut,
                                 kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,
                                 kd_sub_kegiatan as kd_rek,nm_sub_kegiatan as nm_rek,
                                 sum(nilai)as anggaran
-                                from trdrka a 
-                                where kd_skpd= ? and jns_ang= ? 
+                                from trdrka a
+                                where kd_skpd= ? and jns_ang= ?
                                 GROUP BY kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan
                                 UNION ALL
-                                SELECT kd_skpd+kd_sub_kegiatan as urut, 
+                                SELECT kd_skpd+kd_sub_kegiatan as urut,
                                 kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,
                                 kd_rek6,nm_rek6,
                                 sum(nilai)as anggaran
-                                from trdrka a 
-                                where kd_skpd= ? and jns_ang= ? 
+                                from trdrka a
+                                where kd_skpd= ? and jns_ang= ?
                                 GROUP BY kd_skpd,kd_sub_kegiatan,nm_sub_kegiatan,kd_rek6,nm_rek6
-                                ",[$kd_skpd,$jenis_anggaran,$kd_skpd,$jenis_anggaran]);
+                                ", [$kd_skpd, $jenis_anggaran, $kd_skpd, $jenis_anggaran]);
 
         $angkas = DB::select("SELECT a.kd_skpd+a.kd_sub_kegiatan as urut, a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_sub_kegiatan as kd_rek,a.nm_sub_kegiatan as nm_rek,
                                 SUM(CASE WHEN bulan=1 THEN $jenis ELSE 0 END) as jan,
@@ -3486,7 +4070,7 @@ class RakController extends Controller
                                 SUM(CASE WHEN bulan=11 THEN $jenis ELSE 0 END) as nov,
                                 SUM(CASE WHEN bulan=12 THEN $jenis ELSE 0 END) as des
                                 from trdrka a INNER JOIN trdskpd_ro b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6
-                                where a.kd_skpd= ? and a.jns_ang= ? 
+                                where a.kd_skpd= ? and a.jns_ang= ?
                                 GROUP BY a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan
                                 UNION ALL
                                 SELECT a.kd_skpd+a.kd_sub_kegiatan+a.kd_rek6 as urut,a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,
@@ -3505,9 +4089,9 @@ class RakController extends Controller
                                 from trdrka a INNER JOIN trdskpd_ro b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6
                                 where a.kd_skpd= ? and a.jns_ang= ?
                                 GROUP BY a.kd_skpd,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.nm_rek6,a.kd_rek6,a.nm_rek6
-                                ORDER BY urut",[$kd_skpd,$jenis_anggaran,$kd_skpd,$jenis_anggaran]);
+                                ORDER BY urut", [$kd_skpd, $jenis_anggaran, $kd_skpd, $jenis_anggaran]);
 
-    
+
 
         $data = [
             'nama_angkas'       => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),

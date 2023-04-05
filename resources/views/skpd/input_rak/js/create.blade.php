@@ -982,21 +982,12 @@
                 kd_rek6: kd_rek6,
                 kd_sub_kegiatan: kd_sub_kegiatan,
             },
-            success: function(data) {
-                nilai_rak_bulan(data);
-            }
-        })
-        // Isi Nilai Realisasi Triwulan 1 - 4
-        $.ajax({
-            url: "{{ route('skpd.input_rak.nilai_realisasi') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                kd_skpd: kd_skpd,
-                kd_sub_kegiatan: kd_sub_kegiatan,
-                kd_rek6: kd_rek6,
+            beforeSend: function() {
+                $("#overlay").fadeIn(100);
             },
             success: function(data) {
+                nilai_rak_bulan(data.rak);
+                nilai_realisasi_bulan(data);
                 $('#total_realisasi_tw1').val(new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
                 }).format(data.tw1.nilai));
@@ -1009,22 +1000,50 @@
                 $('#total_realisasi_tw4').val(new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
                 }).format(data.tw4.nilai));
-            }
-        })
-        // Isi Nilai Realisai Masing-Masing Bulan
-        $.ajax({
-            url: "{{ route('skpd.input_rak.nilai_realisasi_bulan') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                kd_skpd: kd_skpd,
-                kd_sub_kegiatan: kd_sub_kegiatan,
-                kd_rek6: kd_rek6,
             },
-            success: function(data) {
-                nilai_realisasi_bulan(data);
+            complete: function(data) {
+                $("#overlay").fadeOut(100);
             }
         })
+        // Isi Nilai Realisasi Triwulan 1 - 4
+        // $.ajax({
+        //     url: "{{ route('skpd.input_rak.nilai_realisasi') }}",
+        //     type: "POST",
+        //     dataType: 'json',
+        //     data: {
+        //         kd_skpd: kd_skpd,
+        //         kd_sub_kegiatan: kd_sub_kegiatan,
+        //         kd_rek6: kd_rek6,
+        //     },
+        //     success: function(data) {
+        //         $('#total_realisasi_tw1').val(new Intl.NumberFormat('id-ID', {
+        //             minimumFractionDigits: 2
+        //         }).format(data.tw1.nilai));
+        //         $('#total_realisasi_tw2').val(new Intl.NumberFormat('id-ID', {
+        //             minimumFractionDigits: 2
+        //         }).format(data.tw2.nilai));
+        //         $('#total_realisasi_tw3').val(new Intl.NumberFormat('id-ID', {
+        //             minimumFractionDigits: 2
+        //         }).format(data.tw3.nilai));
+        //         $('#total_realisasi_tw4').val(new Intl.NumberFormat('id-ID', {
+        //             minimumFractionDigits: 2
+        //         }).format(data.tw4.nilai));
+        //     }
+        // })
+        // Isi Nilai Realisai Masing-Masing Bulan
+        // $.ajax({
+        //     url: "{{ route('skpd.input_rak.nilai_realisasi_bulan') }}",
+        //     type: "POST",
+        //     dataType: 'json',
+        //     data: {
+        //         kd_skpd: kd_skpd,
+        //         kd_sub_kegiatan: kd_sub_kegiatan,
+        //         kd_rek6: kd_rek6,
+        //     },
+        //     success: function(data) {
+        //         nilai_realisasi_bulan(data);
+        //     }
+        // })
         status_kunci();
         $('#kode_rekening').val(kd_rek6);
         $('#nama_rekening').val(nm_rek6);
