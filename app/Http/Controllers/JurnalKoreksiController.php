@@ -115,52 +115,52 @@ class JurnalKoreksiController extends Controller
             $data = DB::table('trdrka as a')
                 ->selectRaw("a.kd_rek6,a.nm_rek6,0 AS sp2d,nilai AS anggaran")
                 ->selectRaw("(SELECT SUM(nilai) FROM
-						(SELECT
-							SUM (c.nilai) as nilai
-						FROM
-							trdtransout c
-						LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti
-						AND c.kd_skpd = d.kd_skpd
-						WHERE
-							c.kd_sub_kegiatan = a.kd_sub_kegiatan
-						AND d.kd_skpd = a.kd_skpd
-						AND c.kd_rek6 = a.kd_rek6
-						AND c.no_bukti <> ?
-						AND d.jns_spp=?
-						UNION ALL
-						SELECT
-							SUM (c.nilai) as nilai
-						FROM
-							trdtransout_cmsbank c
-						LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher
-						AND c.kd_skpd = d.kd_skpd
-						WHERE
-							c.kd_sub_kegiatan = a.kd_sub_kegiatan
-						AND d.kd_skpd = a.kd_skpd
-						AND c.kd_rek6 = a.kd_rek6
-						AND d.jns_spp=?
-						AND d.status_validasi<>'1'
-						UNION ALL
-						SELECT SUM(x.nilai) as nilai FROM trdspp x
-						INNER JOIN trhspp y
-						ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
-						WHERE
-							x.kd_sub_kegiatan = a.kd_sub_kegiatan
-						AND x.kd_skpd = a.kd_skpd
-						AND x.kd_rek6 = a.kd_rek6
-						AND y.jns_spp IN ('3','4','5','6')
-						AND (sp2d_batal IS NULL or sp2d_batal ='' or sp2d_batal='0')
-						UNION ALL
-						SELECT SUM(nilai) as nilai FROM trdtagih t
-						INNER JOIN trhtagih u
-						ON t.no_bukti=u.no_bukti AND t.kd_skpd=u.kd_skpd
-						WHERE
-						t.kd_sub_kegiatan = a.kd_sub_kegiatan
-						AND u.kd_skpd = a.kd_skpd
-						AND t.kd_rek = a.kd_rek6
-						AND u.no_bukti
-						NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
-						)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['kd_skpd']])
+        				(SELECT
+        					SUM (c.nilai) as nilai
+        				FROM
+        					trdtransout c
+        				LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti
+        				AND c.kd_skpd = d.kd_skpd
+        				WHERE
+        					c.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND d.kd_skpd = a.kd_skpd
+        				AND c.kd_rek6 = a.kd_rek6
+        				AND c.no_bukti <> ?
+        				AND d.jns_spp=?
+        				UNION ALL
+        				SELECT
+        					SUM (c.nilai) as nilai
+        				FROM
+        					trdtransout_cmsbank c
+        				LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher
+        				AND c.kd_skpd = d.kd_skpd
+        				WHERE
+        					c.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND d.kd_skpd = a.kd_skpd
+        				AND c.kd_rek6 = a.kd_rek6
+        				AND d.jns_spp=?
+        				AND d.status_validasi<>'1'
+        				UNION ALL
+        				SELECT SUM(x.nilai) as nilai FROM trdspp x
+        				INNER JOIN trhspp y
+        				ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
+        				WHERE
+        					x.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND x.kd_skpd = a.kd_skpd
+        				AND x.kd_rek6 = a.kd_rek6
+        				AND y.jns_spp IN ('3','4','5','6')
+        				AND (sp2d_batal IS NULL or sp2d_batal ='' or sp2d_batal='0')
+        				UNION ALL
+        				SELECT SUM(nilai) as nilai FROM trdtagih t
+        				INNER JOIN trhtagih u
+        				ON t.no_bukti=u.no_bukti AND t.kd_skpd=u.kd_skpd
+        				WHERE
+        				t.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND u.kd_skpd = a.kd_skpd
+        				AND t.kd_rek = a.kd_rek6
+        				AND u.no_bukti
+        				NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
+        				)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['kd_skpd']])
                 ->where(['a.kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'a.kd_skpd' => $req['kd_skpd'], 'a.jns_ang' => $jns_ang])
                 ->get();
         } else {
@@ -179,16 +179,24 @@ class JurnalKoreksiController extends Controller
                 })
                 ->selectRaw("b.kd_rek6,b.nm_rek6,
                     (SELECT SUM(c.nilai) FROM trdtransout c LEFT JOIN trhtransout d ON c.no_bukti=d.no_bukti AND c.kd_skpd=d.kd_skpd
-					WHERE c.kd_sub_kegiatan = b.kd_sub_kegiatan AND
+        			WHERE c.kd_sub_kegiatan = b.kd_sub_kegiatan AND
                     d.kd_skpd=a.kd_skpd
-					AND c.kd_rek6=b.kd_rek6 AND c.no_bukti <> ? AND d.jns_spp = ? and c.no_sp2d = ?
-					) AS lalu,
+        			AND c.kd_rek6=b.kd_rek6 AND c.no_bukti <> ? AND d.jns_spp = ? and c.no_sp2d = ?
+        			) AS lalu,
                     b.nilai AS sp2d,
                     0 AS anggaran", [$req['no_bukti'], $req['beban'], $req['no_sp2d']])
                 ->where(['d.no_sp2d' => $req['no_sp2d'], 'b.kd_sub_kegiatan' => $req['kd_sub_kegiatan']])
                 ->get();
         }
-        return response()->json($data);
+
+        $data1 = DB::select("SELECT a.no_bukti, a.kd_rek6, a.nm_rek6,nilai,sumber
+                FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+				WHERE a.kd_skpd=? AND  b.no_sp2d =? and a.kd_sub_kegiatan=? AND b.jns_spp = ? ORDER BY a.no_bukti", [$req['kd_skpd'], $req['no_sp2d'], $req['kd_sub_kegiatan'], $req['beban']]);
+
+        return response()->json([
+            'rekening_awal' => $data1,
+            'rekening_koreksi' => $data,
+        ]);
     }
 
     public function sumber(Request $request)

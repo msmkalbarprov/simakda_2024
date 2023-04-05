@@ -5,7 +5,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        $('#kd_rekening_koreksi').prop('disabled', true);
         let rincian = $('#rincian').DataTable({
             responsive: true,
             processing: true,
@@ -222,11 +222,18 @@
 
         $('#kd_rekening_awal').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
-            let sp2d = parseFloat($(this).find(':selected').data('sp2d')) || 0;
-            let anggaran = parseFloat($(this).find(':selected').data('anggaran')) || 0;
-            let lalu = parseFloat($(this).find(':selected').data('lalu')) || 0;
+            // let sp2d = parseFloat($(this).find(':selected').data('sp2d')) || 0;
+            // let anggaran = parseFloat($(this).find(':selected').data('anggaran')) || 0;
+            // let lalu = parseFloat($(this).find(':selected').data('lalu')) || 0;
             $('#nm_rekening_koreksi').val(nama);
             let kd_rek6 = this.value;
+            $('#kd_rekening_koreksi').val(kd_rek6).change();
+
+            let rekening = $('#kd_rekening_koreksi').find('option:selected');
+            let sp2d = rekening.data('sp2d');
+            let anggaran = rekening.data('anggaran');
+            let lalu = rekening.data('lalu');
+
             let beban = document.getElementById('beban').value;
 
             $('#kd_rekening_koreksi').val(kd_rek6);
@@ -750,12 +757,24 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                 },
                 success: function(data) {
+                    let rekening_awal = data.rekening_awal;
+                    let rekening_koreksi = data.rekening_koreksi;
+                    // data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-sp2d="${data.sp2d}"
                     $('#kd_rekening_awal').empty();
                     $('#kd_rekening_awal').append(
                         `<option value="" disabled selected>Pilih Rekening</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(rekening_awal, function(index, rekening_awal) {
                         $('#kd_rekening_awal').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-sp2d="${data.sp2d}">${data.kd_rek6} | ${data.nm_rek6} | ${data.lalu}</option>`
+                            `<option value="${rekening_awal.kd_rek6}" data-nama="${rekening_awal.nm_rek6}"
+
+                            >${rekening_awal.no_bukti} | ${rekening_awal.kd_rek6} | ${rekening_awal.nm_rek6} | ${rekening_awal.nilai}</option>`
+                        );
+                    });
+                    $.each(rekening_koreksi, function(index, rekening_koreksi) {
+                        $('#kd_rekening_koreksi').append(
+                            `<option value="${rekening_koreksi.kd_rek6}" data-nama="${rekening_koreksi.nm_rek6}"
+                            data-lalu="${rekening_koreksi.lalu}" data-anggaran="${rekening_koreksi.anggaran}" data-sp2d="${rekening_koreksi.sp2d}"
+                            >${rekening_koreksi.kd_rek6} | ${rekening_koreksi.nm_rek6} | ${rekening_koreksi.lalu}</option>`
                         );
                     })
                 }

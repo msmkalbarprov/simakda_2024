@@ -257,8 +257,12 @@
                                     <label for="kd_rekening_koreksi" class="col-md-2 col-form-label">Rekening
                                         Belanja</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" id="kd_rekening_koreksi" readonly
-                                            name="kd_rekening_koreksi">
+                                        {{-- <input type="text" class="form-control" id="kd_rekening_koreksi" readonly
+                                            name="kd_rekening_koreksi"> --}}
+                                        <select class="form-control select2-modal" style=" width: 100%;"
+                                            id="kd_rekening_koreksi" name="kd_rekening_koreksi">
+                                            <option value="" disabled selected>Silahkan Pilih</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-4">
                                         <input type="text" class="form-control" id="nm_rekening_koreksi" readonly
