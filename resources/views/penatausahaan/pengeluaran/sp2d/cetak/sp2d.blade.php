@@ -442,6 +442,7 @@
                     <td>Pengguna Anggaran/Kuasa Pengguna Anggaran</td>
                     <td></td>
                     <td style="text-align: center" class="kanan">
+                        <b>{{ $ttd1->jabatan }}</b>
                     </td>
                 </tr>
                 <tr>
@@ -449,7 +450,7 @@
                     <td>:</td>
                     <td>BUD/Kuasa BUD</td>
                     <td></td>
-                    <td style="text-align: center" class="kanan"><b>{{ $ttd1->jabatan }}</b></td>
+                    <td style="text-align: center" class="kanan"></td>
                 </tr>
                 <tr>
                     <td class="kiri">Lembar 4</td>
