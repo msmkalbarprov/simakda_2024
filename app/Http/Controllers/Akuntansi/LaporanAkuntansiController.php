@@ -799,6 +799,7 @@ class LaporanAkuntansiController extends Controller
         $tgl1    = $request->tanggal1_ns;
         $tgl2    = $request->tanggal2_ns;
         $bulan    = $request->bulan_ns;
+        
         $cetak          = $request->cetak;
         $skpd        = $request->kd_skpd_ns;
         $rek1          = $request->rek1;
@@ -812,8 +813,6 @@ class LaporanAkuntansiController extends Controller
             $periode1= "year (tgl_voucher)='$thn_ang1' and ";
             $nm_bln = tgl_format_oyoy($tgl1);
         }else{
-            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
-            $periode1= "year (tgl_voucher)='$thn_ang1' and ";
             $modtahun= $thn_ang%4;
         
             if ($modtahun = 0){
@@ -822,21 +821,28 @@ class LaporanAkuntansiController extends Controller
                     else {
                 $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
             }
-         
          $arraybulan=explode(".",$nilaibulan);
          $nm_bln = $arraybulan[$bulan];
+            if (strlen($bulan)==1) {
+                $bulan="0".$bulan;
+            }else{
+                $bulan=$bulan;
+            }
+            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
+            $periode1= "year (tgl_voucher)='$thn_ang1' and ";
+         
         }
-        // dd($nm_bln);
+        // dd(strlen($bulan));
 
-        if($request->kd_skpd_ns==''){
+        if($kd_skpd==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
         }else{
             $kd_skpd        = $request->kd_skpd_ns;
-            $skpd_clause = "and left(kd_skpd,len('$skpd'))='$skpd'";
+            $skpd_clause = "and left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
 
-        // dd($skpd_clause);
+        // dd($kd_skpd);
 
                 $query = DB::select("SELECT kd_rek, (SELECT nm_rek6 from ms_rek6 where kd_rek6=x.kd_rek)nm_rek, SaldoAwal,debet,kredit,
 
