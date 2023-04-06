@@ -168,7 +168,7 @@ class SetorSisaController extends Controller
                     'keterangan' => $data['uraian'],
                     'total' => $data['jumlah'],
                     'kd_bank' => '',
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_sub_kegiatan' => isset($data['kd_sub_kegiatan']) ? $data['kd_sub_kegiatan'] : '',
                     'jns_trans' => $data['jenis_transaksi'],
                     'rek_bank' => '',
                     'sumber' => '0',
@@ -187,7 +187,7 @@ class SetorSisaController extends Controller
                         'no_sts' => $no_urut,
                         'kd_rek6' => $value['kd_rek6'],
                         'rupiah' => $value['rupiah'],
-                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_sub_kegiatan' => isset($data['kd_sub_kegiatan']) ? $data['kd_sub_kegiatan'] : '',
                         'kd_skpd' => $kd_skpd,
                     ];
                 }, $data['detail']));
@@ -271,7 +271,7 @@ class SetorSisaController extends Controller
                     'keterangan' => $data['uraian'],
                     'total' => $data['jumlah'],
                     'kd_bank' => '',
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_sub_kegiatan' => isset($data['kd_sub_kegiatan']) ? $data['kd_sub_kegiatan'] : '',
                     'jns_trans' => $data['jenis_transaksi'],
                     'rek_bank' => '',
                     'sumber' => '0',
@@ -290,7 +290,7 @@ class SetorSisaController extends Controller
                         'no_sts' => $data['no_kas'],
                         'kd_rek6' => $value['kd_rek6'],
                         'rupiah' => $value['rupiah'],
-                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_sub_kegiatan' => isset($data['kd_sub_kegiatan']) ? $data['kd_sub_kegiatan'] : '',
                         'kd_skpd' => $kd_skpd,
                     ];
                 }, $data['detail']));
