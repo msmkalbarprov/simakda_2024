@@ -33,11 +33,12 @@ class LraController extends Controller
         $skpdunit    = $request->skpdunit;
         $kd_skpd        = $request->kd_skpd;
         // dd($skpdunit);
-        if($request->kd_skpd==''){
+        if($kd_skpd==''){
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause="";
             $skpd_clauses= "";
             $skpd_clause_prog= "";
+            $skpd_clause_ang="";
         }else{
             if ($skpdunit=="unit") {
                 $kd_skpd=$kd_skpd;
@@ -45,9 +46,11 @@ class LraController extends Controller
                 $kd_skpd=substr($kd_skpd,0,17);
             }
             $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
         }
+        // dd($kd_skpd);
         
         $tahun_anggaran = tahun_anggaran();
 
@@ -224,7 +227,7 @@ class LraController extends Controller
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                             -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka 
-                                                    where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                                    where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
                                                     ) AS anggaran, 
                                             --realisasi
                                             isnull((
@@ -257,7 +260,7 @@ class LraController extends Controller
                 }else{
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka 
-                                                    where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                                    where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
                                                     ) AS anggaran,
                                         --realisasi
                                             isnull((
@@ -293,7 +296,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -363,7 +366,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -436,7 +439,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -498,7 +501,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -565,7 +568,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -627,7 +630,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -692,7 +695,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
@@ -753,7 +756,7 @@ class LraController extends Controller
                     # code...
                     $rincian=DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align, 
                                         -- anggaran
-                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
+                                        isnull((SELECT sum(nilai) FROM trdrka where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0) AS anggaran, 
                                         -- realisasi SPJ
                                         ( 
                                             SELECT sum(realisasi) from (
