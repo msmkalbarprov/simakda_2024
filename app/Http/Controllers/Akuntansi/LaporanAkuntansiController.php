@@ -1013,7 +1013,7 @@ class LaporanAkuntansiController extends Controller
 
 
         
-
+        $from1 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.29.3.30.3.31.01.0000'"))->first();
         $map1 = DB::select(" SELECT 1 as urut, '1' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.29.3.30.3.31.01.0000')
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1023,11 +1023,13 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('3.29.3.30.3.31.01.0000')
+                            where kd_skpd in ($from1->kd_skpd)
+                            and kd_sub_kegiatan in($from1->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
+        $from2 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='2.09.0.00.0.00.01.0000'"))->first();
         $map2 = DB::select(" SELECT 1 as urut , '2' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('2.09.0.00.0.00.01.0000')
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1037,12 +1039,14 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('2.09.0.00.0.00.01.0000')
+                            where kd_skpd in ($from2->kd_skpd)
+                            and kd_sub_kegiatan in($from2->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map3 = DB::select(" SELECT 1 as urut , '3' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.25.0.00.0.00.01.0000')
+        $from3 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.25.0.00.0.00.01.0000'"))->first();
+        $map3 = DB::select(" SELECT 1 as urut , '3' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from3->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1051,12 +1055,14 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('3.25.0.00.0.00.01.0000')
+                            where kd_skpd in ($from3->kd_skpd)
+                            and kd_sub_kegiatan in($from3->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map4 = DB::select(" SELECT 1 as urut , '4' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.01.0000')
+        $from4 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.01.0000'"))->first();
+        $map4 = DB::select(" SELECT 1 as urut , '4' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from4->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1065,12 +1071,15 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('3.27.0.00.0.00.01.0000')
+                            where kd_skpd in ($from4->kd_skpd)
+                            and kd_sub_kegiatan in($from4->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map5 = DB::select(" SELECT 1 as urut , '5' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.01.0002')
+
+        $from5 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.01.0002'"))->first();
+        $map5 = DB::select(" SELECT 1 as urut , '5' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from5->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1079,12 +1088,15 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('3.27.0.00.0.00.01.0002')
+                            where kd_skpd in ($from5->kd_skpd)
+                            and kd_sub_kegiatan in($from5->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map6 = DB::select(" SELECT 1 as urut , '6' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.27.0.00.0.00.02.0000')
+
+        $from6 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.02.0000'"))->first();
+        $map6 = DB::select(" SELECT 1 as urut , '6' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from6->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1093,12 +1105,15 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('3.27.0.00.0.00.02.0000')
+                            where kd_skpd in ($from6->kd_skpd)
+                            and kd_sub_kegiatan in($from6->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map7 = DB::select(" SELECT 1 as urut , '7' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('2.15.0.00.0.00.01.0000')
+
+        $from7 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='2.15.0.00.0.00.01.0000'"))->first();
+        $map7 = DB::select(" SELECT 1 as urut , '7' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from7->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1107,12 +1122,15 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('2.15.0.00.0.00.01.0000')
+                            where kd_skpd in ($from7->kd_skpd)
+                            and kd_sub_kegiatan in($from7->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $map8 = DB::select(" SELECT 1 as urut , '8' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('1.03.0.00.0.00.01.0000')
+
+        $from8 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='1.03.0.00.0.00.01.0000'"))->first();
+        $map8 = DB::select(" SELECT 1 as urut , '8' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from8->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
                             kd_rek6,(select nm_rek6 from ms_rek6 where kd_rek6=z.kd_rek6 )nm_rek6,
@@ -1121,7 +1139,8 @@ class LaporanAkuntansiController extends Controller
                                 and z.kd_rek6=a.kd_rek6
                                 and b.tgl_bukti between '$tgl1' and '$tgl2')as realisasi
                             from trdrka z
-                            where kd_skpd in('1.03.0.00.0.00.01.0000')
+                            where kd_skpd in ($from8->kd_skpd)
+                            and kd_sub_kegiatan in($from8->kd_sub_kegiatan)
                             and  z.jns_ang='$jns_ang'
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
