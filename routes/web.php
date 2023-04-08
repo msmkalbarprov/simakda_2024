@@ -1034,7 +1034,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::post('rekening', [JurnalKoreksiController::class, 'rekening'])->name('koreksi_rekening.rekening');
                 Route::post('sumber', [JurnalKoreksiController::class, 'sumber'])->name('koreksi_rekening.sumber');
                 Route::post('rekening_koreksi', [JurnalKoreksiController::class, 'rekeningKoreksi'])->name('koreksi_rekening.rekening_koreksi');
+                Route::post('rekening_koreksi2', [JurnalKoreksiController::class, 'rekeningKoreksi2'])->name('koreksi_rekening.rekening_koreksi2');
                 Route::post('sumber_koreksi', [JurnalKoreksiController::class, 'sumberKoreksi'])->name('koreksi_rekening.sumber_koreksi');
+                Route::post('sumber_koreksi2', [JurnalKoreksiController::class, 'sumberKoreksi2'])->name('koreksi_rekening.sumber_koreksi2');
                 Route::post('simpan_koreksi', [JurnalKoreksiController::class, 'simpanKoreksi'])->name('koreksi_rekening.simpan_koreksi');
                 Route::get('edit_koreksi_rekening/{no_bukti?}', [JurnalKoreksiController::class, 'editRekening'])->where('no_bukti', '(.*)')->name('koreksi_rekening.edit');
                 Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateRekening'])->name('koreksi_rekening.update');
