@@ -1644,6 +1644,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     });
 });
 
+ // Koreksi penerimaan Kas
+ Route::group(['prefix' => 'koreksi_penerimaan_kas'], function () {
+    Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksiKas'])->name('koreksi_penerimaan_kas.index');
+    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksi'])->name('koreksi_penerimaan_kas.load_data');
+    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksi'])->name('koreksi_penerimaan_kas.tambah');
+    Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksi'])->name('koreksi_penerimaan_kas.jenis');
+    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksi'])->name('koreksi_penerimaan_kas.simpan');
+    Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksi'])->name('koreksi_penerimaan_kas.edit');
+    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_penerimaan_kas.simpan_edit');
+    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_penerimaan_kas.hapus');
+});
+
 
 
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);

@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use PDF;
-
+use Yajra\DataTables\Facades\DataTables;
 class BendaharaUmumDaerahController extends Controller
 {
     public function index()
@@ -7174,5 +7175,34 @@ class BendaharaUmumDaerahController extends Controller
             header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
             return $view;
         }
+    }
+
+     // Koreksi Penerimaan Kas
+     public function indexKoreksiKas()
+     {
+         return view('bud.koreksi_penerimaan.index');
+     }
+
+     public function loadDataKoreksi()
+    {
+        $data = DB::table('tkoreksi_penerimaan_test')
+            ->orderBy("nomor")
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("koreksi_penerimaan_kas.edit", Crypt::encrypt($row->nomor.'|'.$row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->nomor.'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahKoreksi()
+    {
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+        ];
+
+        return view('bud.koreksi_penerimaan.create')->with($data);
     }
 }
