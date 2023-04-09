@@ -24,6 +24,10 @@ class RealisasiFisikController extends Controller
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $cetak          = $request->cetak;
+        $margin_atas    = $request->margin_atas;
+        $margin_bawah   = $request->margin_bawah;
+        $margin_kiri    = $request->margin_kiri;
+        $margin_kanan   = $request->margin_kanan;
         if (strlen($request->kd_skpd) == 17) {
             $kd_skpd        = $request->kd_skpd . '.0000';
             $kd_org         = $request->kd_skpd;
@@ -66,8 +70,17 @@ class RealisasiFisikController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setOrientation('landscape')
+                ->setPaper('legal')
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('REALISASI FISIK.pdf');
+
+            // $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            // return $pdf->stream('REALISASI FISIK.pdf');
         } else {
 
             header("Cache-Control: no-cache, no-store, must_revalidate");
