@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use PDF;
+use Exception;
 use Yajra\DataTables\Facades\DataTables;
 class BendaharaUmumDaerahController extends Controller
 {
@@ -7183,9 +7184,9 @@ class BendaharaUmumDaerahController extends Controller
          return view('bud.koreksi_penerimaan.index');
      }
 
-     public function loadDataKoreksi()
+     public function loadDataKoreksiKas()
     {
-        $data = DB::table('tkoreksi_penerimaan_test')
+        $data = DB::table('tkoreksi_penerimaan')
             ->orderBy("nomor")
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
@@ -7195,7 +7196,7 @@ class BendaharaUmumDaerahController extends Controller
         })->rawColumns(['aksi'])->make(true);
     }
 
-    public function tambahKoreksi()
+    public function tambahKoreksiKas()
     {
         $data = [
             'daftar_skpd' => DB::table('ms_skpd as a')
@@ -7204,5 +7205,113 @@ class BendaharaUmumDaerahController extends Controller
         ];
 
         return view('bud.koreksi_penerimaan.create')->with($data);
+    }
+    
+    public function simpanKoreksiKas(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = $data['nm_skpd'];
+
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+
+            $cek_terima = DB::table('tkoreksi_penerimaan')->where(['nomor' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_terima > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('tkoreksi_penerimaan')
+                ->insert([
+                    'nomor' => $no_urut,
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                    'jenis' => $data['jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd']
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editKoreksiKas($no)
+    {
+        $no = Crypt::decrypt($no);
+        $id = explode("|",$no);
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+            'koreksi' => DB::table('tkoreksi_penerimaan')
+                ->where(['nomor' => $id[0],'kd_skpd' => $id[1]])
+                ->first()
+        ];
+
+        return view('bud.koreksi_penerimaan.edit')->with($data);
+    }
+
+    public function simpanEditKoreksiKas(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd =  $data['kd_skpd'];
+
+        DB::beginTransaction();
+        try {
+
+            DB::table('tkoreksi_penerimaan')
+                ->where(['nomor' => $data['no_kas'],'kd_skpd' => $kd_skpd])
+                ->update([
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                    'jenis' => $data['jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd']
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusKoreksikas(Request $request)
+    {
+        $no = $request->no;
+        $id = explode("|",$no);
+        DB::beginTransaction();
+        try {
+            DB::table('tkoreksi_penerimaan')->where(['nomor' => $id[0],'kd_skpd' => $id[1]])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 }

@@ -3114,10 +3114,14 @@ function nomor_tukd()
         ->selectRaw("no as nomor,'koreksi' ket")
         ->whereRaw("isnumeric(no)=?", ['1'])
         ->unionAll($data4);
+    $data6 = DB::table('trkoreksi_pengeluaran')
+        ->selectRaw("no as nomor,'Koreksi Pengeluaran' ket")
+        ->whereRaw("isnumeric(no)=?", ['1'])
+        ->unionAll($data5);
 
-    $data = DB::table(DB::raw("({$data5->toSql()}) AS sub"))
+    $data = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
         ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
-        ->mergeBindings($data5)
+        ->mergeBindings($data6)
         ->first();
 
     return $data->nomor;

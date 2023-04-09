@@ -11,100 +11,24 @@
             theme: 'bootstrap-5'
         });
 
-        let jenis_sementara = document.getElementById('jenis_sementara').value;
-
-        $.ajax({
-            url: "{{ route('koreksi_pendapatan.jenis') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                kd_skpd: document.getElementById('kd_skpd').value,
-            },
-            success: function(data) {
-                $('#jenis').empty();
-                $('#jenis').append(
-                    `<option value="" disabled selected>Silahkan Pilih</option>`);
-                $.each(data, function(index, data) {
-                    if (jenis_sementara == data.kd_rek6) {
-                        $('#jenis').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" selected>${data.kd_rek6} | ${data.nm_rek6}</option>`
-                        );
-                    } else {
-                        $('#jenis').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
-                        );
-                    }
-                })
-            }
-        })
-
+   
         $('#kd_skpd').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
             $('#nm_skpd').val(nama);
-            $('#jenis').val(null).change();
-            $('#nama_jenis').val(null);
-
-            $.ajax({
-                url: "{{ route('koreksi_pendapatan.jenis') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    kd_skpd: this.value,
-                },
-                success: function(data) {
-                    $('#jenis').empty();
-                    $('#jenis').append(
-                        `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
-                        $('#jenis').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
-                        );
-                    })
-                }
-            })
         });
 
-        $('#jenis').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            $('#nama_jenis').val(nama);
-        });
 
         $('#simpan').on('click', function() {
-            let no_kas = document.getElementById('no_kas').value;
-            let tgl_kas = document.getElementById('tgl_kas').value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            let nm_skpd = document.getElementById('nm_skpd').value;
-            let jenis = document.getElementById('jenis').value;
-            let nama_jenis = document.getElementById('nama_jenis').value;
-            let tahun_anggaran = document.getElementById('tahun_anggaran').value;
-            let keterangan = document.getElementById('keterangan').value;
-            let nilai = angka(document.getElementById('nilai').value);
-            let tahun_input = tgl_kas.substr(0, 4);
-            let minus = document.getElementById('minus').checked;
-            let pengaruh_realisasi = document.getElementById('pengaruh_realisasi').checked;
-
-            let total = 0;
-            if (minus == false) {
-                if (nilai < 0) {
-                    total = nilai * -1;
-                } else {
-                    total = nilai;
-                }
-            } else {
-                if (nilai < 0) {
-                    total = nilai;
-                } else {
-                    total = nilai * -1;
-                }
-            }
-
-            let ngaruh = '';
-            if (pengaruh_realisasi == false) {
-                ngaruh = 0;
-            } else {
-                ngaruh = 1;
-            }
-
+            let no_kas          = document.getElementById('no_kas').value;
+            let tgl_kas         = document.getElementById('tgl_kas').value;
+            let kd_skpd         = document.getElementById('kd_skpd').value;
+            let nm_skpd         = document.getElementById('nm_skpd').value;
+            let jenis           = document.getElementById('jenis').value;
+            let tahun_anggaran  = document.getElementById('tahun_anggaran').value;
+            let keterangan      = document.getElementById('keterangan').value;
+            let nilai           = angka(document.getElementById('nilai').value);
+            let tahun_input     = tgl_kas.substr(0, 4);
+            
             if (!tgl_kas) {
                 alert('Tanggal Tidak Boleh Kosong');
                 return;
@@ -141,16 +65,13 @@
                 kd_skpd,
                 nm_skpd,
                 jenis,
-                nama_jenis,
                 keterangan,
                 nilai,
-                total,
-                ngaruh,
             };
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('koreksi_pendapatan.simpan_edit') }}",
+                url: "{{ route('koreksi_penerimaan_kas.simpan_edit') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -160,7 +81,7 @@
                     if (response.message == '1') {
                         alert('Data berhasil diubah');
                         window.location.href =
-                            "{{ route('koreksi_pendapatan.index') }}";
+                            "{{ route('koreksi_penerimaan_kas.index') }}";
                     } else {
                         alert('Data gagal disimpan!');
                         $('#simpan').prop('disabled', false);

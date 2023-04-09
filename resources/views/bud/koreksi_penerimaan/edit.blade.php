@@ -15,7 +15,7 @@
                         <label for="no_kas" class="col-md-2 col-form-label">No Kas</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="no_kas" name="no_kas"
-                                value="{{ $koreksi->no }}" required readonly>
+                                value="{{ $koreksi->nomor }}" required readonly>
                         </div>
                         <label for="tgl_kas" class="col-md-2 col-form-label">Tanggal</label>
                         <div class="col-md-4">
@@ -46,23 +46,6 @@
                                 value="{{ $koreksi->nm_skpd }}" required readonly>
                         </div>
                     </div>
-                    {{-- Jenis dan Nama Jenis --}}
-                    <div class="mb-3 row">
-                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%" id="jenis" name="jenis">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                </option>
-                            </select>
-                        </div>
-                        <label for="nama_jenis" class="col-md-2 col-form-label">Nama Jenis</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="jenis_sementara" name="jenis_sementara" required
-                                readonly value="{{ $koreksi->kd_rek }}" hidden>
-                            <input class="form-control" type="text" id="nama_jenis" name="nama_jenis" required readonly
-                                value="{{ $koreksi->nm_rek }}">
-                        </div>
-                    </div>
                     {{-- Keterangan --}}
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
@@ -71,39 +54,29 @@
 
                         </div>
                     </div>
-                    {{-- Nilai --}}
+                    {{-- Jenis dan Nama Jenis --}}
                     <div class="mb-3 row">
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="jenis" name="jenis">
+                                <option value="1" selected> Koreksi Penerimaan </option>
+                            </option>
+                        </select>
+                        </div>
                         <label for="nilai" class="col-md-2 col-form-label">Nilai</label>
-                        <div class="col-md-10">
+                        <div class="col-md-4">
                             <input type="text" class="form-control" name="nilai" id="nilai"
                                 value="{{ $koreksi->nilai }}" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"
                                 style="text-align: right">
                         </div>
                     </div>
-                    {{-- Minus dan Mempengaruhi Realisasi Pendapatan --}}
-                    <div class="mb-3 row">
-                        <div class="col-md-2">
-                            <div class="form-check form-switch form-switch-lg">
-                                <input type="checkbox" class="form-check-input" id="minus"
-                                    {{ $koreksi->nilai < 0 ? 'checked' : '' }}>
-                                <label class="form-check-label" for="minus">
-                                    Minus</label>
-                            </div>
-                        </div>
-                        <div class="col-md-10">
-                            <div class="form-check form-switch form-switch-lg">
-                                <input type="checkbox" class="form-check-input" id="pengaruh_realisasi"
-                                    {{ $koreksi->status == '1' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="pengaruh_realisasi">
-                                    <i>(Mempengaruhi Realisasi Pendapatan)</i></label>
-                            </div>
-                        </div>
-                    </div>
+                    
+                
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('koreksi_pendapatan.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                            <a href="{{ route('koreksi_penerimaan_kas.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
                 </div>
@@ -112,5 +85,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.koreksi_pendapatan.js.edit');
+    @include('bud.koreksi_penerimaan.js.edit');
 @endsection

@@ -45,18 +45,10 @@
             let kd_skpd         = document.getElementById('kd_skpd').value;
             let nm_skpd         = document.getElementById('nm_skpd').value;
             let jenis           = document.getElementById('jenis').value;
-            let nama_jenis      = document.getElementById('nama_jenis').value;
             let tahun_anggaran  = document.getElementById('tahun_anggaran').value;
             let keterangan      = document.getElementById('keterangan').value;
             let nilai           = angka(document.getElementById('nilai').value);
             let tahun_input     = tgl_kas.substr(0, 4);
-
-            let total = 0;
-            if (minus == false) {
-                total = nilai;
-            } else {
-                total = nilai * -1;
-            }
 
           
             if (!tgl_kas) {
@@ -94,16 +86,13 @@
                 kd_skpd,
                 nm_skpd,
                 jenis,
-                nama_jenis,
                 keterangan,
-                nilai,
-                total,
-                ngaruh,
+                nilai
             };
 
             $('#simpan').prop('disabled', true);
             $.ajax({
-                url: "{{ route('koreksi_pendapatan.simpan') }}",
+                url: "{{ route('koreksi_penerimaan_kas.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -114,7 +103,7 @@
                         alert('Data berhasil ditambahkan, Nomor Baru yang tersimpan adalah: ' +
                             response.nomor);
                         window.location.href =
-                            "{{ route('koreksi_pendapatan.index') }}";
+                            "{{ route('koreksi_penerimaan_kas.index') }}";
                     } else if (response.message == '2') {
                         alert('No Kas telah digunakan!');
                         $('#simpan').prop('disabled', false);
