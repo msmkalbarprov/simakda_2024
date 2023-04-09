@@ -866,7 +866,7 @@
 
         function cari_rekening_koreksi(no_sp2d) {
             $.ajax({
-                url: "{{ route('koreksi_rekening.rekening_koreksi') }}",
+                url: "{{ route('koreksi_rekening.rekening_koreksi2') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -891,7 +891,7 @@
 
         function cari_sumber_koreksi(kd_rek6) {
             $.ajax({
-                url: "{{ route('koreksi_rekening.sumber_koreksi') }}",
+                url: "{{ route('koreksi_rekening.sumber_koreksi2') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
