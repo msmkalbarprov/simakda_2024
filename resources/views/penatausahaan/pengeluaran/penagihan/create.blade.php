@@ -116,6 +116,7 @@
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_penagihan" class="btn btn-primary btn-md">Simpan</button>
+                        <input type="hidden" name="kode_penagihan" id="kode_penagihan">
                         <a href="{{ route('penagihan.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>

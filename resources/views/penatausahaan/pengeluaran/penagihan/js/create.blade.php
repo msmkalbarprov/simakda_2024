@@ -79,6 +79,7 @@
                 }
             ]
         });
+
         let tabel1 = $('#rincian_penagihan').DataTable({
             responsive: true,
             ordering: false,
@@ -130,6 +131,7 @@
                 }
             ]
         });
+
         $('#tambah_rincian').on("click", function() {
             let no_bukti = document.getElementById('no_bukti').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
@@ -166,10 +168,12 @@
                 })
             }
         });
+
         $('#kd_sub_kegiatan').on("change", function() {
             let nm_sub_kegiatan = $(this).find(':selected').data('nama');
             let kd_sub_kegiatan = this.value;
             $("#nm_sub_kegiatan").val(nm_sub_kegiatan);
+            $('#kode_rekening').empty();
             $("#nm_rekening").val("");
             $('#sumber_dana').empty();
             $("#nm_sumber").val("");
@@ -185,12 +189,22 @@
             $("#nilai_sumber_dana").val("");
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
+
+            let kode_rekening = document.getElementById('kode_rekening').value;
+            let sumber_dana = document.getElementById('sumber_dana').value;
+
+            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber_dana;
+            $('#kode_penagihan').val(kode);
+
             $.ajax({
                 url: "{{ route('penagihan.cari_rekening') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -200,9 +214,13 @@
                             `<option value="${data.kd_rek6}" data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-nama="${data.nm_rek6}" data-map="${data.map_lo}">${data.kd_rek6} | ${data.map_lo} | ${data.nm_rek6} | ${data.lalu} | ${data.sp2d} | ${data.anggaran}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
+
         $('#kode_rekening').on('change', function() {
             let selected = $(this).find('option:selected');
             let nm_rekening = selected.data('nama');
@@ -215,6 +233,7 @@
             $("#nilai_sumber_dana").val("");
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
+            $('#sumber_dana').empty();
             $("#total_spd").val(anggaran.toLocaleString('id-ID', {
                 minimumFractionDigits: 2
             }));
@@ -247,6 +266,12 @@
             let kdgiat = document.getElementById('kd_sub_kegiatan').value;
             let kdrek = document.getElementById('kode_rekening').value;
             let status_ang = document.getElementById('status_anggaran').value;
+
+            let sumber_dana = document.getElementById('sumber_dana').value;
+
+            let kode = kdgiat + '.' + kdrek + '.' + sumber_dana;
+            $('#kode_penagihan').val(kode);
+
             $.ajax({
                 url: "{{ route('penagihan.cari_sumber_dana') }}",
                 type: "POST",
@@ -256,6 +281,9 @@
                     kdgiat: kdgiat,
                     kdrek: kdrek,
                     status_ang: status_ang,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
                     $('#sumber_dana').empty();
@@ -267,9 +295,13 @@
                             `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
+
         $('#sumber_dana').on('select2:select', function() {
             // let selected = $(this).find('option:selected');
             let sumber_dana = this.value;
@@ -284,6 +316,13 @@
             $("#nilai_sumber_dana").val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(nilai));
+
+            let kdgiat = document.getElementById('kd_sub_kegiatan').value;
+            let kdrek = document.getElementById('kode_rekening').value;
+
+            let kode = kdgiat + '.' + kdrek + '.' + sumber_dana;
+            $('#kode_penagihan').val(kode);
+
             $.ajax({
                 url: "{{ route('penagihan.realisasi_sumber_dana') }}",
                 type: "POST",
@@ -294,6 +333,9 @@
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $("#realisasi_sumber_dana").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
@@ -301,6 +343,9 @@
                     $("#sisa_sumber_dana").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(nilai - data));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
             // $.ajax({
@@ -327,6 +372,7 @@
             //     minimumFractionDigits: 2
             // }));
         });
+
         $('#no_kontrak').on('change', function() {
             let selected = $(this).find('option:selected');
             let no_kontrak = this.value;
@@ -356,6 +402,7 @@
                 }
             })
         });
+
         $("input[data-type='currency']").on({
             keyup: function() {
                 formatCurrency($(this));
@@ -364,6 +411,7 @@
                 formatCurrency($(this), "blur");
             }
         });
+
         $('#simpan-btn').on('click', function() {
             // perhitungan nilai
             // let nilai_penagihan = document.getElementById('nilai_penagihan').value;
@@ -396,6 +444,8 @@
             let status_ang = document.getElementById('status_anggaran').value; //status anggaran
             let sisa_kontrak = document.getElementById('sisa_kontrak').value; //sisa kontrak
             let nosp2d = ''; //no_sp2d
+            let kode_penagihan = document.getElementById('kode_penagihan'); // PROTEKSI
+            let kode = kdgiat + '.' + kdrek + '.' + sumber;
             let csp2d = 0;
             let clalu = 0;
             let nilai_total_penagihan = parseFloat(document.getElementById('total_input_penagihan')
@@ -420,6 +470,12 @@
                 alert('Silahkan pilih tanggal');
                 return;
             };
+            if (kode_penagihan != kode) {
+                alert(
+                    'Sub kegiatan, rekening, sumber dana tidak sesuai dengan realisasi dan sisa, Silahkan refresh!'
+                );
+                return;
+            }
             if (sumber == "221020101") {
                 alert(
                     'Silahkan konfirmasi ke perbendaharaan jika ingin transaksi sumber dana DID, jika tidak maka transaksi tidak bisa di approve oleh perbendahaaraan, terima kasih'
@@ -504,6 +560,9 @@
                     nilai_tagih: nilai_tagih,
                     sumber: sumber,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     if (data.message == '0') {
                         alert('Data Detail Gagal Tersimpan');
@@ -573,9 +632,13 @@
                         $('#kode_rekening').empty();
                         $('#sumber_dana').empty();
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
+
         $('#simpan_penagihan').on('click', function() {
             let no_bukti = document.getElementById('no_bukti').value;
             let no_kontrak = document.getElementById('no_kontrak').value;

@@ -208,6 +208,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('total_angkas', [SppLsController::class, 'totalAngkas'])->name('sppls.total_angkas');
             Route::post('realisasi_spd', [SppLsController::class, 'realisasiSpd'])->name('sppls.realisasi_spd');
             Route::post('sumber_dana', [SppLsController::class, 'sumberDana'])->name('sppls.sumber_dana');
+            Route::post('cari_sumber_dana_spp_ls', [PenagihanController::class, 'cariSumberDanaSppLs'])->name('penagihan.cari_sumber_dana_spp_ls');
             Route::post('cari_nospp', [SppLsController::class, 'cariNoSpp'])->name('sppls.cari_nospp');
             Route::post('cek_simpan', [SppLsController::class, 'cekSimpan'])->name('sppls.cek_simpan');
             Route::post('simpan_sppls', [SppLsController::class, 'simpanSppLs'])->name('sppls.simpan_sppls');
@@ -1646,8 +1647,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     });
 });
 
- // Koreksi penerimaan Kas
- Route::group(['prefix' => 'koreksi_penerimaan_kas'], function () {
+// Koreksi penerimaan Kas
+Route::group(['prefix' => 'koreksi_penerimaan_kas'], function () {
     Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksiKas'])->name('koreksi_penerimaan_kas.index');
     Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksiKas'])->name('koreksi_penerimaan_kas.load_data');
     Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksiKas'])->name('koreksi_penerimaan_kas.tambah');
@@ -1670,8 +1671,8 @@ Route::group(['prefix' => 'koreksi_pengeluaran'], function () {
     Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_pengeluaran.simpan_edit');
     Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_pengeluaran.hapus');
 });
- // Pengeluaran Non Sp2D
- Route::group(['prefix' => 'non_sp2d'], function () {
+// Pengeluaran Non Sp2D
+Route::group(['prefix' => 'non_sp2d'], function () {
     Route::get('', [BendaharaUmumDaerahController::class, 'indexPengeluaranNonSp2d'])->name('non_sp2d.index');
     Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataPengeluaranNonSp2d'])->name('non_sp2d.load_data');
     Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahPengeluaranNonSp2d'])->name('non_sp2d.tambah');
