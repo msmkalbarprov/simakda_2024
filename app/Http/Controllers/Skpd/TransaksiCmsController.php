@@ -277,26 +277,26 @@ class TransaksiCmsController extends Controller
             $data1 = DB::table('trdtransout as c')->join('trhtransout as d', function ($join) {
                 $join->on('c.no_bukti', '=', 'd.no_bukti');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'd.jns_spp' => '1'])->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"));
+            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6, 'd.jns_spp' => '1'])->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"));
 
             $data2 = DB::table('trdtransout_cmsbank as c')->join('trhtransout_cmsbank as d', function ($join) {
                 $join->on('c.no_voucher', '=', 'd.no_voucher');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'd.jns_spp' => '1'])->where(function ($query) {
+            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6, 'd.jns_spp' => '1'])->where(function ($query) {
                 $query->where('d.status_validasi', '0')->orWhereNull('d.status_validasi');
             })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data1);
 
             $data3 = DB::table('trdspp as c')->join('trhspp as d', function ($join) {
                 $join->on('c.no_spp', '=', 'd.no_spp');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'c.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening])->whereIn('d.jns_spp', ['3', '4', '5', '6'])->where('d.no_spp', '<>', $no_spp)->where(function ($query) {
+            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'c.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6])->whereIn('d.jns_spp', ['3', '4', '5', '6'])->where('d.no_spp', '<>', $no_spp)->where(function ($query) {
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
             })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data2);
 
             $data4 = DB::table('trdtagih as c')->join('trhtagih as d', function ($join) {
                 $join->on('c.no_bukti', '=', 'd.no_bukti');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening])->whereRaw('d.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)', [$kd_skpd])->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))->unionAll($data3);
+            })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6])->whereRaw('d.no_bukti NOT IN (SELECT no_tagih FROM trhspp WHERE kd_skpd=?)', [$kd_skpd])->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))->unionAll($data3);
 
             $angkas_lalu = DB::table(DB::raw("({$data4->toSql()}) AS sub"))
                 ->select(DB::raw("SUM(nilai) as total"))
