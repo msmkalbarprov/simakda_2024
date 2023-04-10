@@ -1031,7 +1031,7 @@ class PenerimaanController extends Controller
 				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans=4 ) AND no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd_sumber+jns_trans FROM trhkasin_ppkd a where kd_skpd_sumber=? and a.jns_trans=4 )
                 and kd_skpd=?
 				and tgl_sts=?
-				and jns_trans=4 --AND status=1
+				and jns_trans=4
 				UNION ALL
 				SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
 				FROM trhkasin_pkd WHERE no_sts+kd_skpd+jns_trans NOT IN(SELECT a.no_sts+kd_skpd+jns_trans FROM trhkasin_ppkd a where kd_skpd=? and a.jns_trans NOT IN (4,3))
@@ -1050,7 +1050,7 @@ class PenerimaanController extends Controller
                 inner join trhstrpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
                 WHERE a.kd_skpd=? and tgl_bukti=? and a.kd_rek6='210601010007' AND a.no_bukti NOT IN (
                 select no_sts from trhkasin_ppkd
-                where kd_skpd=? )", [$kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas]);
+                where kd_skpd=?)", [$kd_skpd, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas, $kd_skpd, $tgl_kas, $kd_skpd]);
         } elseif ($kd_skpd == '1.02.0.00.0.00.01.0000' || $kd_skpd == '1.03.0.00.0.00.01.0000') {
             $data = DB::select("SELECT no_sts, tgl_sts,kd_skpd, keterangan,sumber,kd_sub_kegiatan,jns_trans,jns_cp,total
 				FROM trhkasin_pkd WHERE no_sts+jns_trans NOT IN(SELECT a.no_sts+jns_trans FROM trhkasin_ppkd a where kd_skpd=? OR kd_skpd_sumber=? and a.jns_trans=4 )
