@@ -85,6 +85,7 @@
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_cms" class="btn btn-primary btn-md">Simpan</button>
+                        <input type="hidden" name="kode_transaksi" id="kode_transaksi">
                         <a href="{{ route('skpd.transaksi_cms.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
