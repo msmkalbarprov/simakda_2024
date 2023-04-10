@@ -38,7 +38,8 @@ class PengumumanController extends Controller
         
         $input = array_map('htmlentities', $request->validated());
         $file = $request->file('dokumen');
-        DB::table('ms_pengumuman')
+        if($file !=null || $file !=''){
+            DB::table('ms_pengumuman')
             ->insert([
                 'judul'     => $input['judul'],
                 'isi'       => $input['isi'],
@@ -50,6 +51,18 @@ class PengumumanController extends Controller
 
         // upload ke folder file_siswa di dalam folder public
         $file->move('pengumuman', $file->getClientOriginalName());
+        }else{
+            DB::table('ms_pengumuman')
+            ->insert([
+                'judul'     => $input['judul'],
+                'isi'       => $input['isi'],
+                'file'      => "/",
+                'tanggal'   => $input['tanggal'],
+                'status'    => $input['status'],
+                'aktif'     => $input['aktif'],
+            ]);
+        }
+        
 
         return redirect()->route('pengumuman.index');
     }
