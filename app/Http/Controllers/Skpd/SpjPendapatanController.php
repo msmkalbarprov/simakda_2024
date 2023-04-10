@@ -15,38 +15,42 @@ class SpjPendapatanController extends Controller
 {
 
 
-     // Cetak List
-     public function cetakSpjPendapatan(Request $request)
-     {
-          $tanggal_ttd    = $request->tgl_ttd;
-          $pa_kpa         = $request->pa_kpa;
-          $bendahara      = $request->bendahara;
-          $tanggal1       = $request->tanggal1;
-          $tanggal2       = $request->tanggal2;
-          $enter          = $request->spasi;
-          $jns_ang        = $request->jns_anggaran;
+    // Cetak List
+    public function cetakSpjPendapatan(Request $request)
+    {
+        $tanggal_ttd    = $request->tgl_ttd;
+        $pa_kpa         = $request->pa_kpa;
+        $bendahara      = $request->bendahara;
+        $tanggal1       = $request->tanggal1;
+        $tanggal2       = $request->tanggal2;
+        $enter          = $request->spasi;
+        $jns_ang        = $request->jns_anggaran;
 
-          $cetak          = $request->cetak;
-          $jenis_cetakan  = $request->jenis_cetakan;
-          $tahun_anggaran = tahun_anggaran();
+        $cetak          = $request->cetak;
+        $jenis_cetakan  = $request->jenis_cetakan;
+        $atas  = $request->atas;
+        $bawah  = $request->bawah;
+        $kiri  = $request->kiri;
+        $kanan  = $request->kanan;
+        $tahun_anggaran = tahun_anggaran();
 
-          if ($jenis_cetakan == 'skpd') {
-               $kd_skpd        = $request->kd_skpd;
-               $kd_org         = $request->kd_skpd;
-          } else {
-               $kd_org        =  substr($request->kd_skpd, 0, 17);
-               $kd_skpd        =  $request->kd_skpd;
-          }
+        if ($jenis_cetakan == 'skpd') {
+            $kd_skpd        = $request->kd_skpd;
+            $kd_org         = $request->kd_skpd;
+        } else {
+            $kd_org        =  substr($request->kd_skpd, 0, 17);
+            $kd_skpd        =  $request->kd_skpd;
+        }
 
-          // TANDA TANGAN
-          $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BP', 'kd_skpd' => $kd_skpd])->first();
-          $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
+        // TANDA TANGAN
+        $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BP', 'kd_skpd' => $kd_skpd])->first();
+        $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
 
 
-          // rincian
+        // rincian
         if ($kd_skpd == '5.02.0.00.0.00.02.0000') {     //ada kondisi BKAD
-               $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
+            $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
                 a.anggaran, isnull(terima_ini,0) as terima_ini,
                 isnull(terima_lalu,0) terima_lalu, isnull(keluar_ini,0) keluar_ini,
                 isnull(keluar_lalu,0) keluar_lalu
@@ -418,8 +422,8 @@ class SpjPendapatanController extends Controller
          )zzz group by kd_skpd,left(kd_skpd,len(?)),kd_sub_kegiatan,kode,nama
 
                      order by kd_skpd,kode", [$kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org]);
-        }else {
-               $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
+        } else {
+            $rincian = DB::select("SELECT a.kd_skpd, a.kd_sub_kegiatan, b.kd_rek2 kode, b.nm_rek2 nama, a.ang,
                 a.anggaran, isnull(terima_ini,0) as terima_ini,
                 isnull(terima_lalu,0) terima_lalu, isnull(keluar_ini,0) keluar_ini,
                 isnull(keluar_lalu,0) keluar_lalu
@@ -734,39 +738,47 @@ class SpjPendapatanController extends Controller
          )zzz group by kd_skpd,left(kd_skpd,len(?)),kd_sub_kegiatan,kode,nama
 
                      order by kd_skpd,kode", [$kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org, $kd_org, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $tanggal1, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal1, $kd_org, $kd_org, $jns_ang, $kd_org]);
-          }
+        }
 
 
 
-          $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-          $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
-          $data = [
-               'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-               'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-               'tanggal1'          => $tanggal1,
-               'tanggal2'          => $tanggal2,
-               'rincian'           => $rincian,
-               'enter'             => $enter,
-               'kd_skpd'           => $kd_skpd,
-               'daerah'            => $daerah,
-               'tanggal_ttd'       => $tanggal_ttd,
-               'cari_pa_kpa'       => $cari_pakpa,
-               'cari_bendahara'    => $cari_bendahara
-          ];
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'skpd'              => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
+            'tanggal1'          => $tanggal1,
+            'tanggal2'          => $tanggal2,
+            'rincian'           => $rincian,
+            'enter'             => $enter,
+            'kd_skpd'           => $kd_skpd,
+            'daerah'            => $daerah,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'cari_pa_kpa'       => $cari_pakpa,
+            'cari_bendahara'    => $cari_bendahara
+        ];
 
-          $view = view('skpd.laporan_bendahara_penerimaan.cetak.spj_pendapatan')->with($data);
+        $view = view('skpd.laporan_bendahara_penerimaan.cetak.spj_pendapatan')->with($data);
 
-          if ($cetak == '1') {
-               return $view;
-          } else if ($cetak == '2') {
-               $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
-               return $pdf->stream('BP KAS BANK.pdf');
-          } else {
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)
+                ->setOrientation('landscape')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-top', $atas)
+                ->setOption('margin-bottom', $bawah)
+                ->setOption('margin-left', $kiri)
+                ->setOption('margin-right', $kanan)
+                ->setPaper('legal');
+            return $pdf->stream('BP KAS BANK.pdf');
+        } else {
 
-               header("Cache-Control: no-cache, no-store, must_revalidate");
-               header('Content-Type: application/vnd.ms-excel');
-               header('Content-Disposition: attachement; filename="BP KAS BANK - ' . $nm_skpd . '.xls"');
-               return $view;
-          }
-     }
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="BP KAS BANK - ' . $nm_skpd . '.xls"');
+            return $view;
+        }
+    }
 }

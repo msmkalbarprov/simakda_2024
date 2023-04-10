@@ -229,14 +229,14 @@
             $('#modal_cetak2').modal('hide');
             $('#modal_register_kasda').modal('hide');
             $("#labelcetak").html("Buku Penerimaan dan Pengeluaran");
-            if (role=='1022') {
+            if (role == '1022') {
                 document.getElementById('jenisanggaran').hidden = true; // Hide
                 document.getElementById('jenis1').hidden = false; // Hide
                 document.getElementById('spasi1').hidden = false; // Hide
                 document.getElementById('tgl_ttd1').hidden = false; // Hide
                 document.getElementById('bendahara1').hidden = true; // Hide
                 document.getElementById('pa_kpa1').hidden = true; // Hide
-            }else{
+            } else {
 
                 document.getElementById('jenisanggaran').hidden = true; // Hide
                 document.getElementById('jenis1').hidden = false; // Hide
@@ -527,6 +527,10 @@
             let rekening
             let tipe
             let format
+            let atas
+            let bawah
+            let kiri
+            let kanan
             if (modal == 1) {
                 spasi = document.getElementById('spasi').value;
                 tgl_ttd = document.getElementById('tgl_ttd').value;
@@ -540,13 +544,17 @@
                 tanggal2 = document.getElementById('tanggal2').value;
                 jns_anggaran = document.getElementById('jns_anggaran').value;
                 format = document.getElementById('format').value;
+                atas = document.getElementById('atas').value;
+                bawah = document.getElementById('bawah').value;
+                kiri = document.getElementById('kiri').value;
+                kanan = document.getElementById('kanan').value;
 
                 // alert validasi data
                 if (!kd_skpd) {
                     alert('SKPD tidak boleh kosong!');
                     return;
                 }
-                if (role!='1022') {
+                if (role != '1022') {
                     if (!bendahara) {
                         alert('Bendahara Pengeluaran tidak boleh kosong!');
                         return;
@@ -595,7 +603,7 @@
                     alert('SKPD tidak boleh kosong!');
                     return;
                 }
-                if (role!='1022') {
+                if (role != '1022') {
                     if (!bendahara) {
                         alert('Bendahara Pengeluaran tidak boleh kosong!');
                         return;
@@ -655,6 +663,10 @@
                 searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("format", format);
+                searchParams.append("atas", atas);
+                searchParams.append("bawah", bawah);
+                searchParams.append("kiri", kiri);
+                searchParams.append("kanan", kanan);
 
 
                 window.open(url.toString(), "_blank");
@@ -673,6 +685,10 @@
                 searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("jns_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("atas", atas);
+                searchParams.append("bawah", bawah);
+                searchParams.append("kiri", kiri);
+                searchParams.append("kanan", kanan);
 
                 window.open(url.toString(), "_blank");
 
