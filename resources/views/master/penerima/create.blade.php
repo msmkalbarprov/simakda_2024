@@ -462,15 +462,15 @@
                     exit;
                 }
                 if (kode_bank && no_rek && nm_rek) {
-                    swal.fire({  
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                title: 'Proses cek Rekening Bank',
-                                text: 'Silahkan tunggu !!!',
-                                onOpen: function () {
-                                    swal.showLoading()
-                                }
-                        })
+                    swal.fire({
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        title: 'Proses cek Rekening Bank',
+                        text: 'Silahkan tunggu !!!',
+                        onOpen: function() {
+                            swal.showLoading()
+                        }
+                    })
                     $.ajax({
                         type: "POST",
                         url: "{{ route('penerima.cekRekening') }}",
@@ -483,16 +483,14 @@
                         success: function(data) {
                             let data1 = $.parseJSON(data);
                             if (data1.status) {
-                                Swal.fire(
-                                        {
-                                            title: 'SUKSES!',
-                                            text: 'Rekening bank '+data1.data[0].data
-                                    .nomorRekening+'-'+data1.data[0].data
-                                    .namaPemilikRekening+' tersedia',
-                                            icon: 'success',
-                                            confirmButtonColor: '#5b73e8',
-                                        }
-                                    )
+                                Swal.fire({
+                                    title: 'SUKSES!',
+                                    text: 'Rekening bank ' + data1.data[0].data
+                                        .nomorRekening + '-' + data1.data[0].data
+                                        .namaPemilikRekening + ' tersedia',
+                                    icon: 'success',
+                                    confirmButtonColor: '#5b73e8',
+                                })
 
                                 $("#no_rekening_validasi").val(data1.data[0].data
                                     .nomorRekening);
@@ -506,12 +504,12 @@
                             } else {
                                 let pesan = data1.message.replaceAll(" ", "\u00A0");
                                 Swal.fire({
-                                        type:"error",
-                                        icon:"error",
-                                        title:"Oops...",
-                                        text:pesan,
-                                        confirmButtonClass:"btn btn-confirm mt-2",
-                                    })
+                                    type: "error",
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: pesan,
+                                    confirmButtonClass: "btn btn-confirm mt-2",
+                                })
                                 document.getElementById("save").disabled = true;
                                 $("#no_rekening_validasi").attr("value", '');
                                 $("#nm_rekening_validasi").attr("value", '');
@@ -539,58 +537,64 @@
                     alert('Nama rekening harus diisi!');
                     exit;
                 }
-                if (npwp && kode_akun && kode_setor) {
-                    swal.fire({  
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                title: 'Proses cek NPWP',
-                                text: 'Silahkan tunggu !!!',
-                                onOpen: function () {
-                                    swal.showLoading()
-                                }
+                if (npwp == '000000000000000') {
+                    $("#npwp_validasi").val(npwp);
+                    $("#nm_npwp_validasi").val("-");
+                    document.getElementById("save").disabled = false;
+                } else {
+                    if (npwp && kode_akun && kode_setor) {
+                        swal.fire({
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            title: 'Proses cek NPWP',
+                            text: 'Silahkan tunggu !!!',
+                            onOpen: function() {
+                                swal.showLoading()
+                            }
                         })
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('penerima.cekNpwp') }}",
-                        dataType: 'json',
-                        data: {
-                            npwp: npwp,
-                            kode_akun: kode_akun,
-                            kode_setor: kode_setor,
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            let data1 = $.parseJSON(data);
-                            if (data1.data[0].response_code == 00) {
-                                Swal.fire(
-                                    {
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('penerima.cekNpwp') }}",
+                            dataType: 'json',
+                            data: {
+                                npwp: npwp,
+                                kode_akun: kode_akun,
+                                kode_setor: kode_setor,
+                            },
+                            dataType: "json",
+                            success: function(data) {
+                                let data1 = $.parseJSON(data);
+                                if (data1.data[0].response_code == 00) {
+                                    Swal.fire({
                                         title: 'SUKSES!',
-                                        text: 'NPWP '+data1.data[0].data
-                                .nomorPokokWajibPajak+'-'+data1.data[0].data.namaWajibPajak+' tersedia',
+                                        text: 'NPWP ' + data1.data[0].data
+                                            .nomorPokokWajibPajak + '-' + data1.data[0]
+                                            .data
+                                            .namaWajibPajak + ' tersedia',
                                         icon: 'success',
                                         confirmButtonColor: '#5b73e8',
-                                    }
-                                )
-                                $("#npwp_validasi").val(data1.data[0].data
-                                    .nomorPokokWajibPajak);
-                                $("#nm_npwp_validasi").val(data1.data[0].data.namaWajibPajak);
-                                document.getElementById("save").disabled = false;
-                            } else {
-                                Swal.fire({
-                                        type:"error",
-                                        icon:"error",
-                                        title:"Oops...",
-                                        text:data1.data[0].message,
-                                        confirmButtonClass:"btn btn-confirm mt-2",
                                     })
-                                document.getElementById("save").disabled = true;
-                                $("#npwp_validasi").attr("value", '');
-                                $("#nm_npwp_validasi").attr("value", '');
+                                    $("#npwp_validasi").val(data1.data[0].data
+                                        .nomorPokokWajibPajak);
+                                    $("#nm_npwp_validasi").val(data1.data[0].data
+                                        .namaWajibPajak);
+                                    document.getElementById("save").disabled = false;
+                                } else {
+                                    Swal.fire({
+                                        type: "error",
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: data1.data[0].message,
+                                        confirmButtonClass: "btn btn-confirm mt-2",
+                                    })
+                                    document.getElementById("save").disabled = true;
+                                    $("#npwp_validasi").attr("value", '');
+                                    $("#nm_npwp_validasi").attr("value", '');
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
-
             });
         });
     </script>
