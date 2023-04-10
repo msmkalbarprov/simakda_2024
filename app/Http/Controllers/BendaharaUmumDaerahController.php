@@ -7290,7 +7290,7 @@ class BendaharaUmumDaerahController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+            'message' => '0'
             ]);
         }
     }
@@ -7302,6 +7302,180 @@ class BendaharaUmumDaerahController extends Controller
         DB::beginTransaction();
         try {
             DB::table('tkoreksi_penerimaan')->where(['nomor' => $id[0],'kd_skpd' => $id[1]])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    
+
+    // KOREKSI PENGELUARAN SP2D
+    public function indexKoreksi()
+    {
+        return view('bud.koreksi_pengeluaran.index');
+    }
+
+    public function loadDataKoreksi()
+    {
+        $data = DB::table('trkoreksi_pengeluaran_test')
+            ->orderByRaw("cast(no as int)")
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("koreksi_pengeluaran.edit", Crypt::encrypt($row->no.'|'.$row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no.'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahKoreksi()
+    {
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+        ];
+
+        return view('bud.koreksi_pengeluaran.create')->with($data);
+    }
+
+    public function jenisKoreksi(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $no_sp2d = $request->no_sp2d;
+            $data = DB::table('trhsp2d as b')
+                ->join('trdspp as a', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                })
+                ->selectRaw("a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
+                ->where(['a.kd_skpd' => $kd_skpd,'b.no_sp2d' => $no_sp2d])
+                ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6")
+                ->get();
+        
+        return response()->json($data);
+    }
+
+    public function nomorSp2d(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+       
+            $data = DB::table('trhsp2d')
+                ->selectRaw("no_sp2d")
+                ->where(['kd_skpd' => $kd_skpd])
+                ->whereRaw("(sp2d_batal is null OR sp2d_batal =0)")
+                ->get();
+        return response()->json($data);
+    }
+
+    public function simpanKoreksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd =  $data['kd_skpd'];
+
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+
+            $cek_terima = DB::table('trkoreksi_pengeluaran_test')->where(['no' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
+            if ($cek_terima > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trkoreksi_pengeluaran_test')
+                ->insert([
+                    'no' => $no_urut,
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['total'],
+                    'no_sp2d' => $data['no_sp2d'],
+                    'kd_rek' => $data['jenis'],
+                    'nm_rek' => $data['nama_jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd'],
+                    'kd_sub_kegiatan' => DB::raw("left('$kd_skpd',4)+'.00.0.00.04'")
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editKoreksi($no)
+    {
+        $no = Crypt::decrypt($no);
+        $id = explode("|",$no);
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd as a')
+                ->orderBy('kd_skpd')
+                ->get(),
+            'koreksi' => DB::table('trkoreksi_pengeluaran_test')
+                ->where(['no' => $id[0],'kd_skpd' => $id[1]])
+                ->first()
+        ];
+
+        return view('bud.koreksi_pengeluaran.edit')->with($data);
+    }
+
+    public function simpanEditKoreksi(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+
+            DB::table('trkoreksi_pengeluaran_test')
+                ->where(['no' => $data['no_kas']])
+                ->update([
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['total'],
+                    'no_sp2d' => $data['no_sp2d'],
+                    'kd_rek' => $data['jenis'],
+                    'nm_rek' => $data['nama_jenis'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd'],
+                    'kd_sub_kegiatan' => DB::raw("left('$kd_skpd',4)+'.00.0.00.04'")
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusKoreksi(Request $request)
+    {
+        $no = $request->no;
+        $id = explode("|",$no);
+        DB::beginTransaction();
+        try {
+            DB::table('trkoreksi_pengeluaran_test')->where(['no' => $id[0],'kd_skpd' => $id[1]])->delete();
 
             DB::commit();
             return response()->json([

@@ -1658,6 +1658,19 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksiKas'])->name('koreksi_penerimaan_kas.hapus');
 });
 
+// Koreksi pengeluaran
+Route::group(['prefix' => 'koreksi_pengeluaran'], function () {
+    Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksi'])->name('koreksi_pengeluaran.index');
+    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksi'])->name('koreksi_pengeluaran.load_data');
+    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksi'])->name('koreksi_pengeluaran.tambah');
+    Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksi'])->name('koreksi_pengeluaran.jenis');
+    Route::post('nosp2d', [BendaharaUmumDaerahController::class, 'nomorSp2d'])->name('koreksi_pengeluaran.nosp2d');
+    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksi'])->name('koreksi_pengeluaran.simpan');
+    Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksi'])->name('koreksi_pengeluaran.edit');
+    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_pengeluaran.simpan_edit');
+    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_pengeluaran.hapus');
+});
+
 
 
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
