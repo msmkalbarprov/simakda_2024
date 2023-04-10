@@ -26,6 +26,10 @@ class BukuPenerimaanPenyetoranController extends Controller
         $tanggal2       = $request->tanggal2;
         $enter          = $request->spasi;
         $format         = $request->format;
+        $atas         = $request->atas;
+        $bawah         = $request->bawah;
+        $kiri         = $request->kiri;
+        $kanan         = $request->kanan;
 
         $cetak          = $request->cetak;
         $jenis_cetakan  = $request->jenis_cetakan;
@@ -108,7 +112,7 @@ class BukuPenerimaanPenyetoranController extends Controller
                 order by tgl, no", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         }
 
-        
+
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
@@ -138,7 +142,15 @@ class BukuPenerimaanPenyetoranController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setOrientation('landscape')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-top', $atas)
+                ->setOption('margin-bottom', $bawah)
+                ->setOption('margin-left', $kiri)
+                ->setOption('margin-right', $kanan)
+                ->setPaper('legal');
             return $pdf->stream('BP KAS BANK.pdf');
         } else {
 
