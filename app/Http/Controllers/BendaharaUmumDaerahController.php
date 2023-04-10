@@ -7325,7 +7325,7 @@ class BendaharaUmumDaerahController extends Controller
 
     public function loadDataKoreksi()
     {
-        $data = DB::table('trkoreksi_pengeluaran_test')
+        $data = DB::table('trkoreksi_pengeluaran')
             ->orderByRaw("cast(no as int)")
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
@@ -7384,14 +7384,14 @@ class BendaharaUmumDaerahController extends Controller
         try {
             $no_urut = nomor_urut_ppkd();
 
-            $cek_terima = DB::table('trkoreksi_pengeluaran_test')->where(['no' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
+            $cek_terima = DB::table('trkoreksi_pengeluaran')->where(['no' => $no_urut, 'kd_skpd' => $kd_skpd])->count();
             if ($cek_terima > 0) {
                 return response()->json([
                     'message' => '2'
                 ]);
             }
 
-            DB::table('trkoreksi_pengeluaran_test')
+            DB::table('trkoreksi_pengeluaran')
                 ->insert([
                     'no' => $no_urut,
                     'tanggal' => $data['tgl_kas'],
@@ -7426,7 +7426,7 @@ class BendaharaUmumDaerahController extends Controller
             'daftar_skpd' => DB::table('ms_skpd as a')
                 ->orderBy('kd_skpd')
                 ->get(),
-            'koreksi' => DB::table('trkoreksi_pengeluaran_test')
+            'koreksi' => DB::table('trkoreksi_pengeluaran')
                 ->where(['no' => $id[0],'kd_skpd' => $id[1]])
                 ->first()
         ];
@@ -7442,7 +7442,7 @@ class BendaharaUmumDaerahController extends Controller
         DB::beginTransaction();
         try {
 
-            DB::table('trkoreksi_pengeluaran_test')
+            DB::table('trkoreksi_pengeluaran')
                 ->where(['no' => $data['no_kas']])
                 ->update([
                     'tanggal' => $data['tgl_kas'],
@@ -7475,7 +7475,121 @@ class BendaharaUmumDaerahController extends Controller
         $id = explode("|",$no);
         DB::beginTransaction();
         try {
-            DB::table('trkoreksi_pengeluaran_test')->where(['no' => $id[0],'kd_skpd' => $id[1]])->delete();
+            DB::table('trkoreksi_pengeluaran')->where(['no' => $id[0],'kd_skpd' => $id[1]])->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+
+    // PENGELUARAN NON SP2D
+    public function indexPengeluaranNonSp2d()
+    {
+        return view('bud.pengeluaran_non_sp2d.index');
+    }
+
+    public function loadDataPengeluaranNonSp2d()
+    {
+        $data = DB::table('pengeluaran_non_sp2d')
+            ->orderByRaw("nomor")
+            ->get();
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            $btn = '<a href="' . route("non_sp2d.edit", Crypt::encrypt($row->nomor)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->nomor . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function tambahPengeluaranNonSp2d()
+    {
+        return view('bud.pengeluaran_non_sp2d.create');
+    }
+
+    public function simpanPengeluaranNonSp2d(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $no_urut = nomor_urut_ppkd();
+
+            DB::table('pengeluaran_non_sp2d')
+                ->insert([
+                    'nomor' => $no_urut,
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $no_urut
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function editPengeluaranNonSp2d($nomor)
+    {
+        $nomor = Crypt::decrypt($nomor);
+
+        $data = [
+            'terima' => DB::table('pengeluaran_non_sp2d')
+                ->where(['nomor' => $nomor])
+                ->first()
+        ];
+
+        return view('bud.pengeluaran_non_sp2d.edit')->with($data);
+    }
+
+    public function simpanEditPengeluaranNonSp2d(Request $request)
+    {
+        $data = $request->data;
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengeluaran_non_sp2d')
+                ->where(['nomor' => $data['no_kas']])
+                ->update([
+                    'tanggal' => $data['tgl_kas'],
+                    'keterangan' => $data['keterangan'],
+                    'nilai' => $data['nilai'],
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'nomor' => $data['no_kas']
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusPengeluaranNonSp2d(Request $request)
+    {
+        $nomor = $request->nomor;
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengeluaran_non_sp2d')->where(['nomor' => $nomor])->delete();
 
             DB::commit();
             return response()->json([

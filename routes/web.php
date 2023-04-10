@@ -1670,6 +1670,16 @@ Route::group(['prefix' => 'koreksi_pengeluaran'], function () {
     Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_pengeluaran.simpan_edit');
     Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_pengeluaran.hapus');
 });
+ // Pengeluaran Non Sp2D
+ Route::group(['prefix' => 'non_sp2d'], function () {
+    Route::get('', [BendaharaUmumDaerahController::class, 'indexPengeluaranNonSp2d'])->name('non_sp2d.index');
+    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataPengeluaranNonSp2d'])->name('non_sp2d.load_data');
+    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahPengeluaranNonSp2d'])->name('non_sp2d.tambah');
+    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanPengeluaranNonSp2d'])->name('non_sp2d.simpan');
+    Route::get('edit/{nomor?}', [BendaharaUmumDaerahController::class, 'editPengeluaranNonSp2d'])->name('non_sp2d.edit');
+    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditPengeluaranNonSp2d'])->name('non_sp2d.simpan_edit');
+    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusPengeluaranNonSp2d'])->name('non_sp2d.hapus');
+});
 
 
 
