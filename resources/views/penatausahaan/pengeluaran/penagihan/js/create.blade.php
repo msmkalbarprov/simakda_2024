@@ -190,12 +190,6 @@
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
 
-            let kode_rekening = document.getElementById('kode_rekening').value;
-            let sumber_dana = document.getElementById('sumber_dana').value;
-
-            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber_dana;
-            $('#kode_penagihan').val(kode);
-
             $.ajax({
                 url: "{{ route('penagihan.cari_rekening') }}",
                 type: "POST",
@@ -218,7 +212,13 @@
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
                 }
-            })
+            });
+
+            let kode_rekening = document.getElementById('kode_rekening').value;
+            let sumber_dana = document.getElementById('sumber_dana').value;
+
+            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber_dana;
+            $('#kode_penagihan').val(kode);
         });
 
         $('#kode_rekening').on('change', function() {
@@ -267,11 +267,6 @@
             let kdrek = document.getElementById('kode_rekening').value;
             let status_ang = document.getElementById('status_anggaran').value;
 
-            let sumber_dana = document.getElementById('sumber_dana').value;
-
-            let kode = kdgiat + '.' + kdrek + '.' + sumber_dana;
-            $('#kode_penagihan').val(kode);
-
             $.ajax({
                 url: "{{ route('penagihan.cari_sumber_dana') }}",
                 type: "POST",
@@ -299,7 +294,12 @@
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
                 }
-            })
+            });
+
+            let sumber_dana = document.getElementById('sumber_dana').value;
+
+            let kode = kdgiat + '.' + kdrek + '.' + sumber_dana;
+            $('#kode_penagihan').val(kode);
         });
 
         $('#sumber_dana').on('select2:select', function() {
@@ -444,7 +444,7 @@
             let status_ang = document.getElementById('status_anggaran').value; //status anggaran
             let sisa_kontrak = document.getElementById('sisa_kontrak').value; //sisa kontrak
             let nosp2d = ''; //no_sp2d
-            let kode_penagihan = document.getElementById('kode_penagihan'); // PROTEKSI
+            let kode_penagihan = document.getElementById('kode_penagihan').value; // PROTEKSI
             let kode = kdgiat + '.' + kdrek + '.' + sumber;
             let csp2d = 0;
             let clalu = 0;
@@ -470,12 +470,14 @@
                 alert('Silahkan pilih tanggal');
                 return;
             };
+
             if (kode_penagihan != kode) {
                 alert(
                     'Sub kegiatan, rekening, sumber dana tidak sesuai dengan realisasi dan sisa, Silahkan refresh!'
                 );
                 return;
             }
+
             if (sumber == "221020101") {
                 alert(
                     'Silahkan konfirmasi ke perbendaharaan jika ingin transaksi sumber dana DID, jika tidak maka transaksi tidak bisa di approve oleh perbendahaaraan, terima kasih'
