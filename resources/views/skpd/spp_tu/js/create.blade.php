@@ -91,6 +91,9 @@
                 data: {
                     no_spd: no_spd,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
                     $('#kd_sub_kegiatan').append(
@@ -100,6 +103,9 @@
                             `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}" data-kd_program="${data.kd_program}" data-nm_program="${data.nm_program}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             });
         });
@@ -124,6 +130,9 @@
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#kode_rekening').empty();
                     $('#kode_rekening').append(
@@ -132,13 +141,23 @@
                         $('#kode_rekening').append(
                             `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
                         );
-                    })
+                    });
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             });
+
+            let kode_rekening = document.getElementById('kode_rekening').value;
+            let sumber = document.getElementById('sumber').value;
+
+            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber;
+
+            $('#kode_spp').val(kode);
         });
 
         $('#kode_rekening').on('select2:select', function() {
-            $("#sumber").val(null).change();
+            $("#sumber").empty();
             let kd_rek6 = this.value;
 
             // CARI NILAI ANGKAS, SPD, ANGGARAN
@@ -154,7 +173,20 @@
                     beban: document.getElementById('beban').value,
                     status_angkas: document.getElementById('status_angkas').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
+                    let sumber = data.sumber;
+                    $('#sumber').empty();
+                    $('#sumber').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`);
+                    $.each(sumber, function(index, sumber) {
+                        $('#sumber').append(
+                            `<option value="${sumber.sumber}" data-nama="${sumber.nm_sumber}" data-nilai="${sumber.nilai}">${sumber.sumber} | ${sumber.nm_sumber}</option>`
+                        );
+                    })
+
                     $('#total_anggaran').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.anggaran.nilai));
@@ -185,30 +217,46 @@
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas - data.transaksi));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             });
 
             // CARI SUMBER DANA
-            $.ajax({
-                url: "{{ route('penagihan.cari_sumber_dana') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    kdgiat: document.getElementById('kd_sub_kegiatan').value,
-                    skpd: document.getElementById('kd_skpd').value,
-                    kdrek: kd_rek6
-                },
-                success: function(data) {
-                    $('#sumber').empty();
-                    $('#sumber').append(
-                        `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
-                        $('#sumber').append(
-                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
-                        );
-                    })
-                }
-            });
+            // $.ajax({
+            //     url: "{{ route('penagihan.cari_sumber_dana') }}",
+            //     type: "POST",
+            //     dataType: 'json',
+            //     data: {
+            //         kdgiat: document.getElementById('kd_sub_kegiatan').value,
+            //         skpd: document.getElementById('kd_skpd').value,
+            //         kdrek: kd_rek6
+            //     },
+            //     beforeSend: function() {
+            //         $("#overlay").fadeIn(100);
+            //     },
+            //     success: function(data) {
+            //         $('#sumber').empty();
+            //         $('#sumber').append(
+            //             `<option value="" disabled selected>Silahkan Pilih</option>`);
+            //         $.each(data, function(index, data) {
+            //             $('#sumber').append(
+            //                 `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
+            //             );
+            //         })
+            //     },
+            //     complete: function(data) {
+            //         $("#overlay").fadeOut(100);
+            //     }
+            // });
+
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let sumber = document.getElementById('sumber').value;
+
+            let kode = kd_sub_kegiatan + '.' + kd_rek6 + '.' + sumber;
+
+            $('#kode_spp').val(kode);
         });
 
         $('#sumber').on('change', function() {
@@ -235,6 +283,9 @@
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $("#lalu_sumber").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
@@ -242,8 +293,18 @@
                     $("#sisa_sumber").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(nilai - data));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
+
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let kode_rekening = document.getElementById('kode_rekening').value;
+
+            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber;
+
+            $('#kode_spp').val(kode);
         });
 
         $('#tambah_rincian').on('click', function() {
@@ -291,6 +352,17 @@
             // let anggaran = rekening.data('nilai');
             // let lalu = rekening.data('lalu');
             // let sp2d = rekening.data('sp2d');
+
+            let kode_spp = document.getElementById('kode_spp').value;
+
+            let kode = kd_sub_kegiatan + '.' + kode_rekening + '.' + sumber;
+
+            if (kode_spp != kode) {
+                alert(
+                    'Kegiatan,rekening,sumber tidak sesuai dengan rincian realisasi dan sisa, silahkan refresh!'
+                    );
+                return;
+            }
 
             if (!sumber) {
                 alert("Sumber Dana kosong");

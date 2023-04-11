@@ -421,6 +421,27 @@ class SppTuController extends Controller
             where a.kd_skpd = ? and  a.kd_sub_kegiatan = ? and a.kd_rek6=? and (bulan <=?) and jns_ang=? GROUP BY a.kd_sub_kegiatan,a.kd_rek6", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $bulan, $status_anggaran]))->first();
         }
 
+        $no_trdrka = $kd_skpd . '.' . $kd_sub_kegiatan . '.' . $kd_rek6;
+
+        $data1 = DB::table('trdpo')
+            ->select('sumber', 'nm_sumber', DB::raw("SUM(total) as nilai"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
+            ->whereNotNull('sumber')
+            ->groupBy('sumber', 'nm_sumber');
+
+        $data2 = DB::table('trdpo')
+            ->select('sumber', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai"))
+            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
+            ->where(function ($query) {
+                $query->where('sumber', '')->orWhereNull('sumber');
+            })
+            ->groupBy('sumber', 'nm_sumber')
+            ->union($data1);
+
+        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
+            ->mergeBindings($data2)
+            ->get();
+
         // TOTAL TRANSAKSI SPD LALU
         $total_transaksi = collect(DB::select("SELECT SUM(nilai) total FROM
                                     (
@@ -477,11 +498,15 @@ class SppTuController extends Controller
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
                                     )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_skpd]))->first();
 
+
+
+
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $total_spd->total_spd,
             'transaksi' => $total_transaksi->total,
             'anggaran' => $anggaran,
+            'sumber' => $data
         ]);
     }
 

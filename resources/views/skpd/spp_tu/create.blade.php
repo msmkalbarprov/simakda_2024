@@ -160,6 +160,7 @@
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            <input type="hidden" name="kode_spp" id="kode_spp">
                             <a href="{{ route('spp_tu.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
