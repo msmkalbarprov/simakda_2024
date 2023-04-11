@@ -879,15 +879,15 @@
             let sumber_dana = document.getElementById('sumber_dana').value;
             let nm_sumber = document.getElementById('nm_sumber').value;
             let nilai_rincian = nilai(document.getElementById('nilai_rincian').value);
-            // let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
-            let sisa_spd = rupiah(document.getElementById('total_spd').value) - rupiah(document
-                .getElementById('realisasi_spd').value);
-            // let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
-            let sisa_angkas = rupiah(document.getElementById('total_angkas').value) - rupiah(document
-                .getElementById('realisasi_angkas').value);
-            // let sisa_penyusunan = rupiah(document.getElementById('sisa_penyusunan').value);
-            let sisa_penyusunan = rupiah(document.getElementById('total_penyusunan').value) - rupiah(
-                document.getElementById('realisasi_penyusunan').value);
+            let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
+            // let sisa_spd = rupiah(document.getElementById('total_spd').value) - rupiah(document
+            //     .getElementById('realisasi_spd').value);
+            let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
+            // let sisa_angkas = rupiah(document.getElementById('total_angkas').value) - rupiah(document
+            //     .getElementById('realisasi_angkas').value);
+            let sisa_penyusunan = rupiah(document.getElementById('sisa_penyusunan').value);
+            // let sisa_penyusunan = rupiah(document.getElementById('total_penyusunan').value) - rupiah(
+            //     document.getElementById('realisasi_penyusunan').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let status_anggaran = document.getElementById('status_anggaran').value;
             let beban = document.getElementById('beban').value;

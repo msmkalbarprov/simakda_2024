@@ -170,7 +170,9 @@ class LaporanRegPajakController extends Controller
                                 ,SUM(b.nilai) as terima,
                                 0 as setor
                                 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                AND MONTH(a.tgl_bukti)< ?  AND b.kd_rek6 IN ('210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                AND MONTH(a.tgl_bukti)< ?
+                                -- AND b.kd_rek6 IN ('210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                AND b.map_pot IN ('210108010001c','210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
                                 UNION ALL
                                 SELECT
                                     0 AS iwp
@@ -199,7 +201,7 @@ class LaporanRegPajakController extends Controller
                                     b.nilai as terima,
                                     0 as setor
                                     FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('210108010001c','210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
                                     UNION ALL
                                     SELECT
                                     a.no_bukti,tgl_bukti, ket
