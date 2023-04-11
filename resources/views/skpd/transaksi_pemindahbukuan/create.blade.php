@@ -92,6 +92,7 @@
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
                             <button id="simpan_transaksi" class="btn btn-primary btn-md">Simpan</button>
+                            <input type="hidden" name="kode_transaksi" id="kode_transaksi">
                             <a href="{{ route('skpd.transaksi_pemindahbukuan.index') }}"
                                 class="btn btn-warning btn-md">Kembali</a>
                         </div>
