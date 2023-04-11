@@ -3,6 +3,7 @@
 
 @include('template.head')
 
+{{-- warna --}}
 @if (Auth::user()->is_admin == 1)
     @if (Auth::user()->role==1006)
         <body data-sidebar='wibowo'>
