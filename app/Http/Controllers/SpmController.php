@@ -60,21 +60,26 @@ class SpmController extends Controller
         $cek = $prov->cek;
 
         if ($cek == '0' || $cek == null || $cek == 0) {
-            if ($tanggal < 13) {
-                $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->where('jns_spp', '!=', '3')->where(function ($query) {
-                    $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-                })->whereNotIn('no_spp', $data2);
-                $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '3'])->where(function ($query) {
-                    $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-                })->whereNotIn('no_spp', $data2)->unionAll($data_spp1);
-                $data_spp = DB::table(DB::raw("({$data_spp2->toSql()}) AS sub"))
-                    ->mergeBindings($data_spp2)
-                    ->get();
-            } else {
-                $data_spp = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['4', '5', '6'])->where(function ($query) {
-                    $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-                })->whereNotIn('no_spp', $data2)->get();
-            }
+
+            $data_spp = DB::select("SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND setujui=?
+                        and (sp2d_batal!='1' or sp2d_batal is null)", [$kd_skpd, $kd_skpd, '1']);
+
+            // if ($tanggal < 13) {
+            //     $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->where('jns_spp', '!=', '3')->where(function ($query) {
+            //         $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            //     })->whereNotIn('no_spp', $data2);
+            //     $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd, 'jns_spp' => '3'])->where(function ($query) {
+            //         $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            //     })->whereNotIn('no_spp', $data2)->unionAll($data_spp1);
+            //     $data_spp = DB::table(DB::raw("({$data_spp2->toSql()}) AS sub"))
+            //         ->mergeBindings($data_spp2)
+            //         ->get();
+            // } else {
+            //     $data_spp = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['4', '5', '6'])->where(function ($query) {
+            //         $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            //     })->whereNotIn('no_spp', $data2)->get();
+            // }
         } else {
             $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['1', '2'])->where(function ($query) {
                 $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
