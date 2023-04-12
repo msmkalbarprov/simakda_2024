@@ -448,7 +448,7 @@
             let kode = kdgiat + '.' + kdrek + '.' + sumber;
             let csp2d = 0;
             let clalu = 0;
-            let nilai_total_penagihan = parseFloat(document.getElementById('total_input_penagihan')
+            let nilai_total_penagihan = rupiah(document.getElementById('total_input_penagihan')
                 .value) || 0;
             if (!kdgiat) {
                 alert('Silahkan pilih sub kegiatan');

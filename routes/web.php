@@ -108,6 +108,7 @@ use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
 use App\Http\Controllers\ListRestitusiController;
+use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
 
 // Route::get('/simakda_2023', function () {
@@ -229,6 +230,13 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_sptb', [SppLsController::class, 'cetakSptbLayar'])->name('sppls.cetak_sptb_layar');
             Route::get('cetak_spp77', [SppLsController::class, 'cetakSpp77Layar'])->name('sppls.cetak_spp77_layar');
             Route::get('cetak_rincian77', [SppLsController::class, 'cetakRincian77Layar'])->name('sppls.cetak_rincian77_layar');
+        });
+
+        Route::group(['prefix' => 'proteksi_spp'], function () {
+            Route::get('', [ProteksiSppController::class, 'index'])->name('proteksi_spp.index');
+            Route::post('load_data', [ProteksiSppController::class, 'loadData'])->name('proteksi_spp.load_data');
+            Route::get('tampil/{no_spp}/{kd_skpd}', [ProteksiSppController::class, 'tampilSppLs'])->name('proteksi_spp.show');
+            Route::post('setujui', [ProteksiSppController::class, 'setuju'])->name('proteksi_spp.setuju');
         });
         // SPM
         Route::group(['prefix' => 'spm'], function () {
