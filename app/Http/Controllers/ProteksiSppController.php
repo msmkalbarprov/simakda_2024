@@ -14,7 +14,13 @@ class ProteksiSppController extends Controller
 {
     public function index()
     {
-        return view('penatausahaan.pengeluaran.proteksi_spp.index');
+        $username = Auth::user()->username;
+
+        if ($username == 'AKT01' || $username == 'AKT02' || $username == 'AKT03') {
+            return view('penatausahaan.pengeluaran.proteksi_spp.index');
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function loadData()
