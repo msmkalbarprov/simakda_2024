@@ -21,10 +21,19 @@
     <link href="{{ asset('template/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('template/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-
+<style>
+    .authentication-bgs {
+  /* background-color: rgba(91, 140, 232, 0.25);  */
+  background-image: url('/template/assets/images/bg.png');
+  /* background-repeat: no-repeat; */
+  background-size: 100% auto;
+}
+.authentication-bgs .auth-logo .logo {
+    margin: 0px auto; }
+</style>
 </head>
 
-<body class="authentication-bg">
+<body class="authentication-bgs">
     <div class="account-pages my-5 pt-sm-5">
         <div class="container">
             <div class="row">

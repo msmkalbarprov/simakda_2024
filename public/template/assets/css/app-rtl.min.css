@@ -3070,7 +3070,11 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
     z-index: 99; }
 
 .authentication-bg {
-  background-color: rgba(91, 140, 232, 0.25); }
+  /* background-color: rgba(91, 140, 232, 0.25);  */
+  background-image: url('/template/assets/images/bg.png');
+  /* background-repeat: no-repeat; */
+  background-size: 100%;
+}
   .authentication-bg .auth-logo .logo {
     margin: 0px auto; }
 
