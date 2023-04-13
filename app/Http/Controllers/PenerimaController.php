@@ -73,7 +73,6 @@ class PenerimaController extends Controller
         $cek = DB::table('ms_rekening_bank_online')
             ->where([
                 'rekening' => $input['no_rekening_validasi'],
-                'nm_rekening' => $input['nm_rekening_validasi'],
                 'kd_skpd' => Auth::user()->kd_skpd
             ])
             ->count();
