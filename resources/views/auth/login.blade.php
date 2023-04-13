@@ -24,7 +24,7 @@
 <style>
     .authentication-bgs {
   /* background-color: rgba(91, 140, 232, 0.25);  */
-  background-image: url('/template/assets/images/bg.png');
+  background-image: url('{{ asset('template/assets/images/bg.png')}}');
   /* background-repeat: no-repeat; */
   background-size: 100% auto;
 }
