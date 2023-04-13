@@ -35,6 +35,9 @@
         .angka {
             text-align: right
         }
+        .tanggal {
+            text-align: center
+        }
     </style>
 </head>
 
@@ -44,7 +47,7 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:16px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td align="center" style="font-size:16px" width="93%">LEMBAR KONFIRMASI TRANSFER KE DAERAH</td>
+            <td align="center" style="font-size:16px" width="93%"><h2> KONFIRMASI TRANSFER KE DAERAH</h2></td>
         </tr>
         <tr>
             <td align="center" style="font-size:16px"><strong>&nbsp;</strong></td>
@@ -60,17 +63,17 @@
         <tr>
             <td>Melalui KPPN sejumlah Rp.</td>
             <td>:</td>
-            <td colspan="3">{{ rupiah($total_transfer) }}</td>
+            <td colspan="3">Rp{{rupiah($total_kppn-$total_pot_kppn)}}</td>
         </tr>
         <tr>
             <td>Terbilang</td>
             <td>:</td>
-            <td colspan="3">{{ terbilang($total_transfer) }}</td>
+            <td colspan="3">{{terbilang($total_kppn-$total_pot_kppn)}}</td>
         </tr>
         <tr>
             <td>Untuk Keperluan</td>
             <td>:</td>
-            <td colspan="3">Pencairan Anggaran Transfer ke Daerah TA {{ tahun_anggaran() }}</td>
+            <td colspan="3">Penyaluran Anggaran Transfer Ke Daerah TA {{ tahun_anggaran() }}</td>
         </tr>
         <tr>
             <td></td>
@@ -84,7 +87,7 @@
             <td></td>
             <td style="width: 10%">Daerah</td>
             <td>:</td>
-            <td>Prov.Kalbar</td>
+            <td>{{ ucwords(strtolower($header->nm_pemda)) }}</td>
         </tr>
         <tr>
             <td>Dengan Rincian</td>
@@ -98,53 +101,108 @@
             <tr>
                 <th><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
                 <th><b>JUMLAH KOTOR</b></th>
-                <th><b>POT.</b></th>
+                <th><b>POTONGAN</b></th>
                 <th><b>JUMLAH BERSIH</b></th>
-                <th><b>Diterima Tanggal</b></th>
+                <th><b>TANGGAL TERIMA</b></th>
             </tr>
         </thead>
         <tbody>
             @php
                 $total = 0;
+                $total_potongan = 0;
             @endphp
-            @foreach ($data_transfer as $data)
-                @php
-                    $total += $data->rupiah;
-                @endphp
-                @if ($data->spasi == '1')
+            @foreach ($map as $data)
+                @if ($data->kode == 0)
                     <tr>
-                        <td>{{ $data->nama }}</td>
+                        <td ><b>{{ $data->nama }}</b></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>
-                @elseif ($data->spasi == '2')
+                @elseif ($data->kode == 1)
                     <tr>
-                        <td>&nbsp;&nbsp;{{ $data->nama }},
-                            @if ($bulan <= 3)
-                                Triwulan 1 Tahun
-                            @elseif ($bulan <= 6)
-                                Triwulan 2 Tahun
-                            @elseif ($bulan <= 9)
-                                Triwulan 3 Tahun
-                            @else
-                                Triwulan 4 Tahun
-                            @endif
-                            {{ tahun_anggaran() }}
+                        <td style="padding-left: 20px"><b>{{ $data->nama }}</b>
                         </td>
-                        <td class="angka">{{ rupiah($data->rupiah) }}</td>
+                        <td class="angka"></td>
                         <td></td>
-                        <td class="angka">{{ rupiah($data->rupiah) }}</td>
-                        <td class="angka">{{ $data->tgl_kas == '1900-01-01' ? '' : tanggal($data->tgl_kas) }}</td>
+                        <td class="angka"></td>
+                        <td class="angka"></td>
                     </tr>
+                @elseif ($data->kode == 2)
+                    <tr>
+                        <td style="padding-left: 40px"><b>{{ $data->nama }}</b>
+                        </td>
+                        <td class="angka"></td>
+                        <td></td>
+                        <td class="angka"></td>
+                        <td class="angka"></td>
+                    </tr>
+                @elseif ($data->kode == 3)
+                @php
+                    ini_set('max_execution_time', -1);
+                    $kd_rek         = isset($data->kd_rek) ?  $data->kd_rek: "'-'"  ;
+                    $panjang        = isset($data->panjang) ?$data->panjang:   0  ;
+                    $kd_rek_notin   = isset($data->kd_rek_not_in) ?  $data->kd_rek_not_in : "'-'" ;
+                    $panjang_notin  = isset($data->panjang_not_in) ?  $data->panjang_not_in : 0 ;
+                    
+                    
+                    $pendapatan = DB::table('trdkasin_ppkd as a')
+                                        ->join('trhkasin_ppkd as b', function ($join) {
+                                                $join->on('a.no_kas', '=', 'b.no_kas');
+                                                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                                            })
+                                        ->selectRaw("sum(rupiah) as nilai")
+                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                                        ->first();
+
+                    $potongan = DB::table('trhkasin_ppkd_pot')
+                    ->selectRaw("sum(total) as nilai")
+                    ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                    ->first();
+                @endphp
+                    <tr>
+                        <td style="padding-left: 60px">- {{ $data->nama }}
+                        </td>
+                        <td class="angka">{{rupiah($pendapatan->nilai)}}</td>
+                        <td class="angka">{{rupiah($potongan->nilai)}}</td>
+                        <td class="angka">{{rupiah($pendapatan->nilai-$potongan->nilai)}}</td>
+                        <td class="angka"></td>
+                    </tr>
+                @php
+                ini_set('max_execution_time', -1);
+                    $rincian = DB::table('trdkasin_ppkd as a')
+                                        ->join('trhkasin_ppkd as b', function ($join) {
+                                                $join->on('a.no_kas', '=', 'b.no_kas');
+                                                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                                            })
+                                        ->selectRaw("a.no_kas,a.no_sts,a.kd_skpd,tgl_kas,keterangan,rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot")
+                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                                        ->get();
+                @endphp
+                @foreach ($rincian as $item)
+                        @php
+                            $total          += $item->rupiah;
+                            $total_potongan += $item->pot;
+                        @endphp
+                    <tr>
+                        <td style="padding-left: 80px">{{ $item->no_kas }} - {{ $item->keterangan }}
+                        </td>
+                        <td class="angka">{{rupiah($item->rupiah)}}</td>
+                        <td class="angka">{{rupiah($item->pot)}}</td>
+                        <td class="angka">{{rupiah($item->rupiah-$item->pot)}}</td>
+                        <td class="tanggal">{{ $item->tgl_kas }}</td>
+                    </tr>
+                @endforeach
+                
                 @endif
+
             @endforeach
             <tr>
                 <td>JUMLAH TOTAL PENERIMAAN TRANSFER</td>
-                <td class="angka">{{ rupiah($total) }}</td>
-                <td></td>
-                <td class="angka">{{ rupiah($total) }}</td>
+                <td class="angka"><b>{{ rupiah($total) }}</b></td>
+                <td class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
+                <td class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
                 <td></td>
             </tr>
         </tbody>
