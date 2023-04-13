@@ -108,6 +108,7 @@ use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
 use App\Http\Controllers\ListRestitusiController;
+use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
 
@@ -1306,6 +1307,17 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit/{no_kas?}', [PenerimaanController::class, 'editPenerimaanPpkd'])->where('no_kas', '(.*)')->name('penerimaan_ppkd.edit');
             Route::post('simpan_edit', [PenerimaanController::class, 'simpanEditPenerimaanPpkd'])->name('penerimaan_ppkd.simpan_edit');
             Route::post('hapus', [PenerimaanController::class, 'hapusPenerimaanPpkd'])->name('penerimaan_ppkd.hapus');
+        });
+        // POTONGAN PENERIMAAN LAIN PPKD
+        Route::group(['prefix' => 'potongan_penerimaan_ppkd'], function () {
+            Route::get('', [PotonganPenerimaanController::class, 'index'])->name('potongan_ppkd.index');
+            Route::post('load', [PotonganPenerimaanController::class, 'load'])->name('potongan_ppkd.load');
+            Route::get('tambah', [PotonganPenerimaanController::class, 'tambah'])->name('potongan_ppkd.tambah');
+            Route::post('no_bukti', [PotonganPenerimaanController::class, 'noBukti'])->name('potongan_ppkd.no_bukti');
+            Route::post('simpan', [PotonganPenerimaanController::class, 'simpan'])->name('potongan_ppkd.simpan');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [PotonganPenerimaanController::class, 'edit'])->name('potongan_ppkd.edit');
+            Route::post('update', [PotonganPenerimaanController::class, 'update'])->name('potongan_ppkd.update');
+            Route::post('hapus', [PotonganPenerimaanController::class, 'hapus'])->name('potongan_ppkd.hapus');
         });
         // Penerimaan Kas
         Route::group(['prefix' => 'penerimaan_kas'], function () {
