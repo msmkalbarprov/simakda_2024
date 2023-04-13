@@ -1315,7 +1315,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('tambah', [PotonganPenerimaanController::class, 'tambah'])->name('potongan_ppkd.tambah');
             Route::post('no_bukti', [PotonganPenerimaanController::class, 'noBukti'])->name('potongan_ppkd.no_bukti');
             Route::post('simpan', [PotonganPenerimaanController::class, 'simpan'])->name('potongan_ppkd.simpan');
-            Route::get('edit/{no_kas?}', [PotonganPenerimaanController::class, 'edit'])->where('no_kas', '(.*)')->name('potongan_ppkd.edit');
+            Route::get('edit/{no_kas?}/{kd_skpd?}', [PotonganPenerimaanController::class, 'edit'])->name('potongan_ppkd.edit');
             Route::post('update', [PotonganPenerimaanController::class, 'update'])->name('potongan_ppkd.update');
             Route::post('hapus', [PotonganPenerimaanController::class, 'hapus'])->name('potongan_ppkd.hapus');
         });

@@ -23,8 +23,8 @@ class PotonganPenerimaanController extends Controller
         $data = DB::select("SELECT * FROM trhkasin_ppkd_pot where kd_skpd=?", [$kd_skpd]);
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            // $btn = '<a href="' . route("potongan_ppkd.edit", Crypt::encrypt($row->no_sts)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("potongan_ppkd.edit", ['no_kas' => Crypt::encrypt($row->no_kas), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_sts . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -140,20 +140,16 @@ class PotonganPenerimaanController extends Controller
         }
     }
 
-    public function edit($no_sts)
+    public function edit($no_kas, $kd_skpd)
     {
-        $no_sts = Crypt::decrypt($no_sts);
-        $kd_skpd = Auth::user()->kd_skpd;
+        $no_kas = Crypt::decrypt($no_kas);
+        $kd_skpd = Crypt::decrypt($kd_skpd);
+
+        if ($kd_skpd != '5.02.0.00.0.00.02.0000') {
+            return back();
+        }
 
         $data = [
-            'terima' => $data = DB::table('trhkasin_pkd as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.no_sts', '=', 'b.no_sts');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->selectRaw("a.*,b.kd_rek6")
-                ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4', 'a.no_sts' => $no_sts])
-                ->first(),
             'daftar_jenis' => DB::table('trdrka as a')
                 ->select('kd_rek6', 'nm_rek6')
                 ->whereRaw("left(kd_rek6,1)=? and kd_skpd=?", ['4', '5.02.0.00.0.00.02.0000'])
@@ -162,13 +158,27 @@ class PotonganPenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
                 ->where(['kd_skpd' => $kd_skpd])
-                // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_rkud' => DB::table('ms_rek_kasda')
                 ->get(),
+            'potongan' => DB::table('trhkasin_ppkd_pot')
+                ->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])
+                ->first(),
+            'data_sts' => DB::table('trhkasin_pkd as a')
+                ->join('trdkasin_pkd as b', function ($join) {
+                    $join->on('a.no_sts', '=', 'b.no_sts');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->leftJoin('ms_rek6 as c', function ($join) {
+                    $join->on('b.kd_rek6', '=', 'c.kd_rek6');
+                })
+                ->selectRaw("a.*, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
+                ->orderByRaw("CAST(REPLACE(a.no_sts,'/BP','') as int)")
+                ->get()
         ];
-        // dd($data['terima']);
+
         return view('skpd.potongan_ppkd.edit')->with($data);
     }
 
@@ -179,42 +189,15 @@ class PotonganPenerimaanController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('trhkasin_pkd')
-                ->where(['no_sts' => $data['no_kas'], 'kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
+            DB::table('trhkasin_ppkd_pot')
+                ->where([
+                    'no_kas' => $data['no_kas'],
+                    'no_sts' => $data['no_sts'],
+                ])
                 ->update([
-                    'tgl_sts' => $data['tgl_kas'],
-                    'keterangan' => $data['keterangan'],
-                    'total' => $data['nilai'],
                     'tgl_kas' => $data['tgl_kas'],
-                    'sumber' => $data['pengirim'],
-                ]);
-
-            DB::table('trdkasin_pkd')
-                ->where(['no_sts' => $data['no_kas'], 'kd_skpd' => $kd_skpd])
-                ->whereRaw("LEFT(kd_rek6,1)=?", ['4'])
-                ->update([
-                    'kd_rek6' => $data['jenis'],
-                    'rupiah' => $data['nilai'],
-                    'sumber' => $data['pengirim'],
-                ]);
-
-            DB::table('trhkasin_ppkd')
-                ->where(['no_sts' => $data['no_kas'], 'kd_skpd' => $kd_skpd, 'jns_trans' => '4'])
-                ->update([
-                    'tgl_sts' => $data['tgl_kas'],
-                    'tgl_kas' => $data['tgl_kas'],
-                    'keterangan' => $data['keterangan'],
                     'total' => $data['nilai'],
-                    'sumber' => $data['pengirim'],
-                ]);
-
-            DB::table('trdkasin_ppkd')
-                ->where(['no_sts' => $data['no_kas'], 'kd_skpd' => $kd_skpd])
-                ->whereRaw("LEFT(kd_rek6,1)=?", ['4'])
-                ->update([
-                    'kd_rek6' => $data['jenis'],
-                    'rupiah' => $data['nilai'],
-                    'sumber' => $data['pengirim'],
+                    'keterangan' => $data['keterangan']
                 ]);
 
             DB::commit();
