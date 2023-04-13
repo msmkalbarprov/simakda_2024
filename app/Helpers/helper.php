@@ -3517,9 +3517,14 @@ function nomor_urut_ppkd()
         ->whereRaw("isnumeric(no)=?", ['1'])
         ->unionAll($data5);
 
-    $data = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
+    $data7 = DB::table('trhkasin_ppkd_pot')
+        ->selectRaw("no_kas as nomor,'potongan ppkd' ket")
+        ->whereRaw("isnumeric(no_kas)=?", ['1'])
+        ->unionAll($data6);
+
+    $data = DB::table(DB::raw("({$data7->toSql()}) AS sub"))
         ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
-        ->mergeBindings($data6)
+        ->mergeBindings($data7)
         ->first();
 
     return $data->nomor;
