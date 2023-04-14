@@ -234,28 +234,11 @@
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
             $('#sumber_dana').empty();
-            $("#total_spd").val(anggaran.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#total_angkas").val(anggaran.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
+
             $("#total_pagu").val(anggaran.toLocaleString('id-ID', {
                 minimumFractionDigits: 2
             }));
-            $("#realisasi_spd").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#realisasi_angkas").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
             $("#realisasi_pagu").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_spd").val(sisa.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_angkas").val(sisa.toLocaleString('id-ID', {
                 minimumFractionDigits: 2
             }));
             $("#sisa_pagu").val(sisa.toLocaleString('id-ID', {
@@ -266,6 +249,8 @@
             let kdgiat = document.getElementById('kd_sub_kegiatan').value;
             let kdrek = document.getElementById('kode_rekening').value;
             let status_ang = document.getElementById('status_anggaran').value;
+            let status_angkas = document.getElementById('status_angkas').value;
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
 
             $.ajax({
                 url: "{{ route('penagihan.cari_sumber_dana') }}",
@@ -276,20 +261,46 @@
                     kdgiat: kdgiat,
                     kdrek: kdrek,
                     status_ang: status_ang,
+                    status_angkas: status_angkas,
+                    tgl_bukti: tgl_bukti,
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
+                    let sumber = data.sumber;
                     $('#sumber_dana').empty();
                     $('#sumber_dana').append(
                         `<option value="0">Pilih Sumber Dana</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(sumber, function(index, sumber) {
                         $('#sumber_dana').append(
-                            // `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
-                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
+                            `<option value="${sumber.sumber}" data-nama="${sumber.nm_sumber}" data-nilai="${sumber.nilai}">${sumber.sumber} | ${sumber.nm_sumber}</option>`
                         );
-                    })
+                    });
+
+                    $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas));
+
+                    $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
+                    $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas - data.angkas_lalu));
+
+                    $('#total_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd));
+
+                    $('#realisasi_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
+                    $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd - data.angkas_lalu));
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
