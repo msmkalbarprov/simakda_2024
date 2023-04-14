@@ -1657,21 +1657,28 @@
         });
 
         $('.cetak_transfer_dana').on('click', function() {
-            let tgl = document.getElementById('tgl_transfer_dana').value;
-            let ttd = document.getElementById('ttd_transfer_dana').value;
-            let bulan = document.getElementById('bulan_transfer_dana').value;
+            let tgl             = document.getElementById('tgl_transfer_dana').value;
+            let ttd             = document.getElementById('ttd_transfer_dana').value;
+            let periode1_tfdana = document.getElementById('periode1_tfdana').value;
+            let periode2_tfdana = document.getElementById('periode2_tfdana').value;
             let jenis_print = $(this).data("jenis");
 
             if (!tgl) {
-                alert("Silahkan Pilih Tanggal!");
+                alert("Silahkan Pilih Tanggal Tanda Tangan!");
                 return;
             }
+            if (!periode1_tfdana || !periode2_tfdana) {
+                alert("Silahkan Pilih Tanggal periode!");
+                return;
+            }
+            
 
             let url = new URL("{{ route('laporan_bendahara_umum.transfer_dana') }}");
             let searchParams = url.searchParams;
             searchParams.append("tgl", tgl);
             searchParams.append("ttd", ttd);
-            searchParams.append("bulan", bulan);
+            searchParams.append("periode1", periode1_tfdana);
+            searchParams.append("periode2", periode2_tfdana);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });

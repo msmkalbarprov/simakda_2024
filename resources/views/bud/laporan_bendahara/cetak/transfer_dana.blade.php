@@ -54,7 +54,7 @@
         </tr>
     </table>
 
-    <table style="width: 100%">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%">
         <tr>
             <td>Telah Terima dari</td>
             <td>:</td>
@@ -78,9 +78,9 @@
         <tr>
             <td></td>
             <td></td>
-            <td style="width: 10%">Bulan</td>
+            <td style="width: 10%">Periode</td>
             <td>:</td>
-            <td>{{ bulan($bulan) }} {{ tahun_anggaran() }}</td>
+            <td>{{ tanggal($tgl1) }} s/d {{ tanggal($tgl2) }} </td>
         </tr>
         <tr>
             <td></td>
@@ -96,14 +96,14 @@
         </tr>
     </table>
 
-    <table style="width: 100%" border="1">
+    <table style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:14px" border="1" cellpading="2px">
         <thead>
             <tr>
-                <th><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
-                <th><b>JUMLAH KOTOR</b></th>
-                <th><b>POTONGAN</b></th>
-                <th><b>JUMLAH BERSIH</b></th>
-                <th><b>TANGGAL TERIMA</b></th>
+                <th bgcolor="#CCCCCC"><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH KOTOR</b></th>
+                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH BERSIH</b></th>
+                <th bgcolor="#CCCCCC"><b>TANGGAL TERIMA</b></th>
             </tr>
         </thead>
         <tbody>
@@ -153,12 +153,12 @@
                                                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                                             })
                                         ->selectRaw("sum(rupiah) as nilai")
-                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
                                         ->first();
 
                     $potongan = DB::table('trhkasin_ppkd_pot')
                     ->selectRaw("sum(total) as nilai")
-                    ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                    ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
                     ->first();
                 @endphp
                     <tr>
@@ -177,7 +177,7 @@
                                                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                                             })
                                         ->selectRaw("a.no_kas,a.no_sts,a.kd_skpd,tgl_kas,keterangan,rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot")
-                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bulan'")
+                                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
                                         ->get();
                 @endphp
                 @foreach ($rincian as $item)
@@ -199,16 +199,16 @@
 
             @endforeach
             <tr>
-                <td>JUMLAH TOTAL PENERIMAAN TRANSFER</td>
-                <td class="angka"><b>{{ rupiah($total) }}</b></td>
-                <td class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
-                <td class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
-                <td></td>
+                <td bgcolor="#CCCCCC"><b>JUMLAH TOTAL PENERIMAAN TRANSFER</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC"></td>
             </tr>
         </tbody>
     </table>
 
-    <table style="width: 100%">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px;width: 100%">
         <tr>
             <td colspan="6">Dana tersebut telah diterima pada Rekening Kas Daerah sebagai berikut:</td>
         </tr>
@@ -226,7 +226,7 @@
             <td>&nbsp;</td>
             <td>Nama Rekening</td>
             <td>:</td>
-            <td>Rekening Kas Umum Daerah Prov. Kalbar</td>
+            <td>RKUD PROV. KALIMANTAN BARAT</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -237,33 +237,52 @@
             <td>Bank Kalbar Cabang Utama Pontianak</td>
         </tr>
     </table>
-
+    <br />
+    <br />
     @if (isset($tanda_tangan))
-        <div style="padding-top:20px;padding-left:800px">
-            <table class="table" style="width:100%">
+            <table class="table" style="border-collapse:collapse;font-family: Open Sans; font-size:14px;width:100%">
                 <tr>
-                    <td style="margin: 2px 0px;text-align: center">
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">
                         @if (isset($tanggal))
                             Pontianak, {{ tanggal($tanggal) }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-bottom: 50px;text-align: center">
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">
                         {{ $tanda_tangan->jabatan }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">&nbsp;
+                    </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center">{{ $tanda_tangan->pangkat }}</td>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">&nbsp;
+                    </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center">NIP. {{ $tanda_tangan->nip }}</td>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center"><b><u>{{ $tanda_tangan->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">{{ $tanda_tangan->pangkat }}</td>
+                </tr>
+                <tr>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">NIP. {{ $tanda_tangan->nip }}</td>
                 </tr>
             </table>
-        </div>
     @endif
 </body>
 

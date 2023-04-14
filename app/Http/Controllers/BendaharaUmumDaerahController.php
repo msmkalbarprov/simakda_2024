@@ -3972,7 +3972,8 @@ class BendaharaUmumDaerahController extends Controller
         ini_set('max_execution_time', -1);
         $tgl            = $request->tgl;
         $ttd            = $request->ttd;
-        $bln            = $request->bulan;
+        $tgl1           = $request->periode1;
+        $tgl2           = $request->periode2;
         $jenis_print    = $request->jenis_print;
         $total          = 0;
         $total_potongan = 0;
@@ -3991,7 +3992,7 @@ class BendaharaUmumDaerahController extends Controller
                                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                             })
                         ->selectRaw("isnull(rupiah,0) as rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot")
-                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and month(tgl_kas)='$bln'")
+                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
                         ->get();
                         
 
@@ -4007,15 +4008,14 @@ class BendaharaUmumDaerahController extends Controller
         
 
         $data = [
-            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'tanggal' => $tgl,
-            'tanda_tangan' => DB::table('ms_ttd')
-                ->where(['kode' => 'BUD', 'nip' => $ttd])
-                ->first(),
-            'bulan' => $bln,
-            'map'   => $map,
-            'total_kppn'          => $total,
-            'total_pot_kppn' => $total_potongan,
+            'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanggal'       => $tgl,
+            'tanda_tangan'  => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ttd])->first(),
+            'tgl1'          => $tgl1,
+            'tgl2'          => $tgl2,
+            'map'           => $map,
+            'total_kppn'    => $total,
+            'total_pot_kppn'=> $total_potongan,
         ];
 
         $view = view('bud.laporan_bendahara.cetak.transfer_dana')->with($data);
