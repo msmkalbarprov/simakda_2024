@@ -65,7 +65,11 @@ class SppLsController extends Controller
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
-            'daftar_penerima' => DB::table('ms_rekening_bank_online')->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat')->where('kd_skpd', $skpd)->orderBy('rekening')->get(),
+            'daftar_penerima' => DB::table('ms_rekening_bank_online')
+                ->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat')
+                ->where(['kd_skpd' => $skpd, 'keperluan' => '2'])
+                ->orderBy('rekening')
+                ->get(),
             'daftar_bank' => DB::table('ms_bank')->select('kode', 'nama')->orderBy('kode')->get(),
             'daftar_penagihan' => DB::table('trhtagih as a')->select('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan', DB::raw('SUM(b.nilai) as total'))->join('trdtagih as b', 'a.no_bukti', '=', 'b.no_bukti')->where('a.kd_skpd', $skpd)->where('a.jns_trs', '1')->whereNotIn('a.no_bukti', $data2)->groupBy('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan')->orderBy('a.no_bukti')->get(),
             'data_tgl' => DB::table('trhspp')->selectRaw('MAX(tgl_spp) as tgl_spp')->where('kd_skpd', $skpd)->where(function ($query) {
