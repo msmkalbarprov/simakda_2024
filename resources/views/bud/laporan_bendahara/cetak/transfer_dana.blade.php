@@ -90,6 +90,16 @@
             <td>{{ ucwords(strtolower($header->nm_pemda)) }}</td>
         </tr>
         <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
             <td>Dengan Rincian</td>
             <td>:</td>
             <td colspan="3"></td>
