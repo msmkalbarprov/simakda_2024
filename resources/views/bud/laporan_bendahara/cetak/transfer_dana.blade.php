@@ -99,11 +99,11 @@
     <table style="width: 100%;border-collapse:collapse;font-family: Open Sans; font-size:14px" border="1" cellpading="2px">
         <thead>
             <tr>
-                <th><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
-                <th><b>JUMLAH KOTOR</b></th>
-                <th><b>POTONGAN</b></th>
-                <th><b>JUMLAH BERSIH</b></th>
-                <th><b>TANGGAL TERIMA</b></th>
+                <th bgcolor="#CCCCCC"><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH KOTOR</b></th>
+                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH BERSIH</b></th>
+                <th bgcolor="#CCCCCC"><b>TANGGAL TERIMA</b></th>
             </tr>
         </thead>
         <tbody>
@@ -199,11 +199,11 @@
 
             @endforeach
             <tr>
-                <td>JUMLAH TOTAL PENERIMAAN TRANSFER</td>
-                <td class="angka"><b>{{ rupiah($total) }}</b></td>
-                <td class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
-                <td class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
-                <td></td>
+                <td bgcolor="#CCCCCC"><b>JUMLAH TOTAL PENERIMAAN TRANSFER</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC"></td>
             </tr>
         </tbody>
     </table>
@@ -253,6 +253,11 @@
                     <td width="50%"></td>
                     <td width="50%" style="text-align: center">
                         {{ $tanda_tangan->jabatan }}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="50%"></td>
+                    <td width="50%" style="text-align: center">&nbsp;
                     </td>
                 </tr>
                 <tr>
