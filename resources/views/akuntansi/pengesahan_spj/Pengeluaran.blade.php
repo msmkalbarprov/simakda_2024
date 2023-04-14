@@ -278,7 +278,14 @@
         sts == 1 ? $('#sts').prop('checked', true) : $('#sts').prop('checked', false);
         $('#ket').val(ket);
         // $('#cek').val(cek);
+        
+        let username = "{{Auth::user()->username}}";
         cek == 1 ? $('#cek').prop('checked', true) : $('#cek').prop('checked', false);
+        if (username=="AKT01" || username=="AKT02" || username=="AKT03" || username=="oyy") {
+
+        }else{
+            cek == 1 ? $('#cek').prop('disabled', true) : $('#cek').prop('disabled', false);
+        }
         
         $('#modal_pengeluaran_spj').modal('show');
     }

@@ -277,7 +277,14 @@
         sts == 1 ? $('#sts').prop('checked', true) : $('#sts').prop('checked', false);
         $('#ket').val(ket);
         // $('#cek').val(cek);
+        let username = "{{Auth::user()->username}}";
         cek == 1 ? $('#cek').prop('checked', true) : $('#cek').prop('checked', false);
+        if (username=="AKT01" || username=="AKT02" || username=="AKT03" || username=="oyy") {
+
+        }else{
+            cek == 1 ? $('#cek').prop('disabled', true) : $('#cek').prop('disabled', false);
+        }
+
         
         $('#modal_penerimaan_spj').modal('show');
     }
@@ -350,27 +357,27 @@
 
         let cbku = document.getElementById('bku').checked;
         if (cbku==false){
-           cbku=0;
+            cbku=0;
         }else{
             cbku=1;
         }
 
         let ckoran = 0;
         if (ckoran==false){
-           ckoran=0;
+            ckoran=0;
         }else{
             ckoran=1;
         }
         
         let csts = document.getElementById('sts').checked;
         if (csts==false){
-           csts=0;
+            csts=0;
         }else{
             csts=1;
         }
         let ccek = document.getElementById('cek').checked;
         if (ccek==false){
-           ccek=0;
+            ccek=0;
         }else{
             ccek=1;
         }
