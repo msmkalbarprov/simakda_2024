@@ -34,7 +34,7 @@ class LraController extends Controller
         $kd_skpd        = $request->kd_skpd;
         // dd($skpdunit);
         if($kd_skpd==''){
-            $kd_skpd        = Auth::user()->kd_skpd;
+            $kd_skpd        = "";
             $skpd_clause="";
             $skpd_clauses= "";
             $skpd_clause_prog= "";
@@ -270,10 +270,10 @@ class LraController extends Controller
                                                 b.kd_sub_kegiatan,
                                                 b.kd_rek6, 
                                                 CASE
-                                                    WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                                                    WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                                                    WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet) - SUM(kredit)
+                                                    WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit-debet)
+                                                    WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet-kredit)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit-debet)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet-kredit)
                                                     ELSE 0
                                                 END AS realisasi
                                                 FROM trhju_pkd a
