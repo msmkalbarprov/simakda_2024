@@ -193,6 +193,9 @@
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#kode_rekening').empty();
                     $('#kode_rekening').append(`<option value="0">Pilih Rekening</option>`);
@@ -201,6 +204,9 @@
                             `<option value="${data.kd_rek6}" data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-nama="${data.nm_rek6}" data-map="${data.map_lo}">${data.kd_rek6} | ${data.map_lo} | ${data.nm_rek6} | ${data.lalu} | ${data.sp2d} | ${data.anggaran}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
@@ -216,28 +222,30 @@
             $("#nilai_sumber_dana").val("");
             $("#realisasi_sumber_dana").val("");
             $("#sisa_sumber_dana").val("");
-            $("#total_spd").val(anggaran.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#total_angkas").val(anggaran.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
+            // $("#total_spd").val(anggaran.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#total_angkas").val(anggaran.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+
+            // $("#realisasi_spd").val(lalu.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#realisasi_angkas").val(lalu.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+
+            // $("#sisa_spd").val(sisa.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#sisa_angkas").val(sisa.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
             $("#total_pagu").val(anggaran.toLocaleString('id-ID', {
                 minimumFractionDigits: 2
             }));
-            $("#realisasi_spd").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#realisasi_angkas").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
             $("#realisasi_pagu").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_spd").val(sisa.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_angkas").val(sisa.toLocaleString('id-ID', {
                 minimumFractionDigits: 2
             }));
             $("#sisa_pagu").val(sisa.toLocaleString('id-ID', {
@@ -248,6 +256,9 @@
             let kdgiat = document.getElementById('kd_sub_kegiatan').value;
             let kdrek = document.getElementById('kode_rekening').value;
             let status_ang = document.getElementById('status_anggaran').value;
+            let status_angkas = document.getElementById('status_angkas').value;
+            let tgl_bukti = document.getElementById('tgl_bukti').value;
+
             $.ajax({
                 url: "{{ route('penagihan.cari_sumber_dana') }}",
                 type: "POST",
@@ -257,17 +268,49 @@
                     kdgiat: kdgiat,
                     kdrek: kdrek,
                     status_ang: status_ang,
+                    status_angkas: status_angkas,
+                    tgl_bukti: tgl_bukti,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
+                    let sumber = data.sumber;
                     $('#sumber_dana').empty();
                     $('#sumber_dana').append(
                         `<option value="0">Pilih Sumber Dana</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(sumber, function(index, sumber) {
                         $('#sumber_dana').append(
-                            // `<option value="${data.sumber_dana}" data-lalu="${data.lalu}" data-nilai="${data.nilai}">${data.sumber_dana}</option>`
-                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
+                            `<option value="${sumber.sumber}" data-nama="${sumber.nm_sumber}" data-nilai="${sumber.nilai}">${sumber.sumber} | ${sumber.nm_sumber}</option>`
                         );
-                    })
+                    });
+
+                    $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas));
+
+                    $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
+                    $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas - data.angkas_lalu));
+
+                    $('#total_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd));
+
+                    $('#realisasi_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
+                    $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd - data.angkas_lalu));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
@@ -295,6 +338,9 @@
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $("#realisasi_sumber_dana").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
@@ -302,6 +348,9 @@
                     $("#sisa_sumber_dana").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(nilai - data));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
             // $.ajax({
