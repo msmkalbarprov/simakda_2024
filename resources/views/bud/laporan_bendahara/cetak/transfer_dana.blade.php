@@ -162,12 +162,12 @@
                     ->first();
                 @endphp
                     <tr>
-                        <td style="padding-left: 60px">- {{ $data->nama }}
-                        </td>
-                        <td class="angka">{{rupiah($pendapatan->nilai)}}</td>
-                        <td class="angka">{{rupiah($potongan->nilai)}}</td>
-                        <td class="angka">{{rupiah($pendapatan->nilai-$potongan->nilai)}}</td>
-                        <td class="angka"></td>
+                        <td style="padding-left: 60px"><b>- {{ $data->nama }}
+                        </b></td>
+                        <td class="angka"><b>{{rupiah($pendapatan->nilai)}}</b></td>
+                        <td class="angka"><b>{{rupiah($potongan->nilai)}}</b></td>
+                        <td class="angka"><b>{{rupiah($pendapatan->nilai-$potongan->nilai)}}</b></td>
+                        <td class="angka"><b></b></td>
                     </tr>
                 @php
                 ini_set('max_execution_time', -1);
