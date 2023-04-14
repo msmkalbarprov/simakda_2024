@@ -12,23 +12,15 @@
                         <label for="" class="form-label">Tanggal Cetak</label>
                         <input type="date" id="tgl_transfer_dana" class="form-control">
                     </div>
-                    <div class="col-md-6">
-                        <label for="" class="form-label">Bulan</label>
-                        <select id="bulan_transfer_dana" class="form-control select2-transfer_dana">
-                            <option value="1" selected> Januari </option>
-                            <option value="2"> Februari </option>
-                            <option value="3"> Maret </option>
-                            <option value="4"> April </option>
-                            <option value="5"> Mei </option>
-                            <option value="6"> Juni </option>
-                            <option value="7"> Juli </option>
-                            <option value="8"> Agustus </option>
-                            <option value="9"> September </option>
-                            <option value="10"> Oktober </option>
-                            <option value="11"> November </option>
-                            <option value="12"> Desember </option>
-                        </select>
-                    </div>
+                        <div class="col-md-3">
+                            <label for="kd_unit" class="form-label">Per Periode</label>
+                            <input type="date" class="form-control" id="periode1_tfdana">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="kd_unit" class="form-label">&nbsp;</label>
+                            <input type="date" class="form-control" id="periode2_tfdana">
+                        </div>
+                    
                 </div>
                 {{-- Kuasa BUD --}}
                 <div class="mb-3 row">
