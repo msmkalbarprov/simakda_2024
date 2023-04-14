@@ -72,7 +72,7 @@ class SppTuController extends Controller
                 ->get(),
             'daftar_rekening' => DB::table('ms_rekening_bank_online')
                 ->selectRaw("rekening, nm_rekening,npwp")
-                ->where(['kd_skpd' => $kd_skpd])
+                ->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
             'daftar_spd' => DB::select("SELECT no_spd, tgl_spd from trhspd where left(kd_skpd,17)=left(?,17) and status=? and jns_beban =?", [$kd_skpd, '1', '5'])
@@ -658,7 +658,7 @@ class SppTuController extends Controller
                 ->get(),
             'daftar_rekening' => DB::table('ms_rekening_bank_online')
                 ->selectRaw("rekening, nm_rekening,npwp")
-                ->where(['kd_skpd' => $kd_skpd])
+                ->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
             'tanggal_lalu' => DB::table('trhspp')
