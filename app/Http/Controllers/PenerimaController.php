@@ -161,7 +161,7 @@ class PenerimaController extends Controller
 
         // $input = array_map('htmlentities', $request->validated());
         $input = $request->validated();
-
+        // dd($input);
         DB::table('ms_rekening_bank_online')
             ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
             ->update([
@@ -181,6 +181,7 @@ class PenerimaController extends Controller
                 'nmrekan' => $input['rekanan'],
                 'pimpinan' => $input['pimpinan'],
                 'alamat' => $input['alamat'],
+                'keperluan' => $input['keperluan'],
             ]);
 
         return redirect()->route('penerima.index');
