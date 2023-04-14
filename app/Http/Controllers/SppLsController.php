@@ -1136,7 +1136,7 @@ class SppLsController extends Controller
                 $query->where('sp2d_batal', '=', '0')
                     ->orWhereNull('sp2d_batal');
             })->first(),
-            'daftar_penerima' => DB::table('ms_rekening_bank_online')->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat')->where('kd_skpd', $kd_skpd)->orderBy('rekening')->get(),
+            'daftar_penerima' => DB::table('ms_rekening_bank_online')->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat')->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])->orderBy('rekening')->get(),
             'daftar_bank' => DB::table('ms_bank')->select('kode', 'nama')->orderBy('kode')->get(),
             'detail_spp' => DB::table('trdspp as a')->select('a.*', 'c.nm_sumber_dana1')->join('trhspp as b', function ($join) {
                 $join->on('a.no_spp', '=', 'b.no_spp');
