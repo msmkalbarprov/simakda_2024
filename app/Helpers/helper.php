@@ -3571,6 +3571,7 @@ function pengumuman_top1()
     $data = DB::table('ms_pengumuman')
         ->where('aktif', 1)
         ->where('status', 1)
+        ->orderByDesc('tanggal')
         ->first();
     return $data;
 }
