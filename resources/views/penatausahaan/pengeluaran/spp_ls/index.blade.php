@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <a href="{{ route('sppls.create') }}" id="tambah_spp_ls"
                         class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }} {{ $cek['status_angkas'] == '0' ? 'disabled' : '' }}"
-                        style="float: right;">Tambah</a>
+                        style="float: right;" {{ $kunci == 1 ? 'hidden' : '' }}>Tambah</a>
                     <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
                     <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
                 </div>

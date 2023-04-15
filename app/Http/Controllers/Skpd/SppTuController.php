@@ -34,6 +34,7 @@ class SppTuController extends Controller
                 ->where('kd_skpd', '5.02.0.00.0.00.02.0000')
                 ->whereIn('kode', ['KPA', 'BUD'])
                 ->get(),
+            'kunci' => kunci()->kunci_spp_tu
         ];
         return view('skpd.spp_tu.index')->with($data);
     }

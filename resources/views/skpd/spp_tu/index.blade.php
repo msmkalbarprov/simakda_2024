@@ -6,7 +6,8 @@
             <div class="card">
                 <div class="card-header">
                     List SPP TU
-                    <a href="{{ route('spp_tu.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('spp_tu.tambah') }}" class="btn btn-primary" style="float: right;"
+                        {{ $kunci == 1 ? 'hidden' : '' }}>Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">

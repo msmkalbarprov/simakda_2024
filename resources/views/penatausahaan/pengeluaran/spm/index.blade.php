@@ -5,8 +5,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('spm.create') }}" id="tambah_spp_ls" class="btn btn-primary"
-                        style="float: right;">Tambah</a>
+                    <a href="{{ route('spm.create') }}" id="tambah_spp_ls" class="btn btn-primary" style="float: right;"
+                        {{ $kunci == 1 ? 'hidden' : '' }}>Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
