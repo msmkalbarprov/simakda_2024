@@ -101,6 +101,13 @@ class SpmController extends Controller
         $data = [
             'data_spp' => $data_spp,
         ];
+
+        $cek = kunci()->kunci_spm;
+
+        if ($cek == 1) {
+            return back();
+        }
+
         return view('penatausahaan.pengeluaran.spm.create')->with($data);
     }
 

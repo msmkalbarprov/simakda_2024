@@ -82,6 +82,12 @@ class SppGuController extends Controller
                 ->first(),
         ];
 
+        $cek = kunci()->kunci_spp_gu;
+
+        if ($cek == 1) {
+            return back();
+        }
+
         return view('skpd.spp_gu.create')->with($data);
     }
 

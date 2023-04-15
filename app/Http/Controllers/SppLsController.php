@@ -79,6 +79,12 @@ class SppLsController extends Controller
             'data_opd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where('kd_skpd', $skpd)->first(),
         ];
 
+        $cek = kunci()->kunci_spp_ls;
+
+        if ($cek == 1) {
+            return back();
+        }
+
         return view('penatausahaan.pengeluaran.spp_ls.create')->with($data);
     }
 

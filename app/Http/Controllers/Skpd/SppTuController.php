@@ -78,6 +78,12 @@ class SppTuController extends Controller
             'daftar_spd' => DB::select("SELECT no_spd, tgl_spd from trhspd where left(kd_skpd,17)=left(?,17) and status=? and jns_beban =?", [$kd_skpd, '1', '5'])
         ];
 
+        $cek = kunci()->kunci_spp_tu;
+
+        if ($cek == 1) {
+            return back();
+        }
+
         return view('skpd.spp_tu.create')->with($data);
     }
 
