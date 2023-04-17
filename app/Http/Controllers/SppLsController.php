@@ -230,7 +230,62 @@ class SppLsController extends Controller
             $beban = ['5'];
         }
 
-        $data = DB::table('trhspd')->select('no_spd', 'tgl_spd', 'total')->whereRaw('LEFT(kd_skpd,17) = ?', [$skpd])->where('status', '1')->where('tgl_spd', '<=', $tgl_spp)->where('bulan_awal', '<=', $bulan)->whereIn('jns_beban', $beban)->get();
+
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '3', $tgl_spp, '1']))
+            ->first()->revisi;
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '6', $tgl_spp, '1']))
+            ->first()->revisi;
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '9', $tgl_spp, '1']))
+            ->first()->revisi;
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '12', $tgl_spp, '1']))
+            ->first()->revisi;
+
+        if ($beban == '5') {
+            $data = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd", ['5', '6', $kd_skpd, '3', $revisi1, '1', $tgl_spp, '5', '6', $kd_skpd, '6', $revisi2, '1', $tgl_spp, '5', '6', $kd_skpd, '9', $revisi3, '1', $tgl_spp, '5', '6', $kd_skpd, '12', $revisi4, '1', $tgl_spp]);
+        } else {
+            $data = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+                    GROUP BY b.no_spd, b.tgl_spd", ['5', $kd_skpd, '3', $revisi1, '1', $tgl_spp, '5', $kd_skpd, '6', $revisi2, '1', $tgl_spp, '5', $kd_skpd, '9', $revisi3, '1', $tgl_spp, '5', $kd_skpd, '12', $revisi4, '1', $tgl_spp]);
+        }
+
+        // $data = DB::table('trhspd')
+        //     ->select('no_spd', 'tgl_spd', 'total')
+        //     ->whereRaw('LEFT(kd_skpd,17) = ?', [$skpd])
+        //     ->where('status', '1')
+        //     ->where('tgl_spd', '<=', $tgl_spp)
+        //     ->where('bulan_awal', '<=', $bulan)
+        //     ->whereIn('jns_beban', $beban)
+        //     ->get();
+
         return response()->json($data);
     }
 
@@ -370,9 +425,9 @@ class SppLsController extends Controller
 
         $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$skpd, $tgl_spp]))->first()->revisi;
 
-        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$skpd, $tgl_spp]))->first()->revisi;
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='9' and tgl_spd<=?", [$skpd, $tgl_spp]))->first()->revisi;
 
-        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$skpd, $tgl_spp]))->first()->revisi;
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=?", [$skpd, $tgl_spp]))->first()->revisi;
 
         $result = collect(DB::select("SELECT sum(nilai)as total_spd from (
                     SELECT

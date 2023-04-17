@@ -670,6 +670,7 @@ class PenagihanController extends Controller
         $rek                = $request->kdrek;
         $no_spp                = $request->no_spp;
         $tgl_spp                = $request->tgl_spp;
+        $nomor_spd                = $request->nomor_spd;
         $status_angkas    = $request->status_angkas;
         $beban    = $request->beban;
         $bulan = date('m', strtotime($tgl_spp));
@@ -746,9 +747,14 @@ class PenagihanController extends Controller
 
         $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
 
-        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='9' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
 
-        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+
+        $tgl_spd = DB::table('trhspd')
+            ->where(['no_spd' => $nomor_spd])
+            ->first()
+            ->tgl_spd;
 
         $total_spd =
             collect(DB::select("SELECT sum(nilai)as total_spd from (
@@ -766,6 +772,7 @@ class PenagihanController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -781,6 +788,7 @@ class PenagihanController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -796,6 +804,7 @@ class PenagihanController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -811,7 +820,8 @@ class PenagihanController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
-                    )spd", [$kode, $giat, $rek, $revisi1, $tgl_spp, $tgl_spp, $kode, $giat, $rek, $revisi2, $tgl_spp, $tgl_spp, $kode, $giat, $rek, $revisi3, $tgl_spp, $tgl_spp, $kode, $giat, $rek, $revisi4, $tgl_spp, $tgl_spp]))->first();
+                    and tgl_spd<=?
+                    )spd", [$kode, $giat, $rek, $revisi1, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi2, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi3, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi4, $tgl_spp, $tgl_spp, $tgl_spd]))->first();
 
         // ANGKAS
         if ($status_angkas == 'murni') {
