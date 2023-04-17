@@ -32,7 +32,7 @@ class PenerimaController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penerima.show_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="' . route("penerima.edit_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->rekening . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->rekening .'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -189,7 +189,12 @@ class PenerimaController extends Controller
 
     public function destroy($id)
     {
-        $data = DB::table('ms_rekening_bank_online')->where('id', $id)->delete();
+        
+        $idnew = explode("|",$id);
+        $kd_skpd = $idnew[1];
+        $norek = $idnew[0];
+        
+        $data = DB::table('ms_rekening_bank_online')->where(['rekening' => $norek,'kd_skpd' => $kd_skpd])->delete();
         if ($data) {
             return response()->json([
                 'message' => '1'
@@ -205,9 +210,11 @@ class PenerimaController extends Controller
     {
         if ($request->ajax()) {
             $id = $request->id;
-            $kd_skpd = Auth::user()->kd_skpd;
-            $rekening = DB::table('ms_rekening_bank_online')->select('nm_rekening')->where('id', $id)->first();
-            $data = DB::table('ms_kontrak')->where(['nm_rekening' => $rekening->nm_rekening, 'kd_skpd' => $kd_skpd])->count();
+            $idnew = explode("|",$id);
+            $kd_skpd = $idnew[1];
+            $norek = $idnew[0];
+            $rekening = DB::table('ms_rekening_bank_online')->select('rekening')->where('rekening', $norek)->first();
+            $data = DB::table('trhspp')->where(['no_rek' => $rekening->rekening, 'kd_skpd' => $kd_skpd])->count();
             return response()->json($data);
         }
     }
