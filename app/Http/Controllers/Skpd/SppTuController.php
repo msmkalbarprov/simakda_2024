@@ -62,6 +62,34 @@ class SppTuController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '3', '1']))
+            ->first()->revisi;
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '6', '1']))
+            ->first()->revisi;
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '9', '1']))
+            ->first()->revisi;
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '12', '1']))
+            ->first()->revisi;
+
+        $daftar_spd = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd", ['5', $kd_skpd, '3', $revisi1, '1', '5', $kd_skpd, '6', $revisi2, '1', '5', $kd_skpd, '9', $revisi3, '1', '5', $kd_skpd, '12', $revisi4, '1']);
+
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
@@ -76,7 +104,8 @@ class SppTuController extends Controller
                 ->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
-            'daftar_spd' => DB::select("SELECT no_spd, tgl_spd from trhspd where left(kd_skpd,17)=left(?,17) and status=? and jns_beban =?", [$kd_skpd, '1', '5'])
+            // 'daftar_spd' => DB::select("SELECT no_spd, tgl_spd from trhspd where left(kd_skpd,17)=left(?,17) and status=? and jns_beban =?", [$kd_skpd, '1', '5']),
+            'daftar_spd' => $daftar_spd
         ];
 
         $cek = kunci()->kunci_spp_tu;
@@ -219,6 +248,7 @@ class SppTuController extends Controller
         $no_spp = $request->no_spp;
         $tgl_spp = $request->tgl_spp;
         $beban = $request->beban;
+        $no_spd = $request->no_spd;
         $kd_skpd = Auth::user()->kd_skpd;
 
         $bulan = date('m', strtotime($tgl_spp));
@@ -270,6 +300,11 @@ class SppTuController extends Controller
 
         $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=?", [$kd_skpd, $tgl_spp]))->first();
 
+        $tgl_spd = DB::table('trhspd')
+            ->where(['no_spd' => $no_spd])
+            ->first()
+            ->tgl_spd;
+
         $total_spd = collect(DB::select("SELECT sum(nilai)as total_spd from (
                     SELECT
                     'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -285,6 +320,7 @@ class SppTuController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -300,6 +336,7 @@ class SppTuController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -315,6 +352,7 @@ class SppTuController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
+                    and tgl_spd<=?
                     UNION ALL
                     SELECT
                     'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
@@ -330,7 +368,8 @@ class SppTuController extends Controller
                     and revisi_ke=?
                     and tgl_spd<=?
                     and bulan_awal <= month(?)
-                    )spd", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi1->revisi, $tgl_spp, $tgl_spp, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi2->revisi, $tgl_spp, $tgl_spp, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi3->revisi, $tgl_spp, $tgl_spp, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi4->revisi, $tgl_spp, $tgl_spp]))->first();
+                    and tgl_spd<=?
+                    )spd", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi1->revisi, $tgl_spp, $tgl_spp, $tgl_spd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi2->revisi, $tgl_spp, $tgl_spp, $tgl_spd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi3->revisi, $tgl_spp, $tgl_spp, $tgl_spd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi4->revisi, $tgl_spp, $tgl_spp, $tgl_spd]))->first();
 
         // ANGKAS
         if ($sts_angkas == 'murni') {
