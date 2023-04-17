@@ -14,7 +14,8 @@ class PenagihanController extends Controller
     public function index()
     {
         $data = [
-            'cek' => selisih_angkas()
+            'cek' => selisih_angkas(),
+            'kunci' => kunci()->kunci_tagih
         ];
 
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
@@ -56,6 +57,11 @@ class PenagihanController extends Controller
                 ->where(['a.kd_skpd' => $kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get()
         ];
 
+        $cek = kunci()->kunci_tagih;
+
+        if ($cek == 1) {
+            return back();
+        }
 
         return view('penatausahaan.pengeluaran.penagihan.create')->with($data);
     }

@@ -3817,3 +3817,12 @@ function total_skpd()
 
     return $data;
 }
+
+function kunci()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = collect(DB::select("SELECT kunci_tagih,kunci_spp,kunci_spp_gu,kunci_spp_tu,kunci_spp_ls,kunci_spm from ms_skpd where kd_skpd=?", [$kd_skpd]))->first();
+
+    return $data;
+}

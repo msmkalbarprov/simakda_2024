@@ -21,7 +21,8 @@ class SppLsController extends Controller
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
-            'cek' => selisih_angkas()
+            'cek' => selisih_angkas(),
+            'kunci' => kunci()->kunci_spp_ls
         ];
 
         return view('penatausahaan.pengeluaran.spp_ls.index')->with($data);
@@ -78,6 +79,12 @@ class SppLsController extends Controller
             })->first(),
             'data_opd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where('kd_skpd', $skpd)->first(),
         ];
+
+        $cek = kunci()->kunci_spp_ls;
+
+        if ($cek == 1) {
+            return back();
+        }
 
         return view('penatausahaan.pengeluaran.spp_ls.create')->with($data);
     }
