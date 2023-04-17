@@ -9,6 +9,8 @@
         $('#satuan').prop('disabled', true);
         $('#bank').prop('disabled', true);
 
+        rekening_tujuan();
+
         // no bukti cms
         $.ajax({
             url: "{{ route('skpd.transaksi_cms.no_urut') }}",
@@ -17,7 +19,7 @@
             success: function(data) {
                 $('#no_bukti').val(data);
             }
-        })
+        });
 
         // kd skpd dan nm skpd
         $.ajax({
@@ -28,7 +30,14 @@
                 $('#kd_skpd').val(data.kd_skpd);
                 $('#nm_skpd').val(data.nm_skpd);
             }
-        })
+        });
+
+        $('#cari_rekening').on('click', function() {
+            rekening_tujuan();
+
+            $("#nm_rekening_tujuan").val(null);
+            $("#bank").val(null).trigger('change');
+        });
 
         $("input[data-type='currency']").on({
             keyup: function() {
@@ -1503,6 +1512,30 @@
             var updated_len = input_val.length;
             caret_pos = updated_len - original_len + caret_pos;
             input[0].setSelectionRange(caret_pos, caret_pos);
+        }
+
+        function rekening_tujuan(no_sp2d) {
+            $.ajax({
+                url: "{{ route('skpd.transaksi_cms.rekening_tujuan') }}",
+                type: "POST",
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(data) {
+                    $('#rek_tujuan').empty();
+                    $('#rek_tujuan').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#rek_tujuan').append(
+                            `<option value="${data.rekening}" data-nama="${data.nm_rekening}" data-bank="${data.bank}">${data.rekening} | ${data.nm_rekening} | ${data.bank} | ${data.keterangan}</option>`
+                        );
+                    });
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            })
         }
     });
 

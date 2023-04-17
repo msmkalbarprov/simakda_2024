@@ -190,7 +190,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Input Rincian Penagihan</h5>
+                    <h5 class="modal-title">Input Rincian Transaksi CMS</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -453,13 +453,21 @@
                             <select class="form-control select2-modal1" style=" width: 100%;" id="rek_tujuan"
                                 name="rek_tujuan">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($data_rek_tujuan as $rek_tujuan)
+                                {{-- @foreach ($data_rek_tujuan as $rek_tujuan)
                                     <option value="{{ $rek_tujuan->rekening }}" data-nama="{{ $rek_tujuan->nm_rekening }}"
                                         data-bank="{{ $rek_tujuan->bank }}">{{ $rek_tujuan->rekening }} |
                                         {{ $rek_tujuan->nm_rekening }} | {{ $rek_tujuan->bank }} |
                                         {{ $rek_tujuan->keterangan }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="md-form input-group mt-md-0 mb-0">
+                                <span class="input-group-btn">
+                                    <button type="button" id="cari_rekening" class="btn btn-primary"><i
+                                            class="uil-refresh"></i></button>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     {{-- Nama Rekening Tujuan --}}
