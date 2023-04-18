@@ -417,10 +417,10 @@
             $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(sisa));
-            load_angkas();
+            // load_angkas();
 
-            let no_sp2d = document.getElementById('no_sp2d').value;
-            load_potongan_ls(no_sp2d);
+            // let no_sp2d = document.getElementById('no_sp2d').value;
+            // load_potongan_ls(no_sp2d);
         })
 
         $('#sumber').on('select2:select', function() {
@@ -820,6 +820,18 @@
                 return data;
             });
 
+            if (Number.isInteger(total_belanja) == false) {
+                alert('Total Belanja tidak boleh ada koma');
+                return;
+            };
+            if (Number.isInteger(total_potongan) == false) {
+                alert('Total Potongan tidak boleh ada koma');
+                return;
+            };
+            if (Number.isInteger(total_transfer) == false) {
+                alert('Total Transfer tidak boleh ada koma');
+                return;
+            };
             if (rincian_rekening.length == 0) {
                 alert('Rincian Rekening tidak boleh kosong!');
                 return;
@@ -1012,6 +1024,9 @@
                     beban: beban,
                     kd_skpd: kd_skpd,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
                     $('#kd_sub_kegiatan').append(
@@ -1021,6 +1036,9 @@
                             `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}" data-kdprogram="${data.kd_program}" data-nmprogram="${data.nm_program}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
@@ -1036,6 +1054,9 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                     no_bukti: document.getElementById('no_bukti').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#no_sp2d').empty();
                     $('#no_sp2d').append(
@@ -1045,6 +1066,9 @@
                             `<option value="${data.no_sp2d}" data-tgl="${data.tgl_sp2d}">${data.no_sp2d} | ${data.tgl_sp2d}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
@@ -1060,6 +1084,9 @@
                     beban: document.getElementById('beban').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
                     let sp2d = 0;
@@ -1080,6 +1107,9 @@
                     }).format(data.lalu)}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
@@ -1095,16 +1125,76 @@
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
+                    tgl_voucher: document.getElementById('tgl_voucher').value,
+                    status_angkas: document.getElementById('status_angkas').value,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
+                    let sumber = data.sumber;
                     $('#sumber').empty();
                     $('#sumber').append(
                         `<option value="" disabled selected>Pilih Sumber Dana</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(sumber, function(index, sumber) {
                         $('#sumber').append(
-                            `<option value="${data.sumber_dana}" data-anggaran="${data.nilai}" data-kd_rek6="${data.kd_rek6}" data-kegiatan="${data.kegiatan}">${data.sumber_dana}</option>`
+                            `<option value="${sumber.sumber_dana}" data-anggaran="${sumber.nilai}">${sumber.sumber_dana}</option>`
                         );
-                    })
+                    });
+
+                    $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas));
+
+                    $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+                    $('#realisasi_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+                    $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas - data.angkas_lalu));
+
+                    $('#total_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd));
+                    $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.spd - data.angkas_lalu));
+
+
+                    let potongan_ls = parseFloat(data.potongan_ls) || 0;
+                    $('#potongan_ls').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(potongan_ls));
+
+                    let sisa_bank = parseFloat(data.sisa_bank) || 0;
+                    let persen_kkpd = document.getElementById('persen_kkpd').value;
+                    let persen_tunai = document.getElementById('persen_tunai').value;
+                    let beban = document.getElementById('beban').value;
+
+                    if (beban != '1') {
+                        let total_sp2d = rupiah(document.getElementById('total_sp2d').value);
+
+                        $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_sp2d - potongan_ls));
+                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_sp2d - potongan_ls + potongan_ls));
+                    } else {
+                        $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(sisa_bank));
+                        let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(sisa_kas + potongan_ls));
+                    }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
@@ -1184,6 +1274,9 @@
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
@@ -1192,6 +1285,9 @@
                     $('#sisa_sumber').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_sumber - data));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         }
