@@ -176,7 +176,7 @@
                         </b></td>
                         <td class="angka"><b>{{rupiah($pendapatan->nilai)}}</b></td>
                         <td class="angka"><b>{{rupiah($potongan->nilai)}}</b></td>
-                        <td class="angka"><b>{{rupiah($pendapatan->nilai-$potongan->nilai)}}</b></td>
+                        <td class="angka"><b>{{rupiah($pendapatan->nilai+$potongan->nilai)}}</b></td>
                         <td class="angka"><b></b></td>
                     </tr>
                 @php
