@@ -15,6 +15,12 @@ class SppLsController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+
+        $kunci = kunci()->kunci_spp_ls;
+        $role = Auth::user()->role;
+
+        $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
         $data = [
             'data_spp' => DB::table('trhspp')->where('kd_skpd', $kd_skpd)->whereNotIn('jns_spp', ['1', '2', '3'])->orderByRaw("tgl_spp ASC, no_spp ASC,CAST(urut AS INT) ASC")->get(),
             'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['KPA', 'BPP', 'BK'])->get(),
@@ -22,7 +28,7 @@ class SppLsController extends Controller
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
             'cek' => selisih_angkas(),
-            'kunci' => kunci()->kunci_spp_ls
+            'kunci' => $kuncian
         ];
 
         return view('penatausahaan.pengeluaran.spp_ls.index')->with($data);
@@ -67,7 +73,7 @@ class SppLsController extends Controller
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
             'daftar_penerima' => DB::table('ms_rekening_bank_online')
-                ->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat','bank','nm_bank')
+                ->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat', 'bank', 'nm_bank')
                 ->where(['kd_skpd' => $skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
@@ -80,7 +86,10 @@ class SppLsController extends Controller
             'data_opd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where('kd_skpd', $skpd)->first(),
         ];
 
-        $cek = kunci()->kunci_spp_ls;
+        $kunci = kunci()->kunci_spp_ls;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
         if ($cek == 1) {
             return back();

@@ -13,9 +13,14 @@ class PenagihanController extends Controller
 {
     public function index()
     {
+        $kunci = kunci()->kunci_tagih;
+        $role = Auth::user()->role;
+
+        $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
         $data = [
             'cek' => selisih_angkas(),
-            'kunci' => kunci()->kunci_tagih
+            'kunci' => $kuncian
         ];
 
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
@@ -57,7 +62,10 @@ class PenagihanController extends Controller
                 ->where(['a.kd_skpd' => $kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get()
         ];
 
-        $cek = kunci()->kunci_tagih;
+        $kunci = kunci()->kunci_tagih;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
         if ($cek == 1) {
             return back();

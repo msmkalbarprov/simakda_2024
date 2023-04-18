@@ -17,12 +17,17 @@ class SppGuController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $kunci = kunci()->kunci_spp_gu;
+        $role = Auth::user()->role;
+
+        $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
         $data = [
             'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['KPA', 'BPP', 'BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
-            'kunci' => kunci()->kunci_spp_gu
+            'kunci' => $kuncian
         ];
 
         return view('skpd.spp_gu.index')->with($data);
@@ -83,7 +88,10 @@ class SppGuController extends Controller
                 ->first(),
         ];
 
-        $cek = kunci()->kunci_spp_gu;
+        $kunci = kunci()->kunci_spp_gu;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
         if ($cek == 1) {
             return back();
