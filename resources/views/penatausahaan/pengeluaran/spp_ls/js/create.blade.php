@@ -459,6 +459,7 @@
                     tgl_spp: tgl_spp,
                     status_angkas: status_angkas,
                     beban: beban,
+                    nomor_spd: nomor_spd,
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

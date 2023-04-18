@@ -41,16 +41,29 @@ class TransaksiCmsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = [
             'data_rek' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')
-                ->where(['kd_skpd' => $kd_skpd])
-                ->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))
-                ->orderBy('a.nm_rekening')
-                ->get(),
+            // 'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')
+            //     ->where(['kd_skpd' => $kd_skpd])
+            //     ->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))
+            //     ->orderBy('a.nm_rekening')
+            //     ->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
             'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
 
         return view('skpd.transaksi_cms.create')->with($data);
+    }
+
+    public function rekeningTujuan(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = DB::table('ms_rekening_bank_online as a')
+            ->where(['kd_skpd' => $kd_skpd])
+            ->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))
+            ->orderBy('a.nm_rekening')
+            ->get();
+
+        return response()->json($data);
     }
 
     public function no_urut(Request $request)

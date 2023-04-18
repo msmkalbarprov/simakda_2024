@@ -172,6 +172,7 @@
                     tgl_spp: document.getElementById('tgl_spp').value,
                     beban: document.getElementById('beban').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    no_spd: document.getElementById('no_spd').value,
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -360,7 +361,7 @@
             if (kode_spp != kode) {
                 alert(
                     'Kegiatan,rekening,sumber tidak sesuai dengan rincian realisasi dan sisa, silahkan refresh!'
-                    );
+                );
                 return;
             }
 
