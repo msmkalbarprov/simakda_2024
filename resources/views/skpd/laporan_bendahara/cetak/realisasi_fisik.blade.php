@@ -61,7 +61,7 @@
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
         border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="text-align: center"><b>REALISASI FISIk</b></td>
+            <td style="text-align: center"><b>REALISASI FISIK</b></td>
         </tr>
         <tr>
             <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(bulan($bulan)) }}</b></td>
@@ -102,7 +102,7 @@
                     $sisa1 = empty($sisa) || $sisa == 0 ? rupiah(0) : rupiah($sisa);
                     $persen1 = empty($persen) || $persen == 0 ? rupiah(0) : rupiah($persen);
                 @endphp
-                @if (strlen($rekening) == 7)
+                @if (strlen($urut) == 7)
                     @php
                         $tot_nilai = $tot_nilai + $nilai;
                         $tot_realisasi = $tot_realisasi + $realisasi;
@@ -124,7 +124,7 @@
                         <td align='right'><b>{{ $sisa1 }}</b></td>
                         <td align='right'><b>{{ $persen1 }}</b></td>
                     </tr>
-                @elseif (strlen($rekening) == 12 || strlen($rekening) == 15)
+                @elseif (strlen($urut) == 12 || strlen($urut) == 15)
                     <tr>
                         <td align='left'><b>{{ $urut }}</b></td>
                         <td align='left'><b>{{ $uraian }}</b></td>
