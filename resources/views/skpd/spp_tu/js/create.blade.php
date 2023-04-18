@@ -73,10 +73,14 @@
         });
 
         $('#rekening').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            let npwp = $(this).find(':selected').data('npwp');
+            let nama    = $(this).find(':selected').data('nama');
+            let npwp    = $(this).find(':selected').data('npwp');
+            let bank    = $(this).find(':selected').data('bank');
+            let nm_bank = $(this).find(':selected').data('nm_bank');
             $("#nm_rekening").val(nama);
             $("#npwp").val(npwp);
+            $("#bank").val(bank);
+            $("#nm_bank").val(nm_bank);
         });
 
         $('#no_spd').on('select2:select', function() {

@@ -103,24 +103,6 @@
                             <small>(Sub Kegiatan dari SPD yang dipilih)</small>
                         </div>
                     </div>
-                    {{-- Kode dan Nama Bank --}}
-                    <div class="mb-3 row">
-                        <label for="bank" class="col-md-2 col-form-label">Kode Bank</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="bank"
-                                name="bank">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_bank as $bank)
-                                    <option value="{{ $bank->bank }}" data-nama="{{ $bank->nama_bank }}">
-                                        {{ $bank->bank }} | {{ $bank->nama_bank }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <label for="nm_bank" class="col-md-2 col-form-label">Nama Bank</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="text" id="nm_bank" name="nm_bank" required readonly>
-                        </div>
-                    </div>
                     {{-- Rekening Bank dan Nama Rekening --}}
                     <div class="mb-3 row">
                         <label for="rekening" class="col-md-2 col-form-label">Rekening Bank</label>
@@ -129,7 +111,10 @@
                                 name="rekening">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_rekening as $rekening)
-                                    <option value="{{ $rekening->rekening }}" data-nama="{{ $rekening->nm_rekening }}"
+                                    <option value="{{ $rekening->rekening }}" 
+                                        data-nm_bank="{{ $rekening->nm_bank }}"
+                                        data-bank="{{ $rekening->bank }}"
+                                        data-nama="{{ $rekening->nm_rekening }}"
                                         data-npwp="{{ $rekening->npwp }}">
                                         {{ $rekening->rekening }} | {{ $rekening->nm_rekening }} | {{ $rekening->npwp }}
                                     </option>
@@ -142,6 +127,18 @@
                                 readonly>
                         </div>
                     </div>
+                    {{-- Kode dan Nama Bank --}}
+                    <div class="mb-3 row">
+                        <label for="bank" class="col-md-2 col-form-label">Kode Bank</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="bank" name="bank" required readonly>
+                        </div>
+                        <label for="nm_bank" class="col-md-2 col-form-label">Nama Bank</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" id="nm_bank" name="nm_bank" required readonly>
+                        </div>
+                    </div>
+                    
                     {{-- NPWP --}}
                     <div class="mb-3 row">
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>

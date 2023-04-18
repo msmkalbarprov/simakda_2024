@@ -105,7 +105,7 @@ class SppTuController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 ->get(),
             'daftar_rekening' => DB::table('ms_rekening_bank_online')
-                ->selectRaw("rekening, nm_rekening,npwp")
+                ->selectRaw("rekening, nm_rekening,npwp,bank,nm_bank")
                 ->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
