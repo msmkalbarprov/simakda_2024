@@ -110,9 +110,9 @@
         <thead>
             <tr>
                 <th bgcolor="#CCCCCC"><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
-                <th bgcolor="#CCCCCC"><b>JUMLAH BERSIH</b></th>
-                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
                 <th bgcolor="#CCCCCC"><b>JUMLAH KOTOR</b></th>
+                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH BERSIH</b></th>
                 <th bgcolor="#CCCCCC"><b>TANGGAL TERIMA</b></th>
             </tr>
         </thead>
@@ -174,9 +174,9 @@
                     <tr>
                         <td style="padding-left: 60px"><b>- {{ $data->nama }}
                         </b></td>
-                        <td class="angka"><b>{{rupiah($pendapatan->nilai)}}</b></td>
-                        <td class="angka"><b>{{rupiah($potongan->nilai)}}</b></td>
                         <td class="angka"><b>{{rupiah($pendapatan->nilai+$potongan->nilai)}}</b></td>
+                        <td class="angka"><b>{{rupiah($potongan->nilai)}}</b></td>
+                        <td class="angka"><b>{{rupiah($pendapatan->nilai)}}</b></td>
                         <td class="angka"><b></b></td>
                     </tr>
                 @php
@@ -198,9 +198,9 @@
                     <tr>
                         <td style="padding-left: 80px">{{ $item->no_kas }} - {{ $item->keterangan }}
                         </td>
-                        <td class="angka">{{rupiah($item->rupiah)}}</td>
-                        <td class="angka">{{rupiah($item->pot)}}</td>
                         <td class="angka">{{rupiah($item->rupiah+$item->pot)}}</td>
+                        <td class="angka">{{rupiah($item->pot)}}</td>
+                        <td class="angka">{{rupiah($item->rupiah)}}</td>
                         <td class="tanggal">{{ $item->tgl_kas }}</td>
                     </tr>
                 @endforeach
@@ -210,9 +210,9 @@
             @endforeach
             <tr>
                 <td bgcolor="#CCCCCC"><b>JUMLAH TOTAL PENERIMAAN TRANSFER</b></td>
-                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total) }}</b></td>
-                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
                 <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total+$total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total) }}</b></td>
                 <td bgcolor="#CCCCCC"></td>
             </tr>
         </tbody>
