@@ -110,9 +110,9 @@
         <thead>
             <tr>
                 <th bgcolor="#CCCCCC"><b>JENIS ANGGARAN TRANSFER KE DAERAH</b></th>
-                <th bgcolor="#CCCCCC"><b>JUMLAH KOTOR</b></th>
-                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
                 <th bgcolor="#CCCCCC"><b>JUMLAH BERSIH</b></th>
+                <th bgcolor="#CCCCCC"><b>POTONGAN</b></th>
+                <th bgcolor="#CCCCCC"><b>JUMLAH KOTOR</b></th>
                 <th bgcolor="#CCCCCC"><b>TANGGAL TERIMA</b></th>
             </tr>
         </thead>
@@ -200,7 +200,7 @@
                         </td>
                         <td class="angka">{{rupiah($item->rupiah)}}</td>
                         <td class="angka">{{rupiah($item->pot)}}</td>
-                        <td class="angka">{{rupiah($item->rupiah-$item->pot)}}</td>
+                        <td class="angka">{{rupiah($item->rupiah+$item->pot)}}</td>
                         <td class="tanggal">{{ $item->tgl_kas }}</td>
                     </tr>
                 @endforeach
@@ -212,7 +212,7 @@
                 <td bgcolor="#CCCCCC"><b>JUMLAH TOTAL PENERIMAAN TRANSFER</b></td>
                 <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total) }}</b></td>
                 <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total_potongan) }}</b></td>
-                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total-$total_potongan) }}</b></td>
+                <td bgcolor="#CCCCCC" class="angka"><b>{{ rupiah($total+$total_potongan) }}</b></td>
                 <td bgcolor="#CCCCCC"></td>
             </tr>
         </tbody>
