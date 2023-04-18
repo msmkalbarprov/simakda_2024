@@ -17,6 +17,11 @@ class SppTuController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $kunci = kunci()->kunci_spp_tu;
+        $role = Auth::user()->role;
+
+        $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
         $data = [
             'ttd1' => DB::table('ms_ttd')
                 ->where('kd_skpd', $kd_skpd)
@@ -34,7 +39,7 @@ class SppTuController extends Controller
                 ->where('kd_skpd', '5.02.0.00.0.00.02.0000')
                 ->whereIn('kode', ['KPA', 'BUD'])
                 ->get(),
-            'kunci' => kunci()->kunci_spp_tu
+            'kunci' => $kuncian
         ];
         return view('skpd.spp_tu.index')->with($data);
     }
@@ -108,7 +113,11 @@ class SppTuController extends Controller
             'daftar_spd' => $daftar_spd
         ];
 
-        $cek = kunci()->kunci_spp_tu;
+        $kunci = kunci()->kunci_spp_tu;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
 
         if ($cek == 1) {
             return back();

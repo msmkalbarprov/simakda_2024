@@ -3581,6 +3581,7 @@ function get_skpd($kd_skpd)
     $id     = Auth::user()->id;
     $role   = Auth::user()->role;
     $app    = Auth::user()->is_admin;
+    $username    = Auth::user()->username;
 
     if ($app == 1) { // 1 simakda
         if ($role == '1012' || $role == '1017') {
@@ -3598,7 +3599,14 @@ function get_skpd($kd_skpd)
         }
     } else { // 2 simakda skpd
         // get skpd dari master skpd
-        $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get();
+        if ($username == '197006171994032004') {
+            $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')
+                ->whereRaw("left(kd_skpd,17)=left(?,17)", [$kd_skpd])
+                ->orderBy('kd_skpd')
+                ->get();
+        } else {
+            $data = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get();
+        }
     }
 
     return $data;

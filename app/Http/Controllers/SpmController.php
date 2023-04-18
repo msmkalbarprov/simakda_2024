@@ -15,12 +15,18 @@ class SpmController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+
+        $kunci = kunci()->kunci_spm;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
         $data = [
             'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['BPP', 'BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'PPK'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'kode', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->whereIn('kode', ['BUD'])->get(),
-            'kunci' => kunci()->kunci_spm
+            'kunci' => $cek
         ];
 
         return view('penatausahaan.pengeluaran.spm.index')->with($data);
@@ -103,7 +109,10 @@ class SpmController extends Controller
             'data_spp' => $data_spp,
         ];
 
-        $cek = kunci()->kunci_spm;
+        $kunci = kunci()->kunci_spm;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
         if ($cek == 1) {
             return back();
