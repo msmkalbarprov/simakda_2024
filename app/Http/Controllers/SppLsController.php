@@ -67,7 +67,7 @@ class SppLsController extends Controller
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
             'daftar_penerima' => DB::table('ms_rekening_bank_online')
-                ->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat')
+                ->select('rekening', 'nm_rekening', 'npwp', 'nmrekan', 'pimpinan', 'alamat','bank','nm_bank')
                 ->where(['kd_skpd' => $skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),

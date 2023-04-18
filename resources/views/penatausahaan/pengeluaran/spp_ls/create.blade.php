@@ -132,20 +132,28 @@
                             <input class="form-control" type="text" id="nm_skpd" name="nm_skpd" required readonly
                                 value="{{ $data_skpd->nm_skpd }}">
                         </div>
-                        <label for="bank" class="col-md-2 col-form-label">Bank</label>
+                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="bank"
-                                name="bank" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Bank">
-                                    <option value="" disabled selected>Silahkan Pilih Bank</option>
-                                    @foreach ($daftar_bank as $bank)
-                                        <option value="{{ $bank->kode }}" data-nama="{{ $bank->nama }}"
-                                            {{ old('bank') == $bank->kode ? 'selected' : '' }}>
-                                            {{ $bank->kode }} | {{ $bank->nama }}</option>
+                            <select class="form-control select2-multiple" style="width: 100%;" id="nm_penerima"
+                                name="nm_penerima" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Penerima">
+                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
+                                    @foreach ($daftar_penerima as $penerima)
+                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
+                                            data-rekening="{{ $penerima->rekening }}"
+                                            data-nmrekan="{{ $penerima->nmrekan }}"
+                                            data-pimpinan="{{ $penerima->pimpinan }}"
+                                            data-alamat="{{ $penerima->alamat }}"
+                                            data-bank="{{ $penerima->bank }}"
+                                            data-nmbank="{{ $penerima->nm_bank }}"
+                                            {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
+                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
+                                            {{ $penerima->npwp }}</option>
                                     @endforeach
                                 </optgroup>
                             </select>
                         </div>
+
                     </div>
                     {{-- Beban dan Penerima --}}
                     <div class="mb-3 row">
@@ -160,25 +168,15 @@
                                 </optgroup>
                             </select>
                         </div>
-                        <label for="nm_penerima" class="col-md-2 col-form-label">Nama Penerima</label>
-                        <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="nm_penerima"
-                                name="nm_penerima" data-placeholder="Silahkan Pilih">
-                                <optgroup label="Daftar Penerima">
-                                    <option value="" disabled selected>Silahkan Pilih Penerima</option>
-                                    @foreach ($daftar_penerima as $penerima)
-                                        <option value="{{ $penerima->nm_rekening }}" data-npwp="{{ $penerima->npwp }}"
-                                            data-rekening="{{ $penerima->rekening }}"
-                                            data-nmrekan="{{ $penerima->nmrekan }}"
-                                            data-pimpinan="{{ $penerima->pimpinan }}"
-                                            data-alamat="{{ $penerima->alamat }}"
-                                            {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
-                                            {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
-                                            {{ $penerima->npwp }}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
+                        <label for="bank" class="col-md-2 col-form-label">Bank</label>
+                        <div class="col-md-1">
+                            <input type="text" class="form-control" id="bank" name="bank" readonly>
                         </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="nmbank" name="nmbank" readonly>
+                        </div>
+
+                        
                     </div>
                     {{-- Jenis dan Rekening --}}
                     <div class="mb-3 row">

@@ -78,9 +78,13 @@
             let npwp = $(this).find(':selected').data('npwp');
             let nmrekan = $(this).find(':selected').data('nmrekan');
             let pimpinan = $(this).find(':selected').data('pimpinan');
+            let bank = $(this).find(':selected').data('bank');
+            let nmbank = $(this).find(':selected').data('nmbank');
             let alamat = $(this).find(':selected').data('alamat');
             $("#rekening").val(rekening);
             $("#npwp").val(npwp);
+            $("#bank").val(bank);
+            $("#nmbank").val(nmbank);
             let beban = document.getElementById('beban').value;
             let jenis = document.getElementById('jenis').value;
 
