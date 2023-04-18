@@ -48,7 +48,7 @@ class LaporanBendaharaController extends Controller
             }
         } else {
             if ($jenis == 'skpd') {
-                $data   = DB::table('ms_organisasi')->where(DB::raw("LEFT(kd_org)"), '=', $kd_org)->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->get();
+                $data   = DB::table('ms_organisasi')->where(DB::raw("LEFT(kd_org,17)"), '=', $kd_org)->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->get();
             } else {
                 $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select('kd_skpd', 'nm_skpd')->get();
             }
