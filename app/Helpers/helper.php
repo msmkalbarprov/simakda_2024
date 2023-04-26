@@ -2976,49 +2976,100 @@ function load_sisa_tunai()
 {
     $kd_skpd = Auth::user()->kd_skpd;
 
-    $tunai1 = DB::table('tr_ambilsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd]);
+    // $tunai1 = DB::table('tr_ambilsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd]);
 
-    $tunai2 = DB::table('tr_jpanjar as a')->join('tr_panjar as b', function ($join) {
-        $join->on('a.no_panjar_lalu', '=', 'b.no_panjar');
-        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-    })->select('a.tgl_kas as tgl', 'a.no_kas as bku', 'a.keterangan as ket', 'a.nilai as jumlah', DB::raw("'1' as jns"), 'a.kd_skpd as kode')->where(['a.jns' => '2', 'a.kd_skpd' => $kd_skpd, 'b.pay' => 'TUNAI'])->unionAll($tunai1);
+    // $tunai2 = DB::table('tr_jpanjar as a')->join('tr_panjar as b', function ($join) {
+    //     $join->on('a.no_panjar_lalu', '=', 'b.no_panjar');
+    //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+    // })->select('a.tgl_kas as tgl', 'a.no_kas as bku', 'a.keterangan as ket', 'a.nilai as jumlah', DB::raw("'1' as jns"), 'a.kd_skpd as kode')->where(['a.jns' => '2', 'a.kd_skpd' => $kd_skpd, 'b.pay' => 'TUNAI'])->unionAll($tunai1);
 
-    $tunai3 = DB::table('tr_panjar')->select('tgl_panjar as tgl', 'no_panjar as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai2);
+    // $tunai3 = DB::table('tr_panjar')->select('tgl_panjar as tgl', 'no_panjar as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai2);
 
-    $tunai4 = DB::table('trhkasin_pkd as a')->join('trdkasin_pkd as b', function ($join) {
-        $join->on('a.no_sts', '=', 'b.no_sts');
-        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-    })->select('a.tgl_sts as tgl', 'a.no_sts as bku', 'a.keterangan as ket', DB::raw("SUM(b.rupiah) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pot_khusus' => '0', 'a.kd_skpd' => $kd_skpd, 'bank' => 'TNK'])->whereNotIn('jns_trans', ['2', '4'])->groupBy('a.tgl_sts', 'a.no_sts', 'a.keterangan', 'a.kd_skpd')->unionAll($tunai3);
+    // $tunai4 = DB::table('trhkasin_pkd as a')->join('trdkasin_pkd as b', function ($join) {
+    //     $join->on('a.no_sts', '=', 'b.no_sts');
+    //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+    // })->select('a.tgl_sts as tgl', 'a.no_sts as bku', 'a.keterangan as ket', DB::raw("SUM(b.rupiah) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pot_khusus' => '0', 'a.kd_skpd' => $kd_skpd, 'bank' => 'TNK'])->whereNotIn('jns_trans', ['2', '4'])->groupBy('a.tgl_sts', 'a.no_sts', 'a.keterangan', 'a.kd_skpd')->unionAll($tunai3);
 
-    $data1 = DB::table('trspmpot')->select('no_spm', DB::raw("SUM(nilai) as pot"))->groupBy('no_spm');
+    // $data1 = DB::table('trspmpot')->select('no_spm', DB::raw("SUM(nilai) as pot"))->groupBy('no_spm');
 
-    $tunai5 = DB::table('trhtransout as a')->join('trdtransout as b', function ($join) {
-        $join->on('a.no_bukti', '=', 'b.no_bukti');
-        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-    })->leftJoin('trhsp2d as c', 'b.no_sp2d', '=', 'c.no_sp2d')->leftJoinSub($data1, 'z', function ($join) {
-        $join->on('c.no_spm', '=', 'z.no_spm');
-    })->select('a.tgl_bukti as tgl', 'a.no_bukti as bku', 'a.ket as ket', DB::raw("SUM(b.nilai)-isnull(pot,0) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pay' => 'TUNAI', 'a.kd_skpd' => $kd_skpd])->where('panjar', '<>', '1')->whereRaw("a.no_bukti NOT IN (select no_bukti from trhtransout where no_sp2d in (SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd='$kd_skpd' GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1) and  no_kas not in (SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=? GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1) and jns_spp in (4,5,6) and kd_skpd=?)", [$kd_skpd, $kd_skpd])->groupBy('a.tgl_bukti', 'a.no_bukti', 'a.ket', 'a.no_sp2d', 'a.total', 'pot', 'a.kd_skpd', 'b.no_sp2d')->unionAll($tunai4);
+    // $tunai5 = DB::table('trhtransout as a')->join('trdtransout as b', function ($join) {
+    //     $join->on('a.no_bukti', '=', 'b.no_bukti');
+    //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+    // })->leftJoin('trhsp2d as c', 'b.no_sp2d', '=', 'c.no_sp2d')->leftJoinSub($data1, 'z', function ($join) {
+    //     $join->on('c.no_spm', '=', 'z.no_spm');
+    // })->select('a.tgl_bukti as tgl', 'a.no_bukti as bku', 'a.ket as ket', DB::raw("SUM(b.nilai)-isnull(pot,0) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pay' => 'TUNAI', 'a.kd_skpd' => $kd_skpd])->where('panjar', '<>', '1')->whereRaw("a.no_bukti NOT IN (select no_bukti from trhtransout where no_sp2d in (SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd='$kd_skpd' GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1) and  no_kas not in (SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=? GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1) and jns_spp in (4,5,6) and kd_skpd=?)", [$kd_skpd, $kd_skpd])->groupBy('a.tgl_bukti', 'a.no_bukti', 'a.ket', 'a.no_sp2d', 'a.total', 'pot', 'a.kd_skpd', 'b.no_sp2d')->unionAll($tunai4);
 
-    $tunai6 = DB::table('trhtransout')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', DB::raw("isnull(total,0) as jumlah"), DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['pay' => 'TUNAI', 'kd_skpd' => $kd_skpd])->where('panjar', '<>', '1')->whereIn('jns_spp', ['4', '5', '6'])->whereRaw("no_sp2d IN (SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd=? GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1) AND no_kas not in (SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=? GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1)", [$kd_skpd, $kd_skpd])->unionAll($tunai5);
+    // $tunai6 = DB::table('trhtransout')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', DB::raw("isnull(total,0) as jumlah"), DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['pay' => 'TUNAI', 'kd_skpd' => $kd_skpd])->where('panjar', '<>', '1')->whereIn('jns_spp', ['4', '5', '6'])->whereRaw("no_sp2d IN (SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd=? GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1) AND no_kas not in (SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=? GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1)", [$kd_skpd, $kd_skpd])->unionAll($tunai5);
 
-    $tunai7 = DB::table('trhoutlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai6);
+    // $tunai7 = DB::table('trhoutlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai6);
 
-    $tunai8 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'jenis' => '2'])->unionAll($tunai7);
+    // $tunai8 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'jenis' => '2'])->unionAll($tunai7);
 
-    $tunai9 = DB::table('trhINlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai8);
+    // $tunai9 = DB::table('trhINlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd, 'pay' => 'TUNAI'])->unionAll($tunai8);
 
-    $tunai10 = DB::table('ms_skpd')->select(DB::raw("'' as tgl"), DB::raw("'' as bku"), DB::raw("'' as ket"), DB::raw("sld_awal+sld_awalpajak as jumlah"), DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd])->unionAll($tunai9);
+    // $tunai10 = DB::table('ms_skpd')->select(DB::raw("'' as tgl"), DB::raw("'' as bku"), DB::raw("'' as ket"), DB::raw("sld_awal+sld_awalpajak as jumlah"), DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd])->unionAll($tunai9);
 
-    $tunai = DB::table(DB::raw("({$tunai10->toSql()}) AS sub"))
-        ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END)-SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) AS sisa"))
-        ->mergeBindings($tunai10)
-        ->first();
+    // $tunai = DB::table(DB::raw("({$tunai10->toSql()}) AS sub"))
+    //     ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END)-SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) AS sisa"))
+    //     ->mergeBindings($tunai10)
+    //     ->first();
 
-    if ($tunai->sisa < 0) {
-        return 0;
-    } else {
-        return $tunai->sisa;
-    }
+    $tunai = collect(DB::select("SELECT
+				SUM(case when jns=1 then jumlah else 0 end ) AS terima,
+				SUM(case when jns=2 then jumlah else 0 end) AS keluar
+				FROM (
+				SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan WHERE kd_skpd=? UNION ALL
+				select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on
+				c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd=? and  d.pay='TUNAI' UNION ALL
+				select tgl_panjar as tgl,no_panjar as bku,keterangan as ket, nilai as jumlah, '2' as jns,kd_skpd as kode from tr_panjar WHERE kd_skpd=? AND pay='TUNAI' UNION ALL
+				select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
+					from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+					where jns_trans NOT IN('4','2') and pot_khusus =0  AND a.kd_skpd=? and bank='TNK'
+					GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+				UNION ALL
+				SELECT	a.tgl_bukti AS tgl,	a.no_bukti AS bku, a.ket AS ket, SUM(z.nilai) - isnull(pot, 0) AS jumlah, '2' AS jns, a.kd_skpd AS kode
+								FROM trhtransout a INNER JOIN trdtransout z ON a.no_bukti=z.no_bukti AND a.kd_skpd=z.kd_skpd
+								LEFT JOIN trhsp2d b ON z.no_sp2d = b.no_sp2d
+								LEFT JOIN (SELECT no_spm, SUM (nilai) pot	FROM trspmpot GROUP BY no_spm) c
+								ON b.no_spm = c.no_spm WHERE pay = 'TUNAI' AND panjar <> 1
+								AND a.kd_skpd=?
+								AND a.no_bukti NOT IN(
+								select no_bukti from trhtransout
+								where no_sp2d in
+								(SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd=? GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1)
+								 and  no_kas not in
+								(SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=?
+
+								GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1)
+								and jns_spp in (4,5,6) and kd_skpd=?)
+								GROUP BY a.tgl_bukti,a.no_bukti,a.ket,a.no_sp2d,z.no_sp2d,a.total,pot,a.kd_skpd
+						UNION ALL
+				SELECT	tgl_bukti AS tgl,	no_bukti AS bku, ket AS ket,  isnull(total, 0) AS jumlah, '2' AS jns, kd_skpd AS kode
+								from trhtransout
+								WHERE pay = 'TUNAI' AND panjar <> 1 and no_sp2d in
+								(SELECT no_sp2d as no_bukti FROM trhtransout where kd_skpd=? GROUP BY no_sp2d HAVING COUNT(no_sp2d)>1)
+								AND   no_kas not in
+								(SELECT min(z.no_kas) as no_bukti FROM trhtransout z WHERE z.jns_spp in (4,5,6) and kd_skpd=?
+
+								GROUP BY z.no_sp2d HAVING COUNT(z.no_sp2d)>1)
+								and jns_spp in (4,5,6) and kd_skpd=?
+
+				UNION ALL
+				SELECT tgl_bukti AS tgl,no_bukti AS bku,ket AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM trhoutlain  WHERE pay='TUNAI' AND kd_skpd=? UNION ALL
+				SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_setorsimpanan WHERE jenis ='2' AND kd_skpd=? UNION ALL
+				SELECT tgl_bukti AS tgl,no_bukti AS bku,ket AS ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='TUNAI'AND kd_skpd=? UNION ALL
+				SELECT '' AS tgl,'' AS bku,'' AS ket,sld_awal+sld_awalpajak AS jumlah,'1' AS jns,kd_skpd AS kode FROM ms_skpd WHERE kd_skpd=?
+				) a
+				where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+
+    $sisa_tunai = $tunai->terima - $tunai->keluar;
+
+    return $sisa_tunai;
+    // if ($tunai->sisa < 0) {
+    //     return 0;
+    // } else {
+    //     return $tunai->sisa;
+    // }
 }
 
 function nama_skpd($kd_skpd)
