@@ -41,6 +41,7 @@ class SetorSisaController extends Controller
     public function create()
     {
         $kd_skpd = Auth::user()->kd_skpd;
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'tahun_anggaran' => tahun_anggaran(),
