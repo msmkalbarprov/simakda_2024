@@ -230,20 +230,42 @@ class SetorSisaController extends Controller
         }
 
         if (isset($kd_sub_kegiatan)) {
-            $data1 = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->join('trhsp2d as c', function ($join) {
-                $join->on('b.no_spp', '=', 'c.no_spp');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })->select('a.kd_rek6', 'a.nm_rek6', DB::raw("SUM(a.nilai) as nilai"), DB::raw("(SELECT SUM(nilai) FROM trdtransout WHERE no_sp2d=c.no_sp2d AND kd_sub_kegiatan=a.kd_sub_kegiatan AND kd_rek6=a.kd_rek6) as transaksi"))->selectRaw("(SELECT f.rupiah FROM trhkasin_pkd e JOIN trdkasin_pkd f ON e.no_sts=f.no_sts AND e.kd_skpd=f.kd_skpd WHERE f.kd_sub_kegiatan=a.kd_sub_kegiatan AND e.no_sp2d=? AND f.kd_rek6=a.kd_rek6) as cp", [$no_sp2d])->where(['c.no_sp2d' => $no_sp2d, 'c.kd_skpd' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->whereNotIn('a.kd_rek6', $kd_rek6)->groupBy('kd_rek6', 'nm_rek6', 'no_sp2d', 'a.kd_sub_kegiatan');
+            $data1 = DB::table('trdspp as a')
+                ->join('trhspp as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('trhsp2d as c', function ($join) {
+                    $join->on('b.no_spp', '=', 'c.no_spp');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->selectRaw("a.kd_rek6,a.nm_rek6,SUM(a.nilai) as nilai,
+					(SELECT sum(nilai) FROM trdtransout WHERE no_sp2d=c.no_sp2d and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6) as transaksi,
+					(select sum(f.rupiah) from trhkasin_pkd e join trdkasin_pkd f on e.no_sts=f.no_sts and e.kd_skpd=f.kd_skpd
+					where f.kd_sub_kegiatan=a.kd_sub_kegiatan and e.no_sp2d=? and f.kd_rek6=a.kd_rek6) [cp]", [$no_sp2d])
+                ->whereRaw("c.no_sp2d =? AND c.kd_skpd =? and a.kd_sub_kegiatan=?", [$no_sp2d, $kd_skpd, $kd_sub_kegiatan])
+                ->whereNotIn('a.kd_rek6', $kd_rek6)
+                ->groupBy('kd_rek6', 'nm_rek6', 'no_sp2d', 'a.kd_sub_kegiatan');
 
             $data = DB::table(DB::raw("({$data1->toSql()}) AS sub"))
                 ->select('sub.*', DB::raw("nilai - isnull(transaksi,0) - isnull(cp,0) as sisa"))
                 ->mergeBindings($data1)
                 ->get();
+
+            // $data = DB::select("SELECT z.*, nilai-isnull(transaksi,0)-isnull(cp,0) as sisa FROM (SELECT a.kd_rek6,a.nm_rek6,SUM(a.nilai) as nilai,
+            // 		(SELECT sum(nilai) FROM trdtransout WHERE no_sp2d=c.no_sp2d and kd_sub_kegiatan=a.kd_sub_kegiatan and kd_rek6=a.kd_rek6) as transaksi,
+            // 		(select sum(f.rupiah) from trhkasin_pkd e join trdkasin_pkd f on e.no_sts=f.no_sts and e.kd_skpd=f.kd_skpd
+            // 		where f.kd_sub_kegiatan=a.kd_sub_kegiatan and e.no_sp2d=? and f.kd_rek6=a.kd_rek6) [cp]
+            // 		FROM trdspp a INNER JOIN trhspp b ON a.no_spp = b.no_spp  and a.kd_skpd=b.kd_skpd
+            // 		INNER JOIN trhsp2d c ON c.no_spp = b.no_spp and c.kd_skpd=b.kd_skpd where c.no_sp2d =?
+            // 		AND c.kd_skpd = ? and a.kd_sub_kegiatan = ?
+            // 		 and a.kd_rek6 not in ($kd_rek6) GROUP BY kd_rek6, nm_rek6,no_sp2d,a.kd_sub_kegiatan)z", [$no_sp2d, $no_sp2d, $kd_skpd, $kd_sub_kegiatan]);
         } else {
-            $data = DB::table('ms_rek6')->select('kd_rek6', 'nm_rek6')->whereRaw("LEFT(kd_rek6,4)=?", ['1101'])->whereNotIn('kd_rek6', $kd_rek6)->get();
+            $data = DB::table('ms_rek6')
+                ->select('kd_rek6', 'nm_rek6')
+                ->whereRaw("LEFT(kd_rek6,4)=?", ['1101'])
+                ->whereNotIn('kd_rek6', $kd_rek6)
+                ->get();
         }
 
         return response()->json($data);
