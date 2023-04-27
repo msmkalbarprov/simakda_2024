@@ -46,6 +46,7 @@
             let jenis_transaksi = document.getElementById('jenis_transaksi').value;
             let no_sp2d = document.getElementById('no_sp2d').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let pembayaran = document.getElementById('pembayaran').value;
             let kd_rek6 = detail_sts.rows().data().toArray().map((value) => {
                 let result = {
                     kd_rek6: value.kd_rek6,
@@ -73,6 +74,11 @@
                     alert('No SP2D dan Kode Sub Kegiatan harus dipilih!');
                     return;
                 }
+            }
+
+            if (!pembayaran) {
+                alert('Pembayaran harus dipilih!');
+                return;
             }
 
             $.ajax({
@@ -121,15 +127,21 @@
                 data: {
                     jenis_transaksi: jenis_transaksi,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     $('#no_sp2d').empty();
                     $('#no_sp2d').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#no_sp2d').append(
-                            `<option value="${data.no_sp2d}" data-jns_spp="${data.jns_spp}" data-jns_cp="${data.jns_cp}">${data.no_sp2d}</option>`
+                            `<option value="${data.no_sp2d}" data-jns_spp="${data.jns_spp}" data-jns_beban="${data.jns_beban}" data-jns_cp="${data.jns_cp}" data-nilai="${data.nilai}">${data.no_sp2d}</option>`
                         );
                     })
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
@@ -137,6 +149,8 @@
         $('#no_sp2d').on('select2:select', function() {
             let no_sp2d = this.value;
             let jns_cp = $(this).find(':selected').data('jns_cp');
+            let nilai = parseFloat($(this).find(':selected').data('nilai')) || 0;
+            let beban = $(this).find(':selected').data('jns_spp');
             $('#jenis_cp').val(jns_cp);
 
             detail_sts.clear().draw();
@@ -150,15 +164,41 @@
                 data: {
                     no_sp2d: no_sp2d,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
+                    let kegiatan = data.kegiatan;
+
                     $('#kd_sub_kegiatan').empty();
                     $('#kd_sub_kegiatan').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(kegiatan, function(index, data) {
                         $('#kd_sub_kegiatan').append(
                             `<option value="${data.kd_sub_kegiatan}" data-nm_sub_kegiatan="${data.nm_sub_kegiatan}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
                         );
-                    })
+                    });
+
+                    let sisa_bank = parseFloat(data.sisa_bank) || 0;
+                    let sisa_tunai = parseFloat(data.sisa_tunai) || 0;
+                    let potongan_ls = parseFloat(data.potongan_ls) || 0;
+
+                    if (beban == '1' || beban == '2') {
+                        $('#sisa_kas_bank').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(sisa_bank));
+                    } else {
+                        $('#sisa_kas_bank').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai - potongan_ls));
+                    }
+
+                    $('#sisa_kas_tunai').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(sisa_tunai));
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });
@@ -180,7 +220,15 @@
             let nm_rek6 = document.getElementById('nm_rek6').value;
             let nilai = angka(document.getElementById('nilai').value);
             let jumlah = rupiah(document.getElementById('jumlah').value);
+            let pembayaran = document.getElementById('pembayaran').value;
             let sisa_kas_tunai = rupiah(document.getElementById('sisa_kas_tunai').value);
+
+            let sisa_kas_bank = rupiah(document.getElementById('sisa_kas_bank').value);
+
+            let sp2d = $('#no_sp2d').find('option:selected');
+            let jns_spp = sp2d.data('jns_spp');
+            let jns_beban = sp2d.data('jns_beban');
+            let nilai_sp2d = sp2d.data('nilai');
 
             let total = nilai + sisa_kas_tunai;
 
@@ -188,13 +236,32 @@
                 alert('Silahkan pilih Rekening!');
                 return;
             }
-            if (jenis_transaksi == '1' && sisa_kas_tunai > total) {
-                alert('Melebihi Kas Tunai');
-                return;
-            }
+            // if (jenis_transaksi == '1' && sisa_kas_tunai > total) {
+            //     alert('Melebihi Kas Tunai');
+            //     return;
+            // }
             if (nilai == 0) {
                 alert('Nilai 0...Cek Lagi!');
                 return;
+            }
+
+            if (jns_spp == '4' || jns_spp == '5' || (jns_spp == '6' && jns_beban == '6')) {
+                if (nilai > nilai_sp2d) {
+                    alert('Nilai CP tidak boleh melebihi nilai SP2D');
+                    return;
+                }
+            }
+
+            if ((jns_spp == '6' && jns_beban != '6') || jns_spp == '3' || jns_spp == '1' || jns_spp ==
+                '2') {
+                if (pembayaran == 'BNK' && nilai > sisa_kas_bank) {
+                    alert('Nilai CP tidak boleh melebihi nilai sisa kas bank!');
+                    return;
+                }
+                if (pembayaran == 'TNK' && nilai > sisa_kas_tunai) {
+                    alert('Nilai CP tidak boleh melebihi nilai sisa kas tunai!');
+                    return;
+                }
             }
 
             detail_sts.row.add({
