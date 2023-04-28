@@ -123,7 +123,8 @@
                     <!-- SIMPAN -->
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            <button id="simpan" class="btn btn-primary btn-md"
+                                {{ $spp->status == 1 ? 'hidden' : '' }}>Simpan</button>
                             <a href="{{ route('spp_gu.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
