@@ -423,9 +423,9 @@
             let kode_rekening = $('#kode_rekening').find('option:selected');
             let anggaran = kode_rekening.data('anggaran'); //nilai anggaran angkas, spd, pagu
             let lalu = kode_rekening.data('lalu'); // realisasi angkas, spd, pagu
-            let sisa_angkas = anggaran - lalu; //sisa angkas
-            let sisa_spd = anggaran - lalu; //sisa spd
-            let sisa_pagu = anggaran - lalu; //sisa pagu
+            // let sisa_angkas = anggaran - lalu; //sisa angkas
+            // let sisa_spd = anggaran - lalu; //sisa spd
+            // let sisa_pagu = anggaran - lalu; //sisa pagu
             // let sumber_dana = $('#sumber_dana').find('option:selected');
             // let nilai_sumber = sumber_dana.data('nilai'); //nilai sumber dana
             // let lalu_sumber = sumber_dana.data('lalu'); //realisasi sumber dana
@@ -434,6 +434,12 @@
                 .value); //nilai sumber dana
             let sisa_sumber = angka(document.getElementById('sisa_sumber_dana')
                 .value); //sisa nilai sumber dana
+            let sisa_angkas = rupiah(document.getElementById('sisa_angkas')
+                .value); //sisa nilai angkas
+            let sisa_pagu = rupiah(document.getElementById('sisa_pagu')
+                .value); //sisa nilai pagu
+            let sisa_spd = rupiah(document.getElementById('sisa_spd')
+                .value); //sisa nilai pagu
             let no_simpan = document.getElementById('no_tersimpan').value; //no tersimpan
             let nomor = document.getElementById('no_bukti').value; //no bast penagihan
             let sisa_spd_rekening = lalu + sisa_spd;
