@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use PDF;
 use Exception;
 use Yajra\DataTables\Facades\DataTables;
+
 class BendaharaUmumDaerahController extends Controller
 {
     public function index()
@@ -2100,7 +2101,7 @@ class BendaharaUmumDaerahController extends Controller
         $req = $request->all();
 
         $rekap_gaji1 = DB::table('trhsp2d as a')
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS IWP325,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
             ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
@@ -2122,7 +2123,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.no_spm', '=', 'b.no_spm');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
             ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
@@ -2141,7 +2142,7 @@ class BendaharaUmumDaerahController extends Controller
             ->unionAll($rekap_gaji1);
 
         $rekap_gaji = DB::table(DB::raw("({$rekap_gaji2->toSql()}) AS sub"))
-            ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP1) + sum(IWP8) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
+            ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(IWP325) IWP325, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP1) + sum(IWP8) + sum(IWP325) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
             ->mergeBindings($rekap_gaji2)
             ->groupByRaw("kd_skpd,nm_skpd,nomor")
             ->orderBy('kd_skpd')
@@ -3968,7 +3969,7 @@ class BendaharaUmumDaerahController extends Controller
     }
 
     public function transferDana(Request $request)
-    {   
+    {
         ini_set('max_execution_time', -1);
         $tgl            = $request->tgl;
         $ttd            = $request->ttd;
@@ -3979,33 +3980,30 @@ class BendaharaUmumDaerahController extends Controller
         $total_potongan = 0;
         $map = DB::table('map_transfer_dana')->orderByRaw("urut")->get();
 
-        foreach ($map as $data){
+        foreach ($map as $data) {
             if ($data->kode == 3) {
-                    $kd_rek         = isset($data->kd_rek) ?  $data->kd_rek: "'-'"  ;
-                    $panjang        = isset($data->panjang) ?$data->panjang:   0  ;
-                    $kd_rek_notin   = isset($data->kd_rek_not_in) ?  $data->kd_rek_not_in : "'-'" ;
-                    $panjang_notin  = isset($data->panjang_not_in) ?  $data->panjang_not_in : 0 ;
+                $kd_rek         = isset($data->kd_rek) ?  $data->kd_rek : "'-'";
+                $panjang        = isset($data->panjang) ? $data->panjang :   0;
+                $kd_rek_notin   = isset($data->kd_rek_not_in) ?  $data->kd_rek_not_in : "'-'";
+                $panjang_notin  = isset($data->panjang_not_in) ?  $data->panjang_not_in : 0;
 
                 $rincian = DB::table('trdkasin_ppkd as a')
-                        ->join('trhkasin_ppkd as b', function ($join) {
-                                $join->on('a.no_kas', '=', 'b.no_kas');
-                                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                            })
-                        ->selectRaw("isnull(rupiah,0) as rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot")
-                        ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
-                        ->get();
-                        
+                    ->join('trhkasin_ppkd as b', function ($join) {
+                        $join->on('a.no_kas', '=', 'b.no_kas');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->selectRaw("isnull(rupiah,0) as rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot")
+                    ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
+                    ->get();
 
-                foreach ($rincian as $item){
-                    $total          = $total+$item->rupiah;
-                    $total_potongan = $total_potongan+$item->pot;
-                    
+
+                foreach ($rincian as $item) {
+                    $total          = $total + $item->rupiah;
+                    $total_potongan = $total_potongan + $item->pot;
                 }
             }
-            
-            
         }
-        
+
 
         $data = [
             'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
@@ -4015,7 +4013,7 @@ class BendaharaUmumDaerahController extends Controller
             'tgl2'          => $tgl2,
             'map'           => $map,
             'total_kppn'    => $total,
-            'total_pot_kppn'=> $total_potongan,
+            'total_pot_kppn' => $total_potongan,
         ];
 
         $view = view('bud.laporan_bendahara.cetak.transfer_dana')->with($data);
@@ -5968,7 +5966,7 @@ class BendaharaUmumDaerahController extends Controller
         $realisasi1 = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN (?,?,?) and jns_ang=? ", ['1.01.02.1.01.53', '1.01.02.1.02.46', '1.01.02.1.03.52',$req['anggaran']])
+            ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN (?,?,?) and jns_ang=? ", ['1.01.02.1.01.53', '1.01.02.1.02.46', '1.01.02.1.03.52', $req['anggaran']])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
@@ -6280,20 +6278,20 @@ class BendaharaUmumDaerahController extends Controller
         }
     }
 
-     // Koreksi Penerimaan Kas
-     public function indexKoreksiKas()
-     {
-         return view('bud.koreksi_penerimaan.index');
-     }
+    // Koreksi Penerimaan Kas
+    public function indexKoreksiKas()
+    {
+        return view('bud.koreksi_penerimaan.index');
+    }
 
-     public function loadDataKoreksiKas()
+    public function loadDataKoreksiKas()
     {
         $data = DB::table('tkoreksi_penerimaan')
             ->orderBy("nomor")
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("koreksi_penerimaan_kas.edit", Crypt::encrypt($row->nomor.'|'.$row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->nomor.'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("koreksi_penerimaan_kas.edit", Crypt::encrypt($row->nomor . '|' . $row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->nomor . '|' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -6308,7 +6306,7 @@ class BendaharaUmumDaerahController extends Controller
 
         return view('bud.koreksi_penerimaan.create')->with($data);
     }
-    
+
     public function simpanKoreksiKas(Request $request)
     {
         $data = $request->data;
@@ -6352,13 +6350,13 @@ class BendaharaUmumDaerahController extends Controller
     public function editKoreksiKas($no)
     {
         $no = Crypt::decrypt($no);
-        $id = explode("|",$no);
+        $id = explode("|", $no);
         $data = [
             'daftar_skpd' => DB::table('ms_skpd as a')
                 ->orderBy('kd_skpd')
                 ->get(),
             'koreksi' => DB::table('tkoreksi_penerimaan')
-                ->where(['nomor' => $id[0],'kd_skpd' => $id[1]])
+                ->where(['nomor' => $id[0], 'kd_skpd' => $id[1]])
                 ->first()
         ];
 
@@ -6374,7 +6372,7 @@ class BendaharaUmumDaerahController extends Controller
         try {
 
             DB::table('tkoreksi_penerimaan')
-                ->where(['nomor' => $data['no_kas'],'kd_skpd' => $kd_skpd])
+                ->where(['nomor' => $data['no_kas'], 'kd_skpd' => $kd_skpd])
                 ->update([
                     'tanggal' => $data['tgl_kas'],
                     'keterangan' => $data['keterangan'],
@@ -6392,7 +6390,7 @@ class BendaharaUmumDaerahController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-            'message' => '0'
+                'message' => '0'
             ]);
         }
     }
@@ -6400,10 +6398,10 @@ class BendaharaUmumDaerahController extends Controller
     public function hapusKoreksikas(Request $request)
     {
         $no = $request->no;
-        $id = explode("|",$no);
+        $id = explode("|", $no);
         DB::beginTransaction();
         try {
-            DB::table('tkoreksi_penerimaan')->where(['nomor' => $id[0],'kd_skpd' => $id[1]])->delete();
+            DB::table('tkoreksi_penerimaan')->where(['nomor' => $id[0], 'kd_skpd' => $id[1]])->delete();
 
             DB::commit();
             return response()->json([
@@ -6417,7 +6415,7 @@ class BendaharaUmumDaerahController extends Controller
         }
     }
 
-    
+
 
     // KOREKSI PENGELUARAN SP2D
     public function indexKoreksi()
@@ -6431,8 +6429,8 @@ class BendaharaUmumDaerahController extends Controller
             ->orderByRaw("cast(no as int)")
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("koreksi_pengeluaran.edit", Crypt::encrypt($row->no.'|'.$row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no.'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="' . route("koreksi_pengeluaran.edit", Crypt::encrypt($row->no . '|' . $row->kd_skpd)) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no . '|' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -6452,28 +6450,28 @@ class BendaharaUmumDaerahController extends Controller
     {
         $kd_skpd = $request->kd_skpd;
         $no_sp2d = $request->no_sp2d;
-            $data = DB::table('trhsp2d as b')
-                ->join('trdspp as a', function ($join) {
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.no_spp', '=', 'b.no_spp');
-                })
-                ->selectRaw("a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
-                ->where(['a.kd_skpd' => $kd_skpd,'b.no_sp2d' => $no_sp2d])
-                ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6")
-                ->get();
-        
+        $data = DB::table('trhsp2d as b')
+            ->join('trdspp as a', function ($join) {
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_spp', '=', 'b.no_spp');
+            })
+            ->selectRaw("a.kd_skpd, a.nm_skpd, a.kd_rek6, a.nm_rek6")
+            ->where(['a.kd_skpd' => $kd_skpd, 'b.no_sp2d' => $no_sp2d])
+            ->groupByRaw("a.kd_skpd,a.nm_skpd, a.kd_rek6, a.nm_rek6")
+            ->get();
+
         return response()->json($data);
     }
 
     public function nomorSp2d(Request $request)
     {
         $kd_skpd = $request->kd_skpd;
-       
-            $data = DB::table('trhsp2d')
-                ->selectRaw("no_sp2d")
-                ->where(['kd_skpd' => $kd_skpd])
-                ->whereRaw("(sp2d_batal is null OR sp2d_batal =0)")
-                ->get();
+
+        $data = DB::table('trhsp2d')
+            ->selectRaw("no_sp2d")
+            ->where(['kd_skpd' => $kd_skpd])
+            ->whereRaw("(sp2d_batal is null OR sp2d_batal =0)")
+            ->get();
         return response()->json($data);
     }
 
@@ -6523,13 +6521,13 @@ class BendaharaUmumDaerahController extends Controller
     public function editKoreksi($no)
     {
         $no = Crypt::decrypt($no);
-        $id = explode("|",$no);
+        $id = explode("|", $no);
         $data = [
             'daftar_skpd' => DB::table('ms_skpd as a')
                 ->orderBy('kd_skpd')
                 ->get(),
             'koreksi' => DB::table('trkoreksi_pengeluaran')
-                ->where(['no' => $id[0],'kd_skpd' => $id[1]])
+                ->where(['no' => $id[0], 'kd_skpd' => $id[1]])
                 ->first()
         ];
 
@@ -6574,10 +6572,10 @@ class BendaharaUmumDaerahController extends Controller
     public function hapusKoreksi(Request $request)
     {
         $no = $request->no;
-        $id = explode("|",$no);
+        $id = explode("|", $no);
         DB::beginTransaction();
         try {
-            DB::table('trkoreksi_pengeluaran')->where(['no' => $id[0],'kd_skpd' => $id[1]])->delete();
+            DB::table('trkoreksi_pengeluaran')->where(['no' => $id[0], 'kd_skpd' => $id[1]])->delete();
 
             DB::commit();
             return response()->json([

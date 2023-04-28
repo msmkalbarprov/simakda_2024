@@ -71,12 +71,13 @@
                 <th rowspan="2" style="width: 5%">NAMA</th>
                 <th rowspan="2" style="width: 5%">NOMOR</th>
                 <th rowspan="2" style="width: 5%">JUMLAH KOTOR</th>
-                <th colspan="9" style="width: 40%">POTONGAN</th>
+                <th colspan="10" style="width: 40%">POTONGAN</th>
                 <th rowspan="2" style="width: 5%">BERSIH</th>
             </tr>
             <tr id="header3">
                 <th style="width: 5%">IWP 1%</th>
                 <th style="width: 5%">IWP 8%</th>
+                <th style="width: 5%">IWP 3.25%</th>
                 <th style="width: 5%">JKK</th>
                 <th style="width: 10%">JKM</th>
                 <th style="width: 10%">BPJS</th>
@@ -101,6 +102,7 @@
                 <th>13</th>
                 <th>14</th>
                 <th>15</th>
+                <th>16</th>
             </tr>
         </thead>
         <tbody>
@@ -108,6 +110,7 @@
                 $totnilai_sp2d = 0;
                 $totIWP1 = 0;
                 $totIWP8 = 0;
+                $totIWP325 = 0;
                 $totJKK = 0;
                 $totJKM = 0;
                 $totBPJS = 0;
@@ -122,6 +125,7 @@
                     $totnilai_sp2d += $rekap->nilai_sp2d;
                     $totIWP1 += $rekap->IWP1;
                     $totIWP8 += $rekap->IWP8;
+                    $totIWP325 += $rekap->IWP325;
                     $totJKK += $rekap->JKK;
                     $totJKM += $rekap->JKM;
                     $totBPJS += $rekap->BPJS;
@@ -139,6 +143,7 @@
                     <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
                     <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
                     <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
+                    <td class="angka">{{ rupiah($rekap->IWP325) }}</td>
                     <td class="angka">{{ rupiah($rekap->JKK) }}</td>
                     <td class="angka">{{ rupiah($rekap->JKM) }}</td>
                     <td class="angka">{{ rupiah($rekap->BPJS) }}</td>
@@ -154,6 +159,7 @@
                 <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
                 <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
                 <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
+                <td class="angka"><b>{{ rupiah($totIWP325) }}</b></td>
                 <td class="angka"><b>{{ rupiah($totJKK) }}</b></td>
                 <td class="angka"><b>{{ rupiah($totJKM) }}</b></td>
                 <td class="angka"><b>{{ rupiah($totBPJS) }}</b></td>
