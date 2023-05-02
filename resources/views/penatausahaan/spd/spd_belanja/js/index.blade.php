@@ -6,25 +6,29 @@
             }
         });
 
-        var format = function(num){
-                var str = num.toString().replace("", ""), parts = false, output = [], i = 1, formatted = null;
-                if(str.indexOf(".") > 0) {
-                    parts = str.split(".");
-                    str = parts[0];
-                }
-                str = str.split("").reverse();
-                for(var j = 0, len = str.length; j < len; j++) {
-                    if(str[j] != ",") {
+        var format = function(num) {
+            var str = num.toString().replace("", ""),
+                parts = false,
+                output = [],
+                i = 1,
+                formatted = null;
+            if (str.indexOf(".") > 0) {
+                parts = str.split(".");
+                str = parts[0];
+            }
+            str = str.split("").reverse();
+            for (var j = 0, len = str.length; j < len; j++) {
+                if (str[j] != ",") {
                     output.push(str[j]);
-                    if(i%3 == 0 && j < (len - 1)) {
+                    if (i % 3 == 0 && j < (len - 1)) {
                         output.push(",");
                     }
                     i++;
-                    }
                 }
-                formatted = output.reverse().join("");
-                return("" + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
-                };
+            }
+            formatted = output.reverse().join("");
+            return ("" + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+        };
 
         let data_awal = $('#spd_belanja').DataTable({
             responsive: true,
@@ -41,42 +45,43 @@
                 //     data: 'DT_RowIndex',
                 //     name: 'DT_RowIndex',
                 //     className: "text-center",
-                // }, 
+                // },
                 {
                     data: 'no_spd',
                     name: 'no_spd',
-                    render: function ( data, type, row ) {
-                        return '<font size="2px">' +row.no_spd +'</font>';
+                    render: function(data, type, row) {
+                        return '<font size="2px">' + row.no_spd + '</font>';
                     },
                 },
                 {
                     data: 'tgl_spd',
                     name: 'tgl_spd',
-                    render: function ( data, type, row ) {
-                        return '<font size="2px">' +row.tgl_spd +'</font>';
+                    render: function(data, type, row) {
+                        return '<font size="2px">' + row.tgl_spd + '</font>';
                     },
                 },
                 {
                     data: 'nm_skpd',
                     name: 'nm_skpd',
-                    render: function ( data, type, row ) {
-                        return '<font size="2px">' +row.nm_skpd +'</font>';
+                    render: function(data, type, row) {
+                        return '<font size="2px">' + row.nm_skpd + '</font>';
                     },
                 },
-                
+
                 {
                     data: 'total',
                     name: 'total',
-                    render: function ( data, type, row ) {
-                        return '<font size="2px" align="right">' +format(row.total) +'</font>';
+                    render: function(data, type, row) {
+                        return '<font size="2px" align="right">' + format(row.total) +
+                            '</font>';
                     }
                 },
                 {
                     data: 'nm_beban',
                     name: 'nm_beban',
                     className: "text-center",
-                    render: function ( data, type, row ) {
-                        return '<font size="2px">' +row.nm_beban +'</font>';
+                    render: function(data, type, row) {
+                        return '<font size="2px">' + row.nm_beban + '</font>';
                     },
                 },
                 {
@@ -91,11 +96,11 @@
                     className: "text-center",
                 },
             ],
-            
-            drawCallback: function (settings) {
+
+            drawCallback: function(settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+            }
         });
 
         $('#nip').select2({
@@ -112,6 +117,10 @@
             let nospd = document.getElementById('no_spd').value;
             let nip = $("#nip").val();
             let jenis = $("#jenis").val();
+            let atas = $("#atas").val();
+            let bawah = $("#bawah").val();
+            let kiri = $("#kiri").val();
+            let kanan = $("#kanan").val();
 
             if (document.getElementById("tambahan").checked == true) {
                 tambahan = '1';
@@ -132,6 +141,10 @@
             searchParams.append('nip', nip);
             searchParams.append('tambahan', tambahan);
             searchParams.append('jenis', jenis);
+            searchParams.append('atas', atas);
+            searchParams.append('bawah', bawah);
+            searchParams.append('kiri', kiri);
+            searchParams.append('kanan', kanan);
             window.open(url.toString(), "_blank");
         })
     });
@@ -142,26 +155,26 @@
     }
 
     function hapusSPD(no_spd) {
-            let tanya = confirm('Apakah anda yakin untuk menghapus data ini');
-            if (tanya == true) {
-                $.ajax({
-                    url: "{{ route('spd.spd_belanja.hapus_data_spd') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        no_spd: no_spd,
-                    },
-                    success: function(data) {
-                        if (data.message == '1') {
-                            alert('Proses Hapus Berhasil');
-                            window.location.reload();
-                        } else {
-                            alert('Proses Hapus Gagal...!!!');
-                        }
+        let tanya = confirm('Apakah anda yakin untuk menghapus data ini');
+        if (tanya == true) {
+            $.ajax({
+                url: "{{ route('spd.spd_belanja.hapus_data_spd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_spd: no_spd,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Proses Hapus Berhasil');
+                        window.location.reload();
+                    } else {
+                        alert('Proses Hapus Gagal...!!!');
                     }
-                })
-            } else {
-                return false;
-            }
+                }
+            })
+        } else {
+            return false;
         }
+    }
 </script>
