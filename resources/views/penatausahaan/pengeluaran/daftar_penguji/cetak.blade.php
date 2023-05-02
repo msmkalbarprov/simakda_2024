@@ -110,7 +110,10 @@
             </tr>
             <tr>
                 <td colspan="3"><b>....................................................................</b></td>
-                <td style="text-align: center"><b>Kuasa Bendahara Umum Daerah</b></td>
+                <td style="text-align: center">
+                    {{-- <b>Kuasa Bendahara Umum Daerah</b> --}}
+                    <b>{{ $ttd->jabatan }}</b>
+                </td>
             </tr>
             <tr>
                 <td colspan="3"><b>Petugas Bank / POS</b></td>

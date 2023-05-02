@@ -74,7 +74,7 @@
                                 <option value="" selected disabled>Silahkan Pilih</option>
                                 @foreach ($ttd1 as $ttd)
                                     <option value="{{ $ttd->nip }}" data-nama="{{ $ttd->nama }}">
-                                        {{ $ttd->nama }}</option>
+                                        {{ $ttd->nama }} | {{ $ttd->jabatan }}</option>
                                 @endforeach
                             </select>
                         </div>
