@@ -112,7 +112,10 @@
                 <td colspan="3"><b>....................................................................</b></td>
                 <td style="text-align: center">
                     {{-- <b>Kuasa Bendahara Umum Daerah</b> --}}
-                    <b>{{ $ttd->jabatan }}</b>
+                    <b>
+                        Kuasa Bendahara Umum Daerah <br>
+                        {{ $ttd->jabatan }}
+                    </b>
                 </td>
             </tr>
             <tr>
