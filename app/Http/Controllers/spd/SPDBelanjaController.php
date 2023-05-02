@@ -2829,8 +2829,6 @@ group by left(kd_skpd,17),kd_sub_kegiatan,kd_rek6,nm_rek6
 order by no_urut");
         }
 
-
-
         $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-lampiran', array(
             'jsprint' => $jsprint,
             'nospd' => $nospd,
@@ -2842,7 +2840,14 @@ order by no_urut");
             'ttd' => $ttd,
         ));
         if ($jsprint == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-top', 10)
+                ->setOption('margin-bottom', 10)
+                ->setOption('margin-right', 10)
+                ->setOption('margin-left', 10);
             return $pdf->stream('laporan.pdf');
         } else if ($request->jenis == 'excel') {
             header("Cache-Control: no-cache, no-store, must-revalidate");
