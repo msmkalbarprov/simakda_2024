@@ -932,7 +932,11 @@ class SPDBelanjaController extends Controller
         $tambahanbln = $tambahan ? "Tambahan" : "";
         $konfig = DB::table('trkonfig_spd')->first();
         $jenis = DB::table('trhspd')->where(['no_spd' => $nospd])->first();
-        $no_dpa = DB::table('trhrka')->where(['kd_skpd' => $jenis->kd_skpd])->first();
+
+        $no_dpa = DB::table('trhrka')
+            ->where(['kd_skpd' => $jenis->kd_skpd, 'jns_ang' => $jenis->jns_ang])
+            ->first();
+
         $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
         $total_anggaran = DB::table('trdrka')
             ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
