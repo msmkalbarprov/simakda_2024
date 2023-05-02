@@ -260,6 +260,7 @@ class SpmController extends Controller
         $no_spm = Crypt::decryptString($no_spm);
         $cari_spm = DB::table('trhspm as a')
             ->select('a.*')
+            ->selectRaw("(SELECT isnull(is_verified, '0') FROM trhsp2d c WHERE a.no_spm=c.no_spm and a.kd_skpd=c.kd_skpd) as is_verified")
             ->where(['a.no_spm' => $no_spm])
             ->first();
 

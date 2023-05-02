@@ -118,7 +118,8 @@
                         </div>
                     </div>
                     <div style="text-align:center">
-                        <button id="simpan_potongan" class="btn btn-primary btn-md">Tambah Potongan</button>
+                        <button id="simpan_potongan" {{ $spm->is_verified > 0 ? 'hidden' : '' }}
+                            class="btn btn-primary btn-md">Tambah Potongan</button>
                         <a href="{{ route('spm.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
