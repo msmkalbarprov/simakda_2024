@@ -70,7 +70,22 @@ class SpmController extends Controller
 
             $data_spp = DB::select("SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
                         FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND setujui=?
-                        and (sp2d_batal!='1' or sp2d_batal is null)", [$kd_skpd, $kd_skpd, '1']);
+                        and (sp2d_batal!='1' or sp2d_batal is null)
+                        UNION ALL
+                        SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND jns_spp='4' AND jns_beban='1' and (sp2d_batal!='1' or sp2d_batal is null)
+                        UNION ALL
+                        SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND jns_spp='4' AND jns_beban='10' and (sp2d_batal!='1' or sp2d_batal is null)
+                        UNION ALL
+                        SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND jns_spp='6' AND jns_beban='1' and (sp2d_batal!='1' or sp2d_batal is null)
+                        UNION ALL
+                        SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND jns_spp='6' AND jns_beban='2' and (sp2d_batal!='1' or sp2d_batal is null)
+                        UNION ALL
+                        SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+                        FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?)and kd_skpd = ? AND jns_spp='6' AND jns_beban='3' and (sp2d_batal!='1' or sp2d_batal is null)", [$kd_skpd, $kd_skpd, '1', $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]);
 
             // if ($tanggal < 13) {
             //     $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->where('jns_spp', '!=', '3')->where(function ($query) {
