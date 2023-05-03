@@ -961,128 +961,239 @@ class BendaharaUmumDaerahController extends Controller
             $tanda_tangan = null;
         }
 
-        $terima1 = DB::table('trhkasin_ppkd as a')
-            ->join('trdkasin_ppkd as b', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->leftJoin('ms_rek3 as c', function ($join) {
-                $join->on(DB::raw("left(b.kd_rek6,3)"), '=', 'c.kd_rek3');
-            })
-            ->selectRaw("a.tgl_kas, SUM ( rupiah ) AS nilai,1 jenis")
-            ->whereRaw("LEFT( b.kd_rek6, 1 ) IN ( ? ) AND a.tgl_kas BETWEEN ? AND ?", ['4', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas");
+        // $terima1 = DB::table('trhkasin_ppkd as a')
+        //     ->join('trdkasin_ppkd as b', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })->leftJoin('ms_rek3 as c', function ($join) {
+        //         $join->on(DB::raw("left(b.kd_rek6,3)"), '=', 'c.kd_rek3');
+        //     })
+        //     ->selectRaw("a.tgl_kas, SUM ( rupiah ) AS nilai,1 jenis")
+        //     ->whereRaw("LEFT( b.kd_rek6, 1 ) IN ( ? ) AND a.tgl_kas BETWEEN ? AND ?", ['4', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas");
 
-        $terima2 = DB::table('trhkasin_ppkd as a')
-            ->join('trdkasin_ppkd as b', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis")
-            ->whereRaw("LEFT (b.kd_rek6,1) IN (?,?) AND pot_khusus=? AND a.tgl_kas BETWEEN ? AND ?", ['5', '1', '3', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas")
-            ->unionAll($terima1);
+        // $terima2 = DB::table('trhkasin_ppkd as a')
+        //     ->join('trdkasin_ppkd as b', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis")
+        //     ->whereRaw("LEFT (b.kd_rek6,1) IN (?,?) AND pot_khusus=? AND a.tgl_kas BETWEEN ? AND ?", ['5', '1', '3', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas")
+        //     ->unionAll($terima1);
 
-        $terima3 = DB::table('trhkasin_ppkd as a')
-            ->join('trdkasin_ppkd as b', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis")
-            ->whereRaw("LEFT ( b.kd_rek6, 1 ) IN ( ?,? ) AND pot_khusus <> ? AND a.tgl_kas BETWEEN ? AND ?", ['5', '1', '3', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas")
-            ->unionAll($terima2);
+        // $terima3 = DB::table('trhkasin_ppkd as a')
+        //     ->join('trdkasin_ppkd as b', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis")
+        //     ->whereRaw("LEFT ( b.kd_rek6, 1 ) IN ( ?,? ) AND pot_khusus <> ? AND a.tgl_kas BETWEEN ? AND ?", ['5', '1', '3', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas")
+        //     ->unionAll($terima2);
 
-        $terima4 = DB::table('trkasout_ppkd as w')
-            ->selectRaw("w.tanggal as tgl_kas, isnull( SUM ( w.nilai ), 0 ) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
-            ->groupByRaw("w.tanggal")
-            ->unionAll($terima3);
+        // $terima4 = DB::table('trkasout_ppkd as w')
+        //     ->selectRaw("w.tanggal as tgl_kas, isnull( SUM ( w.nilai ), 0 ) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($terima3);
 
-        $terima5 = DB::table('penerimaan_non_sp2d as w')
-            ->selectRaw("w.tanggal as tgl_kas, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal BETWEEN ? AND ? AND w.jenis=?", [$periode1, $periode2, '1'])
-            ->groupByRaw("w.tanggal")
-            ->unionAll($terima4);
+        // $terima5 = DB::table('penerimaan_non_sp2d as w')
+        //     ->selectRaw("w.tanggal as tgl_kas, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal BETWEEN ? AND ? AND w.jenis=?", [$periode1, $periode2, '1'])
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($terima4);
 
-        $terima6 = DB::table('penerimaan_non_sp2d as w')
-            ->selectRaw("w.tanggal as tgl_kas, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal BETWEEN ? AND ? AND w.jenis=?", [$periode1, $periode2, '2'])
-            ->groupByRaw("w.tanggal")
-            ->unionAll($terima5);
+        // $terima6 = DB::table('penerimaan_non_sp2d as w')
+        //     ->selectRaw("w.tanggal as tgl_kas, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal BETWEEN ? AND ? AND w.jenis=?", [$periode1, $periode2, '2'])
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($terima5);
 
-        $terima = DB::table(DB::raw("({$terima6->toSql()}) AS a"))
-            ->selectRaw("tgl_kas, SUM(nilai) nilai")
-            ->mergeBindings($terima6)
-            ->groupBy('tgl_kas');
+        // $terima = DB::table(DB::raw("({$terima6->toSql()}) AS a"))
+        //     ->selectRaw("tgl_kas, SUM(nilai) nilai")
+        //     ->mergeBindings($terima6)
+        //     ->groupBy('tgl_kas');
 
-        $keluar1 = DB::table('trhsp2d as a')
-            ->join('trhspm as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->join('trhspp as c', function ($join) {
-                $join->on('b.no_spp', '=', 'c.no_spp');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })
-            ->join('trdspp as d', function ($join) {
-                $join->on('c.no_spp', '=', 'd.no_spp');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas_bud tgl_kas,isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis")
-            ->whereRaw("a.status_bud =? AND a.jns_spp = ? AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL ) AND a.tgl_kas_bud BETWEEN ? AND ?", ['1', '4', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas_bud");
+        // $keluar1 = DB::table('trhsp2d as a')
+        //     ->join('trhspm as b', function ($join) {
+        //         $join->on('a.no_spm', '=', 'b.no_spm');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->join('trhspp as c', function ($join) {
+        //         $join->on('b.no_spp', '=', 'c.no_spp');
+        //         $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+        //     })
+        //     ->join('trdspp as d', function ($join) {
+        //         $join->on('c.no_spp', '=', 'd.no_spp');
+        //         $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas_bud tgl_kas,isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis")
+        //     ->whereRaw("a.status_bud =? AND a.jns_spp = ? AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL ) AND a.tgl_kas_bud BETWEEN ? AND ?", ['1', '4', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas_bud");
 
-        $keluar2 = DB::table('trhsp2d as a')
-            ->join('trhspm as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->join('trhspp as c', function ($join) {
-                $join->on('b.no_spp', '=', 'c.no_spp');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })
-            ->join('trdspp as d', function ($join) {
-                $join->on('c.no_spp', '=', 'd.no_spp');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas_bud tgl_kas, isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis")
-            ->whereRaw("a.status_bud =? AND a.jns_spp != ? AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL ) AND a.tgl_kas_bud BETWEEN ? AND ?", ['1', '4', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas_bud")->unionAll($keluar1);
+        // $keluar2 = DB::table('trhsp2d as a')
+        //     ->join('trhspm as b', function ($join) {
+        //         $join->on('a.no_spm', '=', 'b.no_spm');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->join('trhspp as c', function ($join) {
+        //         $join->on('b.no_spp', '=', 'c.no_spp');
+        //         $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+        //     })
+        //     ->join('trdspp as d', function ($join) {
+        //         $join->on('c.no_spp', '=', 'd.no_spp');
+        //         $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas_bud tgl_kas, isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis")
+        //     ->whereRaw("a.status_bud =? AND a.jns_spp != ? AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL ) AND a.tgl_kas_bud BETWEEN ? AND ?", ['1', '4', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas_bud")->unionAll($keluar1);
 
-        $keluar3 = DB::table('pengeluaran_non_sp2d as x')
-            ->selectRaw("x.tanggal tgl_kas, isnull( SUM ( x.nilai ), 0 ) AS nilai,2 jenis")
-            ->whereRaw("x.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
-            ->groupByRaw("x.tanggal")
-            ->unionAll($keluar2);
+        // $keluar3 = DB::table('pengeluaran_non_sp2d as x')
+        //     ->selectRaw("x.tanggal tgl_kas, isnull( SUM ( x.nilai ), 0 ) AS nilai,2 jenis")
+        //     ->whereRaw("x.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
+        //     ->groupByRaw("x.tanggal")
+        //     ->unionAll($keluar2);
 
-        $keluar4 = DB::table('trkoreksi_pengeluaran as w')
-            ->selectRaw("w.tanggal tgl_kas, isnull( SUM ( w.nilai ), 0 ) AS nilai,2 jenis")
-            ->whereRaw("w.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
-            ->groupByRaw("w.tanggal")
-            ->unionAll($keluar3);
+        // $keluar4 = DB::table('trkoreksi_pengeluaran as w')
+        //     ->selectRaw("w.tanggal tgl_kas, isnull( SUM ( w.nilai ), 0 ) AS nilai,2 jenis")
+        //     ->whereRaw("w.tanggal BETWEEN ? AND ?", [$periode1, $periode2])
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($keluar3);
 
-        $keluar5 = DB::table('trdrestitusi as b')
-            ->join('trhrestitusi as a', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.no_sts', '=', 'b.no_sts');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas, isnull( SUM ( b.rupiah ), 0 ) AS nilai,2 jenis")
-            ->whereRaw("a.jns_trans= ? AND a.tgl_kas BETWEEN ? AND ?", ['3', $periode1, $periode2])
-            ->groupByRaw("a.tgl_kas")->unionAll($keluar4);
+        // $keluar5 = DB::table('trdrestitusi as b')
+        //     ->join('trhrestitusi as a', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.no_sts', '=', 'b.no_sts');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas, isnull( SUM ( b.rupiah ), 0 ) AS nilai,2 jenis")
+        //     ->whereRaw("a.jns_trans= ? AND a.tgl_kas BETWEEN ? AND ?", ['3', $periode1, $periode2])
+        //     ->groupByRaw("a.tgl_kas")->unionAll($keluar4);
 
-        $keluar = DB::table(DB::raw("({$keluar5->toSql()}) AS b"))
-            ->selectRaw("tgl_kas, SUM(nilai) nilai")
-            ->mergeBindings($keluar5)
-            ->groupBy('tgl_kas');
+        // $keluar = DB::table(DB::raw("({$keluar5->toSql()}) AS b"))
+        //     ->selectRaw("tgl_kas, SUM(nilai) nilai")
+        //     ->mergeBindings($keluar5)
+        //     ->groupBy('tgl_kas');
 
-        $nilai = DB::table($terima, 'terima')
-            ->selectRaw("terima.tgl_kas, terima.nilai terima, keluar.nilai keluar")
-            ->leftJoinSub($keluar, 'keluar', function ($join) {
-                $join->on('terima.tgl_kas', '=', 'keluar.tgl_kas');
-            })
-            ->orderBy('terima.tgl_kas')
-            ->get();
+        // $nilai = DB::table($terima, 'terima')
+        //     ->selectRaw("terima.tgl_kas, terima.nilai terima, keluar.nilai keluar")
+        //     ->leftJoinSub($keluar, 'keluar', function ($join) {
+        //         $join->on('terima.tgl_kas', '=', 'keluar.tgl_kas');
+        //     })
+        //     ->orderBy('terima.tgl_kas')
+        //     ->get();
+
+
+        $nilai = DB::select("SELECT terima.tgl_kas, terima.nilai terima, keluar.nilai keluar FROM (
+				-- mulai terima
+                SELECT tgl_kas, SUM(nilai) nilai FROM (
+				SELECT a.tgl_kas, SUM ( rupiah ) AS nilai,1 jenis
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas= b.no_kas AND a.kd_skpd= b.kd_skpd
+									 LEFT JOIN ms_rek3 c ON LEFT ( b.kd_rek6, 3 ) = c.kd_rek3
+				WHERE LEFT( b.kd_rek6, 1 ) IN ( '4' ) AND a.tgl_kas BETWEEN ? AND ? and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001','410409010001')
+				group by a.tgl_kas
+				UNION ALL
+
+                SELECT a.tgl_kas ,SUM(rupiah) as nilai, 1 jenis
+                FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+                WHERE b.kd_rek6 in ('410409010001') AND a.tgl_kas BETWEEN ? AND ? and b.sumber<>'y'
+                GROUP BY a.tgl_kas
+
+                UNION ALL
+
+				SELECT a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas= b.no_kas AND a.kd_skpd= b.kd_skpd
+				WHERE LEFT (b.kd_rek6,1) IN ('5','1') AND pot_khusus=3 AND a.tgl_kas BETWEEN ? AND ?
+				GROUP BY a.tgl_kas
+				UNION ALL
+
+				SELECT a.tgl_kas,SUM ( rupiah ) AS nilai,1 jenis
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas= b.no_kas AND a.kd_skpd= b.kd_skpd
+				WHERE LEFT ( b.kd_rek6, 1 ) IN ( '5', '1','2' ) AND pot_khusus <> 3 AND a.tgl_kas BETWEEN ? AND ?
+				GROUP BY a.tgl_kas
+				UNION ALL
+
+				SELECT w.tanggal, isnull( SUM ( w.nilai ), 0 ) AS nilai, 1 jenis
+				FROM trkasout_ppkd w
+				WHERE w.tanggal BETWEEN ? AND ?
+				GROUP BY w.tanggal
+				UNION ALL
+
+				SELECT w.tanggal, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis
+				FROM penerimaan_non_sp2d w
+				WHERE w.tanggal between ? AND ? AND w.jenis='1'
+				GROUP BY w.tanggal
+				UNION ALL
+
+				SELECT w.tanggal, isnull(SUM(w.nilai), 0) AS nilai, 1 jenis
+				FROM penerimaan_non_sp2d w
+				WHERE w.tanggal between ? AND ? AND w.jenis='2'
+				GROUP BY w.tanggal
+                union all
+
+                SELECT a.tgl_kas
+                ,SUM(rupiah) as nilai, 1 jenis
+                FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                WHERE b.kd_rek6 in ('410409010001') AND a.tgl_kas between ? AND ? and
+                -- b.sumber='y'
+                a.keterangan like '%(UYHD)%'
+                GROUP BY a.tgl_kas
+                UNION ALL
+                SELECT
+
+                    w.tanggal as tgl_kas,
+                    isnull(SUM(w.nilai),0) as nilai,
+                    1 jenis
+                FROM
+                    tkoreksi_penerimaan w
+                WHERE
+                    w.tanggal between ? AND ?
+                group by w.tanggal
+                ) x
+				GROUP BY tgl_kas
+                -- end terima
+                ) terima
+				LEFT JOIN
+				(SELECT tgl_kas, SUM(nilai) nilai FROM (
+
+				SELECT a.tgl_kas_bud tgl_kas,isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis
+					 FROM trhsp2d a INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+									INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+									INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					 WHERE a.status_bud = '1' AND a.jns_spp = '4'
+					 AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL ) AND a.tgl_kas_bud BETWEEN ? AND ?
+				GROUP BY a.tgl_kas_bud
+				UNION ALL
+
+				SELECT a.tgl_kas_bud tgl_kas, isnull( SUM ( d.nilai ), 0 ) AS nilai, 2 jenis
+					 FROM trhsp2d a INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+									INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+									INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+					 WHERE a.status_bud = '1' AND a.jns_spp != '4' AND ( c.sp2d_batal= 0 OR c.sp2d_batal IS NULL )
+					 AND a.tgl_kas_bud BETWEEN ? AND ?
+				GROUP BY a.tgl_kas_bud
+				UNION ALL
+
+				SELECT x.tanggal tgl_kas, isnull( SUM ( x.nilai ), 0 ) AS nilai,2 jenis
+				FROM pengeluaran_non_sp2d x
+				WHERE x.tanggal BETWEEN ? AND ?
+				GROUP BY x.tanggal
+				UNION ALL
+
+				SELECT w.tanggal tgl_kas, isnull( SUM ( w.nilai ), 0 ) AS nilai,2 jenis
+				FROM trkoreksi_pengeluaran w
+				WHERE w.tanggal BETWEEN ? AND ?
+				GROUP BY w.tanggal
+				UNION ALL
+
+				SELECT a.tgl_kas, isnull( SUM ( b.rupiah ), 0 ) AS nilai,2 jenis
+				FROM trdrestitusi b INNER JOIN trhrestitusi a ON a.kd_skpd= b.kd_skpd AND a.no_kas= b.no_kas AND a.no_sts= b.no_sts
+				WHERE a.jns_trans= 3 AND a.tgl_kas BETWEEN ? AND ?
+				GROUP BY a.tgl_kas) x
+				GROUP BY tgl_kas) keluar on terima.tgl_kas=keluar.tgl_kas
+				ORDER BY terima.tgl_kas", [$periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2]);
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
