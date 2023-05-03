@@ -19,7 +19,9 @@ class KontrakController extends Controller
     public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('ms_kontrak AS a')->select('a.*')
+        $data = DB::table('ms_kontrak AS a')
+            ->select('a.*')
+            ->selectRaw("(SELECT count(*) as tot FROM trhtagih WHERE kontrak=a.no_kontrak) as total")
             ->leftJoin('ms_rekening_bank_online AS b', function ($join) {
                 $join->on('a.nm_rekening', '=', 'b.nm_rekening');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -29,7 +31,11 @@ class KontrakController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("kontrak.show", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="' . route("kontrak.edit", Crypt::encryptString($row->no_kontrak)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_kontrak . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            if ($row->total > 0) {
+                $btn .= "";
+            } else {
+                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_kontrak . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
