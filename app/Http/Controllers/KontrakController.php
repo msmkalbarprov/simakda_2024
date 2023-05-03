@@ -97,6 +97,7 @@ class KontrakController extends Controller
                 $join->on('a.nm_rekening', '=', 'b.nm_rekening');
             })
             ->select('a.*', 'b.rekening')
+            ->selectRaw("(SELECT count(*) as tot FROM trhtagih WHERE kontrak=a.no_kontrak) as total")
             ->where(['a.no_kontrak' => $id, 'a.kd_skpd' => $kd_skpd])
             ->first();
 
