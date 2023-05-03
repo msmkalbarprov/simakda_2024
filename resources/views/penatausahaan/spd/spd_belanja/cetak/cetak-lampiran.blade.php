@@ -27,7 +27,7 @@
         }
 
         #rincian-spd {
-            font-size: 14px;
+            font-size: 16px;
         }
 
         .text-bold {
@@ -35,7 +35,7 @@
         }
 
         .spd {
-            font-size: 14px;
+            font-size: 16px;
         }
 
         #info-spd {
@@ -57,7 +57,7 @@
 
         #ttd {
             width: 100%;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         #ttd td {
@@ -65,13 +65,13 @@
         }
 
         #ttd tr>td:first-child {
-            width: 60%;
+            width: 50%;
         }
     </style>
 </head>
 
 <body>
-    <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;text-align:center">
+    <table style="width: 100%;text-align:center;font-size:16px">
         <tr>
             <td>PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
                 PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
@@ -83,8 +83,7 @@
     </table>
     <br />
     <br />
-    <br />
-    <table class="spd" id="info-spd">
+    <table class="spd" id="info-spd" style="font-family: 'Times New Roman', Times, serif;width:100%">
         <tbody>
             <tr>
                 <td colspan="3">LAMPIRAN SURAT PENYEDIAAN DANA</td>
@@ -130,7 +129,7 @@
         </tbody>
     </table>
     <br />
-    <table id="rincian-spd">
+    <table id="rincian-spd" style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
         <thead>
             <tr>
                 <th>No.</th>
@@ -197,25 +196,30 @@
                     }
                 @endphp
                 <tr>
-                    <td style="text-align: center;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td
+                        style="text-align: center;font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:4%">
                         {{ $loop->iteration }}
                     </td>
-                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:10%">
                         {{ $item->kode }}
                     </td>
-                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td style="font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:38%">
                         {{ $item->uraian }}
                     </td>
-                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td
+                        style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:12%">
                         {{ rupiah($item->anggaran) }}
                     </td>
-                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td
+                        style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:12%">
                         {{ rupiah($item->spd_lalu) }}
                     </td>
-                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td
+                        style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:12%">
                         {{ rupiah($item->nilai) }}
                     </td>
-                    <td style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px">
+                    <td
+                        style="text-align: right;font-weight:{{ $bold }};font-size:{{ $fontr }}px;width:12%">
                         {{ rupiah($item->anggaran - $item->spd_lalu - $item->nilai) }}
                     </td>
                 </tr>
@@ -231,24 +235,28 @@
         </tbody>
     </table>
     <br /><br />
-    <div class="content-text">Jumlah Penyediaan Dana Rp{{ number_format($total_spd, 2, ',', '.') }}</div>
-    <div class="content-text"><i>({{ terbilang($total_spd, 2, ',', '.') }})</i></div>
+    <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
+        <tr>
+            <td>Jumlah Penyediaan Dana Rp{{ number_format($total_spd, 2, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td><i>({{ terbilang($total_spd, 2, ',', '.') }})</i></td>
+        </tr>
+    </table>
     <br /><br /><br />
-    <table id="ttd">
-        <tbody>
-            <tr>
-                <td></td>
-                <td>
-                    <div>Ditetapkan di Pontianak</div>
-                    <div>Pada tanggal {{ tanggal($data->tgl_spd) }}</div>
-                    <br />
-                    <div>PPKD SELAKU BUD</div>
-                    <br /><br /><br /><br />
-                    <div><u>{{ $ttd->nama }}</u></div>
-                    <div>NIP. {{ $ttd->nip }}</div>
-                </td>
-            </tr>
-        </tbody>
+    <table id="ttd" style="font-family:Arial, Helvetica, sans-serif">
+        <tr>
+            <td></td>
+            <td>
+                Ditetapkan di Pontianak <br>
+                Pada tanggal {{ tanggal($data->tgl_spd) }}
+                <br /> <br>
+                PPKD SELAKU BUD,
+                <br /><br /><br /><br /><br>
+                <u>{{ $ttd->nama }}</u> <br>
+                NIP. {{ $ttd->nip }}
+            </td>
+        </tr>
     </table>
 </body>
 

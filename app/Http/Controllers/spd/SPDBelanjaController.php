@@ -1161,11 +1161,15 @@ class SPDBelanjaController extends Controller
 
         if ($jenispr == 'pdf') {
             $pdf = PDF::loadHtml($view)
-                ->setOption('margin-top',  10)
-                ->setOption('margin-left',  10)
-                ->setOption('margin-right',  10)
-                ->setOption('header-font-name',  'Arial')
-                ->setOption('header-font-size',  6);
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-top', $request->atas)
+                ->setOption('margin-bottom', $request->bawah)
+                ->setOption('margin-right', $request->kanan)
+                ->setOption('margin-left', $request->kiri);
+            // ->setOption('header-font-name',  'Arial')
+            // ->setOption('header-font-size',  6);
             return $pdf->stream('laporan.pdf');
         } else if ($request->jenis == 'excel') {
             header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -1185,7 +1189,7 @@ class SPDBelanjaController extends Controller
 
         $konfig = DB::table('trkonfig_spd')->first();
         $jenis = DB::table('trhspd')->where(['no_spd' => $nospd])->first();
-        $no_dpa = DB::table('trhrka')->where(['kd_skpd' => $jenis->kd_skpd])->first();
+        $no_dpa = DB::table('trhrka')->where(['kd_skpd' => $jenis->kd_skpd, 'jns_ang' => $jenis->jns_ang])->first();
         $total_anggaran = DB::table('trdrka')
             ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
             ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
