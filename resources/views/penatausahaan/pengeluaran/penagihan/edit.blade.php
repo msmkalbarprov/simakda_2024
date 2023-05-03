@@ -98,11 +98,11 @@
                             <select class="form-control select2-multiple" style=" width: 100%;" id="no_kontrak"
                                 name="no_kontrak" data-placeholder="Silahkan Pilih">
                                 <option value="" disabled selected>Kontrak | Nilai Kontrak | Lalu</option>
-                                @foreach ($daftar_kontrak as $kontrak)
-                                    <option value="{{ $kontrak->no_kontrak }}" data-nilai="{{ $kontrak->nilai }}"
-                                        data-lalu="{{ $kontrak->lalu }}"
-                                        {{ $data_tagih->kontrak == $kontrak->no_kontrak ? 'selected' : '' }}>
-                                        {{ $kontrak->no_kontrak }} | {{ $kontrak->nilai }} | {{ $kontrak->lalu }}
+                                @foreach ($daftar_kontrak as $kontrak1)
+                                    <option value="{{ $kontrak1->no_kontrak }}" data-nilai="{{ $kontrak1->nilai }}"
+                                        data-lalu="{{ $kontrak1->lalu }}"
+                                        {{ $data_tagih->kontrak == $kontrak1->no_kontrak ? 'selected' : '' }}>
+                                        {{ $kontrak1->no_kontrak }} | {{ $kontrak1->nilai }} | {{ $kontrak1->lalu }}
                                     </option>
                                 @endforeach
                             </select>
