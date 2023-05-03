@@ -83,6 +83,8 @@
             let tgl_spm = $(this).find(':selected').data('tgl_spm');
             let nilai = $(this).find(':selected').data('nilai');
             let bank = $(this).find(':selected').data('bank');
+            let jns_spp = $(this).find(':selected').data('jns_spp');
+            let jenis_beban = $(this).find(':selected').data('jenis_beban');
             let bic = $(this).find(':selected').data('bic').trim();
 
             let no_advice = document.getElementById('no_advice').value;
@@ -90,6 +92,13 @@
             if (!tanggal) {
                 alert('Pilih tanggal terlebih dahulu!');
                 $("#no_sp2d").val(null).change();
+                return;
+            }
+
+            if ((sp2d_online == '1' && jns_spp == '4' && jenis_beban == '1') || (sp2d_online == '1' &&
+                    jns_spp == '4' &&
+                    jenis_beban == '10')) {
+                alert('SP2D Gaji dan Tunjangan Tidak Dapat SP2D Online');
                 return;
             }
 
@@ -243,7 +252,7 @@
                     `<option value="0" disabled selected>Silahkan Pilih</option>`);
                 $.each(data, function(index, data) {
                     $('#no_sp2d').append(
-                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}" data-bic="${data.bic}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
+                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}" data-bic="${data.bic}" data-jns_spp="${data.jns_spp}" data-jenis_beban="${data.jenis_beban}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
                     );
                 })
             }

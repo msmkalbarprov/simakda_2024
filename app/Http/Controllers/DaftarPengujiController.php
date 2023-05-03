@@ -123,7 +123,7 @@ class DaftarPengujiController extends Controller
                     $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
                 })
                 ->where('is_verified', '1')
-                ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd')
+                ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd', 'jns_spp', 'jenis_beban')
                 ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
                 ->get()
         ];
@@ -224,7 +224,7 @@ class DaftarPengujiController extends Controller
             'penguji' => DB::table('trhuji')->where(['no_uji' => $no_uji])->first(),
             'daftar_sp2d' => DB::table('trhsp2d')->whereRaw("no_sp2d NOT IN (SELECT no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")->where(function ($query) {
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
-            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai')->get(),
+            })->where('is_verified', '1')->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'jns_spp', 'jenis_beban')->get(),
             'rincian_penguji' => DB::table('trduji as a')->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('no_uji', 'tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank')->where(['no_uji' => $no_uji])->get()
         ];
         return view('penatausahaan.pengeluaran.daftar_penguji.edit')->with($data);
