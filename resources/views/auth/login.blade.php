@@ -22,12 +22,111 @@
     <!-- App Css-->
     <link href="{{ asset('template/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 <style>
-    .authentication-bgs {
-  /* background-color: rgba(91, 140, 232, 0.25);  */
-  background-image: url('{{ asset('template/assets/images/bg.png')}}');
-  /* background-repeat: no-repeat; */
-  background-size: 100% auto;
+
+/* .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/bg.png')}}');
+    background-size: 100% auto;
+  } */
+/* For Desktop View */
+/* 1920 × 1080 */
+
+@media screen and (min-width: 1500px) {
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/bg.png')}}');
+    background-size: 100% auto;
+  }
 }
+
+@media screen and (min-width: 1422px) and (max-device-width: 1500px){
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/lebaran-bg14.png')}}');
+    background-size: 100% auto;
+  }
+}
+
+@media screen and (min-width: 1366px) and (max-device-width: 1422px){
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
+    background-size: 100% auto;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-device-width: 1366px) {
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For Tablet View */
+@media screen and (min-device-width: 768px)
+and (max-device-width: 1024px) {
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For Mobile Portrait View */
+@media screen and (max-device-width: 480px)
+and (orientation: portrait) {
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For Mobile Landscape View */
+@media screen and (max-device-width: 640px)
+and (orientation: landscape) {
+  .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/bg.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For Mobile Phones Portrait or Landscape View */
+@media screen and (max-device-width: 640px) {
+  .authentication-bgs {
+ 
+    background-image: url('{{ asset('template/assets/images/bg.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For iPhone 4 Portrait or Landscape View */
+@media screen and (min-device-width: 320px)
+and (-webkit-min-device-pixel-ratio: 2) {
+  .authentication-bgs {
+   
+    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For iPhone 5 Portrait or Landscape View */
+@media (device-height: 568px) and (device-width: 320px)
+and (-webkit-min-device-pixel-ratio: 2) {
+  .authentication-bgs {
+   
+    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
+    background-size: 100% auto;
+  }
+}
+ 
+/* For iPhone 6 and 6 plus Portrait or Landscape View */
+@media (min-device-height: 667px) and (min-device-width: 375px)
+and (-webkit-min-device-pixel-ratio: 3) {
+  .authentication-bgs {
+   
+    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
+    background-size: 100% auto;
+  }
+}
+
+
+
+    
 .authentication-bgs .auth-logo .logo {
     margin: 0px auto; }
 </style>
