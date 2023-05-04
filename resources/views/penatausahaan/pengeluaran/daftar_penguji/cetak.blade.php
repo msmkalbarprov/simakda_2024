@@ -113,8 +113,8 @@
                 <td style="text-align: center">
                     {{-- <b>Kuasa Bendahara Umum Daerah</b> --}}
                     <b>
-                        Kuasa Bendahara Umum Daerah <br>
-                        {{ $ttd->jabatan }}
+                        Kuasa Bendahara Umum Daerah
+                        {{-- <br> {{ $ttd->jabatan }} --}}
                     </b>
                 </td>
             </tr>
