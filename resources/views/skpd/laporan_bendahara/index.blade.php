@@ -1344,6 +1344,10 @@
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_print", jenis_print);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 searchParams.append("cetak", jns_cetak);
 
 
