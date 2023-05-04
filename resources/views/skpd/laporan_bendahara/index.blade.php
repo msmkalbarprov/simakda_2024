@@ -1379,6 +1379,10 @@
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("judul", 'Administratif');
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak Buku Pembantu Kas Bank') {
                 let url = new URL("{{ route('skpd.laporan_bendahara.cetak_bp_kasbank') }}");
@@ -1521,6 +1525,10 @@
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("jenis", regpajak1);
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak Register CP') {
                 let url = new URL("{{ route('skpd.laporan_bendahara.cetak_register_cp') }}");
