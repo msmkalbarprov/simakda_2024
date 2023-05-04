@@ -369,18 +369,17 @@
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;">{{ $cari_pa_kpa->nama }}</td>
-                <td style="text-align: center;">{{ $cari_bendahara->nama }}</td>
+                <td style="text-align: center;">
+                    <b><u>{{ $cari_pa_kpa->nama }}</u></b> <br>
+                    {{ $cari_pa_kpa->pangkat }} <br>
+                    NIP. {{ $cari_pa_kpa->nip }}
+                </td>
+                <td style="text-align: center;">
+                    <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
+                    {{ $cari_bendahara->pangkat }} <br>
+                    NIP. {{ $cari_bendahara->nip }}
+                </td>
             </tr>
-            <tr>
-                <td style="text-align: center;">{{ $cari_pa_kpa->pangkat }}</td>
-                <td style="text-align: center;">{{ $cari_bendahara->pangkat }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;">NIP. {{ $cari_pa_kpa->nip }}</td>
-                <td style="text-align: center;">NIP. {{ $cari_bendahara->nip }}</td>
-            </tr>
-
         </table>
     </div>
 </body>
