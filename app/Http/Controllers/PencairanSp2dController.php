@@ -96,6 +96,13 @@ class PencairanSp2dController extends Controller
                     'app_cair' => 'SIMAKDA'
                 ]);
 
+            DB::table('trduji')
+                ->where(['no_sp2d' => $no_sp2d])
+                ->update([
+                    'status' => '2',
+                    'ket_payment' => 'SUKSES'
+                ]);
+
             // DB::table('trhju_pkd')->insert([
             //     'no_voucher' => $no_kas,
             //     'tgl_voucher' => $tgl_cair,
@@ -166,8 +173,15 @@ class PencairanSp2dController extends Controller
                     'nocek' => '',
                     'app_cair' => ''
                 ]);
-            DB::table('trhju_pkd')->where(['no_voucher' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
-            DB::table('trdju_pkd')->where(['no_voucher' => $no_kas, 'kd_unit' => $kd_skpd])->delete();
+            // DB::table('trhju_pkd')->where(['no_voucher' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
+            // DB::table('trdju_pkd')->where(['no_voucher' => $no_kas, 'kd_unit' => $kd_skpd])->delete();
+
+            DB::table('trduji')
+                ->where(['no_sp2d' => $no_sp2d])
+                ->update([
+                    'status' => '',
+                    'ket_payment' => ''
+                ]);
             DB::commit();
             return response()->json([
                 'message' => '1'
