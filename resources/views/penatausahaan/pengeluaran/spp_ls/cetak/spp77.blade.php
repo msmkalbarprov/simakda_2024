@@ -150,6 +150,9 @@
                 sebagaimana tertera pada
                 daftar kelengkapan dokumen SPP ini</td>
         </tr>
+    </table>
+    <table class="table rincian"
+        style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;border-top:hidden;border-bottom:hidden">
         @if ($sub_kegiatan == '5.02.00.0.06.62')
             <tr>
                 <td colspan="4" style="margin: 2px 0px;text-align: center;padding-left:700px;padding-top:20px">
@@ -173,20 +176,12 @@
                     NIP. {{ $cari_bendahara->nip }}
                 </td>
             </tr>
-            {{-- <tr>
-                <td colspan="4" style="text-align: center;padding-left:700px">{{ $cari_bendahara->pangkat }}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" style="text-align: center;padding-left:700px">NIP. {{ $cari_bendahara->nip }}
-                </td>
-            </tr> --}}
         @else
             <tr>
-                <td colspan="2" style="margin: 2px 0px;text-align: center;padding-left:100px">
+                <td colspan="2" style="margin: 2px 0px;text-align: center;width:50%;text-align:center">
                 </td>
-                <td colspan="2" style="margin: 2px 0px;padding-top:20px;text-align: center;padding-left:300px"
-                    class="unborder">
+                <td colspan="2"
+                    style="margin: 2px 0px;padding-top:20px;text-align: center;border-right:1px solid black">
                     Pontianak,
                     @if ($tanpa == 1)
                         ______________{{ $tahun_anggaran }}
@@ -196,54 +191,48 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding-bottom: 50px;text-align: center;padding-left:100px">
+                <td colspan="2" style="padding-bottom: 50px;text-align: center">
                     {{ $cari_pptk->jabatan }}
                 </td>
-                <td colspan="2" style="padding-bottom: 50px;text-align: center;padding-left:300px">
+                <td colspan="2" style="padding-bottom: 50px;text-align: center;border-right:1px solid black">
                     {{ $cari_bendahara->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center;padding-left:100px">
+                <td colspan="2" style="text-align: center">
                     <b><u>{{ $cari_pptk->nama }}</u></b> <br>
                     {{ $cari_pptk->pangkat }} <br>
                     {{ $cari_pptk->nip }}
                 </td>
-                <td colspan="2" style="text-align: center;padding-left:300px">
+                <td colspan="2" style="text-align: center;border-right:1px solid black">
                     <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
                     {{ $cari_bendahara->pangkat }} <br>
                     NIP. {{ $cari_bendahara->nip }}
                 </td>
             </tr>
-            {{-- <tr>
-                <td colspan="2" style="text-align: center;padding-left:100px">{{ $cari_pptk->pangkat }}</td>
-                <td colspan="2" style="text-align: center;padding-left:300px">{{ $cari_bendahara->pangkat }}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center;padding-left:100px">{{ $cari_pptk->nip }}</td>
-                <td colspan="2" style="text-align: center;padding-left:300px">NIP. {{ $cari_bendahara->nip }}
-                </td>
-            </tr> --}}
         @endif
+    </table>
+    <table class="table rincian"
+        style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;border-top:hidden">
         <tr>
-            <td style="font-size: 12px;font-weight:bold;padding-top:30px" colspan="4">Lembar Asli :
+            <td style="font-size: 12px;font-weight:bold;padding-top:30px;border-right:1px solid black" colspan="4">
+                Lembar Asli :
                 <span style="font-weight: normal">Untuk Pengguna
                     Anggaran/PPK-SKPD</span>
             </td>
         </tr>
         <tr>
-            <td style="font-size: 12px;font-weight:bold" colspan="4">Salinan 1 : <span
+            <td style="font-size: 12px;font-weight:bold;border-right:1px solid black" colspan="4">Salinan 1 : <span
                     style="font-weight: normal">Untuk Kuasa BUD</span></td>
         </tr>
         <tr>
-            <td style="font-size: 12px;font-weight:bold" colspan="4">Salinan 2 : <span
+            <td style="font-size: 12px;font-weight:bold;border-right:1px solid black" colspan="4">Salinan 2 : <span
                     style="font-weight: normal">Untuk Bendahara Pengeluaran/PPTK</span>
             </td>
         </tr>
         <tr>
-            <td style="font-size: 12px;text-align:left;font-weight:bold" colspan="4">Salinan 3 : <span
-                    style="font-weight: normal">Untuk Arsip
+            <td style="font-size: 12px;text-align:left;font-weight:bold;border-right:1px solid black" colspan="4">
+                Salinan 3 : <span style="font-weight: normal">Untuk Arsip
                     Bendahara Pengeluaran/PPTK</span></td>
         </tr>
     </table>
