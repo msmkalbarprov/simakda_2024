@@ -709,6 +709,37 @@ class PenyetoranController extends Controller
                     'no_terima' => '',
                 ]);
 
+            DB::table('trdkasin_pkd')
+                ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_sts']])
+                ->delete();
+
+            if (isset($detail_sts)) {
+                foreach ($detail_sts as $detail) {
+                    $data_input = [
+                        'no_sts' => $data['no_sts'],
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_rek6' => $detail['kd_rek6'],
+                        'rupiah' => $detail['nilai'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'no_terima' => $detail['no_sts'],
+                        'sumber' => $detail['sumber'],
+                        'kanal' => $detail['kanal'],
+                    ];
+                    DB::table('trdkasin_pkd')->insert($data_input);
+                };
+            }
+
+            DB::table('tr_terima as a')
+                ->join('trdkasin_pkd as b', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    $join->on('a.no_terima', '=', 'b.no_terima');
+                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+                })
+                ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
+                ->update([
+                    'a.kunci' => '1'
+                ]);
+
             $jumlah = DB::table('ms_skpd')->where(['jns' => '2', 'kd_skpd' => $data['kd_skpd']])->count();
 
             if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
@@ -738,72 +769,10 @@ class PenyetoranController extends Controller
                         'no_cek' => '1',
                         'status' => '1'
                     ]);
-            }
 
-            DB::table('trdkasin_pkd')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_sts' => $data['no_sts']])
-                ->delete();
-
-            if (isset($detail_sts)) {
-                // DB::table('trdkasin_pkd')
-                //     ->insert(array_map(
-                //         function ($value) use ($data) {
-                //             return [
-                //                 'no_sts' => $data['no_sts'],
-                //                 'kd_skpd' => $data['kd_skpd'],
-                //                 'kd_rek6' => $value['kd_rek6'],
-                //                 'rupiah' => $value['nilai'],
-                //                 'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                //                 'no_terima' => $value['no_sts'],
-                //                 'sumber' => $value['sumber'],
-                //                 'kanal' => $value['kanal'] == "" ? '' : $value['kanal'],
-                //             ];
-                //         },
-                //         $data['detail_sts']
-                //     ));
-                foreach ($detail_sts as $detail) {
-                    $data = [
-                        'no_sts' => $data['no_sts'],
-                        'kd_skpd' => $data['kd_skpd'],
-                        'kd_rek6' => $detail['kd_rek6'],
-                        'rupiah' => $detail['nilai'],
-                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                        'no_terima' => $detail['no_sts'],
-                        'sumber' => $detail['sumber'],
-                        'kanal' => $detail['kanal'],
-                    ];
-                    DB::table('trdkasin_pkd')->insert($data);
-                };
-            }
-
-            DB::table('tr_terima as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.no_terima', '=', 'b.no_terima');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                })
-                ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
-                ->update([
-                    'a.kunci' => '1'
-                ]);
-
-            if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
                 if (isset($detail_sts)) {
-                    // DB::table('trdkasin_ppkd')
-                    //     ->insert(array_map(function ($value) use ($data) {
-                    //         return [
-                    //             'no_sts' => $data['no_sts'],
-                    //             'kd_skpd' => $data['kd_skpd'],
-                    //             'kd_rek6' => $value['kd_rek6'],
-                    //             'rupiah' => $value['nilai'],
-                    //             'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    //             'no_kas' => $value['no_sts'],
-                    //             'sumber' => $value['sumber'],
-                    //             'kanal' => $value['kanal'] == "" ? '' : $value['kanal'],
-                    //         ];
-                    //     }, $data['detail_sts']));
                     foreach ($detail_sts as $detail) {
-                        $data = [
+                        $data_input1 = [
                             'no_sts' => $data['no_sts'],
                             'kd_skpd' => $data['kd_skpd'],
                             'kd_rek6' => $detail['kd_rek6'],
@@ -813,7 +782,7 @@ class PenyetoranController extends Controller
                             'sumber' => $detail['sumber'],
                             'kanal' => $detail['kanal'] == "" ? '' : $detail['kanal'],
                         ];
-                        DB::table('trdkasin_ppkd')->insert($data);
+                        DB::table('trdkasin_ppkd')->insert($data_input1);
                     }
                 }
 
@@ -828,6 +797,12 @@ class PenyetoranController extends Controller
                         'a.no_kas' => $nomor
                     ]);
             }
+
+
+
+            // if ($jumlah == 0 && $data['kd_skpd'] <> '1.02.0.00.0.00.02.0000') {
+
+            // }
 
             DB::commit();
             return response()->json([
