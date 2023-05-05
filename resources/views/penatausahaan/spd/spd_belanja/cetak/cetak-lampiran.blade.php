@@ -186,7 +186,7 @@
                         $total_spd_lalu += $item->spd_lalu;
                         $total_spd += $item->nilai;
                     }
-                    
+
                     if (strlen($item->no_urut) <= 32) {
                         $bold = 'bold';
                         $fontr = '16';
@@ -244,7 +244,7 @@
         </tr>
     </table>
     <br /><br /><br />
-    <table id="ttd" style="font-family:Arial, Helvetica, sans-serif">
+    <table id="ttd" style="font-family:Arial, Helvetica, sans-serif;width:100%">
         <tr>
             <td></td>
             <td>

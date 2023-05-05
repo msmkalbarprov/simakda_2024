@@ -2856,7 +2856,10 @@ order by no_urut");
                 ->setOption('margin-top', $request->atas)
                 ->setOption('margin-bottom', $request->bawah)
                 ->setOption('margin-right', $request->kanan)
-                ->setOption('margin-left', $request->kiri);
+                ->setOption('margin-left', $request->kiri)
+                ->setOption('footer-right', "Halaman [page]")
+                ->setOption('footer-font-size', 9)
+                ->setOption('footer-line', true);
             return $pdf->stream('laporan.pdf');
         } else if ($request->jenis == 'excel') {
             header("Cache-Control: no-cache, no-store, must-revalidate");
