@@ -122,6 +122,10 @@
             let tahun_anggaran = "{{ tahun_anggaran() }}";
 
             let tahun_input = tgl_cair.substring(0, 4);
+            if (!no_kas) {
+                alert('No Kas tidak boleh kosong!');
+                return;
+            }
             if (!tgl_cair) {
                 alert('Tanggal cair tidak boleh kosong!');
                 return;

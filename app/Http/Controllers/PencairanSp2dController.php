@@ -87,26 +87,28 @@ class PencairanSp2dController extends Controller
         try {
             $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first();
 
-            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
-                'status_bud' => '1',
-                'no_kas_bud' => $no_kas,
-                'tgl_kas_bud' => $tgl_cair,
-                'no_advice' => $no_advice,
-            ]);
+            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])
+                ->update([
+                    'status_bud' => '1',
+                    'no_kas_bud' => $no_kas,
+                    'tgl_kas_bud' => $tgl_cair,
+                    'no_advice' => $no_advice,
+                    'app_cair' => 'SIMAKDA'
+                ]);
 
-            DB::table('trhju_pkd')->insert([
-                'no_voucher' => $no_kas,
-                'tgl_voucher' => $tgl_cair,
-                'ket' => $no_sp2d,
-                'username' => Auth::user()->nama,
-                'tgl_update' => '',
-                'kd_skpd' => $kd_skpd,
-                'nm_skpd' => $skpd->nm_skpd,
-                'kd_unit' => $kd_skpd,
-                'total_d' => $nilai,
-                'total_k' => $nilai,
-                'tabel' => '0'
-            ]);
+            // DB::table('trhju_pkd')->insert([
+            //     'no_voucher' => $no_kas,
+            //     'tgl_voucher' => $tgl_cair,
+            //     'ket' => $no_sp2d,
+            //     'username' => Auth::user()->nama,
+            //     'tgl_update' => '',
+            //     'kd_skpd' => $kd_skpd,
+            //     'nm_skpd' => $skpd->nm_skpd,
+            //     'kd_unit' => $kd_skpd,
+            //     'total_d' => $nilai,
+            //     'total_k' => $nilai,
+            //     'tabel' => '0'
+            // ]);
 
             // $data_tagih = DB::table('trdspp as a')->leftJoin('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->leftJoin('trhspm as c', 'c.no_spp', '=', 'b.no_spp')->leftJoin('trhsp2d as d', 'd.no_spm', '=', 'c.no_spm')->where(['d.no_sp2d' => $no_sp2d])->select('a.no_spp', 'a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek5', 'a.nilai', 'b.bulan', 'c.no_spm', 'd.no_sp2d', 'b.sts_tagih')->get();
             // $jumlah = 0;
@@ -156,12 +158,14 @@ class PencairanSp2dController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->update([
-                'status_bud' => '0',
-                'no_kas_bud' => '',
-                'tgl_kas_bud' => '',
-                'nocek' => '',
-            ]);
+            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])
+                ->update([
+                    'status_bud' => '0',
+                    'no_kas_bud' => '',
+                    'tgl_kas_bud' => '',
+                    'nocek' => '',
+                    'app_cair' => ''
+                ]);
             DB::table('trhju_pkd')->where(['no_voucher' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
             DB::table('trdju_pkd')->where(['no_voucher' => $no_kas, 'kd_unit' => $kd_skpd])->delete();
             DB::commit();
