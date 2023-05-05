@@ -961,7 +961,7 @@ class PenyetoranController extends Controller
                 //         $data['detail_sts']
                 //     ));
                 foreach ($data['detail_sts'] as $detail) {
-                    $data = [
+                    $data_input = [
                         'no_sts' => $data['no_sts'],
                         'kd_skpd' => $data['kd_skpd'],
                         'kd_rek6' => $detail['kd_rek6'],
@@ -971,7 +971,7 @@ class PenyetoranController extends Controller
                         'sumber' => $detail['sumber'],
                         'kanal' => $detail['kanal'],
                     ];
-                    DB::table('trdkasin_pkd')->insert($data);
+                    DB::table('trdkasin_pkd')->insert($data_input);
                 }
             }
 
@@ -1006,7 +1006,7 @@ class PenyetoranController extends Controller
                     //         ];
                     //     }, $data['detail_sts']));
                     foreach ($data['detail_sts'] as $detail) {
-                        $data = [
+                        $data_input2 = [
                             'no_sts' => $data['no_sts'],
                             'kd_skpd' => $data['kd_skpd'],
                             'kd_rek6' => $detail['kd_rek6'],
@@ -1016,7 +1016,7 @@ class PenyetoranController extends Controller
                             'sumber' => $detail['sumber'],
                             'kanal' => $detail['kanal'],
                         ];
-                        DB::table('trdkasin_ppkd')->insert($data);
+                        DB::table('trdkasin_ppkd')->insert($data_input2);
                     }
                 }
 
