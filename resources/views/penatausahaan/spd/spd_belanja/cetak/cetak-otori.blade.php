@@ -26,7 +26,7 @@
         </tr>
     </table>
     <table
-        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:14px;font-family:'Times New Roman', Times, serif;letter-spacing:normal;">
+        style="margin-top: 16px; padding-left: 20px;width:100%;font-size:14px;font-family:Arial, Helvetica, sans-serif;letter-spacing:normal;">
         <tbody>
             <tr>
                 <td style="vertical-align: top; width: 13%;"><b>Menimbang</b></td>
