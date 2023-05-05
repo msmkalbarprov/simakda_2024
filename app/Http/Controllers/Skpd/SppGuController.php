@@ -155,7 +155,10 @@ class SppGuController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek = DB::table('trhspp')->where(['no_spp' => $data['no_spp']])->count();
+            $cek = DB::table('trhspp')
+                ->where(['no_spp' => $data['no_spp']])
+                ->count();
+
             if ($cek > 0) {
                 return response()->json([
                     'message' => '2'
@@ -203,7 +206,7 @@ class SppGuController extends Controller
                         kd_bp_skpd,
                         (select nm_skpd from ms_skpd where ms_skpd.kd_skpd=trlpj.kd_bp_skpd)as nm_skpd,
                         kd_sub_kegiatan,
-                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj.kd_rek6 and trdtransout.no_bukti=trlpj.no_bukti)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows
+                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj.kd_rek6 and trdtransout.no_bukti=trlpj.no_bukti and trdtransout.nilai=trlpj.nilai)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows
                          from trlpj where no_lpj=?", [$no_spp, $data['no_lpj']]);
             // } else {
             //     $data_lpj = DB::table('trlpj as a')
