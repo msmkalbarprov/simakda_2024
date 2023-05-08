@@ -189,7 +189,9 @@
                 return data;
             });
 
-            if (detail_sts.length == 0) {
+            let detail_sts = JSON.stringify(detail_sts1);
+
+            if (detail_sts1.length == 0) {
                 alert('Detail STS tidak boleh kosong!');
                 return;
             }

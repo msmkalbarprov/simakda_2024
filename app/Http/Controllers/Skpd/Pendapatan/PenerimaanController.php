@@ -1226,18 +1226,35 @@ class PenerimaanController extends Controller
                 ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $no_urut])
                 ->delete();
 
-            if (isset($data['detail_sts'])) {
-                DB::table('trdkasin_ppkd')->insert(array_map(function ($value) use ($data, $skpd, $no_urut, $giat) {
-                    return [
+            $data['detail_sts'] = json_decode($data['detail_sts'], true);
+            $rincian_data = $data['detail_sts'];
+            // if (isset($data['detail_sts'])) {
+            //     DB::table('trdkasin_ppkd')->insert(array_map(function ($value) use ($data, $skpd, $no_urut, $giat) {
+            //         return [
+            //             'kd_skpd' => $skpd,
+            //             'no_sts' => $value['no_sts'],
+            //             'kd_rek6' => $value['kd_rek6'],
+            //             'rupiah' => $value['rupiah'],
+            //             'no_kas' => $no_urut,
+            //             'kd_sub_kegiatan' => $giat,
+            //             'sumber' => $value['sumber'],
+            //         ];
+            //     }, $data['detail_sts']));
+            // }
+
+            if (isset($rincian_data)) {
+                foreach ($rincian_data as $data => $value) {
+                    $data_input = [
                         'kd_skpd' => $skpd,
-                        'no_sts' => $value['no_sts'],
-                        'kd_rek6' => $value['kd_rek6'],
-                        'rupiah' => $value['rupiah'],
+                        'no_sts' => $rincian_data[$data]['no_sts'],
+                        'kd_rek6' => $rincian_data[$data]['kd_rek6'],
+                        'rupiah' => $rincian_data[$data]['rupiah'],
                         'no_kas' => $no_urut,
                         'kd_sub_kegiatan' => $giat,
-                        'sumber' => $value['sumber'],
+                        'sumber' => $rincian_data[$data]['sumber'],
                     ];
-                }, $data['detail_sts']));
+                    DB::table('trdkasin_ppkd')->insert($data_input);
+                }
             }
 
             if ($data['sumber'] == 'n') {
