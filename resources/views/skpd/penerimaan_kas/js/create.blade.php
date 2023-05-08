@@ -30,6 +30,10 @@
                     return recordsTotal;
                 },
             },
+            lengthMenu: [
+                [-1],
+                ["All"]
+            ],
             ordering: false,
             columns: [{
                     data: 'DT_RowIndex',
@@ -195,7 +199,7 @@
                 return;
             }
 
-            if (!rkud){
+            if (!rkud) {
                 alert('RKUD Tidak Boleh Kosong');
                 return;
             }
