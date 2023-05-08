@@ -714,16 +714,16 @@ class PenyetoranController extends Controller
                 ->delete();
 
             if (isset($detail_sts)) {
-                foreach ($detail_sts as $detail) {
+                foreach ($detail_sts as $detail1) {
                     $data_input = [
                         'no_sts' => $data['no_sts'],
                         'kd_skpd' => $data['kd_skpd'],
-                        'kd_rek6' => $detail['kd_rek6'],
-                        'rupiah' => $detail['nilai'],
+                        'kd_rek6' => $detail1['kd_rek6'],
+                        'rupiah' => $detail1['nilai'],
                         'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                        'no_terima' => $detail['no_sts'],
-                        'sumber' => $detail['sumber'],
-                        'kanal' => $detail['kanal'],
+                        'no_terima' => $detail1['no_sts'],
+                        'sumber' => $detail1['sumber'],
+                        'kanal' => $detail1['kanal'],
                     ];
                     DB::table('trdkasin_pkd')->insert($data_input);
                 };
@@ -771,16 +771,16 @@ class PenyetoranController extends Controller
                     ]);
 
                 if (isset($detail_sts)) {
-                    foreach ($detail_sts as $detail) {
+                    foreach ($detail_sts as $detail2) {
                         $data_input1 = [
                             'no_sts' => $data['no_sts'],
                             'kd_skpd' => $data['kd_skpd'],
-                            'kd_rek6' => $detail['kd_rek6'],
-                            'rupiah' => $detail['nilai'],
+                            'kd_rek6' => $detail2['kd_rek6'],
+                            'rupiah' => $detail2['nilai'],
                             'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                            'no_kas' => $detail['no_sts'],
-                            'sumber' => $detail['sumber'],
-                            'kanal' => $detail['kanal'] == "" ? '' : $detail['kanal'],
+                            'no_kas' => $detail2['no_sts'],
+                            'sumber' => $detail2['sumber'],
+                            'kanal' => $detail2['kanal'] == "" ? '' : $detail2['kanal'],
                         ];
                         DB::table('trdkasin_ppkd')->insert($data_input1);
                     }

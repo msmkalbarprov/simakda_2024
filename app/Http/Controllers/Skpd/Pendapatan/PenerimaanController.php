@@ -1228,6 +1228,7 @@ class PenerimaanController extends Controller
 
             $data['detail_sts'] = json_decode($data['detail_sts'], true);
             $rincian_data = $data['detail_sts'];
+
             // if (isset($data['detail_sts'])) {
             //     DB::table('trdkasin_ppkd')->insert(array_map(function ($value) use ($data, $skpd, $no_urut, $giat) {
             //         return [
@@ -1243,15 +1244,15 @@ class PenerimaanController extends Controller
             // }
 
             if (isset($rincian_data)) {
-                foreach ($rincian_data as $data => $value) {
+                foreach ($rincian_data as $data1 => $value) {
                     $data_input = [
                         'kd_skpd' => $skpd,
-                        'no_sts' => $rincian_data[$data]['no_sts'],
-                        'kd_rek6' => $rincian_data[$data]['kd_rek6'],
-                        'rupiah' => $rincian_data[$data]['rupiah'],
+                        'no_sts' => $rincian_data[$data1]['no_sts'],
+                        'kd_rek6' => $rincian_data[$data1]['kd_rek6'],
+                        'rupiah' => $rincian_data[$data1]['rupiah'],
                         'no_kas' => $no_urut,
                         'kd_sub_kegiatan' => $giat,
-                        'sumber' => $rincian_data[$data]['sumber'],
+                        'sumber' => $rincian_data[$data1]['sumber'],
                     ];
                     DB::table('trdkasin_ppkd')->insert($data_input);
                 }
