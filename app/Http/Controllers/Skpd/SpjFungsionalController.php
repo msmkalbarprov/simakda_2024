@@ -886,7 +886,7 @@ class SpjFungsionalController extends Controller
         } else if ($cetak == '2') {
             $pdf = PDF::loadHtml($view)
                 ->setOrientation('landscape')
-                ->setPaper('a4')
+                ->setPaper('legal')
                 ->setOption('page-width', 215)
                 ->setOption('page-width', 330)
                 ->setOption('margin-top', $request->margin_atas)
