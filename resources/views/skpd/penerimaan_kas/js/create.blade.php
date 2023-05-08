@@ -177,7 +177,7 @@
             let total = rupiah(document.getElementById('total').value);
             let tahun_input = tgl_kas.substr(0, 4);
 
-            let detail_sts = detail.rows().data().toArray().map((value) => {
+            let detail_sts1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
                     kd_rek6: value.kd_rek6,
