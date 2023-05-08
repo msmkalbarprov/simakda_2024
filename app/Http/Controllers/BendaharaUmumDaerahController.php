@@ -2277,6 +2277,12 @@ class BendaharaUmumDaerahController extends Controller
             return $pdf->stream('laporan.pdf');
         } elseif ($req['jenis_print'] == 'layar') {
             return $view;
+        } elseif ($req['jenis_print'] == 'excel') {
+            $judul = 'REKAP GAJI';
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename= $judul.xls");
+            echo $view;
         }
     }
 
