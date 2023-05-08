@@ -88,38 +88,13 @@
                 return result;
             });
 
-            let daftar_bic = ["BSMDIDJA", "PDKBIDJ1", "SYKBIDJ1"];
+            let daftar_bic = ["PDKBIDJ1"];
 
             // let daftar_bic2 = ["BSMDIDJA", "PDKBIDJ1", "SYKBIDJ1"];
-            console.log(bic);
             let kondisi = tampungan.map(function(data) {
                 if (data.no_sp2d == no_sp2d && data.no_spm == no_spm) {
                     return '1';
                 }
-                // if (data.bank == '266' && bank != '266') {
-                //     return '2';
-                // }
-                // if (data.bank != '266' && bank == '266') {
-                //     return '3';
-                // }
-                // console.log(daftar_bic.includes(bic));
-                // if (data.bic == 'BSMDIDJA' || data.bic == 'PDKBIDJ1' || data.bic ==
-                //     'SYKBIDJ1') {
-                //     if (daftar_bic.includes(bic) == false) {
-                //         return '2';
-                //     }else{
-                //         return '0'; //boleh lanjut
-                //     }
-                // }
-
-                // if (data.bic != 'BSMDIDJA' || data.bic != 'PDKBIDJ1' || data.bic !=
-                //     'SYKBIDJ1') {
-                //     if (daftar_bic.includes(bic) == true) {
-                //         return '3';
-                //     }else{
-                //         return '0'; //boleh lanjut
-                //     }
-                // }
                 // Perbaikan terbaru
                 if (daftar_bic.includes(data.bic) == true) {
                     if (daftar_bic.includes(bic) == false) {
