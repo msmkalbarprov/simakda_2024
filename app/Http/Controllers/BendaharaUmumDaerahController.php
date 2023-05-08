@@ -2243,7 +2243,8 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->where(function ($query) use ($req) {
                 if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
-                    $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                    // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                    $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
                 }
                 if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
                     $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
