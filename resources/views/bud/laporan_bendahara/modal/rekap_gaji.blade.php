@@ -115,6 +115,18 @@
                             </select>
                         </div>
                     </div> --}}
+                {{-- Jenis --}}
+                <div class="mb-3 row">
+                    <div class="col-md-2">
+                        <label for="Jenis" class="form-label">Jenis</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select2-rekap_gaji" style=" width: 100%;" id="jenis_rekap_gaji">
+                            <option value="1">GAJI DAN TUNJANGAN</option>
+                            <option value="2">KESELURUHAN</option>
+                        </select>
+                    </div>
+                </div>
                 {{-- Pilihan Cetak --}}
                 <div class="mb-3 row">
                     <div class="col-md-12 text-center">
