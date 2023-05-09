@@ -20,6 +20,11 @@
                                 <button class="btn btn-md btn-primary" id="pencairan" style="border: 1px solid black"
                                     value="1">CAIR</button>
                             @endif
+                            @if ($cek->sp2d_online == 1)
+                                <label>SP2D ONLINE</label>
+                            @else
+                                <label>SP2D OFFLINE</label>
+                            @endif
                         </div>
                     </div>
                     {{-- No Cair --}}
