@@ -406,6 +406,8 @@
                     alert('Jenis Anggaran tidak boleh kosong!');
                     return;
                 }
+                alert(periodebulan);
+
 
                 let url             = new URL("{{ route('laporan_akuntansi.lapkeu.cetak_lra') }}");
                 let searchParams    = url.searchParams;

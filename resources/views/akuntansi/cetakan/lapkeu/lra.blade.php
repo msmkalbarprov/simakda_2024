@@ -152,7 +152,7 @@
             $n3         = $row4->kode_3;
             $n3        = ($n3=="-"?"'-'":$n3);
 
-            $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit($bulan,'$anggaran',$thn_ang,'$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+            $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit($bulan,'$jns_ang',$thn_ang,'$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
 
 
             $nilai=$nilainya->nilai;
@@ -255,7 +255,46 @@
     @endforeach
 
     
-    </TABLE>
+    @if ($jenis_ttd !=0)
+    <div style="padding-top:20px">
+        <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;" width='50%'>
+                    &nbsp;
+                </td>
+                <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;" width='50%'>
+                    {{ $daerah->daerah }},
+                        {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
+                </td>
+                <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
+                    {{ ucwords(strtolower($tandatangan->jabatan)) }}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+            </tr>
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"><b></b></td>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"><b><u>{{ $tandatangan->nama }}</u></b></td>
+            </tr>
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+            </tr>
+            <tr>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+            </tr>
+
+        </table>
+    </div>
+    @endif
+    {{-- tanda tangan --}}
     
 </body>
 

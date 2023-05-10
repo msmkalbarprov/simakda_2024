@@ -70,12 +70,20 @@ class LapkeuController extends Controller
 
         $map_lra = DB::select("SELECT a.seq,a.cetak,a.bold,a.parent,a.nor,a.uraian,isnull(a.kode_1,'-') as kode_1,isnull(a.kode_2,'-') as kode_2,isnull(a.kode_3,'-') as kode_3,thn_m1 AS lalu FROM map_lra_skpd a 
                           ORDER BY a.seq");
-        if ($periodebulan="periode") {
+        if ($periodebulan=="periode") {
             $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
-        }else if($periodebulan="bulan"){
-            $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_oyoy(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+        }else if($periodebulan=="bulan"){
+            $sus=collect(DB::select("SELECT 
+                    SUM(CASE WHEN kd_rek='4' THEN (nil_ang) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (nil_ang) ELSE 0 END) as ang_surplus,
+                    SUM(CASE WHEN kd_rek='4' THEN (kredit-debet) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet-kredit) ELSE 0 END) as nil_surplus,
+                    SUM(CASE WHEN kd_rek='4' THEN (kredit_awal-debet_awal) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet_awal-kredit_awal) ELSE 0 END) as nil_surplus_awal
+                    FROM
+                    (SELECT LEFT(kd_rek6,1) as kd_rek, SUM(nilai) as nil_ang, SUM(kredit) as kredit,SUM(debet) as debet
+                        ,SUM(kredit_awal) as kredit_awal,SUM(debet_awal) as debet_awal 
+                         FROM data_jurnal_n_sal_awal($bulan,'$jns_ang',$tahun_anggaran) WHERE LEFT(kd_rek6,1) IN ('4','5') $skpd_clause_ang
+                    GROUP BY LEFT(kd_rek6,1)) a"))->first();
         }
-        // dd($map_lra);
+        // dd($periodebulan);
         
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
@@ -98,7 +106,7 @@ class LapkeuController extends Controller
                 'periodebulan'      => $periodebulan,
                 'tanggal1'          => $tanggal1,
                 'tanggal2'          => $tanggal2,
-                'anggaran'          => $jns_ang,
+                'jns_ang'          => $jns_ang,
                 'thn_ang_1'         => $thn_ang1             
             ];
 
