@@ -65,7 +65,7 @@ class SetorSisaController extends Controller
                 })
                 ->select('a.no_sp2d', 'a.jns_spp', 'b.jns_beban', 'a.nilai', DB::raw("CASE a.jns_spp WHEN '4' THEN 'LS GAJI' WHEN '6' THEN 'LS BARANG/JASA' WHEN '1' THEN 'UP' WHEN '2' THEN 'GU' ELSE 'TU' END as jns_cp"))
                 ->where(['a.kd_skpd' => $kd_skpd])
-                ->whereIn('a.jns_spp', ['3', '6'])
+                ->whereIn('a.jns_spp', ['3', '6', '1', '2'])
                 ->whereRaw("b.no_spp NOT IN (SELECT no_spp FROM trhspp WHERE jns_spp=? and jns_beban=?)", ['6', '6'])
                 ->get();
         } elseif ($jenis_transaksi == '5') {
@@ -80,10 +80,8 @@ class SetorSisaController extends Controller
             //     ->whereRaw("a.jns_spp=? and a.jns_spp=? and (a.jns_spp=? and b.jns_beban=?)", ['4', '5', '6', '6'])
             //     ->get();
             $data = DB::select("SELECT * from (
-                select a.no_sp2d,a.jns_spp, a.nilai,b.jns_beban,CASE a.jns_spp WHEN '4' THEN 'LS GAJI' WHEN '6' THEN 'LS BARANG/JASA' WHEN '1' THEN 'UP' WHEN '5' THEN 'LS PIHAK KETIGA LAINNYA' WHEN '2' THEN 'GU' ELSE 'TU' END as jns_cp FROM trhsp2d as a INNER JOIN trhspp as b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.kd_skpd=? and a.jns_spp IN (?,?)
-                UNION ALL
-                select a.no_sp2d,a.jns_spp, a.nilai,b.jns_beban,CASE a.jns_spp WHEN '4' THEN 'LS GAJI' WHEN '6' THEN 'LS BARANG/JASA' WHEN '1' THEN 'UP' WHEN '5' THEN 'LS PIHAK KETIGA LAINNYA' WHEN '2' THEN 'GU' ELSE 'TU' END as jns_cp FROM trhsp2d as a INNER JOIN trhspp as b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.kd_skpd=? and a.jns_spp=? AND b.jns_beban=?
-                )z", [$kd_skpd, '4', '5', $kd_skpd, '6', '6']);
+                select a.no_sp2d,a.jns_spp, a.nilai,b.jns_beban,CASE a.jns_spp WHEN '4' THEN 'LS GAJI' WHEN '6' THEN 'LS BARANG/JASA' WHEN '1' THEN 'UP' WHEN '5' THEN 'LS PIHAK KETIGA LAINNYA' WHEN '2' THEN 'GU' ELSE 'TU' END as jns_cp FROM trhsp2d as a INNER JOIN trhspp as b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.kd_skpd=? and a.jns_spp IN (?,?,?)
+                )z", [$kd_skpd, '4', '5', '6']);
         }
 
         return response()->json($data);
