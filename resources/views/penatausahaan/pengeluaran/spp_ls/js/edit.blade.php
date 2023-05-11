@@ -930,10 +930,18 @@
                 alert('Volume atau satuan output harus diisi!');
                 return;
             }
-            if ((kode_rekening.substr(0, 4) == '5105'  &&(kode_rekening !='510505010001' || kode_rekening !='510505010003')) && (volume_output == '' || satuan_output == '')) {
+            
+            let los = ["510505010001", "510505010003"];
+            if ((kode_rekening.substr(0, 4) == '5105' && (!los.includes(kode_rekening))) && (
+                    volume_output == '' || satuan_output == '')) {
                 alert('Volume atau satuan output harus diisi!');
                 return;
-            }
+            }
+
+            // if ((kode_rekening.substr(0, 4) == '5105'  &&(kode_rekening !='510505010001' || kode_rekening !='510505010003')) && (volume_output == '' || satuan_output == '')) {
+            //     alert('Volume atau satuan output harus diisi!');
+            //     return;
+            // }
 
             if (kode_rekening.substr(0, 4) == '5106' && (volume_output == '' || satuan_output == '')) {
                 alert('Volume atau satuan output harus diisi!');
