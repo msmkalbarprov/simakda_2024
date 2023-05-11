@@ -495,7 +495,7 @@
                 return;
             }
 
-            if (kd_rekening.substr(0, 4) == '5105' && (!satuan || !volume)) {
+            if ((kd_rekening.substr(0, 4) == '5105' && (kd_rekening !='510505010001' || kd_rekening !='510505010003')) && (!satuan || !volume)) {
                 alert('Volume atau Satuan Output Harus Diisi');
                 return;
             }
