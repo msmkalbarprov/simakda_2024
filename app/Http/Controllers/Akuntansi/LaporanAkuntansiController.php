@@ -48,6 +48,23 @@ class LaporanAkuntansiController extends Controller
         return view('akuntansi.konsolidasi')->with($data);
     }
 
+    public function lapkeu()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'ttd' => DB::table('ms_ttd')
+                ->whereIn('kode', ['1'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
+            'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
+            'jns_anggaran' => jenis_anggaran(),
+            'jns_anggaran2' => jenis_anggaran()
+        ];
+
+        return view('akuntansi.lapkeu')->with($data);
+    }
+
     public function perda()
     {
         $kd_skpd = Auth::user()->kd_skpd;
@@ -169,6 +186,7 @@ class LaporanAkuntansiController extends Controller
 
     function cariPaKpa(Request $request)
     {
+        // dd($request->kd_skpd);
         if (strlen($request->kd_skpd) == '17') {
             $kd_skpd    = $request->kd_skpd . '.0000';
         } else {

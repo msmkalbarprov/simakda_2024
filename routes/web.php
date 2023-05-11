@@ -78,6 +78,7 @@ use App\Http\Controllers\skpd\SpjPendapatanController;
 use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
 use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
+use App\Http\Controllers\Akuntansi\LapkeuController;
 use App\Http\Controllers\Akuntansi\LraController;
 use App\Http\Controllers\Skpd\BOS\PenerimaanBosController;
 use App\Http\Controllers\Skpd\BOS\PengembalianBosController;
@@ -1584,6 +1585,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('cari_skpd', [LaporanAkuntansiController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
         Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
+        Route::post('cariPaKpa', [LaporanAkuntansiController::class, 'cariPaKpa'])->name('laporan_akuntansi.pakpa');
         Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
         Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
         Route::post('cari_ttd_bud', [LaporanAkuntansiController::class, 'cari_ttd_bud'])->name('laporan_akuntansi.cari_ttd_bud');
@@ -1615,6 +1617,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_lpe', [LraController::class, 'cetaklpe'])->name('laporan_akuntansi.konsolidasi.cetak_lpe');
             // LAK
             Route::get('cetak_lak', [LraController::class, 'cetaklak'])->name('laporan_akuntansi.konsolidasi.cetak_lak');
+            //laporan keuangan
+            Route::get('lapkeu', [LaporanAkuntansiController::class, 'lapkeu'])->name('laporan_akuntansi.lapkeu');
+            Route::get('cetak_lra', [LapkeuController::class, 'cetak_lra'])->name('laporan_akuntansi.lapkeu.cetak_lra');
         });
     });
     // Pengesahan SPJ

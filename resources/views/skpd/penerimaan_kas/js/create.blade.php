@@ -30,6 +30,10 @@
                     return recordsTotal;
                 },
             },
+            lengthMenu: [
+                [-1],
+                ["All"]
+            ],
             ordering: false,
             columns: [{
                     data: 'DT_RowIndex',
@@ -173,7 +177,7 @@
             let total = rupiah(document.getElementById('total').value);
             let tahun_input = tgl_kas.substr(0, 4);
 
-            let detail_sts = detail.rows().data().toArray().map((value) => {
+            let detail_sts1 = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
                     kd_rek6: value.kd_rek6,
@@ -185,7 +189,9 @@
                 return data;
             });
 
-            if (detail_sts.length == 0) {
+            let detail_sts = JSON.stringify(detail_sts1);
+
+            if (detail_sts1.length == 0) {
                 alert('Detail STS tidak boleh kosong!');
                 return;
             }
@@ -195,7 +201,7 @@
                 return;
             }
 
-            if (!rkud){
+            if (!rkud) {
                 alert('RKUD Tidak Boleh Kosong');
                 return;
             }

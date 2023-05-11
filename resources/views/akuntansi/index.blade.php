@@ -35,7 +35,7 @@
             <div class="card card-info collapsed-card card-outline" id="lkeu">
                 <div class="card-body">
                     {{ 'Laporan Keuangan' }}
-                    <a class="card-block stretched-link" href="#">
+                    <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.lapkeu') }}">
 
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>

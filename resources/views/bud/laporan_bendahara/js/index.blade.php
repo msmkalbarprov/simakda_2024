@@ -851,6 +851,7 @@
             let periode1 = document.getElementById('periode1_rekap_gaji').value;
             let periode2 = document.getElementById('periode2_rekap_gaji').value;
             // let ttd = document.getElementById('ttd_rekap_gaji').value;
+            let jenis = document.getElementById('jenis_rekap_gaji').value;
             let jenis_print = $(this).data("jenis");
 
             if (keseluruhan || skpd) {
@@ -911,6 +912,7 @@
             searchParams.append("periode2", periode2);
             // searchParams.append("ttd", ttd);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("jenis", jenis);
             window.open(url.toString(), "_blank");
         });
         // CETAKAN REKAP GAJI
@@ -1657,8 +1659,8 @@
         });
 
         $('.cetak_transfer_dana').on('click', function() {
-            let tgl             = document.getElementById('tgl_transfer_dana').value;
-            let ttd             = document.getElementById('ttd_transfer_dana').value;
+            let tgl = document.getElementById('tgl_transfer_dana').value;
+            let ttd = document.getElementById('ttd_transfer_dana').value;
             let periode1_tfdana = document.getElementById('periode1_tfdana').value;
             let periode2_tfdana = document.getElementById('periode2_tfdana').value;
             let jenis_print = $(this).data("jenis");
@@ -1671,7 +1673,7 @@
                 alert("Silahkan Pilih Tanggal periode!");
                 return;
             }
-            
+
 
             let url = new URL("{{ route('laporan_bendahara_umum.transfer_dana') }}");
             let searchParams = url.searchParams;

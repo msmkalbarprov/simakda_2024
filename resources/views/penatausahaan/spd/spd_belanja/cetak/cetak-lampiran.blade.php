@@ -71,7 +71,7 @@
 </head>
 
 <body>
-    <table style="width: 100%;text-align:center;font-size:16px">
+    <table style="width: 100%;text-align:center;font-size:20px;font-family:Arial, Helvetica, sans-serif">
         <tr>
             <td>PEMERINTAH PROVINSI KALIMANTAN BARAT<br />
                 PEJABAT PENGELOLA KEUANGAN DAERAH SELAKU BENDAHARA UMUM DAERAH<br />
@@ -83,7 +83,7 @@
     </table>
     <br />
     <br />
-    <table class="spd" id="info-spd" style="font-family: 'Times New Roman', Times, serif;width:100%">
+    <table class="spd" id="info-spd" style="font-family:Arial, Helvetica, sans-serif;width:100%">
         <tbody>
             <tr>
                 <td colspan="3">LAMPIRAN SURAT PENYEDIAAN DANA</td>
@@ -129,7 +129,7 @@
         </tbody>
     </table>
     <br />
-    <table id="rincian-spd" style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
+    <table id="rincian-spd" style="width: 100%;font-family:Arial, Helvetica, sans-serif;font-size:16px">
         <thead>
             <tr>
                 <th>No.</th>
@@ -186,7 +186,7 @@
                         $total_spd_lalu += $item->spd_lalu;
                         $total_spd += $item->nilai;
                     }
-
+                    
                     if (strlen($item->no_urut) <= 32) {
                         $bold = 'bold';
                         $fontr = '16';
@@ -235,7 +235,7 @@
         </tbody>
     </table>
     <br /><br />
-    <table style="width: 100%;font-family:'Times New Roman', Times, serif;font-size:16px">
+    <table style="width: 100%;font-family:Arial, Helvetica, sans-serif;font-size:16px">
         <tr>
             <td>Jumlah Penyediaan Dana Rp{{ number_format($total_spd, 2, ',', '.') }}</td>
         </tr>

@@ -1364,6 +1364,10 @@
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("judul", 'Fungsional');
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak SPJ Administratif') {

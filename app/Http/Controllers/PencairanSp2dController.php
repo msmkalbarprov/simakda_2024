@@ -28,20 +28,41 @@ class PencairanSp2dController extends Controller
     public function tampilCair($no_sp2d)
     {
         $no_sp2d = Crypt::decryptString($no_sp2d);
-        $sp2d = DB::table('trhsp2d as a')->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji', 'a.nilai', 'a.tgl_terima')->orderBy('a.no_sp2d')->orderBy('kd_skpd')->where(['a.no_sp2d' => $no_sp2d])->first();
 
-        $urut1 = DB::table('trhsp2d')->select('no_kas_bud as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')->where(DB::raw("isnumeric(no_kas_bud)"), '1')->where(['status_bud' => '1']);
+        $sp2d = DB::table('trhsp2d as a')
+            ->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')
+            ->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji', 'a.nilai', 'a.tgl_terima')
+            ->orderBy('a.no_sp2d')
+            ->orderBy('kd_skpd')
+            ->where(['a.no_sp2d' => $no_sp2d])
+            ->first();
+
+        $urut1 = DB::table('trhsp2d')
+            ->select('no_kas_bud as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')
+            ->where(DB::raw("isnumeric(no_kas_bud)"), '1')
+            ->where(['status_bud' => '1']);
+
         $urut = DB::table(DB::raw("({$urut1->toSql()}) as sub"))
             ->select(DB::raw("case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor"))
             ->mergeBindings($urut1)
             ->first();
+
         $data = [
             'sp2d' => $sp2d,
-            'total_spm' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp])->first(),
-            'total_potongan' => DB::table('trspmpot')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spm' => $sp2d->no_spm])->first(),
-            'urut' => $urut->nomor
+            'total_spm' => DB::table('trdspp')
+                ->select(DB::raw("SUM(nilai) as nilai"))
+                ->where(['no_spp' => $sp2d->no_spp])
+                ->first(),
+            'total_potongan' => DB::table('trspmpot')
+                ->select(DB::raw("SUM(nilai) as nilai"))
+                ->where(['no_spm' => $sp2d->no_spm])
+                ->first(),
+            'urut' => $urut->nomor,
+            'cek' => DB::table('trhuji')
+                ->where(['no_uji' => $sp2d->no_uji])
+                ->first()
         ];
-        // return $data['sp2d'];
+
         return view('penatausahaan.pengeluaran.pencairan_sp2d.show')->with($data);
     }
 

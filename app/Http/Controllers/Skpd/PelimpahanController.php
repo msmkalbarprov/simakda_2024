@@ -731,13 +731,13 @@ class PelimpahanController extends Controller
             }
 
             $nomor = collect(DB::select("SELECT case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
-    select no_validasi nomor, 'Urut Validasi cms' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank where kd_skpd = ?
-    union all
-    select no_validasi nomor, 'Urut Validasi cms Perbidang' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_bidang where kd_skpd = ?
-    union all
-    select no_validasi nomor, 'Urut Validasi cms Panjar' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_panjar where kd_skpd = ?
-    )
-    z WHERE $init_skpd", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+            select no_validasi nomor, 'Urut Validasi cms' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank where kd_skpd = ?
+            union all
+            select no_validasi nomor, 'Urut Validasi cms Perbidang' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_bidang where kd_skpd = ?
+            union all
+            select no_validasi nomor, 'Urut Validasi cms Panjar' ket, kd_skpd as kd_skpd from trvalidasi_cmsbank_panjar where kd_skpd = ?
+            )
+            z WHERE $init_skpd", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
 
             // $nomor1 = DB::table('trvalidasi_cmsbank')
             //     ->select('no_validasi as nomor', DB::raw("'Urut Validasi cms' as ket"), 'kd_skpd')
@@ -854,19 +854,28 @@ class PelimpahanController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('tr_setorpelimpahan_bank')->where(['kd_skpd_sumber' => $kd_bp, 'no_kas' => $no_kas, 'no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('tr_setorpelimpahan_bank')
+                ->where(['kd_skpd_sumber' => $kd_bp, 'no_kas' => $no_kas, 'no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->delete();
 
-            $data1 = DB::table('trvalidasi_cmsbank_bidang as a')->where(['a.kd_bp' => $kd_bp, 'a.no_bukti' => $no_bukti])->select('a.no_bukti', 'a.kd_skpd', 'a.kd_bp', 'a.tgl_validasi', 'a.status_validasi');
+            $data1 = DB::table('trvalidasi_cmsbank_bidang as a')
+                ->where(['a.kd_bp' => $kd_bp, 'a.no_bukti' => $no_bukti])
+                ->select('a.no_bukti', 'a.kd_skpd', 'a.kd_bp', 'a.tgl_validasi', 'a.status_validasi');
 
-            DB::table('tr_setorpelimpahan_bank_cms as c')->joinSub($data1, 'd', function ($join) {
-                $join->on('c.no_bukti', '=', 'd.no_bukti');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->whereRaw('left(c.kd_skpd,17) = left(?,17)', $kd_bp)->update([
-                'c.status_validasi' => '0',
-                'c.tgl_validasi' => null,
-            ]);
+            DB::table('tr_setorpelimpahan_bank_cms as c')
+                ->joinSub($data1, 'd', function ($join) {
+                    $join->on('c.no_bukti', '=', 'd.no_bukti');
+                    $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+                })
+                ->whereRaw("left(c.kd_skpd,17) = left(?,17)", [$kd_bp])
+                ->update([
+                    'c.status_validasi' => '0',
+                    'c.tgl_validasi' => null,
+                ]);
 
-            DB::table('trvalidasi_cmsbank_bidang')->where(['kd_bp' => $kd_bp, 'no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trvalidasi_cmsbank_bidang')
+                ->where(['kd_bp' => $kd_bp, 'no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->delete();
 
             DB::commit();
             return response()->json([

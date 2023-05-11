@@ -106,6 +106,7 @@
         });
 
         function simpan_cair() {
+            let cek = "{{ $cek->sp2d_online }}";
             let no_kas = document.getElementById('no_kas').value;
             let tgl_cair = document.getElementById('tgl_cair').value;
             let nilai = rupiah(document.getElementById('nilai').value);
@@ -120,6 +121,13 @@
             }
             if (tahun_input != tahun_anggaran) {
                 alert('Tahun tidak sama dengan tahun anggaran!');
+                return;
+            }
+
+            if (cek == 1) {
+                alert(
+                    "MAAF PROSES PENCAIRAN SP2D ONLINE HANYA BISA DILAKUKAN FITUR CALLBACK SP2D ONLINE OLEH BANK KALBAR"
+                    );
                 return;
             }
 
