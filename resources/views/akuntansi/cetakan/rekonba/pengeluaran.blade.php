@@ -35,20 +35,10 @@
 
 <body >
 {{-- <body> --}}
-    <table style="border-collapse:collapse;font-size:11px;font-family:Arial" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
-        <TR>
-            <TD colspan="3" width="100%" valign="top" align="left" >LAMPIRAN I.4 &nbsp;{{ strtoupper($nogub->ket_perda) }}</TD>
-        </TR>
-        <TR>
-            <TD  colspan="3" width="100%" valign="top" align="left" >NOMOR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ strtoupper($nogub->ket_perda_no) }}</TD>
-        </TR>
-        <TR>
-            <TD colspan="3" width="100%" valign="top" align="left" >TENTANG &nbsp; {{ strtoupper($nogub->ket_perda_tentang) }}</TD>
-        </TR>
-    </table>
+    
     <table  style="border-collapse:collapse;font-family:Arial" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
         <tr>
-            <td rowspan="4" align="center" style="border-right:hidden">
+            <td rowspan="4" align="center" style="border-right:hidden; border-bottom: hidden;">
                 <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
             </td>
             <td colspan="3" align="center" style="font-size:14px; border-bottom: hidden;"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT </strong></td>
@@ -58,7 +48,7 @@
         <tr>
             <td colspan="3" align="center" style="font-size:12px; border-bottom: hidden;"><strong>Jalan Ahmad Yani Telepon (0561) 736541 Email: bkad@kalbarprov.go.id Website: bkad.kalbarprov.go.id</strong></tr>
         <tr>
-            <td colspan="3" align="center" style="font-size:14px"><strong>PONTIANAK</strong></td></tr>
+            <td colspan="3" align="center" style="font-size:14px; border-bottom: hidden;"><strong>PONTIANAK</strong></td></tr>
         <tr>
             <td colspan="4" align="right">Kode Pos: 78124 &nbsp; &nbsp;</td>
         </tr>
