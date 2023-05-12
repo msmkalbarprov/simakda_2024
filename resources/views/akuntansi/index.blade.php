@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lrba">
+            <div class="card card-info collapsed-card card-outline" id="rekonba">
                 <div class="card-body">
                     {{ 'Rekon BA' }}
                     <a class="card-block stretched-link" href="#">
@@ -116,6 +116,7 @@
 @include('akuntansi.modal.neraca_saldo')
 @include('akuntansi.modal.ped')
 @include('akuntansi.modal.inflasi')
+@include('akuntansi.modal.rekonba')
 @endsection
 @section('js')
     <script>
@@ -153,8 +154,14 @@
                 dropdownParent: $('#modal_cetak_inflasi .modal-content'),
                 
             });
+            $(".select_rekonba").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_rekonba .modal-content'),
+                
+            });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
+            document.getElementById('baris_skpd_rekonba').hidden = true; // Hide
             document.getElementById('baris_periode1').hidden = true; // Hide
             document.getElementById('baris_periode2').hidden = true; // Hide
             document.getElementById('baris_bulan').hidden = true; // Hide
@@ -198,6 +205,12 @@
             $("#labelcetak_semester").html("Cetak INFLASI");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
+        $('#rekonba').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_rekonba').modal('show');
+            $("#labelcetak_semester").html("Cetak RekonBA");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
 
         // onclick card end
 
@@ -212,6 +225,20 @@
             } else {
                 cari_skpdbb('unit')
                 document.getElementById('baris_skpd').hidden = false; // show
+            }
+        });
+        //rekonba
+        $('input:radio[name="pilihan_rekonba"]').change(function() {
+
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_rekonba').hidden = true; // Hide
+            }else if ($(this).val() == 'skpd') {
+                cari_skpdbb('skpd')
+                document.getElementById('baris_skpd_rekonba').hidden = false; // show
+            } else {
+                cari_skpdbb('unit')
+                document.getElementById('baris_skpd_rekonba').hidden = false; // show
             }
         });
 
@@ -277,6 +304,26 @@
             })
         }
 
+        function ttd_kasubbid() {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.ttd_kasubbid') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    // console.log(data);
+                    $('#ttd_kasubbid').empty();
+                    $('#ttd_kasubbid').append(
+                        `<option value="" disabled selected>Pilih Penandatanganan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#ttd_kasubbid').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                    
+                }
+            })
+        }
+
         function cari_rek1() {
             $.ajax({
                 url: "{{ route('laporan_akuntansi.rek1') }}",
@@ -318,6 +365,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd_ns').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_rekonba').empty();
+                    $('#kd_skpd_rekonba').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_rekonba').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -461,6 +516,53 @@
                 searchParams.append("tanggal2_inflasi", tanggal2_inflasi);
                 searchParams.append("jns_ang", jns_ang);
                 searchParams.append("ttd_bud", ttd_bud);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak RekonBA') {
+                let kd_skpd                  = document.getElementById('kd_skpd_rekonba').value;
+                let tanggal1                    = document.getElementById('tanggal1_rekonba').value;
+                let tanggal2                    = document.getElementById('tanggal2_rekonba').value;
+                let ttd             = document.getElementById('ttd_kasubbid').value;
+                let jns_ang             = document.getElementById('jns_anggaran_rekonba').value;
+                let skpdunit                 = $('input:radio[name="pilihan_rekonba"]:checked').val();
+                let jenis_cetakan             = document.getElementById('jenis_rekonba').value;
+
+
+                if (!kd_skpd) {
+                    alert('SKPD tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_ang) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal1) {
+                    alert('Tanggal Awal tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal2) {
+                    alert('Tanggal Akhir tidak boleh kosong!');
+                    return;
+                }
+                if (!ttd) {
+                    alert('Penandatangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jenis_cetakan) {
+                    alert('Jenis Cetakan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.crekonba') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("jns_ang", jns_ang);
+                searchParams.append("ttd", ttd;
+                searchParams.append("kd_skpd",kd_skpd ;
+                searchParams.append("skpdunit", skpdunit;
+                searchParams.append("jenis_cetakan", jenis_cetakan;
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

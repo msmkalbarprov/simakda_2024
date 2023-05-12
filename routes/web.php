@@ -1586,6 +1586,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('cari_skpd2', [LaporanAkuntansiController::class, 'cariSkpd2'])->name('laporan_akuntansi.skpd2');
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
         Route::post('cariPaKpa', [LaporanAkuntansiController::class, 'cariPaKpa'])->name('laporan_akuntansi.pakpa');
+        Route::post('ttd_kasubbid', [LaporanAkuntansiController::class, 'ttd_kasubbid'])->name('laporan_akuntansi.ttd_kasubbid');
         Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
         Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
         Route::post('cari_ttd_bud', [LaporanAkuntansiController::class, 'cari_ttd_bud'])->name('laporan_akuntansi.cari_ttd_bud');
@@ -1594,6 +1595,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_ns', [LaporanAkuntansiController::class, 'cetak_ns'])->name('laporan_akuntansi.cns');
         Route::get('cetak_ped', [LaporanAkuntansiController::class, 'cetak_ped'])->name('laporan_akuntansi.cped');
         Route::get('cetak_inflasi', [LaporanAkuntansiController::class, 'cetak_inflasi'])->name('laporan_akuntansi.cinflasi');
+        Route::get('cetak_rekonba', [LaporanAkuntansiController::class, 'cetak_rekonba'])->name('laporan_akuntansi.crekonba');
 
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
