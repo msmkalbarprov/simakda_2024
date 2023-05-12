@@ -1245,8 +1245,8 @@ class LaporanAkuntansiController extends Controller
     public function cetak_rekonba(Request $request){
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', -1);
-        $tgl1    = $request->tanggal1;
-        $tgl2    = $request->tanggal2;
+        $periode1    = $request->tanggal1;
+        $periode2    = $request->tanggal2;
         $ttd    = $request->ttd;
         $cetak          = $request->cetak;
         $jns_ang        = $request->jns_ang;
@@ -1258,20 +1258,24 @@ class LaporanAkuntansiController extends Controller
         $thn_ang1 = $thn_ang-1;
         $thn_ang2 = $thn_ang1-1;
         
-        $arraytgl1=explode("-",$tgl1);
-        $arraytgl2=explode("-",$tgl2);      
+        $arrayperiode1=explode("-",$periode1);
+        $arrayperiode2=explode("-",$periode2);      
         
-        if($arraytgl2[1]<='3'){
+        if($arrayperiode2[1]<='3'){
             $tw = "I";
-        }else if($arraytgl2[1]<='6'){
+        }else if($arrayperiode2[1]<='6'){
             $tw = "II";
-        }else if($arraytgl2[1]<='9'){
+        }else if($arrayperiode2[1]<='9'){
             $tw = "III";
         }else{
             $tw = "IV";
         }
 
-        $bln2 = $arraytgl2[1];
+        $bln2 = $arrayperiode2[1];
+
+        $tgl_periode1 = substr($periode1,7,2);
+        $bln_periode1 = substr($periode1,5,1);
+        $thn_periode1 = substr($periode1,0,4);
 
         $kon = "";
         $real_pend_sp2d = "ISNULL(SUM(d.nilai), 0) AS nilai FROM trhsp2d a 
@@ -1328,7 +1332,7 @@ class LaporanAkuntansiController extends Controller
                         )b GROUP BY kd_skpd ";
 
         $att = DB::select(" exec spj_skpd '$kd_skpd','$bln2','$jns_ang'");
-        foreach ($hasil->result() as $trh1){
+        foreach ($att as $trh1){
             $bre                =   $trh1->kd_rek;
             $wok                =   $trh1->uraian;
             $nilai              =   $trh1->anggaran;
@@ -1438,6 +1442,7 @@ class LaporanAkuntansiController extends Controller
                                 where month(a.tgl)='$bln2' and kode='$kd_skpd') z
                                 on x.kd=z.kd ) r"))->first();
             $kastunai  = $sql_kastunai->nilai+$pjk;
+
         $sal_ll = collect(DB::select("SELECT CASE WHEN kd_bayar=1 THEN isnull(sld_awal,0)+sld_awalpajak ELSE 0 END AS sal_lalu  FROM ms_skpd where kd_skpd='$kd_skpd'"))->first();          
             $sal_llu = $sal_ll->sal_lalu;
 
@@ -1501,6 +1506,7 @@ class LaporanAkuntansiController extends Controller
                     GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd  
                     ) a
               where month(tgl)<='$bln2' and kode='$kd_skpd') a"))->first();
+            $saldobank  = $sql_hasil_bank->sisa+$sal_llu;
 
         $sql_pjk = collect(DB::select("SELECT ISNULL(SUM(nilai),0) nilai FROM (
                         SELECT ISNULL(SUM(b.nilai),0) AS nilai
@@ -1510,6 +1516,7 @@ class LaporanAkuntansiController extends Controller
                         SELECT ISNULL(SUM(b.nilai)*-1,0) AS nilai
                         FROM trhstrpot a INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
                         WHERE MONTH(a.tgl_bukti)<='12' AND b.kd_skpd='$kd_skpd') z"))->first();
+            $nil_pajak  = $sql_pjk->nilai;
 
         if($bln2<12){
             $uyhdtini = "ISNULL(SUM(nilai),0) nilai from (
@@ -1526,89 +1533,110 @@ class LaporanAkuntansiController extends Controller
         }
 
         $rek_ppn = "'210106010001'";
-
         $sql_terima_ppn = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn)"))->first();
+            $terima_ppn  = $sql_terima_ppn->nilai;
         $sql_keluar_ppn = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn)"))->first();
+            $keluar_ppn  = $sql_keluar_ppn->nilai;
 
         $rek_pph21 = "'210105010001'";
-
         $sql_terima_pph21 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph21)"))->first();
+            $terima_pph21  = $sql_terima_pph21->nilai;
 
         $sql_keluar_pph21 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph21)"))->first();
+            $keluar_pph21  = $sql_keluar_pph21->nilai;
 
         $rek_pph22 = "'210105020001'";
-
         $sql_terima_pph22 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph22)"))->first();
+            $terima_pph22  = $sql_terima_pph22->nilai;
 
         $sql_keluar_pph22 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph22)"))->first();
+            $keluar_pph22  = $sql_keluar_pph22->nilai;
 
         $rek_pph23 = "'210105030001'";
-
         $sql_terima_pph23 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph23)"))->first();
+            $terima_pph23  = $sql_terima_pph23->nilai;
 
         $sql_keluar_pph23 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph23)"))->first();
+            $keluar_pph23  = $sql_keluar_pph23->nilai;
 
 
         $rek_iwp = "'210108010001'";
         $sql_terima_iwp = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_iwp)"))->first();
+            $terima_iwp  = $sql_terima_iwp->nilai;
         $sql_keluar_iwp = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_iwp)"))->first();
+            $keluar_iwp  = $sql_keluar_iwp->nilai;
 
         $rek_taperum = "'210107010001'";
         $sql_terima_taperum = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_taperum)"))->first();
+            $terima_taperum  = $sql_terima_taperum->nilai; 
         $sql_keluar_taperum = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_taperum)"))->first();
+            $keluar_taperum  = $sql_keluar_taperum->nilai;
 
         $rek_pph4 = "'210109010001'";
         $sql_terima_pph4 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph4)"))->first();
+            $terima_pph4  = $sql_terima_pph4->nilai;
         $sql_keluar_pph4 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_pph4)"))->first();
+            $keluar_pph4  = $sql_keluar_pph4->nilai;
 
         $rek_ppn2 = "'2111001'";
         $sql_terima_ppn2 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn2)"))->first();
+            $terima_ppn2  = $sql_terima_ppn2->nilai;
         $sql_keluar_ppn2 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn2)"))->first();
+            $keluar_ppn2  = $sql_keluar_ppn2->nilai;
 
         $rek_ppn3 = "'2111101'";
         $sql_terima_ppn3 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn3)"))->first();
+            $terima_ppn3  = $sql_terima_ppn3->nilai;
         $sql_keluar_ppn3 = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_ppn3)"))->first();
+            $keluar_ppn3  = $sql_keluar_ppn3->nilai;
 
         $rek_jkk = "'210103010001'";
         $sql_terima_jkk = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_jkk)"))->first();
+            $terima_jkk  = $sql_terima_jkk->nilai;
         $sql_keluar_jkk = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_jkk)"))->first();
+            $keluar_jkk  = $sql_keluar_jkk->nilai;
 
         $rek_jkm = "'210104010001'";
         $sql_terima_jkm = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_jkm)"))->first();
+            $terima_jkm  = $sql_terima_jkm->nilai;
         $sql_keluar_jkm = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_jkm)"))->first();
+            $keluar_jkm  = $sql_keluar_jkm->nilai;
 
         $rek_bpjs = "'210102010001'";
         $sql_terima_bpjs = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_bpjs)"))->first();
+            $terima_bpjs  = $sql_terima_bpjs->nilai;
         $sql_keluar_bpjs = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_bpjs)"))->first();
+            $keluar_bpjs  = $sql_keluar_bpjs->nilai;
 
         //kalau mau ditambah potongan penghasilan lainya komen di buka
         $sql_keluar_pot_penghaslain = collect(DB::select("SELECT ISNULL(SUM(a.rupiah), 0) nilai FROM trdkasin_pkd a 
                 INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
                            WHERE  a.kd_skpd = '$kd_skpd' AND b.tgl_sts BETWEEN '$periode1' AND '$periode2' AND jns_trans='5' and pot_khusus='2'"))->first();
+            $keluar_pot_penghaslain  = $sql_keluar_pot_penghaslain->nilai;
 
         $sql_hkpg = collect(DB::select("SELECT          
                     isnull(SUM(up_hkpg_lalu),0) + 
@@ -1629,15 +1657,19 @@ class LaporanAkuntansiController extends Controller
                 INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
                 WHERE a.kd_skpd = '$kd_skpd' AND jns_trans='5' AND LEFT(kd_rek6,1)<>4
                 )zz"))->first();
+            $keluar_hkpg  = $sql_hkpg->nilai;
 
         $sql_cp = collect(DB::select("SELECT isnull(SUM (rupiah),0) AS nilai FROM trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd 
                   WHERE d.kd_skpd = '$kd_skpd' AND ((jns_trans = '5' AND pot_khusus = '0') OR jns_trans = '1') AND MONTH (tgl_sts) <= '$bln2'"))->first();
+            $keluar_cp  = $sql_cp->nilai;
 
         $rek_denda = "'410411010001'";
         $sql_terima_denda = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_denda)"))->first();
+            $terima_denda  = $sql_terima_denda->nilai;
         $sql_keluar_denda = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
                            WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 IN ($rek_denda)"))->first();
+            $keluar_denda  = $sql_keluar_denda->nilai;
 
         // $sql_terima_lain = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd
         //                    WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 NOT IN ($rek_ppn,$rek_pph21,$rek_pph22,$rek_pph23,$rek_iwp,$rek_taperum,$rek_pph4,$rek_ppn2,$rek_ppn3,$rek_jkk,$rek_jkm,$rek_bpjs,$rek_denda)"))->first();
@@ -1659,6 +1691,7 @@ class LaporanAkuntansiController extends Controller
                                         WHERE pengurang_belanja !='1'
                                         AND a.kd_skpd='$kd_skpd'
                                         ) a"))->first();
+            $terima_lain  = $sql_terima_lain->nilai;
 
         // $sql_keluar_lain = collect(DB::select("SELECT ISNULL(SUM(b.nilai), 0) nilai FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd = b.kd_skpd 
         //                    WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' AND b.kd_rek6 NOT IN ($rek_ppn,$rek_pph21,$rek_pph22,$rek_pph23,$rek_iwp,$rek_taperum,$rek_pph4,$rek_ppn2,$rek_ppn3,$rek_jkk,$rek_jkm,$rek_bpjs,$rek_denda)"))->first();
@@ -1680,6 +1713,8 @@ class LaporanAkuntansiController extends Controller
                                         FROM TRHOUTLAIN a 
                                         WHERE a.kd_skpd='$kd_skpd'
                                         ) a"))->first();
+        $keluar_lain  = $sql_keluar_lain->nilai;
+
 
 
         $sqldropin = collect(DB::select("SELECT isnull(sum(sd_bln_ini),0) as sd_bln_ini from (
@@ -1689,6 +1724,7 @@ class LaporanAkuntansiController extends Controller
                 SELECT isnull(SUM(nilai),0) as sd_bln_ini from tr_setorpelimpahan_tunai 
                 WHERE kd_skpd = '$kd_skpd' AND (tgl_kas BETWEEN '$periode1' and '$periode2')
                 ) x"))->first();
+            $totaldropin = $sqldropin->sd_bln_ini;
         $sqldropin = collect(DB::select("SELECT SUM(z.sd_bln_ini) sd_bln_ini from(
                         select 
                         isnull(SUM(nilai),0) as sd_bln_ini
@@ -1700,14 +1736,17 @@ class LaporanAkuntansiController extends Controller
                         from tr_setorpelimpahan_tunai
                         WHERE kd_skpd_sumber = '$kd_skpd' AND (tgl_kas BETWEEN '$periode1' and '$periode2')
                         )z"))->first();
+            $totaldropout = $sqldropin->sd_bln_ini ;
 
 
         $sqlpanjarin = collect(DB::select("SELECT SUM(x.jar_sd_bln_ini) jar_sd_bln_ini FROM(
             SELECT isnull(SUM(nilai),0) as jar_sd_bln_ini from tr_jpanjar where jns=1 and kd_skpd = '$kd_skpd' and 
             (tgl_kas BETWEEN '$periode1' and '$periode2')
             )x"))->first();
+            $totalpanjarin = $sqlpanjarin->jar_sd_bln_ini;
         $sqlpanjarout = collect(DB::select("SELECT isnull(SUM(nilai),0) as jarout_sd_bln_ini from tr_panjar 
                         WHERE kd_skpd= '$kd_skpd' and (tgl_kas BETWEEN '$periode1' and '$periode2') and jns='1'"))->first();
+            $totalpanjarout = $sqlpanjarout->jarout_sd_bln_ini;
 
         //bos
         $sqlbosin = collect(DB::select("SELECT  isnull(SUM(x.bos_sd_bln_ini),0) nilai_bosin FROM(
@@ -1721,30 +1760,274 @@ class LaporanAkuntansiController extends Controller
             SELECT 
             SUM(CASE WHEN tgl_spb_hibah<='$periode2' THEN b.nilai ELSE 0 END) as bos_sd_bln_ini 
             from trhspb_hibah_skpd a inner join trdspb_hibah_skpd b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti 
-            where a.kd_skpd='$kd_skpd'
-
-            )x"))->first();
+            where a.kd_skpd='$kd_skpd')x"))->first();
+            $bosin = $sqlbosin->nilai_bosin;
         $sqlbosout = collect(DB::select("SELECT isnull(SUM(CASE WHEN tgl_bukti<='$periode2' THEN a.nilai ELSE 0 END),0) as nilai_bosout
                     from trdtransout_blud a inner join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
                     WHERE a.kd_skpd='$kd_skpd' and (kd_satdik<>'1' OR kd_satdik is not null)"))->first();
+            $bosout = $sqlbosout->nilai_bosout;
 
         //blud
         $sqlbludin = collect(DB::select("SELECT * from (
             SELECT SUM(CASE WHEN tgl_sts<='$periode2' THEN b.rupiah ELSE 0 END) as nilai_bludin 
             from trhkasin_blud a inner join trdkasin_blud b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts 
             where a.kd_skpd='$kd_skpd' )x"))->first();
+            $bludin = is_null($sqlbludin->nilai_bludin) ? 'null' : $sqlbludin->nilai_bludin;
         $sqlbludout = collect(DB::select("SELECT isnull(blud_sd_bln_ini,0) as nilai_bludout from (
                     SELECT SUM(CASE WHEN tgl_bukti<='$periode2' THEN a.nilai ELSE 0 END) as blud_sd_bln_ini
                         from trdtransout_blud a inner join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-                        WHERE a.kd_skpd='$kd_skpd' and right(kd_rek6,6)='999999'
-                                                ) x"))->first();
+                        WHERE a.kd_skpd='$kd_skpd' and right(kd_rek6,6)='999999') x"))->first();
+            $bludout = $sqlbludout->nilai_bludout;
 
         $setor_tlalu_blud = "";
 
-        $sql = DB::select(" ");
-        
+        $sql = DB::select("SELECT 1 nomor,0 jns, 'Saldo BKU' AS nama, $kastunai+$saldobank nilai 
+              UNION ALL
+              --Kas tunai
+              SELECT 1 nomor,1 jns,'- Kas Tunai' AS nama, $kastunai nilai
+              UNION ALL
+              --Saldo Bank
+              SELECT 1 nomor, 1 jns, '- Saldo Bank' AS nama, $saldobank nilai
+              UNION ALL
+              --realisasi penerimaan sp2d--
+              SELECT 2 nomor, 0 jns, 'Realisasi penerimaan SP2D' nama, $real_pend_sp2d
+              UNION ALL
+              -- Realisasi SPJ
+              SELECT 3 nomor, '0' jns, 'Realisasi Pengeluaran SPJ (LS+UP/GU/TU)' uraian, $real_spj
+              UNION ALL
+              --setro cp kalau harus masuk pot. penghasilan lainya pot kusus ditambah '2'--
+              SELECT 4 nomor, '0' jns, 'Setoran Tahun Ini' uraian, SUM (nilai_cp) nilai FROM
+                  (
+                  SELECT SUM (rupiah) AS nilai_cp FROM trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd WHERE d.kd_skpd = '$kd_skpd' AND jns_trans = '5' AND pot_khusus IN ('1') AND MONTH (tgl_sts) <= '$bln2'
+                  UNION ALL
+                  SELECT SUM (rupiah) AS nilai_cp FROM trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd 
+                  WHERE d.kd_skpd = '$kd_skpd' AND ((jns_trans = '5' AND pot_khusus = '0') OR jns_trans = '1') AND MONTH (tgl_sts) <= '$bln2'
+                  UNION ALL
+                  SELECT ISNULL(SUM(a.rupiah), 0) nilai_cp FROM trdkasin_pkd a 
+                INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                           WHERE  a.kd_skpd = '$kd_skpd' AND b.tgl_sts BETWEEN '$periode1' AND '$periode2' AND jns_trans='5' and pot_khusus='2'
+                  ) a
+              UNION ALL
+              --setor uyhd tahun lalu--
+              SELECT 5 nomor, '0' jns, 'Setoran UYHD Tahun Lalu' uraian, ISNULL(sum(nilai),0) nilai 
+              from TRHOUTLAIN where KD_SKPD='$kd_skpd' and tgl_bukti<='$periode2' and jns_beban not in ('4','6','7')
+              UNION ALL
+              --lebih setor
+              SELECT 6 nomor, '0' jns, 'Lebih Setor' uraian, 0 nilai
+              UNION ALL
+              SELECT 7 nomor, '0' jns, 'Penerimaan' uraian, SUM (nilai) nilai FROM ( 
+                   SELECT $terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin as nilai 
+                ) a
+                
+            UNION ALL
+            SELECT 7 nomor, '1' jns, '-Potongan Pajak' uraian, 0 nilai
+            UNION ALL
+            ---penerimaan PPN--
+            SELECT 7 nomor, '2' jns, 'a. PPn' uraian, $terima_ppn nilai 
+            UNION ALL
+            ---penerimaan PPH21--
+            SELECT 7 nomor, '2' jns, 'b. PPh 21' uraian, $terima_pph21 nilai
+            UNION ALL
+            ---penerimaan PPH22--
+            SELECT 7 nomor, '2' jns, 'c. PPh22' uraian, $terima_pph22 nilai
+            UNION ALL
+            ---penerimaan PPH23--
+            SELECT 7 nomor, '2' jns, 'c. PPh23' uraian, $terima_pph23 nilai
+            UNION ALL
+            ---penerimaan IWP--
+            SELECT 7 nomor, '2' jns, '- Pot. IWP' uraian, $terima_iwp nilai
+            UNION ALL
+            ---penerimaan Taperum--
+            SELECT 7 nomor, '2' jns, '- Pot. Taperum' uraian, $terima_taperum nilai
+            UNION ALL
+            ---penerimaan pph4--
+            SELECT 7 nomor, '2' jns, '- Pot. PPh Pasal 4' uraian, $terima_pph4 nilai
+            UNION ALL
+            ---penerimaan ppnpn 2%--
+            --SELECT 7 nomor, '2' jns, '- Pot. Iuran Wajib PPNPN 2%' uraian, $terima_ppn2 nilai
+            --UNION ALL
+            ---penerimaan ppnpn 3%--
+            --SELECT 7 nomor, '2' jns, '- Pot. Iuran Wajib PPNPN 3%' uraian, $terima_ppn3 nilai
+            --UNION ALL
+            ---Iuran JKK--
+            --SELECT 7 nomor, '2' jns, '- Pot. Iuran Wajib JKK' uraian, $terima_jkk nilai
+            --UNION ALL
+            ---Iuran JKM--
+            --SELECT 7 nomor, '2' jns, '- Pot. Iuran Wajib JKM' uraian, $terima_jkm nilai
+            --UNION ALL
+            ---Pot. BPJS--
+            SELECT 7 nomor, '2' jns, '- Pot.  Jaminan Kesehatan' uraian, $terima_bpjs nilai
+            UNION ALL
+            ---Denda Keterlambatan--
+            SELECT 7 nomor, '2' jns, '- Denda Keterlambatan' uraian, $terima_denda nilai
+            UNION ALL
+            ---penerimaan lain--
+            SELECT 7 nomor, '2' jns, '- Lain-lain' uraian, $terima_lain nilai
+            UNION ALL
+            SELECT 7 nomor, '2' jns, '- Dropping Dana' uraian, $totaldropin nilai
+            UNION ALL
+            SELECT 7 nomor, '2' jns, '- Panjar Dana' uraian, $totalpanjarin nilai
+            UNION ALL
+            SELECT 7 nomor, '2' jns, '- BOS' uraian, $bosin nilai
+            UNION ALL
+            SELECT 7 nomor, '2' jns, '- BLUD' uraian, $bludin nilai
+            UNION ALL
+            
+            SELECT 8 nomor, '0' jns, 'Pengeluaran' uraian, SUM (nilai) nilai FROM ( SELECT $keluar_ppn+$keluar_pph21+$keluar_pph22+$keluar_pph23+$keluar_iwp+$keluar_taperum+$keluar_pph4+$keluar_bpjs+$keluar_pot_penghaslain+$keluar_hkpg+$keluar_cp+$keluar_denda+$keluar_lain+$totaldropout+$totalpanjarout+$bosout+$bludout as nilai
+                ) a
+            
+            UNION ALL
+                                
+            SELECT 8 nomor, '1' jns, '-Potongan Pajak' uraian, 0 nilai 
+            
+            UNION ALL
+            --pengeluaran ppn--
+            SELECT 8 nomor, '2' jns, 'a. PPn' uraian, $keluar_ppn nilai
+            UNION ALL
+            --pengeluaran pph21--
+            SELECT 8 nomor, '2' jns, 'b. PPh 21' uraian, $keluar_pph21 nilai
+            UNION ALL
+            --pengeluaran pph22--
+            SELECT 8 nomor, '2' jns, 'c. PPh 22' uraian, $keluar_pph22 nilai
+            UNION ALL
+            --pengeluaran pph23--
+            SELECT 8 nomor, '2' jns, 'd. PPh 23' uraian, $keluar_pph23 nilai
+            UNION ALL
+            --pengeluaran iwp--
+            SELECT 8 nomor, '2' jns, '- Pot. IWP' uraian, $keluar_iwp nilai
+            UNION ALL
+            --pengeluaran taperum--
+            SELECT 8 nomor, '2' jns, '- Pot. Taperum' uraian, $keluar_taperum nilai
+            UNION ALL
+            --pengeluaran pphpas4--
+            SELECT 8 nomor, '2' jns, '- Pot. PPh Pasal 4' uraian, $keluar_pph4 nilai
+            UNION ALL
+            --pengeluaran ppnpn 2%--
+            --SELECT 8 nomor, '2' jns, '- Pot. Iuran Wajib PPNPN 2%' uraian, $keluar_ppn2 nilai
+            --UNION ALL
+            --pengeluaran ppnpn 3%--
+            --SELECT 8 nomor, '2' jns, '- Pot. Iuran Wajib PPNPN 3%' uraian, $keluar_ppn3 nilai
+            --UNION ALL
+            --pengeluaran Pot. Iuran Wajib JKK--
+            --SELECT 8 nomor, '2' jns, '- Pot. Iuran Wajib JKK' uraian, $keluar_jkk nilai
+            --UNION ALL
+            --pengeluaran Pot. Iuran Wajib JKM--
+            --SELECT 8 nomor, '2' jns, '- Pot. Iuran Wajib JKM' uraian, $keluar_jkm nilai
+            --UNION ALL
+            --pengeluaran Pot. BPJS--
+            SELECT 8 nomor, '2' jns, '- Pot.  Jaminan Kesehatan' uraian, $keluar_bpjs nilai
+            UNION ALL
+            --pengeluaran Pot. Penghasilan Lainnya--
+            SELECT 8 nomor, '2' jns, '- Pot. Penghasilan Lainnya' uraian, $keluar_pot_penghaslain nilai
+            UNION ALL
+            --hkpg
+            SELECT 8 nomor, '2' jns, '- HKPG' uraian, $keluar_hkpg nilai
+            UNION ALL
+            --contra pos
+            SELECT 8 nomor, '2' jns, '- Contra Pos  ' uraian, $keluar_cp nilai
+            UNION ALL
+            --pengeluaran Denda Keterlambatan--
+            SELECT 8 nomor, '2' jns, '- Denda Keterlambatan' uraian, $keluar_denda nilai
+            UNION ALL
+            --pengeluaran lain--
+            SELECT 8 nomor, '2' jns, '- Lain-lain' uraian, $keluar_lain nilai
+            UNION ALL
+            SELECT 8 nomor, '2' jns, '- Dropping Dana' uraian, $totaldropout nilai
+            UNION ALL
+            SELECT 8 nomor, '2' jns, '- Panjar Dana' uraian, $totalpanjarout nilai
+            UNION ALL
+            SELECT 8 nomor, '2' jns, '- BOS' uraian, $bosout nilai
+            UNION ALL
+            SELECT 8 nomor, '2' jns, '- BLUD' uraian, $bludout nilai
 
-        $ttd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where (kode='bud' OR kode='GUB') and nip like '%$ttd_bud%'"))->first();
+
+            
+            
+            UNION ALL
+            
+            --Setoran Utang Pajak tahun lalu--
+            SELECT 9 nomor, '0' jns, 'Setoran Utang Pajak Tahun Lalu' AS uraian, 
+            isnull(sum(nilai),0) as nilai from 
+            ( SELECT isnull(sum(nilai),0) as nilai FROM TRHOUTLAIN where jns_beban = '7' AND KD_SKPD='$kd_skpd'
+              AND tgl_bukti BETWEEN '$periode1' AND '$periode2'
+              $setor_tlalu_blud ) x
+  
+
+            
+            UNION ALL
+            
+            --Setoran Utang Belanja tahun lalu--
+            SELECT 10 nomor, '0' jns, 'Setoran Utang Belanja Tahun Lalu' AS uraian, ISNULL(SUM(nilai),0) nilai FROM
+                (
+                SELECT ISNULL(SUM(debet - kredit), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) IN ('210601','210602','210606','210607','210608','210609','210610','210614') AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND b.map_real in ('15','40')
+                UNION ALL
+                SELECT ISNULL(SUM(debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) IN ('210601','210602','210606','210607','210608','210609','210610','210614') AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND (b.kd_unit='' OR b.kd_unit IS NULL) AND b.tabel='1' AND reev in ('','0')
+                ) a 
+            
+            UNION ALL
+            SELECT 10 nomor, '1' jns, '- Belanja Pegawai' AS uraian, ISNULL(SUM(nilai),0) nilai FROM
+                (
+                SELECT ISNULL(SUM(debet - kredit), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210601' AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND b.map_real in ('15','40')
+                UNION ALL
+                SELECT ISNULL(SUM(debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210601' AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND (b.kd_unit='' OR b.kd_unit IS NULL) AND b.tabel='1' AND reev in ('','0')
+                ) a 
+            UNION ALL
+            SELECT 10 nomor, '1' jns, '- Belanja Barang dan Jasa' AS uraian, ISNULL(SUM(nilai),0) nilai FROM
+                (
+                SELECT ISNULL(SUM(debet - kredit), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210602' AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND b.map_real in ('15','40')
+                UNION ALL
+                SELECT ISNULL(SUM(debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210602' AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND (b.kd_unit='' OR b.kd_unit IS NULL) AND b.tabel='1' AND reev in ('','0')
+                ) a  
+            UNION ALL
+            SELECT 10 nomor, '1' jns, '- Belanja Modal' AS uraian, ISNULL(SUM(nilai),0) nilai FROM
+                (
+                SELECT ISNULL(SUM(debet - kredit), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) IN ('210606','210607','210608','210609','210610','210614') AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND b.map_real in ('15','40')
+                UNION ALL
+                SELECT ISNULL(SUM(debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+                AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) IN ('210606','210607','210608','210609','210610','210614') AND b.tgl_voucher BETWEEN '$periode1' AND '$periode2' AND (b.kd_unit='' OR b.kd_unit IS NULL) AND b.tabel='1' AND reev in ('','0')
+                ) a   
+            
+            UNION ALL
+            
+            --pajak yang belum di setor--
+            SELECT 11 nomor, '0' jns, 'Pajak yang belum disetor' AS uraian, ISNULL( SUM (terima_pajak - setor_pajak), 0 ) AS nilai
+            FROM ( SELECT a.kd_skpd, SUM (b.nilai) AS terima_pajak, 0 setor_pajak 
+                   FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.kd_skpd = b.kd_skpd AND a.no_bukti = b.no_bukti WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd
+                   UNION ALL
+                   SELECT a.kd_skpd, 0 terima_pajak, SUM (b.nilai) AS setor_pajak
+                   FROM trhstrpot a INNER JOIN trdstrpot b ON a.kd_skpd = b.kd_skpd AND a.no_bukti = b.no_bukti WHERE a.kd_skpd = '$kd_skpd' AND a.tgl_bukti BETWEEN '$periode1' AND '$periode2' GROUP BY a.kd_skpd
+                ) a
+            
+            UNION ALL
+            
+            --belanja yang belum dibayar--
+            SELECT 12 nomor, '0' jns, 'Belanja yang blm dibayar ' AS uraian, SUM (nilai) nilai
+            FROM ( SELECT ISNULL(SUM(kredit - debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher AND a.kd_unit = b.kd_skpd
+                   WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) in ('210601','210602','210606','210607','210608','210609','210610','210614') AND b.tgl_voucher <='$periode2'
+                ) a
+            
+            UNION ALL
+            
+            SELECT 12 nomor, '1' jns, '- Belanja Pegawai' AS uraian, ISNULL(SUM(kredit - debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+            AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210601' AND b.tgl_voucher <='$periode2'
+            UNION ALL
+            SELECT 12 nomor, '1' jns, '- Belanja Barang dan Jasa' AS uraian, ISNULL(SUM(kredit - debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+            AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) = '210602' AND b.tgl_voucher <='$periode2' 
+            UNION ALL
+            SELECT 12 nomor, '1' jns, '- Belanja Modal' AS uraian, ISNULL(SUM(kredit - debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher
+            AND a.kd_unit = b.kd_skpd WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) IN ('210606','210607','210608','210609','210610','210614') 
+            AND b.tgl_voucher <='$periode2' ");
+        
+        // dd($sql);
+
+        $ttdd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where  nip like '%$ttd%'"))->first();
         
         
         $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
@@ -1760,23 +2043,18 @@ class LaporanAkuntansiController extends Controller
             
         $data = [
             'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'map1'     => $map1,
-            'map2'     => $map2,
-            'map3'     => $map3,
-            'map4'     => $map4,
-            'map5'     => $map5,
-            'map6'     => $map6,
-            'map7'     => $map7,
-            'map8'     => $map8,
-            'daerah'    => $sc,
-            'nogub'     => $nogub,
-            'tgl1'    => $tgl1,
-            'tgl2'   => $tgl2,
-            'ttd_bud'   => $ttd_bud,
-            'ttd'   => $ttd,
+            'sql'     => $sql,
+            'nogub'    => $nogub,
+            'kd_skpd'    => $kd_skpd,
+            'tw'    => $tw,
+            'periode1'    => $periode1,
+            'periode2'   => $periode2,
+            'ttd'   => $ttdd,
             'jns_ang'   => $jns_ang,
             'thn_ang'   => $thn_ang,
-            'thn_ang1'   => $thn_ang1
+            'thn_ang1'   => $thn_ang1,
+            'tgl_periode1'   => $tgl_periode1,
+            'bln_periode1'   => $bln_periode1
         ];
         // if($format=='sap'){
         //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
@@ -1785,7 +2063,7 @@ class LaporanAkuntansiController extends Controller
         // }elseif($format=='p77'){
         //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
         // }elseif($format=='sng'){
-            $view =  view('akuntansi.cetakan.inflasi')->with($data);
+            $view =  view('akuntansi.cetakan.rekonba.pengeluaran')->with($data);
         // }
         
         if ($cetak == '1') {

@@ -545,10 +545,10 @@
                     alert('Tanggal Akhir tidak boleh kosong!');
                     return;
                 }
-                if (!ttd) {
-                    alert('Penandatangan tidak boleh kosong!');
-                    return;
-                }
+                // if (!ttd) {
+                //     alert('Penandatangan tidak boleh kosong!');
+                //     return;
+                // }
                 if (!jenis_cetakan) {
                     alert('Jenis Cetakan tidak boleh kosong!');
                     return;
@@ -559,10 +559,10 @@
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("jns_ang", jns_ang);
-                searchParams.append("ttd", ttd;
-                searchParams.append("kd_skpd",kd_skpd ;
-                searchParams.append("skpdunit", skpdunit;
-                searchParams.append("jenis_cetakan", jenis_cetakan;
+                searchParams.append("ttd", ttd);
+                searchParams.append("kd_skpd",kd_skpd) ;
+                searchParams.append("skpdunit", skpdunit);
+                searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

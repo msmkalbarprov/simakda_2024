@@ -47,11 +47,11 @@
 
                         <div id="baris_periode1_inflasi" class="col-md-3">
                             <label for="periode1" class="form-label">Periode</label>
-                            <input type="date" id="tanggal1_inflasi" name="tanggal1_inflasi" class="form-control">
+                            <input type="date" id="tanggal1_rekonba" name="tanggal1_rekonba" class="form-control">
                         </div>
                         <div id="baris_periode2_inflasi" class="col-md-3">
                             <label for="periode2" class="form-label">&nbsp;</label>
-                            <input type="date" id="tanggal2_inflasi" name="tanggal2_inflasi" class="form-control">
+                            <input type="date" id="tanggal2_rekonba" name="tanggal2_rekonba" class="form-control">
                             
                         </div>
                 </div>
