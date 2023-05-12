@@ -131,6 +131,7 @@
             cari_skpdbb();
             cari_rek1();
             ttd_bud();
+            ttd_kasubbid();
 
             $(".select_lbb").select2({
                 theme: 'bootstrap-5',

@@ -201,11 +201,11 @@ class LaporanAkuntansiController extends Controller
         
         $data       = 
                     DB::table('ms_ttd')
-                    ->where(['kd_skpd' => '5.02.0.00.0.00.02.0000'])
-                    ->where(['kode'=> 'AKT'])
+                    ->where(['kd_skpd' => '5.02.0.00.0.00.02.0000', 'kode'=> 'AKT'])
                     ->orderBy('nip')
                     ->orderBy('nama')
                     ->get();
+
         return response()->json($data);
     }
 
@@ -2863,7 +2863,20 @@ class LaporanAkuntansiController extends Controller
                 WHERE nama<> 'saldo bku'
                 order by n.kode");
             
+        }else if ($jenis_cetakan==3) {
+            $sql = DB::select("SELECT a.seq,a.cetak,a.bold,a.parent,a.nor,a.uraian,isnull(a.kode_1,'-') as kode_1,isnull(a.kode_2,'-') as kode_2,isnull(a.kode_3,'-') as kode_3,thn_m1 AS lalu FROM map_lra_skpd a 
+                          ORDER BY a.seq");
         }
+
+        $sus=collect(DB::select("SELECT 
+                    SUM(CASE WHEN kd_rek='4' THEN (nil_ang) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (nil_ang) ELSE 0 END) as ang_surplus,
+                    SUM(CASE WHEN kd_rek='4' THEN (kredit-debet) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet-kredit) ELSE 0 END) as nil_surplus,
+                    SUM(CASE WHEN kd_rek='4' THEN (kredit_awal-debet_awal) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet_awal-kredit_awal) ELSE 0 END) as nil_surplus_awal
+                    FROM
+                    (SELECT LEFT(kd_rek6,1) as kd_rek, SUM(nilai) as nil_ang, SUM(kredit) as kredit,SUM(debet) as debet
+                        ,SUM(kredit_awal) as kredit_awal,SUM(debet_awal) as debet_awal 
+                         FROM data_jurnal_n_sal_awal_tgl($periode1,$periode2,'$jns_ang') WHERE LEFT(kd_rek6,1) IN ('4','5') AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                    GROUP BY LEFT(kd_rek6,1)) a"))->first();
         // dd($sql);
 
         $ttdd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where  nip like '%$ttd%'"))->first();
@@ -2875,7 +2888,7 @@ class LaporanAkuntansiController extends Controller
 
 
  
-        // dd($query);
+        // dd($sql);
 
 
         // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
@@ -2883,6 +2896,7 @@ class LaporanAkuntansiController extends Controller
         $data = [
             'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'sql'     => $sql,
+            'sus'    => $sus,
             'nogub'    => $nogub,
             'kd_skpd'    => $kd_skpd,
             'tw'    => $tw,
@@ -2899,10 +2913,9 @@ class LaporanAkuntansiController extends Controller
             $view =  view('akuntansi.cetakan.rekonba.pengeluaran')->with($data);
         }elseif($jenis_cetakan==2){
             $view =  view('akuntansi.cetakan.rekonba.penerimaan')->with($data);
+        }elseif($jenis_cetakan==3){
+            $view =  view('akuntansi.cetakan.rekonba.lra')->with($data);
         }
-        // elseif($format=='p77'){
-        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
-        // }
         // elseif($format=='sng'){
         //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
         // }
