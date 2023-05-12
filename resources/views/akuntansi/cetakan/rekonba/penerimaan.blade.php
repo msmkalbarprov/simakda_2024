@@ -60,7 +60,7 @@
     <table style="border-collapse:collapse;font-family: Arial; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="2">
         <tr>
             <td rowspan="2" align="right" width="10%" height="50">&nbsp;</td>
-            <td colspan="3" align="center" style="font-size:14px"><b>Realisasi Pengeluaran Tahun Anggaran $thn_ang</b></td>
+            <td colspan="3" align="center" style="font-size:14px"><b>Realisasi Penerimaan Tahun Anggaran {{$thn_ang}}</b></td>
         </tr>
         <tr>
             <td colspan="5" align="center" style="font-size:14px"><b>Periode {{tgl_format_oyoy($periode1)}} - {{tgl_format_oyoy($periode2)}}</b></td>
@@ -76,27 +76,26 @@
     </table>
 
     <table style="border-collapse:collapse;font-family: Arial; font-size:12px" width="100%" align="center" border="1" cellspacing="0" cellpadding="4">
-                     <thead>                       
-                        <tr>
-                            <td rowspan="2" bgcolor="#CCCCCC" width="5%" align="center"><b>NO</b></td>
-                            <td rowspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>URAIAN</b></td>
-                            <td colspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>REALISASI TRIWULAN {{$tw}} TA {{$thn_ang}}</b></td>
-                            <!--<td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>SISA LEBIH/(KURANG)</b></td>-->
-                            <td rowspan="2" bgcolor="#CCCCCC" width="15%" align="center"><b>KETERANGAN</b></td>
-                        </tr>
-                        <tr>
-                            <td bgcolor="#CCCCCC" width="15%" align="center"><b>Akuntansi</b></td>
-                            <td bgcolor="#CCCCCC" width="15%" align="center"><b>SKPD</b></td>     
-                        </tr>
-                     </thead>
-                                       
-                     <tr>
-                            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>                            
-                            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
-                            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
-                            <!--<td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>-->
-                            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
-                     </tr>
+        <thead>                       
+            <tr>
+                <td rowspan="2" bgcolor="#CCCCCC" width="5%" align="center"><b>NO</b></td>
+                <td rowspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>URAIAN</b></td>
+                <td colspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>REALISASI TRIWULAN {{$tw}} TA {{$thn_ang}}</b></td>
+                <!--<td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>SISA LEBIH/(KURANG)</b></td>-->
+                <td rowspan="2" bgcolor="#CCCCCC" width="15%" align="center"><b>KETERANGAN</b></td>
+            </tr>
+            <tr>
+                <td bgcolor="#CCCCCC" width="15%" align="center"><b>Akuntansi</b></td>
+                <td bgcolor="#CCCCCC" width="15%" align="center"><b>SKPD</b></td>     
+            </tr>
+        </thead>
+        <tr>
+            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>                         
+            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
+            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
+            <!--<td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>-->
+            <td style="vertical-align:top;border-top: none;border-bottom: none;" >&nbsp;</td>
+        </tr>
                 @php
                     
                     
@@ -104,20 +103,27 @@
                 @endphp
                     @foreach ($sql as $rowsql)
                         @php
-                            $nomor  = $rowsql->nomor;
-                            $jns    = $rowsql->jns;
-                            $nama   = $rowsql->nama;
-                            $nilai  = $rowsql->nilai;
+                            $kode       = $rowsql->kode;
+                            $nomor      = $rowsql->nomor;
+                            $jns        = $rowsql->jns;
+                            $nama       = $rowsql->nama;
+                            $nilai_unit = $rowsql->nilai_unit;
+                            $nilai_ak   = $rowsql->nilai_ak;
+                            $sisa       = $rowsql->sisa;
                                
-                            if($nilai<0){
-                                $a = "(&nbsp;";
-                                $b = "&nbsp;)";
-                                $nilai2 = number_format($nilai*-1,"2",",",".");
+                            if($nilai_unit<0 || $nilai_ak<0){
+                                $a        = "(&nbsp";
+                                $b        = "&nbsp)";
+                                $jml_unit = rupiah($nilai_unit*-1);
+                                $jml_ak   = rupiah($nilai_ak*-1);
+                                $jml_sisa = rupiah($sisa*-1);
                             }else{
-                                $a = "";
-                                $b = "";
-                                $nilai2 = number_format($nilai,"2",",",".");
-                            }
+                                $a        = "";
+                                $b        = "";
+                                $jml_unit = rupiah($nilai_unit);
+                                $jml_ak   = rupiah($nilai_ak);
+                                $jml_sisa = rupiah($sisa);
+                            }   
                             
                             
 
@@ -126,32 +132,21 @@
 
                               
                         @if($jns==0)
-                            @if($nomor==1 || $nomor==2 || $nomor==3 || $nomor==4 || $nomor==5 || $nomor==6  || $nomor==7 || $nomor==8 || $nomor==9 || $nomor==10 || $nomor==11 || $nomor==12)
-                                <tr>
-                                    <td align="center"><b>{{$nomor}}</b></td>
-                                    <td align="left"><b>{{$nama}}</b></td>
-                                    <td align="right"><b>{{$a}}{{$nilai2}}{{$b}}</b></td>
-                                    <td align="right"><b></b></td>
-                                    <!--<td align="right">0</td>-->
-                                    <td></td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td align="center"><b>{{$nomor}}</b></td>
-                                    <td align="left"><b>${{nama}}</b></td>
-                                    <td align="right">{{$a}}{{$nilai2}}{{$b}}</td>
-                                    <td align="right"></td>
-                                    <!--<td align="right">0</td>-->
-                                    <td></td>
-                                </tr>
-                            @endif
+                            <tr>
+                                <td align="center"><b>{{$nomor}}</b></td>
+                                <td align="left"><b>{{$nama}}</b></td>
+                                <td align="right"><b>{{$a}}{{$jml_unit}}{{$b}}</b></td>
+                                <td align="right"><b></b></td>
+                                <!--<td align="right"><b>$a$jml_sisa$b</b></td>-->
+                                <td></td>
+                            </tr>
                         @else
                             <tr>
                                 <td align="center"></td>
                                 <td align="left">{{$nama}}</td>
-                                <td align="right">{{$a}}{{$nilai2}}{{$b}}</td>
+                                <td align="right">{{$a}}{{$jml_unit}}{{$b}}</td>
                                 <td align="right"></td>
-                                <!--<td align="right">0</td>-->
+                                <!--<td align="right">$a$jml_sisa$b</td>-->
                                 <td></td>
                             </tr>    
                         @endif
@@ -159,6 +154,7 @@
                 @endforeach
     </table>
     {{-- isi --}}
+
     
     <div style="padding-top:20px">
         <table style="border-collapse:collapse;font-family: Arial; font-size:14px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
