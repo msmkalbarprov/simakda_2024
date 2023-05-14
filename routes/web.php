@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Akuntansi\InputJurnalController;
 use App\Http\Controllers\Anggaran\PengesahanAngkasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -1648,6 +1649,19 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('j_koreksi', [MuserController::class, 'j_koreksi'])->name('muser.j_koreksi');
         Route::post('load_jkoreksi', [MuserController::class, 'load_jkoreksi'])->name('muser.load_jkoreksi');
         Route::post('simpan_j_koreksi', [MuserController::class, 'simpan_j_koreksi'])->name('muser.simpan_j_koreksi');
+    });
+
+    Route::group(['prefix' => 'input_jurnal'], function () {
+        Route::get('', [InputJurnalController::class, 'index'])->name('input_jurnal.index');
+        Route::post('load', [InputJurnalController::class, 'load'])->name('input_jurnal.load');
+        Route::get('create', [InputJurnalController::class, 'create'])->name('input_jurnal.create');
+        Route::post('kegiatan', [InputJurnalController::class, 'kegiatan'])->name('input_jurnal.kegiatan');
+        Route::post('rekening', [InputJurnalController::class, 'rekening'])->name('input_jurnal.rekening');
+        Route::post('simpan', [InputJurnalController::class, 'simpan'])->name('input_jurnal.simpan');
+        Route::get('edit/{no_voucher?}/{kd_skpd?}', [InputJurnalController::class, 'edit'])->name('input_jurnal.edit');
+        Route::post('update', [InputJurnalController::class, 'update'])->name('input_jurnal.update');
+        Route::post('hapus', [InputJurnalController::class, 'hapus'])->name('input_jurnal.hapus');
+        Route::get('cetak', [InputJurnalController::class, 'cetak'])->name('input_jurnal.cetak');
     });
 
     Route::group(['prefix' => 'spb'], function () {
