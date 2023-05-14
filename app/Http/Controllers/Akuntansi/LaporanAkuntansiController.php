@@ -2866,7 +2866,97 @@ class LaporanAkuntansiController extends Controller
         }else if ($jenis_cetakan==3) {
             $sql = DB::select("SELECT a.seq,a.cetak,a.bold,a.parent,a.nor,a.uraian,isnull(a.kode_1,'-') as kode_1,isnull(a.kode_2,'-') as kode_2,isnull(a.kode_3,'-') as kode_3,thn_m1 AS lalu FROM map_lra_skpd a 
                           ORDER BY a.seq");
+        }else if ($jenis_cetakan==4) {
+            $sql = DB::select("SELECT seq,bold, nor, uraian, isnull(kode_1ja,'-') as kode_1ja, isnull(kode,'-') as kode, isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak 
+                , isnull(kurangi_1,'-') kurangi_1, isnull(kurangi,'-') kurangi, isnull(c_kurangi,0) as c_kurangi
+                FROM map_lo_prov_permen_77_oyoy 
+                GROUP BY seq,bold, nor, uraian, isnull(kode_1ja,'-'), isnull(kode,'-'), isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet') , 
+                isnull(kurangi_1,'-') , isnull(kurangi,'-') , isnull(c_kurangi,0) 
+                ORDER BY nor");
+        }else if ($jenis_cetakan==5) {
+            $sql = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3, 
+                isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7, 
+                    isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+                    isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
+                FROM map_neraca_permen_77_oyoy ORDER BY seq");
+        }else if ($jenis_cetakan==6) {
+            $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
+                        from(
+                        --1 ekuitas_awal
+                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu_tgl_oyoy('$periode1','$$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
+                        union all
+                        --1 ekuitas lalu
+                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
+                        )a"))->first();
+            // dd($ekuitas_awal);
+            $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                            from(
+                            --2 surplus lo
+                            select sum(nilai_pen-nilai_bel) nilai,0 nilai_lalu
+                            from(
+                                select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where (tgl_voucher between '$periode1' and '$periode2') and left(kd_rek6,1) in ('7') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                union all
+                                select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where (tgl_voucher between '$periode1' and '$periode2') and left(kd_rek6,1) in ('8') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                )a
+                                union all
+                                -- 2 surplus lo lalu
+                                select 0 nilai,isnull(sum(nilai_pen-nilai_bel),0) nilai_lalu
+                                from(
+                                select sum(kredit-debet) as nilai_pen,0 nilai_bel 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('7') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                union all
+                                select 0 nilai_pen,sum(debet-kredit) as nilai_bel 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('8') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                )a
+                            )a"))->first();
+
+            $koreksi = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                            from(
+                                --5 nilai lpe 1
+                                select isnull(sum(kredit-debet),0) nilai , 0 nilai_lalu
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                                where  reev='2' and kd_rek6='310101010001' and (tgl_voucher between '$periode1' and '$periode2') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                union all
+                                --5 nilai lpe 1 lalu
+                                select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                                where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang1 and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                            )a"))->first();
+
+            $selisih = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                            from(
+                                --6 nilai dr
+                                select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                                where  reev='1' and kd_rek6='310101010001' and (tgl_voucher between '$periode1' and '$periode2')
+                                union all
+                                --6 nilai dr lalu
+                                select 0 nilai, isnull(sum(kredit-debet),0) nilai_lalu 
+                                from trhju a inner join trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit 
+                                where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang1
+                            )a"))->first();
+
+            $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                            from(
+                                --7 nilai lpe2
+                                select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                                where  reev='3' and kd_rek6='310101010001' and (tgl_voucher between '$periode1' and '$periode2') and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                                union all
+                                --7 nilai lpe2 lalu
+                                select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu 
+                                from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit 
+                                where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang1 and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                            )a"))->first();
         }
+
+        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
+        $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
+        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
 
         $sus=collect(DB::select("SELECT 
                     SUM(CASE WHEN kd_rek='4' THEN (nil_ang) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (nil_ang) ELSE 0 END) as ang_surplus,
@@ -2892,29 +2982,66 @@ class LaporanAkuntansiController extends Controller
 
 
         // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-            
-        $data = [
-            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'sql'     => $sql,
-            'sus'    => $sus,
-            'nogub'    => $nogub,
-            'kd_skpd'    => $kd_skpd,
-            'tw'    => $tw,
-            'periode1'    => $periode1,
-            'periode2'   => $periode2,
-            'ttd'   => $ttdd,
-            'jns_ang'   => $jns_ang,
-            'thn_ang'   => $thn_ang,
-            'thn_ang1'   => $thn_ang1,
-            'tgl_periode1'   => $tgl_periode1,
-            'bln_periode1'   => $bln_periode1
-        ];
+        if ($jenis_cetakan==6) {
+                $data = [
+                    'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                    // 'ekuitas_awal'      => $ekuitas_awal,
+                    'ekuitas_awal'      => $ekuitas_awal->nilai,
+                    'ekuitas_awal_lalu'      => $ekuitas_awal->nilai_lalu,
+                    'surdef'            => $surdef->nilai,
+                    'surdef_lalu'            => $surdef->nilai_lalu,
+                    'koreksi'           => $koreksi->nilai,
+                    'koreksi_lalu'           => $koreksi->nilai_lalu,
+                    'selisih'           => $selisih->nilai,
+                    'selisih_lalu'           => $selisih->nilai_lalu,
+                    'lain'              => $lain->nilai,
+                    'lain_lalu'              => $lain->nilai_lalu,
+                    'nogub'    => $nogub,
+                    'kd_skpd'    => $kd_skpd,
+                    'tw'    => $tw,
+                    'periode1'    => $periode1,
+                    'periode2'   => $periode2,
+                    'ttd'   => $ttdd,
+                    'jns_ang'   => $jns_ang,
+                    'thn_ang'   => $thn_ang,
+                    'thn_ang1'   => $thn_ang1,
+                    'tgl_periode1'   => $tgl_periode1,
+                    'bln_periode1'   => $bln_periode1
+                ];
+            }else{
+
+                $data = [
+                    'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                    'sql'     => $sql,
+                    'sus'    => $sus,
+                    'ekuitas'     => $ekuitas,
+                    'ekuitas_tanpa_rkppkd'    => $ekuitas_tanpa_rkppkd,
+                    'ekuitas_lalu'    => $ekuitas_lalu,
+                    'nogub'    => $nogub,
+                    'kd_skpd'    => $kd_skpd,
+                    'tw'    => $tw,
+                    'periode1'    => $periode1,
+                    'periode2'   => $periode2,
+                    'ttd'   => $ttdd,
+                    'jns_ang'   => $jns_ang,
+                    'thn_ang'   => $thn_ang,
+                    'thn_ang1'   => $thn_ang1,
+                    'tgl_periode1'   => $tgl_periode1,
+                    'bln_periode1'   => $bln_periode1
+                ];
+            }    
         if($jenis_cetakan==1){
             $view =  view('akuntansi.cetakan.rekonba.pengeluaran')->with($data);
         }elseif($jenis_cetakan==2){
             $view =  view('akuntansi.cetakan.rekonba.penerimaan')->with($data);
         }elseif($jenis_cetakan==3){
             $view =  view('akuntansi.cetakan.rekonba.lra')->with($data);
+        }elseif($jenis_cetakan==4){
+            $view =  view('akuntansi.cetakan.rekonba.lo')->with($data);
+        }elseif($jenis_cetakan==5){
+            $view =  view('akuntansi.cetakan.rekonba.neraca')->with($data);
+        }elseif($jenis_cetakan==6){
+            $view =  view('akuntansi.cetakan.rekonba.lpe')->with($data);
         }
         // elseif($format=='sng'){
         //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);

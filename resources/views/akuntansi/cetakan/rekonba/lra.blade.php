@@ -60,7 +60,7 @@
     <table style="border-collapse:collapse;font-family: Arial; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="2">
         <tr>
             <td rowspan="2" align="right" width="10%" height="50">&nbsp;</td>
-            <td colspan="3" align="center" style="font-size:14px"><b>Realisasi Pengeluaran Tahun Anggaran $thn_ang</b></td>
+            <td colspan="3" align="center" style="font-size:14px"><b>Laporan Realisasi Anggaran Tahun Anggaran $thn_ang</b></td>
         </tr>
         <tr>
             <td colspan="5" align="center" style="font-size:14px"><b>Periode {{tgl_format_oyoy($periode1)}} - {{tgl_format_oyoy($periode2)}}</b></td>
