@@ -430,7 +430,7 @@ class Sp2dController extends Controller
             'jumlah' => count($data_sp2d),
             'nilai_sp2d' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp])->first(),
             'bank' => DB::table('trhsp2d')->select('bank', 'no_rek', 'npwp')->where(['no_sp2d' => $no_sp2d])->first(),
-            'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd_bud, 'kode' => 'BUD'])->first(),
+            'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat','jabatan2')->where(['nip' => $ttd_bud, 'kode' => 'BUD'])->first(),
             'ttd_skpd' => DB::table('ms_ttd')
                 ->select('nama', 'jabatan')
                 ->where(['kd_skpd' => $sp2d->kd_skpd])

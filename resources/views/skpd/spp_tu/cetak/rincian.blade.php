@@ -171,8 +171,8 @@
         </tr>
         <tr>
             <td style="padding-bottom: 50px;text-align: center">
-                Kuasa Bendahara Umum Daerah <br>
-                {{ $ppkd->jabatan }}
+                {{ $ppkd->jabatan }} <br>
+                {{ $ppkd->jabatan2 }}
             </td>
         </tr>
         <tr>

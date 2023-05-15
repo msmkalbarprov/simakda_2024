@@ -440,7 +440,7 @@ class DaftarPengujiController extends Controller
         }
 
         $data = [
-            'ttd' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kode' => 'BUD', 'nip' => $ttd])->first(),
+            'ttd' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat','jabatan2')->where(['kode' => 'BUD', 'nip' => $ttd])->first(),
             'tanggal' => DB::table('trhuji')->select('tgl_uji')->where(['no_uji' => $no_uji])->first(),
             'jumlah_detail' => DB::table('trduji as a')->join('trhuji as b', 'a.no_uji', '=', 'b.no_uji')->where(['a.no_uji' => $no_uji])->count(),
             'no_uji' => $no_uji,

@@ -442,7 +442,7 @@
                     <td>Pengguna Anggaran/Kuasa Pengguna Anggaran</td>
                     <td></td>
                     <td style="text-align: center" class="kanan">
-                        <b>Kuasa Bendahara Umum Daerah</b>
+                        <b>{{ $ttd1->jabatan }}</b>
                     </td>
                 </tr>
                 <tr>
@@ -451,7 +451,7 @@
                     <td>BUD/Kuasa BUD</td>
                     <td></td>
                     <td style="text-align: center" class="kanan">
-                        {{-- <b>{{ $ttd1->jabatan }}</b> --}}
+                        <b>{{ $ttd1->jabatan2 }}</b>
                     </td>
                 </tr>
                 <tr>
