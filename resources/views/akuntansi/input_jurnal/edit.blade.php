@@ -74,14 +74,18 @@
                         <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="umum" name="umum">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="0">Jurnal Umum</option>
-                                <option value="20">Extracomptable</option>
-                                <option value="21">Penghapusan</option>
+                                <option value="0" {{ $jurnal->tgl_real == 0 ? 'selected' : '' }}>Jurnal Umum</option>
+                                <option value="20" {{ $jurnal->tgl_real == 20 ? 'selected' : '' }}>Extracomptable
+                                </option>
+                                <option value="21" {{ $jurnal->tgl_real == 21 ? 'selected' : '' }}>Penghapusan</option>
                                 <!-- <option value="22">Hibah Pemerintah Lainnya</option> -->
                                 <!-- <option value="25">Koreksi Lain-Lain</option> -->
-                                <option value="29">Reklas Aset Lain-Lain</option>
-                                <option value="69">Hibah Masuk</option>
-                                <option value="70">Hibah Keluar</option>
+                                <option value="29" {{ $jurnal->tgl_real == 29 ? 'selected' : '' }}>Reklas Aset
+                                    Lain-Lain
+                                </option>
+                                <option value="69" {{ $jurnal->tgl_real == 69 ? 'selected' : '' }}>Hibah Masuk</option>
+                                <option value="70" {{ $jurnal->tgl_real == 70 ? 'selected' : '' }}>Hibah Keluar
+                                </option>
                                 </option>
                             </select>
                         </div>
@@ -93,35 +97,62 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="lain_lain"
                                 name="lain_lain">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="99">Saldo Awal Neraca</option>
-                                <option value="89">Saldo Awal LO</option>
-                                <option value="1">Penyisihan Piutang</option>
-                                <option value="2">Koreksi Penyusutan</option>
-                                <!-- <option value="3">Hibah Keluar</option> -->
-                                <option value="4">Mutasi Masuk antar OPD</option>
-                                <option value="5">Mutasi Keluar antar OPD</option>
-                                <option value="6">Penghapusan TPTGR</option>
-                                <option value="7">Perubahan Kode Rekening</option>
-                                <option value="8">Koreksi Tanah</option>
-                                <option value="9">Koreksi Utang Belanja</option>
-                                <option value="10">Reklass Antar Akun</option>
-                                <option value="11">Tagihan Penjualan Angsuran</option>
-                                <option value="12">Penyertaan Modal</option>
-                                <option value="13">Persediaan APBN yang belum Tercatat TA {{ tahun_anggaran() - 1 }}
+                                <option value="99" {{ $jurnal->tgl_real == 99 ? 'selected' : '' }}>Saldo Awal Neraca
                                 </option>
-                                <option value="15">Koreksi Dana Transfer Pemerintah Pusat</option>
-                                <option value="16">Koreksi Gedung dan Bangunan</option>
+                                <option value="89" {{ $jurnal->tgl_real == 89 ? 'selected' : '' }}>Saldo Awal LO
+                                </option>
+                                <option value="1" {{ $jurnal->tgl_real == 1 ? 'selected' : '' }}>Penyisihan Piutang
+                                </option>
+                                <option value="2" {{ $jurnal->tgl_real == 2 ? 'selected' : '' }}>Koreksi Penyusutan
+                                </option>
+                                <!-- <option value="3">Hibah Keluar</option> -->
+                                <option value="4" {{ $jurnal->tgl_real == 4 ? 'selected' : '' }}>Mutasi Masuk antar
+                                    OPD</option>
+                                <option value="5" {{ $jurnal->tgl_real == 5 ? 'selected' : '' }}>Mutasi Keluar antar
+                                    OPD</option>
+                                <option value="6" {{ $jurnal->tgl_real == 6 ? 'selected' : '' }}>Penghapusan TPTGR
+                                </option>
+                                <option value="7" {{ $jurnal->tgl_real == 7 ? 'selected' : '' }}>Perubahan Kode
+                                    Rekening</option>
+                                <option value="8" {{ $jurnal->tgl_real == 8 ? 'selected' : '' }}>Koreksi Tanah
+                                </option>
+                                <option value="9" {{ $jurnal->tgl_real == 9 ? 'selected' : '' }}>Koreksi Utang
+                                    Belanja</option>
+                                <option value="10" {{ $jurnal->tgl_real == 10 ? 'selected' : '' }}>Reklass Antar Akun
+                                </option>
+                                <option value="11" {{ $jurnal->tgl_real == 11 ? 'selected' : '' }}>Tagihan Penjualan
+                                    Angsuran</option>
+                                <option value="12" {{ $jurnal->tgl_real == 12 ? 'selected' : '' }}>Penyertaan Modal
+                                </option>
+                                <option value="13" {{ $jurnal->tgl_real == 13 ? 'selected' : '' }}>Persediaan APBN
+                                    yang
+                                    belum Tercatat TA {{ tahun_anggaran() - 1 }}
+                                </option>
+                                <option value="15" {{ $jurnal->tgl_real == 15 ? 'selected' : '' }}>Koreksi Dana
+                                    Transfer Pemerintah Pusat</option>
+                                <option value="16" {{ $jurnal->tgl_real == 16 ? 'selected' : '' }}>Koreksi Gedung dan
+                                    Bangunan</option>
                                 <!-- <option value="17">Koreksi Persediaan</option> -->
-                                <option value="18">Koreksi Kas</option>
-                                <option value="19">Extracomptable</option>
-                                <option value="23">Koreksi Peralatan dan Mesin</option>
-                                <option value="24">Koreksi Jaringan Irigasi Jembatan</option>
-                                <option value="26">Koreksi Aset Tetap Lainnya</option>
-                                <option value="27">Koreksi Piutang</option>
-                                <option value="28">Koreksi Aset Lain Lain</option>
-                                <option value="30">Pelimpahan Masuk</option>
-                                <option value="31">Pelimpahan Keluar</option>
-                                <option value="32">Penghapusan Utang</option>
+                                <option value="18" {{ $jurnal->tgl_real == 18 ? 'selected' : '' }}>Koreksi Kas
+                                </option>
+                                <option value="19" {{ $jurnal->tgl_real == 19 ? 'selected' : '' }}>Extracomptable
+                                </option>
+                                <option value="23" {{ $jurnal->tgl_real == 23 ? 'selected' : '' }}>Koreksi Peralatan
+                                    dan Mesin</option>
+                                <option value="24" {{ $jurnal->tgl_real == 24 ? 'selected' : '' }}>Koreksi Jaringan
+                                    Irigasi Jembatan</option>
+                                <option value="26" {{ $jurnal->tgl_real == 26 ? 'selected' : '' }}>Koreksi Aset Tetap
+                                    Lainnya</option>
+                                <option value="27" {{ $jurnal->tgl_real == 27 ? 'selected' : '' }}>Koreksi Piutang
+                                </option>
+                                <option value="28" {{ $jurnal->tgl_real == 28 ? 'selected' : '' }}>Koreksi Aset Lain
+                                    Lain</option>
+                                <option value="30" {{ $jurnal->tgl_real == 30 ? 'selected' : '' }}>Pelimpahan Masuk
+                                </option>
+                                <option value="31" {{ $jurnal->tgl_real == 31 ? 'selected' : '' }}>Pelimpahan Keluar
+                                </option>
+                                <option value="32" {{ $jurnal->tgl_real == 32 ? 'selected' : '' }}>Penghapusan Utang
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -133,7 +164,8 @@
                                 name="hibah">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_hibah as $hibah)
-                                    <option value="{{ $hibah->kd_rek6 }}" data-nama="{{ $hibah->nm_rek6 }}">
+                                    <option value="{{ $hibah->kd_rek6 }}" data-nama="{{ $hibah->nm_rek6 }}"
+                                        {{ $hibah1->hibah == $hibah->kd_rek6 ? 'selected' : '' }}>
                                         {{ $hibah->kd_rek6 }} | {{ $hibah->nm_rek6 }}
                                     </option>
                                 @endforeach
@@ -148,7 +180,8 @@
                                 name="mutasi">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_skpd as $skpd)
-                                    <option value="{{ $skpd->kd_skpd }}" data-nama="{{ $skpd->nm_skpd }}">
+                                    <option value="{{ $skpd->kd_skpd }}" data-nama="{{ $skpd->nm_skpd }}"
+                                        {{ $jurnal->kd_skpd_mutasi == $skpd->kd_skpd ? 'selected' : '' }}>
                                         {{ $skpd->kd_skpd }} | {{ $skpd->nm_skpd }}
                                     </option>
                                 @endforeach
@@ -189,6 +222,7 @@
                                 <th>D/K</th>
                                 <th>Jenis</th>
                                 <th>Posting</th>
+                                <th>Hibah</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -206,6 +240,7 @@
                                     <td>{{ $detail->rk }}</td>
                                     <td>{{ $detail->jns }}</td>
                                     <td>{{ $detail->pos }}</td>
+                                    <td>{{ $detail->hibah }}</td>
                                     <td>
                                         <a href="javascript:void(0);"
                                             onclick="hapus('{{ $detail->no_voucher }}','{{ $detail->kd_sub_kegiatan }}','{{ $detail->kd_rek6 }}','{{ $detail->debet }}','{{ $detail->kredit }}','{{ $detail->rk }}')"
@@ -355,6 +390,7 @@
                                         <th>D/K</th>
                                         <th>Jenis</th>
                                         <th>Posting</th>
+                                        <th>Hibah</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -372,6 +408,7 @@
                                             <td>{{ $detail->rk }}</td>
                                             <td>{{ $detail->jns }}</td>
                                             <td>{{ $detail->pos }}</td>
+                                            <td>{{ $detail->hibah }}</td>
                                             <td>
                                                 <a href="javascript:void(0);"
                                                     onclick="hapus('{{ $detail->no_voucher }}','{{ $detail->kd_sub_kegiatan }}','{{ $detail->kd_rek6 }}','{{ $detail->debet }}','{{ $detail->kredit }}','{{ $detail->rk }}')"

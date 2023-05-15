@@ -129,7 +129,7 @@ class InputJurnalController extends Controller
                 ->where(['no_voucher' => $data['no_voucher'], 'kd_skpd' => $data['kd_skpd']])
                 ->delete();
 
-            $ket = $data['ket_mutasi1'] . $data['nmskpd_mutasi_'] . $data['ket_mutasi2'] . $data['keterangan'];
+            $ket = $data['ket_mutasi1'] . ' ' . $data['nmskpd_mutasi_'] . ' ' . $data['ket_mutasi2'] . ' ' . $data['keterangan'];
 
             DB::table('trhju_pkd')
                 ->insert([
@@ -174,6 +174,7 @@ class InputJurnalController extends Controller
                     'jns' => $rincian_data[$input]['jns'],
                     'kd_unit' => $data['kd_skpd'],
                     'pos' => $rincian_data[$input]['post'],
+                    'hibah' => $rincian_data[$input]['hibah'],
                     'map_real' =>  in_array(substr($rincian_data[$input]['kd_rek6'], 0, 1), $rekening) ? $rincian_data[$input]['kd_rek6'] : '',
                     'urut' => $urut++,
                 ];
@@ -207,8 +208,12 @@ class InputJurnalController extends Controller
             'jurnal' => DB::table('trhju_pkd')
                 ->where(['no_voucher' => $no_voucher, 'kd_skpd' => $kd_skpd])
                 ->first(),
-            'detail_jurnal' => DB::select("SELECT a.no_voucher,b.kd_sub_kegiatan,b.nm_sub_kegiatan,b.kd_rek6,b.map_real,case when rk='D' then b.nm_rek6 else SPACE(4)+b.nm_rek6 end AS nm_rek6,b.debet,b.kredit,b.rk,b.jns,b.pos FROM trhju_pkd a INNER JOIN trdju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_unit
-		    WHERE a.no_voucher=? AND a.kd_skpd =?", [$no_voucher, $kd_skpd])
+            'detail_jurnal' => DB::select("SELECT a.no_voucher,b.kd_sub_kegiatan,b.nm_sub_kegiatan,b.kd_rek6,b.map_real,case when rk='D' then b.nm_rek6 else SPACE(4)+b.nm_rek6 end AS nm_rek6,b.debet,b.kredit,b.rk,b.jns,b.pos,b.hibah FROM trhju_pkd a INNER JOIN trdju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_unit
+		    WHERE a.no_voucher=? AND a.kd_skpd =?", [$no_voucher, $kd_skpd]),
+            'hibah1' => DB::table('trdju_pkd')
+                ->select('hibah')
+                ->where(['no_voucher' => $no_voucher, 'kd_unit' => $kd_skpd])
+                ->first()
         ];
 
         return view('akuntansi.input_jurnal.edit')->with($data);
@@ -235,7 +240,7 @@ class InputJurnalController extends Controller
                 ->where(['no_voucher' => $data['no_tersimpan'], 'kd_skpd' => $data['kd_skpd']])
                 ->delete();
 
-            $ket = $data['ket_mutasi1'] . $data['nmskpd_mutasi_'] . $data['ket_mutasi2'] . $data['keterangan'];
+            $ket = $data['ket_mutasi1'] . ' ' . $data['nmskpd_mutasi_'] . ' ' . $data['ket_mutasi2'] . ' ' . $data['keterangan'];
 
             DB::table('trhju_pkd')
                 ->insert([
@@ -280,6 +285,7 @@ class InputJurnalController extends Controller
                     'jns' => $rincian_data[$input]['jns'],
                     'kd_unit' => $data['kd_skpd'],
                     'pos' => $rincian_data[$input]['post'],
+                    'hibah' => $rincian_data[$input]['hibah'],
                     'map_real' => in_array(substr($rincian_data[$input]['kd_rek6'], 0, 1), $rekening) ? $rincian_data[$input]['kd_rek6'] : '',
                     'urut' => $urut++,
                 ];

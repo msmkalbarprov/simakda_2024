@@ -187,6 +187,7 @@
                                 <th>D/K</th>
                                 <th>Jenis</th>
                                 <th>Posting</th>
+                                <th>Hibah</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -327,6 +328,7 @@
                                         <th>D/K</th>
                                         <th>Jenis</th>
                                         <th>Posting</th>
+                                        <th>Hibah</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>

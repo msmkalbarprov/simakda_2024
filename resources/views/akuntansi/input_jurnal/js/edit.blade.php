@@ -68,6 +68,11 @@
                     name: 'post',
                 },
                 {
+                    data: 'hibah',
+                    name: 'hibah',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 }
@@ -125,6 +130,11 @@
                     name: 'post',
                 },
                 {
+                    data: 'hibah',
+                    name: 'hibah',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 }
@@ -136,7 +146,23 @@
         $('#pilihan_hibah').hide();
         $('#pilihan_mutasi').hide();
 
-        load_sp2h();
+        let jenis_jurnal_lalu = "{{ $jurnal->reev }}";
+        let jenis_data_lalu = "{{ $jurnal->tgl_real }}";
+        let rekening_hibah = "{{ $hibah1->hibah }}";
+
+        if (jenis_jurnal_lalu == 0) {
+            $('#pilihan_umum').show();
+
+            if (jenis_data_lalu == '69') {
+                $('#pilihan_hibah').show();
+            }
+        } else if (jenis_jurnal_lalu == 3) {
+            $('#pilihan_lain').show();
+
+            if (jenis_data_lalu == '4' || jenis_data_lalu == '5') {
+                $('#pilihan_mutasi').show();
+            }
+        }
 
         $('#jenis_jurnal').on('select2:select', function() {
             let jenis_jurnal = this.value;
@@ -258,6 +284,28 @@
             let no_voucher = document.getElementById('no_voucher').value;
             let tgl_voucher = document.getElementById('tgl_voucher').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
+            let jenis_jurnal = document.getElementById('jenis_jurnal').value;
+            let umum = document.getElementById('umum').value;
+            let lain_lain = document.getElementById('lain_lain').value;
+            let hibah = document.getElementById('hibah').value;
+            let mutasi = document.getElementById('mutasi').value;
+
+            if (jenis_jurnal == 0 && !umum) {
+                alert('Silahkan pilih jenis jurnal UMUM!');
+                return;
+            }
+            if (jenis_jurnal == 0 && umum == 69 && !hibah) {
+                alert('Silahkan pilih rekening hibah!');
+                return;
+            }
+            if (jenis_jurnal == 3 && !lain_lain) {
+                alert('Silahkan pilih jenis Lain-Lain!');
+                return;
+            }
+            if (jenis_jurnal == 3 && (lain_lain == 4 || lain_lain == 5) && !mutasi) {
+                alert('Silahkan pilih SKPD mutasi!');
+                return;
+            }
 
             if (no_voucher != '' && tgl_voucher != '' && kd_skpd != '') {
                 $('#modal_rincian').modal('show');
@@ -343,6 +391,7 @@
                 'rk': debet_kredit,
                 'jns': jenis,
                 'post': pos,
+                'hibah': hibah,
                 'aksi': `<a href="javascript:void(0);" onclick="hapus('${no_voucher}','${kd_sub_kegiatan}','${kd_rek6}','${nilai_debet}','${nilai_kredit}','${debet_kredit}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
 
@@ -362,6 +411,7 @@
                 'rk': debet_kredit,
                 'jns': jenis,
                 'post': pos,
+                'hibah': hibah,
                 'aksi': `<a href="javascript:void(0);" onclick="hapus('${no_voucher}','${kd_sub_kegiatan}','${kd_rek6}','${nilai_debet}','${nilai_kredit}','${debet_kredit}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
 
@@ -453,6 +503,7 @@
                     rk: value.rk,
                     jns: value.jns,
                     post: value.post,
+                    hibah: value.hibah,
                 };
                 return data;
             });
@@ -567,7 +618,7 @@
                 },
                 success: function(response) {
                     if (response.message == '1') {
-                        alert('Data berhasil ditambahkan!');
+                        alert('Data berhasil diperbaharui!');
                         window.location.href =
                             "{{ route('input_jurnal.index') }}";
                     } else if (response.message == '2') {
@@ -575,7 +626,7 @@
                         $('#simpan').prop('disabled', false);
                         return;
                     } else {
-                        alert('Data tidak berhasil ditambahkan!');
+                        alert('Data tidak berhasil diperbaharui!');
                         $('#simpan').prop('disabled', false);
                         return;
                     }
@@ -594,35 +645,6 @@
                 formatCurrency($(this), "blur");
             }
         });
-
-        function load_sp2h() {
-            let detail_spb = detail.rows().data().toArray().map((value) => {
-                let data = {
-                    no_sp2h: value.no_sp2h,
-                };
-                return data;
-            });
-
-            $.ajax({
-                url: "{{ route('spb_hibah.nomor') }}",
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    no_sp2h: detail_spb.length == 0 ? '0' : detail_spb
-                },
-                success: function(data) {
-                    $('#no_sp2h').empty();
-                    $('#no_sp2h').append(
-                        `<option value="" disabled selected>Silahkan Pilih</option>`
-                    );
-                    $.each(data, function(index, data) {
-                        $('#no_sp2h').append(
-                            `<option value="${data.no_sp2h}" data-satdik="${data.kd_satdik}" data-nm_satdik="${data.nm_satdik}" data-tanggal="${data.tgl_sp2h}">${data.no_sp2h} | ${data.tgl_sp2h} | ${data.keterangan}</option>`
-                        );
-                    })
-                }
-            })
-        }
     });
 
     function formatNumber(n) {
