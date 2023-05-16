@@ -2211,83 +2211,142 @@ class BendaharaUmumDaerahController extends Controller
     {
         $req = $request->all();
 
-        $rekap_gaji1 = DB::table('trhsp2d as a')
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS IWP325,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
-            ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
-            ->where(function ($query) use ($req) {
-                if ($req['kd_skpd']) {
-                    $query->where('a.kd_skpd', $req['kd_skpd']);
-                }
-            })
-            ->where(function ($query) use ($req) {
-                if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
-                    // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
-                    $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
-                }
-                if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
-                    $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
-                }
-            })
-            ->where(function ($query) use ($req) {
-                if ($req['jenis'] == 1) {
-                    $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
-                } else if ($req['jenis'] == 2) {
-                    $query->whereRaw("a.no_sp2d like '%GJ%'");
-                } else if ($req['jenis'] == 3) {
-                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
-                } else if ($req['jenis'] == 4) {
-                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
-                }
-            })
-            ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai");
+        if ($req['jenis'] == '3') {
+            $rekap_gaji1 = DB::table('trhsp2d as a')
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS IWP325,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG,0 PPNPN1,0 PPNPN4")
+                ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+                ->where(function ($query) use ($req) {
+                    if ($req['kd_skpd']) {
+                        $query->where('a.kd_skpd', $req['kd_skpd']);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
+                        // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                        $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
+                    }
+                    if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
+                        $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['jenis'] == 3) {
+                        $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
+                    }
+                })
+                ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai");
 
-        $rekap_gaji2 = DB::table('trhsp2d as a')
-            ->join('trspmpot as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
-            ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
-            ->where(function ($query) use ($req) {
-                if ($req['kd_skpd']) {
-                    $query->where('a.kd_skpd', $req['kd_skpd']);
-                }
-            })
-            ->where(function ($query) use ($req) {
-                if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
-                    // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
-                    $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
-                }
-                if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
-                    $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
-                }
-            })
-            ->where(function ($query) use ($req) {
-                if ($req['jenis'] == 1) {
-                    $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
-                } else if ($req['jenis'] == 2) {
-                    $query->whereRaw("a.no_sp2d like '%GJ%'");
-                } else if ($req['jenis'] == 3) {
-                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
-                } else if ($req['jenis'] == 4) {
-                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
-                }
-            })
-            ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai")
-            ->unionAll($rekap_gaji1);
+            $rekap_gaji2 = DB::table('trhsp2d as a')
+                ->join('trspmpot as b', function ($join) {
+                    $join->on('a.no_spm', '=', 'b.no_spm');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG,SUM(CASE WHEN b.map_pot='210102010001c' THEN b.nilai ELSE 0 END) AS PPNPN1,SUM(CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END) AS PPNPN4")
+                ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+                ->where(function ($query) use ($req) {
+                    if ($req['kd_skpd']) {
+                        $query->where('a.kd_skpd', $req['kd_skpd']);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
+                        // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                        $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
+                    }
+                    if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
+                        $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['jenis'] == 3) {
+                        $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
+                    }
+                })
+                ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai")
+                ->unionAll($rekap_gaji1);
 
-        $rekap_gaji = DB::table(DB::raw("({$rekap_gaji2->toSql()}) AS sub"))
-            ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(IWP325) IWP325, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP1) + sum(IWP8) + sum(IWP325) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
-            ->mergeBindings($rekap_gaji2)
-            ->groupByRaw("kd_skpd,nm_skpd,nomor")
-            ->orderBy('kd_skpd')
-            ->get();
+            $rekap_gaji = DB::table(DB::raw("({$rekap_gaji2->toSql()}) AS sub"))
+                ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(IWP325) IWP325, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(PPNPN1) PPNPN1, sum(PPNPN4) PPNPN4, sum(IWP1) + sum(IWP8) + sum(IWP325) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) + sum(PPNPN1) + sum(PPNPN4)  as Total")
+                ->mergeBindings($rekap_gaji2)
+                ->groupByRaw("kd_skpd,nm_skpd,nomor")
+                ->orderBy('kd_skpd')
+                ->get();
+        } else {
+            $rekap_gaji1 = DB::table('trhsp2d as a')
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS IWP325,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
+                ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+                ->where(function ($query) use ($req) {
+                    if ($req['kd_skpd']) {
+                        $query->where('a.kd_skpd', $req['kd_skpd']);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
+                        // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                        $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
+                    }
+                    if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
+                        $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['jenis'] == 1) {
+                        $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
+                    } else if ($req['jenis'] == 2) {
+                        $query->whereRaw("a.no_sp2d like '%GJ%'");
+                    } else if ($req['jenis'] == 4) {
+                        $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
+                    }
+                })
+                ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai");
+
+            $rekap_gaji2 = DB::table('trhsp2d as a')
+                ->join('trspmpot as b', function ($join) {
+                    $join->on('a.no_spm', '=', 'b.no_spm');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
+                ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+                ->where(function ($query) use ($req) {
+                    if ($req['kd_skpd']) {
+                        $query->where('a.kd_skpd', $req['kd_skpd']);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['pilihan'] == '12' || $req['pilihan'] == '22') {
+                        // $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan'])->where('a.jenis_beban', '1');
+                        $query->where(DB::raw("MONTH(tgl_sp2d)"), $req['bulan']);
+                    }
+                    if ($req['pilihan'] == '13' || $req['pilihan'] == '23') {
+                        $query->whereBetween('tgl_sp2d', [$req['periode1'], $req['periode2']]);
+                    }
+                })
+                ->where(function ($query) use ($req) {
+                    if ($req['jenis'] == 1) {
+                        $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
+                    } else if ($req['jenis'] == 2) {
+                        $query->whereRaw("a.no_sp2d like '%GJ%'");
+                    } else if ($req['jenis'] == 4) {
+                        $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
+                    }
+                })
+                ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai")
+                ->unionAll($rekap_gaji1);
+
+            $rekap_gaji = DB::table(DB::raw("({$rekap_gaji2->toSql()}) AS sub"))
+                ->selectRaw("kd_skpd,nm_skpd,nomor,sum(nilai_sp2d) nilai_sp2d, sum(IWP1) IWP1, sum(IWP8) IWP8, sum(IWP325) IWP325, sum(JKK) JKK, sum(JKM) JKM, sum(BPJS) BPJS, sum(PPH21) PPH21, sum(TAPERUM) TAPERUM, sum(HKPG) HKPG, sum(IWP1) + sum(IWP8) + sum(IWP325) + sum(JKK) + sum(JKM) + sum(BPJS) + sum(PPH21) + sum(TAPERUM) + sum(HKPG) as Total")
+                ->mergeBindings($rekap_gaji2)
+                ->groupByRaw("kd_skpd,nm_skpd,nomor")
+                ->orderBy('kd_skpd')
+                ->get();
+        }
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
             'data_awal' => $req,
-            'rekap_gaji' => $rekap_gaji
+            'rekap_gaji' => $rekap_gaji,
+            'jenis' => $req['jenis']
         ];
 
         $view = view('bud.laporan_bendahara.cetak.rekap_gaji')->with($data);

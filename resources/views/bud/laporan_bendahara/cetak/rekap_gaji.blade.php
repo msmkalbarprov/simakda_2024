@@ -64,112 +64,237 @@
         </tr>
     </table>
     <table style="width: 100%" border="1" id="rincian">
-        <thead>
-            <tr id="header3">
-                <th rowspan="2" style="width: 3%">No.<br>Urut</th>
-                <th rowspan="2" style="width: 10%">KODE</th>
-                <th rowspan="2" style="width: 5%">NAMA</th>
-                <th rowspan="2" style="width: 5%">NOMOR</th>
-                <th rowspan="2" style="width: 5%">JUMLAH KOTOR</th>
-                <th colspan="10" style="width: 40%">POTONGAN</th>
-                <th rowspan="2" style="width: 5%">BERSIH</th>
-            </tr>
-            <tr id="header3">
-                <th style="width: 5%">IWP 1%</th>
-                <th style="width: 5%">IWP 8%</th>
-                <th style="width: 5%">IWP 3.25%</th>
-                <th style="width: 5%">JKK</th>
-                <th style="width: 10%">JKM</th>
-                <th style="width: 10%">BPJS</th>
-                <th style="width: 5%">PPH21</th>
-                <th style="width: 5%">TAPERUM</th>
-                <th style="width: 5%">HKPG</th>
-                <th style="width: 10%">Total</th>
-            </tr>
-            <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>9</th>
-                <th>10</th>
-                <th>11</th>
-                <th>12</th>
-                <th>13</th>
-                <th>14</th>
-                <th>15</th>
-                <th>16</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $totnilai_sp2d = 0;
-                $totIWP1 = 0;
-                $totIWP8 = 0;
-                $totIWP325 = 0;
-                $totJKK = 0;
-                $totJKM = 0;
-                $totBPJS = 0;
-                $totPPH21 = 0;
-                $totTAPERUM = 0;
-                $totHKPG = 0;
-                $totTotal = 0;
-                $totBersih = 0;
-            @endphp
-            @foreach ($rekap_gaji as $rekap)
-                @php
-                    $totnilai_sp2d += $rekap->nilai_sp2d;
-                    $totIWP1 += $rekap->IWP1;
-                    $totIWP8 += $rekap->IWP8;
-                    $totIWP325 += $rekap->IWP325;
-                    $totJKK += $rekap->JKK;
-                    $totJKM += $rekap->JKM;
-                    $totBPJS += $rekap->BPJS;
-                    $totPPH21 += $rekap->PPH21;
-                    $totTAPERUM += $rekap->TAPERUM;
-                    $totHKPG += $rekap->HKPG;
-                    $totTotal += $rekap->Total;
-                    $totBersih = $totnilai_sp2d - $totTotal;
-                @endphp
-                <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td>{{ $rekap->kd_skpd }}</td>
-                    <td>{{ $rekap->nm_skpd }}</td>
-                    <td>{{ $rekap->nomor }}</td>
-                    <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
-                    <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
-                    <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
-                    <td class="angka">{{ rupiah($rekap->IWP325) }}</td>
-                    <td class="angka">{{ rupiah($rekap->JKK) }}</td>
-                    <td class="angka">{{ rupiah($rekap->JKM) }}</td>
-                    <td class="angka">{{ rupiah($rekap->BPJS) }}</td>
-                    <td class="angka">{{ rupiah($rekap->PPH21) }}</td>
-                    <td class="angka">{{ rupiah($rekap->TAPERUM) }}</td>
-                    <td class="angka">{{ rupiah($rekap->HKPG) }}</td>
-                    <td class="angka">{{ rupiah($rekap->Total) }}</td>
-                    <td class="angka">{{ rupiah($rekap->nilai_sp2d - $rekap->Total) }}</td>
+        @if ($jenis == 3)
+            <thead>
+                <tr id="header3">
+                    <th rowspan="2" style="width: 3%">No.<br>Urut</th>
+                    <th rowspan="2" style="width: 10%">KODE</th>
+                    <th rowspan="2" style="width: 5%">NAMA</th>
+                    <th rowspan="2" style="width: 5%">NOMOR</th>
+                    <th rowspan="2" style="width: 5%">JUMLAH KOTOR</th>
+                    <th colspan="12" style="width: 40%">POTONGAN</th>
+                    <th rowspan="2" style="width: 5%">BERSIH</th>
                 </tr>
-            @endforeach
-            <tr>
-                <td colspan="4" style="text-align: center"><b>Jumlah</b></td>
-                <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totIWP325) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totJKK) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totJKM) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totBPJS) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totPPH21) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totTAPERUM) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totHKPG) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totTotal) }}</b></td>
-                <td class="angka"><b>{{ rupiah($totBersih) }}</b></td>
-            </tr>
-        </tbody>
+                <tr id="header3">
+                    <th style="width: 5%">IWP 1%</th>
+                    <th style="width: 5%">IWP 8%</th>
+                    <th style="width: 5%">IWP 3.25%</th>
+                    <th style="width: 5%">JKK</th>
+                    <th style="width: 10%">JKM</th>
+                    <th style="width: 10%">BPJS</th>
+                    <th style="width: 5%">PPH21</th>
+                    <th style="width: 5%">TAPERUM</th>
+                    <th style="width: 5%">HKPG</th>
+                    <th style="width: 5%">PPNPN 1%</th>
+                    <th style="width: 5%">PPNPN 4%</th>
+                    <th style="width: 10%">Total</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                    <th>12</th>
+                    <th>13</th>
+                    <th>14</th>
+                    <th>15</th>
+                    <th>16</th>
+                    <th>17</th>
+                    <th>18</th>
+                </tr>
+            </thead>
+        @else
+            <thead>
+                <tr id="header3">
+                    <th rowspan="2" style="width: 3%">No.<br>Urut</th>
+                    <th rowspan="2" style="width: 10%">KODE</th>
+                    <th rowspan="2" style="width: 5%">NAMA</th>
+                    <th rowspan="2" style="width: 5%">NOMOR</th>
+                    <th rowspan="2" style="width: 5%">JUMLAH KOTOR</th>
+                    <th colspan="10" style="width: 40%">POTONGAN</th>
+                    <th rowspan="2" style="width: 5%">BERSIH</th>
+                </tr>
+                <tr id="header3">
+                    <th style="width: 5%">IWP 1%</th>
+                    <th style="width: 5%">IWP 8%</th>
+                    <th style="width: 5%">IWP 3.25%</th>
+                    <th style="width: 5%">JKK</th>
+                    <th style="width: 10%">JKM</th>
+                    <th style="width: 10%">BPJS</th>
+                    <th style="width: 5%">PPH21</th>
+                    <th style="width: 5%">TAPERUM</th>
+                    <th style="width: 5%">HKPG</th>
+                    <th style="width: 10%">Total</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                    <th>12</th>
+                    <th>13</th>
+                    <th>14</th>
+                    <th>15</th>
+                    <th>16</th>
+                </tr>
+            </thead>
+        @endif
+
+        @if ($jenis == 3)
+            <tbody>
+                @php
+                    $totnilai_sp2d = 0;
+                    $totIWP1 = 0;
+                    $totIWP8 = 0;
+                    $totIWP325 = 0;
+                    $totJKK = 0;
+                    $totJKM = 0;
+                    $totBPJS = 0;
+                    $totPPH21 = 0;
+                    $totTAPERUM = 0;
+                    $totHKPG = 0;
+                    $totPPNPN1 = 0;
+                    $totPPNPN4 = 0;
+                    $totTotal = 0;
+                    $totBersih = 0;
+                @endphp
+                @foreach ($rekap_gaji as $rekap)
+                    @php
+                        $totnilai_sp2d += $rekap->nilai_sp2d;
+                        $totIWP1 += $rekap->IWP1;
+                        $totIWP8 += $rekap->IWP8;
+                        $totIWP325 += $rekap->IWP325;
+                        $totJKK += $rekap->JKK;
+                        $totJKM += $rekap->JKM;
+                        $totBPJS += $rekap->BPJS;
+                        $totPPH21 += $rekap->PPH21;
+                        $totTAPERUM += $rekap->TAPERUM;
+                        $totHKPG += $rekap->HKPG;
+                        $totPPNPN1 += $rekap->PPNPN1;
+                        $totPPNPN4 += $rekap->PPNPN4;
+                        $totTotal += $rekap->Total;
+                        $totBersih = $totnilai_sp2d - $totTotal;
+                    @endphp
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $rekap->kd_skpd }}</td>
+                        <td>{{ $rekap->nm_skpd }}</td>
+                        <td>{{ $rekap->nomor }}</td>
+                        <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP325) }}</td>
+                        <td class="angka">{{ rupiah($rekap->JKK) }}</td>
+                        <td class="angka">{{ rupiah($rekap->JKM) }}</td>
+                        <td class="angka">{{ rupiah($rekap->BPJS) }}</td>
+                        <td class="angka">{{ rupiah($rekap->PPH21) }}</td>
+                        <td class="angka">{{ rupiah($rekap->TAPERUM) }}</td>
+                        <td class="angka">{{ rupiah($rekap->HKPG) }}</td>
+                        <td class="angka">{{ rupiah($rekap->PPNPN1) }}</td>
+                        <td class="angka">{{ rupiah($rekap->PPNPN4) }}</td>
+                        <td class="angka">{{ rupiah($rekap->Total) }}</td>
+                        <td class="angka">{{ rupiah($rekap->nilai_sp2d - $rekap->Total) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4" style="text-align: center"><b>Jumlah</b></td>
+                    <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP325) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totJKK) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totJKM) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totBPJS) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totPPH21) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totTAPERUM) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totHKPG) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totPPNPN1) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totPPNPN4) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totTotal) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totBersih) }}</b></td>
+                </tr>
+            </tbody>
+        @else
+            <tbody>
+                @php
+                    $totnilai_sp2d = 0;
+                    $totIWP1 = 0;
+                    $totIWP8 = 0;
+                    $totIWP325 = 0;
+                    $totJKK = 0;
+                    $totJKM = 0;
+                    $totBPJS = 0;
+                    $totPPH21 = 0;
+                    $totTAPERUM = 0;
+                    $totHKPG = 0;
+                    $totTotal = 0;
+                    $totBersih = 0;
+                @endphp
+                @foreach ($rekap_gaji as $rekap)
+                    @php
+                        $totnilai_sp2d += $rekap->nilai_sp2d;
+                        $totIWP1 += $rekap->IWP1;
+                        $totIWP8 += $rekap->IWP8;
+                        $totIWP325 += $rekap->IWP325;
+                        $totJKK += $rekap->JKK;
+                        $totJKM += $rekap->JKM;
+                        $totBPJS += $rekap->BPJS;
+                        $totPPH21 += $rekap->PPH21;
+                        $totTAPERUM += $rekap->TAPERUM;
+                        $totHKPG += $rekap->HKPG;
+                        $totTotal += $rekap->Total;
+                        $totBersih = $totnilai_sp2d - $totTotal;
+                    @endphp
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $rekap->kd_skpd }}</td>
+                        <td>{{ $rekap->nm_skpd }}</td>
+                        <td>{{ $rekap->nomor }}</td>
+                        <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
+                        <td class="angka">{{ rupiah($rekap->IWP325) }}</td>
+                        <td class="angka">{{ rupiah($rekap->JKK) }}</td>
+                        <td class="angka">{{ rupiah($rekap->JKM) }}</td>
+                        <td class="angka">{{ rupiah($rekap->BPJS) }}</td>
+                        <td class="angka">{{ rupiah($rekap->PPH21) }}</td>
+                        <td class="angka">{{ rupiah($rekap->TAPERUM) }}</td>
+                        <td class="angka">{{ rupiah($rekap->HKPG) }}</td>
+                        <td class="angka">{{ rupiah($rekap->Total) }}</td>
+                        <td class="angka">{{ rupiah($rekap->nilai_sp2d - $rekap->Total) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4" style="text-align: center"><b>Jumlah</b></td>
+                    <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totIWP325) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totJKK) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totJKM) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totBPJS) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totPPH21) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totTAPERUM) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totHKPG) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totTotal) }}</b></td>
+                    <td class="angka"><b>{{ rupiah($totBersih) }}</b></td>
+                </tr>
+            </tbody>
+        @endif
     </table>
 </body>
 
