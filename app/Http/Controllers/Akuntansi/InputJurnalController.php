@@ -46,7 +46,6 @@ class InputJurnalController extends Controller
         $data = [
             'daftar_skpd' => DB::select("SELECT kd_skpd,nm_skpd FROM ms_skpd ORDER BY kd_skpd"),
             'daftar_rekening' => DB::select("SELECT kd_rek6,nm_rek6 from ms_rek6 where nm_rek6 like '%uang dana bos%' and left(kd_rek6,1)=?", ['5']),
-            'daftar_kategori' => DB::select("SELECT DISTINCT kategori from ms_satdik where kategori<>''"),
             'daftar_hibah' => DB::select("SELECT kd_rek6,nm_rek6 FROM ms_rek6 where kd_rek6 in ('730101010001','730102010001','730103010001','730104010001','730104020001','730104030001','730104040001')  order by kd_rek6"),
             'kd_skpd' => Auth::user()->kd_skpd
         ];
@@ -202,7 +201,6 @@ class InputJurnalController extends Controller
         $data = [
             'daftar_skpd' => DB::select("SELECT kd_skpd,nm_skpd FROM ms_skpd ORDER BY kd_skpd"),
             'daftar_rekening' => DB::select("SELECT kd_rek6,nm_rek6 from ms_rek6 where nm_rek6 like '%uang dana bos%' and left(kd_rek6,1)=?", ['5']),
-            'daftar_kategori' => DB::select("SELECT DISTINCT kategori from ms_satdik where kategori<>''"),
             'daftar_hibah' => DB::select("SELECT kd_rek6,nm_rek6 FROM ms_rek6 where kd_rek6 in ('730101010001','730102010001','730103010001','730104010001','730104020001','730104030001','730104040001')  order by kd_rek6"),
             'kd_skpd' => Auth::user()->kd_skpd,
             'jurnal' => DB::table('trhju_pkd')
