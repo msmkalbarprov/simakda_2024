@@ -124,6 +124,7 @@
                         <select class="form-control select2-rekap_gaji" style=" width: 100%;" id="jenis_rekap_gaji">
                             <option value="1">GAJI DAN TUNJANGAN</option>
                             <option value="2">KESELURUHAN</option>
+                            <option value="3">HONOR KONTRAK</option>
                         </select>
                     </div>
                 </div>

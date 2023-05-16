@@ -2213,7 +2213,7 @@ class BendaharaUmumDaerahController extends Controller
 
         $rekap_gaji1 = DB::table('trhsp2d as a')
             ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,a.nilai nilai_sp2d,0 as IWP1,0 AS IWP8,0 AS IWP325,0 AS JKK,0 JKM,0 AS BPJS,0 AS PPH21,0 AS TAPERUM,0 AS HKPG")
-            ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+            ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
                     $query->where('a.kd_skpd', $req['kd_skpd']);
@@ -2230,7 +2230,11 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->where(function ($query) use ($req) {
                 if ($req['jenis'] == 1) {
-                    $query->where('a.jenis_beban', '1');
+                    $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
+                } else if ($req['jenis'] == 2) {
+                    $query->whereRaw("a.no_sp2d like '%GJ%'");
+                } else if ($req['jenis'] == 3) {
+                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
                 }
             })
             ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai");
@@ -2241,7 +2245,7 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
             ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
-            ->whereRaw("a.no_sp2d like '%GJ%' and (a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
+            ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
             ->where(function ($query) use ($req) {
                 if ($req['kd_skpd']) {
                     $query->where('a.kd_skpd', $req['kd_skpd']);
@@ -2258,7 +2262,11 @@ class BendaharaUmumDaerahController extends Controller
             })
             ->where(function ($query) use ($req) {
                 if ($req['jenis'] == 1) {
-                    $query->where('a.jenis_beban', '1');
+                    $query->where('a.jenis_beban', '1')->whereRaw("a.no_sp2d like '%GJ%'");
+                } else if ($req['jenis'] == 2) {
+                    $query->whereRaw("a.no_sp2d like '%GJ%'");
+                } else if ($req['jenis'] == 3) {
+                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
                 }
             })
             ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai")
