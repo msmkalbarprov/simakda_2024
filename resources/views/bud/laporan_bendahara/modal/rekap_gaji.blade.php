@@ -125,6 +125,7 @@
                             <option value="1">GAJI DAN TUNJANGAN</option>
                             <option value="2">KESELURUHAN</option>
                             <option value="3">HONOR KONTRAK</option>
+                            <option value="4">TAMBAHAN PENGHASILAN</option>
                         </select>
                     </div>
                 </div>

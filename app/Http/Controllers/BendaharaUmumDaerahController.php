@@ -2235,6 +2235,8 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("a.no_sp2d like '%GJ%'");
                 } else if ($req['jenis'] == 3) {
                     $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
+                } else if ($req['jenis'] == 4) {
+                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
                 }
             })
             ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai");
@@ -2267,6 +2269,8 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("a.no_sp2d like '%GJ%'");
                 } else if ($req['jenis'] == 3) {
                     $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '4']);
+                } else if ($req['jenis'] == 4) {
+                    $query->whereRaw("a.jns_spp=? AND a.jenis_beban=?", ['6', '1']);
                 }
             })
             ->groupByRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d,a.nilai")
