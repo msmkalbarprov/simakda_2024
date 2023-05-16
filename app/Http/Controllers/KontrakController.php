@@ -25,6 +25,7 @@ class KontrakController extends Controller
             ->leftJoin('ms_rekening_bank_online AS b', function ($join) {
                 $join->on('a.nm_rekening', '=', 'b.nm_rekening');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                $join->on('a.no_rekening', '=', 'b.rekening');
             })
             ->where('a.kd_skpd', $kd_skpd)
             ->get();
