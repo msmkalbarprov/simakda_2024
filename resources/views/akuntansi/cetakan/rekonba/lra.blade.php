@@ -35,7 +35,7 @@
 
 <body >
 {{-- <body> --}}
-    
+
     <table  style="border-collapse:collapse;font-family:Arial" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
         <tr>
             <td rowspan="4" align="center" style="border-right:hidden; border-bottom: hidden;">
@@ -55,12 +55,12 @@
     </table>
     <hr  valign="top" color="black" size="3px" width="100%">
 
- 
+
     {{-- isi --}}
     <table style="border-collapse:collapse;font-family: Arial; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="2">
         <tr>
             <td rowspan="2" align="right" width="10%" height="50">&nbsp;</td>
-            <td colspan="3" align="center" style="font-size:14px"><b>Laporan Realisasi Anggaran Tahun Anggaran $thn_ang</b></td>
+            <td colspan="3" align="center" style="font-size:14px"><b>Laporan Realisasi Anggaran Tahun Anggaran {{$thn_ang}}</b></td>
         </tr>
         <tr>
             <td colspan="5" align="center" style="font-size:14px"><b>Periode {{tgl_format_oyoy($periode1)}} - {{tgl_format_oyoy($periode2)}}</b></td>
@@ -76,20 +76,20 @@
     </table>
 
     <table style="border-collapse:collapse;font-family: Arial; font-size:12px" width="100%" align="center" border="1" cellspacing="0" cellpadding="4">
-        <thead>                       
+        <thead>
             <tr>
                 <td rowspan="2" bgcolor="#CCCCCC" width="5%" align="center"><b>NO</b></td>
                 <td rowspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>URAIAN</b></td>
                 <td colspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>REALISASI {{$thn_ang}}</b></td>
-                <td rowspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>KETERANGAN</b></td> 
+                <td rowspan="2" bgcolor="#CCCCCC" width="30%" align="center"><b>KETERANGAN</b></td>
             </tr>
             <tr>
                 <td bgcolor="#CCCCCC" width="15%" align="center"><b>Akuntansi</b></td>
-                <td bgcolor="#CCCCCC" width="15%" align="center"><b>SKPD</b></td>     
+                <td bgcolor="#CCCCCC" width="15%" align="center"><b>SKPD</b></td>
             </tr>
         </thead>
         <tr>
-            <td style="vertical-align:top;border-top: none;border-bottom: none;" width="5%"     align="center">&nbsp;</td>                            
+            <td style="vertical-align:top;border-top: none;border-bottom: none;" width="5%"     align="center">&nbsp;</td>
             <td style="vertical-align:top;border-top: none;border-bottom: none;" width="40%">&nbsp;</td>
             <td style="vertical-align:top;border-top: none;border-bottom: none;" width="20%">&nbsp;</td>
             <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%">&nbsp;</td>
@@ -137,10 +137,10 @@
     @endphp
     @foreach($sql as $row4)
         @php
-            $normal      = $row4->cetak;    
+            $normal      = $row4->cetak;
             $bold      = $row4->bold;
-            $parent      = $row4->parent;       
-            $nama      = $row4->uraian;   
+            $parent      = $row4->parent;
+            $nama      = $row4->uraian;
             $real_lalu = number_format($row4->lalu,"2",",",".");
             $n         = $row4->kode_1;
             $n         = ($n=="-"?"'-'":$n);
@@ -154,16 +154,16 @@
 
             $nilai=$nilainya->nilai;
             $anggaran=$nilainya->anggaran;
-  
-            
-            $selisih = $nilai - $anggaran; 
+
+
+            $selisih = $nilai - $anggaran;
             if ($selisih < 0){
-                $sela="("; 
-                $selisih1=$selisih*-1; 
+                $sela="(";
+                $selisih1=$selisih*-1;
                 $selb=")";
             }else {
-                $sela=""; 
-                $selisih1=$selisih; 
+                $sela="";
+                $selisih1=$selisih;
                 $selb="";
             }
 
@@ -173,14 +173,14 @@
                 $persen = ($nilai/$anggaran)*100;
             }
 
-            
+
 
             $no=$no+1;
         @endphp
 
             @if ($bold == 0)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -189,7 +189,7 @@
 
             @elseif ($bold == 1)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">{{$nama}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -198,7 +198,7 @@
 
             @elseif ($bold == 2)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -207,7 +207,7 @@
 
             @elseif ($bold == 3)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{rupiah($nilai)}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -216,7 +216,7 @@
 
             @elseif ($bold == 4)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{rupiah($nilai)}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -225,7 +225,7 @@
 
             @elseif ($bold == 5)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{$c}}{{rupiah($nil_surplus)}}{{$d}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
@@ -234,19 +234,19 @@
 
             @else
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{rupiah($nilai)}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right"></td>
                 </tr>
             @endif
-        
+
 
     @endforeach
     </table>
     {{-- isi --}}
-    
+
     <div style="padding-top:20px">
         <table style="border-collapse:collapse;font-family: Arial; font-size:14px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
                     <tr>
@@ -266,7 +266,7 @@
     </div>
 
     {{-- tanda tangan --}}
-    
+
 </body>
 
 </html>
