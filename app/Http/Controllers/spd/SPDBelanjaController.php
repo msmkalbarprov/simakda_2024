@@ -2829,7 +2829,7 @@ $spdlalu46
 d.no_spd='$nospd'
 and e.kd_sub_kegiatan=z.kd_sub_kegiatan and e.kd_rek6=z.kd_rek6
 and left(e.kd_unit,17)=left(z.kd_skpd,17) and jns_beban='6')as nilai
-from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$field'
+from trdrka z where left(kd_rek6,2)='62' and  left(kd_skpd,17)=left('$kd_skpd',17) and jns_ang='$jns_ang'
 group by left(kd_skpd,17),kd_sub_kegiatan,kd_rek6,nm_rek6
 
 
