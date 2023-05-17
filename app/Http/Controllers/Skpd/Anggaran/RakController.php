@@ -4589,7 +4589,11 @@ class RakController extends Controller
         $view = view('skpd.cetak_rak.pemda.cetakan')->with($data);
 
         if ($jenis_print == 'pdf') {
-            $pdf = PDF::loadHtml($view)->setOrientation('landscape')->setPaper('a4');
+            $pdf = PDF::loadHtml($view)
+                ->setOrientation('landscape')
+                ->setPaper('a4')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330);
             return $pdf->stream('laporan.pdf');
         } elseif ($jenis_print == 'excel') {
             header("Cache-Control:no-cache,no-store,must-revalidate");
