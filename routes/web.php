@@ -113,6 +113,7 @@ use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
+use App\Http\Controllers\SP2BPController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1686,6 +1687,18 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('update', [HibahController::class, 'update'])->name('spb_hibah.update');
             Route::post('hapus', [HibahController::class, 'hapus'])->name('spb_hibah.hapus');
             Route::get('cetak', [HibahController::class, 'cetak'])->name('spb_hibah.cetak');
+        });
+    });
+
+    Route::group(['prefix' => 'sp2bp'], function () {
+        // SP2BP
+        Route::group(['prefix' => 'blud'], function () {
+            Route::get('', [SP2BPController::class, 'index'])->name('sp2bp_blud.index');
+            Route::post('load', [SP2BPController::class, 'load'])->name('sp2bp_blud.load');
+            Route::get('edit/{no_sp3b?}/{kd_skpd?}', [SP2BPController::class, 'edit'])->name('sp2bp_blud.edit');
+            Route::post('simpan', [SP2BPController::class, 'simpan'])->name('sp2bp_blud.simpan');
+            Route::post('hapus', [SP2BPController::class, 'hapus'])->name('sp2bp_blud.hapus');
+            Route::get('cetak', [SP2BPController::class, 'cetak'])->name('sp2bp_blud.cetak');
         });
     });
 });
