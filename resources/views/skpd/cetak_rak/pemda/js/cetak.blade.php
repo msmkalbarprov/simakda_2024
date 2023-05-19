@@ -14,7 +14,7 @@
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
-      
+
 
         $('#jenis_anggaran').on('select2:select', function() {
             let jns_ang = this.value;
@@ -50,9 +50,9 @@
         });
 
         $('#jenis_rak').on('select2:select', function() {
-            let jenis_rak       = this.value;
-            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
-            let hidden          = 'hidden';
+            let jenis_rak = this.value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            let hidden = 'hidden';
 
             if (!jenis_rak || !jenis_anggaran) {
                 alert('Silahkan Lengkapi Inputan!');
@@ -70,11 +70,15 @@
         });
 
         $('.cetak_rak').on('click', function() {
-            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
-            let jenis_rak       = document.getElementById('jenis_rak').value;
-            let ttd2            = document.getElementById('ttd2').value;
-            let tanggal_ttd     = document.getElementById('tanggal_ttd').value;
-            let jenis_print     = $(this).data("jenis");
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            let jenis_rak = document.getElementById('jenis_rak').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let tanggal_ttd = document.getElementById('tanggal_ttd').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let jenis_print = $(this).data("jenis");
 
             if (!ttd2 || !tanggal_ttd) {
                 alert("Harap Lengkapi Inputan.");
@@ -88,6 +92,10 @@
             searchParams.append("ttd2", ttd2);
             searchParams.append("tanggal_ttd", tanggal_ttd);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
     });
