@@ -17,7 +17,8 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="jenis_anggaran">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($jenis_anggaran as $jns_ang)
-                                    <option value="{{ $jns_ang->kode }}" data-nama="{{ $jns_ang->nama }}">{{ $jns_ang->kode }}
+                                    <option value="{{ $jns_ang->kode }}" data-nama="{{ $jns_ang->nama }}">
+                                        {{ $jns_ang->kode }}
                                         | {{ $jns_ang->nama }}</option>
                                 @endforeach
                             </select>
@@ -32,7 +33,7 @@
                             </select>
                         </div>
                     </div>
-       
+
                     {{-- Penandatangan 2 --}}
                     <div class="mb-3 row">
                         <label for="ttd2" class="col-md-2 col-form-label">Penandatangan BUD</label>
@@ -51,6 +52,29 @@
                         <label for="tanggal_ttd" class="col-md-2 col-form-label">Tanggal TTD</label>
                         <div class="col-md-10">
                             <input class="form-control" type="date" id="tanggal_ttd" required>
+                        </div>
+                    </div>
+                    {{-- Margin --}}
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kiri" name="margin_kiri" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kanan" name="margin_kanan" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_atas" name="margin_atas" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_bawah" name="margin_bawah" value="15">
                         </div>
                     </div>
                     <!-- SIMPAN -->

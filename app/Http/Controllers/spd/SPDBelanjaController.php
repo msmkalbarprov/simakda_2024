@@ -931,16 +931,33 @@ class SPDBelanjaController extends Controller
 
         $tambahanbln = $tambahan ? "Tambahan" : "";
         $konfig = DB::table('trkonfig_spd')->first();
-        $jenis = DB::table('trhspd')->where(['no_spd' => $nospd])->first();
+
+        $jenis = DB::table('trhspd as a')
+            ->join('trdspd as b', 'a.no_spd', '=', 'b.no_spd')
+            ->select('a.*', 'b.kd_rek6')
+            ->where(['a.no_spd' => $nospd])->first();
 
         $no_dpa = DB::table('trhrka')
             ->where(['kd_skpd' => $jenis->kd_skpd, 'jns_ang' => $jenis->jns_ang])
             ->first();
 
         $kepala_skpd = DB::table('ms_ttd')->where(['nip' => $jenis->kd_bkeluar])->first();
-        $total_anggaran = DB::table('trdrka')
-            ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
-            ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+
+        if ($jenis->jns_beban == '5') {
+            $total_anggaran = DB::table('trdrka')
+                ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 1) = ?", [$jenis->kd_skpd, $jenis->jns_beban])
+                ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+        } else {
+            if (substr($jenis->kd_rek6, 0, 2) == '62') {
+                $total_anggaran = DB::table('trdrka')
+                    ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 2) = ?", [$jenis->kd_skpd, '62'])
+                    ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+            } else {
+                $total_anggaran = DB::table('trdrka')
+                    ->whereRaw("left(kd_skpd, 17) = left(?, 17) and left(kd_rek6, 2) = ?", [$jenis->kd_skpd, '61'])
+                    ->where(['jns_ang' => $jenis->jns_ang])->sum('nilai');
+            }
+        }
 
         // $spd_lalu = array_column(DB::select(
         //     "SELECT TOP (1) WITH TIES no_spd, RANK() OVER (PARTITION BY kd_skpd, bulan_awal, bulan_akhir ORDER BY jns_ang, revisi_ke DESC) AS ranking

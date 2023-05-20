@@ -4452,6 +4452,10 @@ class RakController extends Controller
         $ttd2               = $request->ttd2;
         $tanggal_ttd        = $request->tanggal_ttd;
         $jenis_print        = $request->jenis_print;
+        $margin_atas        = $request->margin_atas;
+        $margin_bawah        = $request->margin_bawah;
+        $margin_kiri        = $request->margin_kiri;
+        $margin_kanan        = $request->margin_kanan;
         $hidden             = $request->hidden;
         $jenis              = 'nilai_' . $jenis_rak;
         $kd_skpd            = Auth::user()->kd_skpd;
@@ -4593,7 +4597,11 @@ class RakController extends Controller
                 ->setOrientation('landscape')
                 ->setPaper('a4')
                 ->setOption('page-width', 215)
-                ->setOption('page-width', 330);
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah)
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan);
             return $pdf->stream('laporan.pdf');
         } elseif ($jenis_print == 'excel') {
             header("Cache-Control:no-cache,no-store,must-revalidate");

@@ -184,7 +184,7 @@
                             <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
                             <div class="col-md-10">
                                 <input class="form-control" value="{{ $data_penerima->npwp }}" type="text"
-                                    placeholder="Silahkan isi dengan npwp" id="npwp" name="npwp" maxlength="15">
+                                    placeholder="Silahkan isi dengan npwp" id="npwp" name="npwp" maxlength="16">
                             </div>
                         </div>
                         <!-- Cek NPWP -->
