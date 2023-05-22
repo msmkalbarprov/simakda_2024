@@ -1,3 +1,12 @@
+<style>
+    table.dataTable tbody tr td {
+        font-size: 11px
+    }
+
+    table.dataTable thead tr th {
+        font-size: 11px
+    }
+</style>
 <script>
     $(document).ready(function() {
         $.ajaxSetup({
@@ -34,6 +43,11 @@
                     className: "text-center",
                 },
                 {
+                    data: 'tgl_kas_bud',
+                    name: 'tgl_kas_bud',
+                    className: "text-center",
+                },
+                {
                     data: 'no_uji',
                     name: 'no_uji',
                     // className: "text-center",
@@ -46,11 +60,11 @@
                 {
                     data: 'tgl_sp2d',
                     name: 'tgl_sp2d',
+                    className: "text-center",
                 },
                 {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd',
-                    className: "text-center",
+                    data: 'nm_skpd',
+                    name: 'nm_skpd',
                 },
                 {
                     data: 'aksi',
