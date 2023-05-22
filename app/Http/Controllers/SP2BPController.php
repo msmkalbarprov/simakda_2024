@@ -168,35 +168,9 @@ class SP2BPController extends Controller
             ->first()
             ->tgl_sp2bp;
 
-        $saldo_awal = collect(DB::select("SELECT a.kd_skpd,a.nm_skpd,kd_rek6, ISNULL(SUM(b.nilai),0) as rupiah
-                                                        from trhtransout_blud a inner join
-                                                        trdtransout_blud b on a.no_sp2d=b.no_sp2d
-                                                        and a.kd_skpd=b.kd_skpd
-                                                        Left JOIN trsp2bp d on a.kd_skpd=d.kd_skpd and a.no_sp2d=d.no_sp3bp
-                                                        where a.kd_skpd=?
-                                                             and d.tgl_sp2bp<?
-                                                        group by a.kd_skpd,a.nm_skpd,kd_rek6", [$kd_skpd, $tgl_sp2bp]))
-            ->first();
-
-        // $nilai = collect(DB::select("SELECT SUM(sal_awal) as sal_awal, SUM(pendapatan) as pendapatan, SUM(belanja) as belanja FROM (
-        //         SELECT sum(sal_awal) as sal_awal,
-        //                             case when left(kd_rek6,1)='4' then isnull(sum(rupiah),0) else 0 end as pendapatan,
-        //                             case when left(kd_rek6,1)='5' then isnull(sum(rupiah),0) else 0 end as belanja
-        //                     from (
-        //                     SELECT a.kd_skpd,a.nm_skpd,kd_rek6,isnull(c.sal_awal,0)as sal_awal, ISNULL(SUM(b.nilai),0) as rupiah
-        //                                                 from trhtransout_blud a inner join
-        //                                                 trdtransout_blud b on a.no_sp2d=b.no_sp2d
-        //                                                 and a.kd_skpd=b.kd_skpd
-        //                                                 Left JOIN ms_saldo_awal_blud c on a.kd_skpd=c.kd_skpd
-        //                                                 Left JOIN trsp2bp d on a.kd_skpd=d.kd_skpd and a.no_sp2d=d.no_sp3bp
-        //                                                 where a.kd_skpd=?
-        //                                                      and d.no_sp2bp=?
-        //                                                 group by a.kd_skpd,a.nm_skpd,kd_rek6,c.sal_awal
-        //                     ) x group by left(kd_rek6,1)
-        //     )Z", [$kd_skpd, $no_sp2bp]))
-        //     ->first();
-
-        $nilai = collect(DB::select("SELECT (SELECT sal_awal FROM ms_saldo_awal_blud f WHERE f.kd_skpd=kd_skpd) as sal_awal,SUM(pendapatan) as pendapatan, SUM(belanja) as belanja FROM (
+        $nomor = explode("/", $sp2bp->no_sp3b)[0];
+        if ($nomor == '1') {
+            $nilai = collect(DB::select("SELECT (SELECT sal_awal FROM ms_saldo_awal_blud f WHERE f.kd_skpd=kd_skpd) as sal_awal,SUM(pendapatan) as pendapatan, SUM(belanja) as belanja FROM (
                 SELECT kd_skpd,
                                     case when left(kd_rek6,1)='4' then isnull(sum(rupiah),0) else 0 end as pendapatan,
                                     case when left(kd_rek6,1)='5' then isnull(sum(rupiah),0) else 0 end as belanja
@@ -212,7 +186,51 @@ class SP2BPController extends Controller
                                                         group by a.kd_skpd,a.nm_skpd,kd_rek6,c.sal_awal
                             ) x group by kd_skpd,left(kd_rek6,1)
             )Z", [$kd_skpd, $no_sp2bp]))
-            ->first();
+                ->first();
+
+            $saldo = isset($nilai) ? $nilai->sal_awal : 0;
+        } else {
+            $saldo_awal = collect(DB::select("SELECT sal_awal FROM ms_saldo_awal_blud WHERE kd_skpd=?", [$kd_skpd]))
+                ->first()
+                ->sal_awal;
+
+            $lalu = DB::select("SELECT a.kd_skpd,a.nm_skpd,kd_rek6, case when left(kd_rek6,1)='4' then isnull(sum(b.nilai),0) else 0 end as pendapatan,
+                                    case when left(kd_rek6,1)='5' then isnull(sum(b.nilai),0) else 0 end as belanja
+                                                        from trhtransout_blud a inner join
+                                                        trdtransout_blud b on a.no_sp2d=b.no_sp2d
+                                                        and a.kd_skpd=b.kd_skpd
+                                                        Left JOIN trsp2bp d on a.kd_skpd=d.kd_skpd and a.no_sp2d=d.no_sp3bp
+                                                        where a.kd_skpd=?
+                                                             and d.tgl_sp2bp<?
+                                                        group by a.kd_skpd,a.nm_skpd,kd_rek6", [$kd_skpd, $tgl_sp2bp]);
+
+            $pendapatan = 0;
+            $belanja = 0;
+            foreach ($lalu as $laluan) {
+                $pendapatan += $laluan->pendapatan;
+                $belanja += $laluan->belanja;
+            }
+
+            $nilai = collect(DB::select("SELECT SUM(sal_awal) as sal_awal, SUM(pendapatan) as pendapatan, SUM(belanja) as belanja FROM (
+                SELECT sum(sal_awal) as sal_awal,
+                                    case when left(kd_rek6,1)='4' then isnull(sum(rupiah),0) else 0 end as pendapatan,
+                                    case when left(kd_rek6,1)='5' then isnull(sum(rupiah),0) else 0 end as belanja
+                            from (
+                            SELECT a.kd_skpd,a.nm_skpd,kd_rek6,isnull(c.sal_awal,0)as sal_awal, ISNULL(SUM(b.nilai),0) as rupiah
+                                                        from trhtransout_blud a inner join
+                                                        trdtransout_blud b on a.no_sp2d=b.no_sp2d
+                                                        and a.kd_skpd=b.kd_skpd
+                                                        Left JOIN ms_saldo_awal_blud c on a.kd_skpd=c.kd_skpd
+                                                        Left JOIN trsp2bp d on a.kd_skpd=d.kd_skpd and a.no_sp2d=d.no_sp3bp
+                                                        where a.kd_skpd=?
+                                                             and d.no_sp2bp=?
+                                                        group by a.kd_skpd,a.nm_skpd,kd_rek6,c.sal_awal
+                            ) x group by left(kd_rek6,1)
+            )Z", [$kd_skpd, $no_sp2bp]))
+                ->first();
+
+            $saldo = $saldo_awal + ($pendapatan - $belanja);
+        }
 
         $pembiayaan = collect(DB::select("SELECT sum(sal_awal) as sal_awal,
                                     case when left(kd_rek6,2)='61' then isnull(sum(rupiah),0) else 0 end as t_pembiayaan,
@@ -236,7 +254,7 @@ class SP2BPController extends Controller
             'skpd' => DB::table('ms_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'sp2bp' => $sp2bp,
             'bud' => DB::table('ms_ttd')->where(['nip' => $bud, 'kd_skpd' => $skpd])->whereIn('kode', ['PA', 'BUD'])->first(),
-            'saldo_awal' => isset($saldo_awal) ? $saldo_awal->rupiah : 0,
+            'saldo' => $saldo,
             // 'belanja_barang' => isset($belanja_barang) ? $belanja_barang->nilai : 0,
             // 'belanja_modal' => isset($belanja_modal) ? $belanja_modal->nilai : 0,
             // 'kembali' => isset($kembali) ? $kembali->nilai : 0,

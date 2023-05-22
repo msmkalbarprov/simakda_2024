@@ -134,9 +134,6 @@
             <td colspan="4" style="height: 15px;border-top:hidden">
             </td>
         </tr>
-        @php
-            $saldo = $saldo_awal == 0 ? $nilai->sal_awal : $saldo_awal;
-        @endphp
         <tr>
             <td colspan="2" style="border-top:hidden;border-right:hidden">
                 Saldo Awal
