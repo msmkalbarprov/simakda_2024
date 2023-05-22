@@ -134,12 +134,15 @@
             <td colspan="4" style="height: 15px;border-top:hidden">
             </td>
         </tr>
+        @php
+            $saldo = $saldo_awal == 0 ? $nilai->sal_awal : $saldo_awal;
+        @endphp
         <tr>
             <td colspan="2" style="border-top:hidden;border-right:hidden">
                 Saldo Awal
             </td>
             <td colspan="2" style="border-top:hidden">
-                : Rp. {{ rupiah($saldo_awal) }}
+                : Rp. {{ rupiah($saldo) }}
             </td>
         </tr>
         <tr>
@@ -163,14 +166,14 @@
                 Saldo Akhir
             </td>
             <td colspan="2" style="border-top:hidden">
-                : Rp. {{ rupiah($saldo_awal + ($nilai->pendapatan - $nilai->belanja)) }}
+                : Rp. {{ rupiah($saldo + ($nilai->pendapatan - $nilai->belanja)) }}
             </td>
         </tr>
         <tr>
             <td style="border-top:hidden;border-right:hidden" colspan="2">
             </td>
             <td colspan="2" style="border-top:hidden">
-                ({{ terbilang($saldo_awal + ($nilai->pendapatan - $nilai->belanja)) }})
+                ({{ terbilang($saldo + ($nilai->pendapatan - $nilai->belanja)) }})
             </td>
         </tr>
         <tr>
