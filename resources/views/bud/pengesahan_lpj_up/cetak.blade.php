@@ -5,7 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CETAK RINCIAN</title>
+    <title>
+        @if ($pilihan == 0)
+            RINCI
+        @elseif ($pilihan == 1)
+            REKAP RINCIAN
+        @elseif ($pilihan == 2)
+            RINCIAN PERKEGIATAN
+        @endif
+    </title>
     <style>
         #header>thead>tr>th {
             background-color: #CCCCCC;

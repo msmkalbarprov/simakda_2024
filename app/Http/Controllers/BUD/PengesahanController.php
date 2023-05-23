@@ -230,6 +230,33 @@ class PengesahanController extends Controller
                                 GROUP BY kd_sub_kegiatan, kd_rek6, nm_rek6
                                 ORDER BY kode", [$no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd,]);
         } elseif ($pilihan == '1') {
+            // $data_lpj = DB::select("SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,7) as kode, b.nm_program as uraian, SUM(a.nilai) as nilai
+            //         FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_program,nm_program,kd_skpd FROM trskpd  GROUP BY kd_program,nm_program,kd_skpd)b
+            //         ON LEFT(a.kd_sub_kegiatan,7) =b.kd_program AND a.kd_skpd=b.kd_skpd
+            //         WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+            //         AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+            //         AND jns_spp IN ('1','2','3'))
+            //         GROUP BY LEFT(a.kd_sub_kegiatan,7), b.nm_program
+            //         UNION ALL
+
+            //         SELECT 2 as urut, LEFT(a.kd_sub_kegiatan,12) as kode, b.nm_kegiatan as uraian, SUM(a.nilai) as nilai
+            //         FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_kegiatan,nm_kegiatan,kd_skpd FROM trskpd  GROUP BY kd_kegiatan,nm_kegiatan,kd_skpd)b
+            //         ON LEFT(a.kd_sub_kegiatan,12) =b.kd_kegiatan AND a.kd_skpd=b.kd_skpd
+            //         WHERE a.no_lpj=? AND a.kd_bp_skpd=?
+            //         AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+            //         AND jns_spp IN ('1','2','3'))
+            //         GROUP BY LEFT(a.kd_sub_kegiatan,12), b.nm_kegiatan
+
+            //         UNION ALL
+            //         SELECT 3 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
+            //         FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+            //         WHERE no_lpj=? AND a.kd_bp_skpd=?
+            //         AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
+            //         --AND (panjar NOT IN ('3') or panjar IS NULL)
+            //         AND jns_spp IN ('1','2','3'))
+            //         GROUP BY a.kd_sub_kegiatan, b.nm_sub_kegiatan
+            //                     ORDER BY kode", [$no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd, $no_lpj, $kd_skpd, $kd_skpd]);
+
             $data_lpj = DB::select("SELECT 1 as urut, LEFT(a.kd_sub_kegiatan,7) as kode, b.nm_program as uraian, SUM(a.nilai) as nilai
                     FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_program,nm_program,kd_skpd FROM trskpd  GROUP BY kd_program,nm_program,kd_skpd)b
                     ON LEFT(a.kd_sub_kegiatan,7) =b.kd_program AND a.kd_skpd=b.kd_skpd
@@ -249,7 +276,8 @@ class PengesahanController extends Controller
 
                     UNION ALL
                     SELECT 3 as urut, a.kd_sub_kegiatan as kode, b.nm_sub_kegiatan as uraian, SUM(a.nilai) as nilai
-                    FROM trlpj a LEFT JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
+                    FROM trlpj a LEFT JOIN (SELECT DISTINCT kd_sub_kegiatan,nm_sub_kegiatan,kd_skpd FROM trskpd  GROUP BY kd_sub_kegiatan,nm_sub_kegiatan,kd_skpd)b
+                    ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
                     WHERE no_lpj=? AND a.kd_bp_skpd=?
                     AND no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
                     --AND (panjar NOT IN ('3') or panjar IS NULL)
@@ -330,6 +358,7 @@ class PengesahanController extends Controller
         }
 
         $data = [
+            'pilihan' => $pilihan,
             'header' => DB::table('config_app')
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
                 ->first(),
