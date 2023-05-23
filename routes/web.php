@@ -114,6 +114,7 @@ use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
 use App\Http\Controllers\SP2BPController;
+use App\Http\Controllers\TukarSp2dController;
 
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
@@ -1437,6 +1438,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('realisasiskpd_sp2d', [BendaharaUmumDaerahController::class, 'realisasiSkpdSp2d'])->name('laporan_bendahara_umum.realisasiskpd_sp2d');
         // REGISTER SP2D FORMAT BPK
         Route::get('format_bpk', [BendaharaUmumDaerahController::class, 'formatBpk'])->name('laporan_bendahara_umum.format_bpk');
+        // REGISTER SP2D BATAL
+        Route::get('register_sp2d_batal', [BendaharaUmumDaerahController::class, 'sp2dBatal'])->name('laporan_bendahara_umum.register_sp2d_batal');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {
@@ -1700,6 +1703,22 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('hapus', [SP2BPController::class, 'hapus'])->name('sp2bp_blud.hapus');
             Route::get('cetak', [SP2BPController::class, 'cetak'])->name('sp2bp_blud.cetak');
         });
+    });
+
+    Route::group(['prefix' => 'tukar_sp2d'], function () {
+        Route::get('', [TukarSp2dController::class, 'index'])->name('tukar_sp2d.index');
+        Route::post('load_data', [TukarSp2dController::class, 'load'])->name('tukar_sp2d.load_data');
+        Route::get('tambah', [TukarSp2dController::class, 'create'])->name('tukar_sp2d.create');
+        Route::post('cari_spm', [TukarSp2dController::class, 'cariSpm'])->name('tukar_sp2d.cari_spm');
+        Route::post('cari_jenis', [TukarSp2dController::class, 'cariJenis'])->name('tukar_sp2d.cari_jenis');
+        Route::post('cari_bulan', [TukarSp2dController::class, 'cariBulan'])->name('tukar_sp2d.cari_bulan');
+        Route::post('load_rincian_spm', [TukarSp2dController::class, 'loadRincianSpm'])->name('tukar_sp2d.load_rincian_spm');
+        Route::post('load_rincian_potongan', [TukarSp2dController::class, 'loadRincianPotongan'])->name('tukar_sp2d.load_rincian_potongan');
+        Route::post('cari_total', [TukarSp2dController::class, 'cariTotal'])->name('tukar_sp2d.cari_total');
+        Route::post('cari_nomor', [TukarSp2dController::class, 'cariNomor'])->name('tukar_sp2d.cari_nomor');
+        Route::post('simpan_sp2d', [TukarSp2dController::class, 'simpanSp2d'])->name('tukar_sp2d.simpan_sp2d');
+        Route::post('batal_sp2d', [TukarSp2dController::class, 'batalSp2d'])->name('tukar_sp2d.batal_sp2d');
+        Route::get('tampil/{no_sp2d?}', [TukarSp2dController::class, 'tampilSp2d'])->name('tukar_sp2d.tampil');
     });
 });
 

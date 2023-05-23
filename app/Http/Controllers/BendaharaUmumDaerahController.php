@@ -6477,6 +6477,79 @@ class BendaharaUmumDaerahController extends Controller
         }
     }
 
+    public function sp2dBatal(Request $request)
+    {
+        $req = $request->all();
+
+        $join1 = DB::table('trdspp')
+            ->selectRaw("no_spp, sum(nilai) [nilai]")
+            ->groupBy('no_spp');
+
+        $register_sp2d = DB::table('trhspm as a')
+            ->join('trhsp2d as b', function ($join) {
+                $join->on('a.no_spm', '=', 'b.no_spm');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as d', function ($join) {
+                $join->on('a.no_spp', '=', 'd.no_spp');
+                $join->on('a.kd_skpd', '=', 'd.kd_skpd');
+            })
+            ->joinSub($join1, 'c', function ($join) {
+                $join->on('a.no_spp', '=', 'c.no_spp');
+            })
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_spm,a.tgl_spm,a.no_spp,a.tgl_spp,b.tgl_sp2d,b.no_sp2d,b.keperluan,d.tgl_batal,d.ket_batal,c.nilai")
+            ->whereRaw("b.sp2d_batal=?", ['1'])
+            ->where(function ($query) use ($req) {
+                if ($req['pilihan'] == '11' || $req['pilihan'] == '12' || $req['pilihan'] == '13') {
+                } else {
+                    $query->whereRaw("a.kd_skpd=?", [$req['kd_skpd']]);
+                }
+            })
+            ->where(function ($query) use ($req) {
+                if (substr($req['pilihan'], -1) == '2') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("MONTH(tgl_kas_bud)=?", [$req['bulan']]);
+                    } else {
+                        $query->whereRaw("MONTH(tgl_sp2d)=?", [$req['bulan']]);
+                    }
+                } elseif (substr($req['pilihan'], -1) == '3') {
+                    if ($req['status'] == '2') {
+                        $query->whereRaw("( tgl_kas_bud between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    } else {
+                        $query->whereRaw("( tgl_sp2d between ? and ?)", [$req['periode1'], $req['periode2']]);
+                    }
+                }
+            })
+            ->get();
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'pilihan' => $req['pilihan'],
+            'data_awal' => $req,
+            'register_sp2d' => $register_sp2d
+        ];
+
+        $view = view('bud.laporan_bendahara.cetak.register_sp2d_batal')->with($data);
+
+        if ($req['jenis_print'] == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOrientation('landscape')
+                ->setOption('margin-left', $req['margin_kiri'])
+                ->setOption('margin-right', $req['margin_kanan'])
+                ->setOption('margin-top', $req['margin_atas'])
+                ->setOption('margin-bottom', $req['margin_bawah']);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($req['jenis_print'] == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Register SP2D' . '.xls"');
+            return $view;
+        }
+    }
+
     // Koreksi Penerimaan Kas
     public function indexKoreksiKas()
     {
