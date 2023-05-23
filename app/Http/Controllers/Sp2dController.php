@@ -430,7 +430,7 @@ class Sp2dController extends Controller
             'jumlah' => count($data_sp2d),
             'nilai_sp2d' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp])->first(),
             'bank' => DB::table('trhsp2d')->select('bank', 'no_rek', 'npwp')->where(['no_sp2d' => $no_sp2d])->first(),
-            'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat','jabatan2')->where(['nip' => $ttd_bud, 'kode' => 'BUD'])->first(),
+            'ttd1' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat', 'jabatan2')->where(['nip' => $ttd_bud, 'kode' => 'BUD'])->first(),
             'ttd_skpd' => DB::table('ms_ttd')
                 ->select('nama', 'jabatan')
                 ->where(['kd_skpd' => $sp2d->kd_skpd])
@@ -439,7 +439,7 @@ class Sp2dController extends Controller
             'beban' => $beban,
             'total' => DB::table('trdspp')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spp' => $sp2d->no_spp, 'kd_skpd' => $sp2d->kd_skpd])->first(),
             'data_sp2d' => $data_sp2d,
-            'potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $sp2d->kd_skpd])->get(),
+            'potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $sp2d->kd_skpd])->select('a.*')->get(),
             'total_potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $sp2d->kd_skpd])->select(DB::raw("SUM(nilai) as nilai"))->first(),
             'jumlah_potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $sp2d->kd_skpd])->count(),
             'potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['no_spm' => $sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $sp2d->kd_skpd])->get(),
@@ -449,8 +449,9 @@ class Sp2dController extends Controller
                 ->select('nm_pemda', 'nm_badan', 'logo_pemda_warna')
                 ->first(),
         ];
-        // return view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
+
         $view = view('penatausahaan.pengeluaran.sp2d.cetak.sp2d')->with($data);
+
         $pdf = PDF::loadHtml($view)
             ->setOption('page-width', 215.9)
             ->setOption('page-height', 330.2)
