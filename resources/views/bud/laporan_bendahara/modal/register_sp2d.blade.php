@@ -268,6 +268,20 @@
                             data-jenis="excel">Excel</button>
                     </div>
                 </div>
+                {{-- Register SP2D Batal --}}
+                <div class="mb-3 row">
+                    <div class="col-md-2">
+                        <label for="urutan" class="form-label">Register SP2D Batal</label>
+                    </div>
+                    <div class="col-md-10">
+                        <button type="button" class="btn btn-danger btn-md sp2d_batal" data-jenis="pdf">
+                            PDF</button>
+                        <button type="button" class="btn btn-dark btn-md sp2d_batal"
+                            data-jenis="layar">Layar</button>
+                        <button type="button" class="btn btn-success btn-md sp2d_batal"
+                            data-jenis="excel">Excel</button>
+                    </div>
+                </div>
                 <div class="mb-3 row">
                     <div class="col-md-12 text-right">
                         <button type="button" class="btn btn-md btn-secondary"
