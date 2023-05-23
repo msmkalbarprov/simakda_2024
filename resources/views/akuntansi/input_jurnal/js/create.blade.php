@@ -225,7 +225,37 @@
                         );
                     })
                 }
-            })
+            });
+
+            let detail_rincian = detail.rows().data().toArray().map((value) => {
+                let data = {
+                    kd_rek6: value.kd_rek6,
+                };
+                return data;
+            });
+
+            $.ajax({
+                url: "{{ route('input_jurnal.rekening') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    jenis: $('#jenis').val(),
+                    kd_sub_kegiatan: $('#kd_sub_kegiatan').val(),
+                    kd_skpd: $('#kd_skpd').val(),
+                    kd_rek6: detail_rincian.length == 0 ? '0' : detail_rincian
+                },
+                success: function(data) {
+                    $('#kd_rek6').empty();
+                    $('#kd_rek6').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`
+                    );
+                    $.each(data, function(index, data) {
+                        $('#kd_rek6').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        );
+                    })
+                }
+            });
         });
 
         $('#kd_sub_kegiatan').on('select2:select', function() {

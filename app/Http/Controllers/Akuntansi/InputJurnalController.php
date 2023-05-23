@@ -91,6 +91,7 @@ class InputJurnalController extends Controller
                 ->selectRaw("a.kd_rek6,a.nm_rek6")
                 ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd])
                 ->whereNotIn('a.kd_rek6', $rekening)
+                ->groupByRaw("a.kd_rek6,a.nm_rek6")
                 ->orderBy('kd_rek6')
                 ->get();
         } else if ($jenis == '0') {
