@@ -1328,6 +1328,7 @@ class SppLsController extends Controller
         $cari_spd = DB::table('trhspd')->select('tgl_spd')->where('no_spd', $cari_spp->no_spd)->first();
         $kd_sub_kegiatan = DB::table('trdspp')->select('kd_sub_kegiatan')->where('no_spp', $no_spp)->groupBy('kd_sub_kegiatan')->first();
         $sub_kegiatan = $kd_sub_kegiatan->kd_sub_kegiatan == "" ? "" : $kd_sub_kegiatan->kd_sub_kegiatan;
+
         if ($beban == '4') {
             $jenis = DB::table('trhspp')->select('jns_beban')->where('no_spp', $no_spp)->first();
             switch ($jenis->jns_beban) {
@@ -1404,9 +1405,9 @@ class SppLsController extends Controller
 
             $unit = substr($kd_skpd, -2);
             if ($unit == '01' || $kd_skpd == '1.20.03.00') {
-                $peng = 'Pengguna Anggaran';
-            } else {
                 $peng = 'Kuasa Pengguna Anggaran';
+            } else {
+                $peng = 'Pengguna Anggaran';
             }
 
             $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
@@ -1469,12 +1470,11 @@ class SppLsController extends Controller
             } else {
                 $nogub = $daerah->nogub_perubahan5;
             }
-
             $unit = substr($kd_skpd, -2);
             if ($unit == '01' || $kd_skpd == '1.20.03.00') {
-                $peng = 'Pengguna Anggaran';
-            } else {
                 $peng = 'Kuasa Pengguna Anggaran';
+            } else {
+                $peng = 'Pengguna Anggaran';
             }
 
             $tanggal = $cari_data->tgl_spp;
@@ -1545,9 +1545,9 @@ class SppLsController extends Controller
 
             $unit = substr($kd_skpd, -2);
             if ($unit == '01' || $kd_skpd == '1.20.03.00') {
-                $peng = 'Pengguna Anggaran';
-            } else {
                 $peng = 'Kuasa Pengguna Anggaran';
+            } else {
+                $peng = 'Pengguna Anggaran';
             }
 
             $tanggal = $cari_data->tgl_spp;
@@ -1587,6 +1587,8 @@ class SppLsController extends Controller
         $header =  DB::table('config_app')
             ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
             ->first();
+
+
         $view = view('penatausahaan.pengeluaran.spp_ls.cetak.pengantar', compact('tanpa', 'jenis', 'kd_skpd', 'beban', 'lcbeban', 'no_spp', 'peng', 'cari_data', 'tahun_anggaran', 'cari_bendahara', 'bank', 'daerah', 'tanggal', 'nogub', 'cari_pptk', 'sub_kegiatan', 'jumlah_spp', 'header', 'skpd'));
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
