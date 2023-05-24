@@ -71,6 +71,7 @@
                     <th rowspan="3" style="width: 10%">KODE</th>
                     <th rowspan="3" style="width: 5%">NAMA</th>
                     <th rowspan="3" style="width: 5%">NOMOR</th>
+                    <th rowspan="3" style="width: 5%">TANGGAL CAIR</th>
                     <th rowspan="3" style="width: 5%">JUMLAH KOTOR</th>
                     <th colspan="12" style="width: 40%">POTONGAN</th>
                     <th rowspan="3" style="width: 5%">BERSIH</th>
@@ -89,7 +90,7 @@
                 </tr>
                 <tr id="header3">
                     <th style="width: 5%">DPRD 1%</th>
-                    <th style="width: 5%">DPRD 4%</th>
+                    <th style="width: 10%">DPRD 4%</th>
                     <th style="width: 5%">PPNPN 1%</th>
                     <th style="width: 5%">PPNPN 4%</th>
                 </tr>
@@ -113,6 +114,7 @@
                     <th>17</th>
                     <th>18</th>
                     <th>19</th>
+                    <th>20</th>
                 </tr>
             </thead>
         @else
@@ -122,6 +124,7 @@
                     <th rowspan="2" style="width: 10%">KODE</th>
                     <th rowspan="2" style="width: 5%">NAMA</th>
                     <th rowspan="2" style="width: 5%">NOMOR</th>
+                    <th rowspan="2" style="width: 5%">TANGGAL CAIR</th>
                     <th rowspan="2" style="width: 5%">JUMLAH KOTOR</th>
                     <th colspan="10" style="width: 40%">POTONGAN</th>
                     <th rowspan="2" style="width: 5%">BERSIH</th>
@@ -155,6 +158,7 @@
                     <th>14</th>
                     <th>15</th>
                     <th>16</th>
+                    <th>17</th>
                 </tr>
             </thead>
         @endif
@@ -201,6 +205,7 @@
                         <td>{{ $rekap->kd_skpd }}</td>
                         <td>{{ $rekap->nm_skpd }}</td>
                         <td>{{ $rekap->nomor }}</td>
+                        <td>{{ tanggal_cair($rekap->nomor) }}</td>
                         <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
                         <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
                         <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
@@ -219,7 +224,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4" style="text-align: center"><b>Jumlah</b></td>
+                    <td colspan="5" style="text-align: center"><b>Jumlah</b></td>
                     <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
                     <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
                     <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
@@ -273,6 +278,7 @@
                         <td>{{ $rekap->kd_skpd }}</td>
                         <td>{{ $rekap->nm_skpd }}</td>
                         <td>{{ $rekap->nomor }}</td>
+                        <td>{{ tanggal_cair($rekap->nomor) }}</td>
                         <td class="angka">{{ rupiah($rekap->nilai_sp2d) }}</td>
                         <td class="angka">{{ rupiah($rekap->IWP1) }}</td>
                         <td class="angka">{{ rupiah($rekap->IWP8) }}</td>
@@ -288,7 +294,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4" style="text-align: center"><b>Jumlah</b></td>
+                    <td colspan="5" style="text-align: center"><b>Jumlah</b></td>
                     <td class="angka"><b>{{ rupiah($totnilai_sp2d) }}</b></td>
                     <td class="angka"><b>{{ rupiah($totIWP1) }}</b></td>
                     <td class="angka"><b>{{ rupiah($totIWP8) }}</b></td>
