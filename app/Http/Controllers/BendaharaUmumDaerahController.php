@@ -1473,6 +1473,125 @@ class BendaharaUmumDaerahController extends Controller
             $masuknonsp2d2 = "";
         }
 
+        $bku = DB::select("SELECT * from(
+
+			$saldo
+
+
+			SELECT a.no_kas,a.no_kas as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
+				,0 as terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+				WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas = '$tgl' and  b.kd_rek6 not in
+				-- ('420101040001','410416010001')
+				('420101040001','420101040002','420101040003','410416010001') -- 410409010001 REK INI DIHAPUS DALAM NOT IN
+				GROUP BY a.no_kas,keterangan
+
+			UNION ALL
+			SELECT '',a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
+				,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, ''as sp
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+				LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
+				WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas = '$tgl' and  b.kd_rek6 not in
+				-- ('420101040001','410416010001')
+				('420101040001','420101040002','420101040003','410416010001') -- 410409010001 REK INI DIHAPUS DALAM NOT IN
+				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6
+
+
+				UNION ALL
+
+				-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+				SELECT  a.no_kas,a.no_kas as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
+				,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+				WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas = '$tgl'
+				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+				UNION ALL
+				SELECT  '' as nokas,a.no_kas as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
+				,SUM(rupiah) as terima,0 as keluar, 1 jenis,0 netto, '' as sp
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+				WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas = '$tgl'
+				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+				UNION ALL
+
+				-- CONTRA POST
+				SELECT  a.no_kas,a.no_kas as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
+								,0 as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp
+								FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+								WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 AND a.tgl_kas = '$tgl'
+								group by a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+				UNION ALL
+				SELECT  '' as nokas,a.no_kas as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
+								,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, '' as sp
+								FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+								WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 AND a.tgl_kas = '$tgl'
+								group by a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
+				UNION ALL
+
+				SELECT no_kas_bud AS nokas,a.no_kas_bud as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
+				'' AS kode,'' AS nmrek,0 AS terima,0 AS keluar,2 AS jenis,
+				(SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
+				'' as sp
+											FROM trhsp2d a
+											INNER JOIN trdspp b ON a.no_spp=b.no_spp
+											WHERE a.status_bud = '1' AND a.tgl_kas_bud = '$tgl'
+											AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+											GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
+				UNION ALL
+				SELECT '' AS nokas,a.no_kas_bud AS urut,'' AS ket,(
+											b.kd_sub_kegiatan+'.'+b.kd_rek6) AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp
+											FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud = '1' AND a.tgl_kas_bud = '$tgl'
+											AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
+
+
+				$keluarnonsp2d
+
+				UNION ALL
+				SELECT
+				a.no_kas as nokas,a.no_kas as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
+				0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp
+				FROM
+				trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+				WHERE a.jns_trans=3 and a.tgl_kas='$tgl'
+				group by a.no_kas,keterangan
+
+				UNION ALL
+				SELECT
+				'' as nokas,a.no_kas as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
+				isnull(SUM(b.rupiah), 0) AS keluar, 2 jenis,0 netto, ''sp
+				FROM
+				trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+				left join ms_rek6 c on b.kd_rek6=c.kd_rek6
+				WHERE a.jns_trans=3
+				and a.tgl_kas='$tgl'
+				group by a.no_kas,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6
+
+				UNION ALL
+
+				SELECT no, no,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
+					isnull(SUM(w.nilai),0) as terima,0 as keluar,
+					1 jenis,isnull(SUM(w.nilai),0) as netto,''sp
+				FROM
+					trkasout_ppkd w
+				WHERE
+					tanggal='$tgl'
+					group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
+
+				UNION ALL
+				SELECT no, no,'KOREKSI PENGELUARAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
+					0 as terima,isnull(SUM(w.nilai),0) as keluar,
+					2 jenis,isnull(SUM(w.nilai),0) as netto,''sp
+				FROM
+					trkoreksi_pengeluaran w
+				WHERE
+					tanggal='$tgl'
+					group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
+
+				$masuknonsp2d
+
+				$masuknonsp2d2
+				) a
+					 order by urut,kode,jenis");
+
         // $bku1 = DB::table('trhkasin_ppkd as a')
         //     ->join('trdkasin_ppkd as b', function ($join) {
         //         $join->on('a.no_kas', '=', 'b.no_kas');
@@ -1618,238 +1737,227 @@ class BendaharaUmumDaerahController extends Controller
         //     ->orderBy('jenis')
         //     ->get();
 
-        $total_bku1 = DB::table('trhkasin_ppkd as a')
-            ->join('trdkasin_ppkd as b', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->leftJoin('ms_rek3 as c', function ($join) {
-                $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
-            })
-            ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?) and a.tgl_kas<?", ['4', '420101040001', '410416010001', $tgl])
-            ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,4),c.nm_rek3");
+        // $total_bku1 = DB::table('trhkasin_ppkd as a')
+        //     ->join('trdkasin_ppkd as b', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->leftJoin('ms_rek3 as c', function ($join) {
+        //         $join->on(DB::raw("left(b.kd_rek6,4)"), '=', 'c.kd_rek3');
+        //     })
+        //     ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama,SUM(rupiah) as nilai, 1 jenis")
+        //     ->whereRaw("LEFT(b.kd_rek6,1) IN (?) and b.kd_rek6 not in (?,?) and a.tgl_kas<?", ['4', '420101040001', '410416010001', $tgl])
+        //     ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,4),c.nm_rek3");
 
-        $total_bku2 = DB::table('trhkasin_ppkd as a')
-            ->join('trdkasin_ppkd as b', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,1) as kd_rek, 'CONTRA POST' as nama,SUM(rupiah) as nilai, 1 jenis")
-            ->whereRaw("LEFT(b.kd_rek6,1) IN (?,?) and a.tgl_kas<?", ['5', '1', $tgl])
-            ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,1)")
-            ->unionAll($total_bku1);
+        // $total_bku2 = DB::table('trhkasin_ppkd as a')
+        //     ->join('trdkasin_ppkd as b', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas,LEFT(b.kd_rek6,1) as kd_rek, 'CONTRA POST' as nama,SUM(rupiah) as nilai, 1 jenis")
+        //     ->whereRaw("LEFT(b.kd_rek6,1) IN (?,?) and a.tgl_kas<?", ['5', '1', $tgl])
+        //     ->groupByRaw("a.tgl_kas,LEFT(b.kd_rek6,1)")
+        //     ->unionAll($total_bku1);
 
-        $total_bku3 = DB::table('trhsp2d as a')
-            ->join('trhspm as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->join('trhspp as c', function ($join) {
-                $join->on('b.no_spp', '=', 'c.no_spp');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })
-            ->join('trdspp as d', function ($join) {
-                $join->on('c.no_spp', '=', 'd.no_spp');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA NON GAJI' nama,isnull(SUM(d.nilai), 0) AS nilai, 2 jenis")
-            ->whereRaw("a.status_bud = ? AND  a.jns_spp != ? AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL) AND a.tgl_kas_bud<?", ['1', '4', $tgl])
-            ->groupByRaw("a.tgl_kas_bud")
-            ->unionAll($total_bku2);
+        // $total_bku3 = DB::table('trhsp2d as a')
+        //     ->join('trhspm as b', function ($join) {
+        //         $join->on('a.no_spm', '=', 'b.no_spm');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->join('trhspp as c', function ($join) {
+        //         $join->on('b.no_spp', '=', 'c.no_spp');
+        //         $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+        //     })
+        //     ->join('trdspp as d', function ($join) {
+        //         $join->on('c.no_spp', '=', 'd.no_spp');
+        //         $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA NON GAJI' nama,isnull(SUM(d.nilai), 0) AS nilai, 2 jenis")
+        //     ->whereRaw("a.status_bud = ? AND  a.jns_spp != ? AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL) AND a.tgl_kas_bud<?", ['1', '4', $tgl])
+        //     ->groupByRaw("a.tgl_kas_bud")
+        //     ->unionAll($total_bku2);
 
-        $total_bku4 = DB::table('trhsp2d as a')
-            ->join('trhspm as b', function ($join) {
-                $join->on('a.no_spm', '=', 'b.no_spm');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->join('trhspp as c', function ($join) {
-                $join->on('b.no_spp', '=', 'c.no_spp');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })
-            ->join('trdspp as d', function ($join) {
-                $join->on('c.no_spp', '=', 'd.no_spp');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })
-            ->selectRaw("a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA GAJI' nama,isnull(SUM(d.nilai), 0) AS nilai, 2 jenis")
-            ->whereRaw("a.status_bud = ? AND  a.jns_spp = ? AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL) AND a.tgl_kas_bud<?", ['1', '4', $tgl])
-            ->groupByRaw("a.tgl_kas_bud")
-            ->unionAll($total_bku3);
+        // $total_bku4 = DB::table('trhsp2d as a')
+        //     ->join('trhspm as b', function ($join) {
+        //         $join->on('a.no_spm', '=', 'b.no_spm');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->join('trhspp as c', function ($join) {
+        //         $join->on('b.no_spp', '=', 'c.no_spp');
+        //         $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+        //     })
+        //     ->join('trdspp as d', function ($join) {
+        //         $join->on('c.no_spp', '=', 'd.no_spp');
+        //         $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        //     })
+        //     ->selectRaw("a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA GAJI' nama,isnull(SUM(d.nilai), 0) AS nilai, 2 jenis")
+        //     ->whereRaw("a.status_bud = ? AND  a.jns_spp = ? AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL) AND a.tgl_kas_bud<?", ['1', '4', $tgl])
+        //     ->groupByRaw("a.tgl_kas_bud")
+        //     ->unionAll($total_bku3);
 
-        $total_bku5 = DB::table('pengeluaran_non_sp2d as x')
-            ->selectRaw("x.tanggal,'' kd_rek, 'PENGELUARAN NON SP2D' nama,isnull(SUM(x.nilai), 0) AS nilai, 2 jenis")
-            ->whereRaw("x.tanggal<?", [$tgl])
-            ->groupByRaw("x.tanggal")
-            ->unionAll($total_bku4);
+        // $total_bku5 = DB::table('pengeluaran_non_sp2d as x')
+        //     ->selectRaw("x.tanggal,'' kd_rek, 'PENGELUARAN NON SP2D' nama,isnull(SUM(x.nilai), 0) AS nilai, 2 jenis")
+        //     ->whereRaw("x.tanggal<?", [$tgl])
+        //     ->groupByRaw("x.tanggal")
+        //     ->unionAll($total_bku4);
 
-        $total_bku6 = DB::table('trdrestitusi as b')
-            ->join('trhrestitusi as a', function ($join) {
-                $join->on('a.no_kas', '=', 'b.no_kas');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                $join->on('a.no_sts', '=', 'b.no_sts');
-            })
-            ->selectRaw("a.tgl_kas,'' kd_rek, 'RESTITUSI' nama,isnull(SUM(b.rupiah), 0) AS nilai, 2 jenis")
-            ->whereRaw("a.tgl_kas<?", [$tgl])
-            ->where('a.jns_trans', '3')
-            ->groupByRaw("a.tgl_kas")
-            ->unionAll($total_bku5);
+        // $total_bku6 = DB::table('trdrestitusi as b')
+        //     ->join('trhrestitusi as a', function ($join) {
+        //         $join->on('a.no_kas', '=', 'b.no_kas');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //         $join->on('a.no_sts', '=', 'b.no_sts');
+        //     })
+        //     ->selectRaw("a.tgl_kas,'' kd_rek, 'RESTITUSI' nama,isnull(SUM(b.rupiah), 0) AS nilai, 2 jenis")
+        //     ->whereRaw("a.tgl_kas<?", [$tgl])
+        //     ->where('a.jns_trans', '3')
+        //     ->groupByRaw("a.tgl_kas")
+        //     ->unionAll($total_bku5);
 
-        $total_bku7 = DB::table('trkasout_ppkd as w')
-            ->selectRaw("w.tanggal,'' as kd_rek, 'KOREKSI PENERIMAAN' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal<?", [$tgl])
-            ->groupByRaw("w.tanggal,w.kd_rek")
-            ->unionAll($total_bku6);
+        // $total_bku7 = DB::table('trkasout_ppkd as w')
+        //     ->selectRaw("w.tanggal,'' as kd_rek, 'KOREKSI PENERIMAAN' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal<?", [$tgl])
+        //     ->groupByRaw("w.tanggal,w.kd_rek")
+        //     ->unionAll($total_bku6);
 
-        $total_bku8 = DB::table('trkoreksi_pengeluaran as w')
-            ->selectRaw("w.tanggal,'' as kd_rek, 'KOREKSI PENGELUARAN' nama,isnull(SUM(w.nilai), 0) AS nilai, 2 jenis")
-            ->whereRaw("w.tanggal<?", [$tgl])
-            ->groupByRaw("w.tanggal,w.kd_rek")
-            ->unionAll($total_bku7);
+        // $total_bku8 = DB::table('trkoreksi_pengeluaran as w')
+        //     ->selectRaw("w.tanggal,'' as kd_rek, 'KOREKSI PENGELUARAN' nama,isnull(SUM(w.nilai), 0) AS nilai, 2 jenis")
+        //     ->whereRaw("w.tanggal<?", [$tgl])
+        //     ->groupByRaw("w.tanggal,w.kd_rek")
+        //     ->unionAll($total_bku7);
 
-        $total_bku9 = DB::table('penerimaan_non_sp2d as w')
-            ->selectRaw("w.tanggal,'' as kd_rek, 'DEPOSITO' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal<?", [$tgl])
-            ->where('w.jenis', '1')
-            ->groupByRaw("w.tanggal")
-            ->unionAll($total_bku8);
+        // $total_bku9 = DB::table('penerimaan_non_sp2d as w')
+        //     ->selectRaw("w.tanggal,'' as kd_rek, 'DEPOSITO' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal<?", [$tgl])
+        //     ->where('w.jenis', '1')
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($total_bku8);
 
-        $total_bku10 = DB::table('penerimaan_non_sp2d as w')
-            ->selectRaw("w.tanggal,'' as kd_rek, 'PENERIMAAN NON SP2D' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
-            ->whereRaw("w.tanggal<?", [$tgl])
-            ->where('w.jenis', '2')
-            ->groupByRaw("w.tanggal")
-            ->unionAll($total_bku9);
+        // $total_bku10 = DB::table('penerimaan_non_sp2d as w')
+        //     ->selectRaw("w.tanggal,'' as kd_rek, 'PENERIMAAN NON SP2D' nama,isnull(SUM(w.nilai), 0) AS nilai, 1 jenis")
+        //     ->whereRaw("w.tanggal<?", [$tgl])
+        //     ->where('w.jenis', '2')
+        //     ->groupByRaw("w.tanggal")
+        //     ->unionAll($total_bku9);
 
-        $total_bku = DB::table(DB::raw("({$total_bku10->toSql()}) AS sub"))
-            ->selectRaw("SUM(CASE WHEN jenis IN('1') THEN nilai ELSE 0 END) as trm_sbl,SUM(CASE WHEN jenis IN('2') THEN nilai ELSE 0 END) as klr_sbl")
-            ->mergeBindings($total_bku10)
+        // $total_bku = DB::table(DB::raw("({$total_bku10->toSql()}) AS sub"))
+        //     ->selectRaw("SUM(CASE WHEN jenis IN('1') THEN nilai ELSE 0 END) as trm_sbl,SUM(CASE WHEN jenis IN('2') THEN nilai ELSE 0 END) as klr_sbl")
+        //     ->mergeBindings($total_bku10)
+        //     ->first();
+
+        $total_bku = collect(DB::select("SELECT SUM(CASE WHEN jenis IN('1') THEN nilai ELSE 0 END) as trm_sbl,
+						SUM(CASE WHEN jenis IN('2') THEN nilai ELSE 0 END) as klr_sbl
+			FROM(
+				SELECT  a.tgl_kas,LEFT(b.kd_rek6,4) as kd_rek, UPPER(c.nm_rek3) as nama
+				,SUM(rupiah) as nilai, 1 jenis
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd  and a.no_sts=b.no_sts
+				LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+				WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas<'$tgl'
+                and b.kd_rek6 not in
+                -- ('420101040001','410416010001')
+                ('420101040001','420101040002','420101040003','410416010001')
+                -- 410409010001 REK INI DIHAPUS
+				 GROUP BY a.tgl_kas,LEFT(b.kd_rek6,4),c.nm_rek3
+				UNION ALL
+				SELECT  a.tgl_kas,LEFT(b.kd_rek6,1) as kd_rek, 'CONTRA POST' as nama
+				,SUM(rupiah) as nilai, 1 jenis
+				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
+				WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') AND a.tgl_kas<'$tgl'
+				 GROUP BY a.tgl_kas,LEFT(b.kd_rek6,1)
+				UNION ALL
+				SELECT
+				a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA NON GAJI' nama,
+							isnull(SUM(d.nilai), 0) AS nilai, 2 jenis
+						FROM
+							trhsp2d a
+						INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+						INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+						INNER JOIN trdspp d ON c.no_spp = d.no_spp 	AND c.kd_skpd = d.kd_skpd
+						WHERE a.status_bud = '1' AND  a.jns_spp != '4'
+						AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+						AND a.tgl_kas_bud<'$tgl'
+				GROUP BY a.tgl_kas_bud
+				UNION ALL
+				SELECT
+				a.tgl_kas_bud, '' kd_rek, 'PENGELUARAN BELANJA GAJI' nama,
+							isnull(SUM(d.nilai), 0) AS nilai, 2 jenis
+						FROM trhsp2d a
+						INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
+						INNER JOIN trhspp c ON b.no_spp = c.no_spp AND b.kd_skpd = c.kd_skpd
+						INNER JOIN trdspp d ON c.no_spp = d.no_spp AND c.kd_skpd = d.kd_skpd
+						WHERE a.status_bud = '1' AND a.jns_spp = '4'
+						AND (c.sp2d_batal=0 OR c.sp2d_batal is NULL)
+						AND a.tgl_kas_bud<'$tgl'
+				GROUP BY a.tgl_kas_bud
+				UNION ALL
+				SELECT
+									x.tanggal,'' kd_rek, 'PENGELUARAN NON SP2D' nama,
+									isnull(SUM(x.nilai), 0) AS nilai, 2 jenis
+								FROM
+									pengeluaran_non_sp2d x
+								WHERE
+									x.tanggal < '$tgl'
+				GROUP BY x.tanggal
+				UNION ALL
+				SELECT
+									a.tgl_kas,'' kd_rek, 'RESTITUSI' nama,
+									isnull(SUM(b.rupiah), 0) AS nilai, 2 jenis
+								FROM
+									trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
+								WHERE a.jns_trans=3
+									AND a.tgl_kas < '$tgl'
+				GROUP BY a.tgl_kas
+				UNION ALL
+				SELECT
+									w.tanggal,'' as kd_rek, 'KOREKSI PENERIMAAN' nama,
+									isnull(SUM(w.nilai), 0) AS nilai, 1 jenis
+								FROM
+									trkasout_ppkd w
+								WHERE
+									w.tanggal < '$tgl'
+
+				GROUP BY w.tanggal,w.kd_rek
+				UNION ALL
+				SELECT
+									w.tanggal,'' as kd_rek, 'KOREKSI PENGELUARAN' nama,
+									isnull(SUM(w.nilai), 0) AS nilai, 2 jenis
+								FROM
+									trkoreksi_pengeluaran w
+								WHERE
+									w.tanggal < '$tgl'
+
+				GROUP BY w.tanggal,w.kd_rek
+				UNION ALL
+				SELECT
+									w.tanggal,'' as kd_rek, 'DEPOSITO' nama,
+									isnull(SUM(w.nilai), 0) AS nilai, 1 jenis
+								FROM
+									penerimaan_non_sp2d w
+								WHERE
+									w.tanggal < '$tgl'
+								AND w.jenis='1'
+				GROUP BY w.tanggal
+				UNION ALL
+				SELECT
+									w.tanggal,'' as kd_rek, 'PENERIMAAN NON SP2D' nama,
+									isnull(SUM(w.nilai), 0) AS nilai, 1 jenis
+								FROM
+									penerimaan_non_sp2d w
+								WHERE
+									w.tanggal < '$tgl'
+								AND w.jenis='2'
+				GROUP BY w.tanggal
+				) a"))->first();
+
+        $saldo_awal = DB::table('buku_kas')
+            ->select('nilai')
+            ->where(['nomor' => '0'])
             ->first();
 
-        $saldo_awal = DB::table('buku_kas')->select('nilai')->where(['nomor' => '0'])->first();
         if ($tgl == '2019-01-01') {
             $saldo_awal = 0;
         } else {
             $saldo_awal = $saldo_awal->nilai;
         }
-
-        $bku = DB::select("SELECT * from(
-
-			$saldo
-
-
-			SELECT a.no_kas,a.no_kas as urut,keterangan+'. Rp. ' as uraian,'' as kode, '' as nm_rek6
-				,0 as terima,0 as keluar, 1 jenis, SUM(b.rupiah) netto, ''as sp
-				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-				WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas = '$tgl' and  b.kd_rek6 not in
-				-- ('420101040001','410416010001')
-				('420101040001','420101040002','420101040003','410416010001','410409010001')
-				GROUP BY a.no_kas,keterangan
-
-			UNION ALL
-			SELECT '',a.no_kas as urut,keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6 as nm_rek6
-				,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, ''as sp
-				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-				LEFT JOIN ms_rek6 c ON b.kd_rek6=c.kd_rek6
-				WHERE LEFT(b.kd_rek6,1) IN ('4') AND a.tgl_kas = '$tgl' and  b.kd_rek6 not in
-				-- ('420101040001','410416010001')
-				('420101040001','420101040002','420101040003','410416010001','410409010001')
-				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6
-
-
-				UNION ALL
-
-				-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
-				SELECT  a.no_kas,a.no_kas as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, ''as nm_rek6
-				,0 as terima,0 as keluar, 1 jenis,SUM(rupiah) netto, '' as sp
-				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-				WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas = '$tgl'
-				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-				UNION ALL
-				SELECT  '' as nokas,a.no_kas as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'Lain-lain PAD yang sah'as nm_rek6
-				,SUM(rupiah) as terima,0 as keluar, 1 jenis,0 netto, '' as sp
-				FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-				WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3 AND a.tgl_kas = '$tgl'
-				GROUP BY a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-				UNION ALL
-
-				-- CONTRA POST
-				SELECT  a.no_kas,a.no_kas as urut,a.keterangan+'. Rp. ' as uraian,'' as kode, '' as nama
-								,0 as terima,0 as keluar, 1 jenis, SUM(rupiah) netto, '' as sp
-								FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-								WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 AND a.tgl_kas = '$tgl'
-								group by a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-				UNION ALL
-				SELECT  '' as nokas,a.no_kas as urut,a.keterangan as uraian,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, 'CONTRA POST' as nama
-								,SUM(rupiah) as terima,0 as keluar, 1 jenis, 0 netto, '' as sp
-								FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON  a.no_sts=b.no_sts AND a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-								WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 AND a.tgl_kas = '$tgl'
-								group by a.no_kas,keterangan,b.kd_sub_kegiatan,b.kd_rek6
-				UNION ALL
-
-				SELECT no_kas_bud AS nokas,a.no_kas_bud as urut,'No.SP2D :'+' '+a.no_sp2d+'<br> '+a.keperluan+'Netto Rp. ' AS ket,
-				'' AS kode,'' AS nmrek,0 AS terima,0 AS keluar,2 AS jenis,
-				(SUM(b.nilai))-(SELECT ISNULL(SUM(nilai),0) FROM trspmpot WHERE no_spm=a.no_spm) AS netto,
-				'' as sp
-											FROM trhsp2d a
-											INNER JOIN trdspp b ON a.no_spp=b.no_spp
-											WHERE a.status_bud = '1' AND a.tgl_kas_bud = '$tgl'
-											AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
-											GROUP BY a.no_sp2d,no_kas_bud,a.keperluan,a.no_spm
-				UNION ALL
-				SELECT '' AS nokas,a.no_kas_bud AS urut,'' AS ket,(
-											b.kd_sub_kegiatan+'.'+b.kd_rek6) AS kode,b.nm_rek6 AS nmrek,0 AS terima,b.nilai AS keluar,2 AS jenis,0 as netto,''as sp
-											FROM trdspp b INNER JOIN trhsp2d a ON a.no_spp=b.no_spp WHERE a.status_bud = '1' AND a.tgl_kas_bud = '$tgl'
-											AND (a.sp2d_batal=0 OR a.sp2d_batal is NULL)
-
-
-				$keluarnonsp2d
-
-				UNION ALL
-				SELECT
-				a.no_kas as nokas,a.no_kas as urut,'RESTITUSI<br>'+keterangan+'. Rp. ','' as kode, '' as nm_rek6,
-				0 AS terima,0 keluar, 2 jenis,isnull(SUM(b.rupiah), 0) as netto,''sp
-				FROM
-				trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-				WHERE a.jns_trans=3 and a.tgl_kas='$tgl'
-				group by a.no_kas,keterangan
-
-				UNION ALL
-				SELECT
-				'' as nokas,a.no_kas as urut,''as ket,b.kd_sub_kegiatan+'.'+b.kd_rek6 as kode, c.nm_rek6,0 terima,
-				isnull(SUM(b.rupiah), 0) AS keluar, 2 jenis,0 netto, ''sp
-				FROM
-				trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts
-				left join ms_rek6 c on b.kd_rek6=c.kd_rek6
-				WHERE a.jns_trans=3
-				and a.tgl_kas='$tgl'
-				group by a.no_kas,b.kd_sub_kegiatan,b.kd_rek6,c.nm_rek6
-
-				UNION ALL
-
-				SELECT no, no,'KOREKSI PENERIMAAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
-					isnull(SUM(w.nilai),0) as terima,0 as keluar,
-					1 jenis,isnull(SUM(w.nilai),0) as netto,''sp
-				FROM
-					trkasout_ppkd w
-				WHERE
-					tanggal='$tgl'
-					group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
-
-				UNION ALL
-				SELECT no, no,'KOREKSI PENGELUARAN<br>'+keterangan as ket,kd_sub_kegiatan+'.'+kd_rek kode,nm_rek,
-					0 as terima,isnull(SUM(w.nilai),0) as keluar,
-					2 jenis,isnull(SUM(w.nilai),0) as netto,''sp
-				FROM
-					trkoreksi_pengeluaran w
-				WHERE
-					tanggal='$tgl'
-					group by no,keterangan,kd_sub_kegiatan,kd_rek,nm_rek
-
-				$masuknonsp2d
-
-				$masuknonsp2d2
-				) a
-					 order by urut,kode,jenis");
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
