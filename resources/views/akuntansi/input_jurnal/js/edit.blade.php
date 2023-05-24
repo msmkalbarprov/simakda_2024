@@ -278,6 +278,8 @@
 
         $('#kd_sub_kegiatan').on('select2:select', function() {
             $('#kd_rek6').empty();
+            let nama = $(this).find(':selected').data('nama');
+            $('#nm_sub_kegiatan').val(nama);
 
             let detail_rincian = detail.rows().data().toArray().map((value) => {
                 let data = {
@@ -357,7 +359,7 @@
 
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let kegiatan = $('#kd_sub_kegiatan').find('option:selected');
-            let nm_sub_kegiatan = kegiatan.data('nama');
+            let nm_sub_kegiatan = document.getElementById('nm_sub_kegiatan').value;
 
             let kd_rek6 = document.getElementById('kd_rek6').value;
             let rekening = $('#kd_rek6').find('option:selected');

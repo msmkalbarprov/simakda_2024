@@ -261,6 +261,7 @@
                             </select>
                         </div>
                     </div>
+                    <input type="hidden" name="nm_sub_kegiatan" id="nm_sub_kegiatan" readonly>
                     <!-- Kode Rekening -->
                     <div class="mb-3 row">
                         <label for="kd_rek6" class="col-md-2 col-form-label">Kode Rekening</label>

@@ -172,6 +172,7 @@
                             </select>
                         </div>
                     </div>
+                    <input type="hidden" name="nm_sub_kegiatan" id="nm_sub_kegiatan" readonly>
                     {{-- Mutasi --}}
                     <div class="mb-3 row" id="pilihan_mutasi">
                         <label for="mutasi" class="col-md-2 col-form-label"></label>
