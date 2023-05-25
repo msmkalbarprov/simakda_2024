@@ -218,6 +218,9 @@
                             'Nomor SPP Sudah Terpakai...!!!,  Pilih Nomor SPP Lainnya...!!!'
                         );
                         $('#simpan_spm').prop('disabled', false);
+                    } else if (data.message == '5') {
+                        alert('Nomor SPM tidak sama dengan Nomor SPP....!!!');
+                        $('#simpan_spm').prop('disabled', false);
                     } else {
                         alert('Nomor bisa dipakai');
                         $('#simpan_spm').prop('disabled', false);

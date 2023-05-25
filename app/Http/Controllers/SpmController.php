@@ -213,54 +213,73 @@ class SpmController extends Controller
         $skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
 
-        DB::beginTransaction();
         try {
-            $cek = DB::table('trhspm')->where(['no_spp' => $no_spp])->count();
+            DB::beginTransaction();
+
+            $cek = DB::table('trhspm')
+                ->where(['no_spp' => $no_spp])
+                ->count();
+
             if ($cek > 0) {
                 return response()->json([
                     'message' => '3'
                 ]);
-            } else {
-                $cek1 = DB::table('trhspm')->where(['no_spm' => $no_spm])->count();
-                if ($cek1 > 0) {
-                    return response()->json([
-                        'message' => '1'
-                    ]);
-                } else {
-                    DB::table('trhspm')->insert([
-                        'no_spm' => $no_spm,
-                        'tgl_spm' => $tgl_spm,
-                        'no_spp' => $no_spp,
-                        'kd_skpd' => $kd_skpd,
-                        'nm_skpd' => $nm_skpd,
-                        'tgl_spp' => $tgl_spp,
-                        'bulan' => $bulan,
-                        'no_spd' => $no_spd,
-                        'keperluan' => $keperluan,
-                        'jns_spp' => $beban,
-                        'jenis_beban' => $jenis,
-                        'bank' => $bank,
-                        'nmrekan' => $rekanan,
-                        'no_rek' => $rekening,
-                        'npwp' => $npwp,
-                        'nilai' => $total,
-                        'urut' => $urut,
-                        'status' => '0',
-                        'username' => $nama,
-                        'last_update' => date('Y-m-d H:i:s')
-                    ]);
-
-                    DB::table('trhspp')->where(['no_spp' => $no_spp, 'kd_skpd' => $skpd])->update([
-                        'status' => '1'
-                    ]);
-
-                    DB::commit();
-                    return response()->json([
-                        'message' => '2',
-                        'url' => route('spm.tambah_potongan', Crypt::encryptString($no_spm))
-                    ]);
-                }
             }
+
+            $cek1 = DB::table('trhspm')
+                ->where(['no_spm' => $no_spm])
+                ->count();
+
+            if ($cek1 > 0) {
+                return response()->json([
+                    'message' => '1'
+                ]);
+            }
+
+            $kode_spm = explode("/", $no_spm);
+            $kode_spp = explode("/", $no_spp);
+
+            if ($kode_spm[0] != $kode_spp[0]) {
+                return response()->json([
+                    'message' => '5'
+                ]);
+            }
+
+            DB::table('trhspm')
+                ->insert([
+                    'no_spm' => $no_spm,
+                    'tgl_spm' => $tgl_spm,
+                    'no_spp' => $no_spp,
+                    'kd_skpd' => $kd_skpd,
+                    'nm_skpd' => $nm_skpd,
+                    'tgl_spp' => $tgl_spp,
+                    'bulan' => $bulan,
+                    'no_spd' => $no_spd,
+                    'keperluan' => $keperluan,
+                    'jns_spp' => $beban,
+                    'jenis_beban' => $jenis,
+                    'bank' => $bank,
+                    'nmrekan' => $rekanan,
+                    'no_rek' => $rekening,
+                    'npwp' => $npwp,
+                    'nilai' => $total,
+                    'urut' => $urut,
+                    'status' => '0',
+                    'username' => $nama,
+                    'last_update' => date('Y-m-d H:i:s')
+                ]);
+
+            DB::table('trhspp')
+                ->where(['no_spp' => $no_spp, 'kd_skpd' => $skpd])
+                ->update([
+                    'status' => '1'
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '2',
+                'url' => route('spm.tambah_potongan', Crypt::encryptString($no_spm))
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
