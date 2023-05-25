@@ -901,9 +901,14 @@
                         <td class="row4">1. Proposal Bantuan Sosial dari Pihak Ketiga</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
-                    @elseif (in_array($jenis, ['14', '15']))
+                    @elseif (in_array($jenis, ['14']))
                         <td class="row4">1. Keputusan Gubernur tentang Penetapan Bantuan Keuangan kepada
                             Kabupaten/Kota</td>
+                        <td class="row2"></td>
+                        <td class="row3"></td>
+                    @elseif (in_array($jenis, ['15']))
+                        <td class="row4">1. Keputusan Gubernur tentang Penetapan Perhitungan Belanja Bagi Hasil Pajak
+                            Daerah dan Retribusi Daerah</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @endif
@@ -1534,9 +1539,14 @@
                         <td class="row4">1. Proposal Bantuan Sosial dari Pihak Ketiga</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
-                    @elseif (in_array($jenis, ['14', '15']))
+                    @elseif (in_array($jenis, ['14']))
                         <td class="row4">1. Keputusan Gubernur tentang Penetapan Bantuan Keuangan kepada
                             Kabupaten/Kota</td>
+                        <td class="row2"></td>
+                        <td class="row3"></td>
+                    @elseif (in_array($jenis, ['15']))
+                        <td class="row4">1. Keputusan Gubernur tentang Penetapan Perhitungan Belanja Bagi Hasil Pajak
+                            Daerah dan Retribusi Daerah</td>
                         <td class="row2"></td>
                         <td class="row3"></td>
                     @elseif ($jenis == '99')
