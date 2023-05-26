@@ -24,22 +24,35 @@ class Sp2dController extends Controller
         return view('penatausahaan.pengeluaran.sp2d.index')->with($data);
     }
 
-    public function loadData()
+    public function loadData(Request $request)
     {
         // USER BUD JANGAN LUPA
         $kd_skpd = Auth::user()->kd_skpd;
+        $tipe = $request->tipe;
+
         $data = DB::table('trhsp2d as a')
             ->join('trhspp as b', function ($join) {
                 $join->on('a.no_spp', '=', 'b.no_spp');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
             // ->where(['a.kd_skpd' => $kd_skpd])
+            ->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), DB::raw("(select no_uji from trduji where trduji.no_sp2d=a.no_sp2d)as no_uji"))
             ->where(function ($query) use ($kd_skpd) {
                 if (Auth::user()->is_admin == 2) {
                     $query->where(['a.kd_skpd' => $kd_skpd]);
                 }
             })
-            ->orderBy('tgl_sp2d')->orderBy(DB::raw("CAST(LEFT(no_sp2d,LEN(no_sp2d)-8)as int)"))->orderBy('kd_skpd')->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), DB::raw("(select no_uji from trduji where trduji.no_sp2d=a.no_sp2d)as no_uji"))->get();
+            ->where(function ($query) use ($tipe) {
+                if ($tipe == 'cair') {
+                    $query->where(['a.status_bud' => '1']);
+                } else if ($tipe == 'batal') {
+                    $query->where(['a.sp2d_batal' => '1']);
+                }
+            })
+            ->orderBy('tgl_sp2d')
+            ->orderBy(DB::raw("CAST(LEFT(no_sp2d,LEN(no_sp2d)-8)as int)"))
+            ->orderBy('kd_skpd')
+            ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat SP2D"><i class="uil-eye"></i></a>';
@@ -598,7 +611,8 @@ class Sp2dController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+                'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }

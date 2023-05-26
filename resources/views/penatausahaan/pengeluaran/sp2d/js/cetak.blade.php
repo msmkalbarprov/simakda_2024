@@ -14,15 +14,23 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#sp2d').DataTable({
+
+        let tabel = $('#sp2d').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
             processing: true,
             lengthMenu: [5, 10],
+            // ajax: {
+            //     "url": "{{ route('sp2d.load_data') }}",
+            //     "type": "POST",
+            // },
             ajax: {
                 "url": "{{ route('sp2d.load_data') }}",
                 "type": "POST",
+                "data": function(d) {
+                    d.tipe = document.getElementById('tipe').value;
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_bud == '1') {
@@ -102,6 +110,12 @@
         $('#kop').select2({
             dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
+        });
+
+        $('.tipe').on('click', function() {
+            let jenis = $(this).data("jenis");
+            $('#tipe').val(jenis);
+            tabel.ajax.reload();
         });
 
         // cetak sp2d
