@@ -109,6 +109,18 @@
 
                 </div>
             </div>
+        </div>    
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="jumum">
+                <div class="card-body">
+                    {{ 'Cetak Jurnal Umum' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
         </div>        
     </div>
 
@@ -117,6 +129,7 @@
 @include('akuntansi.modal.ped')
 @include('akuntansi.modal.inflasi')
 @include('akuntansi.modal.rekonba')
+@include('akuntansi.modal.jumum')
 @endsection
 @section('js')
     <script>
@@ -158,6 +171,12 @@
             $(".select_rekonba").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_rekonba .modal-content'),
+                
+            });
+
+            $(".select_ju").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_ju .modal-content'),
                 
             });
             // hidden
@@ -210,6 +229,12 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_rekonba').modal('show');
             $("#labelcetak_semester").html("Cetak RekonBA");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#jumum').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_ju').modal('show');
+            $("#labelcetak_semester").html("Cetak Jurnal Umum");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -374,6 +399,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd_rekonba').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_ju').empty();
+                    $('#kd_skpd_ju').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_ju').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -564,6 +597,32 @@
                 searchParams.append("kd_skpd",kd_skpd) ;
                 searchParams.append("skpdunit", skpdunit);
                 searchParams.append("jenis_cetakan", jenis_cetakan);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak Jurnal Umum') {
+                let tanggal1                    = document.getElementById('tanggal1_ju').value;
+                let tanggal2                    = document.getElementById('tanggal2_ju').value;
+                let kd_skpd             = document.getElementById('kd_skpd_ju').value;
+                // PERINGATAN
+                if (!tanggal1) {
+                    alert('Tanggal Awal tidak boleh kosong!');
+                    return;
+                }
+                if (!tanggal2) {
+                    alert('Tanggal Akhir tidak boleh kosong!');
+                    return;
+                }
+                if (!kd_skpd) {
+                    alert('SKPD tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.cju') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

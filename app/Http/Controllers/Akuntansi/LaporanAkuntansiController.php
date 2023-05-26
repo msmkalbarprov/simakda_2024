@@ -3061,4 +3061,75 @@ class LaporanAkuntansiController extends Controller
         }
     }
 
+    public function cetak_ju(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $dcetak    = $request->tanggal1;
+        $dcetak2    = $request->tanggal2;
+        $cetak          = $request->cetak;
+        $skpd        = $request->kd_skpd;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        
+        $thn_ang = tahun_anggaran();
+
+
+        $trh = collect(DB::select("SELECT count(*) as tot FROM 
+                 trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher= b.no_voucher  AND b.kd_skpd=a.kd_unit
+                 where b.tgl_voucher >= '$dcetak' and b.tgl_voucher <= '$dcetak2' and b.kd_skpd = '$skpd'"))->first();
+        
+        $query = DB::select("SELECT b.tgl_voucher,a.no_voucher,a.kd_rek6,a.nm_rek6 AS nm_rek6,a.debet,a.kredit FROM 
+                  trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher= b.no_voucher AND b.kd_skpd=a.kd_unit
+                  where b.tgl_voucher between '$dcetak' and  '$dcetak2' and b.kd_skpd = '$skpd' 
+                  ORDER BY b.tgl_voucher,a.no_voucher,a.urut,a.rk,a.kd_rek6");  
+
+        
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'trh'     => $trh,
+            'query'     => $query,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'dcetak'    => $dcetak,
+            'dcetak2'   => $dcetak2,
+            'thn_ang'   => $thn_ang,
+            'skpd'      => $skpd
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.jumum')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('JURNAL UMUM.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="JURNAL UMUM.xls"');
+            return $view;
+        }
+    }
+
 }
