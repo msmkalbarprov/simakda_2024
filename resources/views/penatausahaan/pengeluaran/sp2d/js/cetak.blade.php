@@ -20,7 +20,7 @@
             ordering: false,
             serverSide: true,
             processing: true,
-            lengthMenu: [5, 10],
+            lengthMenu: [5, 10, 50, 100],
             // ajax: {
             //     "url": "{{ route('sp2d.load_data') }}",
             //     "type": "POST",
