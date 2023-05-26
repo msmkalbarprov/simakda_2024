@@ -18,6 +18,9 @@
         </div>
     </div>
     <!-- end page title -->
+    @if(Auth::user()->role=='1025')
+
+    @else
     <div class="row">
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="lkonsol">
@@ -44,6 +47,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="lbb">
@@ -197,47 +201,57 @@
         } else {
             jenis = 'unit';
         }
-
-         // onclick card start
-        $('#lbb').on('click', function() {
+        let role = "{{ Auth::user()->role}}";
+        if (role=='1025') {
+            $('#lbb').on('click', function() {
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_lbb').modal('show');
             $("#labelcetak_semester").html("Cetak Buku Besar");
             // document.getElementById('row-hidden').hidden = true; // Hide
+            document.getElementById('lkonsol').hidden = true; // Hide
         });
-        $('#neraca_saldo').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_ns').modal('show');
-            $("#labelcetak_semester").html("Cetak Neraca Saldo");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-        });
+        }else{
+         // onclick card start
+        
+            $('#lbb').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_lbb').modal('show');
+                $("#labelcetak_semester").html("Cetak Buku Besar");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
+            $('#neraca_saldo').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_ns').modal('show');
+                $("#labelcetak_semester").html("Cetak Neraca Saldo");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
 
-        $('#ped').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_ped').modal('show');
-            $("#labelcetak_semester").html("Cetak PED");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-        });
+            $('#ped').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_ped').modal('show');
+                $("#labelcetak_semester").html("Cetak PED");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
 
-        $('#inflasi').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_inflasi').modal('show');
-            $("#labelcetak_semester").html("Cetak INFLASI");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-        });
-        $('#rekonba').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_rekonba').modal('show');
-            $("#labelcetak_semester").html("Cetak RekonBA");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-        });
-        $('#jumum').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_ju').modal('show');
-            $("#labelcetak_semester").html("Cetak Jurnal Umum");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-        });
-
+            $('#inflasi').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_inflasi').modal('show');
+                $("#labelcetak_semester").html("Cetak INFLASI");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
+            $('#rekonba').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_rekonba').modal('show');
+                $("#labelcetak_semester").html("Cetak RekonBA");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
+            $('#jumum').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_ju').modal('show');
+                $("#labelcetak_semester").html("Cetak Jurnal Umum");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
+        }
         // onclick card end
 
         // cari skpd/org
