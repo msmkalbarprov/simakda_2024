@@ -118,7 +118,12 @@ use App\Http\Controllers\TukarSp2dController;
 use Illuminate\Support\Facades\Http;
 
 Route::get('/coba_coba', function () {
-    $data = Http::post('https://mr-keuda.kalbarprov.go.id/api/get_token');
+    $data = Http::withHeaders([
+        'Content-Type' => 'application/json',
+    ])->post('https://mr-keuda.kalbarprov.go.id/api/get_token', [
+        'key' => 'AENao6JDrf9+xCSwJks18IghphTdQuvcOBcVc7abvCo0WeZSDxm/9IPy+2EaqnVG',
+    ]);
+
     dd($data->json());
 });
 // Route::get('/simakda_2023', function () {
