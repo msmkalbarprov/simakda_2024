@@ -88,6 +88,11 @@
     $ekuitas = $ekuitas->ekuitas;
     $ekuitas_lalu = $ekuitas_lalu->ekuitas_lalu;
     $no     = 0;
+    if (strlen($bulan)==1) {
+            $bulan="0$bulan";
+        }else{
+            $bulan=$bulan;
+        }
     @endphp
     @foreach($map_neraca as $res)
         @php
