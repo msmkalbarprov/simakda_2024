@@ -118,8 +118,8 @@ use App\Http\Controllers\TukarSp2dController;
 use Illuminate\Support\Facades\Http;
 
 Route::get('/coba_coba', function () {
-    $data = Http::get('http://127.0.0.1:9000/ambil_token1');
-    dd($data->body());
+    $data = Http::post('https://mr-keuda.kalbarprov.go.id/api/get_token');
+    dd($data->status());
 });
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
