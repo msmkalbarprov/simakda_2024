@@ -119,7 +119,7 @@ use Illuminate\Support\Facades\Http;
 
 Route::get('/coba_coba', function () {
     $data = Http::post('https://mr-keuda.kalbarprov.go.id/api/get_token');
-    dd($data->status());
+    dd($data->json());
 });
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
