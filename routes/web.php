@@ -115,7 +115,12 @@ use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
 use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\TukarSp2dController;
+use Illuminate\Support\Facades\Http;
 
+Route::get('/coba_coba', function () {
+    $data = Http::get('http://127.0.0.1:9000/ambil_token1');
+    dd($data->body());
+});
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
