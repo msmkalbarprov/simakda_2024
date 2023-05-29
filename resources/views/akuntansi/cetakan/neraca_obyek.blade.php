@@ -45,7 +45,7 @@
             @else
 
             <TR>
-                <td align="center"><strong>{{nama_skpd($skpd)}}</strong></td>
+                <td align="center"><strong>{{nama_skpd($kd_skpd)}}</strong></td>
             </TR>
             @endif
             <TR>
