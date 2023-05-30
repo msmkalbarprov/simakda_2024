@@ -127,6 +127,25 @@
             </div>
         </div>        
     </div>
+    @if(Auth::user()->role=='1006' || Auth::user()->role=='1022')
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="siskas">
+                <div class="card-body">
+                    {{ 'Rekap Sisa Kas' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>    
+        
+    </div>
+    @else
+    @endif
 
 @include('akuntansi.modal.bukubesar')
 @include('akuntansi.modal.neraca_saldo')
@@ -134,6 +153,7 @@
 @include('akuntansi.modal.inflasi')
 @include('akuntansi.modal.rekonba')
 @include('akuntansi.modal.jumum')
+@include('akuntansi.modal.rekap_sisa_kas')
 @endsection
 @section('js')
     <script>
@@ -181,6 +201,11 @@
             $(".select_ju").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ju .modal-content'),
+                
+            });
+            $(".select_rekap_sisa_kas").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_rekap_sisa_kas .modal-content'),
                 
             });
             // hidden
@@ -249,6 +274,12 @@
                 // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
                 $('#modal_cetak_ju').modal('show');
                 $("#labelcetak_semester").html("Cetak Jurnal Umum");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
+            $('#siskas').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_rekap_sisa_kas').modal('show');
+                $("#labelcetak_semester").html("Cetak Rekap Sisa Kas");
                 // document.getElementById('row-hidden').hidden = true; // Hide
             });
         }
@@ -637,6 +668,32 @@
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak Rekap Sisa Kas') {
+                let bulan                    = document.getElementById('bulan_kas').value;
+                let anggaran                    = document.getElementById('jns_anggaran_kas').value;
+                let jenis             = document.getElementById('jenis_kas').value;
+                // PERINGATAN
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+                if (!anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!jenis) {
+                    alert('SKPD tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.crekap_sisa_kas') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("bulan", bulan);
+                searchParams.append("anggaran", anggaran);
+                searchParams.append("jenis", jenis);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

@@ -3132,4 +3132,109 @@ class LaporanAkuntansiController extends Controller
         }
     }
 
+    public function cetak_rekap_sisa_kas(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan    = $request->bulan;
+        $anggaran    = $request->anggaran;
+        $cetak          = $request->cetak;
+        $jenis        = $request->jenis;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        
+        $thn_ang = tahun_anggaran();
+
+        if ($jenis=='1') {
+            
+            $query = DB::select("SELECT * FROM rekap_sisa_kas_pengeluaran_new ($bulan,'$anggaran',$thn_ang) order by kd_skpd");  
+            $query_jum = DB::select("SELECT 
+                                    sum(anggaran) total_ang,
+                                    sum(sp2d) total_sp2d,
+                                    sum(spj) total_spj,
+                                    sum(sisa_kas) total_sisa_kas,
+                                    sum(cp) total_cp,
+                                    sum(kas_ben) total_kas_ben
+                         FROM rekap_sisa_kas_pengeluaran_new ($bulan,'$anggaran',$thn_ang) ");  
+        }else if($jenis=='2'){
+
+            $query = DB::select("SELECT * FROM rekap_sisa_kas_pengeluaran_new_droping_oyoy ($bulan,'$anggaran',$thn_ang) order by kd_skpd");  
+            $query_jum = DB::select("SELECT 
+                                    sum(anggaran) total_ang,
+                                    sum(sp2d) total_sp2d,
+                                    sum(spb) total_spb,
+                                    sum(dropp_dana_terima) total_dropp_dana_terima,
+                                    sum(dropp_dana_keluar) total_dropp_dana_keluar,
+                                    sum(spj) total_spj,
+                                    sum(sisa_kas) total_sisa_kas,
+                                    sum(cp) total_cp,
+                                    sum(uyhd) total_uyhd,
+                                    sum(kas_ben_rumus) total_kas_ben_rumus,
+                                    sum(kas_ben) total_kas_ben
+                         FROM rekap_sisa_kas_pengeluaran_new_droping_oyoy ($bulan,'$anggaran',$thn_ang) "); 
+        }else if($jenis=='3'){
+
+            $query = DB::select("SELECT * FROM rekap_sisa_kas_penerimaan_oyoy ($bulan,'$anggaran',$thn_ang) order by kd_skpd");  
+            $query_jum = DB::select("SELECT 
+                            sum(anggaran) total_ang, 
+                            sum(terima) total_terima,
+                            sum(setor) total_setor,
+                            sum(sisa_kas) total_sisa_kas,
+                            sum(setor_lalu) total_setor_lalu,
+                            sum(kas_ben) total_kas_ben,
+                            sum(kas_ben_lalu) total_kas_ben_lalu
+
+                        FROM rekap_sisa_kas_penerimaan_oyoy($bulan,'$anggaran',$thn_ang) "); 
+        }
+        
+
+        
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'     => $query,
+            'query_jum'     => $query_jum,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'bulan'    => $bulan,
+            'anggaran'   => $anggaran,
+            'thn_ang'   => $thn_ang,
+            'jenis'      => $jenis
+        ];
+        if($jenis=='1'){
+            $view =  view('akuntansi.cetakan.rekap_sisa_kas.pengeluaran')->with($data);
+        }elseif($jenis=='2'){
+            $view =  view('akuntansi.cetakan.rekap_sisa_kas.pengeluaran_dropping')->with($data);
+        }elseif($jenis=='3'){
+            $view =  view('akuntansi.cetakan.rekap_sisa_kas.penerimaan')->with($data);
+        }
+            //elseif($format=='sng'){
+        //     $view =  view('akuntansi.cetakan.rekap_sisa_kas.pengeluaran')->with($data);
+        // // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('Rekap Sisa Kas.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Rekap Sisa Kas.xls"');
+            return $view;
+        }
+    }
+
 }
