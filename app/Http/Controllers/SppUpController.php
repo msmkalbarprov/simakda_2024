@@ -41,9 +41,9 @@ class SppUpController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sppup.edit", Crypt::encryptString($row->no_spp)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_spp . '\', \'' . $row->jns_spp . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
-            if ($row->status != 1) {
-                $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
-            }
+            // if ($row->status != 1) {
+            //     $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_spp . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="fas fa-trash-alt"></i></a>';
+            // }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
