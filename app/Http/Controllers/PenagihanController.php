@@ -424,7 +424,7 @@ class PenagihanController extends Controller
                                     WHERE c.kd_sub_kegiatan = ?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6 = ?
-                                    and d.tgl_bukti<=?
+                                    -- and d.tgl_bukti<=?
                                     AND d.jns_spp in ('1')
 
                                     UNION ALL
@@ -436,7 +436,7 @@ class PenagihanController extends Controller
                                     WHERE c.kd_sub_kegiatan =?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6=?
-                                    and d.tgl_voucher<=?
+                                    -- and d.tgl_voucher<=?
                                     AND d.jns_spp in ('1')
                                     AND (d.status_validasi='0' OR d.status_validasi is null)
 
@@ -448,7 +448,7 @@ class PenagihanController extends Controller
                                     WHERE x.kd_sub_kegiatan = ?
                                     AND x.kd_skpd = ?
                                     AND x.kd_rek6 = ?
-                                    and y.tgl_spp <=?
+                                    -- and y.tgl_spp <=?
                                     AND y.jns_spp IN ('3','4','5','6')
                                     AND (sp2d_batal IS NULL or sp2d_batal ='' or sp2d_batal='0')
 
@@ -460,10 +460,11 @@ class PenagihanController extends Controller
                                     WHERE t.kd_sub_kegiatan =?
                                     AND t.kd_rek =?
                                     AND u.kd_skpd = ?
-                                    and u.tgl_bukti<=?
+                                    -- and u.tgl_bukti<=? (PERMINTAAN KAK MINA TANGGAL DIHAPUS)
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $tgl_bukti, $giat, $kode, $rek, $tgl_bukti, $giat, $kode, $rek, $tgl_bukti, $giat, $rek, $kode, $tgl_bukti, $kode]))->first();
+                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode]))->first();
+        // [$giat, $kode, $rek, $giat, $kode, $rek, $tgl_bukti, $giat, $kode, $rek, $tgl_bukti, $giat, $kode, $rek, $tgl_bukti, $giat, $rek, $kode, $tgl_bukti, $kode]
 
 
         // SPD
