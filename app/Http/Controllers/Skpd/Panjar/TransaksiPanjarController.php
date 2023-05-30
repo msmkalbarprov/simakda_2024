@@ -33,7 +33,11 @@ class TransaksiPanjarController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             // $btn = '<a href="' . route("transaksipanjar.edit", ['no_bukti' => Crypt::encrypt($row->no_bukti), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_bukti . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            if ($row->ketlpj == 1 || $row->ketspj == 1 || $row->ketlpj == 2) {
+                $btn = "";
+            } else {
+                $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_bukti . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
