@@ -892,6 +892,7 @@ class LraController extends Controller
             $kd_skpd        = "";
             $skpd_clause    = "";
             $skpd_clauses    = "";
+            $skpd_clausesun    = "";
         }else{
             if ($skpdunit=="unit") {
                 $kd_skpd=$kd_skpd;
