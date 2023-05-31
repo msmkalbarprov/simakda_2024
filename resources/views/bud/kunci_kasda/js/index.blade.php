@@ -62,8 +62,8 @@
                     alert('Silahkan Pilih SKPD!');
                     return;
                 }
-                if (tgl_kunci < tgl_akhir) {
-                    alert('Tanggal Akhir Lebih Besar dari Tanggal Kunci');
+                if (tgl_kunci > tgl_akhir) {
+                    alert('Tanggal Akhir Lebih Kecil dari Tanggal Kunci');
                     return;
                 }
             }
