@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>UMUR PIUTANG</title>
+    <title>PENYISIHAN PIUTANG</title>
     <style>
         table {
             border-collapse: collapse
@@ -41,7 +41,7 @@
             <td colspan="5" style="border-top:none;border-right:none;border-left:none;font-size:14px" align="center">
                 <b>PEMERINTAH PROVINSI KALIMANTAN BARAT</b> <br>
                 <b>{{nama_skpd($skpd)}}</b> <br>
-                <b>ANALISIS UMUR PIUTANG</b><BR>
+                <b>RINCIAN PENYISIHAN PIUTANG</b><BR>
                 <b>PER 31 DESEMBER {{$lntahunang}} </b>
                 <BR>&nbsp;                                        
             </td>           
