@@ -790,7 +790,7 @@
                     document.getElementById('nilai_penagihan').value = '';
                     document.getElementById('no_kontrak').value = '';
                     // $('#no_penagihan').val(null).change();
-                    // tabel.clear().draw();
+                    tabel.clear().draw();
                     // $('#total').val('');
                     $('#card_penagihan').show();
                 }
@@ -803,7 +803,7 @@
                     document.getElementById('no_kontrak').value = '';
                     $('#no_penagihan').val(null).change();
                     // $('#total').val('');
-                    // tabel.clear().draw();
+                    tabel.clear().draw();
                     $('#card_penagihan').hide();
                 }
             }
@@ -1117,6 +1117,7 @@
             let rekening = document.getElementById('rekening').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
             let total = rupiah(document.getElementById('total').value);
+            let nilai_penagihan = rupiah(document.getElementById('nilai_penagihan').value);
             let nm_sub_kegiatan = document.getElementById('nm_sub_kegiatan').value;
             let alamat = document.getElementById('alamat').value;
             let no_kontrak = document.getElementById('no_kontrak').value;
@@ -1148,6 +1149,8 @@
                 return data;
             });
 
+
+
             let tampungan = tabel.rows().data().toArray().map((value) => {
                 let result = {
                     kd_sub_kegiatan: value.kd_sub_kegiatan
@@ -1166,7 +1169,22 @@
                 return;
             }
 
+            let nilai_tampungan = tabel.rows().data().toArray().reduce((previousValue,
+                currentValue) => (previousValue += rupiah(currentValue.nilai)), 0);
+
             let sts_tagih = dengan_penagihan == false ? 0 : 1;
+
+            if (sts_tagih == 1) {
+                if (total != nilai_tampungan) {
+                    alert('Nilai Rincian tidak sama dengan Total...!!Silahkan Refresh!!');
+                    return;
+                }
+            } else {
+                if (total != nilai_tampungan) {
+                    alert('Nilai Rincian tidak sama dengan Total...!!Silahkan Refresh!!');
+                    return;
+                }
+            }
 
             if (rincian_rekening.length == 0) {
                 alert('Rincian Rekening tidak boleh kosong!');

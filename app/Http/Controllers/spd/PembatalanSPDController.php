@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Exception;
+use Illuminate\Support\Facades\Gate;
 
 class PembatalanSPDController extends Controller
 {
@@ -18,6 +19,10 @@ class PembatalanSPDController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('akses')) {
+            abort(401);
+        }
+
         return view('penatausahaan.spd.pembatalan_spd.index');
     }
 
@@ -25,6 +30,7 @@ class PembatalanSPDController extends Controller
     {
         $id = Auth::user()->id;
         $skpd = Auth::user()->kd_skpd;
+        $role = Auth::user()->role;
 
         $data = DB::table('trhspd as a')->Select(
             'a.*',
@@ -46,15 +52,8 @@ class PembatalanSPDController extends Controller
             ])
             ->orderBy('no_spd')->orderBy('tgl_spd')->orderBy('kd_skpd')->get();
 
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if($row->total > 0) {
-                if ($row->status == '1') {
-                    $btn = '<font color="green"><i class="fa fa-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Aktif dan Sudah Digunakan"></i></font>';
-                }else{
-                    $btn = '<font color="red"><i class="fa fa-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Tidak Aktif dan Sudah Digunakan"></i></font>';
-                }
-                
-            } else {
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use ($role) {
+            if ($role == '1006') {
                 if ($row->status == '1') {
                     $btn = '<div class="form-check form-switch form-switch-lg">
                     <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
@@ -64,7 +63,25 @@ class PembatalanSPDController extends Controller
                     <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
                         ></div>';
                 }
-            } 
+            } else {
+                if ($row->total > 0) {
+                    if ($row->status == '1') {
+                        $btn = '<font color="green"><i class="fa fa-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Aktif dan Sudah Digunakan"></i></font>';
+                    } else {
+                        $btn = '<font color="red"><i class="fa fa-check-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="SPD Tidak Aktif dan Sudah Digunakan"></i></font>';
+                    }
+                } else {
+                    if ($row->status == '1') {
+                        $btn = '<div class="form-check form-switch form-switch-lg">
+                    <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
+                         checked></div>';
+                    } else {
+                        $btn = '<div class="form-check form-switch form-switch-lg">
+                    <input type="checkbox" class="form-check-input" onChange="ubahStatus(\'' . $row->no_spd . '\', \'' . $row->status . '\');"
+                        ></div>';
+                    }
+                }
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('penatausahaan.spd.pembatalan_spd.index');

@@ -3150,27 +3150,44 @@ function no_urut_tukd()
 {
     $kd_skpd = Auth::user()->kd_skpd;
 
-    $urut1 = DB::table('trhsp2d')->select('no_kas as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=? AND status=?", ['1', '1'])->where('kd_skpd', $kd_skpd);
-    $urut2 = DB::table('trhsp2d')->select('no_terima as nomor', DB::raw("'Penerimaan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_terima)=? AND status_terima=?", ['1', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut1);
-    $urut3 = DB::table('trhtransout')->select('no_bukti as nomor', DB::raw("'Pembayaran Transaksi' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where(function ($query) {
-        $query->where('panjar', '!=', '3')->orWhereNull('panjar');
-    })->unionAll($urut2)->where('kd_skpd', $kd_skpd);
-    $urut4 = DB::table('tr_panjar')->select('no_panjar as nomor', DB::raw("'Pemberian Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_panjar)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut3);
-    $urut5 = DB::table('tr_jpanjar')->select('no_kas as nomor', DB::raw("'Pertanggungjawaban Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut4);
-    $urut6 = DB::table('trhtrmpot')->select('no_bukti as nomor', DB::raw("'Penerimaan Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut5);
-    $urut7 = DB::table('trhstrpot')->select('no_bukti as nomor', DB::raw("'Penyetoran Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut6);
-    $urut8 = DB::table('trhkasin_pkd')->select(DB::raw("no_sts as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>?", ['1', '4'])->where('kd_skpd', $kd_skpd)->unionAll($urut7);
-    $urut9 = DB::table('trhkasin_pkd')->select(DB::raw("(no_sts+1) as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>? AND pot_khusus=?", ['1', '4', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut8);
-    $urut10 = DB::table('tr_ambilsimpanan')->select(DB::raw("(no_bukti+1) as nomor"), DB::raw("'Ambil Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut9);
-    $urut11 = DB::table('tr_setorsimpanan')->select('no_kas as nomor', DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut10);
-    $urut12 = DB::table('tr_setorsimpanan')->select(DB::raw("(no_kas+1) as nomor"), DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=? AND jenis=?", ['1', '2'])->where('kd_skpd', $kd_skpd)->unionAll($urut11);
-    $urut13 = DB::table('TRHINLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Terima lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(NO_BUKTI)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut12);
-    $urut14 = DB::table('TRHOUTLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Keluar lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut13);
+    // $urut1 = DB::table('trhsp2d')->select('no_kas as nomor', DB::raw("'Pencairan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=? AND status=?", ['1', '1'])->where('kd_skpd', $kd_skpd);
+    // $urut2 = DB::table('trhsp2d')->select('no_terima as nomor', DB::raw("'Penerimaan SP2D' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_terima)=? AND status_terima=?", ['1', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut1);
+    // $urut3 = DB::table('trhtransout')->select('no_bukti as nomor', DB::raw("'Pembayaran Transaksi' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where(function ($query) {
+    //     $query->where('panjar', '!=', '3')->orWhereNull('panjar');
+    // })->unionAll($urut2)->where('kd_skpd', $kd_skpd);
+    // $urut4 = DB::table('tr_panjar')->select('no_panjar as nomor', DB::raw("'Pemberian Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_panjar)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut3);
+    // $urut5 = DB::table('tr_jpanjar')->select('no_kas as nomor', DB::raw("'Pertanggungjawaban Panjar' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_kas)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut4);
+    // $urut6 = DB::table('trhtrmpot')->select('no_bukti as nomor', DB::raw("'Penerimaan Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut5);
+    // $urut7 = DB::table('trhstrpot')->select('no_bukti as nomor', DB::raw("'Penyetoran Potongan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut6);
+    // $urut8 = DB::table('trhkasin_pkd')->select(DB::raw("no_sts as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>?", ['1', '4'])->where('kd_skpd', $kd_skpd)->unionAll($urut7);
+    // $urut9 = DB::table('trhkasin_pkd')->select(DB::raw("(no_sts+1) as nomor"), DB::raw("'Setor Sisa Kas' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_sts)=? AND jns_trans<>? AND pot_khusus=?", ['1', '4', '1'])->where('kd_skpd', $kd_skpd)->unionAll($urut8);
+    // $urut10 = DB::table('tr_ambilsimpanan')->select(DB::raw("(no_bukti+1) as nomor"), DB::raw("'Ambil Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut9);
+    // $urut11 = DB::table('tr_setorsimpanan')->select('no_kas as nomor', DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut10);
+    // $urut12 = DB::table('tr_setorsimpanan')->select(DB::raw("(no_kas+1) as nomor"), DB::raw("'Setor Simpanan' as ket"), 'kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=? AND jenis=?", ['1', '2'])->where('kd_skpd', $kd_skpd)->unionAll($urut11);
+    // $urut13 = DB::table('TRHINLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Terima lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(NO_BUKTI)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut12);
+    // $urut14 = DB::table('TRHOUTLAIN')->select(DB::raw("NO_BUKTI as nomor"), DB::raw("'Keluar lain-lain' as ket"), 'KD_SKPD as kd_skpd')->whereRaw("ISNUMERIC(no_bukti)=?", ['1'])->where('kd_skpd', $kd_skpd)->unionAll($urut13);
 
-    $urut = DB::table(DB::raw("({$urut14->toSql()}) AS sub"))
-        ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
-        ->mergeBindings($urut14)
-        ->first();
+    // $urut = DB::table(DB::raw("({$urut14->toSql()}) AS sub"))
+    //     ->select(DB::raw("CASE WHEN MAX(nomor+1) IS NULL THEN 1 ELSE MAX(nomor+1) END AS nomor"))
+    //     ->mergeBindings($urut14)
+    //     ->first();
+
+    $urut = collect(DB::select("SELECT case when max(nomor+1) is null then 1 else max(nomor+1) end as nomor from (
+	select no_kas nomor,'Pencairan SP2D' ket,kd_skpd from trhsp2d where isnumeric(no_kas)=1 and status=1 union ALL
+	select no_terima nomor,'Penerimaan SP2D' ket,kd_skpd from trhsp2d where isnumeric(no_terima)=1 and status_terima=1 union ALL
+	select no_bukti nomor, 'Pembayaran Transaksi' ket, kd_skpd from trhtransout where  isnumeric(no_bukti)=1 AND (panjar !='3' OR panjar IS NULL) union ALL
+	select no_panjar nomor, 'Pemberian Panjar' ket,kd_skpd from tr_panjar where  isnumeric(no_panjar)=1  union ALL
+	select no_kas nomor, 'Pertanggungjawaban Panjar' ket, kd_skpd from tr_jpanjar where  isnumeric(no_kas)=1 union ALL
+	select no_bukti nomor, 'Penerimaan Potongan' ket,kd_skpd from trhtrmpot where  isnumeric(no_bukti)=1  union ALL
+	select no_bukti nomor, 'Penyetoran Potongan' ket,kd_skpd from trhstrpot where  isnumeric(no_bukti)=1 union ALL
+	select no_sts nomor, 'Setor Sisa Kas' ket,kd_skpd from trhkasin_pkd where  isnumeric(no_sts)=1 and jns_trans<>4 union ALL
+	select no_sts+1 nomor, 'Setor Sisa Kas' ket,kd_skpd from trhkasin_pkd where  isnumeric(no_sts)=1 and jns_trans<>4 and pot_khusus=1 union ALL
+	select no_bukti+1 nomor, 'Ambil SImpanan' ket,kd_skpd from tr_ambilsimpanan where  isnumeric(no_bukti)=1 union ALL
+	select no_kas nomor, 'Setor Simpanan' ket,kd_skpd from tr_setorsimpanan where  isnumeric(no_bukti)=1 union all
+	select no_kas+1 nomor, 'Setor Simpanan' ket,kd_skpd from tr_setorsimpanan where  isnumeric(no_bukti)=1 and jenis='2' union ALL
+	select NO_BUKTI nomor, 'Terima lain-lain' ket,KD_SKPD as kd_skpd from TRHINLAIN where  isnumeric(NO_BUKTI)=1 union ALL
+	select NO_BUKTI nomor, 'Keluar lain-lain' ket,KD_SKPD as kd_skpd from TRHOUTLAIN where  isnumeric(NO_BUKTI)=1	) z WHERE KD_SKPD = ?", [$kd_skpd]))->first();
+
     return $urut->nomor;
 }
 
