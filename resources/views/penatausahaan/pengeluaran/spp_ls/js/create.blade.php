@@ -1176,12 +1176,12 @@
 
             if (sts_tagih == 1) {
                 if (total != nilai_tampungan) {
-                    alert('Nilai Penagihan tidak sama dengan Total...!!Silahkan Refresh!!');
+                    alert('Nilai Rincian tidak sama dengan Total...!!Silahkan Refresh!!');
                     return;
                 }
             } else {
                 if (total != nilai_tampungan) {
-                    alert('Nilai Penagihan tidak sama dengan Total...!!Silahkan Refresh!!');
+                    alert('Nilai Rincian tidak sama dengan Total...!!Silahkan Refresh!!');
                     return;
                 }
             }
