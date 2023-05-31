@@ -2274,4 +2274,545 @@ class cetaklampneracaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_penyisihan_piutang(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $skpd = $request->kd_skpd;
+        $lntahunang = $request->tahun;
+        $lntahunang_1   = $lntahunang-1;       
+        $bulan = 12+1;
+        $cetak   = $request->cetak;
+        
+        // dd($kd_skpd);
+        
+        // $lntahunang    = tahun_anggaran();
+        // $thn_ang1   = $lntahunang-1;
+        if ($skpd=='1.02.0.00.0.00.02.0000') {
+            $query = DB::select("SELECT a.no_lamp,a.kode1,a.kode,a.nama,a.lokasi,a.tahun,a.bulan,a.jumlah,a.sal_awal,a.kurang,a.tambah,a.tahun_n,a.koreksi,a.keterangan,a.umur_t,a.umur_b,a.kualitas,b.kualitas as kualitas_lalu,a.penyi_piu,
+                        b.sal_akhir,b.piu_tahun_lalu,(b.sal_awal*b.kualitas)piu_lalu from
+                        (
+                        SELECT '' no_lamp, kd_rek3 kode1, kd_rek3 kode, UPPER(nm_rek3) nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                     0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109')  and kd_skpd='$skpd' and tahun<= $lntahunang
+                     union
+
+                    select '' no_lamp, LEFT(kd_rek6,6) kode1, LEFT(kd_rek6,6) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,6)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+                    union
+
+                    select '' no_lamp, LEFT(kd_rek6,8) kode1, LEFT(kd_rek6,8) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,8)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+
+                      union all
+
+                        select no_lamp, kode1, kode, nama, lokasi, tahun, bulan, jumlah,  sal_awal,  kurang,  
+                        tambah, tahun_n, koreksi, keterangan, umur_t, isnull(umur_b,1) umur_b, 
+                        case 
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 'Lancar'
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 3  then 'Kurang Lancar'
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 'Diragukan'
+                        when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 'Macet'
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)=0 then 'Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=0 and isnull(umur_b,1)>=1 then 'Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)>=1 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)=0 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)>=1 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)=0 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)>=1 then 'Diragukan'
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)=0 then 'Diragukan'
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)>=1 then 'Diragukan'
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)=0 then 'Diragukan'
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)>=1 then 'Macet'
+                        when (left(kode1,4)in('1103' )) and umur_t>=6 then 'Macet'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then 'Lancar'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 'Diragukan'
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 'Macet'
+                        when left(kode1,6)='110613' then ''
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 'Lancar'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 'Kurang Lancar'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 'Diragukan'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 'Macet'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 'Macet'
+                        else 'Tidak Diketahui' end as kualitas,
+                         case 
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=0 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t>=6 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when left(kode1,6)='110613' then 0
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        else 'Tidak Diketahui' end as penyi_piu 
+                        from
+                        (SELECT no_lamp, kd_rek6 as kode1, kd_rek6 as kode, nm_rek6 as nama, lokasi, tahun, isnull(bulan,1) bulan, jumlah,   
+                        isnull(sal_awal,0)sal_awal,  isnull(kurang,0) kurang,  isnull(tambah,0) tambah, isnull(tahun_n,0)tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi, keterangan, case when 13-isnull(bulan,1)=12 then $lntahunang-tahun+1 else $lntahunang-tahun end 
+                        as umur_t, case when 13-isnull(bulan,1)=12 then 0 else 13-isnull(bulan,1) end as umur_b 
+                        FROM lamp_aset 
+                        where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd ='$skpd' and tahun<= $lntahunang) a
+                        
+                        union
+                        select '' no_lamp, LEFT(kd_rek6,6)+'9999' kode1, '' kode, '' nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                        0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, '' kualitas, 0 penyi_piu 
+                        from lamp_aset where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+                        )a
+
+
+
+
+                    left join 
+                    (SELECT '' no_lamp,kd_rek3 kode1, kd_rek3 kode, UPPER(nm_rek3) nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                     0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, 0 kualitas, 0 piu_tahun_lalu , 0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109')  and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                     union
+
+                    select '' no_lamp, LEFT(kd_rek6,6) kode1, LEFT(kd_rek6,6) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,6)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                    union
+
+                    select '' no_lamp, LEFT(kd_rek6,8) kode1, LEFT(kd_rek6,8) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,8)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0, '' keterangan, 0 umur_t, 
+                    0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+
+                      union all
+
+                        select no_lamp, kode1, kode, nama, lokasi, tahun, bulan, jumlah,  sal_awal,  kurang,  
+                        tambah, tahun_n, koreksi, keterangan, umur_t, isnull(umur_b,1) umur_b, 
+                        case 
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 0.005
+                       when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 2 then 0.1
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 0.5
+                       when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 1
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)=0 then 0.005
+                        when (left(kode1,4)in('1103' )) and umur_t=0 and isnull(umur_b,1)>=1 then 0.005
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)>=1 then 0.1
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)=0 then 0.1
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)>=1 then 1
+                        when (left(kode1,4)in('1103' )) and umur_t>=6 then 1
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then 0.005
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 0.01
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 0.5
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 1
+                        when left(kode1,6)='110613' then ''
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 0.005
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 0.1
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 0.5
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 1
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 1
+                        else 'Tidak Diketahui' end as kualitas,
+                         case 
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 2 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=0 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=2 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=3 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=4 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t=5 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1103' )) and umur_t>=6 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when left(kode1,6)='110613' then 0
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        else 'Tidak Diketahui' end as piu_tahun_lalu , (sal_awal-kurang+tambah+tahun_n) sal_akhir
+                        from
+                        (SELECT no_lamp, kd_rek6 as kode1, kd_rek6 as kode, nm_rek6 as nama, lokasi, tahun, isnull(bulan,1) bulan, jumlah,   
+                        isnull(sal_awal,0)sal_awal,  isnull(kurang,0) kurang,  isnull(tambah,0) tambah, isnull(tahun_n,0)tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi, keterangan, case when 13-isnull(bulan,1)=12 then $lntahunang_1-tahun+1 else $lntahunang_1-tahun end 
+                        as umur_t, case when 13-isnull(bulan,1)=12 then 0 else 13-isnull(bulan,1) end as umur_b,ISNULL((sal_awal-kurang+tambah+tahun_n),0) sal_akhir
+                        FROM lamp_aset 
+                        where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd ='$skpd' and tahun<= $lntahunang_1) a
+                        
+                        
+                        union
+                        select '' no_lamp, LEFT(kd_rek6,6)+'9999' kode1, '' kode, '' nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                        0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                        from lamp_aset where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                        ) b on a.no_lamp=b.no_lamp and a.kode1=b.kode1 and a.kode=b.kode 
+                                                order by a.kode1, a.tahun, a.bulan ,a.sal_awal");  
+        }else{
+            $query = DB::select("SELECT a.no_lamp,a.kode1,a.kode,a.nama,a.lokasi,a.tahun,a.bulan,a.jumlah,a.sal_awal,a.kurang,a.tambah,a.tahun_n,a.koreksi,a.keterangan,a.umur_t,a.umur_b,a.kualitas,b.kualitas as kualitas_lalu,a.penyi_piu,
+                    b.sal_akhir,b.piu_tahun_lalu,(b.sal_awal*b.kualitas)piu_lalu from
+                    (
+                    SELECT '' no_lamp, kd_rek3 kode1, kd_rek3 kode, UPPER(nm_rek3) nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                     0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109')  and kd_skpd='$skpd' and tahun<= $lntahunang
+                     union
+
+                    select '' no_lamp, LEFT(kd_rek6,6) kode1, LEFT(kd_rek6,6) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,6)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+                    union
+
+                    select '' no_lamp, LEFT(kd_rek6,8) kode1, LEFT(kd_rek6,8) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,8)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, '' kualitas, 0 penyi_piu 
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+
+                      union all
+
+                        select no_lamp, kode1, kode, nama, lokasi, tahun, bulan, jumlah,  sal_awal,  kurang,  
+                        tambah, tahun_n, koreksi, keterangan, umur_t, isnull(umur_b,1) umur_b, 
+                        case 
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 'Lancar'
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 3  then 'Kurang Lancar'
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 'Diragukan'
+                        --when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 'Macet'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)=0 then 'Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=0 and isnull(umur_b,1)>=1 then 'Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)>=1 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 'Diragukan'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 'Diragukan'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)>=1 then 'Diragukan'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)=0 then 'Diragukan'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)>=1 then 'Macet'
+                        when (left(kode1,4)in('1103','1106' )) and umur_t>=6 then 'Macet'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then 'Lancar'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 'Kurang Lancar'
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 'Diragukan'
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 'Macet'
+                        when left(kode1,6)='110613' then ''
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 'Lancar'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 'Kurang Lancar'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 'Diragukan'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 'Macet'
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 'Macet'
+                        else 'Tidak Diketahui' end as kualitas,
+                         case 
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 3 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=0 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t>=6 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when left(kode1,6)='110613' then 0
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        else 'Tidak Diketahui' end as penyi_piu 
+                        from
+                        (SELECT no_lamp, kd_rek6 as kode1, kd_rek6 as kode, nm_rek6 as nama, lokasi, tahun, isnull(bulan,1) bulan, jumlah,   
+                        isnull(sal_awal,0)sal_awal,  isnull(kurang,0) kurang,  isnull(tambah,0) tambah, isnull(tahun_n,0)tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi, keterangan, case when 13-isnull(bulan,1)=12 then $lntahunang-tahun+1 else $lntahunang-tahun end 
+                        as umur_t, case when 13-isnull(bulan,1)=12 then 0 else 13-isnull(bulan,1) end as umur_b 
+                        FROM lamp_aset 
+                        where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd ='$skpd' and tahun<= $lntahunang) a
+                        
+                        union
+                        select '' no_lamp, LEFT(kd_rek6,6)+'9999' kode1, '' kode, '' nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                        0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, '' kualitas, 0 penyi_piu 
+                        from lamp_aset where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang
+                        )a
+
+                    left join 
+                    (SELECT '' no_lamp,kd_rek3 kode1, kd_rek3 kode, UPPER(nm_rek3) nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                     0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, 0 kualitas, 0 piu_tahun_lalu , 0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109')  and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                     union
+
+                    select '' no_lamp, LEFT(kd_rek6,6) kode1, LEFT(kd_rek6,6) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,6)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 
+                    0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                    union
+
+                    select '' no_lamp, LEFT(kd_rek6,8) kode1, LEFT(kd_rek6,8) kode, 
+                    (SELECT UPPER(nm_rek4) from ms_rek4 where kd_rek4 = LEFT(kd_rek6,8)) nama, 
+                    '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 0 kurang, 0 tambah, 0 tahun_n, 0, '' keterangan, 0 umur_t, 
+                    0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                    from lamp_aset 
+                    where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+
+                      union all
+
+                        select no_lamp, kode1, kode, nama, lokasi, tahun, bulan, jumlah,  sal_awal,  kurang,  
+                        tambah, tahun_n, koreksi, keterangan, umur_t, isnull(umur_b,1) umur_b, 
+                        case 
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 0.005
+                       -- when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 2 then 0.01
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 0.5
+                       -- when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 1
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)=0 then 0.005
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=0 and isnull(umur_b,1)>=1 then 0.005
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)>=1 then 0.1
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 0.1
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)>=1 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)>=1 then 1
+                        when (left(kode1,4)in('1103','1106' )) and umur_t>=6 then 1
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then 0.005
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 0.01
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 0.5
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 1
+                        when left(kode1,6)='110613' then ''
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 0.005
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 0.1
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 0.5
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 1
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 1
+                        else 'Tidak Diketahui' end as kualitas,
+                         case 
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 2 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        --when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 
+                        --cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=0 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1103','1106' )) and umur_t>=6 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4)in('1104')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when left(kode1,6)='110613' then 0
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=0 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.005 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)=2 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi)* 0.5 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t=0 and isnull(umur_b,1)>=3 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        when (left(kode1,4) not in ('1103','1104') or left(kode1,6) not in ('110613')) and umur_t>=1 then 
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 1 as decimal(20,2))
+                        else 'Tidak Diketahui' end as piu_tahun_lalu , (sal_awal-kurang+tambah+tahun_n) sal_akhir
+                        from
+                        (SELECT no_lamp, kd_rek6 as kode1, kd_rek6 as kode, nm_rek6 as nama, lokasi, tahun, isnull(bulan,1) bulan, jumlah,   
+                        isnull(sal_awal,0)sal_awal,  isnull(kurang,0) kurang,  isnull(tambah,0) tambah, isnull(tahun_n,0)tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi, keterangan, case when 13-isnull(bulan,1)=12 then $lntahunang_1-tahun+1 else $lntahunang_1-tahun end 
+                        as umur_t, case when 13-isnull(bulan,1)=12 then 0 else 13-isnull(bulan,1) end as umur_b,ISNULL((sal_awal-kurang+tambah+tahun_n),0) sal_akhir
+                        FROM lamp_aset 
+                        where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd ='$skpd' and tahun<= $lntahunang_1) a
+                        
+                        
+                        union
+                        select '' no_lamp, LEFT(kd_rek6,6)+'9999' kode1, '' kode, '' nama, '' lokasi, 0 tahun, 0 bulan, 0 jumlah, 0 sal_awal, 
+                        0 kurang, 0 tambah, 0 tahun_n, 0 koreksi, '' keterangan, 0 umur_t, 0 umur_b, 0 kualitas, 0 piu_tahun_lalu ,0 sal_akhir
+                        from lamp_aset where kd_rek3 in ('1103','1104','1105','1106','1107','1108','1109') and kd_skpd='$skpd' and tahun<= $lntahunang_1
+                        ) b on a.no_lamp=b.no_lamp and a.kode1=b.kode1 and a.kode=b.kode 
+                                                order by a.kode1, a.tahun, a.bulan ,a.sal_awal");
+        }
+             
+        
+
+
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $skpd)->first();
+            // dd($sus);
+        
+            $data = [
+            'header'         => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'          => $query,
+            'skpd'           => $skpd,
+            'lntahunang'     => $lntahunang,
+            'lntahunang_1'     => $lntahunang_1  
+            ];
+        // dd($data['ekuitas_awal']->nilai);
+            $view =  view('akuntansi.cetakan.lamp_neraca.penyisihan_piutang')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('Umur Piutang.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Umur Piutang.xls"');
+            return $view;
+        }
+    }
 }
