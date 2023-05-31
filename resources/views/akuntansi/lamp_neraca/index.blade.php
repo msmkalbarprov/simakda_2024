@@ -107,6 +107,11 @@
                 dropdownParent: $('#modal_cetak_penyisihan_piutang .modal-content'),
                 
             });
+            $(".select_ikhtisar").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_ikhtisar .modal-content'),
+                
+            });
             
         });
 
@@ -128,6 +133,12 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_penyisihan_piutang').modal('show');
             $("#labelcetak_semester").html("Cetak Penyisihan Piutang");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#ikhtisar').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_ikhtisar').modal('show');
+            $("#labelcetak_semester").html("Cetak Ikhtisar");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -245,6 +256,17 @@
                 let searchParams    = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tahun", tahun);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak Ikhtisar') {
+
+                let bulan                    = document.getElementById('bulan').value;
+                let jns_ang                  = document.getElementById('jns_anggaran').value;
+                let url             = new URL("{{ route('lamp_neraca.cetak_ikhtisar') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("bulan", bulan);
+                searchParams.append("jns_ang", jns_ang);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

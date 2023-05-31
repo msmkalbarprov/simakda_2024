@@ -1692,6 +1692,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_lamp_neraca', [cetaklampneracaController::class, 'cetak_lamp_neraca'])->name('lamp_neraca.cetak_lamp_neraca');
         Route::get('cetak_umur_piutang', [cetaklampneracaController::class, 'cetak_umur_piutang'])->name('lamp_neraca.cetak_umur_piutang');
         Route::get('cetak_penyisihan_piutang', [cetaklampneracaController::class, 'cetak_penyisihan_piutang'])->name('lamp_neraca.cetak_penyisihan_piutang');
+        Route::get('cetak_ikhtisar', [cetaklampneracaController::class, 'cetak_ikhtisar'])->name('lamp_neraca.cetak_ikhtisar');
     });
 
     Route::group(['prefix' => 'spb'], function () {

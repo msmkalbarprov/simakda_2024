@@ -2815,4 +2815,48 @@ class cetaklampneracaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_ikhtisar(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan = $request->bulan;  
+        $anggaran = $request->jns_ang;
+        $cetak   = $request->cetak;
+        
+        // dd($kd_skpd);
+        
+        $lntahunang    = tahun_anggaran();
+        // $thn_ang1   = $lntahunang-1;
+
+        $query = DB::select("SELECT seq, kd_skpd, kd_kegiatan, nm_rek, anggaran, realisasi FROM BABIII($bulan,'$anggaran',$lntahunang) ORDER BY kd_skpd");  
+             
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $skpd)->first();
+            // dd($sus);
+        
+            $data = [
+            'header'         => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'          => $query,
+            'bulan'           => $bulan,
+            'lntahunang'     => $lntahunang  
+            ];
+        // dd($data['ekuitas_awal']->nilai);
+            $view =  view('akuntansi.cetakan.lamp_neraca.ikhtisar')->with($data);
+
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('Umur Piutang.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="Umur Piutang.xls"');
+            return $view;
+        }
+    }
 }
