@@ -89,9 +89,12 @@
                 }
             });
 
-            $(".select_lamp_aset").select2({
+            cari_rek_objek();
+            cari_skpd();
+
+            $(".select_lamp_neraca").select2({
                 theme: 'bootstrap-5',
-                dropdownParent: $('#modal_cetak_lamp_aset .modal-content'),
+                dropdownParent: $('#modal_cetak_lamp_neraca .modal-content'),
                 
             });
             
@@ -99,37 +102,37 @@
 
 
     // onclick card start
-        $('#lamp_aset').on('click', function() {
+        $('#lamp_neraca').on('click', function() {
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_lamp_aset').modal('show');
-            $("#labelcetak_semester").html("Cetak Lampiran Aset");
+            $('#modal_cetak_lamp_neraca').modal('show');
+            $("#labelcetak_semester").html("Cetak Lampiran Neraca");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
         
 
-        function cari_rek6() {
+        function cari_rek_objek() {
             $.ajax({
-                url: "{{ route('laporan_akuntansi.rek6') }}",
+                url: "{{ route('lamp_neraca.rekobjek') }}",
                 type: "POST",
                 dataType: 'json',
                 success: function(data) {
                     // console.log(data);
-                    $('#rek6').empty();
-                    $('#rek6').append(
+                    $('#rekobjek').empty();
+                    $('#rekobjek').append(
                         `<option value="" disabled selected>Pilih Rekening</option>`);
                     $.each(data, function(index, data) {
-                        $('#rek6').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        $('#rekobjek').append(
+                            `<option value="${data.kd_rek3}" data-nama="${data.nm_rek3}">${data.kd_rek3} | ${data.nm_rek3}</option>`
                         );
                     })
                 }
             })
         }
 
-        function cari_skpdbb(kd_skpd, jenis) {
+        function cari_skpd(kd_skpd, jenis) {
             $.ajax({
-                url: "{{ route('laporan_akuntansi.skpd') }}",
+                url: "{{ route('lamp_neraca.skpd') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -169,38 +172,19 @@
         function Cetak(jns_cetak) {
 
             // GET DATA
-            let bulan                    = document.getElementById('bulan').value;
-            let tgl_ttd                  = document.getElementById('tgl_ttd').value;
-            let jns_anggaran             = document.getElementById('jns_anggaran').value;
-            let jenis                    = document.getElementById('jenis').value;
             let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
-            // alert(labelcetak_semester)
-            // PERINGATAN
-                if (!tgl_ttd) {
-                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
-                    return;
-                }
-                if (!jenis) {
-                    alert('jenis Data tidak boleh kosong!');
-                    return;
-                }
-                if (!bulan) {
-                    alert('Bulan tidak boleh kosong!');
-                    return;
-                }
-                if (!jns_anggaran) {
-                    alert('Jenis Anggaran tidak boleh kosong!');
-                    return;
-                }
 
             // SET CETAKAN
-            if (labelcetak_semester == 'Cetak I.4 URUSAN') {
-                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i4_urusan') }}");
+            if (labelcetak_semester == 'Cetak Lampiran Neraca') {
+
+                let kd_skpd                    = document.getElementById('kd_skpd').value;
+                let rek3                  = document.getElementById('rekobjek').value;
+                let cetakan                  = document.getElementById('cetakan').value;
+                let url             = new URL("{{ route('lamp_neraca.cetak_lamp_neraca') }}");
                 let searchParams    = url.searchParams;
-                searchParams.append("bulan", bulan);
-                searchParams.append("tgl_ttd", tgl_ttd);
-                searchParams.append("jenis", jenis);
-                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("rek3", rek3);
+                searchParams.append("cetakan", cetakan);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

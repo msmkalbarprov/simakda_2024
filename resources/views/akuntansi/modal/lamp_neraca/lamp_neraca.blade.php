@@ -1,7 +1,7 @@
 {{-- modal cetak PERDA --}}
 
 
-<div id="modal_cetak_lamp_aset" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+<div id="modal_cetak_lamp_neraca" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,7 +13,7 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">SKPD</label>
-                        <select class="form-control select_lamp_aset @error('rek6') is-invalid @enderror"
+                        <select class="form-control select_lamp_neraca @error('rek6') is-invalid @enderror"
                             style=" width: 100%;" id="kd_skpd" name="kd_skpd">
                             <option value="" disabled selected>Silahkan Pilih</option>
                         </select>
@@ -22,14 +22,23 @@
                         @enderror
                     </div>
                     <div class="col-md-6">
-                        <label for="rek6" class="form-label">Rekening</label>
-                        <select class="form-control select_lamp_aset @error('rek6') is-invalid @enderror"
-                            style=" width: 100%;" id="rek6" name="rek6">
+                        <label for="rekobjek" class="form-label">Rekening</label>
+                        <select class="form-control select_lamp_neraca @error('rekobjek') is-invalid @enderror"
+                            style=" width: 100%;" id="rekobjek" name="rekobjek">
                             <option value="" disabled selected>Silahkan Pilih</option>
                         </select>
-                        @error('rek6')
+                        @error('rekobjek')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="cetakan" class="form-label">Jenis Cetakan</label>
+                        <select name="cetakan" class="form-control select_lamp_neraca" id="cetakan">
+                            <option value="1">Cetak Biasa</option>
+                            <option value="2">Cetak Dengan No Lampiran</option>
+                        </select>
                     </div>
                 </div>
                 

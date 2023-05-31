@@ -80,6 +80,7 @@ use App\Http\Controllers\Skpd\SppGuController;
 use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
 use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
 use App\Http\Controllers\Akuntansi\lamp_neraca\lampneracaController;
+use App\Http\Controllers\Akuntansi\lamp_neraca\cetaklampneracaController;
 use App\Http\Controllers\Akuntansi\LapkeuController;
 use App\Http\Controllers\Akuntansi\LraController;
 use App\Http\Controllers\Skpd\BOS\PenerimaanBosController;
@@ -1684,8 +1685,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     // lampiran neraca
     Route::group(['prefix' => 'lamp_neraca'], function () {
         Route::get('', [lampneracaController::class, 'index'])->name('lamp_neraca.index');
-        Route::post('cari_skpd', [lampneracaController::class, 'cariSkpd'])->name('laporan_akuntansi.skpd');
-        Route::post('cari_rek_objek', [lampneracaController::class, 'cari_rek_objek'])->name('laporan_akuntansi.rek6');
+        Route::post('cari_skpd', [lampneracaController::class, 'cariSkpd'])->name('lamp_neraca.skpd');
+        Route::post('cari_rek_objek', [lampneracaController::class, 'cari_rek_objek'])->name('lamp_neraca.rekobjek');
+
+        //cetak
+        Route::get('cetak_lamp_neraca', [cetaklampneracaController::class, 'cetak_lamp_neraca'])->name('lamp_neraca.cetak_lamp_neraca');
     });
 
     Route::group(['prefix' => 'spb'], function () {
