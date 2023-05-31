@@ -97,6 +97,11 @@
                 dropdownParent: $('#modal_cetak_lamp_neraca .modal-content'),
                 
             });
+            $(".select_umur_piutang").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_umur_piutang .modal-content'),
+                
+            });
             
         });
 
@@ -106,6 +111,12 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_lamp_neraca').modal('show');
             $("#labelcetak_semester").html("Cetak Lampiran Neraca");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#umur_piutang').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_umur_piutang').modal('show');
+            $("#labelcetak_semester").html("Cetak Umur Piutang");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -148,6 +159,14 @@
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
+                    $('#kd_skpd_up').empty();
+                    $('#kd_skpd_up').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_up').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
                     
                 }
             })
@@ -185,6 +204,17 @@
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("rek3", rek3);
                 searchParams.append("cetakan", cetakan);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak Umur Piutang') {
+
+                let kd_skpd                    = document.getElementById('kd_skpd_up').value;
+                let tahun                  = document.getElementById('tahun').value;
+                let url             = new URL("{{ route('lamp_neraca.cetak_umur_piutang') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tahun", tahun);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             
