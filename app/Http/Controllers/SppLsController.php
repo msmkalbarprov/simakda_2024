@@ -2770,8 +2770,12 @@ class SppLsController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
+                ->setOption('margin-left', $request->margin_kiri)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;

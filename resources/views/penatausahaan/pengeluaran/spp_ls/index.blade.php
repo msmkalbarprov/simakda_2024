@@ -160,6 +160,33 @@
                                 name="spasi">
                         </div>
                     </div>
+                    {{-- Margin --}}
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kiri" name="margin_kiri"
+                                value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kanan" name="margin_kanan"
+                                value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_atas" name="margin_atas"
+                                value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_bawah" name="margin_bawah"
+                                value="10">
+                        </div>
+                    </div>
                     {{-- Pengantar, Ringkasan dan Format Permandagri 77 --}}
                     <div class="mb-3 row">
                         <label for="pengantar" class="col-md-2 col-form-label">Pengantar</label>
@@ -424,7 +451,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             // cetak rincian layar
             $('.rincian_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
@@ -469,7 +495,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             // cetak permintaan layar
             $('.permintaan_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
@@ -514,7 +539,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             $('.ringkasan_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
                 let no_spp = document.getElementById('no_spp').value;
@@ -558,7 +582,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             $('.pernyataan_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
                 let no_spp = document.getElementById('no_spp').value;
@@ -602,7 +625,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             $('.sptb_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
                 let no_spp = document.getElementById('no_spp').value;
@@ -646,7 +668,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             $('.spp_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
                 let no_spp = document.getElementById('no_spp').value;
@@ -656,6 +677,10 @@
                 let pa_kpa = document.getElementById('pa_kpa').value;
                 let ppkd = document.getElementById('ppkd').value;
                 let kd_skpd = document.getElementById('kd_skpd').value;
+                let margin_atas = document.getElementById('margin_atas').value;
+                let margin_bawah = document.getElementById('margin_bawah').value;
+                let margin_kanan = document.getElementById('margin_kanan').value;
+                let margin_kiri = document.getElementById('margin_kiri').value;
                 let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
                 let jenis_print = $(this).data("jenis");
                 let tanpa;
@@ -688,9 +713,12 @@
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tanpa", tanpa);
                 searchParams.append("jenis_print", jenis_print);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kanan", margin_kanan);
+                searchParams.append("margin_kiri", margin_kiri);
                 window.open(url.toString(), "_blank");
             });
-
             $('.rincian77_layar').on('click', function() {
                 let spasi = document.getElementById('spasi').value;
                 let no_spp = document.getElementById('no_spp').value;
@@ -734,7 +762,6 @@
                 searchParams.append("jenis_print", jenis_print);
                 window.open(url.toString(), "_blank");
             });
-
             $('#batal_sppls').on('click', function() {
                 let no_spp = document.getElementById('no_spp_batal').value;
                 let keterangan = document.getElementById('keterangan_batal').value;
