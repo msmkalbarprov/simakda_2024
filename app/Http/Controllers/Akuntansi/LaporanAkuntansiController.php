@@ -2010,7 +2010,7 @@ class LaporanAkuntansiController extends Controller
                 UNION ALL
                 
                 --belanja yang belum dibayar--
-                SELECT 12 nomor, '0' jns, 'Belanja yang blm dibayar ' AS uraian, SUM (nilai) nilai
+                SELECT 12 nomor, '0' jns, 'Belanja yang belum dibayar ' AS uraian, SUM (nilai) nilai
                 FROM ( SELECT ISNULL(SUM(kredit - debet), 0) AS nilai FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher = b.no_voucher AND a.kd_unit = b.kd_skpd
                        WHERE a.kd_unit = '$kd_skpd' AND LEFT (a.kd_rek6, 6) in ('210601','210602','210606','210607','210608','210609','210610','210614') AND b.tgl_voucher <='$periode2'
                     ) a
