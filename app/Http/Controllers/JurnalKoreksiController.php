@@ -466,10 +466,11 @@ class JurnalKoreksiController extends Controller
     public function simpanKoreksi(Request $request)
     {
         $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
 
         DB::beginTransaction();
         try {
-            $no_bukti = no_urut_tukd();
+            $no_bukti = no_urut($kd_skpd);
 
             DB::table('trhtransout')->where(['kd_skpd' => $data['kd_skpd'], 'no_bukti' => $no_bukti])->delete();
 
