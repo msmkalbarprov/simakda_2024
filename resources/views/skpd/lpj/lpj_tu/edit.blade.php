@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Input LPJ TU | SIMAKDA')
+@section('title', 'Edit LPJ TU | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -69,7 +69,7 @@
                     <!-- SIMPAN -->
                     <div class="mb-6 row" style="text-align;center">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan" class="btn btn-primary btn-md">Simpan</button>
+                            <button id="simpan" hidden class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('lpj_tu.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
