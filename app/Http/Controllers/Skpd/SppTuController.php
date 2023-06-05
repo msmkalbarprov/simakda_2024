@@ -58,7 +58,8 @@ class SppTuController extends Controller
             //     // $btn = '<a href="' . route("spp_tu.edit", ['no_spp' => Crypt::encrypt($row->no_spp), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             //     $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             // }
-            $btn = '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spp . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
+            $btn = '<a href="' . route("spp_tu.edit", ['no_spp' => Crypt::encrypt($row->no_spp), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_spp . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak LPJ" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -150,6 +151,7 @@ class SppTuController extends Controller
                 $data = DB::select("SELECT '-' kd_sub_kegiatan, 'Tidak Bisa Melakukan SPP TU karena Ada SP2D Yang Melebihi Batas Satu Bulan' nm_sub_kegiatan, '' kd_program, '' nm_program");
             }
         } else {
+
             if ($kendali_tu->status == 1) {
                 $data = DB::select("SELECT kd_sub_kegiatan, nm_sub_kegiatan, kd_program, nm_program FROM (SELECT DISTINCT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.kd_program,b.nm_program FROM trdspd a INNER JOIN trskpd b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan where b.kd_skpd = ? AND a.no_spd=? AND b.status_sub_kegiatan='1') h WHERE h.kd_sub_kegiatan NOT IN (
 
@@ -702,6 +704,36 @@ class SppTuController extends Controller
         $no_spp = Crypt::decrypt($no_spp);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '3', '1']))
+            ->first()->revisi;
+
+        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '6', '1']))
+            ->first()->revisi;
+
+        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '9', '1']))
+            ->first()->revisi;
+
+        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=?  and [status]=?", [$kd_skpd, '12', '1']))
+            ->first()->revisi;
+
+        $daftar_spd = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd
+                    UNION ALL
+                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+                    and bulan_akhir=? and revisi_ke=? and [status]=?
+                    GROUP BY b.no_spd, b.tgl_spd", ['5', $kd_skpd, '3', $revisi1, '1', '5', $kd_skpd, '6', $revisi2, '1', '5', $kd_skpd, '9', $revisi3, '1', '5', $kd_skpd, '12', $revisi4, '1']);
+
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
@@ -712,22 +744,27 @@ class SppTuController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 ->get(),
             'daftar_rekening' => DB::table('ms_rekening_bank_online')
-                ->selectRaw("rekening, nm_rekening,npwp")
+                ->selectRaw("rekening, nm_rekening,npwp,bank,nm_bank")
                 ->where(['kd_skpd' => $kd_skpd, 'keperluan' => '2'])
                 ->orderBy('rekening')
                 ->get(),
-            'tanggal_lalu' => DB::table('trhspp')
-                ->selectRaw("max(tgl_spp) as tgl_spp")
-                ->where(['kd_skpd' => $kd_skpd])
-                ->whereRaw("(sp2d_batal is null or sp2d_batal= '0')")
-                ->first(),
-            'spp' => DB::table('trhspp as a')
-                ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd")
-                ->where(['a.no_spp' => $no_spp, 'a.kd_skpd' => $kd_skpd, 'a.jns_spp' => '2'])
-                ->first()
+            // 'daftar_spd' => DB::select("SELECT no_spd, tgl_spd from trhspd where left(kd_skpd,17)=left(?,17) and status=? and jns_beban =?", [$kd_skpd, '1', '5']),
+            'daftar_spd' => $daftar_spd,
+            'spp' => collect(DB::select("SELECT a.* FROM trhspp a INNER JOIN trdspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd WHERE a.no_spp=? AND a.kd_skpd=? AND a.jns_spp=?", [$no_spp, $kd_skpd, '3']))->first(),
+            'detail_spp' => DB::select("SELECT b.* FROM trhspp a INNER JOIN trdspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd WHERE a.no_spp=? AND a.kd_skpd=? AND a.jns_spp=?", [$no_spp, $kd_skpd, '3'])
         ];
 
-        return view('skpd.spp_gu.edit')->with($data);
+        $kunci = kunci()->kunci_spp_tu;
+        $role = Auth::user()->role;
+
+        $cek = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
+
+
+        if ($cek == 1) {
+            return back();
+        }
+
+        return view('skpd.spp_tu.edit')->with($data);
     }
 
     public function update(Request $request)
