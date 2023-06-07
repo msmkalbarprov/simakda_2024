@@ -111,6 +111,7 @@ use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
+use App\Http\Controllers\KoreksiDataController;
 use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
@@ -1746,6 +1747,13 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('simpan_sp2d', [TukarSp2dController::class, 'simpanSp2d'])->name('tukar_sp2d.simpan_sp2d');
         Route::post('batal_sp2d', [TukarSp2dController::class, 'batalSp2d'])->name('tukar_sp2d.batal_sp2d');
         Route::get('tampil/{no_sp2d?}', [TukarSp2dController::class, 'tampilSp2d'])->name('tukar_sp2d.tampil');
+    });
+
+    // Koreksi SP2D/SPM/SPP/PENAGIHAN
+    Route::group(['prefix' => 'koreksi_data'], function () {
+        Route::get('', [KoreksiDataController::class, 'index'])->name('koreksi_data.index');
+        Route::post('simpan', [KoreksiDataController::class, 'simpan'])->name('koreksi_data.simpan');
+        Route::post('sp2d', [KoreksiDataController::class, 'sp2d'])->name('koreksi_data.sp2d');
     });
 });
 
