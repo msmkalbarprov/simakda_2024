@@ -21,7 +21,7 @@
                                         @foreach ($daftar_bank as $bank)
                                             <option value="{{ $bank->kd_bank }}" data-bic="{{ $bank->bic }}"
                                                 data-nama="{{ $bank->nama_bank }}"
-                                                {{ $bank->kd_bank == $data_penerima->kd_bank ? 'selected' : '' }}>
+                                                {{ $bank->kd_bank == $data_penerima->kd_bank && $bank->bic == $data_penerima->bic ? 'selected' : '' }}>
                                                 {{ $bank->kd_bank }} | {{ $bank->nama_bank }}</option>
                                         @endforeach
                                     </optgroup>
