@@ -140,7 +140,7 @@ class SppTuController extends Controller
                 and b.kd_sub_kegiatan not in ('3.27.07.1.02.02') and a.no_sp2d
                 NOT IN (select no_sp2d FROM trhlpj_tu WHERE kd_skpd=? AND jenis='3' and status=1))a
                 WHERE selisih>30 and no_sp2d not in ('')", [$kd_skpd, $kd_skpd]))->first();
-
+        // dd($cek);
         if ($cek->jumlah > 0) {
             // SP2D KHUSUS
             if ($kd_skpd == '3.27.0.00.0.00.03.0000') {
@@ -234,7 +234,18 @@ class SppTuController extends Controller
                     UNION ALL
                     select kd_sub_kegiatan FROM trhlpj_tu a inner join trlpj_tu b on a.no_lpj=b.no_lpj and a.kd_skpd=b.kd_skpd WHERE status<>'1' AND jenis = '3' AND a.kd_skpd=?
 
-                     )", [$kd_skpd, $no_spd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]);
+                    UNION ALL
+
+                    -- sudah mengajukan spp sudah sp2d belum trx
+                    SELECT b.kd_sub_kegiatan FROM trhspp a
+                    INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
+                    INNER JOIN trhsp2d c ON a.no_spp=c.no_spp AND a.kd_skpd = c.kd_skpd
+                    WHERE a.jns_spp='3' AND a.kd_skpd = ? and b.kd_sub_kegiatan not in ('')
+                    and (a.sp2d_batal is null or a.sp2d_batal<>'1') AND b.kd_sub_kegiatan+'.'+no_sp2d NOT IN (
+                    select kd_sub_kegiatan+'.'+d.no_sp2d from trdtransout d INNER JOIN trhtransout e ON d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd where d.kd_skpd =? and e.jns_spp ='3'
+                    ) GROUP BY b.kd_sub_kegiatan
+
+                     )", [$kd_skpd, $no_spd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]);
             }
         }
 
