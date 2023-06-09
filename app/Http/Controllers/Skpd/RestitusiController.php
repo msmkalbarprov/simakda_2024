@@ -47,10 +47,12 @@ class RestitusiController extends Controller
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::select("SELECT distinct a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan FROM trdrka_pend a left join ms_rek6 b on a.kd_rek6=b.kd_rek6 left join ms_rek5 c on left(a.kd_rek6,8)=c.kd_rek5 where a.kd_skpd = ? and left(a.kd_rek6,1)='4' and a.jns_ang=? order by kd_rek6", [$kd_skpd, $status_ang_pend->jns_ang]),
+            'daftar_akun' => DB::select("SELECT distinct a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan FROM trdrka a left join ms_rek6 b on a.kd_rek6=b.kd_rek6 left join ms_rek5 c on left(a.kd_rek6,8)=c.kd_rek5 where a.kd_skpd = ? and left(a.kd_rek6,1)='4' and a.jns_ang=? order by kd_rek6", [$kd_skpd, $status_ang_pend->jns_ang]),
             'daftar_pengirim' => DB::select("SELECT * from ms_pengirim WHERE LEFT(kd_skpd,17)=LEFT(?,17)
                 order by kd_pengirim", [$kd_skpd])
         ];
+
+
 
         return view('skpd.restitusi.create')->with($data);
     }
@@ -166,7 +168,7 @@ class RestitusiController extends Controller
 
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_akun' => DB::select("SELECT distinct a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan FROM trdrka_pend a left join ms_rek6 b on a.kd_rek6=b.kd_rek6 left join ms_rek5 c on left(a.kd_rek6,8)=c.kd_rek5 where a.kd_skpd = ? and left(a.kd_rek6,1)='4' and a.jns_ang=? order by kd_rek6", [$kd_skpd, $status_ang_pend->jns_ang]),
+            'daftar_akun' => DB::select("SELECT distinct a.kd_rek6 as kd_rek6,b.nm_rek6 AS nm_rek,b.map_lo as kd_rek, c.nm_rek5, a.kd_sub_kegiatan FROM trdrka a left join ms_rek6 b on a.kd_rek6=b.kd_rek6 left join ms_rek5 c on left(a.kd_rek6,8)=c.kd_rek5 where a.kd_skpd = ? and left(a.kd_rek6,1)='4' and a.jns_ang=? order by kd_rek6", [$kd_skpd, $status_ang_pend->jns_ang]),
             'daftar_pengirim' => DB::select("SELECT * from ms_pengirim WHERE LEFT(kd_skpd,17)=LEFT(?,17)
                 order by cast(kd_pengirim as int)", [$kd_skpd]),
             'data' => collect(DB::select("SELECT a.no_sts,a.tgl_sts,a.kd_skpd,a.keterangan as ket,
