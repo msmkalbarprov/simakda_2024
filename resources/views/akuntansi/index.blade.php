@@ -18,35 +18,35 @@
         </div>
     </div>
     <!-- end page title -->
-    @if(Auth::user()->role=='1025')
-
+    @if (Auth::user()->role == '1025')
     @else
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lkonsol">
-                <div class="card-body">
-                    {{ 'Laporan Konsolidasi' }}
-                    <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.konsolidasi.konsolidasi') }}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lkonsol">
+                    <div class="card-body">
+                        {{ 'Laporan Konsolidasi' }}
+                        <a class="card-block stretched-link"
+                            href="{{ route('laporan_akuntansi.konsolidasi.konsolidasi') }}">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lkeu">
+                    <div class="card-body">
+                        {{ 'Laporan Keuangan' }}
+                        <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.lapkeu') }}">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lkeu">
-                <div class="card-body">
-                    {{ 'Laporan Keuangan' }}
-                    <a class="card-block stretched-link" href="{{ route('laporan_akuntansi.lapkeu') }}">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
     @endif
     <div class="row">
         <div class="col-md-6">
@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -113,7 +113,7 @@
 
                 </div>
             </div>
-        </div>    
+        </div>
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="jumum">
                 <div class="card-body">
@@ -125,15 +125,13 @@
 
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
-    @if(Auth::user()->role=='1006' || Auth::user()->role=='1022')
-
     <div class="row">
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="siskas">
+            <div class="card card-info collapsed-card card-outline" id="mandatory">
                 <div class="card-body">
-                    {{ 'Rekap Sisa Kas' }}
+                    {{ 'Mandatory' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -141,19 +139,35 @@
 
                 </div>
             </div>
-        </div>    
-        
+        </div>
     </div>
+    @if (Auth::user()->role == '1006' || Auth::user()->role == '1022')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="siskas">
+                    <div class="card-body">
+                        {{ 'Rekap Sisa Kas' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
     @else
     @endif
 
-@include('akuntansi.modal.bukubesar')
-@include('akuntansi.modal.neraca_saldo')
-@include('akuntansi.modal.ped')
-@include('akuntansi.modal.inflasi')
-@include('akuntansi.modal.rekonba')
-@include('akuntansi.modal.jumum')
-@include('akuntansi.modal.rekap_sisa_kas')
+    @include('akuntansi.modal.bukubesar')
+    @include('akuntansi.modal.neraca_saldo')
+    @include('akuntansi.modal.ped')
+    @include('akuntansi.modal.inflasi')
+    @include('akuntansi.modal.mandatory')
+    @include('akuntansi.modal.rekonba')
+    @include('akuntansi.modal.jumum')
+    @include('akuntansi.modal.rekap_sisa_kas')
 @endsection
 @section('js')
     <script>
@@ -173,40 +187,43 @@
             $(".select_lbb").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_lbb .modal-content'),
-                
+
             });
 
             $(".select_ns").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ns .modal-content'),
-                
+
             });
 
             $(".select_ped").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ped .modal-content'),
-                
+
             });
             $(".select_inflasi").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_inflasi .modal-content'),
-                
+
             });
             $(".select_rekonba").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_rekonba .modal-content'),
-                
+
             });
 
             $(".select_ju").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_ju .modal-content'),
-                
+
             });
             $(".select_rekap_sisa_kas").select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_rekap_sisa_kas .modal-content'),
-                
+            });
+            $(".select_mandatory").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_mandatory .modal-content'),
             });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
@@ -215,7 +232,7 @@
             document.getElementById('baris_periode2').hidden = true; // Hide
             document.getElementById('baris_bulan').hidden = true; // Hide
 
-            
+
 
         });
 
@@ -226,18 +243,18 @@
         } else {
             jenis = 'unit';
         }
-        let role = "{{ Auth::user()->role}}";
-        if (role=='1025') {
+        let role = "{{ Auth::user()->role }}";
+        if (role == '1025') {
             $('#lbb').on('click', function() {
-            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            $('#modal_cetak_lbb').modal('show');
-            $("#labelcetak_semester").html("Cetak Buku Besar");
-            // document.getElementById('row-hidden').hidden = true; // Hide
-            document.getElementById('lkonsol').hidden = true; // Hide
-        });
-        }else{
-         // onclick card start
-        
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_lbb').modal('show');
+                $("#labelcetak_semester").html("Cetak Buku Besar");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+                document.getElementById('lkonsol').hidden = true; // Hide
+            });
+        } else {
+            // onclick card start
+
             $('#lbb').on('click', function() {
                 // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
                 $('#modal_cetak_lbb').modal('show');
@@ -282,6 +299,12 @@
                 $("#labelcetak_semester").html("Cetak Rekap Sisa Kas");
                 // document.getElementById('row-hidden').hidden = true; // Hide
             });
+            $('#mandatory').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_mandatory').modal('show');
+                $("#labelcetak_semester").html("Cetak Mandatory");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
         }
         // onclick card end
 
@@ -290,7 +313,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             if ($(this).val() == 'keseluruhan') {
                 document.getElementById('baris_skpd').hidden = true; // Hide
-            }else if ($(this).val() == 'skpd') {
+            } else if ($(this).val() == 'skpd') {
                 cari_skpdbb('skpd')
                 document.getElementById('baris_skpd').hidden = false; // show
             } else {
@@ -304,7 +327,7 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             if ($(this).val() == 'keseluruhan') {
                 document.getElementById('baris_skpd_rekonba').hidden = true; // Hide
-            }else if ($(this).val() == 'skpd') {
+            } else if ($(this).val() == 'skpd') {
                 cari_skpdbb('skpd')
                 document.getElementById('baris_skpd_rekonba').hidden = false; // show
             } else {
@@ -313,13 +336,13 @@
             }
         });
 
-         // cari periode
-         $('input:radio[name="pilihanperiode"]').change(function() {
+        // cari periode
+        $('input:radio[name="pilihanperiode"]').change(function() {
             if ($(this).val() == 'tahun') {
                 document.getElementById('baris_periode1').hidden = true; // Hide
                 document.getElementById('baris_periode2').hidden = true; // Hide
                 document.getElementById('baris_bulan').hidden = true; // Hide
-            }else if ($(this).val() == 'periode') {
+            } else if ($(this).val() == 'periode') {
                 document.getElementById('baris_periode1').hidden = false; // show
                 document.getElementById('baris_periode2').hidden = false; // Hide
                 document.getElementById('baris_bulan').hidden = true; // Hide
@@ -329,6 +352,7 @@
                 document.getElementById('baris_bulan').hidden = false; // Hide
             }
         });
+
         function cari_rek6() {
             $.ajax({
                 url: "{{ route('laporan_akuntansi.rek6') }}",
@@ -390,7 +414,7 @@
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
-                    
+
                 }
             })
         }
@@ -413,6 +437,7 @@
                 }
             })
         }
+
         function cari_skpdbb(kd_skpd, jenis) {
             $.ajax({
                 url: "{{ route('laporan_akuntansi.skpd2') }}",
@@ -471,19 +496,19 @@
         function Cetak(jns_cetak) {
 
             // GET DATA
-            
-            let labelcetak_semester      = document.getElementById('labelcetak_semester').textContent;
 
-            
+            let labelcetak_semester = document.getElementById('labelcetak_semester').textContent;
+
+
             // alert(labelcetak_semester)
-            
+
 
             // SET CETAKAN
             if (labelcetak_semester == 'Cetak Buku Besar') {
-                let tanggal1                    = document.getElementById('tanggal1').value;
-                let tanggal2                    = document.getElementById('tanggal2').value;
-                let kd_skpd             = document.getElementById('kd_skpd').value;
-                let rek6                    = document.getElementById('rek6').value;
+                let tanggal1 = document.getElementById('tanggal1').value;
+                let tanggal2 = document.getElementById('tanggal2').value;
+                let kd_skpd = document.getElementById('kd_skpd').value;
+                let rek6 = document.getElementById('rek6').value;
 
                 // PERINGATAN
                 if (!tanggal1) {
@@ -503,29 +528,29 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.cbb') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.cbb') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("rek6", rek6);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak Neraca Saldo') {
-                let tanggal1_ns                    = document.getElementById('tanggal1_ns').value;
-                let tanggal2_ns                    = document.getElementById('tanggal2_ns').value;
-                let kd_skpd_ns             = document.getElementById('kd_skpd_ns').value;
-                let bulan_ns             = document.getElementById('bulan_ns').value;
-                let rek1                    = document.getElementById('rek1').value;
+
+            } else if (labelcetak_semester == 'Cetak Neraca Saldo') {
+                let tanggal1_ns = document.getElementById('tanggal1_ns').value;
+                let tanggal2_ns = document.getElementById('tanggal2_ns').value;
+                let kd_skpd_ns = document.getElementById('kd_skpd_ns').value;
+                let bulan_ns = document.getElementById('bulan_ns').value;
+                let rek1 = document.getElementById('rek1').value;
 
                 if (!rek1) {
                     alert('Rekening tidak boleh kosong!');
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.cns') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.cns') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1_ns", tanggal1_ns);
                 searchParams.append("tanggal2_ns", tanggal2_ns);
                 searchParams.append("bulan_ns", bulan_ns);
@@ -533,12 +558,12 @@
                 searchParams.append("rek1", rek1);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak PED') {
-                let tanggal1_ped                    = document.getElementById('tanggal1_ped').value;
-                let tanggal2_ped                    = document.getElementById('tanggal2_ped').value;
-                let ttd_bud             = document.getElementById('ttd_bud').value;
-                let jns_ang             = document.getElementById('jns_anggaran').value;
+
+            } else if (labelcetak_semester == 'Cetak PED') {
+                let tanggal1_ped = document.getElementById('tanggal1_ped').value;
+                let tanggal2_ped = document.getElementById('tanggal2_ped').value;
+                let ttd_bud = document.getElementById('ttd_bud').value;
+                let jns_ang = document.getElementById('jns_anggaran').value;
 
                 if (!jns_ang) {
                     alert('Jenis Anggaran tidak boleh kosong!');
@@ -557,20 +582,20 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.cped') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.cped') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1_ped", tanggal1_ped);
                 searchParams.append("tanggal2_ped", tanggal2_ped);
                 searchParams.append("jns_ang", jns_ang);
                 searchParams.append("ttd_bud", ttd_bud);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak INFLASI') {
-                let tanggal1_inflasi                    = document.getElementById('tanggal1_inflasi').value;
-                let tanggal2_inflasi                    = document.getElementById('tanggal2_inflasi').value;
-                let ttd_bud             = document.getElementById('ttd_bud_inflasi').value;
-                let jns_ang             = document.getElementById('jns_anggaran_inflasi').value;
+
+            } else if (labelcetak_semester == 'Cetak INFLASI') {
+                let tanggal1_inflasi = document.getElementById('tanggal1_inflasi').value;
+                let tanggal2_inflasi = document.getElementById('tanggal2_inflasi').value;
+                let ttd_bud = document.getElementById('ttd_bud_inflasi').value;
+                let jns_ang = document.getElementById('jns_anggaran_inflasi').value;
 
                 if (!jns_ang) {
                     alert('Jenis Anggaran tidak boleh kosong!');
@@ -589,23 +614,23 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.cinflasi') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.cinflasi') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1_inflasi", tanggal1_inflasi);
                 searchParams.append("tanggal2_inflasi", tanggal2_inflasi);
                 searchParams.append("jns_ang", jns_ang);
                 searchParams.append("ttd_bud", ttd_bud);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak RekonBA') {
-                let kd_skpd                  = document.getElementById('kd_skpd_rekonba').value;
-                let tanggal1                    = document.getElementById('tanggal1_rekonba').value;
-                let tanggal2                    = document.getElementById('tanggal2_rekonba').value;
-                let ttd             = document.getElementById('ttd_kasubbid').value;
-                let jns_ang             = document.getElementById('jns_anggaran_rekonba').value;
-                let skpdunit                 = $('input:radio[name="pilihan_rekonba"]:checked').val();
-                let jenis_cetakan             = document.getElementById('jenis_rekonba').value;
+
+            } else if (labelcetak_semester == 'Cetak RekonBA') {
+                let kd_skpd = document.getElementById('kd_skpd_rekonba').value;
+                let tanggal1 = document.getElementById('tanggal1_rekonba').value;
+                let tanggal2 = document.getElementById('tanggal2_rekonba').value;
+                let ttd = document.getElementById('ttd_kasubbid').value;
+                let jns_ang = document.getElementById('jns_anggaran_rekonba').value;
+                let skpdunit = $('input:radio[name="pilihan_rekonba"]:checked').val();
+                let jenis_cetakan = document.getElementById('jenis_rekonba').value;
 
 
                 if (!kd_skpd) {
@@ -633,22 +658,22 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.crekonba') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.crekonba') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("jns_ang", jns_ang);
                 searchParams.append("ttd", ttd);
-                searchParams.append("kd_skpd",kd_skpd) ;
+                searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("skpdunit", skpdunit);
                 searchParams.append("jenis_cetakan", jenis_cetakan);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak Jurnal Umum') {
-                let tanggal1                    = document.getElementById('tanggal1_ju').value;
-                let tanggal2                    = document.getElementById('tanggal2_ju').value;
-                let kd_skpd             = document.getElementById('kd_skpd_ju').value;
+
+            } else if (labelcetak_semester == 'Cetak Jurnal Umum') {
+                let tanggal1 = document.getElementById('tanggal1_ju').value;
+                let tanggal2 = document.getElementById('tanggal2_ju').value;
+                let kd_skpd = document.getElementById('kd_skpd_ju').value;
                 // PERINGATAN
                 if (!tanggal1) {
                     alert('Tanggal Awal tidak boleh kosong!');
@@ -663,18 +688,18 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.cju') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.cju') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else if (labelcetak_semester == 'Cetak Rekap Sisa Kas') {
-                let bulan                    = document.getElementById('bulan_kas').value;
-                let anggaran                    = document.getElementById('jns_anggaran_kas').value;
-                let jenis             = document.getElementById('jenis_kas').value;
+
+            } else if (labelcetak_semester == 'Cetak Rekap Sisa Kas') {
+                let bulan = document.getElementById('bulan_kas').value;
+                let anggaran = document.getElementById('jns_anggaran_kas').value;
+                let jenis = document.getElementById('jenis_kas').value;
                 // PERINGATAN
                 if (!bulan) {
                     alert('Bulan tidak boleh kosong!');
@@ -689,15 +714,26 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.crekap_sisa_kas') }}");
-                let searchParams    = url.searchParams;
+                let url = new URL("{{ route('laporan_akuntansi.crekap_sisa_kas') }}");
+                let searchParams = url.searchParams;
                 searchParams.append("bulan", bulan);
                 searchParams.append("anggaran", anggaran);
                 searchParams.append("jenis", jenis);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
-            
-            }else{
+
+            } else if (labelcetak_semester == 'Cetak Mandatory') {
+                let bidang = document.getElementById('bidang_mandatory').value;
+                let format = document.getElementById('format_mandatory').value;
+                let anggaran = document.getElementById('anggaran_mandatory').value;
+
+                let url = new URL("{{ route('laporan_akuntansi.mandatory') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("bidang", bidang);
+                searchParams.append("format", format);
+                searchParams.append("anggaran", anggaran);
+                window.open(url.toString(), "_blank");
+            } else {
                 alert('-' + jns_cetak + '- Tidak ada cetakan');
             }
         }
