@@ -1163,6 +1163,7 @@ class SPDBelanjaController extends Controller
 
         $view = view('penatausahaan.spd.spd_belanja.cetak.cetak-otori', array(
             'jenispr' => $jenispr,
+            'jns_ang' => $jenis->jns_ang,
             'nospd' => $nospd,
             'total_ingat' => $total_ingat,
             'konfig' => $konfig,
