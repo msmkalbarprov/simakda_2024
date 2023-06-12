@@ -309,9 +309,18 @@ class ValidasiCmsController extends Controller
         try {
             $no_bukti1 = strval($no_bukti) + 1;
             $spjbulan = cek_status_spj($kd_skpd);
-            $cek_spj = DB::table('trlpj')->select(DB::raw("COUNT(*) as tot_lpj"))->selectRaw("(SELECT DISTINCT CASE WHEN MONTH(a.tgl_bukti)<=?  THEN 1 ELSE 0 END FROM trhtransout a WHERE  a.panjar = '0' AND a.kd_skpd=? AND a.no_bukti=?) as tot_spj", [$spjbulan, $kd_skpd, $no_bukti])->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->first();
+            $cek_spj = DB::table('trlpj')
+                ->select(DB::raw("COUNT(*) as tot_lpj"))
+                ->selectRaw("(SELECT DISTINCT CASE WHEN MONTH(a.tgl_bukti)<=?  THEN 1 ELSE 0 END FROM trhtransout a WHERE  a.panjar = '0' AND a.kd_skpd=? AND a.no_bukti=?) as tot_spj", [$spjbulan, $kd_skpd, $no_bukti])
+                ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->first();
 
-            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0) {
+            $cek_spj_tu = DB::table('trlpj_tu')
+                ->select(DB::raw("COUNT(*) as tot_lpj"))
+                ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->first();
+
+            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0 || $$cek_spj_tu->tot_lpj != 0) {
                 return response()->json([
                     'message' => '3'
                 ]);
