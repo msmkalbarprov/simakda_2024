@@ -320,7 +320,7 @@ class ValidasiCmsController extends Controller
                 ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
                 ->first();
 
-            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0 || $$cek_spj_tu->tot_lpj != 0) {
+            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0 || $cek_spj_tu->tot_lpj != 0) {
                 return response()->json([
                     'message' => '3'
                 ]);
