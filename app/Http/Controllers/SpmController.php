@@ -37,7 +37,7 @@ class SpmController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('trhspm as a')->join('trhspp as b', 'a.no_spp', '=', 'b.no_spp')->where(['a.kd_skpd' => $kd_skpd])->select('a.*', DB::raw("ISNULL(b.sp2d_batal,'') as sp2d_batal"), DB::raw("ISNULL(b.ket_batal,'') as ket_batal"))->orderBy('a.no_spm', 'asc')->orderBy('a.kd_skpd', 'asc')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->jns_spp == '3') {
+            if ($row->jns_spp == '1' || $row->jns_spp == '2' || $row->jns_spp == '3') {
                 $btn = "";
             } else {
                 $btn = '<a href="' . route("spm.tambah_potongan", Crypt::encryptString($row->no_spm)) . '" class="btn btn-secondary btn-sm" id="tambah_potongan" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Input Potongan & Pajak"><i class="uil-percentage"></i></a>';
