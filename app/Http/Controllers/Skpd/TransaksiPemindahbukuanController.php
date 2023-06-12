@@ -19,10 +19,14 @@ class TransaksiPemindahbukuanController extends Controller
     public function loadData()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('trhtransout as a')->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("(SELECT COUNT(*) FROM trhtrmpot WHERE no_kas=a.no_bukti AND kd_skpd=a.kd_skpd) as kete"), DB::raw("(SELECT COUNT(*) FROM trlpj z JOIN trhlpj v ON v.no_lpj=z.no_lpj WHERE v.jenis=a.jns_spp AND z.no_bukti=a.no_bukti AND z.kd_skpd=a.kd_skpd) as ketlpj"), DB::raw("'0' as ketspj"))->selectRaw("(SELECT rekening FROM ms_skpd WHERE kd_skpd=?) as rekening_awal", [$kd_skpd])->where(['a.panjar' => '0', 'a.kd_skpd' => $kd_skpd, 'a.pay' => 'BANK'])->orderBy(DB::raw("CAST(a.no_bukti as numeric)"))->orderBy('a.kd_skpd')->get();
+        $data = DB::table('trhtransout as a')->select('a.*', DB::raw("'' as nokas_pot"), DB::raw("'' as tgl_pot"), DB::raw("(SELECT COUNT(*) FROM trhtrmpot WHERE no_kas=a.no_bukti AND kd_skpd=a.kd_skpd) as kete"), DB::raw("(SELECT COUNT(*) FROM trlpj z JOIN trhlpj v ON v.no_lpj=z.no_lpj WHERE v.jenis=a.jns_spp AND z.no_bukti=a.no_bukti AND z.kd_skpd=a.kd_skpd) as ketlpj"), DB::raw("(SELECT COUNT(*) FROM trlpj_tu z JOIN trhlpj_tu v ON v.no_lpj=z.no_lpj WHERE v.jenis=a.jns_spp AND z.no_bukti=a.no_bukti AND z.kd_skpd=a.kd_skpd) as ketlpj_tu"), DB::raw("'0' as ketspj"))->selectRaw("(SELECT rekening FROM ms_skpd WHERE kd_skpd=?) as rekening_awal", [$kd_skpd])->where(['a.panjar' => '0', 'a.kd_skpd' => $kd_skpd, 'a.pay' => 'BANK'])->orderBy(DB::raw("CAST(a.no_bukti as numeric)"))->orderBy('a.kd_skpd')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("skpd.transaksi_pemindahbukuan.edit", $row->no_bukti) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            if ($row->ketlpj == 1 || $row->kete == 1 || $row->ketlpj_tu == 1) {
+                $btn .= "";
+            } else {
+                $btn .= '<a href="javascript:void(0);" onclick="hapusTransaksi(' . $row->no_bukti . ');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
         return view('skpd.transaksi_pemindahbukuan.index');
