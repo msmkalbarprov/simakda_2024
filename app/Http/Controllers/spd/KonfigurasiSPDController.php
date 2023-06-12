@@ -24,7 +24,8 @@ class KonfigurasiSPDController extends Controller
 
     public function load()
     {
-        $data = DB::table('trkonfig_spd')
+        $data = DB::table('trkonfig_spd as a')
+            ->selectRaw("a.*, (SELECT nama FROM tb_status_anggaran WHERE a.jns_ang=kode) as nama_ang")
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {

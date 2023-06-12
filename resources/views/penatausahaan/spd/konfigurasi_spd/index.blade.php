@@ -56,17 +56,8 @@
                         name: 'no_konfig_spd',
                     },
                     {
-                        data: null,
-                        name: 'jns_ang',
-                        render: function(data, type, row, meta) {
-                            if (data.jns_ang == 'M') {
-                                return 'Murni'
-                            } else if (data.jns_ang == 'P1') {
-                                return 'Pergeseran 1'
-                            } else if (data.jns_ang == 'P2') {
-                                return 'Pergeseran 2'
-                            }
-                        }
+                        data: 'nama_ang',
+                        name: 'nama_ang',
                     },
                     {
                         data: 'aksi',
