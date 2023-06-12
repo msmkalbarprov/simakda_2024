@@ -84,19 +84,19 @@ if (!function_exists('jsBbn')) {
     }
 }
 
-function count_ingat()
+function count_ingat($jns_ang)
 {
-    $ingat1 = DB::table('trkonfig_spd')->whereNotNull('ingat1')->count();
-    $ingat2 = DB::table('trkonfig_spd')->whereNotNull('ingat2')->count();
-    $ingat3 = DB::table('trkonfig_spd')->whereNotNull('ingat3')->count();
-    $ingat4 = DB::table('trkonfig_spd')->whereNotNull('ingat4')->count();
-    $ingat5 = DB::table('trkonfig_spd')->whereNotNull('ingat5')->count();
-    $ingat6 = DB::table('trkonfig_spd')->whereNotNull('ingat6')->count();
-    $ingat7 = DB::table('trkonfig_spd')->whereNotNull('ingat7')->count();
-    $ingat8 = DB::table('trkonfig_spd')->whereNotNull('ingat8')->count();
-    $ingat9 = DB::table('trkonfig_spd')->whereNotNull('ingat9')->count();
-    $ingat10 = DB::table('trkonfig_spd')->whereNotNull('ingat10')->count();
-    $ingat11 = DB::table('trkonfig_spd')->whereNotNull('ingat11')->count();
+    $ingat1 = DB::table('trkonfig_spd')->whereNotNull('ingat1')->where('jns_ang', $jns_ang)->count();
+    $ingat2 = DB::table('trkonfig_spd')->whereNotNull('ingat2')->where('jns_ang', $jns_ang)->count();
+    $ingat3 = DB::table('trkonfig_spd')->whereNotNull('ingat3')->where('jns_ang', $jns_ang)->count();
+    $ingat4 = DB::table('trkonfig_spd')->whereNotNull('ingat4')->where('jns_ang', $jns_ang)->count();
+    $ingat5 = DB::table('trkonfig_spd')->whereNotNull('ingat5')->where('jns_ang', $jns_ang)->count();
+    $ingat6 = DB::table('trkonfig_spd')->whereNotNull('ingat6')->where('jns_ang', $jns_ang)->count();
+    $ingat7 = DB::table('trkonfig_spd')->whereNotNull('ingat7')->where('jns_ang', $jns_ang)->count();
+    $ingat8 = DB::table('trkonfig_spd')->whereNotNull('ingat8')->where('jns_ang', $jns_ang)->count();
+    $ingat9 = DB::table('trkonfig_spd')->whereNotNull('ingat9')->where('jns_ang', $jns_ang)->count();
+    $ingat10 = DB::table('trkonfig_spd')->whereNotNull('ingat10')->where('jns_ang', $jns_ang)->count();
+    $ingat11 = DB::table('trkonfig_spd')->whereNotNull('ingat11')->where('jns_ang', $jns_ang)->count();
 
     return $ingat1 + $ingat2 + $ingat3 + $ingat4 + $ingat5 + $ingat6 +
         $ingat7 + $ingat8 + $ingat9 + $ingat10 + $ingat11;

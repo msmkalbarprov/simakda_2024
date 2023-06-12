@@ -927,15 +927,18 @@ class SPDBelanjaController extends Controller
         $jenispr = $request->jenis;
         $jns_ang = $request->jns_ang;
 
-        $total_ingat = count_ingat();
-
         $tambahanbln = $tambahan ? "Tambahan" : "";
-        $konfig = DB::table('trkonfig_spd')->first();
 
         $jenis = DB::table('trhspd as a')
             ->join('trdspd as b', 'a.no_spd', '=', 'b.no_spd')
             ->select('a.*', 'b.kd_rek6')
             ->where(['a.no_spd' => $nospd])->first();
+
+        $total_ingat = count_ingat($jenis->jns_ang);
+
+        $konfig = DB::table('trkonfig_spd')
+            ->where('jns_ang', $jenis->jns_ang)
+            ->first();
 
         $no_dpa = DB::table('trhrka')
             ->where(['kd_skpd' => $jenis->kd_skpd, 'jns_ang' => $jenis->jns_ang])

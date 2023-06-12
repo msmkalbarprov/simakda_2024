@@ -407,6 +407,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             //konfigurasi spd
             Route::group(['prefix' => 'konfigurasi_spd'], function () {
                 Route::get('', [KonfigurasiSPDController::class, 'index'])->name('konfigurasi_spd.index');
+                Route::post('load', [KonfigurasiSPDController::class, 'load'])->name('konfigurasi_spd.load');
+                Route::get('edit/{jns_ang?}', [KonfigurasiSPDController::class, 'edit'])->name('konfigurasi_spd.edit');
                 Route::patch('update', [KonfigurasiSPDController::class, 'update'])->name('spd.konfigurasi_spd.update');
             });
             //pembatalan spd

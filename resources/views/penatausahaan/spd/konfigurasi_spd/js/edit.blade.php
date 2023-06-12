@@ -10,7 +10,7 @@
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
         });
-        
+
         $('#simpan_konfigurasi').on('click', function() {
             let no_konfig = document.getElementById('nomor').value;
             let tgl_konfig = document.getElementById('tgl_con').value;
@@ -28,10 +28,26 @@
             let ingat_akhir = document.getElementById('ingat_akhir').value;
             let memutuskan = document.getElementById('memutuskan').value;
             let jenis = document.getElementById('jenis_spd').value;
-            
+            let jns_ang = "{{ $data_konfig->jns_ang }}";
+
             let data = {
-                no_konfig, tgl_konfig, ingat1, ingat2, ingat3, ingat4, ingat5, ingat6,
-                ingat7, ingat8, ingat9, ingat10, ingat11, ingat_akhir, memutuskan, jenis
+                no_konfig,
+                tgl_konfig,
+                ingat1,
+                ingat2,
+                ingat3,
+                ingat4,
+                ingat5,
+                ingat6,
+                ingat7,
+                ingat8,
+                ingat9,
+                ingat10,
+                ingat11,
+                ingat_akhir,
+                memutuskan,
+                jenis,
+                jns_ang
             };
 
             $.ajax({

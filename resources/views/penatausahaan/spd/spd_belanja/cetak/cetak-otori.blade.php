@@ -44,11 +44,7 @@
                 <td style="vertical-align: top;text-align:justify">
                     <ol style="margin: 0px;">
                         @for ($tes = 1; $tes <= $total_ingat; $tes++)
-                            @if ($tes == 2)
-                                <li>{{ khusus_spd(${'konfig'}->{'ingat' . $tes}, $jns_ang) }}</li>
-                            @else
-                                <li>{{ ${'konfig'}->{'ingat' . $tes} }}</li>
-                            @endif
+                            <li>{{ ${'konfig'}->{'ingat' . $tes} }}</li>
                         @endfor
                         <li>{{ $konfig->ingat_akhir }} {{ $no_dpa->no_dpa }} Tahun Anggaran {{ tahun_anggaran() }}</li>
                     </ol>
