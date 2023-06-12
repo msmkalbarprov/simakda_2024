@@ -109,10 +109,10 @@ function khusus_spd($params, $jns_ang)
             $data = "Peraturan Kepala Daerah Nomor 96 Tahun 2022 tentang Penjabaran APBD Provinsi Kalimantan Barat Tahun Anggaran 2023";
             break;
         case 'P1':
-            $data = "Pergub no 1 tahun 2023 ttg perubahan atas pergub no. 96 tahun 2022 ttg penjabaran anggaran dan pendapatan dan belanja daerah tahun anggaran 2023 tanggal 9 januari 2023. Berita daerah nomor 1";
+            $data = "Peraturan Gubernur no 1 tahun 2023 ttg perubahan atas pergub no. 96 tahun 2022 ttg penjabaran anggaran dan pendapatan dan belanja daerah tahun anggaran 2023 tanggal 9 januari 2023. Berita daerah nomor 1";
             break;
         case 'P2':
-            $data = "Pergub Nomor 8 Tahun 2023 tentang Perubahan Kedua Atas Peraturan Gubernur Nomor 96 Tahun 2022 tentang Penjabaran Anggaran Pendapatan dan Belanja Daerah Tahun Anggaran 2022 tanggal 13 maret 2023..berita daerah nomor 11";
+            $data = "Peraturan Gubernur Nomor 8 Tahun 2023 tentang Perubahan Kedua Atas Peraturan Gubernur Nomor 96 Tahun 2022 tentang Penjabaran Anggaran Pendapatan dan Belanja Daerah Tahun Anggaran 2022 tanggal 13 maret 2023..berita daerah nomor 11";
             break;
         default:
             break;
