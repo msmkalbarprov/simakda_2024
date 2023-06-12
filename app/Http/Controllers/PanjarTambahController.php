@@ -454,7 +454,7 @@ class PanjarTambahController extends Controller
         $data13 = DB::table('trhtrmpot as d')->join('trdtrmpot as e', function ($join) {
             $join->on('d.no_bukti', '=', 'e.no_bukti');
             $join->on('d.kd_skpd', '=', 'e.kd_skpd');
-        })->where(['d.no_sp2d' => '2977/TU/2022', 'e.kd_skpd' => $kd_skpd, 'd.pay' => 'BANK'])->groupBy('d.tgl_bukti', 'd.no_bukti', 'd.ket', 'd.kd_skpd')->select('d.tgl_bukti as tgl', 'd.no_bukti as bku', 'd.ket as ket', DB::raw("SUM(e.nilai) as jumlah"), DB::raw("'1' as jns"), 'd.kd_skpd as kode')->unionAll($data12);
+        })->where(['d.no_sp2d' => '2704/TU/2023', 'e.kd_skpd' => $kd_skpd, 'd.pay' => 'BANK'])->groupBy('d.tgl_bukti', 'd.no_bukti', 'd.ket', 'd.kd_skpd')->select('d.tgl_bukti as tgl', 'd.no_bukti as bku', 'd.ket as ket', DB::raw("SUM(e.nilai) as jumlah"), DB::raw("'1' as jns"), 'd.kd_skpd as kode')->unionAll($data12);
 
         $data14 = DB::table('trhkasin_pkd as a')->join('trdkasin_pkd as b', function ($join) {
             $join->on('a.no_sts', '=', 'b.no_sts');
