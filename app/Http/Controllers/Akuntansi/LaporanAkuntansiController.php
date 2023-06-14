@@ -1774,7 +1774,7 @@ class LaporanAkuntansiController extends Controller
             //     from trhkasin_blud a inner join trdkasin_blud b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
             //     where a.kd_skpd='$kd_skpd' )x"))->first();
             $sqlbludin = collect(DB::select("SELECT * from (
-                 SELECT SUM(CASE WHEN tgl_kas<'$periode2' THEN b.nilai ELSE 0 END) as nilai_bludin
+                 SELECT SUM(CASE WHEN tgl_kas<='$periode2' THEN b.nilai ELSE 0 END) as nilai_bludin
                  from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
                 where a.kd_skpd= '$kd_skpd' and left(b.kd_rek6,1)='5' and b.sumber='BLUD' )x"))->first();
             $bludin = is_null($sqlbludin->nilai_bludin) ? 'null' : $sqlbludin->nilai_bludin;
