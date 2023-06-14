@@ -93,6 +93,9 @@
     <i class="fa fa-info-circle"> {{$pengumuman1->judul}}</i>
     
     <p>{!! html_entity_decode($pengumuman1->isi, ENT_QUOTES, 'UTF-8') !!}</p>
+    @isset($pengumuman1->file)
+        <p><a href="{{asset('template/assets/download/'.$pengumuman1->file)}}">Download</a></p>    
+    @endisset
     <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{-- ALERT END --}}
