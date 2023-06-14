@@ -1326,11 +1326,11 @@ class LaporanAkuntansiController extends Controller
                                 ,SUM(CASE WHEN MONTH(b.tgl_bukti)=$bln2 AND jns_spp in (6,7) THEN a.nilai ELSE 0 END) AS brg_ini
                                 ,SUM(CASE WHEN MONTH(b.tgl_bukti)<$bln2 AND jns_spp in (6,7) THEN a.nilai ELSE 0 END) AS brg_ll
                                 from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-                                WHERE a.kd_skpd='$kd_skpd' 
-                                
+                                WHERE a.kd_skpd='$kd_skpd'
+
                                 and left(a.kd_rek6,1)='5'  GROUP BY a.kd_skpd
                             )b GROUP BY kd_skpd ";
-                            
+
 
             $att = DB::select(" exec spj_skpd '$kd_skpd','$bln2','$jns_ang'");
             foreach ($att as $trh1) {
@@ -2063,6 +2063,7 @@ class LaporanAkuntansiController extends Controller
             $rek_penyesuaian = "'4340104'";
             $rek_ban_keu = "'4350201'";
             $rek_blud = "'410416010001'";
+            $rek_pap = "'410412040001'";
 
 
             $sql_terima_pkb = collect(DB::select("SELECT SUM(nilai) nilai FROM (
@@ -2612,8 +2613,19 @@ class LaporanAkuntansiController extends Controller
                         AND a.jns_trans='3') z"))->first();
             $setor_blud  = $sql_setor_blud->nilai;
 
+            $sql_denda_pap = collect(DB::select("SELECT SUM(nilai) nilai FROM (
+                        SELECT ISNULL(SUM(b.rupiah), 0) AS nilai
+                        from trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
+                        WHERE a.kd_skpd = '$kd_skpd' and a.jns_trans in ('4','2') and left(b.kd_rek6,1)='4' AND a.tgl_sts <= '$periode2' AND b.kd_rek6 IN ($rek_pap)
+                        UNION ALL
+                        select ISNULL(sum(b.rupiah*-1),0) nilai
+                        FROM trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
+                        WHERE b.kd_skpd='$kd_skpd' AND b.kd_rek6 IN ($rek_pap) AND a.tgl_sts <= '$periode2'
+                        AND a.jns_trans='3') z"))->first();
+            $denda_pap  = $sql_denda_pap->nilai;
+
             $Realisasi_Penerimaan = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
+                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu+$denda_pap nilai
                         ) a
 
                    UNION ALL
@@ -2670,7 +2682,9 @@ class LaporanAkuntansiController extends Controller
                    UNION ALL
                    SELECT 2 nomor, 1 jns, 29 urut,'- Dana Penyesuaian' nama, $setor_penyesuaian nilai
                    UNION ALL
-                   SELECT 2 nomor, 1 jns, 30 urut,'- Bantuan Keuangan Dari Kabupaten' nama, $setor_ban_keu nilai";
+                   SELECT 2 nomor, 1 jns, 30 urut,'- Bantuan Keuangan Dari Kabupaten' nama, $setor_ban_keu nilai
+                   UNION ALL
+                   SELECT 2 nomor, 1 jns, 31 urut,'- Pendapatan Denda Pajak Air Permukaan' nama, $denda_pap nilai";
 
             $Saldo_Penerimaan_Yang_Belum_Di_Setor = "SELECT 4 nomor, 0 jns, 0 urut, '- Saldo Penerimaan Yang Belum Di Setor' nama,  nilai_terima-nilai_setor as nilai
                         from (
@@ -2683,7 +2697,7 @@ class LaporanAkuntansiController extends Controller
                         where a.kd_skpd='$kd_skpd' AND b.jns_trans='4' AND LEFT(a.kd_rek6,1)='4' AND b.tgl_sts <= '$periode2' ) a";
 
             $akuntansi = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
+                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu+$denda_pap nilai
                         ) a
 
                       UNION ALL
@@ -2740,7 +2754,9 @@ class LaporanAkuntansiController extends Controller
                        UNION ALL
                        SELECT 2 nomor, 1 jns, 29 urut,'- Dana Penyesuaian' nama, $setor_penyesuaian nilai
                        UNION ALL
-                       SELECT 2 nomor, 1 jns, 30 urut,'- Bantuan Keuangan Dari Kabupaten' nama, $setor_ban_keu nilai";
+                       SELECT 2 nomor, 1 jns, 30 urut,'- Bantuan Keuangan Dari Kabupaten' nama, $setor_ban_keu nilai
+                       UNION ALL
+                       SELECT 2 nomor, 1 jns, 31 urut,'- Pendapatan Denda Pajak Air Permukaan' nama, $denda_pap nilai";
 
             $sql = DB::select("SELECT n.kode, n.nomor, n.jns, n.nama, n.jns, n.nilai_unit, w.nilai_ak, (nilai_ak - nilai_unit) sisa
                 FROM (SELECT ROW_NUMBER () OVER (ORDER BY b.nomor) AS kode,b.nomor, b.urut, b.nama,b.jns,b.nilai_unit
