@@ -34,112 +34,124 @@
 </head>
 
 {{-- <body onload="window.print()"> --}}
-    <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+
+<body>
+    <table style="border-collapse:collapse;font-family:'Open Sans', Helvetica,Arial,sans-serif; font-size:16px"
+        width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
-            <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
+                <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
+                    height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>SKPD {{ $skpd->nm_skpd }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td></tr>
-            </table>
+            <td align="left" style="font-size:16px" width="93%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:16px" width="93%"><strong>PEMERINTAH
+                    {{ strtoupper($header->nm_pemda) }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:16px"><strong>SKPD {{ $skpd->nm_skpd }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:16px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:16px"><strong>&nbsp;</strong></td>
+        </tr>
+    </table>
     <hr>
-    
 
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+
+    <table style="border-collapse:collapse;font-family:'Open Sans', Helvetica,Arial,sans-serif; font-size:14px"
+        width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td style="text-align: center"><b>BUKU PEMBANTU SUB RINCIAN OBYEK BELANJA</b></td>
         </tr>
         <tr>
-            <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(\Carbon\Carbon::parse($tanggal1)->locale('id')->isoFormat('DD MMMM Y')) }} S/D {{ strtoupper(\Carbon\Carbon::parse($tanggal2)->locale('id')->isoFormat('DD MMMM Y')) }}</b></td>
+            <td style="text-align: center;padding-bottom:30px"><b>PERIODE
+                    {{ strtoupper(\Carbon\Carbon::parse($tanggal1)->locale('id')->isoFormat('DD MMMM Y')) }} S/D
+                    {{ strtoupper(\Carbon\Carbon::parse($tanggal2)->locale('id')->isoFormat('DD MMMM Y')) }}</b></td>
         </tr>
     </table>
-    <TABLE width="100%" style="font-size:12px;">
+    <table width="100%" style="font-size:14px;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <TR>
-           <TD align="left" width="25%" >Nama Sub Kegiatan </TD>
-           <TD align="left" width="75%" >: {{$kd_subkegiatan}} - {{$nm_subkegiatan}}</TD>
+            <TD align="left" width="25%">Nama Sub Kegiatan </TD>
+            <TD align="left" width="75%">: {{ $kd_subkegiatan }} - {{ $nm_subkegiatan }}</TD>
         </TR>
         <TR>
-           <TD align="left" width="25%" >Nama  Rekening </TD>
-           <TD align="left" width="75%" >: {{$kd_akunbelanja}} - {{$nm_akunbelanja}}</TD>
+            <TD align="left" width="25%">Nama Rekening </TD>
+            <TD align="left" width="75%">: {{ $kd_akunbelanja }} - {{ $nm_akunbelanja }}</TD>
         </TR>
         <TR>
-           <TD align="left" width="25%" >Jumlah Anggaran </TD>
-           <TD align="left" width="75%" >: Rp {{rupiah($dppa->nilai)}} </TD>
+            <TD align="left" width="25%">Jumlah Anggaran </TD>
+            <TD align="left" width="75%">: Rp {{ rupiah($dppa->nilai) }} </TD>
         </TR>
-        </TABLE>
-    <TABLE style="border-collapse:collapse;font-size:12px" border="1" cellspacing="2" cellpadding="2" width="100%" >
-        <THEAD>
-            <TR>
-               <TD align="center" ><b>No SP2D/ No SPP /No Tagih/ No Bukti</b></TD>
-               <TD align="center" ><b>Tanggal</b></TD>
-               <TD align="center" ><b>Keterangan</b></TD>
-               <TD align="center" ><b>Sumber Dana</b></TD>
-               <TD align="center" ><b>Nilai</b></TD>		
-            </TR>
-        </THEAD>
+    </table>
+    <table style="border-collapse:collapse;font-size:14px;font-family:'Open Sans', Helvetica,Arial,sans-serif"
+        border="1" cellspacing="2" cellpadding="2" width="100%">
+        <thead>
+            <tr>
+                <td align="center"><b>No SP2D/ No SPP /No Tagih/ No Bukti</b></td>
+                <td align="center" style="width:10%"><b>Tanggal</b></td>
+                <td align="center"><b>Keterangan</b></td>
+                <td align="center" style="width:20%"><b>Sumber Dana</b></td>
+                <td align="center"><b>Nilai</b></td>
+            </tr>
+        </thead>
+        @php
+            $tnilai = 0;
+        @endphp
+
+        @foreach ($rincian as $row)
             @php
-                $tnilai = 0;
+                $no1 = $row->no1;
+                $tgl = $row->tgl;
+                $ket = $row->ket;
+                $nilai = $row->nilai;
+                $sumberdana = $row->sumberdana;
+                $tnilai = $tnilai + $nilai;
             @endphp
-            
-            @foreach ($rincian as $row) 
-                @php
-                    $no1    		= $row->no1;
-                    $tgl    		= $row->tgl;
-                    $ket    		= $row->ket;
-                    $nilai  		= $row->nilai;
-                    $sumberdana  	= $row->sumberdana;
-                    $tnilai 		= $tnilai + $nilai;
-                @endphp                 
-                                
-                    <TR>
-                        <TD align="left" >{{$no1}}</TD>
-                        <TD align="left" >{{tanggal_indonesia($tgl)}}</TD>
-                        <TD align="left" >{{$ket}}</TD>
-                        <TD align="left" >{{$sumberdana}}</TD>
-                        <TD align="right" >{{rupiah($nilai)}}</TD>		
-                    </TR>
-                                 
-                    
-            @endforeach 
+
             <TR>
-                <TD colspan="4" align="right"><b>Jumlah Anggaran</b></TD>
-                <TD  align="right" >{{rupiah($dppa->nilai)}}</TD>	
-                    
-             </TR>
-             <TR>
-                <TD colspan="4" align="right"><b>Total Inputan</b></TD>
-                <TD  align="right" >{{rupiah($tnilai)}}</TD>
-                        
-             </TR>
-             <TR>
-                <TD colspan="4" align="right"><b>Sisa Anggaran</b></TD>
-                <TD  align="right" >{{rupiah($dppa->nilai-$tnilai)}}</TD>	
-                    
-             </TR>
+                <TD align="center">{{ $no1 }}</TD>
+                <TD align="center">{{ tanggal_indonesia($tgl) }}</TD>
+                <TD align="left">{{ $ket }}</TD>
+                <TD align="left">{{ $sumberdana }}</TD>
+                <TD align="right">{{ rupiah($nilai) }}</TD>
+            </TR>
+        @endforeach
+        <TR>
+            <TD colspan="4" align="right"><b>Jumlah Anggaran</b></TD>
+            <TD align="right">{{ rupiah($dppa->nilai) }}</TD>
+
+        </TR>
+        <TR>
+            <TD colspan="4" align="right"><b>Total Inputan</b></TD>
+            <TD align="right">{{ rupiah($tnilai) }}</TD>
+
+        </TR>
+        <TR>
+            <TD colspan="4" align="right"><b>Sisa Anggaran</b></TD>
+            <TD align="right">{{ rupiah($dppa->nilai - $tnilai) }}</TD>
+
+        </TR>
     </table>
     @php
         for ($i = 0; $i <= $enter; $i++) {
-            echo "<br>";
+            echo '<br>';
         }
     @endphp
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
+        <table class="table"
+            style="width: 100%;font-size:12px;font-size:14px;font-family:'Open Sans', Helvetica,Arial,sans-serif">
             <tr>
-                <td style="margin: 2px 0px;text-align: center;">
+                <td style="margin: 2px 0px;text-align: center;width:50%">
                     Disetujui oleh
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},
-                        {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
+                    {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
                 </td>
             </tr>
             <tr>
