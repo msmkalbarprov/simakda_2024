@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6" >
+                    <div class="col-md-6">
                         <div id="baris_skpd">
                             <label for="kd_skpd_ns" class="form-label">Kode SKPD</label>
                             <select class="form-control select_ns  @error('kd_skpd_ns') is-invalid @enderror"
@@ -40,7 +40,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -64,37 +64,37 @@
                         </div>
                     </div>
                     {{-- PERIODE /BULAN --}}
-                        <div id="baris_periode1" class="col-md-3">
-                            <label for="periode1" class="form-label">Periode</label>
-                            <input type="date" id="tanggal1_ns" name="tanggal1_ns" class="form-control">
-                        </div>
-                        <div id="baris_periode2" class="col-md-3">
-                            <label for="periode2" class="form-label">&nbsp;</label>
-                            <input type="date" id="tanggal2_ns" name="tanggal2_ns" class="form-control">
-                            
-                        </div>
-                        <div id="baris_bulan" class="col-md-6">
-                            <label for="bulan" class="form-label">Bulan</label>
-                            <select name="bulan_ns" class="form-control select_ns" id="bulan_ns">
-                                <option value="">Silahkan Pilih</option>
-                                <option value="01">Januari</option>
-                                <option value="02">Februari</option>
-                                <option value="03">Maret</option>
-                                <option value="04">April</option>
-                                <option value="05">Mei</option>
-                                <option value="06">Juni</option>
-                                <option value="07">Juli</option>
-                                <option value="08">Agustus</option>
-                                <option value="09">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
-                            </select>
-                        </div>
+                    <div id="baris_periode1" class="col-md-3">
+                        <label for="periode1" class="form-label">Periode</label>
+                        <input type="date" id="tanggal1_ns" name="tanggal1_ns" class="form-control">
+                    </div>
+                    <div id="baris_periode2" class="col-md-3">
+                        <label for="periode2" class="form-label">&nbsp;</label>
+                        <input type="date" id="tanggal2_ns" name="tanggal2_ns" class="form-control">
+
+                    </div>
+                    <div id="baris_bulan" class="col-md-6">
+                        <label for="bulan" class="form-label">Bulan</label>
+                        <select name="bulan_ns" class="form-control select_ns" id="bulan_ns">
+                            <option value="">Silahkan Pilih</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="mb-3 row">
-                    
+
                     <div class="col-md-6">
                         <label for="rek1" class="form-label">Rekening</label>
                         <select class="form-control select_ns @error('rek6') is-invalid @enderror"
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                     {{-- Bulan --}}
-                    <div class="col-md-6" >
+                    <div class="col-md-6">
                         <div id="baris_skpd_neraca">
                             <label for="kd_skpd_ns" class="form-label">Kode SKPD</label>
                             <select class="form-control select_neraca  @error('kd_skpd_ns') is-invalid @enderror"
@@ -164,38 +164,38 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                     </div>
                 </div>
 
                 <div class="mb-3 row">
-                    
-                    {{-- PERIODE /BULAN --}}
-                        
 
-                        <div id="baris_bulan" class="col-md-6">
-                            <label for="bulan" class="form-label">Bulan</label>
-                            <select name="bulan" class="form-control select_neraca" id="bulan">
-                                <option value="">Silahkan Pilih</option>
-                                <option value="1">Januari</option>
-                                <option value="2">Februari</option>
-                                <option value="3">Maret</option>
-                                <option value="4">April</option>
-                                <option value="5">Mei</option>
-                                <option value="6">Juni</option>
-                                <option value="7">Juli</option>
-                                <option value="8">Agustus</option>
-                                <option value="9">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
-                            </select>
-                        </div>
+                    {{-- PERIODE /BULAN --}}
+
+
+                    <div id="baris_bulan" class="col-md-6">
+                        <label for="bulan" class="form-label">Bulan</label>
+                        <select name="bulan" class="form-control select_neraca" id="bulan">
+                            <option value="">Silahkan Pilih</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
                 </div>
 
-                
 
-                
+
+
 
                 <div class="mb-3 row">
                     <div class="col-md-12 text-center">
