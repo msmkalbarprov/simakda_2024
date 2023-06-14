@@ -2959,7 +2959,7 @@ class LaporanAkuntansiController extends Controller
                     FROM
                     (SELECT LEFT(kd_rek6,1) as kd_rek, SUM(nilai) as nil_ang, SUM(kredit) as kredit,SUM(debet) as debet
                         ,SUM(kredit_awal) as kredit_awal,SUM(debet_awal) as debet_awal
-                         FROM data_jurnal_n_sal_awal_tgl($periode1,$periode2,'$jns_ang') WHERE LEFT(kd_rek6,1) IN ('4','5') AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'
+                         FROM data_jurnal_n_sal_awal_tgl('$periode1','$periode2','$jns_ang') WHERE LEFT(kd_rek6,1) IN ('4','5') AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'
                     GROUP BY LEFT(kd_rek6,1)) a"))->first();
         // dd($sql);
 
