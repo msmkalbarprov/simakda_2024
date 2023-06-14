@@ -1769,11 +1769,16 @@ class LaporanAkuntansiController extends Controller
             $bosout = $sqlbosout->nilai_bosout;
 
             //blud
+            // $sqlbludin = collect(DB::select("SELECT * from (
+            //     SELECT SUM(CASE WHEN tgl_sts<='$periode2' THEN b.rupiah ELSE 0 END) as nilai_bludin
+            //     from trhkasin_blud a inner join trdkasin_blud b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
+            //     where a.kd_skpd='$kd_skpd' )x"))->first();
             $sqlbludin = collect(DB::select("SELECT * from (
-                SELECT SUM(CASE WHEN tgl_sts<='$periode2' THEN b.rupiah ELSE 0 END) as nilai_bludin
-                from trhkasin_blud a inner join trdkasin_blud b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
-                where a.kd_skpd='$kd_skpd' )x"))->first();
+                 SELECT SUM(CASE WHEN tgl_kas<'$periode2' THEN b.nilai ELSE 0 END) as nilai_bludin
+                 from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
+                where a.kd_skpd= '$kd_skpd' and left(b.kd_rek6,1)='5' and b.sumber='BLUD' )x"))->first();
             $bludin = is_null($sqlbludin->nilai_bludin) ? 'null' : $sqlbludin->nilai_bludin;
+
             $sqlbludout = collect(DB::select("SELECT isnull(blud_sd_bln_ini,0) as nilai_bludout from (
                         SELECT SUM(CASE WHEN tgl_bukti<='$periode2' THEN a.nilai ELSE 0 END) as blud_sd_bln_ini
                             from trdtransout_blud a inner join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
@@ -2623,9 +2628,11 @@ class LaporanAkuntansiController extends Controller
                         WHERE b.kd_skpd='$kd_skpd' AND b.kd_rek6 IN ($rek_pap) AND a.tgl_sts <= '$periode2'
                         AND a.jns_trans='3') z"))->first();
             $denda_pap  = $sql_denda_pap->nilai;
-
+            // dd($setor_pkb);
+            // PERMINTAAN KAK AFLY
+            // $setor_pkb + $setor_tgk_pkb + $setor_pka + $setor_bbnkb + $setor_bbnka + $setor_pbbkb + $setor_rokok + $setor_papabt + $setor_ret_umum + $setor_ret_jasa + $setor_ret_izin + $setor_denda_pkb + $setor_denda_pap + $setor_denda_bbnkb + $setor_pendidikan + $setor_pihak3 + $setor_penjualan + $setor_laba + $setor_jagir + $setor_bunga + $setor_denda_terlambat + $setor_pengembalian + $setor_bg_hasil_pjk + $setor_bg_hasil_bknpjk + $setor_dau + $setor_dak + $setor_daknf + $setor_hibah + $setor_penyesuaian + $setor_ban_keu + $denda_pap
             $Realisasi_Penerimaan = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu+$denda_pap nilai
+                    FROM( SELECT $terima_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
                         ) a
 
                    UNION ALL
@@ -2697,7 +2704,7 @@ class LaporanAkuntansiController extends Controller
                         where a.kd_skpd='$kd_skpd' AND b.jns_trans='4' AND LEFT(a.kd_rek6,1)='4' AND b.tgl_sts <= '$periode2' ) a";
 
             $akuntansi = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu+$denda_pap nilai
+                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
                         ) a
 
                       UNION ALL
