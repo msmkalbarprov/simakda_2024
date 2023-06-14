@@ -1319,15 +1319,18 @@ class LaporanAkuntansiController extends Controller
                                 GROUP BY a.kd_skpd
                                 UNION ALL
                                 SELECT a.kd_skpd
-                                ,SUM(CASE WHEN MONTH(b.tgl_bukti)=$bln2 AND jns_spp in (1,2,3) THEN a.nilai ELSE 0 END) AS up_ini
-                                ,SUM(CASE WHEN MONTH(b.tgl_bukti)<$bln2 AND jns_spp in (1,2,3) THEN a.nilai ELSE 0 END) AS up_ll
-                                ,SUM(CASE WHEN MONTH(b.tgl_bukti)=$bln2 AND jns_spp in (4,5) THEN a.nilai ELSE 0 END) AS gj_ini
-                                ,SUM(CASE WHEN MONTH(b.tgl_bukti)<$bln2 AND jns_spp in (4,5) THEN a.nilai ELSE 0 END) AS gj_ll
+                                ,0 AS up_ini
+                                ,0 AS up_ll
+                                ,0 AS gj_ini
+                                ,0 AS gj_ll
                                 ,SUM(CASE WHEN MONTH(b.tgl_bukti)=$bln2 AND jns_spp in (6,7) THEN a.nilai ELSE 0 END) AS brg_ini
                                 ,SUM(CASE WHEN MONTH(b.tgl_bukti)<$bln2 AND jns_spp in (6,7) THEN a.nilai ELSE 0 END) AS brg_ll
                                 from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-                                WHERE a.kd_skpd='$kd_skpd' and (kd_satdik<>'1' OR kd_satdik is not null) and left(a.kd_rek6,1)='5'  GROUP BY a.kd_skpd
+                                WHERE a.kd_skpd='$kd_skpd' 
+                                
+                                and left(a.kd_rek6,1)='5'  GROUP BY a.kd_skpd
                             )b GROUP BY kd_skpd ";
+                            
 
             $att = DB::select(" exec spj_skpd '$kd_skpd','$bln2','$jns_ang'");
             foreach ($att as $trh1) {
