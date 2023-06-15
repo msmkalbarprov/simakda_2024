@@ -37,6 +37,7 @@
                 {
                     data: 'kd_rek_ang',
                     name: 'kd_rek_ang',
+                    visible: false,
                 },
                 {
                     data: 'kd_rek6',

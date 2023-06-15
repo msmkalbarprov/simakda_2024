@@ -233,8 +233,8 @@
                                     <td>{{ $detail->no_voucher }}</td>
                                     <td>{{ $detail->kd_sub_kegiatan }}</td>
                                     <td>{{ $detail->nm_sub_kegiatan }}</td>
-                                    <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->map_real }}</td>
+                                    <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->nm_rek6 }}</td>
                                     <td>{{ rupiah($detail->debet) }}</td>
                                     <td>{{ rupiah($detail->kredit) }}</td>
