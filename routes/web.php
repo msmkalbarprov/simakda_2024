@@ -116,6 +116,8 @@ use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
+use App\Http\Controllers\Skpd\UploadKKPDController;
+use App\Http\Controllers\Skpd\VerifikasiKKPDController;
 use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\TukarSp2dController;
 use Illuminate\Support\Facades\Http;
@@ -949,28 +951,19 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cariSp2d', [TransaksiKKPDController::class, 'cariSp2d'])->name('skpd.transaksi_kkpd.nomor_sp2d');
             Route::post('cariRekening', [TransaksiKKPDController::class, 'cariRekening'])->name('skpd.transaksi_kkpd.rekening');
             Route::post('cariSumber', [TransaksiKKPDController::class, 'cariSumber'])->name('skpd.transaksi_kkpd.sumber');
-            Route::post('sisaBank', [TransaksiKKPDController::class, 'sisaBank'])->name('skpd.transaksi_kkpd.sisa_bank');
-            Route::post('potonganLs', [TransaksiKKPDController::class, 'potonganLs'])->name('skpd.transaksi_kkpd.potongan_ls');
+            // Route::post('sisaBank', [TransaksiKKPDController::class, 'sisaBank'])->name('skpd.transaksi_kkpd.sisa_bank');
+            // Route::post('potonganLs', [TransaksiKKPDController::class, 'potonganLs'])->name('skpd.transaksi_kkpd.potongan_ls');
             Route::post('loadDana', [TransaksiKKPDController::class, 'loadDana'])->name('skpd.transaksi_kkpd.load_dana');
             Route::post('statusAng', [TransaksiKKPDController::class, 'statusAng'])->name('skpd.transaksi_kkpd.status_ang');
-            Route::post('loadAngkas', [TransaksiKKPDController::class, 'loadAngkas'])->name('skpd.transaksi_kkpd.load_angkas');
-            Route::post('loadAngkasLalu', [TransaksiKKPDController::class, 'loadAngkasLalu'])->name('skpd.transaksi_kkpd.load_angkas_lalu');
-            Route::post('loadSpd', [TransaksiKKPDController::class, 'loadSpd'])->name('skpd.transaksi_kkpd.load_spd');
-            Route::post('cekSimpan', [TransaksiKKPDController::class, 'cekSimpan'])->name('skpd.transaksi_kkpd.cek_simpan');
+            // Route::post('loadAngkas', [TransaksiKKPDController::class, 'loadAngkas'])->name('skpd.transaksi_kkpd.load_angkas');
+            // Route::post('loadAngkasLalu', [TransaksiKKPDController::class, 'loadAngkasLalu'])->name('skpd.transaksi_kkpd.load_angkas_lalu');
+            // Route::post('loadSpd', [TransaksiKKPDController::class, 'loadSpd'])->name('skpd.transaksi_kkpd.load_spd');
+            // Route::post('cekSimpan', [TransaksiKKPDController::class, 'cekSimpan'])->name('skpd.transaksi_kkpd.cek_simpan');
             Route::post('simpanCms', [TransaksiKKPDController::class, 'simpanCms'])->name('skpd.transaksi_kkpd.simpan_cms');
-            Route::post('simpanDetailCms', [TransaksiKKPDController::class, 'simpanDetailCms'])->name('skpd.transaksi_kkpd.simpan_detail_cms');
+            // Route::post('simpanDetailCms', [TransaksiKKPDController::class, 'simpanDetailCms'])->name('skpd.transaksi_kkpd.simpan_detail_cms');
             Route::get('edit/{no_voucher?}', [TransaksiKKPDController::class, 'edit'])->where('no_voucher', '(.*)')->name('skpd.transaksi_kkpd.edit');
             Route::post('hapusCms', [TransaksiKKPDController::class, 'hapusCms'])->name('skpd.transaksi_kkpd.hapus_cms');
             Route::get('cetak_list', [TransaksiKKPDController::class, 'cetakList'])->name('skpd.transaksi_kkpd.cetak_list');
-
-            // Validasi Transaksi KKPD
-            Route::get('verifikasi', [TransaksiKKPDController::class, 'indexValidasi'])->name('skpd.transaksi_kkpd.index_validasi');
-            Route::post('load_data_validasi', [TransaksiKKPDController::class, 'loadDataValidasi'])->name('skpd.transaksi_kkpd.load_data_validasi');
-            Route::post('draft_validasi', [TransaksiKKPDController::class, 'draftValidasi'])->name('skpd.transaksi_kkpd.draft_validasi');
-            Route::post('data_validasi', [TransaksiKKPDController::class, 'dataValidasi'])->name('skpd.transaksi_kkpd.data_validasi');
-            Route::get('tambah_verifikasi', [TransaksiKKPDController::class, 'createValidasi'])->name('skpd.transaksi_kkpd.create_validasi');
-            Route::post('proses_validasi', [TransaksiKKPDController::class, 'prosesValidasi'])->name('skpd.transaksi_kkpd.proses_validasi');
-            Route::post('batal_validasi', [TransaksiKKPDController::class, 'batalValidasi'])->name('skpd.transaksi_kkpd.batal_validasi');
 
             // TERIMA POTONGAN PAJAK KKPD
             Route::get('terima_potongan_kkpd', [TransaksiKKPDController::class, 'indexPotongan'])->name('skpd.transaksi_kkpd.index_potongan');
@@ -981,6 +974,33 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('simpan_potongan', [TransaksiKKPDController::class, 'simpanPotongan'])->name('skpd.transaksi_kkpd.simpan_potongan');
             Route::post('simpan_edit_potongan', [TransaksiKKPDController::class, 'simpanEditPotongan'])->name('skpd.transaksi_kkpd.simpan_edit_potongan');
             Route::post('hapus_potongan', [TransaksiKKPDController::class, 'hapusPotongan'])->name('skpd.transaksi_kkpd.hapus_potongan');
+        });
+        // VERIFIKASI KKPD
+        Route::group(['prefix' => 'verifikasi_kkpd'], function () {
+            // Verifikasi Transaksi KKPD
+            Route::get('verifikasi', [VerifikasiKKPDController::class, 'indexValidasi'])->name('skpd.verifikasi_kkpd.index_validasi');
+            Route::post('load', [VerifikasiKKPDController::class, 'loadDataValidasi'])->name('skpd.verifikasi_kkpd.load_data_validasi');
+            Route::post('draft_validasi', [VerifikasiKKPDController::class, 'draftValidasi'])->name('skpd.verifikasi_kkpd.draft_validasi');
+            Route::post('data_validasi', [VerifikasiKKPDController::class, 'dataValidasi'])->name('skpd.verifikasi_kkpd.data_validasi');
+            Route::get('tambah_verifikasi', [VerifikasiKKPDController::class, 'createValidasi'])->name('skpd.verifikasi_kkpd.create_validasi');
+            Route::post('proses_validasi', [VerifikasiKKPDController::class, 'prosesValidasi'])->name('skpd.verifikasi_kkpd.proses_validasi');
+            Route::post('batal_validasi', [VerifikasiKKPDController::class, 'batalValidasi'])->name('skpd.verifikasi_kkpd.batal_validasi');
+        });
+        // UPLOAD KKPD
+        Route::group(['prefix' => 'upload_kkpd'], function () {
+            Route::get('', [UploadKKPDController::class, 'index'])->name('upload_kkpd.index');
+            Route::post('load_upload', [UploadKKPDController::class, 'loadUpload'])->name('upload_kkpd.load_data');
+            Route::post('draft_upload', [UploadKKPDController::class, 'draftUpload'])->name('upload_kkpd.draft_upload');
+            Route::post('data_upload', [UploadKKPDController::class, 'dataUpload'])->name('upload_kkpd.data_upload');
+            Route::get('tambah', [UploadKKPDController::class, 'create'])->name('upload_kkpd.create');
+            Route::post('load_transaksi', [UploadKKPDController::class, 'loadTransaksi'])->name('upload_kkpd.load_transaksi');
+            Route::post('proses_upload', [UploadKKPDController::class, 'prosesUpload'])->name('upload_kkpd.proses_upload');
+            Route::post('batal_upload', [UploadKKPDController::class, 'batalUpload'])->name('upload_kkpd.batal_upload');
+            Route::get('cetak_csv_kalbar', [UploadKKPDController::class, 'cetakCsvKalbar'])->name('upload_kkpd.cetak_csv_kalbar');
+            Route::get('cetak_csv_luar_kalbar', [UploadKKPDController::class, 'cetakCsvLuarKalbar'])->name('upload_kkpd.cetak_csv_luar_kalbar');
+            Route::post('rekening_transaksi', [UploadKKPDController::class, 'rekeningTransaksi'])->name('upload_kkpd.rekening_transaksi');
+            Route::post('rekening_potongan', [UploadKKPDController::class, 'rekeningPotongan'])->name('upload_kkpd.rekening_potongan');
+            Route::post('rekening_tujuan', [UploadKKPDController::class, 'rekeningTujuan'])->name('upload_kkpd.rekening_tujuan');
         });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {
