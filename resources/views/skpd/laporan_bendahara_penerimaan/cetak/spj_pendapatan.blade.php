@@ -197,7 +197,7 @@
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_lalu*-1)}}</b></td>
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu*-1)-($row->terima_lalu))}}</b></td>
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->terima_ini)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_ini)}}</b></td>
+                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_ini*-1)}}</b></td>
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_ini*-1)-($row->terima_ini))}}</b></td>
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</b></td>
                                         <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu*-1)-($row->keluar_ini))}}</b></td>
