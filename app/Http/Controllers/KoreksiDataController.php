@@ -141,7 +141,7 @@ class KoreksiDataController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => '0',
-                'error' => $e->getMessage()
+                // 'error' => $e->getMessage()
             ]);
         }
     }
