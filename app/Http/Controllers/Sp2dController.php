@@ -366,6 +366,7 @@ class Sp2dController extends Controller
         $no_spp = $request->no_spp;
         $no_spm = $request->no_spm;
         $tgl_sp2d = $request->tgl_sp2d;
+        $username = Auth::user()->nama;
 
         DB::beginTransaction();
         try {
@@ -383,7 +384,7 @@ class Sp2dController extends Controller
                 $no_sp2d = $nomor->nomor . '/LS' . '/' . tahun_anggaran();
             }
 
-            $data_spm = DB::table('trhspm')->where(['no_spm' => $no_spm])->select('no_spm', 'tgl_spm', 'no_spp', 'kd_skpd', 'nm_skpd', 'tgl_spp', 'bulan', 'no_spd', 'keperluan', 'username', 'last_update', 'jns_spp', 'bank', 'nmrekan', 'no_rek', 'npwp', 'nilai', 'jenis_beban', DB::raw("'$tgl_sp2d' as tgl_sp2d"), DB::raw("'$no_sp2d' as no_sp2d"), DB::raw("'0' as status"), DB::raw("'0' as status_terima"));
+            $data_spm = DB::table('trhspm')->where(['no_spm' => $no_spm])->select('no_spm', 'tgl_spm', 'no_spp', 'kd_skpd', 'nm_skpd', 'tgl_spp', 'bulan', 'no_spd', 'keperluan', DB::raw("'$username' as username"), 'last_update', 'jns_spp', 'bank', 'nmrekan', 'no_rek', 'npwp', 'nilai', 'jenis_beban', DB::raw("'$tgl_sp2d' as tgl_sp2d"), DB::raw("'$no_sp2d' as no_sp2d"), DB::raw("'0' as status"), DB::raw("'0' as status_terima"));
 
 
             DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->insertUsing(['no_spm', 'tgl_spm', 'no_spp', 'kd_skpd', 'nm_skpd', 'tgl_spp', 'bulan', 'no_spd', 'keperluan', 'username', 'last_update', 'jns_spp', 'bank', 'nmrekan', 'no_rek', 'npwp', 'nilai', 'jenis_beban', 'tgl_sp2d', 'no_sp2d', 'status', 'status_terima'], $data_spm);
