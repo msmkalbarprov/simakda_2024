@@ -43,7 +43,7 @@
                         <label for="tgl_cair" class="col-md-1 col-form-label">Tgl Cair</label>
                         <div class="col-md-3">
                             <input type="date" class="form-control" id="tgl_cair" name="tgl_cair"
-                                value="{{ $sp2d->tgl_kas_bud }}">
+                                value="{{ $sp2d->tgl_kas_bud == '1900-01-01' || !isset($sp2d->tgl_kas_bud) ? date('Y-m-d') : $sp2d->tgl_kas_bud }}">
                         </div>
                         <label for="no_advice" class="col-md-1 col-form-label">No Advice</label>
                         <div class="col-md-3">
@@ -51,6 +51,22 @@
                                 value="{{ $sp2d->no_uji }}" readonly>
                             <input type="text" class="form-control" id="no_kontrak" name="no_kontrak"
                                 value="{{ $sp2d->nocek }}" readonly hidden>
+                        </div>
+                    </div>
+                    {{-- Keterangan Cair dan Tanggal Cair Kasda --}}
+                    <div class="mb-3 row">
+                        <label for="" class="col-md-2"></label>
+                        <label for="ket_cair" class="col-md-4 col-form-label">
+                            @if ($sp2d->status_bud == '1')
+                                SP2D TELAH DICAIRKAN
+                            @else
+                                SP2D BELUM DICAIRKAN
+                            @endif
+                        </label>
+                        <label for="tgl_cair_kasda" class="col-md-2 col-form-label">Tanggal Cair</label>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="tgl_cair_kasda" name="tgl_cair_kasda"
+                                value="{{ $sp2d->tgl_kas_bud }}" readonly>
                         </div>
                     </div>
                     {{-- Nilai dan Tanggal Terima --}}
