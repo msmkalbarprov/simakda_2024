@@ -712,18 +712,53 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek1 = DB::table('tr_kunci')
-                ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
-                ->where(['kd_skpd' => $kd_skpd]);
+            // $cek1 = DB::table('tr_kunci')
+            //     ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
+            //     ->where(['kd_skpd' => $kd_skpd]);
 
-            $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
-                ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
-                ->mergeBindings($cek1)
-                ->first();
+            // $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
+            //     ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
+            //     ->mergeBindings($cek1)
+            //     ->first();
 
-            if ($cek->status == '1') {
+            // if ($cek->status == '1') {
+            //     return response()->json([
+            //         'message' => '2'
+            //     ]);
+            // }
+
+            $tanggal = $data['tgl_sts'];
+
+            $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
+            SELECT CASE
+                        WHEN tgl2<=tgl_kasda THEN '1'
+                            ELSE '0'
+                        END as status_kasda,0 status_spj,*
+                        from (
+
+                            SELECT max(tgl_kunci) as tgl_kasda,''tgl_spj,'$tanggal'as tgl2 FROM [dbo].[tr_kunci] where kd_skpd=?
+                        )zz
+
+            UNION ALL
+            SELECT 0 status_kasda,CASE
+                        WHEN tgl2<=tgl_spj THEN '1'
+                            ELSE '0'
+                        END as status_spj,*
+                        from (
+
+                            SELECT ''tgl_kasda,max(bulan) as tgl_spj,MONTH('$tanggal')as tgl2 FROM [dbo].[trhspj_terima_ppkd]
+                                    where kd_skpd=? and cek = '1'
+                        )zz
+            )xx", [$kd_skpd, $kd_skpd]))->first();
+
+            if ($cek->status_kasda == '1') {
                 return response()->json([
                     'message' => '2'
+                ]);
+            }
+            if ($cek->status_spj == '1') {
+                return response()->json([
+                    'message' => '3'
                 ]);
             }
 
@@ -901,18 +936,53 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek1 = DB::table('tr_kunci')
-                ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
-                ->where(['kd_skpd' => $kd_skpd]);
+            // $cek1 = DB::table('tr_kunci')
+            //     ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
+            //     ->where(['kd_skpd' => $kd_skpd]);
 
-            $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
-                ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
-                ->mergeBindings($cek1)
-                ->first();
+            // $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
+            //     ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
+            //     ->mergeBindings($cek1)
+            //     ->first();
 
-            if ($cek->status == '1') {
+            // if ($cek->status == '1') {
+            //     return response()->json([
+            //         'message' => '2'
+            //     ]);
+            // }
+
+            $tanggal = $data['tgl_sts'];
+
+            $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
+            SELECT CASE
+                        WHEN tgl2<=tgl_kasda THEN '1'
+                            ELSE '0'
+                        END as status_kasda,0 status_spj,*
+                        from (
+
+                            SELECT max(tgl_kunci) as tgl_kasda,''tgl_spj,'$tanggal'as tgl2 FROM [dbo].[tr_kunci] where kd_skpd=?
+                        )zz
+
+            UNION ALL
+            SELECT 0 status_kasda,CASE
+                        WHEN tgl2<=tgl_spj THEN '1'
+                            ELSE '0'
+                        END as status_spj,*
+                        from (
+
+                            SELECT ''tgl_kasda,max(bulan) as tgl_spj,MONTH('$tanggal')as tgl2 FROM [dbo].[trhspj_terima_ppkd]
+                                    where kd_skpd=? and cek = '1'
+                        )zz
+            )xx", [$kd_skpd, $kd_skpd]))->first();
+
+            if ($cek->status_kasda == '1') {
                 return response()->json([
                     'message' => '2'
+                ]);
+            }
+            if ($cek->status_spj == '1') {
+                return response()->json([
+                    'message' => '3'
                 ]);
             }
 

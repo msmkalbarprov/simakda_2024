@@ -167,6 +167,11 @@
                             "Tanggal sudah dikunci KASDA. Silahkan Hubungi operator/staff di bagian KASDA."
                         );
                         $('#simpan').prop('disabled', false);
+                    } else if (response.message == '3') {
+                        alert(
+                            "Tanggal sudah dikunci Akuntansi. Silahkan Hubungi operator/staff di bagian Akuntansi."
+                        );
+                        $('#simpan').prop('disabled', false);
                     } else if (response.message == '4') {
                         alert("Nomor Telah Dipakai!");
                         $('#simpan').prop('disabled', false);
