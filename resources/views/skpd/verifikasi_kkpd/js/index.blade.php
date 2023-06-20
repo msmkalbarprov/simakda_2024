@@ -13,7 +13,7 @@
             processing: true,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('validasi_kkpd.load_data') }}",
+                "url": "{{ route('skpd.verifikasi_kkpd.load_data_validasi') }}",
                 "type": "POST",
             },
             columns: [{
@@ -29,8 +29,8 @@
                     name: 'tgl_voucher'
                 },
                 {
-                    data: 'tgl_validasi',
-                    name: 'tgl_validasi',
+                    data: 'tgl_verifikasi',
+                    name: 'tgl_verifikasi',
                 },
                 {
                     data: 'kd_skpd',
@@ -54,8 +54,8 @@
                     }
                 },
                 {
-                    data: 'status_validasi',
-                    name: 'status_validasi',
+                    data: 'status_verifikasi',
+                    name: 'status_verifikasi',
                     className: 'text-center'
                 },
                 {
@@ -99,7 +99,7 @@
             autoWidth: false,
             lengthMenu: [5, 10],
             ajax: {
-                "url": "{{ route('validasi_kkpd.draft_validasi') }}",
+                "url": "{{ route('skpd.verifikasi_kkpd.draft_validasi') }}",
                 "type": "POST",
             },
             columns: [{
@@ -119,8 +119,8 @@
                     name: 'no_bukti',
                 },
                 {
-                    data: 'tgl_validasi',
-                    name: 'tgl_validasi',
+                    data: 'tgl_verifikasi',
+                    name: 'tgl_verifikasi',
                 },
                 {
                     data: 'kd_skpd',
@@ -144,8 +144,8 @@
                     }
                 },
                 {
-                    data: 'status_validasi',
-                    name: 'status_validasi',
+                    data: 'status_verifikasi',
+                    name: 'status_verifikasi',
                     visible: false
                 },
                 {
@@ -191,7 +191,7 @@
 
         $('#cetakCsvKalbar').on('click', function() {
             let no_upload = document.getElementById('no_upload').value;
-            let url = new URL("{{ route('upload_kkpd.cetak_csv_kalbar') }}");
+            let url = new URL("{{ route('skpd.upload_cms.cetak_csv_kalbar') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_upload", no_upload);
             window.open(url.toString(), "_blank");
@@ -199,7 +199,7 @@
 
         $('#cetakCsvLuarKalbar').on('click', function() {
             let no_upload = document.getElementById('no_upload').value;
-            let url = new URL("{{ route('upload_kkpd.cetak_csv_luar_kalbar') }}");
+            let url = new URL("{{ route('skpd.upload_cms.cetak_csv_luar_kalbar') }}");
             let searchParams = url.searchParams;
             searchParams.append("no_upload", no_upload);
             window.open(url.toString(), "_blank");
@@ -234,10 +234,14 @@
     }
 
     function batalValidasi(no_voucher, kd_skpd, no_bukti) {
+        let tabel = $('#list_blm_validasi').DataTable();
+        let tabel1 = $('#draft_validasi').DataTable();
+
         let tanya = confirm('Apakah anda yakin untuk membatalkan dengan Nomor Voucher : ' + no_voucher);
+
         if (tanya == true) {
             $.ajax({
-                url: "{{ route('validasi_kkpd.batal_validasi') }}",
+                url: "{{ route('skpd.verifikasi_kkpd.batal_validasi') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -247,10 +251,12 @@
                 },
                 success: function(data) {
                     if (data.message == '1') {
-                        alert('Proses Batal Berhasil');
-                        window.location.href = "{{ route('validasi_kkpd.index') }}";
+                        alert('Proses Batal Verifikasi Berhasil');
+                        tabel.ajax.reload();
+                        tabel1.ajax.reload();
+                        // window.location.href = "{{ route('skpd.verifikasi_kkpd.index_validasi') }}";
                     } else {
-                        alert('Proses Batal Gagal...!!!');
+                        alert('Proses Batal Verifikasi Gagal...!!!');
                     }
                 }
             })

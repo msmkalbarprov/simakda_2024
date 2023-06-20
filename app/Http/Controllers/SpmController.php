@@ -107,22 +107,34 @@ class SpmController extends Controller
                 })->whereNotIn('no_spp', $data2)->get();
             }
         } else {
-            $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['1', '2'])->where(function ($query) {
-                $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-            })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd);
+            // $data_spp1 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where('kd_skpd', $kd_skpd)->whereIn('jns_spp', ['1', '2'])->where(function ($query) {
+            //     $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            // })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd);
 
-            // 'sts_setuju' => '1' MATIIN DLU KARENA PENGESAHAN SPM TU DI WHERE
-            $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['3'])->where(function ($query) {
-                $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-            })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd)->unionAll($data_spp1);
+            // // 'sts_setuju' => '1' MATIIN DLU KARENA PENGESAHAN SPM TU DI WHERE
+            // $data_spp2 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['3'])->where(function ($query) {
+            //     $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            // })->whereNotIn('no_spp', $data2)->whereIn('kd_skpd', $skpd)->unionAll($data_spp1);
 
-            $data_spp3 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['4', '5', '6'])->where(function ($query) {
-                $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
-            })->whereNotIn('no_spp', $data2)->unionAll($data_spp2);
+            // $data_spp3 = DB::table('trhspp')->select('no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'jns_beban', DB::raw("(replace( replace( npwp, '.', '' ), '-', '' )) as npwp"))->where(['kd_skpd' => $kd_skpd])->whereIn('jns_spp', ['4', '5', '6'])->where(function ($query) {
+            //     $query->where('sp2d_batal', '!=', '1')->orWhereNull('sp2d_batal');
+            // })->whereNotIn('no_spp', $data2)->unionAll($data_spp2);
 
-            $data_spp = DB::table(DB::raw("({$data_spp3->toSql()}) AS sub"))
-                ->mergeBindings($data_spp3)
-                ->get();
+            // $data_spp = DB::table(DB::raw("({$data_spp3->toSql()}) AS sub"))
+            //     ->mergeBindings($data_spp3)
+            //     ->get();
+
+            $data_spp = DB::select("SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+            FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?) AND jns_spp IN ('1','2') and kd_skpd = ?
+            AND kd_skpd IN (select kd_skpd from trhspj_ppkd WHERE bulan=? AND cek='1' AND kd_skpd=?)  and (sp2d_batal!='1' or sp2d_batal is null)
+            UNION ALL
+            SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+            FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?) AND jns_spp IN ('3') and kd_skpd = ?
+            AND kd_skpd IN (select kd_skpd from trhspj_ppkd WHERE bulan=? AND cek='1' AND kd_skpd=?)
+            and (sp2d_batal!='1' or sp2d_batal is null)
+            UNION ALL
+            SELECT no_spp,tgl_spp,kd_skpd,nm_skpd,jns_spp,keperluan,bulan,no_spd,bank,nmrekan,no_rek,jns_beban,replace(replace(npwp,'.',''),'-','')as npwp
+            FROM trhspp WHERE no_spp NOT IN (SELECT no_spp FROM trhspm WHERE kd_skpd=?) AND jns_spp IN ('4','5','6') and kd_skpd = ?   and (sp2d_batal!='1' or sp2d_batal is null)", [$kd_skpd, $kd_skpd, $bulan2, $kd_skpd, $kd_skpd, $kd_skpd, $bulan2, $kd_skpd, $kd_skpd, $kd_skpd]);
         }
         $data = [
             'data_spp' => $data_spp,

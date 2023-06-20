@@ -301,6 +301,9 @@
             let tahun_input = tgl_bukti.substring(0, 4);
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
 
+            let transaksi = $('#no_transaksi').find('option:selected');
+            let potongan = transaksi.data('potongan');
+
             let rincian_potongan = list_potongan.rows().data().toArray().map((value) => {
                 let data = {
                     kd_rek_trans: value.kd_rek_trans,
@@ -352,6 +355,11 @@
                 alert('List potongan tidak boleh kosong!');
                 return;
             }
+            if (total_potongan > potongan) {
+                alert('Total potongan pajak melebihi potongan KKPD yang diinput!');
+                return;
+            }
+
             let data = {
                 rincian_potongan,
                 tgl_bukti,

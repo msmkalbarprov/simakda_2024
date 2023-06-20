@@ -46,7 +46,8 @@
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_potongan as $potongan)
                                     <option value="{{ $potongan->no_voucher }}" data-kode="{{ $potongan->kd_rek6 }}"
-                                        data-nama="{{ $potongan->nm_rek6 }}">{{ $potongan->no_voucher }} |
+                                        data-nama="{{ $potongan->nm_rek6 }}" data-potongan="{{ $potongan->potongan }}">
+                                        {{ $potongan->no_voucher }} |
                                         {{ $potongan->tgl_voucher }}</option>
                                 @endforeach
                             </select>

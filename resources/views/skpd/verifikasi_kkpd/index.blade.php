@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Validasi Tagihan KKPD | SIMAKDA')
+@section('title', 'Verifikasi Transaksi KKPD | SIMAKDA')
 @section('content')
     <div class="row">
         <div class="accordion" id="accordionExample">
@@ -17,8 +17,8 @@
                             <div class="card-body" id="card_transaksi">
                                 <div class="mb-3 row">
                                     <div class="col-md-12">
-                                        <a href="{{ route('validasi_kkpd.create') }}" class="btn btn-primary"
-                                            style="float: right;">Tambah Validasi</a>
+                                        <a href="{{ route('skpd.verifikasi_kkpd.create_validasi') }}"
+                                            class="btn btn-primary" style="float: right;">Tambah Verifikasi</a>
                                     </div>
                                 </div>
                                 <div class="table-rep-plugin">
@@ -29,11 +29,11 @@
                                                     <th style="width: 25px;text-align:center">No.</th>
                                                     <th style="width: 50px;text-align:center">No. Voucher</th>
                                                     <th style="width: 100px;text-align:center">Tanggal Transaksi</th>
-                                                    <th style="width: 100px;text-align:center">Tanggal Validasi</th>
+                                                    <th style="width: 100px;text-align:center">Tanggal Verifikasi</th>
                                                     <th style="width: 100px;text-align:center">SKPD</th>
                                                     <th style="width: 50px;text-align:center">Keterangan</th>
                                                     <th style="width: 50px;text-align:center">Nilai Pengeluaran</th>
-                                                    <th style="width: 50px;text-align:center">Status Validasi</th>
+                                                    <th style="width: 50px;text-align:center">Status Verifikasi</th>
                                                     <th>Rek Bend</th>
                                                     <th>Nama Rek</th>
                                                     <th>Rek Tujuan</th>
@@ -42,7 +42,36 @@
                                                     <th>Status Pot</th>
                                                 </tr>
                                             </thead>
+                                            <tbody>
+                                            </tbody>
                                         </table>
+                                        {{-- <hr>
+                                        <table style="width: 100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding-left: 600px">Total Transaksi</td>
+                                                    <td>:</td>
+                                                    <td style="text-align: right"><input type="text"
+                                                            style="border:none;background-color:white;text-align:right"
+                                                            class="form-control" readonly id="total_transaksi">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 600px">Total Potongan</td>
+                                                    <td>:</td>
+                                                    <td style="text-align: right"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 600px">Sisa Saldo Bank</td>
+                                                    <td>:</td>
+                                                    <td><input type="text"
+                                                            style="border:none;background-color:white;text-align:right"
+                                                            readonly id="sisa_saldo" class="form-control"
+                                                            value="{{ rupiah($sisa_bank->sisa) }}">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table> --}}
                                     </div>
                                 </div>
                             </div>
@@ -320,5 +349,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.validasi_kkpd.js.index')
+    @include('skpd.verifikasi_kkpd.js.index')
 @endsection

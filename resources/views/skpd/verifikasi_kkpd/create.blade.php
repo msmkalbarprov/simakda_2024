@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Tambah Validasi Tagihan KKPD | SIMAKDA')
+@section('title', 'Tambah Verifikasi Transaksi KKPD | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -12,7 +12,7 @@
                     @csrf
                     {{-- Tanggal Validasi --}}
                     <div class="mb-3 row">
-                        <label for="tanggal_validasi" class="col-md-12 col-form-label">Tanggal Validasi</label>
+                        <label for="tanggal_validasi" class="col-md-12 col-form-label">Tanggal Verifikasi</label>
                         <div class="col-md-2">
                             <input type="date" class="form-control" name="tanggal_validasi" id="tanggal_validasi">
                         </div>
@@ -23,7 +23,7 @@
                         <div class="col-md-12">
                             <select name="data_transaksi" id="data_transaksi" class="form-control select2-multiple">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                {{-- @foreach ($daftar_transaksi as $data)
+                                @foreach ($daftar_transaksi as $data)
                                     <option value="{{ $data->no_voucher }}" data-tgl="{{ $data->tgl_voucher }}"
                                         data-kd_skpd="{{ $data->kd_skpd }}" data-ket="{{ $data->ket }}"
                                         data-total="{{ $data->total }}" data-tot_pot="{{ $data->tot_pot }}"
@@ -35,7 +35,7 @@
                                         {{ $data->no_voucher }} |
                                         {{ $data->tgl_voucher }}
                                     </option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -43,7 +43,8 @@
                     <div style="float: right;">
                         <button id="proses_upload" class="btn btn-primary btn-md"><i class="uil-search-alt"></i>Proses
                             Verifikasi</button>
-                        <a href="{{ route('validasi_kkpd.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                        <a href="{{ route('skpd.verifikasi_kkpd.index_validasi') }}"
+                            class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
 
@@ -65,15 +66,12 @@
                                 <th>SKPD</th>
                                 <th>Keterangan</th>
                                 <th>Total</th>
-                                <th>Status Upload</th>
-                                <th>No Upload</th>
                                 <th>Rekening Awal</th>
                                 <th>Nama Rekening Tujuan</th>
                                 <th>Rekening Tujuan</th>
                                 <th>Bank Tujuan</th>
                                 <th>Ket Tujuan</th>
                                 <th>Potongan</th>
-                                <th>Status Potongan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -112,5 +110,5 @@
     </div>
 @endsection
 @section('js')
-    @include('skpd.validasi_kkpd.js.create');
+    @include('skpd.verifikasi_kkpd.js.create');
 @endsection

@@ -117,6 +117,7 @@ use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\RestitusiController;
 use App\Http\Controllers\Skpd\UploadKKPDController;
+use App\Http\Controllers\Skpd\ValidasiKKPDController;
 use App\Http\Controllers\Skpd\VerifikasiKKPDController;
 use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\TukarSp2dController;
@@ -1001,6 +1002,17 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('rekening_transaksi', [UploadKKPDController::class, 'rekeningTransaksi'])->name('upload_kkpd.rekening_transaksi');
             Route::post('rekening_potongan', [UploadKKPDController::class, 'rekeningPotongan'])->name('upload_kkpd.rekening_potongan');
             Route::post('rekening_tujuan', [UploadKKPDController::class, 'rekeningTujuan'])->name('upload_kkpd.rekening_tujuan');
+        });
+        // VALIDASI KKPD
+        Route::group(['prefix' => 'validasi_kkpd'], function () {
+            Route::get('', [ValidasiKKPDController::class, 'index'])->name('validasi_kkpd.index');
+            Route::post('load_data', [ValidasiKKPDController::class, 'loadData'])->name('validasi_kkpd.load_data');
+            Route::post('draft_validasi', [ValidasiKKPDController::class, 'draftValidasi'])->name('validasi_kkpd.draft_validasi');
+            Route::post('data_upload', [ValidasiKKPDController::class, 'dataUpload'])->name('validasi_kkpd.data_upload');
+            Route::get('tambah', [ValidasiKKPDController::class, 'create'])->name('validasi_kkpd.create');
+            Route::post('load_transaksi', [ValidasiKKPDController::class, 'loadTransaksi'])->name('validasi_kkpd.load_transaksi');
+            Route::post('proses_validasi', [ValidasiKKPDController::class, 'prosesValidasi'])->name('validasi_kkpd.proses_validasi');
+            Route::post('batal_validasi', [ValidasiKKPDController::class, 'batalValidasi'])->name('validasi_kkpd.batal_validasi');
         });
         // Laporan Bendahara
         Route::group(['prefix' => 'laporan_bendahara'], function () {

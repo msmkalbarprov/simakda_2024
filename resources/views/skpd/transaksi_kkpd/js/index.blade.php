@@ -48,6 +48,30 @@
                 },
                 {
                     data: null,
+                    name: 'status_verifikasi',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_verifikasi == '1') {
+                            return '&#10004';
+                        } else {
+                            return '&#10008';
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    name: 'status_upload',
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (data.status_upload == '1') {
+                            return '&#10004';
+                        } else {
+                            return '&#10008';
+                        }
+                    }
+                },
+                {
+                    data: null,
                     name: 'status_validasi',
                     className: "text-center",
                     render: function(data, type, row, meta) {
@@ -66,19 +90,6 @@
                 },
             ],
         });
-
-        $('#cetak_cms').on('click', function() {
-            let tgl_voucher = document.getElementById('tgl_voucher').value;
-            if (!tgl_voucher) {
-                alert('Tanggal tidak boleh kosong!');
-                return;
-            }
-            let url = new URL("{{ route('skpd.transaksi_cms.cetak_list') }}");
-            let searchParams = url.searchParams;
-            searchParams.append("tgl_voucher", tgl_voucher);
-            window.open(url.toString(), "_blank");
-        });
-
     });
 
     function hapus(no_voucher) {

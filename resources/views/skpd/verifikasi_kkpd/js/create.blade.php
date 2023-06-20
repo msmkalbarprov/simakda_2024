@@ -34,16 +34,6 @@
                     name: 'total',
                 },
                 {
-                    data: 'status_upload',
-                    name: 'status_upload',
-                    visible: false
-                },
-                {
-                    data: 'no_upload',
-                    name: 'no_upload',
-                    visible: false
-                },
-                {
                     data: 'rekening_awal',
                     name: 'rekening_awal',
                     visible: false
@@ -74,18 +64,11 @@
                     visible: false
                 },
                 {
-                    data: 'status_pot',
-                    name: 'status_pot',
-                    visible: false
-                },
-                {
                     data: 'aksi',
                     name: 'aksi',
                 },
             ]
         });
-
-        load_transaksi();
 
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
@@ -103,13 +86,11 @@
                 };
                 return result;
             });
-
             let kondisi = tampungan.map(function(data) {
                 if (data.no_voucher == no_voucher) {
                     return '1';
                 }
             });
-
             if (kondisi.includes("1")) {
                 alert('Nomor Transaksi ini sudah ada di LIST!');
                 $("#data_transaksi").val(null).change();
@@ -124,24 +105,18 @@
                 'total': new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
                 }).format($(this).find(':selected').data('total')),
-                'status_upload': $(this).find(':selected').data('status_upload'),
-                'no_upload': $(this).find(':selected').data('no_upload'),
                 'rekening_awal': $(this).find(':selected').data('rekening_awal'),
                 'nm_rekening_tujuan': $(this).find(':selected').data('nm_rekening_tujuan'),
                 'rekening_tujuan': $(this).find(':selected').data('rekening_tujuan'),
                 'bank_tujuan': $(this).find(':selected').data('bank_tujuan'),
                 'ket_tujuan': $(this).find(':selected').data('ket_tujuan'),
-                'potongan': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format($(this).find(':selected').data('tot_pot')),
-                'status_pot': $(this).find(':selected').data('status_trmpot'),
+                'potongan': $(this).find(':selected').data('tot_pot'),
                 'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_voucher}','${total}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
             }).draw();
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi + total));
             $("#data_transaksi").val(null).change();
-            load_transaksi();
         });
 
         $('#proses_upload').on('click', function() {
@@ -160,7 +135,7 @@
             }
 
             let total_potongan = rincian_upload.rows().data().toArray().reduce((previousValue,
-                currentValue) => (previousValue += angka(currentValue.potongan)), 0);
+                currentValue) => (previousValue += currentValue.potongan), 0);
 
             let total_transfer = total_transaksi - total_potongan;
             if (total_transfer > sisa_saldo) {
@@ -168,7 +143,7 @@
                 return;
             }
 
-            let tanya = confirm("Apakah data yang akan di-Validasi sudah benar ?");
+            let tanya = confirm("Apakah data yang akan di-Verifikasi sudah benar ?");
             if (tanya == true) {
                 $('#proses_upload').prop("disabled", true);
                 let rincian_data = rincian_upload.rows().data().toArray().map((value) => {
@@ -185,33 +160,26 @@
                         rekening_tujuan: value.rekening_tujuan,
                         bank_tujuan: value.bank_tujuan,
                         ket_tujuan: value.ket_tujuan,
-                        status_pot: value.status_pot,
                     };
                     return data;
                 });
                 $.ajax({
-                    url: "{{ route('validasi_kkpd.proses_validasi') }}",
+                    url: "{{ route('skpd.verifikasi_kkpd.proses_validasi') }}",
                     type: "POST",
                     dataType: 'json',
                     data: {
                         rincian_data: rincian_data,
                         tanggal_validasi: tanggal_validasi,
                     },
-                    beforeSend: function() {
-                        $("#overlay").fadeIn(100);
-                    },
                     success: function(data) {
                         if (data.message == '1') {
-                            alert('Data berhasil divalidasi');
+                            alert('Data berhasil diverifikasi');
                             window.location.href =
-                                "{{ route('validasi_kkpd.index') }}";
+                                "{{ route('skpd.verifikasi_kkpd.index_validasi') }}";
                         } else {
-                            alert('Data tidak berhasil divalidasi!');
+                            alert('Data tidak berhasil diverifikasi!');
                             $('#proses_upload').prop("disabled", false);
                         }
-                    },
-                    complete: function(data) {
-                        $("#overlay").fadeOut(100);
                     }
                 })
             } else {
@@ -227,36 +195,6 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function load_transaksi() {
-        $('#data_transaksi').empty();
-        let rincian_upload = $('#rincian_upload').DataTable();
-        let detail_rincian = rincian_upload.rows().data().toArray().map((value) => {
-            let data = {
-                no_voucher: value.no_voucher,
-            };
-            return data;
-        });
-
-        $.ajax({
-            url: "{{ route('validasi_kkpd.load_transaksi') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                no_voucher: detail_rincian.length == 0 ? '0' : detail_rincian
-            },
-            success: function(data) {
-                $('#data_transaksi').empty();
-                $('#data_transaksi').append(
-                    `<option value="" disabled selected>Silahkan Pilih</option>`);
-                $.each(data, function(index, data) {
-                    $('#data_transaksi').append(
-                        `<option value="${data.no_voucher}" data-tgl="${data.tgl_voucher}" data-kd_skpd="${data.kd_skpd}" data-ket="${data.ket}" data-total="${data.total}" data-tot_pot="${data.tot_pot}" data-total="${data.total}" data-status_upload="${data.status_upload}" data-rekening_awal="${data.rekening_awal}" data-nm_rekening_tujuan="${data.nm_rekening_tujuan}" data-rekening_tujuan="${data.rekening_tujuan}" data-bank_tujuan="${data.bank_tujuan}" data-ket_tujuan="${data.ket_tujuan}" data-status_trmpot="${data.status_trmpot}" data-no_upload="${data.no_upload}">${data.no_voucher} | ${data.tgl_voucher}</option>`
-                    );
-                })
-            }
-        })
-    }
-
     function deleteData(no_voucher, total) {
         let tanya = confirm('Apakah anda yakin untuk menghapus dengan Nomor Transaksi : ' + no_voucher);
         let tabel = $('#rincian_upload').DataTable();
@@ -268,7 +206,6 @@
             $('#total_transaksi').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(total_transaksi - parseFloat(total)));
-            load_transaksi();
         } else {
             return false;
         }
