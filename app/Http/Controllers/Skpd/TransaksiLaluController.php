@@ -153,6 +153,20 @@ class TransaksiLaluController extends Controller
 						AND c.no_voucher <> ?
 						AND d.jns_spp=?
 						AND d.status_validasi<>'1'
+                        UNION ALL
+                        SELECT
+							SUM (c.nilai) as nilai
+						FROM
+							trdtransout_kkpd c
+						LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+						AND c.kd_skpd = d.kd_skpd
+						WHERE
+							c.kd_sub_kegiatan = a.kd_sub_kegiatan
+						AND d.kd_skpd = a.kd_skpd
+						AND c.kd_rek6 = a.kd_rek6
+						AND c.no_voucher <> ?
+						AND d.jns_spp=?
+						AND d.status_validasi<>'1'
 						UNION ALL
 						SELECT SUM(x.nilai) as nilai FROM trdspp x
 						INNER JOIN trhspp y
@@ -179,7 +193,7 @@ class TransaksiLaluController extends Controller
                         AND a.kd_skpd = ?
                         and a.status_aktif='1'
                         and jns_ang=?
-                        order by a.kd_rek6", [$beban, $no_bukti, $beban, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $status_anggaran]);
+                        order by a.kd_rek6", [$beban, $no_bukti, $beban, $no_bukti, $beban, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $status_anggaran]);
         } else {
             $data = DB::select("SELECT kd_rek6, nm_rek6,
             (SELECT SUM(nilai) FROM
@@ -212,6 +226,21 @@ class TransaksiLaluController extends Controller
                         AND d.jns_spp=?
                         AND d.status_validasi<>'1'
                         and d.no_sp2d = ?
+                        UNION ALL
+                        SELECT
+                            SUM (c.nilai) as nilai
+                        FROM
+                            trdtransout_kkpd c
+                        LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+                        AND c.kd_skpd = d.kd_skpd
+                        WHERE
+                            c.kd_sub_kegiatan = x.kd_sub_kegiatan
+                        AND d.kd_skpd = x.kd_skpd
+                        AND c.kd_rek6 = x.kd_rek6
+                        AND c.no_voucher <> ?
+                        AND d.jns_spp=?
+                        AND d.status_validasi<>'1'
+                        and d.no_sp2d = ?
                         )r
 
                         ) r) AS lalu,
@@ -224,7 +253,7 @@ class TransaksiLaluController extends Controller
             INNER JOIN trhsp2d d ON c.no_spm=d.no_Spm AND c.kd_skpd=d.kd_skpd
             WHERE d.no_sp2d = ? and b.kd_sub_kegiatan=?
             group by b.kd_skpd,b.kd_sub_kegiatan,b.kd_rek6,b.nm_rek6
-            )x", [$beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_sp2d, $kd_sub_kegiatan]);
+            )x", [$beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_sp2d, $kd_sub_kegiatan]);
         }
 
         return response()->json($data);
@@ -428,6 +457,18 @@ class TransaksiLaluController extends Controller
                                     AND (d.status_validasi='0' OR d.status_validasi is null)
 
                                     UNION ALL
+                                    -- transaksi UP/GU KKPD Belum Validasi
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trdtransout_kkpd c
+                                    LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    AND d.jns_spp in ('1')
+                                    AND (d.status_validasi='0' OR d.status_validasi is null)
+
+                                    UNION ALL
                                     -- transaksi SPP SELAIN UP/GU
                                     SELECT SUM(isnull(x.nilai,0)) as nilai FROM trdspp x
                                     INNER JOIN trhspp y
@@ -448,7 +489,7 @@ class TransaksiLaluController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         } else {
             $spp = DB::table('trhsp2d')
                 ->select('no_spp')
@@ -481,6 +522,18 @@ class TransaksiLaluController extends Controller
                                     AND (d.status_validasi='0' OR d.status_validasi is null)
 
                                     UNION ALL
+                                    -- transaksi UP/GU KKPD Belum Validasi
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trdtransout_kkpd c
+                                    LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    AND d.jns_spp in ('1')
+                                    AND (d.status_validasi='0' OR d.status_validasi is null)
+
+                                    UNION ALL
                                     -- transaksi SPP SELAIN UP/GU
                                     SELECT SUM(isnull(x.nilai,0)) as nilai FROM trdspp x
                                     INNER JOIN trhspp y
@@ -502,7 +555,7 @@ class TransaksiLaluController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         }
 
         return response()->json([

@@ -235,15 +235,15 @@
             $("#sisa_sumber_dana").val("");
             $('#sumber_dana').empty();
 
-            $("#total_pagu").val(anggaran.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#realisasi_pagu").val(lalu.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
-            $("#sisa_pagu").val(sisa.toLocaleString('id-ID', {
-                minimumFractionDigits: 2
-            }));
+            // $("#total_pagu").val(anggaran.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#realisasi_pagu").val(lalu.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
+            // $("#sisa_pagu").val(sisa.toLocaleString('id-ID', {
+            //     minimumFractionDigits: 2
+            // }));
             // load_sumber_dn
             let skpd = document.getElementById('kd_skpd').value;
             let kdgiat = document.getElementById('kd_sub_kegiatan').value;
@@ -277,6 +277,18 @@
                             `<option value="${sumber.sumber}" data-nama="${sumber.nm_sumber}" data-nilai="${sumber.nilai}">${sumber.sumber} | ${sumber.nm_sumber}</option>`
                         );
                     });
+
+                    $('#total_pagu').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(anggaran));
+
+                    $('#realisasi_pagu').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
+                    $('#sisa_pagu').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(anggaran - data.angkas_lalu));
 
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2

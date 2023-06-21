@@ -380,6 +380,18 @@ class TransaksiPanjarController extends Controller
                                     AND (d.status_validasi='0' OR d.status_validasi is null)
 
                                     UNION ALL
+                                    -- transaksi UP/GU KKPD BANK Belum Validasi
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trdtransout_kkpd c
+                                    LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    AND d.jns_spp in ('1')
+                                    AND (d.status_validasi='0' OR d.status_validasi is null)
+
+                                    UNION ALL
                                     -- transaksi SPP SELAIN UP/GU
                                     SELECT SUM(isnull(x.nilai,0)) as nilai FROM trdspp x
                                     INNER JOIN trhspp y
@@ -400,7 +412,7 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         } else {
             $spp = DB::table('trhsp2d')
                 ->select('no_spp')
@@ -433,6 +445,18 @@ class TransaksiPanjarController extends Controller
                                     AND (d.status_validasi='0' OR d.status_validasi is null)
 
                                     UNION ALL
+                                    -- transaksi UP/GU KKPD BANK Belum Validasi
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trdtransout_kkpd c
+                                    LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    AND d.jns_spp in ('1')
+                                    AND (d.status_validasi='0' OR d.status_validasi is null)
+
+                                    UNION ALL
                                     -- transaksi SPP SELAIN UP/GU
                                     SELECT SUM(isnull(x.nilai,0)) as nilai FROM trdspp x
                                     INNER JOIN trhspp y
@@ -454,7 +478,7 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         }
 
         return response()->json([

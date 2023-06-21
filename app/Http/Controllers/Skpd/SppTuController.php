@@ -309,9 +309,13 @@ class SppTuController extends Controller
                     SELECT SUM(a.nilai) nilai FROM trdtransout_cmsbank a INNER JOIN trhtransout_cmsbank b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd
                     WHERE a.kd_sub_kegiatan=? and a.kd_rek6=? and a.kd_skpd=? AND b.status_validasi = '0'
 
+                    UNION ALL
+                    SELECT SUM(a.nilai) nilai FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd
+                    WHERE a.kd_sub_kegiatan=? and a.kd_rek6=? and a.kd_skpd=? AND b.status_validasi = '0'
+
                     )b)
           as rektotal_spp_lalu
-          FROM trdrka WHERE kd_rek6=? and kd_sub_kegiatan=? and jns_ang=? and kd_skpd=?", [$kd_sub_kegiatan, $kd_rek6, $kd_skpd, $no_spp, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $status_anggaran, $kd_skpd]))->first();
+          FROM trdrka WHERE kd_rek6=? and kd_sub_kegiatan=? and jns_ang=? and kd_skpd=?", [$kd_sub_kegiatan, $kd_rek6, $kd_skpd, $no_spp, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $status_anggaran, $kd_skpd]))->first();
 
         // SPD
         $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='3' and tgl_spd<=?", [$kd_skpd, $tgl_spp]))->first();
@@ -491,83 +495,10 @@ class SppTuController extends Controller
 
         $no_trdrka = $kd_skpd . '.' . $kd_sub_kegiatan . '.' . $kd_rek6;
 
-        $data1 = DB::table('trdpo')
-            ->select('sumber', 'nm_sumber', DB::raw("SUM(total) as nilai"))
-            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
-            ->whereNotNull('sumber')
-            ->groupBy('sumber', 'nm_sumber');
-
-        $data2 = DB::table('trdpo')
-            ->select('sumber', DB::raw("'Silahkan isi sumber di anggaran' as nm_sumber"), DB::raw("SUM(total) as nilai"))
-            ->where(['no_trdrka' => $no_trdrka, 'jns_ang' => $status_anggaran])
-            ->where(function ($query) {
-                $query->where('sumber', '')->orWhereNull('sumber');
-            })
-            ->groupBy('sumber', 'nm_sumber')
-            ->union($data1);
-
-        $data = DB::table(DB::raw("({$data2->toSql()}) AS sub"))
-            ->mergeBindings($data2)
-            ->get();
+        $data = sumber_dana($no_trdrka, $status_anggaran);
 
         // TOTAL TRANSAKSI SPD LALU
-        $total_transaksi = collect(DB::select("SELECT SUM(nilai) total FROM
-                                    (
-
-                                    --Table tampungan // tambahan tampungan
-                                    SELECT SUM (isnull(nilai,0)) as nilai
-                                    FROM tb_transaksi
-                                    WHERE kd_sub_kegiatan = ?
-                                    AND kd_skpd = ?
-                                    AND kd_rek6 = ?
-                                    UNION ALL
-                                    -- transaksi UP/GU
-                                    SELECT SUM (isnull(c.nilai,0)) as nilai
-                                    FROM trdtransout c
-                                    LEFT JOIN trhtransout d ON c.no_bukti = d.no_bukti
-                                    AND c.kd_skpd = d.kd_skpd
-                                    WHERE c.kd_sub_kegiatan = ?
-                                    AND d.kd_skpd = ?
-                                    AND c.kd_rek6 = ?
-                                    AND d.jns_spp in ('1')
-
-                                    UNION ALL
-                                    -- transaksi UP/GU CMS BANK Belum Validasi
-                                    SELECT SUM (isnull(c.nilai,0)) as nilai
-                                    FROM trdtransout_cmsbank c
-                                    LEFT JOIN trhtransout_cmsbank d ON c.no_voucher = d.no_voucher
-                                    AND c.kd_skpd = d.kd_skpd
-                                    WHERE c.kd_sub_kegiatan =?
-                                    AND d.kd_skpd = ?
-                                    AND c.kd_rek6=?
-                                    AND d.jns_spp in ('1')
-                                    AND (d.status_validasi='0' OR d.status_validasi is null)
-
-                                    UNION ALL
-                                    -- transaksi SPP SELAIN UP/GU
-                                    SELECT SUM(isnull(x.nilai,0)) as nilai FROM trdspp x
-                                    INNER JOIN trhspp y
-                                    ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
-                                    WHERE x.kd_sub_kegiatan = ?
-                                    AND x.kd_skpd = ?
-                                    AND x.kd_rek6 = ?
-                                    AND y.jns_spp IN ('3','4','5','6')
-                                    AND (sp2d_batal IS NULL or sp2d_batal ='' or sp2d_batal='0')
-
-                                    UNION ALL
-                                    -- Penagihan yang belum jadi SPP
-                                    SELECT SUM(isnull(nilai,0)) as nilai FROM trdtagih t
-                                    INNER JOIN trhtagih u
-                                    ON t.no_bukti=u.no_bukti AND t.kd_skpd=u.kd_skpd
-                                    WHERE t.kd_sub_kegiatan =?
-                                    AND u.kd_skpd = ?
-                                    AND t.kd_rek =?
-                                    AND u.no_bukti
-                                    NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_skpd]))->first();
-
-
-
+        $total_transaksi = angkas_lalu_penagihan($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
 
         return response()->json([
             'angkas' => $nilai_angkas->nilai,

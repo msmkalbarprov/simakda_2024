@@ -140,6 +140,19 @@ class JurnalKoreksiController extends Controller
         				AND c.kd_rek6 = a.kd_rek6
         				AND d.jns_spp=?
         				AND d.status_validasi<>'1'
+                        UNION ALL
+                        SELECT
+        					SUM (c.nilai) as nilai
+        				FROM
+        					trdtransout_kkpd c
+        				LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+        				AND c.kd_skpd = d.kd_skpd
+        				WHERE
+        					c.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND d.kd_skpd = a.kd_skpd
+        				AND c.kd_rek6 = a.kd_rek6
+        				AND d.jns_spp=?
+        				AND d.status_validasi<>'1'
         				UNION ALL
         				SELECT SUM(x.nilai) as nilai FROM trdspp x
         				INNER JOIN trhspp y
@@ -160,7 +173,7 @@ class JurnalKoreksiController extends Controller
         				AND t.kd_rek = a.kd_rek6
         				AND u.no_bukti
         				NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
-        				)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['kd_skpd']])
+        				)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['beban'], $req['kd_skpd']])
                 ->where(['a.kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'a.kd_skpd' => $req['kd_skpd'], 'a.jns_ang' => $jns_ang])
                 ->get();
         } else {
@@ -233,6 +246,19 @@ class JurnalKoreksiController extends Controller
         				AND c.kd_rek6 = a.kd_rek6
         				AND d.jns_spp=?
         				AND d.status_validasi<>'1'
+                        UNION ALL
+                        SELECT
+        					SUM (c.nilai) as nilai
+        				FROM
+        					trdtransout_kkpd c
+        				LEFT JOIN trhtransout_kkpd d ON c.no_voucher = d.no_voucher
+        				AND c.kd_skpd = d.kd_skpd
+        				WHERE
+        					c.kd_sub_kegiatan = a.kd_sub_kegiatan
+        				AND d.kd_skpd = a.kd_skpd
+        				AND c.kd_rek6 = a.kd_rek6
+        				AND d.jns_spp=?
+        				AND d.status_validasi<>'1'
         				UNION ALL
         				SELECT SUM(x.nilai) as nilai FROM trdspp x
         				INNER JOIN trhspp y
@@ -253,7 +279,7 @@ class JurnalKoreksiController extends Controller
         				AND t.kd_rek = a.kd_rek6
         				AND u.no_bukti
         				NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
-        				)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['kd_skpd']])
+        				)r) AS lalu", [$no_bukti, $req['beban'], $req['beban'], $req['beban'], $req['kd_skpd']])
                 ->where(['a.kd_sub_kegiatan' => $req['kd_sub_kegiatan'], 'a.kd_skpd' => $req['kd_skpd'], 'a.jns_ang' => $jns_ang])
                 ->get();
         } else {

@@ -279,9 +279,6 @@
             $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
             }).format(sisa));
-            $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(lalu));
 
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let sumber = document.getElementById('sumber').value;
@@ -432,7 +429,7 @@
             if (kode != kode_transaksi) {
                 alert(
                     'Kegiatan,rekening,sumber tidak sesuai dengan rincian realisasi dan sisa, silahkan refresh!'
-                    );
+                );
                 return;
             }
 
@@ -803,6 +800,7 @@
                     tgl_voucher: document.getElementById('tgl_bukti').value,
                     beban: document.getElementById('beban').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    no_sp2d: document.getElementById('no_sp2d').value,
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -825,9 +823,15 @@
                     $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas_lalu));
+
+                    $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+
                     $('#realisasi_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas_lalu));
+
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas - data.angkas_lalu));
@@ -838,6 +842,14 @@
                     $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.spd - data.angkas_lalu));
+
+                    $('#realisasi_anggaran').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data.angkas_lalu));
+                    let total_anggaran = rupiah(document.getElementById('total_anggaran').value)
+                    $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(total_anggaran - data.angkas_lalu));
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
