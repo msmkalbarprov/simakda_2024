@@ -704,9 +704,74 @@ class PenagihanController extends Controller
         $kd_skpd = $request->kd_skpd;
         $kd_rek6 = $request->kd_rek6;
 
-        $realisasi = angkas_lalu_penagihan($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
+        $tagih_lalu = DB::table('trdtagih as a')
+            ->join('trhtagih as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( nilai ) AS nilai")
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->whereRaw("b.no_bukti NOT IN ( SELECT no_tagih FROM trhspp WHERE kd_skpd =? )", [$kd_skpd])
+            ->first();
 
-        return response()->json($realisasi->total);
+        $tampungan = DB::table('tb_transaksi as a')
+            ->selectRaw("SUM( nilai ) AS nilai")
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.kd_rek6' => $kd_rek6, 'a.sumber' => $sumber])
+            ->first();
+
+        $spplalu = DB::table('trhspp as a')
+            ->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->where(function ($query) {
+                $query->where('sp2d_batal', '<>', '1')->orWhereNull('sp2d_batal');
+            })
+            ->whereNotIn('jns_spp', ['1', '2'])
+            ->first();
+
+        $upgulalucms = DB::table('trhtransout_cmsbank as a')
+            ->join('trdtransout_cmsbank as b', function ($join) {
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->where(function ($query) {
+                $query->where('a.status_validasi', '<>', '1')->orWhereNull('a.status_validasi');
+            })
+            ->whereIn('a.jns_spp', ['1'])
+            ->first();
+
+        $upgulalu = DB::table('trhtransout as a')
+            ->join('trdtransout as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->whereIn('a.jns_spp', ['1'])
+            ->first();
+
+        $upgulalukkpd = DB::table('trhtransout_kkpd as a')
+            ->join('trdtransout_kkpd as b', function ($join) {
+                $join->on('a.no_voucher', '=', 'b.no_voucher');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->selectRaw("SUM( b.nilai ) AS nilai")
+            ->where(['b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_skpd' => $kd_skpd, 'b.kd_rek6' => $kd_rek6, 'sumber' => $sumber])
+            ->where(function ($query) {
+                $query->where('a.status_validasi', '<>', '1')->orWhereNull('a.status_validasi');
+            })
+            ->whereIn('a.jns_spp', ['1'])
+            ->first();
+
+        $realisasi = $tagih_lalu->nilai + $tampungan->nilai + $spplalu->nilai + $upgulalucms->nilai + $upgulalu->nilai + $upgulalukkpd->nilai;
+        return response()->json($realisasi);
+
+        return response()->json($realisasi);
     }
 
     public function cariNamaSumber(Request $request)
