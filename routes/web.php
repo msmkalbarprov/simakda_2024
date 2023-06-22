@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Akuntansi\InputJurnalController;
+use App\Http\Controllers\Akuntansi\KunciJurnalController;
 use App\Http\Controllers\Anggaran\PengesahanAngkasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -1722,6 +1723,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('update', [InputJurnalController::class, 'update'])->name('input_jurnal.update');
         Route::post('hapus', [InputJurnalController::class, 'hapus'])->name('input_jurnal.hapus');
         Route::get('cetak', [InputJurnalController::class, 'cetak'])->name('input_jurnal.cetak');
+    });
+
+    Route::group(['prefix' => 'akuntansi/kunci_jurnal'], function () {
+        Route::get('', [KunciJurnalController::class, 'index'])->name('kunci_jurnal.index');
+        Route::post('load', [KunciJurnalController::class, 'load'])->name('kunci_jurnal.load');
+        Route::post('kunci', [KunciJurnalController::class, 'kunci'])->name('kunci_jurnal.kunci');
     });
 
     // lampiran neraca
