@@ -22,15 +22,15 @@
                 "type": "POST",
             },
             createdRow: function(row, data, index) {
-                if (data.status == 1 && (data.sts_batal == '0' || data.sts_batal == '' || data
-                        .sts_batal == null)) {
+                if (data.status == 1 && (data.sp2d_batal == '0' || data.sp2d_batal == '' || data
+                        .sp2d_batal == null)) {
                     $(row).css("background-color", "#03d3ff");
                     $(row).css("color", "white");
-                } else if (data.status == 1 && data.sts_batal == '1') {
-                    $(row).css("background-color", "#red");
+                } else if (data.status == 1 && data.sp2d_batal == '1') {
+                    $(row).css("background-color", "#ff0000");
                     $(row).css("color", "white");
-                } else if (data.sts_batal == '1') {
-                    $(row).css("background-color", "#red");
+                } else if (data.sp2d_batal == '1') {
+                    $(row).css("background-color", "#ff0000");
                     $(row).css("color", "white");
                 }
             },
