@@ -37,9 +37,9 @@
                             return `<a href="javascript:void(0);" onclick="kunci('${data.kd_skpd}','${data.kunci_jurnal}')" class="btn btn-dark btn-md"><i class="fa fa-lock"></i> / <i class="fas fa-lock-open"></i></a>`
                         } else {
                             if (data.kunci_jurnal == 1) {
-                                return `<a href="javascript:void(0);" onclick="kunci('${data.kd_skpd}','${data.kunci_jurnal}')" class="btn btn-info btn-md"><i class="fa fa-lock" aria-hidden="true"></i></a>`
+                                return `<a href="javascript:void(0);" onclick="kunci('${data.kd_skpd}','${data.kunci_jurnal}')" class="btn btn-danger btn-md"><i class="fa fa-lock" aria-hidden="true"></i></a>`
                             } else {
-                                return `<a href="javascript:void(0);" onclick="kunci('${data.kd_skpd}','${data.kunci_jurnal}')" class="btn btn-danger btn-md"><i class="fas fa-lock-open"></i></a>`
+                                return `<a href="javascript:void(0);" onclick="kunci('${data.kd_skpd}','${data.kunci_jurnal}')" class="btn btn-success btn-md"><i class="fas fa-lock-open"></i></a>`
                             }
                         }
                     }
