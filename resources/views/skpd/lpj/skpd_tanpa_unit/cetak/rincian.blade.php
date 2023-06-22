@@ -217,8 +217,8 @@
     <div style="padding-top:20px">
         <table class="table" style="width: 100%">
             <tr>
-                <td style="text-align: center">MENGETAHUI :</td>
-                <td style="margin: 2px 0px;text-align: center">
+                <td style="text-align: center;width:50%">MENGETAHUI :</td>
+                <td style="margin: 2px 0px;text-align: center;width:50%">
                     {{ $daerah->daerah }}, {{ tanggal($lpj->tgl_lpj) }}
                 </td>
             </tr>

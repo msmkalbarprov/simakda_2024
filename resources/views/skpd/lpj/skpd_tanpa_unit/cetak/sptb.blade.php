@@ -104,7 +104,7 @@
         <table class="table" style="width: 100%">
             <tr>
                 <td style="width: 50%"></td>
-                <td style="margin: 2px 0px;text-align: center">
+                <td style="margin: 2px 0px;text-align: center;width:50%">
                     {{ $daerah->daerah }},{{ tanggal($jumlah_belanja->tgl_lpj) }}
                 </td>
             </tr>
