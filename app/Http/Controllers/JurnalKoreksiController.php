@@ -26,12 +26,20 @@ class JurnalKoreksiController extends Controller
             'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
         ];
 
-        if ($role == '1007') {
-            if ($akses == '1') {
-                return view('skpd.koreksi_rekening.index')->with($data);
-            } else {
-                return view('akses_koreksi');
-            }
+        $kunci = kunci()->kunci_jurnal;
+
+        // if ($role == '1007') {
+        //     if ($akses == '1') {
+        //         return view('skpd.koreksi_rekening.index')->with($data);
+        //     } else {
+        //         return view('akses_koreksi');
+        //     }
+        // } else {
+        //     return view('skpd.koreksi_rekening.index')->with($data);
+        // }
+
+        if ($kunci == '1') {
+            return view('akses_koreksi');
         } else {
             return view('skpd.koreksi_rekening.index')->with($data);
         }
@@ -78,6 +86,13 @@ class JurnalKoreksiController extends Controller
                 ->groupByRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan")
                 ->get()
         ];
+
+        $kunci = kunci()->kunci_jurnal;
+
+        if ($kunci == '1') {
+            return view('akses_koreksi');
+        }
+
         return view('skpd.koreksi_rekening.create')->with($data);
     }
 
@@ -723,12 +738,20 @@ class JurnalKoreksiController extends Controller
             'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
         ];
 
-        if ($role == '1007') {
-            if ($akses == '1') {
-                return view('skpd.koreksi_nominal.index')->with($data);
-            } else {
-                return view('akses_koreksi');
-            }
+        $kunci = kunci()->kunci_jurnal;
+
+        // if ($role == '1007') {
+        //     if ($akses == '1') {
+        //         return view('skpd.koreksi_nominal.index')->with($data);
+        //     } else {
+        //         return view('akses_koreksi');
+        //     }
+        // } else {
+        //     return view('skpd.koreksi_nominal.index')->with($data);
+        // }
+
+        if ($kunci == '1') {
+            return view('akses_koreksi');
         } else {
             return view('skpd.koreksi_nominal.index')->with($data);
         }
@@ -769,6 +792,13 @@ class JurnalKoreksiController extends Controller
                 ->distinct()
                 ->get(),
         ];
+
+        $kunci = kunci()->kunci_jurnal;
+
+        if ($kunci == '1') {
+            return view('akses_koreksi');
+        }
+
         return view('skpd.koreksi_nominal.create')->with($data);
     }
 
