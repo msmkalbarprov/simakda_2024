@@ -361,10 +361,10 @@
                 return;
             }
 
-            if (nilai == 0) {
-                alert('Nilai Nol.....!!!, Cek Lagi...!!!');
-                return;
-            }
+            // if (nilai == 0) {
+            //     alert('Nilai Nol.....!!!, Cek Lagi...!!!');
+            //     return;
+            // }
 
             let tampungan = rincian_inputan.rows().data().toArray().map((value) => {
                 let result = {
@@ -809,7 +809,8 @@
                 success: function(data) {
                     let sumber_awal = data.sumber_awal;
                     let sumber_koreksi = data.sumber_koreksi;
-
+                    console.log(sumber_awal);
+                    console.log(sumber_koreksi);
                     $('#sumber_awal').empty();
                     $('#sumber_awal').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
