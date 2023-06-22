@@ -522,10 +522,10 @@
                 return;
             }
 
-            if (nilai == 0) {
-                alert('Nilai Nol.....!!!, Cek Lagi...!!!');
-                return;
-            }
+            // if (nilai == 0) {
+            //     alert('Nilai Nol.....!!!, Cek Lagi...!!!');
+            //     return;
+            // }
 
             if (nilai > (sisa_angkas + nilai_atas)) {
                 alert('Nilai Koreksi melebihi Sisa Anggaran Kas');
