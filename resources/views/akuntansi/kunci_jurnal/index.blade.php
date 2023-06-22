@@ -8,9 +8,9 @@
                     List Buka Kunci
                 </div>
                 <div class="card-body">
-                    <button type="button" class="btn btn-md btn-info"><i class="fa fa-lock" aria-hidden="true"></i> : Biru
+                    <button type="button" class="btn btn-md btn-danger"><i class="fa fa-lock" aria-hidden="true"></i> : Merah
                         Artinya Terkunci</button>
-                    <button type="button" class="btn btn-md btn-danger"><i class="fas fa-lock-open"></i> : Merah
+                    <button type="button" class="btn btn-md btn-success"><i class="fas fa-lock-open"></i> : Hijau
                         Artinya Tidak Terkunci</button>
                 </div>
                 <div class="card-body">
