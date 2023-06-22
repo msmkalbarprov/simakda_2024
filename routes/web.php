@@ -1104,6 +1104,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('edit_koreksi_rekening/{no_bukti?}', [JurnalKoreksiController::class, 'editRekening'])->where('no_bukti', '(.*)')->name('koreksi_rekening.edit');
                 Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateRekening'])->name('koreksi_rekening.update');
                 Route::post('hapus_rekening', [JurnalKoreksiController::class, 'hapusRekening'])->name('koreksi_rekening.hapus');
+
+                Route::get('cetak', [JurnalKoreksiController::class, 'cetakRekening'])->name('koreksi_rekening.cetak');
             });
             // Koreksi Atas Nominal
             Route::group(['prefix' => 'koreksi_nominal'], function () {
@@ -1114,6 +1116,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
                 Route::get('edit_koreksi_nominal/{no_bukti?}', [JurnalKoreksiController::class, 'editNominal'])->where('no_bukti', '(.*)')->name('koreksi_nominal.edit');
                 Route::post('simpan_edit_rekening', [JurnalKoreksiController::class, 'updateNominal'])->name('koreksi_nominal.update');
                 Route::post('hapus_rekening', [JurnalKoreksiController::class, 'hapusNominal'])->name('koreksi_nominal.hapus');
+
+                Route::get('cetak', [JurnalKoreksiController::class, 'cetakNominal'])->name('koreksi_nominal.cetak');
             });
         });
         // Pendapatan
@@ -1295,6 +1299,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('rekening', [SppTuController::class, 'rekening'])->name('spp_tu.rekening');
             Route::post('ang_spd_angkas', [SppTuController::class, 'angSpdAngkas'])->name('spp_tu.ang_spd_angkas');
             Route::post('nomor', [SppTuController::class, 'nomor'])->name('spp_tu.nomor');
+            Route::post('simpan_tampungan', [SppTuController::class, 'simpanTampungan'])->name('spp_tu.simpan_tampungan');
             Route::post('simpan', [SppTuController::class, 'simpan'])->name('spp_tu.simpan');
             Route::get('edit/{no_spp?}/{kd_skpd?}', [SppTuController::class, 'edit'])->name('spp_tu.edit');
             Route::post('update', [SppTuController::class, 'update'])->name('spp_tu.update');

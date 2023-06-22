@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 use function PHPUnit\Framework\isNull;
 
@@ -18,14 +19,21 @@ class JurnalKoreksiController extends Controller
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'data_ppk' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PPK','PA')", [$kd_skpd]),
+            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
+        ];
+
         if ($role == '1007') {
             if ($akses == '1') {
-                return view('skpd.koreksi_rekening.index');
+                return view('skpd.koreksi_rekening.index')->with($data);
             } else {
                 return view('akses_koreksi');
             }
         } else {
-            return view('skpd.koreksi_rekening.index');
+            return view('skpd.koreksi_rekening.index')->with($data);
         }
     }
 
@@ -665,19 +673,64 @@ class JurnalKoreksiController extends Controller
         }
     }
 
+    public function cetakRekening(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $pa_kpa = $request->pa_kpa;
+        $ppk = $request->ppk;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $jenis_print = $request->jenis_print;
+        $tgl_ttd = $request->tgl_ttd;
+
+        $data = [
+            'ppk' => collect(DB::select("SELECT * FROM ms_ttd where kd_skpd=? and nip=? and kode='PPK'", [$kd_skpd, $ppk]))
+                ->first(),
+            'pa_kpa' => collect(DB::select("SELECT * FROM ms_ttd where kd_skpd=? and nip=? and kode in ('PA','KPA')", [$kd_skpd, $pa_kpa]))
+                ->first(),
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data' => DB::select("SELECT a.tgl_bukti,a.no_bukti,b.nilai,b.kd_sub_kegiatan,kd_rek6,nm_rek6 from trhtransout a INNER JOIN trdtransout b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+                WHERE a.kd_skpd=? AND panjar='3' AND (tgl_bukti BETWEEN ? AND ?)
+                 ORDER BY a.tgl_bukti ASC,a.no_bukti ASC, b.nilai DESC", [$kd_skpd, $periode1, $periode2]),
+            'tgl_ttd' => $tgl_ttd
+        ];
+
+        $view = view('skpd.koreksi_rekening.cetak')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
+        }
+    }
+
     // KOREKSI TRANSAKSI NOMINAL
     public function indexNominal()
     {
         $akses = Auth::user()->koreksi;
         $role = Auth::user()->role;
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        $data = [
+            'data_ppk' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PPK','PA')", [$kd_skpd]),
+            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
+        ];
+
         if ($role == '1007') {
             if ($akses == '1') {
-                return view('skpd.koreksi_nominal.index');
+                return view('skpd.koreksi_nominal.index')->with($data);
             } else {
                 return view('akses_koreksi');
             }
         } else {
-            return view('skpd.koreksi_nominal.index');
+            return view('skpd.koreksi_nominal.index')->with($data);
         }
     }
 
@@ -887,6 +940,46 @@ class JurnalKoreksiController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function cetakNominal(Request $request)
+    {
+        $kd_skpd = $request->kd_skpd;
+        $pa_kpa = $request->pa_kpa;
+        $ppk = $request->ppk;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $jenis_print = $request->jenis_print;
+        $tgl_ttd = $request->tgl_ttd;
+
+        $data = [
+            'ppk' => collect(DB::select("SELECT * FROM ms_ttd where kd_skpd=? and nip=? and kode='PPK'", [$kd_skpd, $ppk]))
+                ->first(),
+            'pa_kpa' => collect(DB::select("SELECT * FROM ms_ttd where kd_skpd=? and nip=? and kode in ('PA','KPA')", [$kd_skpd, $pa_kpa]))
+                ->first(),
+            'header' =>  DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'data' => DB::select("SELECT a.tgl_bukti,a.no_bukti,b.nilai,b.kd_sub_kegiatan,kd_rek6,nm_rek6,
+                (SELECT SUM (nilai) FROM trdtransout WHERE kd_skpd = ? AND panjar = '5' AND no_bukti=a.no_bukti) as total
+                FROM trhtransout a INNER JOIN trdtransout b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+                WHERE a.kd_skpd=? AND panjar='5' AND (tgl_bukti BETWEEN ? AND ?)
+                 ORDER BY a.tgl_bukti ASC,a.no_bukti ASC, b.nilai DESC", [$kd_skpd, $kd_skpd, $periode1, $periode2]),
+            'tgl_ttd' => $tgl_ttd
+        ];
+
+        $view = view('skpd.koreksi_nominal.cetak')->with($data);
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } else {
+            return $view;
         }
     }
 }
