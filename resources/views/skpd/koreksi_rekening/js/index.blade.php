@@ -120,6 +120,8 @@
                     if (data.message == '1') {
                         alert('Proses Hapus Berhasil');
                         window.location.reload();
+                    } else if (data.message == '3') {{
+                        alert('Jurnal Koreksi sudah diLPJkan...!!!');
                     } else {
                         alert('Proses Hapus Gagal...!!!');
                     }

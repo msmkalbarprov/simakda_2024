@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     List Koreksi Transaksi
-                    <a href="{{ route('koreksi_rekening.create') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('koreksi_rekening.create') }}" class="btn btn-primary {{kunci()->kunci_jurnal== 1 ? 'hidden' : ''}}" style="float: right;">Tambah</a>
                     <a href="javascript:void(0);" onclick="cetak()" class="btn btn-success btn-md"
                         style="float: right;margin-right:4px">Cetak</a>
                 </div>

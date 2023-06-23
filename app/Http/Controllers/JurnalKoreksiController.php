@@ -26,7 +26,7 @@ class JurnalKoreksiController extends Controller
             'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
         ];
 
-        $kunci = kunci()->kunci_jurnal;
+        
 
         // if ($role == '1007') {
         //     if ($akses == '1') {
@@ -38,17 +38,18 @@ class JurnalKoreksiController extends Controller
         //     return view('skpd.koreksi_rekening.index')->with($data);
         // }
 
-        if ($kunci == '1') {
-            return view('akses_koreksi');
-        } else {
+        // if ($kunci == '1') {
+        //     return view('akses_koreksi');
+        // } else {
             return view('skpd.koreksi_rekening.index')->with($data);
-        }
+        // }
+
     }
 
     public function loadDataRekening()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-
+        $kunci = kunci()->kunci_jurnal;
         $tgl_terima = DB::table('trhspj_ppkd')
             ->selectRaw("ISNULL(MAX(tgl_terima),'2016-01-01') as tgl_terima")
             ->where(['cek' => '1', 'kd_skpd' => $kd_skpd])
@@ -61,9 +62,15 @@ class JurnalKoreksiController extends Controller
             ->orderBy('a.no_bukti')
             ->orderBy('a.kd_skpd')
             ->get();
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("koreksi_rekening.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapusRekening(' . $row->no_bukti . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use($kunci) {
+            if($kunci==1){
+                $btn ='';
+            }else{
+                $btn = '<a href="' . route("koreksi_rekening.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapusRekening(' . $row->no_bukti . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
+            
+            
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -670,9 +677,21 @@ class JurnalKoreksiController extends Controller
         $no_bukti = $request->no_bukti;
         $kd_skpd = $request->kd_skpd;
 
+        
+
         DB::beginTransaction();
         try {
 
+            $cek_spj = DB::table('trlpj')
+                ->select(DB::raw("COUNT(*) as tot_lpj"))
+                ->selectRaw("(SELECT DISTINCT CASE WHEN MONTH(a.tgl_bukti)<=?  THEN 1 ELSE 0 END FROM trhtransout a WHERE  a.panjar = '0' AND a.kd_skpd=? AND a.no_bukti=?) as tot_spj", [$spjbulan, $kd_skpd, $no_bukti])
+                ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->first();
+            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0) {
+                return response()->json([
+                    'message' => '3'
+                ]);
+            }
             DB::table('trhtransout')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $no_bukti])->delete();
             DB::table('trdtransout')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $no_bukti])->delete();
 
@@ -738,7 +757,7 @@ class JurnalKoreksiController extends Controller
             'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
         ];
 
-        $kunci = kunci()->kunci_jurnal;
+        // $kunci = kunci()->kunci_jurnal;
 
         // if ($role == '1007') {
         //     if ($akses == '1') {
@@ -750,17 +769,17 @@ class JurnalKoreksiController extends Controller
         //     return view('skpd.koreksi_nominal.index')->with($data);
         // }
 
-        if ($kunci == '1') {
-            return view('akses_koreksi');
-        } else {
+        // if ($kunci == '1') {
+        //     return view('akses_koreksi');
+        // } else {
             return view('skpd.koreksi_nominal.index')->with($data);
-        }
+        // }
     }
 
     public function loadDataNominal()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-
+        $kunci = kunci()->kunci_jurnal;
         $tgl_terima = DB::table('trhspj_ppkd')
             ->selectRaw("ISNULL(MAX(tgl_terima),'2016-01-01') as tgl_terima")
             ->where(['cek' => '1', 'kd_skpd' => $kd_skpd])
@@ -773,9 +792,14 @@ class JurnalKoreksiController extends Controller
             ->orderBy('a.no_bukti')
             ->orderBy('a.kd_skpd')
             ->get();
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("koreksi_nominal.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use($kunci) {
+            if($kunci==1){
+                $btn = '';
+            }else{
+                $btn = '<a href="' . route("koreksi_nominal.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapusRekening(' . $row->no_bukti . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
+            
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -957,6 +981,18 @@ class JurnalKoreksiController extends Controller
 
         DB::beginTransaction();
         try {
+
+            $cek_spj = DB::table('trlpj')
+            ->select(DB::raw("COUNT(*) as tot_lpj"))
+            ->selectRaw("(SELECT DISTINCT CASE WHEN MONTH(a.tgl_bukti)<=?  THEN 1 ELSE 0 END FROM trhtransout a WHERE  a.panjar = '0' AND a.kd_skpd=? AND a.no_bukti=?) as tot_spj", [$spjbulan, $kd_skpd, $no_bukti])
+            ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])
+            ->first();
+            
+            if ($cek_spj->tot_lpj != 0 || $cek_spj->tot_spj != 0) {
+                return response()->json([
+                    'message' => '3'
+                ]);
+            }
 
             DB::table('trhtransout')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $no_bukti])->delete();
             DB::table('trdtransout')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $no_bukti])->delete();
