@@ -119,25 +119,7 @@
                 </tr>
             </thead>
                 @php
-                    
-					$tot_apeg       = $tot->ang_peg;
-					$tot_abarjas    = $tot->ang_brng;
-                    $tot_amod       = $tot->ang_mod;
-                    $tot_ahibah     = $tot->ang_hibah;
-                    $tot_abansos    = $tot->ang_bansos;
-                    $tot_abghasil   = $tot->ang_bghasil;
-                    $tot_abankeu    = $tot->ang_bankeu;
-                    $tot_abtt       = $tot->ang_btt;
-                    $tot_aja        = $tot->jum_ang;
-                    $tot_rpeg       = $tot->real_peg;
-                    $tot_rbarjas    = $tot->real_brng;
-                    $tot_rmod       = $tot->real_mod;
-                    $tot_rhibah     = $tot->real_hibah;
-                    $tot_rbansos    = $tot->real_bansos;
-                    $tot_rbghasil   = $tot->real_bghasil;
-                    $tot_rbankeu    = $tot->real_bankeu;
-                    $tot_rbtt       = $tot->real_btt;
-                    $tot_rja        = $tot->real_jum;
+                  
                     $total_apeg     =0;
                     $total_abarjas      =0;
                     $total_amod     =0;
@@ -188,32 +170,7 @@
                         @endphp
 
 
-                              
-                        @if($len=='1')
-                        <tr>
-                               <td align="left" valign="top" style="font-size:12px"><b>{{ $kode}}</b></td> 
-                               <td align="left"  valign="top" style="font-size:12px"><b>{{$nm_rek}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_peg)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_brng)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_mod)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_hibah)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bansos)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bghasil)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_bankeu)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($ang_btt)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($tot_ang)}}</b></td> 
-
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_peg)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_brng)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_mod)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_hibah)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_bansos)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_bghasil)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_bankeu)}}</b></td>
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($real_btt)}}</b></td> 
-                               <td align="right" valign="top" style="font-size:12px"><b>{{rupiah($tot_real)}}</b></td> 
-                            </tr>
-                        @else
+                    
 
                         @php
                             $total_apeg       =$total_apeg+$ang_peg;
@@ -264,7 +221,6 @@
                                <td align="right" valign="top" style="font-size:12px">{{rupiah($real_btt)}}</td> 
                                <td align="right" valign="top" style="font-size:12px">{{rupiah($real_peg+$real_brng+$real_mod+$real_hibah+$real_bansos+$real_bghasil+$real_bankeu+$real_btt)}}</td> 
                             </tr>     
-                        @endif
                     
                 @endforeach
 
