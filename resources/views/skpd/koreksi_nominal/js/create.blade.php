@@ -658,6 +658,11 @@
                 return;
             }
 
+            if (rincian_rekening.length % 2 != 0) {
+                alert('Silahkan lengkapi Kredit dan Debet terlebih dahulu!');
+                return
+            }
+
             let tahun_input = tgl_transaksi.substr(0, 4);
 
             if (tahun_input != tahun_anggaran) {
