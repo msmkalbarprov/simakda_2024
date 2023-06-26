@@ -417,7 +417,7 @@
                     $('#nm_sumber').val(data.nm_sumber_dana1);
                 }
             })
-            // $('#realisasi_sumber').val(null);
+            $('#realisasi_sumber').val(null);
             $('#sisa_sumber').val(null);
             load_dana(sumber);
 
@@ -1088,13 +1088,13 @@
                         minimumFractionDigits: 2
                     }).format(data.spd - data.angkas_lalu));
 
-                    $('#realisasi_anggaran').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(data.angkas_lalu));
-                    let total_anggaran = rupiah(document.getElementById('total_anggaran').value)
-                    $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(total_anggaran - data.angkas_lalu));
+                    // $('#realisasi_anggaran').val(new Intl.NumberFormat('id-ID', {
+                    //     minimumFractionDigits: 2
+                    // }).format(data.angkas_lalu));
+                    // let total_anggaran = rupiah(document.getElementById('total_anggaran').value)
+                    // $('#sisa_anggaran').val(new Intl.NumberFormat('id-ID', {
+                    //     minimumFractionDigits: 2
+                    // }).format(total_anggaran - data.angkas_lalu));
 
                     let potongan_ls = parseFloat(data.potongan_ls) || 0;
                     $('#potongan_ls').val(new Intl.NumberFormat('id-ID', {
@@ -1299,15 +1299,15 @@
                     $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
-                    // $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
-                    //     minimumFractionDigits: 2
-                    // }).format(data));
+                    $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(data));
                     let total_sumber = rupiah(document.getElementById('total_sumber').value);
-                    let realisasi_sumber = rupiah(document.getElementById('realisasi_sumber')
-                        .value);
+                    // let realisasi_sumber = rupiah(document.getElementById('realisasi_sumber')
+                    //     .value);
                     $('#sisa_sumber').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(total_sumber - realisasi_sumber));
+                    }).format(total_sumber - data));
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
