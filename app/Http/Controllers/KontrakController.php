@@ -58,6 +58,16 @@ class KontrakController extends Controller
     public function store(KontrakRequest $request)
     {
         $input = array_map('htmlentities', $request->validated());
+
+        $cek = DB::table('ms_kontrak')
+            ->where(['no_kontrak' => $input['no_kontrak'], 'kd_skpd' => $input['kd_skpd']])
+            ->count();
+
+        if ($cek > 0) {
+            return redirect()->back()->withInput()
+                ->with(['message' => 'No Kontrak telah ada!', 'alert' => 'alert-danger']);
+        }
+
         DB::table('ms_kontrak')
             ->insert([
                 'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),

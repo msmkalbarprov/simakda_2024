@@ -7,13 +7,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{'Tambah Kontrak'}}</h4>
+                        <h4 class="mb-0">{{ 'Tambah Kontrak' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{'Kontrak'}}</a></li>
-                                <li class="breadcrumb-item active">{{'Tambah Kontrak'}}</li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{ 'Kontrak' }}</a></li>
+                                <li class="breadcrumb-item active">{{ 'Tambah Kontrak' }}</li>
                             </ol>
                         </div>
 
@@ -21,7 +21,11 @@
                 </div>
             </div>
             <!-- end page title -->
-
+            @if (session()->has('message'))
+                <div class="alert {{ session('alert') ?? 'alert-info' }}">
+                    {{ session('message') }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <form action="{{ route('kontrak.store') }}" method="post">
@@ -75,8 +79,9 @@
                         <div class="mb-3 row">
                             <label for="nmpel" class="col-md-2 col-form-label">Pelaksana Pekerjaan/Rekanan</label>
                             <div class="col-md-10">
-                                <input class="form-control @error('nmpel') is-invalid @enderror" value="{{ old('nmpel') }}"
-                                    type="text" placeholder="Silahkan isi dengan nama pelaksana pekerjaan" id="nmpel"
+                                <input class="form-control @error('nmpel') is-invalid @enderror"
+                                    value="{{ old('nmpel') }}" type="text"
+                                    placeholder="Silahkan isi dengan nama pelaksana pekerjaan" id="nmpel"
                                     name="nmpel">
                                 @error('nmpel')
                                     <div class="invalid-feedback">{{ $message }}</div>
