@@ -874,7 +874,7 @@ function lampiran_spm($beban, $no_spm, $kd_skpd)
                     FROM trhspm a
                     INNER JOIN trhspp b ON a.no_spp=b.no_spp AND a.kd_skpd=b.kd_skpd
                     INNER JOIN trdspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
-                    INNER JOIN trskpd d ON c.kd_sub_kegiatan=d.kd_sub_kegiatan  AND c.kd_skpd=d.kd_skpd
+                    INNER JOIN trskpd d ON c.kd_sub_kegiatan=d.kd_sub_kegiatan  AND c.kd_bidang=d.kd_skpd
                     WHERE a.no_spm=? AND a.kd_skpd=? and d.jns_ang=?
                     AND c.no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
                     AND jns_spp IN ('1','2','3'))
@@ -884,7 +884,7 @@ function lampiran_spm($beban, $no_spm, $kd_skpd)
                     FROM trhspm a
                     INNER JOIN trhspp b ON a.no_spp=b.no_spp AND a.kd_skpd=b.kd_skpd
                     INNER JOIN trdspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
-                    INNER JOIN trskpd d ON c.kd_sub_kegiatan=d.kd_sub_kegiatan  AND c.kd_skpd=d.kd_skpd
+                    INNER JOIN trskpd d ON c.kd_sub_kegiatan=d.kd_sub_kegiatan  AND c.kd_bidang=d.kd_skpd
                     WHERE a.no_spm=? AND a.kd_skpd=? and d.jns_ang=?
                     AND c.no_bukti IN (SELECT no_bukti FROM trhtransout WHERE left(kd_skpd,17)=left(?,17)
                     AND jns_spp IN ('1','2','3'))
