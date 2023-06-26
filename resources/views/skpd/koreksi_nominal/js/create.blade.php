@@ -285,7 +285,7 @@
         });
 
         $('#sumber_awal').on('select2:select', function() {
-            let sumber = this.value;
+            let sumber = this.value.trim();
             let nilai = $(this).find(':selected').data('nilai');
 
             $('#sumber_koreksi').val(sumber).change();
@@ -663,6 +663,14 @@
                 return
             }
 
+            let total_transaksi = rincian.rows().data().toArray().reduce((previousValue,
+                currentValue) => (previousValue += rupiah(currentValue.nilai)), 0);
+
+            if (total_transaksi != total) {
+                alert('Total rincian tidak sama dengan Total transaksi!Silahkan refresh!');
+                return;
+            }
+
             let tahun_input = tgl_transaksi.substr(0, 4);
 
             if (tahun_input != tahun_anggaran) {
@@ -814,19 +822,18 @@
                 success: function(data) {
                     let sumber_awal = data.sumber_awal;
                     let sumber_koreksi = data.sumber_koreksi;
-                    console.log(sumber_awal);
-                    console.log(sumber_koreksi);
+
                     $('#sumber_awal').empty();
                     $('#sumber_awal').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(sumber_awal, function(index, sumber_awal) {
                         $('#sumber_awal').append(
-                            `<option value="${sumber_awal.sumber}" data-nilai="${sumber_awal.nilai}">${sumber_awal.sumber} | ${sumber_awal.nilai}</option>`
+                            `<option value="${sumber_awal.sumber.trim()}" data-nilai="${sumber_awal.nilai}">${sumber_awal.sumber} | ${sumber_awal.nilai}</option>`
                         );
                     })
                     $.each(sumber_koreksi, function(index, sumber_koreksi) {
                         $('#sumber_koreksi').append(
-                            `<option value="${sumber_koreksi.sumber}" data-nilai_sumber="${sumber_koreksi.nilai_sumber}">${sumber_koreksi.sumber} | ${sumber_koreksi.nilai_sumber}</option>`
+                            `<option value="${sumber_koreksi.sumber.trim()}" data-nilai_sumber="${sumber_koreksi.nilai_sumber}">${sumber_koreksi.sumber} | ${sumber_koreksi.nilai_sumber}</option>`
                         );
                     })
                 }

@@ -697,6 +697,14 @@
                 return
             }
 
+            let total_transaksi = rincian.rows().data().toArray().reduce((previousValue,
+                currentValue) => (previousValue += rupiah(currentValue.nilai)), 0);
+
+            if (total_transaksi != total) {
+                alert('Total rincian tidak sama dengan Total transaksi!Silahkan refresh!');
+                return;
+            }
+
             let tahun_input = tgl_transaksi.substr(0, 4);
 
             if (tahun_input != tahun_anggaran) {
