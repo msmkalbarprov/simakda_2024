@@ -22,7 +22,7 @@
                                         <option value="" disabled selected>Silahkan Pilih Bank</option>
                                         @foreach ($daftar_bank as $bank)
                                             <option value="{{ $bank->kd_bank }}" data-bic="{{ $bank->bic }}"
-                                                data-nama="{{ $bank->nama_bank }}"
+                                                data-nama="{{ $bank->nama_bank }}" data-digit="{{ $bank->digit }}"
                                                 {{ old('bank') == $bank->kd_bank ? 'selected' : '' }}>{{ $bank->kd_bank }}
                                                 |
                                                 {{ $bank->nama_bank }}</option>
@@ -85,6 +85,8 @@
                                             Pihak Ketiga</option>
                                         <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Rekening
                                             Penampung Pajak</option>
+                                        <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Virtual Account
+                                        </option>
                                     </optgroup>
                                 </select>
                                 @error('jenis')
@@ -122,8 +124,9 @@
                         <div class="mb-3 row">
                             <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik</label>
                             <div class="col-md-10">
-                                <input class="form-control" type="text" placeholder="Silahkan isi dengan nama penerima"
-                                    id="nm_rekening" name="nm_rekening" value="{{ old('nm_rekening') }}">
+                                <input class="form-control" type="text"
+                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening"
+                                    value="{{ old('nm_rekening') }}">
                             </div>
                         </div>
                         <!-- Cek Rekening -->
@@ -310,18 +313,21 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
             $('#jenis').on('select2:select', function() {
+                let bank = $('#bank').val();
+
+                if (!bank) {
+                    alert('Silahkan pilih Bank terlebih dahulu!');
+                    $('#jenis').val(null).change();
+                    return;
+                }
+
                 let jenis = this.value;
 
-                if (jenis == '2') {
-                    $('#rekanan').val(null);
-                    $('#pimpinan').val(null);
-                    $('#alamat').val(null);
-                } else {
-                    $('#rekanan').val(null);
-                    $('#pimpinan').val(null);
-                    $('#alamat').val(null);
-                }
+                $('#rekanan').val(null);
+                $('#pimpinan').val(null);
+                $('#alamat').val(null);
             });
 
             // $('#rekanan').on('change', function() {
@@ -391,7 +397,7 @@
                 })
             }
 
-            $('#bank').on("change", function() {
+            $('#bank').on("select2:select", function() {
                 $("#nama_cabang").val("");
                 let bic = $(this).find(':selected').data('bic');
                 let nm_bank = $(this).find(':selected').data('nama');
@@ -416,13 +422,13 @@
                 })
             });
 
-            $('#cabang').on('change', function() {
+            $('#cabang').on('select2:select', function() {
                 let selected = $(this).find('option:selected');
                 let nama_cabang = selected.data('nama');
                 $("#nama_cabang").val(nama_cabang);
             });
 
-            $('#kode_akun').on("change", function() {
+            $('#kode_akun').on("select2:select", function() {
                 let kd_map = this.value;
                 $.ajax({
                     type: "POST",
@@ -449,6 +455,9 @@
                 let kode_bank = document.getElementById('bank').value;
                 let no_rek = document.getElementById('rekening').value;
                 let nm_rek = document.getElementById('nm_rekening').value;
+
+                let digit = $('#bank').find('option:selected').data('digit');
+
                 if (!kode_bank) {
                     alert('Bank harus dipilih!');
                     exit;
@@ -461,64 +470,82 @@
                     alert('Nama rekening harus diisi!');
                     exit;
                 }
-                if (kode_bank && no_rek && nm_rek) {
-                    swal.fire({
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        title: 'Proses cek Rekening Bank',
-                        text: 'Silahkan tunggu !!!',
-                        onOpen: function() {
-                            swal.showLoading()
-                        }
-                    })
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('penerima.cekRekening') }}",
-                        dataType: 'json',
-                        data: {
-                            kode_bank: kode_bank,
-                            no_rek: no_rek,
-                            nm_rek: nm_rek,
-                        },
-                        success: function(data) {
-                            let data1 = $.parseJSON(data);
-                            if (data1.status) {
-                                Swal.fire({
-                                    title: 'SUKSES!',
-                                    text: 'Rekening bank ' + data1.data[0].data
-                                        .nomorRekening + '-' + data1.data[0].data
-                                        .namaPemilikRekening + ' tersedia',
-                                    icon: 'success',
-                                    confirmButtonColor: '#5b73e8',
-                                })
 
-                                $("#no_rekening_validasi").val(data1.data[0].data
-                                    .nomorRekening);
-                                $("#nm_rekening_validasi").val(data1.data[0].data
-                                    .namaPemilikRekening);
-                                if (jenis == '1') {
-                                    $("#rekanan").val(data1.data[0].data
-                                        .namaPemilikRekening);
-                                }
-                                document.getElementById("save").disabled = false;
-                            } else {
-                                let pesan = data1.message.replaceAll(" ", "\u00A0");
-                                Swal.fire({
-                                    type: "error",
-                                    icon: "error",
-                                    title: "Oops...",
-                                    text: pesan,
-                                    confirmButtonClass: "btn btn-confirm mt-2",
-                                })
-                                document.getElementById("save").disabled = true;
-                                $("#no_rekening_validasi").attr("value", '');
-                                $("#nm_rekening_validasi").attr("value", '');
-                                $('#rekanan').val(null);
+                if (jenis == '4') {
+                    if (no_rek.length > digit) {
+                        alert('No Rekening melebihi digit inputan rekening, yaitu ' + digit + ' digit!');
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: 'SUKSES!',
+                        text: 'Rekening bank ' + no_rek + '-' + nm_rek + ' tersimpan',
+                        icon: 'success',
+                        confirmButtonColor: '#5b73e8',
+                    })
+
+                    $("#no_rekening_validasi").val(no_rek);
+                    $("#nm_rekening_validasi").val(nm_rek);
+                    document.getElementById("save").disabled = false;
+                } else {
+                    if (kode_bank && no_rek && nm_rek) {
+                        swal.fire({
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            title: 'Proses cek Rekening Bank',
+                            text: 'Silahkan tunggu !!!',
+                            onOpen: function() {
+                                swal.showLoading()
                             }
-                        }
-                    })
-                }
+                        })
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('penerima.cekRekening') }}",
+                            dataType: 'json',
+                            data: {
+                                kode_bank: kode_bank,
+                                no_rek: no_rek,
+                                nm_rek: nm_rek,
+                            },
+                            success: function(data) {
+                                let data1 = $.parseJSON(data);
+                                if (data1.status) {
+                                    Swal.fire({
+                                        title: 'SUKSES!',
+                                        text: 'Rekening bank ' + data1.data[0].data
+                                            .nomorRekening + '-' + data1.data[0].data
+                                            .namaPemilikRekening + ' tersedia',
+                                        icon: 'success',
+                                        confirmButtonColor: '#5b73e8',
+                                    })
 
+                                    $("#no_rekening_validasi").val(data1.data[0].data
+                                        .nomorRekening);
+                                    $("#nm_rekening_validasi").val(data1.data[0].data
+                                        .namaPemilikRekening);
+                                    if (jenis == '1') {
+                                        $("#rekanan").val(data1.data[0].data
+                                            .namaPemilikRekening);
+                                    }
+                                    document.getElementById("save").disabled = false;
+                                } else {
+                                    let pesan = data1.message.replaceAll(" ", "\u00A0");
+                                    Swal.fire({
+                                        type: "error",
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: pesan,
+                                        confirmButtonClass: "btn btn-confirm mt-2",
+                                    })
+                                    document.getElementById("save").disabled = true;
+                                    $("#no_rekening_validasi").attr("value", '');
+                                    $("#nm_rekening_validasi").attr("value", '');
+                                    $('#rekanan').val(null);
+                                }
+                            }
+                        })
+                    }
+                }
             });
 
             $('#cek_npwp').on("click", function() {
