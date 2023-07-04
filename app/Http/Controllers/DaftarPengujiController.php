@@ -12,6 +12,16 @@ use PDF;
 
 class DaftarPengujiController extends Controller
 {
+    public function jenis(Request $request)
+    {
+        $no_rek = $request->no_rek;
+        $kd_skpd = $request->kd_skpd;
+
+        $data = jenis_rekening($no_rek, $kd_skpd);
+
+        return response()->json($data);
+    }
+
     public function index()
     {
         $data = [
@@ -107,10 +117,11 @@ class DaftarPengujiController extends Controller
                 $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
             })
             ->where('is_verified', '1')
-            ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd', 'bank')
+            ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'nm_skpd', 'bank', 'no_rek', 'kd_skpd')
             ->selectRaw("(SELECT nama from ms_bank a where bank=a.kode) as nama_bank")
             ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
             ->get();
+
         return response()->json($data);
     }
 
@@ -123,8 +134,9 @@ class DaftarPengujiController extends Controller
                     $query->where('sp2d_batal', '')->orWhereNull('sp2d_batal');
                 })
                 ->where('is_verified', '1')
-                ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd', 'jns_spp', 'jenis_beban')
+                ->select('no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'nm_skpd', 'jns_spp', 'jenis_beban', 'no_rek', 'kd_skpd')
                 ->selectRaw("(SELECT bic from ms_bank a where bank=a.kode) as bic")
+
                 ->get()
         ];
 
@@ -440,7 +452,7 @@ class DaftarPengujiController extends Controller
         }
 
         $data = [
-            'ttd' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat','jabatan2')->where(['kode' => 'BUD', 'nip' => $ttd])->first(),
+            'ttd' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat', 'jabatan2')->where(['kode' => 'BUD', 'nip' => $ttd])->first(),
             'tanggal' => DB::table('trhuji')->select('tgl_uji')->where(['no_uji' => $no_uji])->first(),
             'jumlah_detail' => DB::table('trduji as a')->join('trhuji as b', 'a.no_uji', '=', 'b.no_uji')->where(['a.no_uji' => $no_uji])->count(),
             'no_uji' => $no_uji,

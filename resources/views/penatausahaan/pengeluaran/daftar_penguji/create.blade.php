@@ -52,7 +52,8 @@
                                         data-no_spm="{{ $sp2d->no_spm }}" data-tgl_spm="{{ $sp2d->tgl_spm }}"
                                         data-nilai="{{ $sp2d->nilai }}" data-bank="{{ $sp2d->bank }}"
                                         data-bic="{{ $sp2d->bic }}" data-jns_spp="{{ $sp2d->jns_spp }}"
-                                        data-jenis_beban="{{ $sp2d->jenis_beban }}">
+                                        data-jenis_beban="{{ $sp2d->jenis_beban }}"
+                                        data-jenis="{{ jenis_rekening($sp2d->no_rek, $sp2d->kd_skpd) }}">
                                         {{ $sp2d->no_sp2d }} | {{ $sp2d->tgl_sp2d }} |
                                         {{ nama_bank($sp2d->bank) }} | {{ $sp2d->nm_skpd }}
                                     </option>

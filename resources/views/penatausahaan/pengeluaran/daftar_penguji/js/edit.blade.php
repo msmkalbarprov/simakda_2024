@@ -85,7 +85,25 @@
             let bank = $(this).find(':selected').data('bank');
             let jns_spp = $(this).find(':selected').data('jns_spp');
             let jenis_beban = $(this).find(':selected').data('jenis_beban');
+            let no_rek = $(this).find(':selected').data('no_rek');
+            let kd_skpd = $(this).find(':selected').data('kd_skpd');
             let bic = $(this).find(':selected').data('bic').trim();
+
+            let jenis = '';
+
+            $.ajax({
+                url: "{{ route('daftar_penguji.jenis') }}",
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: {
+                    no_rek: no_rek,
+                    kd_skpd: kd_skpd,
+                },
+                success: function(data) {
+                    jenis = data;
+                }
+            })
 
             let no_advice = document.getElementById('no_advice').value;
             let tanggal = document.getElementById('tanggal').value;
@@ -99,6 +117,11 @@
                     jns_spp == '4' &&
                     jenis_beban == '10')) {
                 alert('SP2D Gaji dan Tunjangan Tidak Dapat SP2D Online');
+                return;
+            }
+
+            if (sp2d_online == '1' && jenis == '4') {
+                alert('SP2D dengan Virtual Account tidak dapat melakukan SP2D Online!');
                 return;
             }
 
@@ -245,7 +268,7 @@
                     `<option value="0" disabled selected>Silahkan Pilih</option>`);
                 $.each(data, function(index, data) {
                     $('#no_sp2d').append(
-                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}" data-bic="${data.bic}" data-jns_spp="${data.jns_spp}" data-jenis_beban="${data.jenis_beban}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
+                        `<option value="${data.no_sp2d}" data-tgl_sp2d="${data.tgl_sp2d}" data-no_spm="${data.no_spm}" data-tgl_spm="${data.tgl_spm}" data-nilai="${data.nilai}" data-bank="${data.bank}" data-bic="${data.bic}" data-jns_spp="${data.jns_spp}" data-jenis_beban="${data.jenis_beban}" data-no_rek="${data.no_rek}" data-kd_skpd="${data.kd_skpd}">${data.no_sp2d} | ${data.tgl_sp2d} | ${data.nama_bank} | ${data.nm_skpd}</option>`
                     );
                 })
             }

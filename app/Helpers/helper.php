@@ -4455,3 +4455,12 @@ function spd_penagihan($kode, $giat, $rek, $revisi1, $revisi2, $revisi3, $revisi
 
     return $data;
 }
+
+function jenis_rekening($rekening, $kd_skpd)
+{
+    $data = DB::table('ms_rekening_bank_online')
+        ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
+        ->first();
+
+    return $data->jenis;
+}

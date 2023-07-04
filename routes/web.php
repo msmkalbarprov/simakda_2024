@@ -333,6 +333,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('simpan_edit_penguji', [DaftarPengujiController::class, 'simpanEditPenguji'])->name('daftar_penguji.simpan_edit_penguji');
             Route::post('hapus_penguji', [DaftarPengujiController::class, 'hapusPenguji'])->name('daftar_penguji.hapus_penguji');
             Route::post('status_bank', [DaftarPengujiController::class, 'statusBank'])->name('daftar_penguji.status_bank');
+            Route::post('jenis', [DaftarPengujiController::class, 'jenis'])->name('daftar_penguji.jenis');
 
             // cetakan
             Route::get('cetak_penguji', [DaftarPengujiController::class, 'cetakPenguji'])->name('daftar_penguji.cetak_penguji');
