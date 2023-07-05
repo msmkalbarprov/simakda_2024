@@ -270,8 +270,8 @@ FROM
 		trhtrmpot a
 		INNER JOIN trdtrmpot b ON a.no_bukti= b.no_bukti
 		AND a.kd_skpd= b.kd_skpd
-		-- LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
-		-- AND a.no_sp2d= c.no_sp2d
+		LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
+		AND a.no_sp2d= c.no_sp2d
 	WHERE
 		a.kd_skpd= ?
 	GROUP BY
@@ -289,8 +289,8 @@ FROM
 		trhstrpot a
 		INNER JOIN trdstrpot b ON a.no_bukti= b.no_bukti
 		AND a.kd_skpd= b.kd_skpd
-		-- LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
-		-- AND a.no_sp2d= c.no_sp2d
+		LEFT JOIN trhsp2d c ON a.kd_skpd= c.kd_skpd
+		AND a.no_sp2d= c.no_sp2d
 	WHERE
 		a.kd_skpd= ?
 	GROUP BY
