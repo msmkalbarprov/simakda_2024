@@ -336,7 +336,7 @@ class LraController extends Controller
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
                                                 ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE (a.tgl_sts between ? and ? )  $skpd_clause
+                                                WHERE (a.tgl_sts between ? and ? ) AND  LEFT(b.kd_rek6, 1) = '4' $skpd_clause
                                                 AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 group by a.jns_trans
                                                 UNION ALL
@@ -402,15 +402,15 @@ class LraController extends Controller
                                                 group by b.jns_trans,b.jns_cp,b.pot_khusus
                                                 UNION ALL
                                                 -- PENDAPATAN
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)
+                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) realisasi
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
                                                 ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=?  $skpd_clause
+                                                WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=? AND  LEFT(b.kd_rek6, 1) = '4' $skpd_clause
                                                 AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 group by a.jns_trans
                                                 UNION ALL
 
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)
+                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)realisasi
                                                 FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
                                                 ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                                                 WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=?  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
@@ -419,7 +419,7 @@ class LraController extends Controller
                                                 group by a.jns_trans
                                                 UNION ALL
 
-                                                SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah else b.rupiah end),0) FROM trhkasin_blud a INNER JOIN trdkasin_blud b
+                                                SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah else b.rupiah end),0)realisasi FROM trhkasin_blud a INNER JOIN trdkasin_blud b
                                                 ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
                                                 WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=?  $skpd_clause
                                                 AND  LEFT(b.kd_rek5, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
