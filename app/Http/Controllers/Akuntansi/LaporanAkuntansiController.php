@@ -972,8 +972,8 @@ class LaporanAkuntansiController extends Controller
 
 
 
-        $map1 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu_oyoy where bagian='1'"))->first();
-        $map2 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu_oyoy where bagian='2'"))->first();
+        $map1 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu where bagian='1'"))->first();
+        $map2 = collect(DB::select("SELECT kd_skpd, kd_sub_kegiatan from map_ped_dtu where bagian='2'"))->first();
 
         $ttd = collect(DB::select("SELECT nama ,nip,jabatan, pangkat FROM ms_ttd where (kode='bud' OR kode='GUB') and nip like '%$ttd_bud%'"))->first();
 
@@ -1046,7 +1046,7 @@ class LaporanAkuntansiController extends Controller
 
 
 
-        $from1 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.29.3.30.3.31.01.0000'"))->first();
+        $from1 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='3.29.3.30.3.31.01.0000'"))->first();
         $map1 = DB::select(" SELECT 1 as urut, '1' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('3.29.3.30.3.31.01.0000')
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1062,7 +1062,7 @@ class LaporanAkuntansiController extends Controller
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $from2 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='2.09.0.00.0.00.01.0000'"))->first();
+        $from2 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='2.09.0.00.0.00.01.0000'"))->first();
         $map2 = DB::select(" SELECT 1 as urut , '2' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ('2.09.0.00.0.00.01.0000')
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1078,7 +1078,7 @@ class LaporanAkuntansiController extends Controller
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $from3 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.25.0.00.0.00.01.0000'"))->first();
+        $from3 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='3.25.0.00.0.00.01.0000'"))->first();
         $map3 = DB::select(" SELECT 1 as urut , '3' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from3->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1094,7 +1094,7 @@ class LaporanAkuntansiController extends Controller
                             group by kd_skpd,nm_skpd,kd_sub_kegiatan,kd_rek6
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
-        $from4 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.01.0000'"))->first();
+        $from4 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='3.27.0.00.0.00.01.0000'"))->first();
         $map4 = DB::select(" SELECT 1 as urut , '4' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from4->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1111,7 +1111,7 @@ class LaporanAkuntansiController extends Controller
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
 
-        $from5 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.01.0002'"))->first();
+        $from5 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='3.27.0.00.0.00.01.0002'"))->first();
         $map5 = DB::select(" SELECT 1 as urut , '5' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from5->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1128,7 +1128,7 @@ class LaporanAkuntansiController extends Controller
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
 
-        $from6 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='3.27.0.00.0.00.02.0000'"))->first();
+        $from6 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='3.27.0.00.0.00.02.0000'"))->first();
         $map6 = DB::select(" SELECT 1 as urut , '6' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from6->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1145,7 +1145,7 @@ class LaporanAkuntansiController extends Controller
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
 
-        $from7 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='2.15.0.00.0.00.01.0000'"))->first();
+        $from7 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='2.15.0.00.0.00.01.0000'"))->first();
         $map7 = DB::select(" SELECT 1 as urut , '7' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from7->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -1162,7 +1162,7 @@ class LaporanAkuntansiController extends Controller
                             order by kd_skpd,kd_sub_kegiatan,kd_rek6,urut
                 ");
 
-        $from8 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu_oyoy where skpdnya='1.03.0.00.0.00.01.0000'"))->first();
+        $from8 = collect(DB::select("SELECT kd_skpd,kd_sub_kegiatan FROM map_inflasi_dtu where skpdnya='1.03.0.00.0.00.01.0000'"))->first();
         $map8 = DB::select(" SELECT 1 as urut , '8' no, kd_skpd, nm_skpd,'' kd_sub_kegiatan, '' uraian,''kd_rek6,''nm_rek6, 0 anggaran, 0 realisasi from ms_skpd where kd_skpd in ($from8->kd_skpd)
                             union all
                             select 2 as urut , '' no, kd_skpd,''nm_skpd, kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=z.kd_sub_kegiatan)as uraian,
@@ -2889,7 +2889,7 @@ class LaporanAkuntansiController extends Controller
         } else if ($jenis_cetakan == 4) {
             $sql = DB::select("SELECT seq,bold, nor, uraian, isnull(kode_1ja,'-') as kode_1ja, isnull(kode,'-') as kode, isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak
                 , isnull(kurangi_1,'-') kurangi_1, isnull(kurangi,'-') kurangi, isnull(c_kurangi,0) as c_kurangi
-                FROM map_lo_prov_permen_77_oyoy
+                FROM map_lo_prov_permen_77
                 GROUP BY seq,bold, nor, uraian, isnull(kode_1ja,'-'), isnull(kode,'-'), isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet') ,
                 isnull(kurangi_1,'-') , isnull(kurangi,'-') , isnull(c_kurangi,0)
                 ORDER BY nor");
@@ -2898,15 +2898,15 @@ class LaporanAkuntansiController extends Controller
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
                     isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
                     isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
-                FROM map_neraca_permen_77_oyoy ORDER BY seq");
+                FROM map_neraca_permen_77 ORDER BY seq");
         } else if ($jenis_cetakan == 6) {
             $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
                         from(
                         --1 ekuitas_awal
-                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu_tgl_oyoy('$periode1','$$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
+                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu_tgl('$periode1','$$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
                         union all
                         --1 ekuitas lalu
-                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
+                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu_tgl('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'
                         )a"))->first();
             // dd($ekuitas_awal);
             $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
@@ -2974,9 +2974,9 @@ class LaporanAkuntansiController extends Controller
                             )a"))->first();
         }
 
-        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
-        $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
-        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_tgl_oyoy('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
+        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_tgl('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
+        $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_tgl('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
+        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_tgl('$periode1','$periode2',$thn_ang,$thn_ang1) where left(kd_unit,len('$kd_skpd'))='$kd_skpd'"))->first();
 
         $sus = collect(DB::select("SELECT
                     SUM(CASE WHEN kd_rek='4' THEN (nil_ang) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (nil_ang) ELSE 0 END) as ang_surplus,
@@ -3179,7 +3179,7 @@ class LaporanAkuntansiController extends Controller
                          FROM rekap_sisa_kas_pengeluaran_new ($bulan,'$anggaran',$thn_ang) ");
         } else if ($jenis == '2') {
 
-            $query = DB::select("SELECT * FROM rekap_sisa_kas_pengeluaran_new_droping_oyoy ($bulan,'$anggaran',$thn_ang) order by kd_skpd");
+            $query = DB::select("SELECT * FROM rekap_sisa_kas_pengeluaran_new_droping ($bulan,'$anggaran',$thn_ang) order by kd_skpd");
             $query_jum = DB::select("SELECT
                                     sum(anggaran) total_ang,
                                     sum(sp2d) total_sp2d,
@@ -3192,10 +3192,10 @@ class LaporanAkuntansiController extends Controller
                                     sum(uyhd) total_uyhd,
                                     sum(kas_ben_rumus) total_kas_ben_rumus,
                                     sum(kas_ben) total_kas_ben
-                         FROM rekap_sisa_kas_pengeluaran_new_droping_oyoy ($bulan,'$anggaran',$thn_ang) ");
+                         FROM rekap_sisa_kas_pengeluaran_new_droping ($bulan,'$anggaran',$thn_ang) ");
         } else if ($jenis == '3') {
 
-            $query = DB::select("SELECT * FROM rekap_sisa_kas_penerimaan_oyoy ($bulan,'$anggaran',$thn_ang) order by kd_skpd");
+            $query = DB::select("SELECT * FROM rekap_sisa_kas_penerimaan ($bulan,'$anggaran',$thn_ang) order by kd_skpd");
             $query_jum = DB::select("SELECT
                             sum(anggaran) total_ang,
                             sum(terima) total_terima,
@@ -3205,7 +3205,7 @@ class LaporanAkuntansiController extends Controller
                             sum(kas_ben) total_kas_ben,
                             sum(kas_ben_lalu) total_kas_ben_lalu
 
-                        FROM rekap_sisa_kas_penerimaan_oyoy($bulan,'$anggaran',$thn_ang) ");
+                        FROM rekap_sisa_kas_penerimaan($bulan,'$anggaran',$thn_ang) ");
         }
 
 
@@ -3268,19 +3268,19 @@ class LaporanAkuntansiController extends Controller
         if ($format == 1) {
             if ($bidang == 1) {
                 $data = [
-                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kd_skpd from map_pend_mandatory_rekap_oyoy order by nor"),
+                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kd_skpd from map_pend_mandatory_rekap order by nor"),
                     'jns_ang' => $anggaran
                 ];
                 return view('akuntansi.cetakan.mandatory_pendidikan')->with($data);
             } elseif ($bidang == 2) {
                 $data = [
-                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kd_skpd from map_kes_mandatory_rekap_oyoy order by nor"),
+                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kd_skpd from map_kes_mandatory_rekap order by nor"),
                     'jns_ang' => $anggaran
                 ];
                 return view('akuntansi.cetakan.mandatory_kesehatan')->with($data);
             } elseif ($bidang == 3) {
                 $data = [
-                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kode_2,kode_3,kode_4 from map_inA_mandatory_rekap_oyoy order by nor"),
+                    'data' => DB::select("SELECT nor,uraian,bold,kode_1,kode_2,kode_3,kode_4 from map_inA_mandatory_rekap order by nor"),
                     'jns_ang' => $anggaran
                 ];
                 return view('akuntansi.cetakan.mandatory_infrastruktur')->with($data);
@@ -3291,7 +3291,7 @@ class LaporanAkuntansiController extends Controller
                     (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)anggaran,
                     (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                     where year(tgl_voucher)='2023' and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)realisasi
-                    from map_pend_mandatory_oyoy z
+                    from map_pend_mandatory z
                     group by kd_skpd,kd_sub_kegiatan,kd_rek6
                     order by kd_skpd,kd_sub_kegiatan,kd_rek6", [$anggaran]);
             } elseif ($bidang == 2) {
@@ -3299,7 +3299,7 @@ class LaporanAkuntansiController extends Controller
                     (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)anggaran,
                     (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                     where year(tgl_voucher)='2023' and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)realisasi
-                    from map_kes_mandatory_oyoy z
+                    from map_kes_mandatory z
                     group by kd_skpd,kd_sub_kegiatan,kd_rek6
                     order by kd_skpd,kd_sub_kegiatan,kd_rek6", [$anggaran]);
             } elseif ($bidang == 3) {
@@ -3307,7 +3307,7 @@ class LaporanAkuntansiController extends Controller
                     (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)anggaran,
                     (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                     where year(tgl_voucher)='2023' and kd_skpd=z.kd_skpd and z.kd_sub_kegiatan=kd_sub_kegiatan and kd_rek6=z.kd_rek6)realisasi
-                    from map_in_mandatory_oyoy z
+                    from map_in_mandatory z
                     group by kd_skpd,kd_sub_kegiatan,kd_rek6
                     order by kd_skpd,kd_sub_kegiatan,kd_rek6", [$anggaran]);
             }

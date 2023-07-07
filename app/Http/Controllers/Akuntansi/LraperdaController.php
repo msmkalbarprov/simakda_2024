@@ -44,7 +44,7 @@ class LraperdaController extends Controller
             $rincian = DB::select("SELECT kd_skpd kode,nm_skpd nm_rek,ang_peg,ang_brng,ang_modal ang_mod,ang_hibah,ang_bansos,ang_bghasil,
             ang_bankeu,ang_btt,
           real_peg,real_brng,real_modal real_mod,real_hibah,real_bansos,real_bghasil,real_bankeu,real_btt 
-          FROM [perda_lampI.3_skpd_spj_new]($bulan,'$jns_ang')
+          FROM [perda_lampI.3_skpd_spj]($bulan,'$jns_ang',$tahun_anggaran)
           where len(kd_skpd)='22'
           ORDER BY kd_skpd"
                 );
@@ -296,9 +296,9 @@ class LraperdaController extends Controller
 
             // rincian
        
-            $tot = collect(DB::select("SELECT * from data_tot_perda_i1_ringkasan_oyoy(3,'P1',2023)"))->first();
+            $tot = collect(DB::select("SELECT * from data_tot_perda_i1_ringkasan(3,'P1',2023)"))->first();
 
-            $rincian = DB::select("SELECT * from data_perda_i1_ringkasan_oyoy($bulan,'$jns_ang',$tahun_anggaran) order by kode");
+            $rincian = DB::select("SELECT * from data_perda_i1_ringkasan($bulan,'$jns_ang',$tahun_anggaran) order by kode");
 
         
         

@@ -52,7 +52,9 @@
                 <td align="center" style="font-size:18px" ><strong>LAPORAN REALISASI {{strtoupper(bulan($judul))}} ANGGARAN PENDAPATAN DAN BELANJA DAERAH</strong></td>
             </tr>
             <tr>
-                <td align="center" style="font-size:18px" ><strong>PROGNOSIS {{12-$judul}} ({{strtoupper(bulan(12-$judul))}}) BULAN BERIKUTNYA<br> TAHUN ANGGARAN {{ tahun_anggaran() }} </strong></td>
+                <td align="center" style="font-size:18px" ><strong>PROGNOSIS {{12-$judul}} 
+                    <!-- ({{strtoupper(bulan(12-$judul))}})  -->
+                    BULAN BERIKUTNYA<br> TAHUN ANGGARAN {{ tahun_anggaran() }} </strong></td>
             </tr>
             <tr>
                 <td align="left" style="font-size:18px" ><strong>&nbsp;</strong></td>
