@@ -84,7 +84,7 @@ class LraperkadaController extends Controller
                                             where group_id <='8'
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align                                       
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang,$bulan]);
-            $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_oyoy(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
+            $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses",[$bulan,$jns_ang,$tahun_anggaran]))->first();
         }else if($jenis=="2"){
         
         }else if($jenis=="3"){
@@ -204,7 +204,7 @@ class LraperkadaController extends Controller
                         ) a
 
                 union all
-                SELECT 0 nilai_sp2d,0 nilai_cp,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_objek_n_oyoy($bulan,'$jns_ang',$tahun_anggaran) 
+                SELECT 0 nilai_sp2d,0 nilai_cp,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_objek_n($bulan,'$jns_ang',$tahun_anggaran) 
                 where $skpd_clause_prog  LEN(kd_rek)='4'
                 )a
                 "))->first();

@@ -296,9 +296,9 @@ class LraperdaController extends Controller
 
             // rincian
        
-            $tot = collect(DB::select("SELECT * from data_tot_perda_i1_ringkasan_oyoy(3,'P1',2023)"))->first();
+            $tot = collect(DB::select("SELECT * from data_tot_perda_i1_ringkasan(3,'P1',2023)"))->first();
 
-            $rincian = DB::select("SELECT * from data_perda_i1_ringkasan_oyoy($bulan,'$jns_ang',$tahun_anggaran) order by kode");
+            $rincian = DB::select("SELECT * from data_perda_i1_ringkasan($bulan,'$jns_ang',$tahun_anggaran) order by kode");
 
         
         

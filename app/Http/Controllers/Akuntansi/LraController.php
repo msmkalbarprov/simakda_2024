@@ -110,7 +110,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
-                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi_oyoy(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
             } else {
                 $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka
@@ -143,20 +143,20 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $bulan, $jns_rincian]);
-                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_sinergi_oyoy(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_sinergi(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
             }
         } else if ($format == 'prog') {
             if ($periodebulan == 'periode') {
                 $rincian = DB::select(
                     "SELECT *,(anggaran-sd_bulan_ini) sisa
                                         from
-                                        (SELECT '1'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND
+                                        (SELECT '1'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND
                                                             kd_sub_kegiatan<>''
                                         union all
                                         SELECT '2' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
 
                                         union all
-                                        SELECT '3' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Pendapatan'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl_oyoy($tanggal1,$tanggal2,?)
+                                        SELECT '3' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Pendapatan'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl($tanggal1,$tanggal2,?)
                                         WHERE $skpd_clause_prog LEN(kd_rek)=$jns_rincian
 
                                         union all
@@ -164,20 +164,20 @@ class LraController extends Controller
 
                                         union all
                                         SELECT '5' urut,''kd_sub_kegiatan,''kd_rek,'Belanja Daerah'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini
-                                        FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+                                        FROM realisasi_jurnal_rinci_n_tgl($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
 
                                         union all
                                         SELECT '6' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
 
                                         union all
-                                        SELECT '7'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND SUBSTRING(kd_sub_kegiatan,17,2)!='00'
+                                        SELECT '7'urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n_tgl($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)<=$jns_rincian AND SUBSTRING(kd_sub_kegiatan,17,2)!='00'
 
                                         union all
                                         SELECT '8' urut,''kd_sub_kegiatan,''kd_rek,''nm_rek,0 anggaran ,0 sd_bulan_ini
 
                                         union all
                                         SELECT '9' urut,''kd_sub_kegiatan,''kd_rek,'Jumlah Belanja'nm_rek,SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini
-                                        FROM realisasi_jurnal_rinci_n_tgl_oyoy($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
+                                        FROM realisasi_jurnal_rinci_n_tgl($tanggal1,$tanggal2,?) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')
                                         ) a
 
                                         ORDER BY urut,kd_sub_kegiatan,kd_rek",
@@ -257,7 +257,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_oyoy(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                    $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
                                             isnull((SELECT sum(nilai) FROM trdrka
@@ -290,7 +290,7 @@ class LraController extends Controller
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                             ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $bulan, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_oyoy(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                    $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 4) {
                 if ($periodebulan == 'periode') {
@@ -915,23 +915,23 @@ class LraController extends Controller
 
         if ($format == '1') {
 
-            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
             $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
                     isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
                     isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
-                FROM map_neraca_permen_77_oyoy ORDER BY seq");
+                FROM map_neraca_permen_77 ORDER BY seq");
         } else if ($format == '2') {
-            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
             $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
                     isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
                     isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
-                FROM map_neraca_permen_77_obyek_oyoy ORDER BY seq");
+                FROM map_neraca_permen_77_obyek ORDER BY seq");
         } else if ($format == '3') {
         }
 
@@ -1039,7 +1039,7 @@ class LraController extends Controller
         if ($format == '1') {
             $map_lo = DB::select("SELECT seq,bold, nor, uraian, isnull(kode_1ja,'-') as kode_1ja, isnull(kode,'-') as kode, isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak
                 , isnull(kurangi_1,'-') kurangi_1, isnull(kurangi,'-') kurangi, isnull(c_kurangi,0) as c_kurangi
-                FROM map_lo_prov_permen_77_oyoy
+                FROM map_lo_prov_permen_77
                 GROUP BY seq,bold, nor, uraian, isnull(kode_1ja,'-'), isnull(kode,'-'), isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet') ,
                 isnull(kurangi_1,'-') , isnull(kurangi,'-') , isnull(c_kurangi,0)
                 ORDER BY nor");
@@ -1126,10 +1126,10 @@ class LraController extends Controller
         $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
                         from(
                         --1 ekuitas_awal
-                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause
+                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clause
                         union all
                         --1 ekuitas lalu
-                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu_oyoy($bulan,$thn_ang,$thn_ang1) $skpd_clause
+                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clause
                         )a"))->first();
         // dd($ekuitas_awal);
         $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
@@ -1137,10 +1137,10 @@ class LraController extends Controller
                         --2 surplus lo
                         select sum(nilai_pen-nilai_bel) nilai,0 nilai_lalu
                         from(
-                            select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                             where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') $skpd_clauses
                             union all
-                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                             where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('8') $skpd_clauses
                             )a
                             union all
@@ -1148,11 +1148,11 @@ class LraController extends Controller
                             select 0 nilai,isnull(sum(nilai_pen-nilai_bel),0) nilai_lalu
                             from(
                             select sum(kredit-debet) as nilai_pen,0 nilai_bel
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                             where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('7') $skpd_clauses
                             union all
                             select 0 nilai_pen,sum(debet-kredit) as nilai_bel
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
                             where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('8') $skpd_clauses
                             )a
                         )a"))->first();
