@@ -419,6 +419,7 @@
             let sisa_sp2d = rupiah(document.getElementById('sisa_sp2d').value);
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
+            let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
             let total_rincian = rupiah(document.getElementById('total_rincian').value);
             let nilai = angka(document.getElementById('nilai').value);
 
@@ -476,8 +477,23 @@
                 return;
             }
 
-            if ((status_anggaran == 'Penyusunan') && (nilai > sisa_sp2d)) {
-                alert('Nilai Melebihi Sisa Anggaran Penyusunan...!!!, Cek Lagi...!!!');
+            if (nilai > sisa_sp2d) {
+                alert('Nilai Melebihi Sisa Anggaran/SP2D...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (nilai > sisa_sumber) {
+                alert('Nilai Melebihi Sisa Sumber Dana/SP2D...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (nilai > sisa_spd) {
+                alert('Nilai Melebihi Sisa SPD...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (nilai > sisa_angkas) {
+                alert('Nilai Melebihi Sisa Angkas...!!!, Cek Lagi...!!!');
                 return;
             }
 
