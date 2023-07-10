@@ -143,8 +143,7 @@
                                             data-rekening="{{ $penerima->rekening }}"
                                             data-nmrekan="{{ $penerima->nmrekan }}"
                                             data-pimpinan="{{ $penerima->pimpinan }}"
-                                            data-alamat="{{ $penerima->alamat }}"
-                                            data-bank="{{ $penerima->bank }}"
+                                            data-alamat="{{ $penerima->alamat }}" data-bank="{{ $penerima->bank }}"
                                             data-nmbank="{{ $penerima->nm_bank }}"
                                             {{ old('nm_penerima') == $penerima->nm_rekening ? 'selected' : '' }}>
                                             {{ $penerima->nm_rekening }} | {{ $penerima->rekening }} |
@@ -176,7 +175,7 @@
                             <input type="text" class="form-control" id="nmbank" name="nmbank" readonly>
                         </div>
 
-                        
+
                     </div>
                     {{-- Jenis dan Rekening --}}
                     <div class="mb-3 row">

@@ -95,11 +95,17 @@ class SppLsController extends Controller
             return back();
         }
 
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => $skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('penatausahaan.pengeluaran.spp_ls.create')->with($data);
     }
 
     public function cariJenis(Request $request)
     {
+        $kd_skpd = Auth::user()->kd_skpd;
+
         $beban = $request->beban;
         if ($beban == '3') {
             $data = [
@@ -150,44 +156,81 @@ class SppLsController extends Controller
                 ]
             ];
         } elseif ($beban == '5') {
-            $data = [
-                [
-                    "id"   => 1,
-                    "text" => "Hibah berupa uang"
-                ],
-                [
-                    "id"   => 2,
-                    "text" => " Bantuan Sosial berupa uang"
-                ],
-                [
-                    "id"   => 3,
-                    "text" => " Bantuan Keuangan"
-                ],
-                [
-                    "id"   => 4,
-                    "text" => " Subsidi"
-                ],
-                [
-                    "id"   => 5,
-                    "text" => " Bagi Hasil"
-                ],
-                [
-                    "id"   => 6,
-                    "text" => " Belanja Tidak Terduga"
-                ],
-                [
-                    "id"   => 7,
-                    "text" => " Pembayaran kewajiban pemda atas putusan pengadilan, dan rekomendasi APIP dan/atau rekomendasi BPK"
-                ],
-                [
-                    "id"   => 8,
-                    "text" => " Pengeluaran Pembiayaan"
-                ],
-                [
-                    "id" => 9,
-                    "text" => "Barang yang diserahkan ke masyarakat"
-                ]
-            ];
+            if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
+                $data = [
+                    [
+                        "id"   => 1,
+                        "text" => "Hibah berupa uang"
+                    ],
+                    [
+                        "id"   => 2,
+                        "text" => " Bantuan Sosial berupa uang"
+                    ],
+                    [
+                        "id"   => 3,
+                        "text" => " Bantuan Keuangan"
+                    ],
+                    [
+                        "id"   => 4,
+                        "text" => " Subsidi"
+                    ],
+                    [
+                        "id"   => 5,
+                        "text" => " Bagi Hasil"
+                    ],
+                    [
+                        "id"   => 6,
+                        "text" => " Belanja Tidak Terduga"
+                    ],
+                    [
+                        "id"   => 7,
+                        "text" => " Pembayaran kewajiban pemda atas putusan pengadilan, dan rekomendasi APIP dan/atau rekomendasi BPK"
+                    ],
+                    [
+                        "id"   => 8,
+                        "text" => " Pengeluaran Pembiayaan"
+                    ],
+                    [
+                        "id" => 9,
+                        "text" => "Barang yang diserahkan ke masyarakat"
+                    ]
+                ];
+            } else {
+                $data = [
+                    [
+                        "id"   => 1,
+                        "text" => "Hibah berupa uang"
+                    ],
+                    [
+                        "id"   => 2,
+                        "text" => " Bantuan Sosial berupa uang"
+                    ],
+                    [
+                        "id"   => 3,
+                        "text" => " Bantuan Keuangan"
+                    ],
+                    [
+                        "id"   => 4,
+                        "text" => " Subsidi"
+                    ],
+                    [
+                        "id"   => 5,
+                        "text" => " Bagi Hasil"
+                    ],
+                    [
+                        "id"   => 6,
+                        "text" => " Belanja Tidak Terduga"
+                    ],
+                    [
+                        "id"   => 7,
+                        "text" => " Pembayaran kewajiban pemda atas putusan pengadilan, dan rekomendasi APIP dan/atau rekomendasi BPK"
+                    ],
+                    [
+                        "id" => 9,
+                        "text" => "Barang yang diserahkan ke masyarakat"
+                    ]
+                ];
+            }
         } elseif ($beban == '6') {
             $data = [
                 [

@@ -801,18 +801,29 @@ class PenagihanController extends Controller
         $tanggal_ubah = date('Y-m-d H:i:s');
         DB::beginTransaction();
         try {
-            DB::table('tb_transaksi')->insert(
-                [
-                    'kd_skpd' => $skpd,
-                    'no_transaksi' => $nomor,
-                    'kd_sub_kegiatan' => $kdgiat,
-                    'kd_rek6' => $kdrek,
-                    'sumber' => $sumber,
-                    'nilai' => $nilai_tagih,
-                    'username' => $nama,
-                    'last_update' => $tanggal_ubah,
-                ]
-            );
+            $cek = DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $skpd, 'kd_sub_kegiatan' => $kdgiat, 'kd_rek6' => $kdrek, 'sumber' => $sumber])
+                ->count();
+
+            if ($cek > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('tb_transaksi')
+                ->insert(
+                    [
+                        'kd_skpd' => $skpd,
+                        'no_transaksi' => $nomor,
+                        'kd_sub_kegiatan' => $kdgiat,
+                        'kd_rek6' => $kdrek,
+                        'sumber' => $sumber,
+                        'nilai' => $nilai_tagih,
+                        'username' => $nama,
+                        'last_update' => $tanggal_ubah,
+                    ]
+                );
             DB::commit();
             return response()->json([
                 'message' => '1'
@@ -993,7 +1004,9 @@ class PenagihanController extends Controller
         $nilai = $request->nilai;
         DB::beginTransaction();
         try {
-            DB::table('tb_transaksi')->where(['no_transaksi' => $no_bukti, 'username' => $nama, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek, 'sumber' => $sumber])->delete();
+            DB::table('tb_transaksi')
+                ->where(['no_transaksi' => $no_bukti, 'username' => $nama, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek, 'sumber' => $sumber])
+                ->delete();
             DB::commit();
             return response()->json([
                 'message' => '1'

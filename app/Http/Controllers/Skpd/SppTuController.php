@@ -124,6 +124,10 @@ class SppTuController extends Controller
             return back();
         }
 
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('skpd.spp_tu.create')->with($data);
     }
 
@@ -628,6 +632,10 @@ class SppTuController extends Controller
                                 INNER JOIN trskpd b
                                 ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
                                 WHERE no_spp=?", [$data['no_spp']]);
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $data['no_spp'], 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([

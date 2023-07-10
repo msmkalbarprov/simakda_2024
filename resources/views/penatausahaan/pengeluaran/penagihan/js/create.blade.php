@@ -598,6 +598,11 @@
                     if (data.message == '0') {
                         alert('Data Detail Gagal Tersimpan');
                         return;
+                    } else if (data.message == '2') {
+                        alert(
+                            'SKPD, Kegiatan, Rekening, Sumber telah ada di tampungan! Silahkan refresh!'
+                        );
+                        return;
                     } else {
                         alert('Data Detail Tersimpan di tampungan');
                         tabel.row.add({
