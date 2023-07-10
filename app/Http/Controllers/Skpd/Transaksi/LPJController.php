@@ -2362,6 +2362,8 @@ class LPJController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
                 ->setOption('margin-left', 15)
                 ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
@@ -2465,6 +2467,8 @@ class LPJController extends Controller
         if ($jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-height', 330)
                 ->setOption('margin-left', 15)
                 ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
