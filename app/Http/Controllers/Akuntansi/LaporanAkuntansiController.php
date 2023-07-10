@@ -855,7 +855,7 @@ class LaporanAkuntansiController extends Controller
                 $bulan = $bulan;
             }
             $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
-            $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
+            $periode1 = "year (tgl_voucher)<='$thn_ang1' and ";
         }
         // dd(strlen($bulan));
 
@@ -889,7 +889,7 @@ class LaporanAkuntansiController extends Controller
                                                       and b.kd_unit=a.kd_skpd where $periode
                                                         (left(kd_rek6,1) in ('$rek1')) $skpd_clause
                                             group by            kd_skpd,kd_rek6
-                                            union
+                                            union all
                                     Select kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd) nm_skpd,
                                     kd_rek6 as kd_rek,0 as debet, 0 as kredit,SUM(b.debet) AS debetaw,SUM(b.kredit) AS kreditaw from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher
                                                       and b.kd_unit=a.kd_skpd where $periode1
