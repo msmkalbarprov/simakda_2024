@@ -41,6 +41,11 @@ class TransaksiTunaiController extends Controller
             'daftar_kegiatan' => DB::table('trdrka as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd])->whereRaw("left(a.kd_rek6,1)=?", ['5'])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->orderBy('a.nm_sub_kegiatan')->get(),
             'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
         ];
+
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('skpd.transaksi_tunai.create')->with($data);
     }
 
@@ -101,7 +106,8 @@ class TransaksiTunaiController extends Controller
         }
 
         // SISA BANK
-        $sisa_bank = collect(DB::select("SELECT
+        if ($beban == '1') {
+            $sisa_bank = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
             SUM(case when jns=2 then jumlah else 0 end) AS keluar
             from (
@@ -159,7 +165,27 @@ class TransaksiTunaiController extends Controller
             where jns_trans IN ('5') and bank='BNK' and a.kd_skpd=?
             GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
             ) a
-        where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+            where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+        } else {
+            $sisa_bank = collect(DB::select("SELECT
+            SUM(case when jns=1 then jumlah else 0 end) AS terima,
+            SUM(case when jns=2 then jumlah else 0 end) AS keluar
+            from (
+            SELECT SUM(a.nilai) AS jumlah,'1' AS jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhspm c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd INNER JOIN trhsp2d d ON c.no_spm=d.no_spm and c.kd_skpd=d.kd_skpd WHERE d.kd_skpd=? and d.no_sp2d=?
+            UNION ALL
+            select SUM(b.nilai) AS jumlah,'2' AS jns
+            from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and a.no_sp2d=?
+            UNION ALL
+            select isnull(sum(isnull(b.nilai,0)),0) AS jumlah, '2' as jns
+            from trhtransout_cmsbank a join trdtransout_cmsbank b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and a.no_sp2d=? and (status_validasi='0' OR status_validasi is null)
+            UNION ALL
+            SELECT isnull(sum(isnull(nilai,0)),0) AS jumlah, '2' as jns
+            from tb_transaksi WHERE kd_skpd=? and no_sp2d=?
+            ) aa", [$kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d]))
+                ->first();
+        }
 
         // SISA TUNAI
         $sisa_tunai1 = DB::table('tr_ambilsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['kd_skpd' => $kd_skpd]);
@@ -315,6 +341,10 @@ class TransaksiTunaiController extends Controller
                     ];
                 }, $data['tabel_rincian']));
             }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([

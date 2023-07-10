@@ -541,7 +541,8 @@
             // }
 
             let los = ["510505010001", "510505010003"];
-            if ((kd_rekening.substr(0, 4) == '5105' && (!los.includes(kd_rekening))) && (!satuan || !volume)) {
+            if ((kd_rekening.substr(0, 4) == '5105' && (!los.includes(kd_rekening))) && (!satuan || !
+                    volume)) {
                 alert('Volume atau satuan output harus diisi!');
                 return;
             }
@@ -684,55 +685,90 @@
                 return;
             }
 
-            tabel_rekening.row.add({
-                'no_bukti': no_bukti,
-                'no_sp2d': no_sp2d,
-                'kd_sub_kegiatan': kd_sub_kegiatan,
-                'nm_sub_kegiatan': nm_sub_kegiatan,
-                'kd_rek6': kd_rekening,
-                'nm_rek6': nm_rekening,
-                'nilai': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(nilai),
-                'sumber': sumber,
-                'lalu': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(lalu),
-                'sp2d': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(sp2d),
-                'anggaran': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(anggaran),
-                'volume': volume,
-                'satuan': satuan,
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
-            tabel_rekening1.row.add({
-                'no_bukti': no_bukti,
-                'no_sp2d': no_sp2d,
-                'kd_sub_kegiatan': kd_sub_kegiatan,
-                'nm_sub_kegiatan': nm_sub_kegiatan,
-                'kd_rek6': kd_rekening,
-                'nm_rek6': nm_rekening,
-                'nilai': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(nilai),
-                'sumber': sumber,
-                'lalu': lalu,
-                'sp2d': sp2d,
-                'anggaran': anggaran,
-                'volume': volume,
-                'satuan': satuan,
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
+            $.ajax({
+                url: "{{ route('penagihan.simpan_tampungan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    nomor: no_bukti,
+                    kdgiat: kd_sub_kegiatan,
+                    kdrek: kd_rekening,
+                    nilai_tagih: nilai,
+                    sumber: sumber,
+                    no_sp2d: no_sp2d
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(response) {
+                    if (response.message == '0') {
+                        alert('Data Detail Gagal Tersimpan');
+                        return;
+                    } else if (response.message == '2') {
+                        alert(
+                            'SKPD, Kegiatan, Rekening, Sumber telah ada di tampungan! Silahkan refresh!'
+                        );
+                        return;
+                    } else {
+                        // proses input ke tabel input detail spp
+                        alert('Data Detail Tersimpan');
+                        tabel_rekening.row.add({
+                            'no_bukti': no_bukti,
+                            'no_sp2d': no_sp2d,
+                            'kd_sub_kegiatan': kd_sub_kegiatan,
+                            'nm_sub_kegiatan': nm_sub_kegiatan,
+                            'kd_rek6': kd_rekening,
+                            'nm_rek6': nm_rekening,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai),
+                            'sumber': sumber,
+                            'lalu': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(lalu),
+                            'sp2d': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(sp2d),
+                            'anggaran': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(anggaran),
+                            'volume': volume,
+                            'satuan': satuan,
+                            'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+                        }).draw();
+                        tabel_rekening1.row.add({
+                            'no_bukti': no_bukti,
+                            'no_sp2d': no_sp2d,
+                            'kd_sub_kegiatan': kd_sub_kegiatan,
+                            'nm_sub_kegiatan': nm_sub_kegiatan,
+                            'kd_rek6': kd_rekening,
+                            'nm_rek6': nm_rekening,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai),
+                            'sumber': sumber,
+                            'lalu': lalu,
+                            'sp2d': sp2d,
+                            'anggaran': anggaran,
+                            'volume': volume,
+                            'satuan': satuan,
+                            'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_bukti}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+                        }).draw();
 
-            $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_input_rekening + nilai));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_input_rekening + nilai));
+                        $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_input_rekening + nilai));
+                        $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_input_rekening + nilai));
+
+                        kosong_input_detail();
+                    }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            });
         });
 
         $('#simpan_rekening_tujuan').on('click', function() {
@@ -1543,6 +1579,33 @@
                 }
             })
         }
+
+        function kosong_input_detail() {
+            $('#kd_rekening').val(null).change();
+            $('#nm_rekening').val(null);
+            $('#sumber').empty();
+            $('#nm_sumber').val(null);
+
+            $('#total_spd').val(null);
+            $('#realisasi_spd').val(null);
+            $('#sisa_spd').val(null);
+            // total anggaran kas
+            $('#total_angkas').val(null);
+            $('#realisasi_angkas').val(null);
+            $('#sisa_angkas').val(null);
+            // anggaran
+            $('#total_anggaran').val(null);
+            $('#realisasi_anggaran').val(null);
+            $('#sisa_anggaran').val(null);
+            // sumber dana penyusunan
+            $('#total_sumber').val(null);
+            $('#realisasi_sumber').val(null);
+            $('#sisa_sumber').val(null);
+            // volume output, satuan output, nilai
+            $('#volume').val(null);
+            $('#satuan').val(null);
+            $('#nilai').val(null);
+        }
     });
 
     function angka(n) {
@@ -1564,20 +1627,47 @@
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek + '  Nilai :  ' + nilai +
             ' ?');
         if (hapus == true) {
-            tabel.rows(function(idx, data, node) {
-                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                    data.kd_rek6 == kd_rek
-            }).remove().draw();
-            tabel1.rows(function(idx, data, node) {
-                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                    data.kd_rek6 == kd_rek
-            }).remove().draw();
-            $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(nilai_sementara - nilai_rekening));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(nilai_sementara - nilai_rekening));
+            $.ajax({
+                url: "{{ route('penagihan.hapus_detail_tampungan_penagihan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_bukti: no_bukti,
+                    kd_sub_kegiatan: kd_sub_kegiatan,
+                    kd_rek: kd_rek,
+                    sumber: sumber,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(response) {
+                    if (response.message == '0') {
+                        alert('Data detail gagal dihapus');
+                        return;
+                    } else {
+                        alert('Data detail berhasil dihapus');
+                        tabel.rows(function(idx, data, node) {
+                            return data.sumber == sumber && data.kd_sub_kegiatan ==
+                                kd_sub_kegiatan &&
+                                data.kd_rek6 == kd_rek
+                        }).remove().draw();
+                        tabel1.rows(function(idx, data, node) {
+                            return data.sumber == sumber && data.kd_sub_kegiatan ==
+                                kd_sub_kegiatan &&
+                                data.kd_rek6 == kd_rek
+                        }).remove().draw();
+                        $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_sementara - nilai_rekening));
+                        $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_sementara - nilai_rekening));
+                    }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            });
         } else {
             return false;
         }

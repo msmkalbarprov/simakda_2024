@@ -70,6 +70,10 @@ class TransaksiPanjarController extends Controller
                 ORDER BY no_panjar_lalu", [$kd_skpd, $kd_skpd, $kd_skpd])
         ];
 
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('skpd.transaksi_panjar.create')->with($data);
     }
 
@@ -158,6 +162,11 @@ class TransaksiPanjarController extends Controller
                         AND t.kd_rek = a.kd_rek6
                         AND u.no_bukti
                         NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
+                        UNION ALL
+                        SELECT SUM(v.nilai) as nilai FROM tb_transaksi v
+                        WHERE v.kd_sub_kegiatan = a.kd_sub_kegiatan
+                        AND v.kd_skpd = a.kd_skpd
+                        AND v.kd_rek6 = a.kd_rek6
                         )r) as lalu,0 as sp2d,
                         nilai as nilai
                         FROM trdrka a WHERE a.kd_sub_kegiatan= ? AND a.kd_skpd = ? and a.status_aktif='1' and jns_ang=?", [$no_bukti, $no_panjar, $no_bukti, $beban, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $status_anggaran]);
@@ -352,11 +361,20 @@ class TransaksiPanjarController extends Controller
                     AND a.kd_rek6 = ?
                     AND b.status = '1'
                     and bulan_akhir='12'
-                    and revisi_ke=?)spd", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi1->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi2->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi3->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi4->revisi,]))->first();
+                    and revisi_ke=?)spd", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi1->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi2->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi3->revisi, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $revisi4->revisi,]))
+            ->first();
+
 
         if ($beban == '1') {
             $total_trans = collect(DB::select("SELECT SUM(nilai) total FROM
                                     (
+                                    -- tampungan
+                                    SELECT SUM(isnull(nilai,0)) as nilai
+                                    FROM tb_transaksi
+                                    WHERE kd_sub_kegiatan=?
+                                    AND kd_skpd=?
+                                    AND kd_rek6=?
+                                    UNION ALL
                                     -- transaksi UP/GU
                                     SELECT SUM (isnull(c.nilai,0)) as nilai
                                     FROM trdtransout c
@@ -412,7 +430,7 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         } else {
             $spp = DB::table('trhsp2d')
                 ->select('no_spp')
@@ -422,6 +440,13 @@ class TransaksiPanjarController extends Controller
 
             $total_trans = collect(DB::select("SELECT SUM(nilai) total FROM
                                     (
+                                    -- tampungan
+                                    SELECT SUM(isnull(nilai,0)) as nilai
+                                    FROM tb_transaksi
+                                    WHERE kd_sub_kegiatan=?
+                                    AND kd_skpd=?
+                                    AND kd_rek6=?
+                                    UNION ALL
                                     -- transaksi UP/GU
                                     SELECT SUM (isnull(c.nilai,0)) as nilai
                                     FROM trdtransout c
@@ -478,13 +503,96 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))
+                ->first();
+        }
+
+        if ($beban == '1') {
+            $sisa_bank = collect(DB::select("SELECT
+            SUM(case when jns=1 then jumlah else 0 end) AS terima,
+            SUM(case when jns=2 then jumlah else 0 end) AS keluar
+            from (
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan
+            union all
+            SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK'
+            union all
+            select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd=? and  d.pay='BANK'
+            union all
+            select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'1' [jns],a.kd_skpd [kode] from trhtrmpot a
+            join trdtrmpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            where a.kd_skpd=? and a.pay='BANK' and jns_spp not in('1','2','3') group by a.tgl_bukti,a.no_bukti,a.ket,a.kd_skpd
+            union all
+            select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
+            from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            where jns_trans IN ('5') and bank='BNK' and a.kd_skpd=?
+            GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+            union all
+            SELECT tgl_bukti AS tgl,no_bukti AS bku,ket AS ket,total-isnull(pot,0)-isnull(f.pot2,0) AS jumlah,'2' AS jns,a.kd_skpd AS kode FROM trhtransout a join trhsp2d b on a.no_sp2d=b.no_sp2d left join (select no_spm, sum(nilai)pot
+                from trspmpot group by no_spm) c on b.no_spm=c.no_spm
+                left join
+                    (select d.no_kas,sum(e.nilai) [pot2],d.kd_skpd from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd where e.kd_skpd=? and d.no_kas<>'' and d.pay='BANK' group by d.no_kas,d.kd_skpd
+                    ) f on f.no_kas=a.no_bukti and f.kd_skpd=a.kd_skpd WHERE pay='BANK' and (panjar not in ('1') or panjar is null)
+             union all
+            select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'2' [jns],a.kd_skpd [kode] from trhstrpot a
+            join trdstrpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            where a.kd_skpd=? and a.pay='BANK' group by a.tgl_bukti,a.no_bukti,a.ket,a.kd_skpd
+            UNION ALL
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan
+            union all
+            SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM trhoutlain WHERE pay='BANK'
+            union all
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'2' AS jns,kd_skpd_sumber AS kode FROM tr_setorpelimpahan_bank
+            union all
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan WHERE status_drop!='1'
+            union all
+            SELECT a.tgl_kas AS tgl,a.no_panjar AS bku,a.keterangan as ket,a.nilai-isnull(b.pot2,0) AS jumlah,'2' AS jns,a.kd_skpd AS kode FROM tr_panjar a
+            left join
+            (
+                select d.no_kas,sum(e.nilai) [pot2],d.kd_skpd from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd
+                where e.kd_skpd=? and d.no_kas<>'' and d.pay='BANK' group by d.no_kas,d.kd_skpd
+             ) b on a.no_panjar=b.no_kas and a.kd_skpd=b.kd_skpd
+            where a.pay='BANK' and a.kd_skpd=?
+            union all
+            select d.tgl_bukti, d.no_bukti,d.ket [ket],sum(e.nilai) [jumlah],'1' [jns],d.kd_skpd [kode] from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd
+            where e.kd_skpd=? and d.no_sp2d='2704/TU/2023' and d.pay='BANK' group by d.tgl_bukti,d.no_bukti,d.ket,d.kd_skpd
+            union all
+            select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
+            from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            where jns_trans NOT IN ('4','2','5') and pot_khusus =0  and bank='BNK' and a.kd_skpd=?
+            GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+            union all
+            select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '1' as jns, a.kd_skpd as kode
+            from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            where jns_trans IN ('5') and bank='BNK' and a.kd_skpd=?
+            GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+            ) a
+            where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
+        } else {
+            $sisa_bank = collect(DB::select("SELECT
+            SUM(case when jns=1 then jumlah else 0 end) AS terima,
+            SUM(case when jns=2 then jumlah else 0 end) AS keluar
+            from (
+            SELECT SUM(a.nilai) AS jumlah,'1' AS jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhspm c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd INNER JOIN trhsp2d d ON c.no_spm=d.no_spm and c.kd_skpd=d.kd_skpd WHERE d.kd_skpd=? and d.no_sp2d=?
+            UNION ALL
+            select SUM(b.nilai) AS jumlah,'2' AS jns
+            from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and a.no_sp2d=?
+            UNION ALL
+            select isnull(sum(isnull(b.nilai,0)),0) AS jumlah, '2' as jns
+            from trhtransout_cmsbank a join trdtransout_cmsbank b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and a.no_sp2d=? and (status_validasi='0' OR status_validasi is null)
+            UNION ALL
+            SELECT isnull(sum(isnull(nilai,0)),0) AS jumlah, '2' as jns
+            from tb_transaksi WHERE kd_skpd=? and no_sp2d=?
+            ) aa", [$kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d, $kd_skpd, $no_sp2d]))
+                ->first();
         }
 
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $nilai_spd->total_spd,
             'transaksi' => $total_trans->total,
+            'sisa_bank' => $sisa_bank->terima - $sisa_bank->keluar
         ]);
     }
 
@@ -506,131 +614,145 @@ class TransaksiPanjarController extends Controller
 
         if ($beban == '1') {
             $data = collect(DB::select("SELECT sum(nilai) [total] from (
-select 'tagih' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai] from trhtagih a
-join trdtagih b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where
- b.kd_skpd=? and b.kd_sub_kegiatan=?
-and b.kd_rek=?
- and b.no_bukti not in (select no_tagih from trhspp where kd_skpd=?)
-and b.sumber=?
+                select 'tagih' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai] from trhtagih a
+                join trdtagih b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where
+                b.kd_skpd=? and b.kd_sub_kegiatan=?
+                and b.kd_rek=?
+                and b.no_bukti not in (select no_tagih from trhspp where kd_skpd=?)
+                and b.sumber=?
 
-union all
+                union all
 
- select 'spp' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
-and jns_spp not in ('1','2') and b.sumber=? and a.no_spp=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
- AND a.no_spp not in (select no_spp from trhsp2d where kd_skpd=? and jns_spp not in ('1','2')
+                select 'spp' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+                from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where
+                b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+                and jns_spp not in ('1','2') and b.sumber=? and a.no_spp=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+                AND a.no_spp not in (select no_spp from trhsp2d where kd_skpd=? and jns_spp not in ('1','2')
 
- )
+                )
 
-union all
+                union all
 
- select 'sp2d terbit' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
-and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and (no_kas_bud='' OR no_kas_bud is null)
+                select 'sp2d terbit' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+                from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+                b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+                and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+                and (no_kas_bud='' OR no_kas_bud is null)
 
-UNION ALL
+                UNION ALL
 
- select 'sp2d cair not trx cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
-and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and no_kas_bud='1'
- and no_sp2d not in (select no_sp2d from trhtransout_cmsbank where kd_skpd=?
- and (status_validasi='0' OR status_validasi is null) )
-
-
-UNION ALL
-
-select 'sp2d cair not trx' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
-and a.jns_spp not in ('1','2')
-and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and no_kas_bud='1'
- and no_sp2d not in (select no_sp2d from trhtransout where kd_skpd=?
- and jns_spp not in ('1','2'))
-
-UNION ALL
-
-select 'trans' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-where b.kd_skpd=? and b.kd_sub_kegiatan=?
-and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
+                select 'sp2d cair not trx cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+                from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+                b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+                and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+                and no_kas_bud='1'
+                and no_sp2d not in (select no_sp2d from trhtransout_cmsbank where kd_skpd=?
+                and (status_validasi='0' OR status_validasi is null) )
 
 
-) as gabung", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $no_spp, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber]))->first();
+                UNION ALL
+
+                select 'sp2d cair not trx' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+                from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+                b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+                and a.jns_spp not in ('1','2')
+                and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+                and no_kas_bud='1'
+                and no_sp2d not in (select no_sp2d from trhtransout where kd_skpd=?
+                and jns_spp not in ('1','2'))
+
+                UNION ALL
+
+                select 'trans' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+                from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                where b.kd_skpd=? and b.kd_sub_kegiatan=?
+                and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
+
+                UNION ALL
+
+                select 'tampungan' [jdl],isnull(sum(isnull(nilai,0)),0) [nilai]
+                from tb_transaksi
+                where kd_skpd=? and kd_sub_kegiatan=?
+                and kd_rek6=? and sumber=?
+
+
+                ) as gabung", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $no_spp, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber]))->first();
         } else {
             $data = collect(DB::select("SELECT sum(nilai) [total] from (
 
 
-select 'tagih' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai] from trhtagih a
-join trdtagih b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-join trdspp c on a.kd_skpd=c.kd_skpd and b.kd_sub_kegiatan=c.kd_sub_kegiatan and b.kd_rek6=c.kd_rek6
-join trhsp2d d on c.no_spp=d.no_spp and c.kd_skpd=d.kd_skpd where
- b.kd_skpd=? and b.kd_sub_kegiatan=?
-and b.kd_rek=? and b.no_bukti not in (select no_tagih from trhspp where
-kd_skpd=? and no_spp=?) and b.sumber=? and d.no_sp2d=?
+            select 'tagih' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai] from trhtagih a
+            join trdtagih b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            join trdspp c on a.kd_skpd=c.kd_skpd and b.kd_sub_kegiatan=c.kd_sub_kegiatan and b.kd_rek6=c.kd_rek6
+            join trhsp2d d on c.no_spp=d.no_spp and c.kd_skpd=d.kd_skpd where
+            b.kd_skpd=? and b.kd_sub_kegiatan=?
+            and b.kd_rek=? and b.no_bukti not in (select no_tagih from trhspp where
+            kd_skpd=? and no_spp=?) and b.sumber=? and d.no_sp2d=?
 
-union all
+            union all
 
- select 'spp' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
-and jns_spp not in ('1','2') and b.sumber=? and a.no_spp=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-AND a.no_spp not in (select no_spp from trhsp2d where kd_skpd=? and jns_spp not in ('1','2') and no_sp2d=?)
+            select 'spp' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where
+            b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=?
+            and jns_spp not in ('1','2') and b.sumber=? and a.no_spp=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+            AND a.no_spp not in (select no_spp from trhsp2d where kd_skpd=? and jns_spp not in ('1','2') and no_sp2d=?)
 
-union all
+            union all
 
- select 'sp2d terbit' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
-and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and (no_kas_bud='' OR no_kas_bud is null)
+            select 'sp2d terbit' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+            inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+            b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
+            and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+            and (no_kas_bud='' OR no_kas_bud is null)
 
-UNION ALL
+            UNION ALL
 
- select 'sp2d cair not trx cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
-and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and no_kas_bud='1' and no_sp2d not in (select no_sp2d from trhtransout_cmsbank where kd_skpd=? and no_sp2d=? and jns_spp not in ('1','2') and
-(status_validasi='0' OR status_validasi is null)
-)
-
-
-UNION ALL
-
-select 'sp2d cair not trx' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
-b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
-and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
-and no_kas_bud='1' and no_sp2d not in (select no_sp2d from trhtransout where kd_skpd=? and no_sp2d=? and jns_spp not in ('1','2'))
-
-UNION ALL
-
-select 'trans cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhtransout_cmsbank a join trdtransout_cmsbank b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_skpd
-where b.kd_skpd=? and b.kd_sub_kegiatan=? and a.no_sp2d=?
-and b.kd_rek6=? and a.no_voucher not in('') and b.sumber=? and (status_validasi='0' OR status_validasi is null)
-
-UNION ALL
-
-select 'trans' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
-from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-where b.kd_skpd=? and b.kd_sub_kegiatan=? and a.no_sp2d=?
-and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
+            select 'sp2d cair not trx cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+            inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+            b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
+            and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+            and no_kas_bud='1' and no_sp2d not in (select no_sp2d from trhtransout_cmsbank where kd_skpd=? and no_sp2d=? and jns_spp not in ('1','2') and
+            (status_validasi='0' OR status_validasi is null)
+            )
 
 
-) as gabung", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $no_spp, $sumber, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $no_spp, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $no_sp2d, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $no_sp2d, $kd_rek6, $sumber]))->first();
+            UNION ALL
+
+            select 'sp2d cair not trx' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhspp a join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+            inner join trhsp2d c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd where
+            b.kd_skpd=? and b.kd_sub_kegiatan=? and b.kd_rek6=? and no_sp2d=?
+            and a.jns_spp not in ('1','2') and b.sumber=? AND (a.sp2d_batal<>1 OR a.sp2d_batal IS NULL)
+            and no_kas_bud='1' and no_sp2d not in (select no_sp2d from trhtransout where kd_skpd=? and no_sp2d=? and jns_spp not in ('1','2'))
+
+            UNION ALL
+
+            select 'trans cms' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhtransout_cmsbank a join trdtransout_cmsbank b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and b.kd_sub_kegiatan=? and a.no_sp2d=?
+            and b.kd_rek6=? and a.no_voucher not in('') and b.sumber=? and (status_validasi='0' OR status_validasi is null)
+
+            UNION ALL
+
+            select 'trans' [jdl],isnull(sum(isnull(b.nilai,0)),0) [nilai]
+            from trhtransout a join trdtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+            where b.kd_skpd=? and b.kd_sub_kegiatan=? and a.no_sp2d=?
+            and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
+
+            UNION ALL
+
+            select 'tampungan' [jdl],isnull(sum(isnull(nilai,0)),0) [nilai]
+            from tb_transaksi
+            where kd_skpd=? and kd_sub_kegiatan=? and no_sp2d=?
+            and kd_rek6=? and sumber=?
+
+
+            ) as gabung", [$kd_skpd, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $no_spp, $sumber, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $sumber, $no_spp, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $kd_rek6, $no_sp2d, $sumber, $kd_skpd, $no_sp2d, $kd_skpd, $kd_sub_kegiatan, $no_sp2d, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $no_sp2d, $kd_rek6, $sumber, $kd_skpd, $kd_sub_kegiatan, $no_sp2d, $kd_rek6, $sumber]))->first();
         }
         return response()->json($data);
     }
@@ -678,6 +800,7 @@ and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
                 ->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])
                 ->groupBy('b.sumber')
                 ->select('b.sumber as sumber_dana', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))
+                ->selectRaw("(SELECT nm_sumber_dana1 FROM sumber_dana WHERE kd_sumber_dana1=b.sumber) as nm_sumber")
                 ->get();
         }
         return response()->json($data);
@@ -746,6 +869,10 @@ and b.kd_rek6=? and a.no_bukti not in('') and b.sumber=?
                     ];
                 }, $data['rincian_rekening']));
             }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([

@@ -2420,6 +2420,12 @@ function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti
 						AND t.kd_rek = a.kd_rek6
 						AND u.no_bukti
 						NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=? )
+                        UNION ALL
+						SELECT SUM(nilai) as nilai FROM tb_transaksi v
+						WHERE
+						v.kd_sub_kegiatan = a.kd_sub_kegiatan
+						AND v.kd_skpd = a.kd_skpd
+						AND v.kd_rek6 = a.kd_rek6
 						)r) r) AS lalu,
 						0 AS sp2d,nilai AS anggaran
 						FROM trdrka a WHERE a.kd_sub_kegiatan= ?
@@ -2435,6 +2441,15 @@ function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti
                         ( nilai )
                     FROM
                         (
+                        SELECT SUM
+                            ( nilai ) AS nilai
+                        FROM
+                            tb_transaksi v
+                        WHERE
+                            v.kd_sub_kegiatan = x.kd_sub_kegiatan
+                            AND v.kd_skpd = x.kd_skpd
+                            AND v.kd_rek6 = x.kd_rek6
+                            AND v.no_sp2d = ? UNION ALL
                         SELECT SUM
                             ( c.nilai ) AS nilai
                         FROM
@@ -2510,7 +2525,7 @@ function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti
                         b.kd_sub_kegiatan,
                         b.kd_rek6,
                     b.nm_rek6
-                    ) x", [$beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_sp2d, $kd_sub_kegiatan]);
+                    ) x", [$no_sp2d, $beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_bukti, $beban, $no_sp2d, $no_sp2d, $kd_sub_kegiatan]);
     }
     return $data;
 }
@@ -2660,9 +2675,14 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             $query->where('status_validasi', '0')->orWhereNull('status_validasi');
         })->select(DB::raw("'trans kkpd' as jdl"), DB::raw("ISNULL(SUM(ISNULL(b.nilai,0)),0) as nilai"))->unionAll($data7);
 
-        $data = DB::table(DB::raw("({$data8->toSql()}) AS sub"))
+        $data9 = DB::table('tb_transaksi')
+            ->select(DB::raw("'tampungan' as jdl"), DB::raw("ISNULL(SUM(ISNULL(nilai,0)),0) as nilai"))
+            ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rekening, 'sumber' => $sumber])
+            ->unionAll($data8);
+
+        $data = DB::table(DB::raw("({$data9->toSql()}) AS sub"))
             ->select(DB::raw("SUM(nilai) as total"))
-            ->mergeBindings($data8)
+            ->mergeBindings($data9)
             ->first();
     } else {
         $data1 = DB::table('trhtagih as a')->join('trdtagih as b', function ($join) {
@@ -2735,9 +2755,14 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             $query->where('status_validasi', '0')->orWhereNull('status_validasi');
         })->select(DB::raw("'trans kkpd' as jdl"), DB::raw("ISNULL(SUM(ISNULL(b.nilai,0)),0) as nilai"))->unionAll($data7);
 
-        $data = DB::table(DB::raw("({$data8->toSql()}) AS sub"))
+        $data9 = DB::table('tb_transaksi')
+            ->select(DB::raw("'tampungan' as jdl"), DB::raw("ISNULL(SUM(ISNULL(nilai,0)),0) as nilai"))
+            ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rekening, 'sumber' => $sumber])
+            ->unionAll($data8);
+
+        $data = DB::table(DB::raw("({$data9->toSql()}) AS sub"))
             ->select(DB::raw("SUM(nilai) as total"))
-            ->mergeBindings($data8)
+            ->mergeBindings($data9)
             ->first();
     }
 

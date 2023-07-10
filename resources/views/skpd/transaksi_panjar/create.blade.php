@@ -330,6 +330,15 @@
                                 style="text-align: right" readonly>
                         </div>
                     </div>
+                    {{-- SISA KAS BANK --}}
+                    <div class="mb-3 row">
+                        <label for="jarak" class="col-md-8 col-form-label"></label>
+                        <label for="sisa_bank" class="col-md-2 col-form-label">Sisa Kas Bank</label>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="sisa_bank" id="sisa_bank"
+                                style="text-align: right" readonly>
+                        </div>
+                    </div>
                     {{-- Nilai --}}
                     <div class="mb-3 row">
                         <label for="jarak" class="col-md-8 col-form-label"></label>

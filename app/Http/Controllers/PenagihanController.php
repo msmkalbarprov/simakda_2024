@@ -403,9 +403,14 @@ class PenagihanController extends Controller
                 $query->where('d.status_validasi', '0')->orWhereNull('d.status_validasi');
             })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data4);
 
-            $angkas_lalu = DB::table(DB::raw("({$data5->toSql()}) AS sub"))
+            $data6 = DB::table('tb_transaksi')
+                ->where(['kd_sub_kegiatan' => $giat, 'kd_skpd' => $kode, 'kd_rek6' => $rek])
+                ->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))
+                ->unionAll($data5);
+
+            $angkas_lalu = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
                 ->select(DB::raw("SUM(nilai) as total"))
-                ->mergeBindings($data5)
+                ->mergeBindings($data6)
                 ->first();
         } else {
             $spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
@@ -442,9 +447,14 @@ class PenagihanController extends Controller
                 $query->where('d.status_validasi', '0')->orWhereNull('d.status_validasi');
             })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data4);
 
-            $angkas_lalu = DB::table(DB::raw("({$data5->toSql()}) AS sub"))
+            $data6 = DB::table('tb_transaksi')
+                ->where(['kd_sub_kegiatan' => $giat, 'kd_skpd' => $kode, 'kd_rek6' => $rek])
+                ->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))
+                ->unionAll($data5);
+
+            $angkas_lalu = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
                 ->select(DB::raw("SUM(nilai) as total"))
-                ->mergeBindings($data5)
+                ->mergeBindings($data6)
                 ->first();
         }
 
@@ -796,6 +806,7 @@ class PenagihanController extends Controller
         $kdrek = $request->kdrek;
         $nilai_tagih = $request->nilai_tagih;
         $sumber = $request->sumber;
+        $no_sp2d = $request->no_sp2d;
         $skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
         $tanggal_ubah = date('Y-m-d H:i:s');
@@ -822,6 +833,7 @@ class PenagihanController extends Controller
                         'nilai' => $nilai_tagih,
                         'username' => $nama,
                         'last_update' => $tanggal_ubah,
+                        'no_sp2d' => $no_sp2d,
                     ]
                 );
             DB::commit();
