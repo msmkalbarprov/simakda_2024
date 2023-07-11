@@ -1250,12 +1250,19 @@
                     if (beban != '1') {
                         let total_sp2d = rupiah(document.getElementById('total_sp2d').value);
 
+                        // $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
+                        //     minimumFractionDigits: 2
+                        // }).format(total_sp2d - potongan_ls));
+                        // $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                        //     minimumFractionDigits: 2
+                        // }).format(total_sp2d - potongan_ls + potongan_ls));
+
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(total_sp2d - potongan_ls));
+                        }).format(total_sp2d));
                         $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(total_sp2d - potongan_ls + potongan_ls));
+                        }).format(total_sp2d));
                     } else {
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
