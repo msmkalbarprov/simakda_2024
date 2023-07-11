@@ -291,7 +291,7 @@
             $('#sisa_sumber').val(null);
             $('#sisa_kas').val(null);
             $('#potongan_ls').val(null);
-            $('#total_sisa').val(null);
+            // $('#total_sisa').val(null);
             cari_nomor(kd_sub_kegiatan);
 
             let kd_rekening = document.getElementById('kd_rekening').value;
@@ -332,6 +332,7 @@
             $('#potongan_ls').val(null);
             $('#total_sisa').val(null);
             cari_rekening(no_sp2d);
+            load_sisa_bank(no_sp2d);
         });
 
         $('#kd_rekening').on('select2:select', function() {
@@ -359,7 +360,7 @@
             $('#sisa_sumber').val(null);
             $('#potongan_ls').val(null);
             $('#sisa_kas').val(null);
-            $('#total_sisa').val(null);
+            // $('#total_sisa').val(null);
 
             cari_sumber(kd_rek6);
             if (kd_rek6.substr(0, 2) == '52') {
@@ -576,6 +577,7 @@
                     kd_sub_kegiatan: value.kd_sub_kegiatan,
                     kd_rek6: value.kd_rek6,
                     sumber: value.sumber,
+                    no_sp2d: value.no_sp2d,
                 };
                 return result;
             });
@@ -585,6 +587,8 @@
                     return '2';
                 } else if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
                     return '3';
+                } else if (data.no_sp2d != no_sp2d) {
+                    return '4';
                 } else {
                     return '1';
                 }
@@ -597,6 +601,11 @@
 
             if (kondisi.includes("3")) {
                 alert('Tdk boleh memilih kegiatan berbeda dlm 1 no bku');
+                return;
+            }
+
+            if (kondisi.includes("4")) {
+                alert('Tdk boleh memilih no.SP2D berbeda dlm 1 no bku');
                 return;
             }
 
@@ -1011,6 +1020,9 @@
                 data: {
                     data: response
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Data berhasil ditambahkan, dengan Nomor Bukti : ' + data
@@ -1032,6 +1044,9 @@
                         $('#simpan_transaksi').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
             // } else {
@@ -1041,8 +1056,7 @@
         });
 
         function kosong_input_detail() {
-            $('#no_sp2d').val(null).change();
-            $('#kd_rekening').empty();
+            $('#kd_rekening').val(null).change();
             $('#nm_rekening').val(null);
             $('#sumber').empty();
             $('#nm_sumber').val(null);
@@ -1217,18 +1231,18 @@
 
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(total_sp2d));
-                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(total_sp2d));
+                        }).format(sisa_bank));
+                        // $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                        //     minimumFractionDigits: 2
+                        // }).format(sisa_bank));
                     } else {
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(sisa_bank));
                         let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
-                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(sisa_kas + potongan_ls));
+                        // $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                        //     minimumFractionDigits: 2
+                        // }).format(sisa_kas + potongan_ls));
                     }
                 },
                 complete: function(data) {
@@ -1237,42 +1251,24 @@
             })
         }
 
-        function load_sisa_bank(potongan_ls) {
+        function load_sisa_bank(no_sp2d) {
             $.ajax({
                 url: "{{ route('skpd.transaksi_cms.sisa_bank') }}",
                 type: "POST",
+                data: {
+                    beban: document.getElementById('beban').value,
+                    no_sp2d: no_sp2d
+                },
                 dataType: 'json',
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
-                    let persen_kkpd = document.getElementById('persen_kkpd').value;
-                    let persen_tunai = document.getElementById('persen_tunai').value;
-                    let beban = document.getElementById('beban').value;
-                    // let sisa_kas;
-                    // if (beban == 1) {
-                    //     sisa_kas = (persen_kkpd / 100) * nilai;
-                    // } else {
-                    //     sisa_kas = (persen_tunai / 100) * nilai;
-                    // }
-                    // $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
-                    //     minimumFractionDigits: 2
-                    // }).format(nilai));
-                    if (beban != '1') {
-                        let total_sp2d = rupiah(document.getElementById('total_sp2d').value);
-                        $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(total_sp2d - potongan_ls));
-                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(total_sp2d - potongan_ls + potongan_ls));
-                    } else {
-                        $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(nilai));
-                        let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
-                        $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(sisa_kas + potongan_ls));
-                    }
+
+                    $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai));
+                    $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai));
                 }
             })
         }
