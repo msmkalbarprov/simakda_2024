@@ -102,9 +102,9 @@ realisasi",
                         @else
                             @php
                                 $nilai2 = DB::select(
-                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and (kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in ($kd_skpd) group by kd_rek6) or left(kd_rek6,4) in ($kode_1)) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in ($kd_skpd) group by kd_sub_kegiatan) ) anggaran,
+                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and (kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in ($kd_skpd) group by kd_rek6) or left(kd_rek6,4) in ($kode_1)) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in ($kd_skpd) group by kd_sub_kegiatan) ) anggaran,
                                 (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and (kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in ($kd_skpd) group by kd_rek6) or left(kd_rek6,4) in ($kode_1)) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_sub_kegiatan))
+                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and (kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in ($kd_skpd) group by kd_rek6) or left(kd_rek6,4) in ($kode_1)) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan))
 realisasi",
                                     [$jns_ang],
                                 );
@@ -132,9 +132,9 @@ realisasi",
                         @if ($nor == 11)
                             @php
                                 $nilai = DB::select(
-                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in ($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in ($kd_skpd) group by kd_sub_kegiatan) ) anggaran,
+                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in ($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in ($kd_skpd) group by kd_sub_kegiatan) ) anggaran,
                                 (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_sub_kegiatan))
+                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan))
 realisasi",
                                     [$jns_ang],
                                 );
@@ -170,9 +170,9 @@ realisasi",
                         @if ($nor == 12 || $nor == 13 || $nor == 14)
                             @php
                                 $nilai = DB::select(
-                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd=$kd_skpd group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd=$kd_skpd group by kd_sub_kegiatan) ) anggaran,
+                                    "SELECT (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd=$kd_skpd group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd=$kd_skpd group by kd_sub_kegiatan) ) anggaran,
                                 (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd=$kd_skpd group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd=$kd_skpd group by kd_sub_kegiatan))
+                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd=$kd_skpd group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd=$kd_skpd group by kd_sub_kegiatan))
 realisasi",
                                     [$jns_ang],
                                 );
@@ -198,11 +198,11 @@ realisasi",
                             @php
                                 $nilair = DB::select(
                                     "SELECT concat(kd_sub_kegiatan,' - ',(select nm_sub_kegiatan from ms_sub_kegiatan where a.kd_sub_kegiatan=kd_sub_kegiatan))uraian, isnull(sum(anggaran),0)anggaran, isnull(sum(realisasi),0)realisasi from(
-                                select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai) anggaran,0 realisasi from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
+                                select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai) anggaran,0 realisasi from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
                                 group by kd_skpd,kd_sub_kegiatan,kd_rek6
                                 union all
                                 select kd_skpd,kd_sub_kegiatan,kd_rek6,0 anggaran,sum(debet-kredit) realisasi from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
+                                where year(tgl_voucher)='2023' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
                                 group by kd_skpd,kd_sub_kegiatan,kd_rek6) a
                                 group by kd_sub_kegiatan",
                                     [$jns_ang],
@@ -246,14 +246,14 @@ realisasi",
             @php
                 $no2 = DB::select(
                     "SELECT
-                        (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in(select kd_skpd from map_pend_mandatory_oyoy group by kd_skpd) and
-                        (kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy  group by kd_rek6) or left(kd_rek6,4)in('5101','5102','5105','5106','5201','5202','5203','5204','5205','5206','5402'))
-                        and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy group by kd_sub_kegiatan))
+                        (select isnull(sum(nilai),0)nilai from trdrka where jns_ang=? and kd_skpd in(select kd_skpd from map_pend_mandatory group by kd_skpd) and
+                        (kd_rek6 in (select kd_rek6 from map_pend_mandatory  group by kd_rek6) or left(kd_rek6,4)in('5101','5102','5105','5106','5201','5202','5203','5204','5205','5206','5402'))
+                        and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory group by kd_sub_kegiatan))
 anggaran,
                         (select isnull(sum(debet-kredit),0)nilai from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                        where year(tgl_voucher)='2023' and kd_skpd in(select kd_skpd from map_pend_mandatory_oyoy group by kd_skpd) and
-                        (kd_rek6 in (select kd_rek6 from map_pend_mandatory_oyoy  group by kd_rek6) or left(kd_rek6,4)in('5101','5102','5105','5106','5201','5202','5203','5204','5205','5206','5402'))
-                        and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory_oyoy group by kd_sub_kegiatan) ) realisasi",
+                        where year(tgl_voucher)='2023' and kd_skpd in(select kd_skpd from map_pend_mandatory group by kd_skpd) and
+                        (kd_rek6 in (select kd_rek6 from map_pend_mandatory  group by kd_rek6) or left(kd_rek6,4)in('5101','5102','5105','5106','5201','5202','5203','5204','5205','5206','5402'))
+                        and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory group by kd_sub_kegiatan) ) realisasi",
                     [$jns_ang],
                 );
 

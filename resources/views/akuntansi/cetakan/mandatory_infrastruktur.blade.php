@@ -214,7 +214,7 @@ realisasi",
         </thead>
         <tbody>
             @php
-                $map = DB::select('SELECT nor,uraian,bold,kode_1,kode_2,kode_3,kode_4 from map_inB_mandatory_rekap_oyoy order by nor');
+                $map = DB::select('SELECT nor,uraian,bold,kode_1,kode_2,kode_3,kode_4 from map_inB_mandatory_rekap order by nor');
             @endphp
 
             @foreach ($map as $row)
@@ -232,7 +232,7 @@ realisasi",
                         from
                         (SELECT a.kd_skpd,a.kd_sub_kegiatan,a.kd_rek6,
                         sum(nilai) as nilai
-                         FROM trdrka a  inner join map_in_mandatory_oyoy b on left(a.kd_skpd,22)=left(b.kd_skpd,22) and left(a.kd_sub_kegiatan,15)=left(b.kd_sub_kegiatan,15) and left(a.kd_rek6,12)=left(b.kd_rek6,12)
+                         FROM trdrka a  inner join map_in_mandatory b on left(a.kd_skpd,22)=left(b.kd_skpd,22) and left(a.kd_sub_kegiatan,15)=left(b.kd_sub_kegiatan,15) and left(a.kd_rek6,12)=left(b.kd_rek6,12)
                          where jns_ang=? and (left(b.kd_rek6,4)in($kode_1) or left(b.kd_rek6,6)in($kode_2) or left(b.kd_rek6,8)in($kode_3) or left(b.kd_rek6,12)in($kode_4))
                          group by a.kd_skpd,a.kd_sub_kegiatan,a.kd_rek6)
 a
