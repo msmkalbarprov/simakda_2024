@@ -1268,7 +1268,7 @@
 
                         $('#sisa_kas').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(total_sp2d));
+                        }).format(sisa_bank));
                         // $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
                         //     minimumFractionDigits: 2
                         // }).format(total_sp2d));
