@@ -6,22 +6,27 @@
             }
         });
 
-        let beban1 = "{{ $data_transaksi->jns_spp }}";
-        let trx_mbiz1 = "{{ $data_transaksi->trx_mbiz }}";
+        // let beban1 = "{{ $data_transaksi->jns_spp }}";
+        // let trx_mbiz1 = "{{ $data_transaksi->trx_mbiz }}";
 
-        if (beban1 == '1') {
-            $('#input_mbiz').show();
-        } else {
-            $('#input_mbiz').hide();
-        }
+        // if (beban1 == '1') {
+        //     $('#input_mbiz').show();
+        // } else {
+        //     $('#input_mbiz').hide();
+        // }
 
-        if (trx_mbiz1 == '1') {
-            $('#label_invoice').show();
-            $('#input_invoice').show();
-        } else {
-            $('#label_invoice').hide();
-            $('#input_invoice').hide();
-        }
+        // if (trx_mbiz1 == '1') {
+        //     $('#label_invoice').show();
+        //     $('#input_invoice').show();
+        // } else {
+        //     $('#label_invoice').hide();
+        //     $('#input_invoice').hide();
+        // }
+
+        $('#input_mbiz').hide();
+
+        $('#label_invoice').hide();
+        $('#input_invoice').hide();
 
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
