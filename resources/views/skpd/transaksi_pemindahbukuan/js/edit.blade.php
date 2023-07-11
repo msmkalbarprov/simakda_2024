@@ -6,6 +6,23 @@
             }
         });
 
+        let beban1 = "{{ $data_transaksi->jns_spp }}";
+        let trx_mbiz1 = "{{ $data_transaksi->trx_mbiz }}";
+
+        if (beban1 == '1') {
+            $('#input_mbiz').show();
+        } else {
+            $('#input_mbiz').hide();
+        }
+
+        if (trx_mbiz1 == '1') {
+            $('#label_invoice').show();
+            $('#input_invoice').show();
+        } else {
+            $('#label_invoice').hide();
+            $('#input_invoice').hide();
+        }
+
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
 
@@ -213,6 +230,17 @@
             theme: 'bootstrap-5'
         });
 
+        $('#trx_mbiz').on('select2:select', function() {
+            let trx_mbiz = this.value;
+
+            if (trx_mbiz == 1) {
+                $('#label_invoice').show();
+                $('#input_invoice').show();
+            } else {
+                $('#label_invoice').hide();
+                $('#input_invoice').hide();
+            }
+        });
 
         $('#tambah_rekening').on('click', function() {
             let beban = document.getElementById('beban').value;
@@ -746,6 +774,9 @@
             let rekening = document.getElementById('rekening').value;
             let ketcms = document.getElementById('ketcms').value;
 
+            let trx_mbiz = document.getElementById('trx_mbiz').value;
+            let invoice = document.getElementById('invoice').value;
+
             let total_belanja = rupiah(document.getElementById('total_belanja').value);
             let total_sisa = rupiah(document.getElementById('total_sisa').value);
             let total_potongan = rupiah(document.getElementById('total_potongan').value);
@@ -840,6 +871,11 @@
                 return;
             }
 
+            // if (beban == '1' && !trx_mbiz) {
+            //     alert('Silahkan pilih transaksi MBIZ!');
+            //     return;
+            // }
+
             if (!keterangan) {
                 alert('Keterangan Tidak Boleh Kosong');
                 return;
@@ -860,6 +896,11 @@
                 return;
             }
 
+            // if (trx_mbiz == '1' && !invoice) {
+            //     alert('Silahkan isi terlebih dahulu invoice!');
+            //     return;
+            // }
+
             let response = {
                 no_bukti,
                 tgl_voucher,
@@ -873,7 +914,9 @@
                 ketcms,
                 sp2d,
                 rincian_rekening,
-                rincian_rek_tujuan
+                rincian_rek_tujuan,
+                trx_mbiz,
+                invoice
             };
 
             $('#simpan_transaksi').prop('disabled', true);

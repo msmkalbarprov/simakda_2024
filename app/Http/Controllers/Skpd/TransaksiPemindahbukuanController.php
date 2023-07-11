@@ -53,6 +53,11 @@ class TransaksiPemindahbukuanController extends Controller
             'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
             'no_urut' => no_urut($kd_skpd)
         ];
+
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('skpd.transaksi_pemindahbukuan.create')->with($data);
     }
 
@@ -67,28 +72,45 @@ class TransaksiPemindahbukuanController extends Controller
             $no_urut = $data['no_bukti'];
 
             // TRHTRANSOUT
-            DB::table('trhtransout')->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trhtransout')
+                ->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])
+                ->delete();
 
-            DB::table('trhtransout')->insert([
-                'no_kas' => $no_urut,
-                'tgl_kas' => $data['tgl_voucher'],
-                'no_bukti' => $no_urut,
-                'tgl_bukti' => $data['tgl_voucher'],
-                'ket' => $data['keterangan'],
-                'username' => Auth::user()->nama,
-                'tgl_update' => date('Y-m-d H:i:s'),
-                'kd_skpd' => $kd_skpd,
-                'nm_skpd' => $data['nm_skpd'],
-                'total' => $data['total_belanja'],
-                'no_tagih' => '',
-                'sts_tagih' => '0',
-                'tgl_tagih' => '',
-                'jns_spp' => $data['beban'],
-                'pay' => $data['pembayaran'],
-                'no_kas_pot' => $no_urut,
-                'panjar' => '0',
-                'no_sp2d' => $data['sp2d'],
-            ]);
+            // if ($data['beban'] == '1' && $data['trx_mbiz'] == '1') {
+            //     $invoice = $data['invoice'];
+            // } else {
+            //     $invoice = '';
+            // }
+
+            // if ($data['beban'] == '1') {
+            //     $trx_mbiz = $data['trx_mbiz'];
+            // } else {
+            //     $trx_mbiz = '';
+            // }
+
+            DB::table('trhtransout')
+                ->insert([
+                    'no_kas' => $no_urut,
+                    'tgl_kas' => $data['tgl_voucher'],
+                    'no_bukti' => $no_urut,
+                    'tgl_bukti' => $data['tgl_voucher'],
+                    'ket' => $data['keterangan'],
+                    'username' => Auth::user()->nama,
+                    'tgl_update' => date('Y-m-d H:i:s'),
+                    'kd_skpd' => $kd_skpd,
+                    'nm_skpd' => $data['nm_skpd'],
+                    'total' => $data['total_belanja'],
+                    'no_tagih' => '',
+                    'sts_tagih' => '0',
+                    'tgl_tagih' => '',
+                    'jns_spp' => $data['beban'],
+                    'pay' => $data['pembayaran'],
+                    'no_kas_pot' => $no_urut,
+                    'panjar' => '0',
+                    'no_sp2d' => $data['sp2d'],
+                    // 'trx_mbiz' => $trx_mbiz,
+                    // 'no_invoice' => $invoice,
+                ]);
 
             // TRDTRANSOUT
             DB::table('trdtransout')->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])->delete();
@@ -128,6 +150,10 @@ class TransaksiPemindahbukuanController extends Controller
                     ];
                 }, $data['rincian_rek_tujuan']));
             }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([
@@ -210,6 +236,18 @@ class TransaksiPemindahbukuanController extends Controller
             // TRHTRANSOUT
             DB::table('trhtransout')->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])->delete();
 
+            // if ($data['beban'] == '1' && $data['trx_mbiz'] == '1') {
+            //     $invoice = $data['invoice'];
+            // } else {
+            //     $invoice = '';
+            // }
+
+            // if ($data['beban'] == '1') {
+            //     $trx_mbiz = $data['trx_mbiz'];
+            // } else {
+            //     $trx_mbiz = '';
+            // }
+
             DB::table('trhtransout')->insert([
                 'no_kas' => $data['no_bukti'],
                 'tgl_kas' => $data['tgl_voucher'],
@@ -229,6 +267,8 @@ class TransaksiPemindahbukuanController extends Controller
                 'no_kas_pot' => $data['no_bukti'],
                 'panjar' => '0',
                 'no_sp2d' => $data['sp2d'],
+                // 'trx_mbiz' => $trx_mbiz,
+                // 'no_invoice' => $invoice,
             ]);
 
             // TRDTRANSOUT
@@ -269,6 +309,10 @@ class TransaksiPemindahbukuanController extends Controller
                     ];
                 }, $data['rincian_rek_tujuan']));
             }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([

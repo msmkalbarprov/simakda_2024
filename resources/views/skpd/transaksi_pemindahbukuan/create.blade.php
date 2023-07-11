@@ -88,6 +88,22 @@
                             <textarea class="form-control" style="width: 100%" id="keterangan" name="keterangan"></textarea>
                         </div>
                     </div>
+                    {{-- Transaksi MBIZ dan Invoice --}}
+                    <div class="mb-3 row" id="input_mbiz">
+                        <label for="trx_mbiz" class="col-md-2 col-form-label">Transaksi MBIZ</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="trx_mbiz"
+                                name="trx_mbiz">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">YA</option>
+                                <option value='0'>TIDAK</option>
+                            </select>
+                        </div>
+                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice</label>
+                        <div class="col-md-4" id="input_invoice">
+                            <input class="form-control" type="text" id="invoice" name="invoice" required>
+                        </div>
+                    </div>
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
