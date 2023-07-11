@@ -333,7 +333,7 @@
             $('#sisa_sumber').val(null);
             $('#sisa_kas').val(null);
             $('#potongan_ls').val(null);
-            $('#total_sisa').val(null);
+            // $('#total_sisa').val(null);
 
             let kd_rekening = document.getElementById('kd_rekening').value;
             let sumber = document.getElementById('sumber').value;
@@ -403,7 +403,7 @@
             $('#sisa_sumber').val(null);
             $('#potongan_ls').val(null);
             $('#sisa_kas').val(null);
-            $('#total_sisa').val(null);
+            // $('#total_sisa').val(null);
             cari_sumber(kd_rek6);
             if (kd_rek6.substr(0, 2) == '52') {
                 $('#volume').prop('disabled', false);
@@ -630,10 +630,10 @@
                     return '2';
                 } else if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
                     return '3';
-                } else {
-                    return '1';
                 } else if (data.no_sp2d != no_sp2d) {
                     return '4';
+                } else {
+                    return '1';
                 }
             });
 
