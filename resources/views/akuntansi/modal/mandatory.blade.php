@@ -13,7 +13,7 @@
                     <div class="col-md-6">
                         <select class="form-control select_mandatory" style=" width: 100%;" id="bidang_mandatory"
                             name="bidang_mandatory">
-                            <option value="1">Dinas Pendidikan</option>
+                            <option value="1">Pendidikan</option>
                             <option value="2">Kesehatan</option>
                             <option value="3">Infrastruktur</option>
                         </select>

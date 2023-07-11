@@ -356,7 +356,7 @@ a
                 <td align="center"><b>4</b></td>
                 <td align="left"><b>Persentase Belanja Infrastruktur terhadap Transfer ke Daerah yang
                         Penggunaannya Bersifat Umum dalam Rancangan Anggaran Pendapatan Belanja Daerah Tahun Anggaran
-                        2022</b></td>
+                        {{ tahun_anggaran() }}</b></td>
                 <td class="angka"><b>{{ rupiah($anggaran4) }}</b></td>
                 <td class="angka"><b>{{ rupiah($realisasi4) }}</b></td>
                 <td style="text-align: center"><b>{{ rupiah($persen4) }}</b></td>
