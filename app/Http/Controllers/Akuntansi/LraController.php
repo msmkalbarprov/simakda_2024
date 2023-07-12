@@ -1406,4 +1406,116 @@ class LraController extends Controller
             return $view;
         }
     }
+
+    public function cetaklpsal(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $cbulan          = $request->bulan;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+
+        // dd($kd_skpd);
+
+        $thn_ang    = tahun_anggaran();
+        $thn_ang1   = $thn_ang - 1;
+
+        $modtahun = $thn_ang % 4;
+
+        if ($modtahun = 0) {
+            $nilaibulan = ".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+        } else {
+            $nilaibulan = ".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+        }
+
+        $arraybulan = explode(".", $nilaibulan);
+        $nm_bln = $arraybulan[$cbulan];
+
+
+
+
+        // $anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd='$kd_skpd' and status=1 order by tgl_dpa DESC"))->first();
+
+
+        $kas_lalu = collect(DB::select("SELECT isnull(thn_m1,0) as nilai FROM map_lpsal_permen_77 where seq='40'"))->first();
+        $kas_lalu=$kas_lalu->nilai;
+
+        $kas = collect(DB::select("SELECT isnull(sum(debet-kredit),0) thn_m1 from trhju_pkd a
+                    inner join trdju_pkd b on a.no_voucher=b.no_voucher AND b.kd_unit=a.kd_skpd where kd_rek6 in ('110101010001') and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$cbulan'"))->first();
+        $kas=$kas->thn_m1;
+
+        $bulan  = 12;       
+        
+        $silpa=collect(DB::select(" SELECT ((pend+pemb)-(belanja+trans)) as silpa FROM
+                    (SELECT 
+                     SUM(CASE WHEN LEFT(a.kd_rek6,1)='4' THEN a.kredit-a.debet ELSE 0 END) as pend
+                    ,SUM(CASE WHEN LEFT(a.kd_rek6,4)='6101' THEN a.kredit-a.debet ELSE 0 END) as pemb
+                    ,SUM(CASE WHEN LEFT(a.kd_rek6,1)IN ('5'
+                        -- ,'6'
+                        ) THEN a.debet-a.kredit ELSE 0 END) as belanja
+                    ,SUM(CASE WHEN LEFT(a.kd_rek6,4)='6202' THEN a.debet-a.kredit ELSE 0 END) as trans
+                    FROM trdju a INNER JOIN trhju b ON a.kd_unit=b.kd_skpd AND a.no_voucher=b.no_voucher 
+                    WHERE YEAR(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$cbulan
+                    ) a"))->first();
+        $silpa=$silpa->silpa;
+                 
+        $salnil=collect(DB::select("SELECT sum(kredit-debet)*-1 nilai FROM trdju a INNER JOIN trhju b ON a.kd_unit=b.kd_skpd AND a.no_voucher=b.no_voucher 
+                    WHERE left(a.kd_rek6,2)='61' and YEAR(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$cbulan"))->first();//rama_oyoy
+        $salnil=$salnil->nilai;
+        
+        $lain=collect(DB::select("SELECT sum(kredit-debet) nilai FROM trdju a INNER JOIN trhju b ON a.kd_unit=b.kd_skpd AND a.no_voucher=b.no_voucher WHERE left(a.kd_rek6,4)='6101' and YEAR(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$cbulan"))->first();
+        $lain=$lain->nilai;
+        
+        $lain   = $lain-$kas_lalu;
+        // $silpa   = $silpa-$lain;
+
+        $silpa  = $silpa;
+        $sub01  = $kas_lalu+$salnil;
+        $sub02  = $sub01+$silpa;
+        
+        $koreksi = 0;
+        
+        //$lain = 0;
+
+        $sub03  = $sub02+$koreksi+$lain;
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        // dd($sus);
+
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            // 'ekuitas_awal'      => $ekuitas_awal,
+            'kas_lalu'      => $kas_lalu,
+            'kas'      => $kas,
+            'silpa'            => $silpa,
+            'salnil'            => $salnil,
+            'lain'           => $lain,
+            'sub01'           => $sub01,
+            'sub02'           => $sub02,
+            'sub03'           => $sub03,
+            'enter'             => $enter,
+            'koreksi'            => $koreksi,
+            'bulan'             => $cbulan,
+            'nm_bln'            => $nm_bln,
+            'thn_ang'           => $thn_ang,
+            'thn_ang1'         => $thn_ang1
+        ];
+        // dd($data['ekuitas_awal']->nilai);
+        $view =  view('akuntansi.cetakan.lpsal')->with($data);
+
+
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LPSAL.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LPSAL.xls"');
+            return $view;
+        }
+    }
 }

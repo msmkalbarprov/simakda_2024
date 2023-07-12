@@ -1682,6 +1682,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_lpe', [LraController::class, 'cetaklpe'])->name('laporan_akuntansi.konsolidasi.cetak_lpe');
             // LAK
             Route::get('cetak_lak', [LraController::class, 'cetaklak'])->name('laporan_akuntansi.konsolidasi.cetak_lak');
+            // LPSAL
+            Route::get('cetak_lpsal', [LraController::class, 'cetaklpsal'])->name('laporan_akuntansi.konsolidasi.cetak_lpsal');
             //laporan keuangan
             Route::get('lapkeu', [LaporanAkuntansiController::class, 'lapkeu'])->name('laporan_akuntansi.lapkeu');
             Route::get('cetak_lra_keu', [LapkeuController::class, 'cetak_lra'])->name('laporan_akuntansi.lapkeu.cetak_lra');
