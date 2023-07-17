@@ -96,7 +96,7 @@
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_rek6').append(
-                            `<option value="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-sisa="${data.sisa}">${data.kd_rek6} | ${data.nm_rek6} | | ${data.sisa}</option>`
+                            `<option value="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-sisa="${data.sisa}">${data.kd_rek6} | ${data.nm_rek6} | ${data.nilai} | ${data.transaksi} | ${data.sisa}</option>`
                         );
                     })
                 }
