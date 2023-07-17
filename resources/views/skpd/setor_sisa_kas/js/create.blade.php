@@ -96,7 +96,7 @@
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_rek6').append(
-                            `<option value="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                            `<option value="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-sisa="${data.sisa}">${data.kd_rek6} | ${data.nm_rek6} | | ${data.sisa}</option>`
                         );
                     })
                 }
@@ -210,7 +210,10 @@
 
         $('#kd_rek6').on('select2:select', function() {
             let nm_rek6 = $(this).find(':selected').data('nm_rek6');
+            let sisa = $(this).find(':selected').data('sisa');
             $('#nm_rek6').val(nm_rek6);
+
+            $('#nilai').val(sisa);
         });
 
         $('#simpan_detail').on('click', function() {
