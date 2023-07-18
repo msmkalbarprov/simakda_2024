@@ -1220,7 +1220,7 @@
                         `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(sumber, function(index, sumber) {
                         $('#sumber').append(
-                            `<option value="${sumber.sumber_dana}" data-anggaran="${sumber.nilai}">${sumber.sumber_dana}</option>`
+                            `<option value="${sumber.sumber_dana}" data-anggaran="${sumber.nilai}">${sumber.sumber_dana} | ${sumber.nm_sumber}</option>`
                         );
                     });
 

@@ -1388,6 +1388,8 @@
         // CETAKAN DAFTAR PENGELUARAN
         $('#pilih_skpd_daftar_pengeluaran').hide();
         $('#pilih_unit_daftar_pengeluaran').hide();
+        $('#periode_daftar_pengeluaran').hide();
+        $('#bulan1_daftar_pengeluaran').hide();
 
         $('#pilihan_semua_daftar_pengeluaran').on('click', function() {
             $('#kd_skpd_daftar_pengeluaran').val(null).change();
@@ -1396,6 +1398,9 @@
             $('#nm_unit_daftar_pengeluaran').val(null);
             $('#pilih_unit_daftar_pengeluaran').hide();
             $('#pilih_skpd_daftar_pengeluaran').hide();
+            $('#periode_daftar_pengeluaran').hide();
+            $('#bulan1_daftar_pengeluaran').show();
+
         });
 
         $('#pilihan_periode_daftar_pengeluaran').on('click', function() {
@@ -1405,6 +1410,9 @@
             $('#nm_unit_daftar_pengeluaran').val(null);
             $('#pilih_unit_daftar_pengeluaran').hide();
             $('#pilih_skpd_daftar_pengeluaran').hide();
+            $('#periode_daftar_pengeluaran').hide();
+            $('#bulan1_daftar_pengeluaran').show();
+
         });
 
         $('#pilihan_skpd_daftar_pengeluaran').on('click', function() {
@@ -1412,6 +1420,9 @@
             $('#nm_skpd_daftar_pengeluaran').val(null);
             $('#pilih_unit_daftar_pengeluaran').hide();
             $('#pilih_skpd_daftar_pengeluaran').show();
+            $('#periode_daftar_pengeluaran').hide();
+            $('#bulan1_daftar_pengeluaran').show();
+
         });
 
         $('#pilihan_unit_daftar_pengeluaran').on('click', function() {
@@ -1419,6 +1430,8 @@
             $('#nm_unit_daftar_pengeluaran').val(null);
             $('#pilih_skpd_daftar_pengeluaran').hide();
             $('#pilih_unit_daftar_pengeluaran').show();
+            $('#periode_daftar_pengeluaran').show();
+            $('#bulan1_daftar_pengeluaran').hide();
         });
 
         $('#kd_skpd_daftar_pengeluaran').on('select2:select', function() {
@@ -1458,6 +1471,8 @@
             let tgl = document.getElementById('tgl_daftar_pengeluaran').value;
             let beban = document.getElementById('beban_daftar_pengeluaran').value;
             let bulan = document.getElementById('bulan_daftar_pengeluaran').value;
+            let periode1 = document.getElementById('periode1_daftar_pengeluaran').value;
+            let periode2 = document.getElementById('periode2_daftar_pengeluaran').value;
             let jenis_print = $(this).data("jenis");
 
             if (skpd) {
@@ -1492,6 +1507,11 @@
                 return;
             }
 
+            if (pilihan == '3' && !periode1 && !periode2) {
+                alert('Silahkan pilih periode');
+                return;
+            }
+
             let url = new URL("{{ route('laporan_bendahara_umum.daftar_pengeluaran') }}");
             let searchParams = url.searchParams;
             searchParams.append("pilihan", pilihan);
@@ -1501,6 +1521,8 @@
             searchParams.append("bulan", bulan);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("kd_unit", kd_unit);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });

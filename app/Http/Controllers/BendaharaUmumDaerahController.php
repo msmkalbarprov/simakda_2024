@@ -4143,10 +4143,16 @@ class BendaharaUmumDaerahController extends Controller
         $kd_unit = $request->kd_unit;
         $beban = $request->beban;
         $bulan = $request->bulan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
         $jenis_print = $request->jenis_print;
 
         if ($ttd) {
-            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+            $tanda_tangan = DB::table('ms_ttd')
+                ->select('nama', 'nip', 'jabatan', 'pangkat')
+                ->where(['nip' => $ttd])
+                ->whereIn('kode', ['BUD', 'PA'])
+                ->first();
         } else {
             $tanda_tangan = null;
         }
@@ -4165,7 +4171,8 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })
             ->selectRaw("2 urut, '' no_kas_bud, a.no_kas_bud as urut2, '' tgl_kas_bud, '' no_sp2d,  '' tgl_sp2d,  a.kd_skpd, '' keperluan, '' nmrekan, '' pimpinan, '' nm_skpd, d.kd_sub_kegiatan,  d.kd_rek6, d.nm_rek6, d.nilai, d.no_bukti")
-            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            // ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan]) permintaan kak eni
+            ->whereRaw("a.status_bud=?", ['1'])
             ->where(function ($query) use ($beban) {
                 if ($beban == '0') {
                     $query->where('a.jns_spp', '4');
@@ -4184,6 +4191,13 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
                 } else if ($pilihan == '3') {
                     $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit, $periode1, $periode2, $bulan) {
+                if ($pilihan == '3') {
+                    $query->whereRaw("a.tgl_kas_bud between ? and ?", [$periode1, $periode2]);
+                } else {
+                    $query->whereRaw("month(a.tgl_kas_bud)=?", [$bulan]);
                 }
             })
             ->groupByRaw("a.no_kas_bud, a.kd_skpd, a.keperluan, d.kd_sub_kegiatan, d.kd_rek6, d.nm_rek6,d.nilai,d.no_bukti");
@@ -4202,7 +4216,8 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })
             ->selectRaw("1 urut, a.no_kas_bud as urut2, a.no_kas_bud, a.tgl_kas_bud, a.no_sp2d, a.tgl_sp2d, a.kd_skpd, a.keperluan, a.nmrekan, c.pimpinan, a.nm_skpd, '' kd_sub_kegiatan, '' kd_rek6, '' nm_rek6, 0 nilai, 0 no_bukti")
-            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            // ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            ->whereRaw("a.status_bud=?", ['1'])
             ->where(function ($query) use ($beban) {
                 if ($beban == '0') {
                     $query->where('a.jns_spp', '4');
@@ -4221,6 +4236,13 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
                 } else if ($pilihan == '3') {
                     $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit, $periode1, $periode2, $bulan) {
+                if ($pilihan == '3') {
+                    $query->whereRaw("a.tgl_kas_bud between ? and ?", [$periode1, $periode2]);
+                } else {
+                    $query->whereRaw("month(a.tgl_kas_bud)=?", [$bulan]);
                 }
             })
             ->groupByRaw("a.tgl_kas_bud, a.no_kas_bud, a.no_sp2d, a.tgl_sp2d, a.keperluan, a.nmrekan, c.pimpinan, a.kd_skpd, a.nm_skpd")->unionAll($data_pengeluaran2);
@@ -4239,7 +4261,8 @@ class BendaharaUmumDaerahController extends Controller
                 $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })
             ->selectRaw("sum(d.nilai) as nilai")
-            ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            // ->whereRaw("a.status_bud=? and month(a.tgl_kas_bud)=?", ['1', $bulan])
+            ->whereRaw("a.status_bud=?", ['1'])
             ->where(function ($query) use ($beban) {
                 if ($beban == '0') {
                     $query->where('a.jns_spp', '4');
@@ -4258,6 +4281,13 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("LEFT(a.kd_skpd,17)=?", [$kd_skpd]);
                 } else if ($pilihan == '3') {
                     $query->where('a.kd_skpd', $kd_unit);
+                }
+            })
+            ->where(function ($query) use ($pilihan, $kd_skpd, $kd_unit, $periode1, $periode2, $bulan) {
+                if ($pilihan == '3') {
+                    $query->whereRaw("a.tgl_kas_bud between ? and ?", [$periode1, $periode2]);
+                } else {
+                    $query->whereRaw("month(a.tgl_kas_bud)=?", [$bulan]);
                 }
             })
             ->first();
@@ -6641,7 +6671,7 @@ class BendaharaUmumDaerahController extends Controller
                     and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
             ->where(['a.jns_spp' => '5', 'a.jenis_beban' => '8'])
             ->first();
-
+        // dd($realisasi_pembiayaan);
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),

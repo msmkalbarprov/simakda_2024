@@ -36,14 +36,23 @@ class PotonganPajakController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
-        $potongan1 = DB::table('trhtransout as a')->join('trdtransout as b', function ($join) {
-            $join->on('a.no_bukti', '=', 'b.no_bukti');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['a.kd_skpd' => $kd_skpd])->whereIn('a.jns_spp', ['1', '2', '3'])->where(function ($query) {
-            $query->where('a.no_panjar', '<>', '1')->orWhereNull('a.no_panjar');
-        })->select('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd', DB::raw("SUM(b.nilai) as nilai"))->groupBy('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd');
+        $potongan1 = DB::table('trhtransout as a')
+            ->join('trdtransout as b', function ($join) {
+                $join->on('a.no_bukti', '=', 'b.no_bukti');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->whereIn('a.jns_spp', ['1', '2', '3'])
+            ->where(function ($query) {
+                $query->where('a.no_panjar', '<>', '1')->orWhereNull('a.no_panjar');
+            })
+            ->select('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd', 'a.trx_mbiz', DB::raw("SUM(b.nilai) as nilai"))
+            ->groupBy('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd', 'a.trx_mbiz');
 
-        $potongan2 = DB::table('tr_panjar as a')->where(['a.kd_skpd' => $kd_skpd])->select('a.no_panjar as no_bukti', 'a.tgl_panjar as tgl_bukti', DB::raw("'' as no_sp2d"), 'a.keterangan as ket', 'a.kd_skpd', 'nilai')->union($potongan1);
+        $potongan2 = DB::table('tr_panjar as a')
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->select('a.no_panjar as no_bukti', 'a.tgl_panjar as tgl_bukti', DB::raw("'' as no_sp2d"), 'a.keterangan as ket', 'a.kd_skpd', DB::raw("'' as trx_mbiz"), 'nilai')
+            ->union($potongan1);
 
         $potongan = DB::table(DB::raw("({$potongan2->toSql()}) AS sub"))
             ->select('*')

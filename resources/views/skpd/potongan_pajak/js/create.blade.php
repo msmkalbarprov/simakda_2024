@@ -152,6 +152,13 @@
 
         $('#no_transaksi').on('select2:select', function() {
             let tgl = $(this).find(':selected').data('tgl');
+            let trx_mbiz = $(this).find(':selected').data('trx_mbiz');
+
+            if (trx_mbiz == '1') {
+                alert('Transaksi MBIZ tidak dapat menggunakan terima potongan!!');
+                $('#no_transaksi').val(null).change();
+                return;
+            }
             $('#tgl_transaksi').val(tgl);
         });
 

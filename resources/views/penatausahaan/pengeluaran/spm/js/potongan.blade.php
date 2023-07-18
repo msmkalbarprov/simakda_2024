@@ -632,8 +632,10 @@
             }
             let nama = $(this).find(':selected').data('nama');
             let map_pot = $(this).find(':selected').data('map_pot');
+            let kd_map = $(this).find(':selected').data('kd_map');
             $('#nm_rek_pot').val(nama);
             $('#map_pot').val(map_pot);
+            $('#kd_map').val(kd_map);
             let kode_rek = this.value;
             if (kode_rek.substr(0, 6) == '210601') {
                 peringatan();
@@ -648,6 +650,7 @@
             let id_billing = document.getElementById('id_billing').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let map_pot = document.getElementById('map_pot').value;
+            let kd_map = document.getElementById('kd_map').value;
             let nilai_pot = angka(document.getElementById('nilai_pot').value);
             let total_pot = rupiah(document.getElementById('total_pot').value);
             if (!no_spm) {
@@ -711,13 +714,23 @@
                         if (data1.status == 'true' || data1.status == true) {
                             if (data1.data[0].response_code == '00') {
                                 alert(data1.data[0].message);
-                                if (nilai_pot != data1.data[0].data.jumlahBayar){
-                                    alert('Nilai inputan tidak sesuai dengan nominal di Billing');
+                                if (nilai_pot != data1.data[0].data.jumlahBayar) {
+                                    alert(
+                                        'Nilai inputan tidak sesuai dengan nominal di Billing'
+                                    );
                                     return;
                                 }
-                                
+
+                                if (kd_map != data1.data[0].data.kodeMap) {
+                                    alert(
+                                        'Rekening Potongan tidak sesuai dengan kode Rekening di Billing!'
+                                    );
+                                    return;
+                                }
+
                                 tambah_list_potongan(rekening_transaksi, rekening_potongan,
-                                    map_pot, nm_rek_pot, data1.data[0].data.idBilling, nilai_pot, no_spm,
+                                    map_pot, nm_rek_pot, data1.data[0].data.idBilling,
+                                    nilai_pot, no_spm,
                                     kd_skpd, total_pot);
                             } else {
                                 alert(data1.data[0].message);

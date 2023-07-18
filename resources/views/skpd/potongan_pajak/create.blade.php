@@ -45,7 +45,8 @@
                                 name="no_transaksi">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_potongan as $potongan)
-                                    <option value="{{ $potongan->no_bukti }}" data-tgl="{{ $potongan->tgl_bukti }}">
+                                    <option value="{{ $potongan->no_bukti }}" data-tgl="{{ $potongan->tgl_bukti }}"
+                                        data-trx_mbiz="{{ $potongan->trx_mbiz }}">
                                         {{ $potongan->no_bukti }} |
                                         {{ $potongan->tgl_bukti }} | {{ $potongan->no_sp2d }} |
                                         {{ rupiah($potongan->nilai) }} |

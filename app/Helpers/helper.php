@@ -4489,3 +4489,12 @@ function jenis_rekening($rekening, $kd_skpd)
 
     return $data->jenis;
 }
+
+function kd_map($kd_rek6)
+{
+    $data = DB::table('ms_map_billing')
+        ->where(['kd_rek6' => $kd_rek6])
+        ->first();
+
+    return isset($data) ? $data->kd_map : '';
+}

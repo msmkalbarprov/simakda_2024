@@ -97,7 +97,7 @@
                 </div>
                 {{-- Bulan dan Tanggal Cetak --}}
                 <div class="mb-3 row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="bulan1_daftar_pengeluaran">
                         <label for="bulan" class="form-label">Bulan</label>
                         <select class="form-control select2-daftar_pengeluaran" style=" width: 100%;"
                             id="bulan_daftar_pengeluaran">
@@ -118,6 +118,17 @@
                     <div class="col-md-6">
                         <label for="tanggal_cetak" class="form-label">Tanggal Cetak</label>
                         <input type="date" id="tgl_daftar_pengeluaran" class="form-control">
+                    </div>
+                </div>
+                {{-- PERIODE --}}
+                <div class="mb-3 row" id="periode_daftar_pengeluaran">
+                    <div class="col-md-6">
+                        <label for="periode1" class="form-label">Periode 1</label>
+                        <input type="date" id="periode1_daftar_pengeluaran" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="periode2" class="form-label">Periode 2</label>
+                        <input type="date" id="periode2_daftar_pengeluaran" class="form-control">
                     </div>
                 </div>
                 {{-- Pilihan Cetak --}}
