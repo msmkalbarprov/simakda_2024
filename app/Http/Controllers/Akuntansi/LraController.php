@@ -109,7 +109,7 @@ class LraController extends Controller
 
                                             where group_id <= ?
                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                            ORDER BY BY map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
+                                            ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
                 $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl_sinergi(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
             } else {
                 $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
@@ -734,11 +734,22 @@ class LraController extends Controller
                                                 AND  LEFT(a.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 group by b.jns_trans,b.jns_cp,b.pot_khusus
                                                 UNION ALL
+                                                --hkpg
+                                                SELECT   sum(a.rupiah*-1) as realisasi
+                                                from trdkasin_pkd a 
+                                                INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                                                INNER JOIN trhsp2d e ON b.no_sp2d=e.no_sp2d 
+                                                INNER JOIN trspmpot f ON e.no_spm=f.no_spm and f.kd_rek6=a.kd_rek6
+                                                LEFT JOIN ms_rek6 c on f.kd_trans=c.kd_rek6 
+                                                where (b.tgl_sts between ? and ? ) and left(a.kd_rek6,1)='5'  $skpd_clause
+                                                AND  LEFT(c.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek and left(a.kd_rek6,1)='2'
+                                                group by a.kd_skpd, c.kd_rek6 
+                                                UNION ALL
                                                 -- PENDAPATAN
                                                 SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)
                                                 FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
                                                 ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE (a.tgl_sts between ? and ? )  $skpd_clause
+                                                WHERE (a.tgl_sts between ? and ? )  $skpd_clause and left(kd_rek6,1)='4'
                                                 AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 group by a.jns_trans
                                                 UNION ALL
@@ -762,7 +773,7 @@ class LraController extends Controller
                                                             FROM map_lra_2023
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
+                                                            ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
                     $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     # code...
