@@ -224,6 +224,7 @@ class TransaksiCmsController extends Controller
                 ->where(['c.no_sp2d' => $no_sp2d, 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])
                 ->groupBy('b.sumber')
                 ->select('b.sumber as sumber_dana', DB::raw("SUM(b.nilai) as nilai"), DB::raw("SUM(b.nilai) as nilai_sempurna"), DB::raw("SUM(b.nilai) as nilai_ubah"))
+                ->selectRaw("(SELECT nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=b.sumber) as nm_sumber")
                 ->get();
         }
 
