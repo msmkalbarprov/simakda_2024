@@ -2619,9 +2619,9 @@ class LaporanAkuntansiController extends Controller
             $setor_blud  = $sql_setor_blud->nilai;
 
             $sql_denda_pap = collect(DB::select("SELECT SUM(nilai) nilai FROM (
-                        SELECT ISNULL(SUM(b.rupiah), 0) AS nilai
-                        from trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
-                        WHERE a.kd_skpd = '$kd_skpd' and a.jns_trans in ('4','2') and left(b.kd_rek6,1)='4' AND a.tgl_sts <= '$periode2' AND b.kd_rek6 IN ($rek_pap)
+                        SELECT ISNULL(SUM(nilai), 0) AS nilai
+                        FROM tr_terima WHERE kd_skpd = '$kd_skpd' AND tgl_terima <= '$periode2' 
+                            AND kd_rek6 IN ($rek_pap)
                         UNION ALL
                         select ISNULL(sum(b.rupiah*-1),0) nilai
                         FROM trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
