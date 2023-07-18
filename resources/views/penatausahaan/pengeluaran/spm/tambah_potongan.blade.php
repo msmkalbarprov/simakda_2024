@@ -78,7 +78,8 @@
                                     <option value="" disabled selected>Silahkan Pilih Rekening Potongan</option>
                                     @foreach ($daftar_potongan as $potongan)
                                         <option value="{{ $potongan->kd_rek6 }}" data-nama="{{ $potongan->nm_rek6 }}"
-                                            data-map_pot="{{ $potongan->map_pot }}">
+                                            data-map_pot="{{ $potongan->map_pot }}"
+                                            data-kd_map="{{ kd_map($potongan->kd_rek6) }}">
                                             {{ $potongan->kd_rek6 }} | {{ $potongan->nm_rek6 }}</option>
                                     @endforeach
                                 </optgroup>
@@ -92,6 +93,8 @@
                                 id="nm_rek_pot" name="nm_rek_pot" readonly>
                             <input type="text" class="form-control @error('map_pot') is-invalid @enderror" id="map_pot"
                                 name="map_pot" readonly hidden>
+                            <input type="text" class="form-control @error('kd_map') is-invalid @enderror" id="kd_map"
+                                name="kd_map" readonly hidden>
                         </div>
                     </div>
                     {{-- ID BILLING --}}
@@ -110,8 +113,8 @@
                         <label for="nilai_pot" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control @error('nilai_pot') is-invalid @enderror"
-                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"
-                                style="text-align: right">
+                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
+                                data-type="currency" style="text-align: right">
                             @error('nilai')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
