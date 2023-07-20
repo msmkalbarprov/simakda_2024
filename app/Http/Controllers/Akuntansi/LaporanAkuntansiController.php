@@ -2632,7 +2632,7 @@ class LaporanAkuntansiController extends Controller
             // PERMINTAAN KAK AFLY
             // $setor_pkb + $setor_tgk_pkb + $setor_pka + $setor_bbnkb + $setor_bbnka + $setor_pbbkb + $setor_rokok + $setor_papabt + $setor_ret_umum + $setor_ret_jasa + $setor_ret_izin + $setor_denda_pkb + $setor_denda_pap + $setor_denda_bbnkb + $setor_pendidikan + $setor_pihak3 + $setor_penjualan + $setor_laba + $setor_jagir + $setor_bunga + $setor_denda_terlambat + $setor_pengembalian + $setor_bg_hasil_pjk + $setor_bg_hasil_bknpjk + $setor_dau + $setor_dak + $setor_daknf + $setor_hibah + $setor_penyesuaian + $setor_ban_keu + $denda_pap
             $Realisasi_Penerimaan = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $terima_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
+                    FROM( SELECT $terima_pkb+$terima_bbnkb+$terima_pbbkb+$terima_papabt+$terima_rokok+$terima_ret_umum+$terima_ret_jasa+$terima_ret_izin+$terima_denda_pkb+$terima_denda_bbnkb+$terima_pendidikan+$terima_pihak3+$terima_penjualan+$terima_blud+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk + $setor_dau + $setor_dak + $setor_daknf + $setor_hibah + $setor_penyesuaian + $setor_ban_keu + $denda_pap nilai
                         ) a
 
                    UNION ALL
@@ -2704,7 +2704,7 @@ class LaporanAkuntansiController extends Controller
                         where a.kd_skpd='$kd_skpd' AND b.jns_trans='4' AND LEFT(a.kd_rek6,1)='4' AND b.tgl_sts <= '$periode2' ) a";
 
             $akuntansi = "SELECT 2 nomor, 0 jns,0 urut,'- Realisasi Penerimaan' nama,ISNULL(SUM(nilai), 0) AS nilai
-                    FROM( SELECT $setor_pkb+$setor_tgk_pkb+$setor_pka+$setor_bbnkb+$setor_bbnka+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$setor_ret_jasa+$setor_ret_izin+$setor_denda_pkb+$setor_denda_pap+$setor_denda_bbnkb+$setor_pendidikan+$setor_pihak3+$setor_penjualan+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk+$setor_dau+$setor_dak+$setor_daknf+$setor_hibah+$setor_penyesuaian+$setor_ban_keu nilai
+                    FROM( SELECT $terima_pkb+$terima_bbnkb+$terima_pbbkb+$terima_papabt+$terima_rokok+$terima_ret_umum+$setor_pbbkb+$setor_rokok+$setor_papabt+$setor_ret_umum+$terima_ret_jasa+$terima_ret_izin+$terima_denda_pkb+$terima_denda_bbnkb+$terima_pendidikan+$terima_pihak3+$terima_penjualan+$terima_blud+$setor_laba+$setor_jagir+$setor_bunga+$setor_denda_terlambat+$setor_pengembalian+$setor_bg_hasil_pjk+$setor_bg_hasil_bknpjk + $setor_dau + $setor_dak + $setor_daknf + $setor_hibah + $setor_penyesuaian + $setor_ban_keu + $denda_pap nilai
                         ) a
 
                       UNION ALL
