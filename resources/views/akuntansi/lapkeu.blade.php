@@ -18,7 +18,7 @@
         </div>
     </div>
     <!-- end page title -->
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="semester">
                 <div class="card-body">
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="row">
         <div class="col-md-6">
