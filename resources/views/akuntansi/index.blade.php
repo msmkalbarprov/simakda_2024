@@ -61,6 +61,8 @@
                 </div>
             </div>
         </div>
+        @if(Auth::user()->role == '1015')
+        @else
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="rekonba">
                 <div class="card-body">
@@ -73,6 +75,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
     <div class="row">
         <div class="col-md-6">
