@@ -30,7 +30,6 @@ class LapkeuController extends Controller
         $skpdunit    = $request->skpdunit;
         $kd_skpd        = $request->kd_skpd;
 
-        
             if ($skpdunit=="unit") {
                 $kd_skpd=$kd_skpd;
             }else if ($skpdunit=="skpd") {
@@ -41,8 +40,13 @@ class LapkeuController extends Controller
             $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
 
+        // dd(substr($tanggal2,5,2));
         // dd($kd_skpd);
-        
+        if ($periodebulan=='periode') {
+            $bulan=substr($tanggal2,6,1);
+        }else{
+            $bulan=$bulan;
+        }
         $tahun_anggaran = tahun_anggaran();
         $thn_ang1   = $tahun_anggaran-1;
 
@@ -106,8 +110,9 @@ class LapkeuController extends Controller
                 'periodebulan'      => $periodebulan,
                 'tanggal1'          => $tanggal1,
                 'tanggal2'          => $tanggal2,
-                'jns_ang'          => $jns_ang,
-                'thn_ang_1'         => $thn_ang1             
+                'jns_ang'           => $jns_ang,
+                'thn_ang_1'         => $thn_ang1,
+                'skpdunit'          =>$skpdunit   
             ];
 
 
