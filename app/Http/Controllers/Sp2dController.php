@@ -485,6 +485,7 @@ class Sp2dController extends Controller
         $kd_skpd = $request->kd_skpd;
         $beban = $request->beban;
         $baris = $request->baris;
+        $margin = $request->margin_atas;
 
         $sp2d = DB::table('trhsp2d as a')->where(['a.no_sp2d' => $no_sp2d])->select('a.*', DB::raw("(SELECT nmrekan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as nmrekan"), DB::raw("(SELECT pimpinan FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as pimpinan"), DB::raw("(SELECT alamat FROM trhspp WHERE no_spp=a.no_spp AND kd_skpd=a.kd_skpd) as alamat"))->first();
         $data_sp2d = cari_lampiran($sp2d, $baris);
@@ -498,7 +499,10 @@ class Sp2dController extends Controller
         ];
         $view = view('penatausahaan.pengeluaran.sp2d.cetak.lampiran')->with($data);
 
-        $pdf = PDF::loadHtml($view);
+        $pdf = PDF::loadHtml($view)
+            ->setOption('page-width', 215.9)
+            ->setOption('page-height', 330.2)
+            ->setOption('margin-top', $margin);
         return $pdf->stream('laporan.pdf');
     }
 

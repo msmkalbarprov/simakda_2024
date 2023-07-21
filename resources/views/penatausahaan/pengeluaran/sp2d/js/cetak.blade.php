@@ -176,6 +176,7 @@
             let jenis = document.getElementById('jenis').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let beban = document.getElementById('beban').value;
+            let margin_atas = document.getElementById('margin_atas').value;
             if (!ttd_bud) {
                 alert('Pilih Penandatangan BUD Terlebih Dahulu!');
                 return;
@@ -202,6 +203,7 @@
             searchParams.append("baris", baris);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("beban", beban);
+            searchParams.append("margin_atas", margin_atas);
             window.open(url.toString(), "_blank");
         });
 
