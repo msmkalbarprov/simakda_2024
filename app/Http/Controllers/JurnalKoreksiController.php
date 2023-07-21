@@ -114,7 +114,7 @@ class JurnalKoreksiController extends Controller
             })
             ->select('a.no_sp2d')
             ->distinct()
-            ->where(['a.kd_skpd' => $req['kd_skpd'], 'b.jns_spp' => $req['beban'], 'a.kd_sub_kegiatan' => $req['kd_sub_kegiatan']])
+            ->where(['a.kd_skpd' => $req['kd_skpd'], 'b.jns_spp' => $req['beban']])
             ->orderBy('a.no_sp2d')
             ->get();
         return response()->json($data);
