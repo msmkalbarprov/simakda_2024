@@ -77,10 +77,10 @@
                 return;
             }
 
-            if (sp2d_online == '1' && jenis == '4') {
-                alert('SP2D dengan Virtual Account tidak dapat melakukan SP2D Online!');
-                return;
-            }
+            // if (sp2d_online == '1' && jenis == '4') {
+            //     alert('SP2D dengan Virtual Account tidak dapat melakukan SP2D Online!');
+            //     return;
+            // }
 
             let tampungan = rincian_penguji.rows().data().toArray().map((value) => {
                 let result = {
