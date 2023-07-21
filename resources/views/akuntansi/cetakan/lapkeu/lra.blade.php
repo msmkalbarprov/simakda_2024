@@ -203,7 +203,7 @@
             @if ($bold == 0)
                 <tr>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%"
-                        align="center">$no</td>
+                        align="center">{{$no}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%"></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"
                         align="right"></td>
