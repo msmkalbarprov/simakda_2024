@@ -146,6 +146,14 @@ class PencairanSp2dController extends Controller
         $tgl_sp2d = $request->tgl_sp2d;
         $nama = Auth::user()->nama;
 
+        $map_cp = collect(DB::select("SELECT kd_rek6 from map_cp"))
+            ->pluck('kd_rek6')
+            ->toArray();
+
+        $map = implode("','", $map_cp);
+
+        $map = "'" . $map . "'";
+
         DB::beginTransaction();
         try {
             $no_spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
@@ -252,7 +260,7 @@ class PencairanSp2dController extends Controller
 
             // $total_data1 = DB::table('trspmpot as a')->join('trhsp2d as b', 'a.no_spm', '=', 'b.no_spm')->where(['b.no_sp2d' => $no_sp2d])->whereIn('a.kd_rek6', ['210601010003', '210601010017', '210601010001', '210601010021', '210601010019', '210601010007', '210601020001', '210601020009', '210601010022', '210601010011', '210601010012', '210601010009', '410411010001'])->count();
 
-            $total_data1 = collect(DB::select("SELECT COUNT(*) as jumlah FROM trspmpot a INNER JOIN trhsp2d b ON a.no_spm = b.no_spm WHERE b.no_sp2d = '$no_sp2d' AND a.kd_rek6 IN ('210601010003','210601010017','210601010001','210601010021','210601010019','210601010007','210601020001','210601020009','210601010022','210601010011','210601010012','210601010009','410411010001','210601010005')"))->first();
+            $total_data1 = collect(DB::select("SELECT COUNT(*) as jumlah FROM trspmpot a INNER JOIN trhsp2d b ON a.no_spm = b.no_spm WHERE b.no_sp2d = '$no_sp2d' AND a.kd_rek6 IN ($map)"))->first();
 
             if ($total_data1->jumlah > 0) {
                 $sts = $bukti_str + 1;
@@ -270,7 +278,7 @@ class PencairanSp2dController extends Controller
                         $join->on('b.no_spp', '=', 'c.no_spp');
                         $join->on('b.kd_skpd', '=', 'c.kd_skpd');
                     })
-                    ->whereRaw("b.no_sp2d = ? AND a.kd_rek6 IN ('210601010003','210601010017','210601010001','210601010021','210601010019','210601010007','210601020001','210601020009','210601010022','210601010011','210601010012','210601010009','410411010001','210601010005')", [$no_sp2d])
+                    ->whereRaw("b.no_sp2d = ? AND a.kd_rek6 IN ($map)", [$no_sp2d])
                     ->groupByRaw("a.no_spm,a.kd_skpd,a.kd_rek6,a.nm_rek6,a.nilai,a.pot,a.kd_trans,a.map_pot,a.nm_pot,a.noreff,a.nomorPokokWajibPajak,a.namaWajibPajak,a.alamatWajibPajak,a.kota,a.nik,a.kodeMap,a.keteranganKodeMap,a.kodeSetor,a.keteranganKodeSetor,a.masaPajak,a.tahunPajak,a.jumlahBayar,a.nomorObjekPajak,a.nomorSK,a.nomorPokokWajibPajakPenyetor,a.nomorPokokWajibPajakRekanan,a.nikRekanan,a.nomorFakturPajak,a.idBilling,a.tanggalExpiredBilling,a.tgl_setor,a.status_setor,a.ntpn,a.keterangan,a.jenis,a.username,a.last_update,c.kd_sub_kegiatan")
                     ->get();
 
