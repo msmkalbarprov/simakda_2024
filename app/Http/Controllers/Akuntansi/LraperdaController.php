@@ -345,5 +345,91 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_i2(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tanggal_ttd    = $request->tgl_ttd;
+        $cetak          = $request->cetak;
+        $jns_ang        = $request->jenis_anggaran;
+        $bulan          = $request->bulan;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+        $skpdunit    = $request->skpdunit;
+        $kd_skpd        = $request->kd_skpd;
+        $tahun_anggaran = tahun_anggaran();
+
+        if ($kd_skpd == '') {
+            $kd_skpd        = "";
+            $skpd_clause = "";
+            $skpd_clauses = "";
+            $skpd_clause_prog = "";
+            $skpd_clause_ang = "";
+        } else {
+            if ($skpdunit == "unit") {
+                $kd_skpd = $kd_skpd;
+            } else if ($skpdunit == "skpd") {
+                $kd_skpd = substr($kd_skpd, 0, 17);
+            }
+            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+        }
+
+
+
+            // rincian
+       
+            $tot = collect(DB::select("SELECT * from data_tot_perda_i1_ringkasan(3,'P1',2023)"))->first();
+
+            $rincian = DB::select("SELECT * from data_perda_i1_ringkasan($bulan,'$jns_ang',$tahun_anggaran) order by kode");
+
+            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+
+        
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+ 
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tot'               => $tot,
+            'rincian'           => $rincian,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'tahun_anggaran'    => $tahun_anggaran
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+            $view =  view('akuntansi.cetakan.perda.perda_i1_ringkasan')->with($data);
+        // }
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I1 RINGKASAN.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I1 RINGKASAN.xls"');
+            return $view;
+        }
+    }
     
 }

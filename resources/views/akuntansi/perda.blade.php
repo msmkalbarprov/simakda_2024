@@ -181,7 +181,17 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_i1_ringkasan .modal-content'),
                 
-            });            
+            });
+
+            $(".select_i2").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_i2 .modal-content'),
+                
+            });    
+
+
+            // hidden
+            document.getElementById('baris_skpd_i2').hidden = true; // Hide        
         });
 
 
@@ -204,30 +214,53 @@
             $("#labelcetak_semester").html("Cetak I.1 Ringkasan");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
+        $('#i2').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_i2').modal('show');
+            $("#labelcetak_semester").html("Cetak I.2");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+    //onclick card end
+
+    //radio
+        $('input:radio[name="pilihan_i2"]').change(function() {
+
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_i2').hidden = true; // Hide
+            }else if ($(this).val() == 'skpd') {
+                cari_skpd('skpd')
+                document.getElementById('baris_skpd_i2').hidden = false; // show
+            } else {
+                cari_skpd('unit')
+                document.getElementById('baris_skpd_i2').hidden = false; // show
+            }
+        });
+    //endradio
 
         
 
-        // function cari_skpd(jenis) {
-        //     $.ajax({
-        //         url: "{{ route('laporan_akuntansi.skpd') }}",
-        //         type: "POST",
-        //         dataType: 'json',
-        //         data: {
-        //             jenis: jenis
-        //         },
-        //         success: function(data) {
-        //             $('#kd_skpd').empty();
-        //             $('#kd_skpd').append(
-        //                 `<option value="" disabled selected>Pilih SKPD</option>`);
-        //             $.each(data, function(index, data) {
-        //                 $('#kd_skpd').append(
-        //                     `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
-        //                 );
-        //             })
+        function cari_skpd(jenis) {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.skpd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    jenis: jenis
+                },
+                success: function(data) {
+                    $('#kd_skpd_i2').empty();
+                    $('#kd_skpd_i2').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_i2').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
 
-        //         }
-        //     })
-        // }
+                }
+            })
+        }
 
         
 
@@ -305,12 +338,12 @@
                 window.open(url.toString(), "_blank");
             
             }else if (labelcetak_semester == 'Cetak I.1 Ringkasan') {
-            // GET DATA
-            let tgl_ttd                  = document.getElementById('tgl_ttd_i1_ringkasan').value;
-            let jns_anggaran             = document.getElementById('jns_anggaran_i1_ringkasan').value;
-            let bulan                    = document.getElementById('bulan_i1_ringkasan').value;
-            // alert(labelcetak_semester)
-            // PERINGATAN
+                // GET DATA
+                let tgl_ttd                  = document.getElementById('tgl_ttd_i1_ringkasan').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_i1_ringkasan').value;
+                let bulan                    = document.getElementById('bulan_i1_ringkasan').value;
+                // alert(labelcetak_semester)
+                // PERINGATAN
                 if (!tgl_ttd) {
                     alert('Tanggal Tanda Tangan tidak boleh kosong!');
                     return;
@@ -329,6 +362,40 @@
                 searchParams.append("bulan", bulan);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak I.2') {
+                // GET DATA
+                let kd_skpd                  = document.getElementById('kd_skpd_i2').value;
+                let tgl_ttd                  = document.getElementById('tgl_ttd_i2').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_i2').value;
+                let bulan                    = document.getElementById('bulan_i2').value;
+                let skpdunit                 = $('input:radio[name="pilihan_i2"]:checked').val();
+                // alert(labelcetak_semester)
+                // PERINGATAN
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+                if (!kd_skpd) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i2') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("bulan", bulan);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("skpdunit", skpdunit); 
                 window.open(url.toString(), "_blank");
             
             }else{
