@@ -211,9 +211,13 @@
         $('#kd_rek6').on('select2:select', function() {
             let nm_rek6 = $(this).find(':selected').data('nm_rek6');
             let sisa = $(this).find(':selected').data('sisa');
+            let jenis_cp = $('#jenis_cp').val();
+
             $('#nm_rek6').val(nm_rek6);
 
-            $('#nilai').val(sisa);
+            if (jenis_cp == 'TU') {
+                $('#nilai').val(sisa);
+            }
         });
 
         $('#simpan_detail').on('click', function() {
