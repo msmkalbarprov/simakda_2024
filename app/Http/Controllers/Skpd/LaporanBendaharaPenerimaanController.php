@@ -20,7 +20,10 @@ class LaporanBendaharaPenerimaanController extends Controller
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
             'jns_anggaran' => jenis_anggaran(),
             'daftar_rekening' => DB::select("SELECT * FROM (SELECT '' kd_rek6, '' nm_rek6 UNION ALL SELECT a.kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) nm_rek6 from tr_terima a group by a.kd_rek6) x order by kd_rek6"),
-            'daftar_skpd' => DB::table('ms_skpd')->orderBy('kd_skpd')->get()
+            'daftar_skpd' => DB::table('ms_skpd')
+                ->where('kd_skpd', $kd_skpd)
+                ->orderBy('kd_skpd')
+                ->get()
         ];
 
         return view('skpd.laporan_bendahara_penerimaan.index')->with($data);
