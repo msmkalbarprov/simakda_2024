@@ -142,6 +142,11 @@
                 dropdownParent: $('#modal_cetak_semester .modal-content'),
                 
             });
+            $(".select_semesterrinci").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_semesterrinci .modal-content'),
+                
+            });
             // hidden
             //LRA
             document.getElementById('baris_skpd').hidden = true; // Hide
@@ -179,6 +184,19 @@
                 document.getElementById('pilihan0_semester').hidden = true;
             }
             //ENDLRA SEMESTER
+
+            //LRA SEMESTERR rinci
+            document.getElementById('baris_skpd_semesterrinci').hidden = true; // Hide
+            document.getElementById('baris_periode1_semesterrinci').hidden = true; // Hide
+            document.getElementById('baris_periode2_semesterrinci').hidden = true; // Hide
+            document.getElementById('baris_bulan_semesterrinci').hidden = true; // Hide
+            let typeusrinci = "{{Auth::user()->is_admin}}";
+            if (typeusrinci == '1') {
+                 document.getElementById('pilihan0_semesterrinci').hidden = false;
+            }else{
+                document.getElementById('pilihan0_semesterrinci').hidden = true;
+            }
+            //ENDLRA SEMESTER rinci
         });
 
     // function tambahclass(){
@@ -233,6 +251,12 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_semester').modal('show');
             $("#labelcetak_semester").html("Cetak Semester");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#semesterrinci').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_semesterrinci').modal('show');
+            $("#labelcetak_semester").html("Cetak Semester Rinci");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -312,6 +336,20 @@
             }
         });
 
+        $('input:radio[name="pilihan_semesterrinci"]').change(function() {
+
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_semesterrinci').hidden = true; // Hide
+            }else if ($(this).val() == 'skpd') {
+                cari_skpd('skpd')
+                document.getElementById('baris_skpd_semesterrinci').hidden = false; // show
+            } else {
+                cari_skpd('unit')
+                document.getElementById('baris_skpd_semesterrinci').hidden = false; // show
+            }
+        });
+
          // cari periode
          $('input:radio[name="pilihanperiode"]').change(function() {
             if ($(this).val() == 'tahun') {
@@ -342,6 +380,22 @@
                 document.getElementById('baris_periode1_semester').hidden = true; // show
                 document.getElementById('baris_periode2_semester').hidden = true; // Hide
                 document.getElementById('baris_bulan_semester').hidden = false; // Hide
+            }
+        });
+
+         $('input:radio[name="pilihanperiode_semesterrinci"]').change(function() {
+            if ($(this).val() == 'tahun') {
+                document.getElementById('baris_periode1_semesterrinci').hidden = true; // Hide
+                document.getElementById('baris_periode2_semesterrinci').hidden = true; // Hide
+                document.getElementById('baris_bulan_semesterrinci').hidden = true; // Hide
+            }else if ($(this).val() == 'periode') {
+                document.getElementById('baris_periode1_semesterrinci').hidden = false; // show
+                document.getElementById('baris_periode2_semesterrinci').hidden = false; // Hide
+                document.getElementById('baris_bulan_semesterrinci').hidden = true; // Hide
+            } else {
+                document.getElementById('baris_periode1_semesterrinci').hidden = true; // show
+                document.getElementById('baris_periode2_semesterrinci').hidden = true; // Hide
+                document.getElementById('baris_bulan_semesterrinci').hidden = false; // Hide
             }
         });
 
@@ -393,6 +447,15 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd_semester').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+
+                    $('#kd_skpd_semesterrinci').empty();
+                    $('#kd_skpd_semesterrinci').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_semesterrinci').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -598,6 +661,50 @@
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_data", jenis_data);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("skpdunit", skpdunit);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("periodebulan", periodebulan);
+                window.open(url.toString(), "_blank");
+            
+            }if (labelcetak_semester == 'Cetak Semester Rinci') {
+                let kd_skpd                  = document.getElementById('kd_skpd_semesterrinci').value;
+                let bulan                    = document.getElementById('bulan_semesterrinci').value;
+                let tanggal1                 = document.getElementById('tanggal1_semesterrinci').value;
+                let tanggal2                 = document.getElementById('tanggal2_semesterrinci').value;
+                let tgl_ttd                  = document.getElementById('tgl_ttd_semesterrinci').value;
+                let ttd                      = document.getElementById('ttd_semesterrinci').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_semesterrinci').value;
+                let jenis_data               = document.getElementById('jenis_data_semesterrinci').value;
+                let panjang_data             = document.getElementById('panjang_data_semesterrinci').value;
+                let periodebulan             = $('input:radio[name="pilihanperiode_semesterrinci"]:checked').val();
+                let skpdunit                 = $('input:radio[name="pilihan_semesterrinci"]:checked').val();
+
+                // PERINGATAN
+                
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jenis_data) {
+                    alert('jenis Data tidak boleh kosong!');
+                    return;
+                }
+                if (!panjang_data) {
+                    alert('Rincian tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.lapkeu.semesterrinci') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("ttd", ttd);
+                searchParams.append("bulan", bulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_data", jenis_data);
+                searchParams.append("panjang_data", panjang_data);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("skpdunit", skpdunit);
                 searchParams.append("cetak", jns_cetak);

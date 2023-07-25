@@ -1689,6 +1689,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('lapkeu', [LaporanAkuntansiController::class, 'lapkeu'])->name('laporan_akuntansi.lapkeu');
             Route::get('cetak_lra_keu', [LapkeuController::class, 'cetak_lra'])->name('laporan_akuntansi.lapkeu.cetak_lra');
             Route::get('cetak_semester_keu', [LapkeuController::class, 'cetak_semester'])->name('laporan_akuntansi.lapkeu.semester');
+            Route::get('cetak_semesterrinci_keu', [LapkeuController::class, 'cetak_semester_rinci'])->name('laporan_akuntansi.lapkeu.semesterrinci');
         });
     });
     // Pengesahan SPJ
