@@ -149,8 +149,10 @@ class LapkeuController extends Controller
         $jenis_data     = $request->jenis_data;
         $skpdunit    = $request->skpdunit;
         $kd_skpd        = $request->kd_skpd;
-        $jns_rincian = 4;
-        // dd($skpdunit);
+        $jns_rincian = $request->panjang_data;;
+
+
+        // dd($jns_rincian);
         if ($kd_skpd == '') {
             $kd_skpd        = "";
             $skpd_clause = "";
@@ -933,37 +935,37 @@ class LapkeuController extends Controller
         // rincian
             if ($jenis_data == 5) { //Jurnal
                 if ($periodebulan == 'periode') {
-                    // $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
-                    //                         -- anggaran
-                    //                         isnull((SELECT sum(nilai) FROM trdrka
-                    //                                 where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
-                    //                                 ) AS anggaran,
-                    //                         --realisasi
-                    //                         isnull((
-                    //                             SELECT sum(realisasi) realisasi FROM(
-                    //                             SELECT
-                    //                             b.kd_unit,
-                    //                             b.kd_sub_kegiatan,
-                    //                             b.kd_rek6,
-                    //                             CASE
-                    //                                 WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit) - SUM(debet)
-                    //                                 WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet) - SUM(kredit)
-                    //                                 WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit) - SUM(debet)
-                    //                                 WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet) - SUM(kredit)
-                    //                                 ELSE 0
-                    //                             END AS realisasi
-                    //                             FROM trhju_pkd a
-                    //                             JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
-                    //                                         AND a.kd_skpd = b.kd_unit
-                    //                             WHERE b.kd_rek1_cmp IN ('4', '5', '6')
-                    //                             $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                    //                             GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
-                    //                         ) ,0)realisasi
-                    //                         FROM map_lra_2023
+                    $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
+                                            -- anggaran
+                                            isnull((SELECT sum(nilai) FROM trdrka
+                                                    where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                                    ) AS anggaran,
+                                            --realisasi
+                                            isnull((
+                                                SELECT sum(realisasi) realisasi FROM(
+                                                SELECT
+                                                b.kd_unit,
+                                                b.kd_sub_kegiatan,
+                                                b.kd_rek6,
+                                                CASE
+                                                    WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit) - SUM(debet)
+                                                    WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet) - SUM(kredit)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit) - SUM(debet)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet) - SUM(kredit)
+                                                    ELSE 0
+                                                END AS realisasi
+                                                FROM trhju_pkd a
+                                                JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                            AND a.kd_skpd = b.kd_unit
+                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
+                                                $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
+                                            ) ,0)realisasi
+                                            FROM map_lra_2023
 
-                    //                         where group_id <= ?
-                    //                         GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                    //                         ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
+                                            where group_id <= ?
+                                            GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                            ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
 
                     $rincian_pend=DB::select("SELECT kd_sub_kegiatan,kd_rek,nm_rek,SUM(anggaran)anggaran,SUM(sd_bulan_ini)sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl('$tanggal1','$tanggal2','$jns_ang') WHERE $skpd_clause_prog $where1 AND kd_sub_kegiatan<>'' 
                         group by kd_sub_kegiatan,kd_rek,nm_rek
@@ -975,37 +977,37 @@ class LapkeuController extends Controller
                     
                     $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
-                    // $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
-                    //                         isnull((SELECT sum(nilai) FROM trdrka
-                    //                                 where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
-                    //                                 ) AS anggaran,
-                    //                     --realisasi
-                    //                         isnull((
-                    //                             SELECT sum(realisasi) realisasi FROM(
-                    //                             SELECT
-                    //                             b.kd_unit,
-                    //                             b.kd_sub_kegiatan,
-                    //                             b.kd_rek6,
-                    //                             CASE
-                    //                                 WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit-debet)
-                    //                                 WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet-kredit)
-                    //                                 WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit-debet)
-                    //                                 WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet-kredit)
-                    //                                 ELSE 0
-                    //                             END AS realisasi
-                    //                             FROM trhju_pkd a
-                    //                             JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
-                    //                                         AND a.kd_skpd = b.kd_unit
-                    //                             WHERE b.kd_rek1_cmp IN ('4', '5', '6')
-                    //                             $skpd_clause  AND MONTH(tgl_voucher) $operator ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                    //                             GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
-                    //                         ) ,0)realisasi
+                    $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
+                                            isnull((SELECT sum(nilai) FROM trdrka
+                                                    where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                                    ) AS anggaran,
+                                        --realisasi
+                                            isnull((
+                                                SELECT sum(realisasi) realisasi FROM(
+                                                SELECT
+                                                b.kd_unit,
+                                                b.kd_sub_kegiatan,
+                                                b.kd_rek6,
+                                                CASE
+                                                    WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit-debet)
+                                                    WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet-kredit)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit-debet)
+                                                    WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet-kredit)
+                                                    ELSE 0
+                                                END AS realisasi
+                                                FROM trhju_pkd a
+                                                JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                            AND a.kd_skpd = b.kd_unit
+                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
+                                                $skpd_clause  AND MONTH(tgl_voucher) $operator ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
+                                            ) ,0)realisasi
 
-                    //                         FROM map_lra_2023
+                                            FROM map_lra_2023
 
-                    //                         where group_id <= ?
-                    //                         GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                    //                         ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $bulan, $jns_rincian]);
+                                            where group_id <= ?
+                                            GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                            ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $bulan, $jns_rincian]);
 
                     $rincian_pend=DB::select("SELECT kd_sub_kegiatan,kd_rek,nm_rek,SUM(anggaran)anggaran,SUM(sd_bulan_ini)sd_bulan_ini FROM realisasi_jurnal_pend_n($bulan,'$jns_ang',$tahun_anggaran) WHERE $skpd_clause_prog $where1 AND kd_sub_kegiatan<>'' 
                         group by kd_sub_kegiatan,kd_rek,nm_rek
@@ -1568,7 +1570,7 @@ class LapkeuController extends Controller
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         // dd($sus);
-        if ($jenis_data == 5) {
+        if ($jenis_data == 5 && $kd_skpd!= "") {
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
                 'kd_skpd'           => $kd_skpd,
@@ -1595,6 +1597,33 @@ class LapkeuController extends Controller
             ];
         
         $view =  view('akuntansi.cetakan.lapkeu.semester_rinci_jurnal')->with($data);
+        }else if ($jenis_data == 5 && $kd_skpd== "") {
+            $data = [
+                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                'kd_skpd'           => $kd_skpd,
+                'skpdunit'          => $skpdunit,
+                'tanggal1'          => $tanggal1,
+                'tanggal2'          => $tanggal2,
+                'periodebulan'      => $periodebulan,
+                'rincian'      => $rincian,
+                'rincian_bel'       => $rincian_bel,
+                'jum_pend'          => $jum_pend,
+                'jum_bel'           => $jum_bel,
+                'enter'             => $enter,
+                'daerah'            => $daerah,
+                'tanggal_ttd'       => $tanggal_ttd,
+                'tandatangan'       => $tandatangan,
+                'tahun_anggaran'    => $tahun_anggaran,
+                'bulan'             => $bulan,
+                'bulan2'            => $bulan2,
+                'judul'             => $judul,
+                'pilih'             => $pilih,
+                'jenis_ttd'         => $ttd,
+                'jenis'             => $jns_rincian,
+                'sus'               => $sus
+            ];
+        
+        $view =  view('akuntansi.cetakan.lapkeu.semester')->with($data);
         }else{
 
             $data = [

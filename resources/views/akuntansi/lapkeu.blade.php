@@ -661,6 +661,7 @@
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_data", jenis_data);
+                searchParams.append("panjang_data", 4);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("skpdunit", skpdunit);
                 searchParams.append("cetak", jns_cetak);

@@ -306,7 +306,7 @@
                         
                         @endphp
                               
-                        @if ($leng == 1)
+                        @if ($urut == 1)
                             <tr>
                                 <td align="left" valign="top"><b>{{$kd_sub_kegiatan}}</b></td> 
                                 <td align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
@@ -316,7 +316,7 @@
                                 <td align="right" valign="top"><b>{{$a}} {{rupiah($sisa1)}} {{$b}}</b></td> 
                                 <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td> 
                             </tr>
-                        @elseif ($leng == 2)
+                        @elseif ($urut == 2)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
@@ -326,7 +326,7 @@
                                 <td align="right" valign="top">{{$a}} {{rupiah($sisa1)}} {{$b}}</td> 
                                 <td align="right" valign="top">{{rupiah($persen)}}</td> 
                             </tr>
-                        @elseif ($leng == 3)
+                        @elseif ($urut == 3)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
@@ -336,7 +336,7 @@
                                 <td align="right" valign="top">{{$a}} {{rupiah($sisa1)}} {{$b}}</td> 
                                 <td align="right" valign="top">{{rupiah($persen)}}</td> 
                             </tr>
-                        @elseif ($leng == 4)
+                        @elseif ($urut == 4)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan_potong}}.{{dotrek($kd_rek)}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
@@ -346,7 +346,7 @@
                                 <td align="right" valign="top">{{$a}} {{rupiah($sisa1)}} {{$b}}</td> 
                                 <td align="right" valign="top">{{rupiah($persen)}}</td> 
                             </tr> 
-                        @elseif ($leng == 5)
+                        @elseif ($urut == 5)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan_potong}}.{{dotrek($kd_rek)}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
@@ -356,7 +356,7 @@
                                 <td align="right" valign="top">{{$a}} {{rupiah($sisa1)}} {{$b}}</td> 
                                 <td align="right" valign="top">{{rupiah($persen)}}</td> 
                             </tr> 
-                        @elseif ($leng == 6)
+                        @elseif ($urut == 6)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan_potong}}.{{dotrek($kd_rek)}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
@@ -366,7 +366,7 @@
                                 <td align="right" valign="top">{{$a}} {{rupiah($sisa1)}} {{$b}}</td> 
                                 <td align="right" valign="top">{{rupiah($persen)}}</td> 
                             </tr>
-                        @elseif ($leng == 7)
+                        @elseif ($urut == 7)
                             <tr>
                                 <td align="left" valign="top">{{$kd_sub_kegiatan_potong}}.{{dotrek($kd_rek)}}</td> 
                                 <td align="left"  valign="top">{{$nm_rek}}</td> 
