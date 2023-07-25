@@ -230,67 +230,78 @@ class TransaksiBosController extends Controller
         $rekening = $request->rekening;
         $jns_ang = $request->jns_ang;
 
-        $data = DB::select("SELECT a.sumber1 as kode,b.nm_sumberdana as nama,sum(nsumber1)as nilai,
-                (SELECT SUM(nilai) FROM
-                        (SELECT
-                            SUM (c.nilai) as nilai
-                        FROM
-                            trdtransout_blud c
-                        LEFT JOIN trhtransout_blud d ON c.no_bukti = d.no_bukti
-                        AND c.kd_skpd = d.kd_skpd
-                        WHERE
-                            c.kd_sub_kegiatan = ?
-                        AND d.kd_skpd = ?
-                        AND c.kd_rek6 = ?
-                        AND c.no_bukti <> ?
-                        and c.sumber=a.sumber1
-                        UNION ALL
-                        SELECT SUM(x.nilai) as nilai FROM trdspp x
-                        INNER JOIN trhspp y
-                        ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
-                        WHERE
-                            x.kd_sub_kegiatan = ?
-                        AND x.kd_skpd = ?
-                        AND x.kd_rek6 = ?
-                        and x.sumber=a.sumber1
-                        AND y.jns_spp IN ('3','4','5','6'))r) AS lalu
+        $status             = DB::table('trhrka')
+            ->where(['kd_skpd' => $kd_skpd, 'status' => '1'])
+            ->orderByDesc('tgl_dpa')
+            ->first();
 
-                FROM trdrka a INNER JOIN hsumber_dana b
-                ON a.sumber1=b.kd_sumberdana
-                WHERE a.kd_skpd=? AND a.kd_sub_kegiatan= ? and a.jns_ang=? and a.kd_rek6=?
-                group by a.sumber1,b.nm_sumberdana
+        $status_anggaran    = $status->jns_ang;
 
-                UNION ALL
+        $no_trdrka = $kd_skpd . '.' . $kd_sub_kegiatan . '.' . $rekening;
 
-                SELECT a.sumber2 as kode,b.nm_sumberdana as nama,sum(nsumber1)as nilai,
-                (SELECT SUM(nilai) FROM
-                        (SELECT
-                            SUM (c.nilai) as nilai
-                        FROM
-                            trdtransout_blud c
-                        LEFT JOIN trhtransout_blud d ON c.no_bukti = d.no_bukti
-                        AND c.kd_skpd = d.kd_skpd
-                        WHERE
-                            c.kd_sub_kegiatan = ?
-                        AND d.kd_skpd = ?
-                        AND c.kd_rek6 = ?
-                        AND c.no_bukti <> ?
-                    AND d.jns_spp='1'
-                        and c.sumber=a.sumber2
-                        UNION ALL
-                        SELECT SUM(x.nilai) as nilai FROM trdspp x
-                        INNER JOIN trhspp y
-                        ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
-                        WHERE
-                            x.kd_sub_kegiatan = ?
-                        AND x.kd_skpd = ?
-                        AND x.kd_rek6 = ?
-                        and x.sumber=a.sumber2
-                        AND y.jns_spp IN ('3','4','5','6'))r) AS lalu
-                FROM trdrka a INNER JOIN hsumber_dana b
-                ON a.sumber2=b.kd_sumberdana
-                WHERE a.kd_skpd=? AND a.kd_sub_kegiatan= ? and a.kd_rek6=?
-                group by a.sumber2,b.nm_sumberdana", [$kd_sub_kegiatan, $kd_skpd, $rekening, $no_bukti, $kd_sub_kegiatan, $kd_skpd, $rekening, $kd_skpd, $kd_sub_kegiatan, $jns_ang, $rekening, $kd_sub_kegiatan, $kd_skpd, $rekening, $no_bukti, $kd_sub_kegiatan, $kd_skpd, $rekening, $kd_skpd, $kd_sub_kegiatan, $rekening]);
+        // $data = DB::select("SELECT a.sumber1 as kode,b.nm_sumberdana as nama,sum(nsumber1)as nilai,
+        //         (SELECT SUM(nilai) FROM
+        //                 (SELECT
+        //                     SUM (c.nilai) as nilai
+        //                 FROM
+        //                     trdtransout_blud c
+        //                 LEFT JOIN trhtransout_blud d ON c.no_bukti = d.no_bukti
+        //                 AND c.kd_skpd = d.kd_skpd
+        //                 WHERE
+        //                     c.kd_sub_kegiatan = ?
+        //                 AND d.kd_skpd = ?
+        //                 AND c.kd_rek6 = ?
+        //                 AND c.no_bukti <> ?
+        //                 and c.sumber=a.sumber1
+        //                 UNION ALL
+        //                 SELECT SUM(x.nilai) as nilai FROM trdspp x
+        //                 INNER JOIN trhspp y
+        //                 ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
+        //                 WHERE
+        //                     x.kd_sub_kegiatan = ?
+        //                 AND x.kd_skpd = ?
+        //                 AND x.kd_rek6 = ?
+        //                 and x.sumber=a.sumber1
+        //                 AND y.jns_spp IN ('3','4','5','6'))r) AS lalu
+
+        //         FROM trdrka a INNER JOIN hsumber_dana b
+        //         ON a.sumber1=b.kd_sumberdana
+        //         WHERE a.kd_skpd=? AND a.kd_sub_kegiatan= ? and a.jns_ang=? and a.kd_rek6=?
+        //         group by a.sumber1,b.nm_sumberdana
+
+        //         UNION ALL
+
+        //         SELECT a.sumber2 as kode,b.nm_sumberdana as nama,sum(nsumber1)as nilai,
+        //         (SELECT SUM(nilai) FROM
+        //                 (SELECT
+        //                     SUM (c.nilai) as nilai
+        //                 FROM
+        //                     trdtransout_blud c
+        //                 LEFT JOIN trhtransout_blud d ON c.no_bukti = d.no_bukti
+        //                 AND c.kd_skpd = d.kd_skpd
+        //                 WHERE
+        //                     c.kd_sub_kegiatan = ?
+        //                 AND d.kd_skpd = ?
+        //                 AND c.kd_rek6 = ?
+        //                 AND c.no_bukti <> ?
+        //             AND d.jns_spp='1'
+        //                 and c.sumber=a.sumber2
+        //                 UNION ALL
+        //                 SELECT SUM(x.nilai) as nilai FROM trdspp x
+        //                 INNER JOIN trhspp y
+        //                 ON x.no_spp=y.no_spp AND x.kd_skpd=y.kd_skpd
+        //                 WHERE
+        //                     x.kd_sub_kegiatan = ?
+        //                 AND x.kd_skpd = ?
+        //                 AND x.kd_rek6 = ?
+        //                 and x.sumber=a.sumber2
+        //                 AND y.jns_spp IN ('3','4','5','6'))r) AS lalu
+        //         FROM trdrka a INNER JOIN hsumber_dana b
+        //         ON a.sumber2=b.kd_sumberdana
+        //         WHERE a.kd_skpd=? AND a.kd_sub_kegiatan= ? and a.kd_rek6=?
+        //         group by a.sumber2,b.nm_sumberdana", [$kd_sub_kegiatan, $kd_skpd, $rekening, $no_bukti, $kd_sub_kegiatan, $kd_skpd, $rekening, $kd_skpd, $kd_sub_kegiatan, $jns_ang, $rekening, $kd_sub_kegiatan, $kd_skpd, $rekening, $no_bukti, $kd_sub_kegiatan, $kd_skpd, $rekening, $kd_skpd, $kd_sub_kegiatan, $rekening]);
+
+        $data = sumber_dana($no_trdrka, $status_anggaran);
 
         return response()->json($data);
     }

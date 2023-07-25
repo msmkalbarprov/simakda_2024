@@ -273,7 +273,7 @@
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#sumber').append(
-                            `<option value="${data.kode}" data-nama="${data.nama}" data-nilai="${data.nilai}" data-lalu="${data.lalu}">${data.kode} | ${data.nama}</option>`
+                            `<option value="${data.sumber}" data-nama="${data.nm_sumber}" data-nilai="${data.nilai}">${data.sumber} | ${data.nm_sumber}</option>`
                         );
                     })
                 }
@@ -282,7 +282,7 @@
 
         $('#sumber').on('select2:select', function() {
             let nilai = $(this).find(':selected').data('nilai');
-            let lalu = $(this).find(':selected').data('lalu');
+            let lalu = rupiah(document.getElementById('lalu_angkas').value);
 
             $('#total_sumber').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
