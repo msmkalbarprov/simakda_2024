@@ -112,19 +112,19 @@
                 <th>Januari</th>
                 <th>Februari</th>
                 <th>Maret</th>
-                <th style="color:#000080">Triwulan I</th>
+                <th style="color:#bf00ff">Triwulan I</th>
                 <th>April</th>
                 <th>Mei</th>
                 <th>Juni</th>
-                <th style="color:#000080">Triwulan II</th>
+                <th style="color:#bf00ff">Triwulan II</th>
                 <th>Juli</th>
                 <th>Agustus</th>
                 <th>September</th>
-                <th style="color:#000080">Triwulan III</th>
+                <th style="color:#bf00ff">Triwulan III</th>
                 <th>Oktober</th>
                 <th>November</th>
                 <th>Desember</th>
-                <th style="color:#000080">Triwulan IV</th>
+                <th style="color:#bf00ff">Triwulan IV</th>
             </tr>
         </thead>
         <tbody>
@@ -170,19 +170,19 @@
                     <td class="angka">{{ rupiah($giat->jan) }}</td>
                     <td class="angka">{{ rupiah($giat->feb) }}</td>
                     <td class="angka">{{ rupiah($giat->mar) }}</td>
-                    <td class="angka" style="color:#000080">{{ rupiah($giat->jan + $giat->feb + $giat->mar) }}</td>
+                    <td class="angka" style="color:#bf00ff">{{ rupiah($giat->jan + $giat->feb + $giat->mar) }}</td>
                     <td class="angka">{{ rupiah($giat->apr) }}</td>
                     <td class="angka">{{ rupiah($giat->mei) }}</td>
                     <td class="angka">{{ rupiah($giat->jun) }}</td>
-                    <td class="angka" style="color:#000080">{{ rupiah($giat->apr + $giat->mei + $giat->jun) }}</td>
+                    <td class="angka" style="color:#bf00ff">{{ rupiah($giat->apr + $giat->mei + $giat->jun) }}</td>
                     <td class="angka">{{ rupiah($giat->jul) }}</td>
                     <td class="angka">{{ rupiah($giat->ags) }}</td>
                     <td class="angka">{{ rupiah($giat->sep) }}</td>
-                    <td class="angka" style="color:#000080">{{ rupiah($giat->jul + $giat->ags + $giat->sep) }}</td>
+                    <td class="angka" style="color:#bf00ff">{{ rupiah($giat->jul + $giat->ags + $giat->sep) }}</td>
                     <td class="angka">{{ rupiah($giat->okt) }}</td>
                     <td class="angka">{{ rupiah($giat->nov) }}</td>
                     <td class="angka">{{ rupiah($giat->des) }}</td>
-                    <td class="angka" style="color:#000080">{{ rupiah($giat->okt + $giat->nov + $giat->des) }}</td>
+                    <td class="angka" style="color:#bf00ff">{{ rupiah($giat->okt + $giat->nov + $giat->des) }}</td>
                 </tr>
             @endforeach
             <tr>
@@ -191,19 +191,19 @@
                 <td class="angka"><b>{{ rupiah($total_jan) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_feb) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_mar) }}</b></td>
-                <td class="angka" style="color:#000080"><b>{{ rupiah($total_jan + $total_feb + $total_mar) }}</b></td>
+                <td class="angka" style="color:#bf00ff"><b>{{ rupiah($total_jan + $total_feb + $total_mar) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_apr) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_mei) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_jun) }}</b></td>
-                <td class="angka" style="color:#000080"><b>{{ rupiah($total_apr + $total_mei + $total_jun) }}</b></td>
+                <td class="angka" style="color:#bf00ff"><b>{{ rupiah($total_apr + $total_mei + $total_jun) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_jul) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_ags) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_sep) }}</b></td>
-                <td class="angka" style="color:#000080"><b>{{ rupiah($total_jul + $total_ags + $total_sep) }}</b></td>
+                <td class="angka" style="color:#bf00ff"><b>{{ rupiah($total_jul + $total_ags + $total_sep) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_okt) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_nov) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_des) }}</b></td>
-                <td class="angka" style="color:#000080"><b>{{ rupiah($total_okt + $total_nov + $total_des) }}</b></td>
+                <td class="angka" style="color:#bf00ff"><b>{{ rupiah($total_okt + $total_nov + $total_des) }}</b></td>
             </tr>
             {{-- <tr>
                 <td colspan="14" style="border-left:hidden;border-bottom:hidden;border-right:hidden"></td>
