@@ -29,27 +29,28 @@
         .angka {
             text-align: right;
             font-family: "Open Sans", Helvetica, Arial, sans-serif;
-            letter-spacing:0.5px;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 
 <body>
-    <table style="width: 100%;text-align:center;font-size:12px" id="tabel_angkas" border="1" cellspacing='0' cellpadding='2'>
+    <table style="width: 100%;text-align:center;font-size:12px" id="tabel_angkas" border="1" cellspacing='0'
+        cellpadding='2'>
         <tr>
             <td><b>RENCANA ANGGARAN KAS<br>
-                SATUAN KERJA PERANGKAT DAERAH</b></td>
-            <td rowspan="2"><b>Formulir<br>RAK 
-                
-                @if(substr($sub_header1->subkegiatan,5,10)=='00.0.00.04')
-                    Pendapatan
-                @elseif(substr($sub_header1->subkegiatan,5,10)=='00.0.00.61')
-                    Penerimaan Pembiayaan
-                @elseif(substr($sub_header1->subkegiatan,5,10)=='00.0.00.62')
-                    Pengeluaran Pembiayaan
-                @else
-                    Belanja
-                @endif
+                    SATUAN KERJA PERANGKAT DAERAH</b></td>
+            <td rowspan="2"><b>Formulir<br>RAK
+
+                    @if (substr($sub_header1->subkegiatan, 5, 10) == '00.0.00.04')
+                        Pendapatan
+                    @elseif(substr($sub_header1->subkegiatan, 5, 10) == '00.0.00.61')
+                        Penerimaan Pembiayaan
+                    @elseif(substr($sub_header1->subkegiatan, 5, 10) == '00.0.00.62')
+                        Pengeluaran Pembiayaan
+                    @else
+                        Belanja
+                    @endif
                 </b></td>
         </tr>
         <tr>
@@ -75,7 +76,9 @@
             <td>Sub Unit Organisasi</td>
             <td>: {{ $sub_header->unit }} {{ $sub_header->nmunit }}</td>
         </tr>
-        @if(substr($sub_header1->subkegiatan,5,10)!='00.0.00.04' && substr($sub_header1->subkegiatan,5,10)!='00.0.00.61' && substr($sub_header1->subkegiatan,5,10)!='00.0.00.62')
+        @if (substr($sub_header1->subkegiatan, 5, 10) != '00.0.00.04' &&
+                substr($sub_header1->subkegiatan, 5, 10) != '00.0.00.61' &&
+                substr($sub_header1->subkegiatan, 5, 10) != '00.0.00.62')
             <tr>
                 <td>Program</td>
                 <td>: {{ $sub_header1->program }} {{ $sub_header1->nmprogram }}</td>
@@ -89,7 +92,7 @@
                 <td>: {{ $sub_header1->subkegiatan }}{{ ucwords($sub_header1->nmsubkegiatan) }}</td>
             </tr>
         @endif
-        
+
         <tr>
             <td style="vertical-align:top">Nilai Anggaran</td>
             <td style="vertical-align:top">: {{ rupiah($sub_header1->ang) }}<br>
@@ -109,19 +112,19 @@
                 <th>Januari</th>
                 <th>Februari</th>
                 <th>Maret</th>
-                <th style="color:#44c3c7">Triwulan I</th>
+                <th style="color:#000080">Triwulan I</th>
                 <th>April</th>
                 <th>Mei</th>
                 <th>Juni</th>
-                <th style="color:#44c3c7">Triwulan II</th>
+                <th style="color:#000080">Triwulan II</th>
                 <th>Juli</th>
                 <th>Agustus</th>
                 <th>September</th>
-                <th style="color:#44c3c7">Triwulan III</th>
+                <th style="color:#000080">Triwulan III</th>
                 <th>Oktober</th>
                 <th>November</th>
                 <th>Desember</th>
-                <th style="color:#44c3c7">Triwulan IV</th>
+                <th style="color:#000080">Triwulan IV</th>
             </tr>
         </thead>
         <tbody>
@@ -140,7 +143,7 @@
                 $total_nov = 0;
                 $total_des = 0;
                 $total_jumlah = 0;
-                $no         = 0;
+                $no = 0;
             @endphp
             @foreach ($data_giat as $giat)
                 @php
@@ -159,7 +162,7 @@
                     $total_des += $giat->des;
                 @endphp
                 <tr>
-                    <td style="text-align:center">{{++$no}}</td>
+                    <td style="text-align:center">{{ ++$no }}</td>
                     <td>{{ $giat->kd_rek6 }} <br>{{ $giat->nm_rek }}</td>
                     <td class="angka">
                         {{ rupiah(anggaran_rekening_objek($kd_skpd, $kd_sub_kegiatan, $giat->kd_rek6, $jenis_anggaran)) }}
@@ -167,19 +170,19 @@
                     <td class="angka">{{ rupiah($giat->jan) }}</td>
                     <td class="angka">{{ rupiah($giat->feb) }}</td>
                     <td class="angka">{{ rupiah($giat->mar) }}</td>
-                    <td class="angka" style="color:#44c3c7">{{ rupiah($giat->jan + $giat->feb + $giat->mar) }}</td>
+                    <td class="angka" style="color:#000080">{{ rupiah($giat->jan + $giat->feb + $giat->mar) }}</td>
                     <td class="angka">{{ rupiah($giat->apr) }}</td>
                     <td class="angka">{{ rupiah($giat->mei) }}</td>
                     <td class="angka">{{ rupiah($giat->jun) }}</td>
-                    <td class="angka" style="color:#44c3c7">{{ rupiah($giat->apr + $giat->mei + $giat->jun) }}</td>
+                    <td class="angka" style="color:#000080">{{ rupiah($giat->apr + $giat->mei + $giat->jun) }}</td>
                     <td class="angka">{{ rupiah($giat->jul) }}</td>
                     <td class="angka">{{ rupiah($giat->ags) }}</td>
                     <td class="angka">{{ rupiah($giat->sep) }}</td>
-                    <td class="angka" style="color:#44c3c7">{{ rupiah($giat->jul + $giat->ags + $giat->sep) }}</td>
+                    <td class="angka" style="color:#000080">{{ rupiah($giat->jul + $giat->ags + $giat->sep) }}</td>
                     <td class="angka">{{ rupiah($giat->okt) }}</td>
                     <td class="angka">{{ rupiah($giat->nov) }}</td>
                     <td class="angka">{{ rupiah($giat->des) }}</td>
-                    <td class="angka" style="color:#44c3c7">{{ rupiah($giat->okt + $giat->nov + $giat->des) }}</td>
+                    <td class="angka" style="color:#000080">{{ rupiah($giat->okt + $giat->nov + $giat->des) }}</td>
                 </tr>
             @endforeach
             <tr>
@@ -188,19 +191,19 @@
                 <td class="angka"><b>{{ rupiah($total_jan) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_feb) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_mar) }}</b></td>
-                <td class="angka" style="color:#44c3c7"><b>{{ rupiah($total_jan + $total_feb + $total_mar) }}</b></td>
+                <td class="angka" style="color:#000080"><b>{{ rupiah($total_jan + $total_feb + $total_mar) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_apr) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_mei) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_jun) }}</b></td>
-                <td class="angka" style="color:#44c3c7"><b>{{ rupiah($total_apr + $total_mei + $total_jun) }}</b></td>
+                <td class="angka" style="color:#000080"><b>{{ rupiah($total_apr + $total_mei + $total_jun) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_jul) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_ags) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_sep) }}</b></td>
-                <td class="angka" style="color:#44c3c7"><b>{{ rupiah($total_jul + $total_ags + $total_sep) }}</b></td>
+                <td class="angka" style="color:#000080"><b>{{ rupiah($total_jul + $total_ags + $total_sep) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_okt) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_nov) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_des) }}</b></td>
-                <td class="angka" style="color:#44c3c7"><b>{{ rupiah($total_okt + $total_nov + $total_des) }}</b></td>
+                <td class="angka" style="color:#000080"><b>{{ rupiah($total_okt + $total_nov + $total_des) }}</b></td>
             </tr>
             {{-- <tr>
                 <td colspan="14" style="border-left:hidden;border-bottom:hidden;border-right:hidden"></td>
@@ -232,6 +235,14 @@
                 </td>
             </tr> --}}
         </tbody>
+    </table>
+
+    <br>
+
+    <table style="width: 100%;font-size:12px" cellspacing='0' cellpadding='2'>
+        <tr>
+            <td>Jenis Anggaran : {{ $nama_angkas->nama }}</td>
+        </tr>
     </table>
 
     @if ($hidden != 'hidden')
