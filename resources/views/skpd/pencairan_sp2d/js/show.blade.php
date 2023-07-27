@@ -197,6 +197,10 @@
                     if (data.message == '1') {
                         alert('SP2D telah Dibatalkan');
                         window.location.reload();
+                    } else if (data.message == '2') {
+                        alert('SP2D telah diterima cair di SKPD!');
+                        $('#pencairan').prop('disabled', false);
+                        return;
                     } else {
                         alert('SP2D Tidak berhasil dibatalkan');
                         $('#pencairan').prop('disabled', false);

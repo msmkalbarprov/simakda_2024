@@ -33,11 +33,14 @@
                 },
             },
             createdRow: function(row, data, index) {
-                if (data.status_bud == '1') {
+                if (data.status_bud == '1' && data.status_sp2d == '2') {
                     $(row).css("background-color", "#4bbe68");
                     $(row).css("color", "white");
                 } else if (data.sp2d_batal == '1') {
                     $(row).css("background-color", "#ff0000");
+                    $(row).css("color", "white");
+                } else if (data.status_bud == '1' && data.status_sp2d == '4') {
+                    $(row).css("background-color", "#bf00ff");
                     $(row).css("color", "white");
                 }
             },

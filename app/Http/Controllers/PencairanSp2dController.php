@@ -186,7 +186,18 @@ class PencairanSp2dController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])
+            $cek = DB::table('trhsp2d')
+                ->where(['no_sp2d' => $no_sp2d])
+                ->first();
+
+            if ($cek->status_terima == '1' || $cek->status_terima == 1) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
+            DB::table('trhsp2d')
+                ->where(['no_sp2d' => $no_sp2d])
                 ->update([
                     'status_bud' => '0',
                     'no_kas_bud' => '',
