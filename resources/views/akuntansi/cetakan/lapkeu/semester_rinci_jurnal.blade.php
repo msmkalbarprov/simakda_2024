@@ -240,8 +240,8 @@
                     <td align="left"  valign="top"><b>JUMLAH PENDAPATAN</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($ang_jum_pend)}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($real_jum_pend)}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajp}} {{rupiah($sisa1)}} {{$bjp}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajp}} {{rupiah($sisa1)}} {{$bjp}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajp}} {{rupiah($sisa_jp1)}} {{$bjp}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajp}} {{rupiah($sisa_jp1)}} {{$bjp}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($persen_jp)}}</b></td> 
                 </tr>
                 <tr>
@@ -274,8 +274,8 @@
                     <td align="left"  valign="top"><b>BELANJA DAERAH</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($ang_jum_bel)}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($real_jum_bel)}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa1)}} {{$bjB}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa1)}} {{$bjB}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa_jB1)}} {{$bjB}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa_jB1)}} {{$bjB}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($persen_jB)}}</b></td> 
                 </tr>
                 <tr>
