@@ -7,6 +7,9 @@
                 <div class="card-header">
                     <button class="btn btn-md btn-success tipe" data-jenis="cair">Hijau : CAIR SP2D</button>
                     <button class="btn btn-md btn-danger tipe" data-jenis="batal">Merah : BATAL SP2D</button>
+                    <button class="btn btn-md tipe" style="background-color: #bf00ff;color:white" data-jenis="nampung">Ungu
+                        :
+                        PENAMPUNG</button>
                     <input type="hidden" name="tipe" id="tipe">
                     <a href="{{ route('sp2d.create') }}" id="tambah_sp2d" class="btn btn-primary"
                         style="float: right;">Tambah</a>
