@@ -973,7 +973,9 @@ class LapkeuController extends Controller
                     $jum_pend=collect(DB::select("SELECT SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n_tgl('$tanggal1','$tanggal2','$jns_ang') WHERE $skpd_clause_prog LEN(kd_rek)='$jns_rincian' "))->first();
                     $jum_bel=collect(DB::select("SELECT SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
                         FROM realisasi_jurnal_rinci_n_tgl('$tanggal1','$tanggal2','$jns_ang') WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')"))->first();
-                    $rincian_bel=DB::select("SELECT urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n_tgl('$tanggal1','$tanggal2','$jns_ang') WHERE $skpd_clause_prog $where1 AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' ORDER BY kd_sub_kegiatan,kd_rek");
+                    $rincian_bel=DB::select("SELECT urut,kd_sub_kegiatan,kd_rek,nm_rek,sum(anggaran)anggaran,sum(sd_bulan_ini)sd_bulan_ini FROM realisasi_jurnal_rinci_n_tgl('$tanggal1','$tanggal2','$jns_ang') WHERE $skpd_clause_prog $where1 AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' 
+                        group by urut,kd_sub_kegiatan,kd_rek,nm_rek
+                        ORDER BY kd_sub_kegiatan,kd_rek");
                     
                     $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
@@ -1015,7 +1017,9 @@ class LapkeuController extends Controller
                     $jum_pend=collect(DB::select("SELECT SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini FROM realisasi_jurnal_pend_n($bulan,'$jns_ang',$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)='$jns_rincian' "))->first();
                     $jum_bel=collect(DB::select("SELECT SUM(anggaran) anggaran ,SUM(sd_bulan_ini) sd_bulan_ini 
                         FROM realisasi_jurnal_rinci_n($bulan,'$jns_ang',$tahun_anggaran) WHERE $skpd_clause_prog LEN(kd_rek)='4' and urut='4' and left(kd_rek,1)in('5')"))->first();
-                    $rincian_bel=DB::select("SELECT urut,kd_sub_kegiatan,kd_rek,nm_rek,anggaran,sd_bulan_ini FROM realisasi_jurnal_rinci_n($bulan,'$jns_ang',$tahun_anggaran) WHERE $skpd_clause_prog $where1 AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' ORDER BY kd_sub_kegiatan,kd_rek");
+                    $rincian_bel=DB::select("SELECT urut,kd_sub_kegiatan,kd_rek,nm_rek,sum(anggaran)anggaran,sum(sd_bulan_ini)sd_bulan_ini FROM realisasi_jurnal_rinci_n($bulan,'$jns_ang',$tahun_anggaran) WHERE $skpd_clause_prog $where1 AND SUBSTRING(kd_sub_kegiatan,17,2)!='00' 
+                        group by urut,kd_sub_kegiatan,kd_rek,nm_rek
+                        ORDER BY kd_sub_kegiatan,kd_rek");
 
                     $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
