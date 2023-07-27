@@ -394,8 +394,8 @@
                     <td align="left"  valign="top"><b>JUMLAH BELANJA</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($ang_jum_bel)}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($real_jum_bel)}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa1)}} {{$bjB}}</b></td> 
-                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa1)}} {{$bjB}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa_jB1)}} {{$bjB}}</b></td> 
+                    <td align="right" valign="top"><b>{{$ajB}} {{rupiah($sisa_jB1)}} {{$bjB}}</b></td> 
                     <td align="right" valign="top"><b>{{rupiah($persen_jB)}}</b></td> 
                 </tr>
 
