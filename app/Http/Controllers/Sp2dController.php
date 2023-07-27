@@ -70,7 +70,7 @@ class Sp2dController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat SP2D"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak SP2D"><i class="uil-print"></i></a>';
-            if ($row->status_bud != 1) {
+            if ($row->status_bud != 1 && $row->status_sp2d == 'null') {
                 $btn .= '<a href="javascript:void(0);" onclick="batal_sp2d(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_spm . '\',\'' . $row->no_spp . '\',\'' . $row->status_bud . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Batal SP2D"><i class="uil-ban"></i></a>';
             } else {
                 $btn .= '';
