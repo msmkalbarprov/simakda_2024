@@ -33,7 +33,12 @@ class DaftarPengujiController extends Controller
 
     public function loadData()
     {
-        $data = DB::table('trhuji as a')->select('a.no_uji', 'a.tgl_uji', 'a.status_bank')->groupBy('a.no_uji', 'a.tgl_uji', 'a.status_bank')->orderBy('a.tgl_uji')->orderBy('a.no_uji')->get();
+        $data = DB::table('trhuji as a')
+            ->select('a.no_uji', 'a.tgl_uji', 'a.status_bank')
+            ->groupBy('a.no_uji', 'a.tgl_uji', 'a.status_bank')
+            ->orderBy('a.tgl_uji')
+            ->orderByRaw("cast(left(a.no_uji,len(a.no_uji)-8) as int)")
+            ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->status_bank == 0 || $row->status_bank == null) {
