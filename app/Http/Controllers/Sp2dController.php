@@ -37,7 +37,7 @@ class Sp2dController extends Controller
             })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
             // ->where(['a.kd_skpd' => $kd_skpd])
             ->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), DB::raw("(select no_uji from trduji where trduji.no_sp2d=a.no_sp2d)as no_uji"))
-            ->selectRaw("(SELECT status FROM trduji WHERE a.no_sp2d=no_sp2d) as status_sp2d")
+            ->selectRaw("ISNULL((SELECT status FROM trduji WHERE a.no_sp2d=no_sp2d),0) as status_sp2d")
             ->where(function ($query) use ($kd_skpd) {
                 if (Auth::user()->is_admin == 2) {
                     $query->where(['a.kd_skpd' => $kd_skpd]);
@@ -70,7 +70,7 @@ class Sp2dController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Lihat SP2D"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak SP2D"><i class="uil-print"></i></a>';
-            if ($row->status_bud != 1 && $row->status_sp2d == 'null') {
+            if ($row->status_bud != 1 && $row->status_sp2d == '0') {
                 $btn .= '<a href="javascript:void(0);" onclick="batal_sp2d(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_spm . '\',\'' . $row->no_spp . '\',\'' . $row->status_bud . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Batal SP2D"><i class="uil-ban"></i></a>';
             } else {
                 $btn .= '';
