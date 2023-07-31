@@ -171,8 +171,8 @@
         </tr>
         <tr>
             <td style="padding-bottom: 50px;text-align: center">
-                {{ $ppkd->jabatan2 }} <br>
-                {{ $ppkd->jabatan }}
+                {{ $ppkd->jabatan }} <br>
+                {{ $ppkd->jabatan2 }}
             </td>
         </tr>
         <tr>

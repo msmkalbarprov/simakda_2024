@@ -125,13 +125,13 @@
             <tr>
                 <td style="width: 50%"></td>
                 <td style="text-align: center">
-                    {{ $ttd1->jabatan2 }}
+                    {{ $ttd1->jabatan }}
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%"></td>
                 <td style="padding-bottom: 50px;text-align: center">
-                    {{ $ttd1->jabatan }}
+                    {{ $ttd1->jabatan2 }}
                 </td>
             </tr>
             <tr>
