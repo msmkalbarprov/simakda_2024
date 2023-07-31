@@ -101,7 +101,7 @@ class LraController extends Controller
                                                 FROM trhju_sinergi a
                                                 JOIN trdju_sinergi b ON a.no_voucher = b.no_voucher
                                                             AND a.kd_skpd = b.kd_unit
-                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
+                                                WHERE  left(b.kd_rek6,1) IN ('4', '5', '6')
                                                 $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
                                             ) ,0)realisasi
@@ -248,7 +248,7 @@ class LraController extends Controller
                                                 FROM trhju_pkd a
                                                 JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
                                                             AND a.kd_skpd = b.kd_unit
-                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
+                                                WHERE  left(b.kd_rek6,1) IN ('4', '5', '6')
                                                 $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
                                             ) ,0)realisasi
@@ -280,7 +280,7 @@ class LraController extends Controller
                                                 FROM trhju_pkd a
                                                 JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
                                                             AND a.kd_skpd = b.kd_unit
-                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
+                                                WHERE  left(b.kd_rek6,1) IN ('4', '5', '6')
                                                 $skpd_clause  AND MONTH(tgl_voucher) $operator ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
                                             ) ,0)realisasi
