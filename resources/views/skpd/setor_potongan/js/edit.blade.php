@@ -231,6 +231,14 @@
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let tahun_input = tgl_bukti.substring(0, 4);
 
+            let jenis_spp = "{{ $data_setor->jns_spp }}";
+            let cek = jenis_spp.trim();
+
+            if ((cek == '4' || cek == '5' || cek == '6') && pembayaran == 'BANK') {
+                alert('LS harus dengan pembayaran Tunai');
+                return;
+            }
+
             if (!tgl_bukti) {
                 alert('Tanggal Tidak Boleh kosong');
                 return;
