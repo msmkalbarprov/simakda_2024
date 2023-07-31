@@ -188,7 +188,7 @@ and (-webkit-min-device-pixel-ratio: 3) {
                                     </div>
                                     <div class="mb-3">
                                         <div class="float-end">
-                                            <a href="auth-recoverpw.html" class="text-muted">Forgot password?</a>
+                                            {{-- <a href="auth-recoverpw.html" class="text-muted">Forgot password?</a> --}}
                                         </div>
                                         <label class="form-label" for="userpassword">Password</label>
                                         <input id="password" type="password"
@@ -216,6 +216,7 @@ and (-webkit-min-device-pixel-ratio: 3) {
                                             class="btn btn-primary w-sm waves-effect waves-light  -,k">
                                             {{ __('Login') }}
                                         </button>
+                                        <a href="https://simakda.kalbarprov.go.id/sp2d" class="btn btn-dark w-sm waves-effect waves-light  -,k" target="_blank">CEK SP2D</a>
 
                                         @if (Route::has('password.request'))
                                             <a class="btn btn-link" href="{{ route('password.request') }}">
@@ -259,7 +260,7 @@ and (-webkit-min-device-pixel-ratio: 3) {
 
                         </div>
                     </div>
-
+                    
                     {{-- <div class="mt-5 text-center">
                             <p>© <script>document.write(new Date().getFullYear())</script> SIMAKDA V.5 by PT. MSM Cabang Kalbar</p>
                         </div> --}}

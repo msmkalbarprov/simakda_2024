@@ -114,8 +114,8 @@
                     {{-- <b>Kuasa Bendahara Umum Daerah</b> --}}
                     <b>
                         {{-- Kuasa Bendahara Umum Daerah --}}
-                        {{ $ttd->jabatan }}
-                        <br> {{ $ttd->jabatan2 }}
+                        {{ $ttd->jabatan2 }}
+                        <br> {{ $ttd->jabatan }}
                     </b>
                 </td>
             </tr>

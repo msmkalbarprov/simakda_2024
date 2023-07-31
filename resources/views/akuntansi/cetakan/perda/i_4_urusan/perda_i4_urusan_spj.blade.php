@@ -48,19 +48,20 @@
     </table>
     <table  style="border-collapse:collapse;font-family:Arial" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
             <tr>
-                <td rowspan="4" align="center" style="border-right:hidden">
+                <td rowspan="4" align="center" style="border-right:hidden" width="25%">
                     <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
+                </td>
+                <td align="center" width="50%" style="border-left:hidden;border-right:hidden;border-bottom:hidden"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
+                <td rowspan="4" align="center" style="border-left:hidden" width="25%">
+                    &nbsp;aaa
                 </td>
                 
             </tr>
             <tr>
-                <td align="center" style="border-left:hidden;border-bottom:hidden"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
+                <td align="center" width="50%" style="border-left:hidden;border-right:hidden;border-bottom:hidden;border-top:hidden" ><strong>REKAPITULASI REALISASI BELANJA DAERAH MENURUT URUSAN PEMERINTAH DAERAH, <BR> ORGANISASI, PROGRAM, DAN KEGIATAN</strong></td>
             </tr>
             <tr>
-                <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden" ><strong>REKAPITULASI REALISASI BELANJA DAERAH MENURUT URUSAN PEMERINTAH DAERAH, <BR> ORGANISASI, PROGRAM, DAN KEGIATAN</strong></td>
-            </tr>
-            <tr>
-                <td align="center" style="border-left:hidden;border-top:hidden" ><strong>TAHUN ANGGARAN {{ tahun_anggaran() }} </strong></td>
+                <td align="center" width="50%" style="border-left:hidden;border-right:hidden;border-top:hidden" ><strong>TAHUN ANGGARAN {{ tahun_anggaran() }} </strong></td>
             </tr>
 
         </table>
