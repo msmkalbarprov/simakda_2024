@@ -463,7 +463,10 @@
             })
         }
 
-        
+        $('#kd_skpd_semester').on('select2:select', function() {
+            let kd_skpd = this.value;
+            cari_pakpa(kd_skpd);
+        });        
 
 
         function cari_ttd(kd_skpd) {
@@ -482,6 +485,27 @@
                         <option value="0">Tanpa Tanda Tangan</option>`);
                     $.each(data, function(index, data) {
                         $('#ttd').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
+
+        function cari_pakpa(kd_skpd) {
+            $.ajax({
+                url: "{{ route('skpd.laporan_bendahara.pakpa') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd
+                },
+                success: function(data) {
+                    $('#pa_kpa').empty();
+                    $('#pa_kpa').append(
+                        `<option value="" disabled selected>Pilih PA/KPA</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pa_kpa').append(
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
@@ -635,7 +659,7 @@
                 let tanggal1                 = document.getElementById('tanggal1_semester').value;
                 let tanggal2                 = document.getElementById('tanggal2_semester').value;
                 let tgl_ttd                  = document.getElementById('tgl_ttd_semester').value;
-                let ttd                      = document.getElementById('ttd_semester').value;
+                let ttd                      = document.getElementById('pa_kpa').value;
                 let jns_anggaran             = document.getElementById('jns_anggaran_semester').value;
                 let jenis_data               = document.getElementById('jenis_data_semester').value;
                 let periodebulan             = $('input:radio[name="pilihanperiode_semester"]:checked').val();
@@ -652,7 +676,14 @@
                     return;
                 }
 
-                let url             = new URL("{{ route('laporan_akuntansi.lapkeu.semester') }}");
+                // alert(jenis_data);
+                let url ='';
+
+                if (jenis_data == 5) {
+                    url             = new URL("{{ route('laporan_akuntansi.lapkeu.semester_jurnal') }}");
+                }else{
+                    url             = new URL("{{ route('laporan_akuntansi.lapkeu.semester') }}");
+                }
                 let searchParams    = url.searchParams;
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);

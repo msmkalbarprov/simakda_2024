@@ -76,6 +76,24 @@ class lampneracaController extends Controller
 
     }
 
+    //inputan
+    public function input_lamp_neraca()
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $data = [
+            'bendahara' => DB::table('ms_ttd')
+                ->whereIn('kode', ['1'])
+                ->orderBy('nip')
+                ->orderBy('nama')
+                ->get(),
+            'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $kd_skpd)->first(),
+            'jns_anggaran' => jenis_anggaran(),
+            'jns_anggaran2' => jenis_anggaran()
+        ];
+
+        return view('akuntansi.lamp_neraca.inputan.input')->with($data);
+    }
+
     
 
 

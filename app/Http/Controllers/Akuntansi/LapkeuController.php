@@ -159,31 +159,33 @@ class LapkeuController extends Controller
             $skpd_clauses = "";
             $skpd_clause_prog = "";
             $skpd_clause_ang = "";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
         } else {
             if ($skpdunit == "unit") {
                 $kd_skpd = $kd_skpd;
             } else if ($skpdunit == "skpd") {
                 $kd_skpd = substr($kd_skpd, 0, 17);
             }
-            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause = "AND left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         }
-        // dd($kd_skpd);
-
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
         if ($ttd == '0') {
             $tandatangan = "";
         } else {
-            $tandatangan = DB::table('ms_ttd')
-                ->select('nama', 'nip', 'jabatan', 'pangkat')
-                ->where('nama', $ttd)
-                ->whereIn('kode', ['1'])
-                ->first();
+            // $tandatangan = DB::table('ms_ttd')
+            //     ->select('nama', 'nip', 'jabatan', 'pangkat')
+            //     ->where('nip', $ttd)
+            //     ->whereIn('kode', ['1'])
+            //     ->first();
+            $tandatangan = collect(DB::select("SELECT top 1 nama,nip,jabatan,pangkat from ms_ttd where nip='$ttd'"))->first();
         }
+        // dd($tandatangan);
         $isi    = "sd_bulan_ini";
         $pilih  = "S/D";
         $operator = "<=";
@@ -821,7 +823,7 @@ class LapkeuController extends Controller
 
 
 
-        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         // dd($sus);
             $data = [
                 'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
@@ -846,6 +848,136 @@ class LapkeuController extends Controller
             ];
         
         $view =  view('akuntansi.cetakan.lapkeu.semester')->with($data);
+        
+
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LRA Semester.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LRA Semester.xls"');
+            return $view;
+        }
+    }
+
+    public function cetak_semester_jurnal(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tanggal_ttd    = $request->tgl_ttd;
+        $ttd            = $request->ttd;
+        $bulan          = $request->bulan;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        $tanggal1       = $request->tanggal1;
+        $tanggal2       = $request->tanggal2;
+        $jns_ang        = $request->jenis_anggaran;
+        $periodebulan   = $request->periodebulan;
+        $jenis_data     = $request->jenis_data;
+        $skpdunit    = $request->skpdunit;
+        $kd_skpd        = $request->kd_skpd;
+        $jns_rincian = $request->panjang_data;;
+
+
+        // dd($jns_rincian);
+        if ($kd_skpd == '') {
+            $kd_skpd        = "";
+            $skpd_clause = "";
+            $skpd_clauses = "";
+            $skpd_clause_prog = "";
+            $skpd_clause_ang = "";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
+        } else {
+            if ($skpdunit == "unit") {
+                $kd_skpd = $kd_skpd;
+            } else if ($skpdunit == "skpd") {
+                $kd_skpd = substr($kd_skpd, 0, 17);
+            }
+            $skpd_clause = "AND left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        }
+
+        $tahun_anggaran = tahun_anggaran();
+
+        // TANDA TANGAN
+        if ($ttd == '0') {
+            $tandatangan = "";
+        } else {
+            // $tandatangan = DB::table('ms_ttd')
+            //     ->select('nama', 'nip', 'jabatan', 'pangkat')
+            //     ->where('nip', $ttd)
+            //     ->whereIn('kode', ['1'])
+            //     ->first();
+            $tandatangan = collect(DB::select("SELECT top 1 nama,nip,jabatan,pangkat from ms_ttd where nip='$ttd'"))->first();
+        }
+        // dd($tandatangan);
+        $isi    = "sd_bulan_ini";
+        $pilih  = "S/D";
+        $operator = "<=";
+        if ($bulan=="1"||$bulan=="2"||$bulan=="4"||$bulan=="5"||$bulan=="7"||$bulan=="8"||$bulan=="10"||$bulan=="11") {
+            $judul  = BULAN($bulan);
+        }else if ($bulan=="3"){
+            $judul = "TRIWULAN I";
+        }else if ($bulan=="6"){
+            $judul = "SEMESTER PERTAMA";
+        }else if ($bulan=="9"){
+            $judul = "TRIWULAN III";
+        }else if ($bulan=="2"){
+            $judul = "SEMESTER KEDUA";
+        }else{
+            $Judul = "bulan tidak diketahui";
+        }
+        $bulan2 = 12 - $bulan;
+        // dd(left($kd_skpd,3));
+
+        // rincian
+
+        if ($periodebulan == 'periode') {
+            
+            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+        }else{
+            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+        }
+        $rincian = DB::select("SELECT * from map_lra_semester");
+            
+
+
+
+
+        // dd($sus);
+            $data = [
+                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                'kd_skpd'           => $kd_skpd,
+                'skpdunit'          => $skpdunit,
+                'tanggal1'          => $tanggal1,
+                'tanggal2'          => $tanggal2,
+                'periodebulan'      => $periodebulan,
+                'rincian'           => $rincian,
+                'enter'             => $enter,
+                'daerah'            => $daerah,
+                'tanggal_ttd'       => $tanggal_ttd,
+                'tandatangan'       => $tandatangan,
+                'tahun_anggaran'    => $tahun_anggaran,
+                'jns_ang'           => $jns_ang,
+                'skpd_clause_ang'   => $skpd_clause_ang,
+                'skpd_clause'       => $skpd_clause,     
+                'bulan'             => $bulan,
+                'bulan2'            => $bulan2,
+                'judul'             => $judul,
+                'pilih'             => $pilih,
+                'jenis_ttd'         => $ttd,
+                'jenis'             => $jns_rincian,
+                'sus'               => $sus
+            ];
+        
+        $view =  view('akuntansi.cetakan.lapkeu.semester_jurnal')->with($data);
         
 
         if ($cetak == '1') {

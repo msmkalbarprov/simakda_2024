@@ -1689,6 +1689,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('lapkeu', [LaporanAkuntansiController::class, 'lapkeu'])->name('laporan_akuntansi.lapkeu');
             Route::get('cetak_lra_keu', [LapkeuController::class, 'cetak_lra'])->name('laporan_akuntansi.lapkeu.cetak_lra');
             Route::get('cetak_semester_keu', [LapkeuController::class, 'cetak_semester'])->name('laporan_akuntansi.lapkeu.semester');
+            Route::get('cetak_semester_jurnal_keu', [LapkeuController::class, 'cetak_semester_jurnal'])->name('laporan_akuntansi.lapkeu.semester_jurnal');
             Route::get('cetak_semesterrinci_keu', [LapkeuController::class, 'cetak_semester_rinci'])->name('laporan_akuntansi.lapkeu.semesterrinci');
         });
     });
@@ -1748,6 +1749,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_umur_piutang', [cetaklampneracaController::class, 'cetak_umur_piutang'])->name('lamp_neraca.cetak_umur_piutang');
         Route::get('cetak_penyisihan_piutang', [cetaklampneracaController::class, 'cetak_penyisihan_piutang'])->name('lamp_neraca.cetak_penyisihan_piutang');
         Route::get('cetak_ikhtisar', [cetaklampneracaController::class, 'cetak_ikhtisar'])->name('lamp_neraca.cetak_ikhtisar');
+        // input
+        Route::group(['prefix' => 'input_lamp_neraca'], function () {
+            Route::get('', [lampneracaController::class, 'input_lamp_neraca'])->name('lamp_neraca.input_lamp_neraca.inputan');
+        });
     });
 
     Route::group(['prefix' => 'spb'], function () {
