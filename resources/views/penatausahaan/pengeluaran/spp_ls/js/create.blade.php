@@ -529,11 +529,11 @@
 
                         $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.angkas_lalu));
+                        }).format(realisasi_spd));
 
                         $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
-                        }).format(data.anggaran_selanjutnya - data.angkas_lalu));
+                        }).format(data.anggaran_selanjutnya - realisasi_spd));
                     }
                 },
                 complete: function(data) {
