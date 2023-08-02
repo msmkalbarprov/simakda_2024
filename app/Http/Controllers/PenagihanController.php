@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
+use function PHPUnit\Framework\isNull;
+
 class PenagihanController extends Controller
 {
     public function index()
@@ -326,11 +328,26 @@ class PenagihanController extends Controller
 
         $spd = spd_penagihan($kode, $giat, $rek, $revisi1, $revisi2, $revisi3, $revisi4);
 
+        $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
+            ->select('a.kode')
+            ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->first();
+
+        $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
+
+        $anggaran_selanjutnya = DB::table('trdrka')
+            ->selectRaw("SUM(nilai) as nilai")
+            ->where(['jns_ang' => $status_anggaran_selanjutnya, 'kd_skpd' => $kode, 'kd_sub_kegiatan' => $giat, 'kd_rek6' => $rek])
+            ->first();
+
         return response()->json([
             'sumber' => $data,
             'angkas' => $angkas->nilai,
             'angkas_lalu' => $angkas_lalu->total,
-            'spd' => $spd->total_spd
+            'spd' => $spd->total_spd,
+            'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }
 

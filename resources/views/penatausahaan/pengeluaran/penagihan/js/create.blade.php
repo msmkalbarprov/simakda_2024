@@ -29,6 +29,8 @@
             }
         });
 
+        let status_anggaran_selanjutnya = '';
+
         let tabel = $('#input_penagihan').DataTable({
             responsive: true,
             ordering: false,
@@ -202,7 +204,8 @@
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
-                    $('#kode_rekening').append(`<option value="0">Pilih Rekening</option>`);
+                    $('#kode_rekening').append(
+                        `<option value="" disabled selected>Pilih Rekening</option>`);
                     $.each(data, function(index, data) {
                         $('#kode_rekening').append(
                             `<option value="${data.kd_rek6}" data-lalu="${data.lalu}" data-anggaran="${data.anggaran}" data-nama="${data.nm_rek6}" data-map="${data.map_lo}">${data.kd_rek6} | ${data.map_lo} | ${data.nm_rek6} | ${data.lalu} | ${data.sp2d} | ${data.anggaran}</option>`
@@ -271,7 +274,7 @@
                     let sumber = data.sumber;
                     $('#sumber_dana').empty();
                     $('#sumber_dana').append(
-                        `<option value="0">Pilih Sumber Dana</option>`);
+                        `<option value="" disabled selected>Pilih Sumber Dana</option>`);
                     $.each(sumber, function(index, sumber) {
                         $('#sumber_dana').append(
                             `<option value="${sumber.sumber}" data-nama="${sumber.nm_sumber}" data-nilai="${sumber.nilai}">${sumber.sumber} | ${sumber.nm_sumber}</option>`
@@ -313,6 +316,22 @@
                     $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.spd - data.angkas_lalu));
+
+                    status_anggaran_selanjutnya = data.status_ang_selanjutnya;
+
+                    if (status_anggaran_selanjutnya != '') {
+                        $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya));
+
+                        $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.angkas_lalu));
+
+                        $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya - data.angkas_lalu));
+                    }
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -458,6 +477,8 @@
                 .value); //sisa nilai pagu
             let sisa_spd = rupiah(document.getElementById('sisa_spd')
                 .value); //sisa nilai pagu
+            let sisa_rpa = rupiah(document.getElementById('sisa_rpa')
+                .value); //sisa nilai RENCANA PERGESERAN ANGGARAN
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber_dana')
                 .value); //sisa nilai sumber dana
             let no_simpan = document.getElementById('no_tersimpan').value; //no tersimpan
@@ -579,6 +600,11 @@
                 alert('Sub kegiatan tidak boleh beda dengan rincian penagihan!');
                 return;
             }
+            if (status_anggaran_selanjutnya != '' && nilai_tagih > sisa_rpa) {
+                alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
+                return;
+            }
+
             // tampungan
             $.ajax({
                 url: "{{ route('penagihan.simpan_tampungan') }}",
