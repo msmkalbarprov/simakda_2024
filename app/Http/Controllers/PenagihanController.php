@@ -478,11 +478,26 @@ class PenagihanController extends Controller
         // SPD
         $spd = load_spd($giat, $kode, $rek);
 
+        $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
+            ->select('a.kode')
+            ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->first();
+
+        $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
+
+        $anggaran_selanjutnya = DB::table('trdrka')
+            ->selectRaw("SUM(nilai) as nilai")
+            ->where(['jns_ang' => $status_anggaran_selanjutnya, 'kd_skpd' => $kode, 'kd_sub_kegiatan' => $giat, 'kd_rek6' => $rek])
+            ->first();
+
         return response()->json([
             'sumber' => $data,
             'angkas' => $angkas->nilai,
             'angkas_lalu' => $angkas_lalu->total,
-            'spd' => $spd->total
+            'spd' => $spd->total,
+            'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }
 

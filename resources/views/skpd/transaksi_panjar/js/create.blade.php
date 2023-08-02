@@ -17,6 +17,8 @@
             theme: 'bootstrap-5'
         });
 
+        let status_anggaran_selanjutnya = '';
+
         let tabel_rincian = $('#rincian_panjar').DataTable({
             responsive: true,
             processing: true,
@@ -133,6 +135,10 @@
                     name: 'aksi',
                 },
             ]
+        });
+
+        $('#tgl_kas').on('change', function() {
+            $('#tgl_bukti').val(this.value);
         });
 
         $('#tambah_rincian').on('click', function() {
@@ -360,6 +366,43 @@
                     $('#sisa_bank').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.sisa_bank));
+
+                    status_anggaran_selanjutnya = data.status_ang_selanjutnya;
+
+                    if (status_anggaran_selanjutnya != '') {
+                        let beban = document.getElementById('beban').value;
+                        let total_sp2d = rupiah(document.getElementById(
+                                'total_sp2d')
+                            .value);
+                        let lalu_sp2d = rupiah(document.getElementById(
+                                'lalu_sp2d')
+                            .value);
+                        let sisa = 0;
+
+                        if (beban == '1') {
+                            sisa = data.anggaran_selanjutnya - data.transaksi;
+                            $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(data.anggaran_selanjutnya));
+
+                            $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(data.transaksi));
+                        } else {
+                            sisa = total_sp2d - lalu_sp2d;
+                            $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(total_sp2d));
+
+                            $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(lalu_sp2d));
+                        }
+
+                        $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(sisa));
+                    }
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -461,6 +504,8 @@
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
+            let sisa_rpa = rupiah(document.getElementById('sisa_rpa')
+                .value);
             let total_rincian = rupiah(document.getElementById('total_rincian').value);
             let sisa_bank = rupiah(document.getElementById('sisa_bank').value);
             let nilai = angka(document.getElementById('nilai').value);
@@ -531,6 +576,11 @@
 
             if (nilai > sisa_panjar) {
                 alert('Transaksi melebihi Sisa Panjar');
+                return;
+            }
+
+            if (status_anggaran_selanjutnya != '' && nilai > sisa_rpa) {
+                alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
                 return;
             }
 

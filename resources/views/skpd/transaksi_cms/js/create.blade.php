@@ -11,6 +11,8 @@
 
         rekening_tujuan();
 
+        let status_anggaran_selanjutnya = '';
+
         // no bukti cms
         $.ajax({
             url: "{{ route('skpd.transaksi_cms.no_urut') }}",
@@ -510,6 +512,8 @@
             let potongan_ls = rupiah(document.getElementById('potongan_ls').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
+            let sisa_rpa = rupiah(document.getElementById('sisa_rpa')
+                .value); //sisa nilai RENCANA PERGESERAN ANGGARAN
             let realisasi_anggaran = rupiah(document.getElementById('realisasi_anggaran').value);
             let kd_rekening1 = $('#kd_rekening').find('option:selected');
             let anggaran = kd_rekening1.data('anggaran');
@@ -679,6 +683,11 @@
 
             if (nilai > sisa_sumber) {
                 alert('Nilai Melebihi Sisa Anggaran Sumber Dana...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (status_anggaran_selanjutnya != '' && nilai > sisa_rpa) {
+                alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
                 return;
             }
 
@@ -1280,6 +1289,42 @@
                         // $('#total_sisa').val(new Intl.NumberFormat('id-ID', {
                         //     minimumFractionDigits: 2
                         // }).format(sisa_kas + potongan_ls));
+                    }
+
+                    status_anggaran_selanjutnya = data.status_ang_selanjutnya;
+
+                    if (status_anggaran_selanjutnya != '') {
+                        let beban = document.getElementById('beban').value;
+                        let total_anggaran = rupiah(document.getElementById('total_anggaran')
+                            .value);
+                        let realisasi_anggaran = rupiah(document.getElementById(
+                                'realisasi_anggaran')
+                            .value);
+                        let sisa = 0;
+
+                        if (beban == '1') {
+                            sisa = data.anggaran_selanjutnya - data.angkas_lalu;
+                            $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(data.anggaran_selanjutnya));
+
+                            $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(data.angkas_lalu));
+                        } else {
+                            sisa = total_anggaran - realisasi_anggaran;
+                            $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(total_anggaran));
+
+                            $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(realisasi_anggaran));
+                        }
+
+                        $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(sisa));
                     }
                 },
                 complete: function(data) {
