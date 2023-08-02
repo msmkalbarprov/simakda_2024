@@ -111,10 +111,8 @@
                                 name="rekening">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_rekening as $rekening)
-                                    <option value="{{ $rekening->rekening }}" 
-                                        data-nm_bank="{{ $rekening->nm_bank }}"
-                                        data-bank="{{ $rekening->bank }}"
-                                        data-nama="{{ $rekening->nm_rekening }}"
+                                    <option value="{{ $rekening->rekening }}" data-nm_bank="{{ $rekening->nm_bank }}"
+                                        data-bank="{{ $rekening->bank }}" data-nama="{{ $rekening->nm_rekening }}"
                                         data-npwp="{{ $rekening->npwp }}">
                                         {{ $rekening->rekening }} | {{ $rekening->nm_rekening }} | {{ $rekening->npwp }}
                                     </option>
@@ -138,7 +136,7 @@
                             <input class="form-control" type="text" id="nm_bank" name="nm_bank" required readonly>
                         </div>
                     </div>
-                    
+
                     {{-- NPWP --}}
                     <div class="mb-3 row">
                         <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
@@ -294,6 +292,21 @@
                         <div class="col-md-2">
                             <input type="text" readonly class="form-control" name="sisa_anggaran" id="sisa_anggaran"
                                 style="text-align: right">
+                        </div>
+                    </div>
+                    <!-- Rencana Pergeseran Anggaran -->
+                    <div class="mb-3 row">
+                        <label for="total_rpa" class="col-md-2 col-form-label">Rencana Pergeseran Anggaran</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly class="form-control" name="total_rpa" id="total_rpa">
+                        </div>
+                        <label for="realisasi_rpa" class="col-md-1 col-form-label">Realisasi</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly class="form-control" name="realisasi_rpa" id="realisasi_rpa">
+                        </div>
+                        <label for="sisa_rpa" class="col-md-1 col-form-label">Sisa</label>
+                        <div class="col-md-3">
+                            <input type="text" readonly class="form-control" name="sisa_rpa" id="sisa_rpa">
                         </div>
                     </div>
                     <!-- Sumber Dana -->
