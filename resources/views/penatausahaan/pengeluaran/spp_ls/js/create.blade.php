@@ -7,6 +7,8 @@
         });
         $('#card_penagihan').hide();
 
+        let status_anggaran_selanjutnya = '';
+
         let tabel = $('#rincian_sppls').DataTable({
             responsive: true,
             ordering: false,
@@ -517,6 +519,22 @@
                     $("#sisa_angkas").val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(total_angkas - realisasi_spd));
+
+                    status_anggaran_selanjutnya = data.status_ang_selanjutnya;
+
+                    if (status_anggaran_selanjutnya != '') {
+                        $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya));
+
+                        $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.angkas_lalu));
+
+                        $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya - data.angkas_lalu));
+                    }
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -891,6 +909,8 @@
             // let sisa_angkas = rupiah(document.getElementById('total_angkas').value) - rupiah(document
             //     .getElementById('realisasi_angkas').value);
             let sisa_penyusunan = rupiah(document.getElementById('sisa_penyusunan').value);
+            let sisa_rpa = rupiah(document.getElementById('sisa_rpa')
+                .value); //sisa nilai RENCANA PERGESERAN ANGGARAN
             // let sisa_penyusunan = rupiah(document.getElementById('total_penyusunan').value) - rupiah(
             //     document.getElementById('realisasi_penyusunan').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
@@ -1033,6 +1053,11 @@
             }
             if (kondisi.includes("3")) {
                 alert('Tidak boleh memilih kegiatan berbeda dalam 1 SPP!');
+                return;
+            }
+
+            if (status_anggaran_selanjutnya != '' && nilai_rincian > sisa_rpa) {
+                alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
                 return;
             }
 

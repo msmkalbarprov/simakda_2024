@@ -713,13 +713,28 @@ class PenagihanController extends Controller
         // REALISASI
         $realisasi = angkas_lalu_penagihan($kode, $giat, $rek);
 
+        $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
+            ->select('a.kode')
+            ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->first();
+
+        $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
+
+        $anggaran_selanjutnya = DB::table('trdrka')
+            ->selectRaw("SUM(nilai) as nilai")
+            ->where(['jns_ang' => $status_anggaran_selanjutnya, 'kd_skpd' => $kode, 'kd_sub_kegiatan' => $giat, 'kd_rek6' => $rek])
+            ->first();
+
         return response()->json([
             'sumber' => $data,
             'rektotal' => $rektotal->rektotal,
             'rektotal_lalu' => $realisasi->total,
             'total_spd' => $total_spd->total_spd,
             'angkas' => $total_angkas->nilai,
-            'realisasi' => $realisasi->total
+            'realisasi' => $realisasi->total,
+            'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }
 

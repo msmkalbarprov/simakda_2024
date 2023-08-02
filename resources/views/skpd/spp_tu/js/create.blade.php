@@ -19,6 +19,8 @@
 
         cari_nomor();
 
+        let status_anggaran_selanjutnya = '';
+
         let detail = $('#rincian_spp').DataTable({
             responsive: true,
             ordering: false,
@@ -221,6 +223,20 @@
                     $('#sisa_angkas').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas - data.transaksi));
+
+                    status_anggaran_selanjutnya = data.status_ang_selanjutnya;
+
+                    if (status_anggaran_selanjutnya != '') {
+                        $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya));
+                        $('#realisasi_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.transaksi));
+                        $('#sisa_rpa').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.anggaran_selanjutnya - data.transaksi));
+                    }
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -343,7 +359,8 @@
             let sisa_spd = rupiah(document.getElementById('sisa_spd').value);
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let sisa_angkas = rupiah(document.getElementById('sisa_angkas').value);
-
+            let sisa_rpa = rupiah(document.getElementById('sisa_rpa')
+                .value); //sisa nilai RENCANA PERGESERAN ANGGARAN
             let total = rupiah(document.getElementById('total').value);
 
             let nilai = angka(document.getElementById('nilai').value);
@@ -398,6 +415,11 @@
 
             if (nilai > sisa_sumber) {
                 alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (status_anggaran_selanjutnya != '' && nilai > sisa_rpa) {
+                alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
                 return;
             }
 
