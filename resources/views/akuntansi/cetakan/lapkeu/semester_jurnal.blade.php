@@ -132,7 +132,26 @@
         </thead>
                 @php
                     $ang_surplus=$sus->ang_surplus;
+                    if($ang_surplus<0){
+                        $xa_surplus="(";
+                        $ang_surpluss=$ang_surplus*-1;
+                        $ya_surplus=")";
+                    }else{
+                        $xa_surplus="";
+                        $ang_surpluss=$ang_surplus;
+                        $ya_surplus="";
+                    }
+
                     $nil_surplus=$sus->nil_surplus;
+                    if($nil_surplus<0){
+                        $xn_surplus="(";
+                        $nil_surpluss=$nil_surplus*-1;
+                        $yn_surplus=")";
+                    }else{
+                        $xn_surplus="";
+                        $nil_surpluss=$nil_surplus;
+                        $yn_surplus="";
+                    }
                     $selisih_surplus=$ang_surplus-$nil_surplus;
                     if($selisih_surplus<0){
                         $x_surplus="(";
@@ -150,7 +169,25 @@
                     }
 
                     $ang_neto=$sus->ang_neto;
+                    if($ang_neto<0){
+                        $xa_neto="(";
+                        $ang_netos=$ang_neto*-1;
+                        $ya_neto=")";
+                    }else{
+                        $xa_neto="";
+                        $ang_netos=$ang_neto;
+                        $ya_neto="";
+                    }
                     $nil_neto=$sus->nil_neto;
+                    if($nil_neto<0){
+                        $xn_neto="(";
+                        $nil_netos=$nil_neto*-1;
+                        $yn_neto=")";
+                    }else{
+                        $xn_neto="";
+                        $nil_netos=$nil_neto;
+                        $yn_neto="";
+                    }
                     $selisih_neto=$ang_neto-$nil_neto;
                     if($selisih_neto<0){
                         $x_neto="(";
@@ -165,6 +202,42 @@
                         $persen_neto= 0;
                     } else {
                         $persen_neto= $nil_neto / $ang_neto * 100;
+                    }
+
+                    $ang_silpa = $ang_surplus+$ang_neto;
+                    if($ang_silpa<0){
+                        $xa_silpa="(";
+                        $ang_silpas=$ang_silpa*-1;
+                        $ya_silpa=")";
+                    }else{
+                        $xa_silpa="";
+                        $ang_silpas=$ang_silpa;
+                        $ya_silpa="";
+                    }
+                    $nil_silpa = $nil_surplus+$nil_neto;
+                    if($nil_silpa<0){
+                        $xn_silpa="(";
+                        $nil_silpas=$nil_silpa*-1;
+                        $yn_silpa=")";
+                    }else{
+                        $xn_silpa="";
+                        $nil_silpas=$nil_silpa;
+                        $yn_silpa="";
+                    }
+                    $selisih_silpa=$ang_silpa-$nil_silpa;
+                    if($selisih_silpa<0){
+                        $x_silpa="(";
+                        $sel_silpa=$selisih_silpa*-1;
+                        $y_silpa=")";
+                    }else{
+                        $x_silpa="";
+                        $sel_silpa=$selisih_silpa;
+                        $y_silpa="";
+                    }
+                        if (($ang_silpa == 0) || ($ang_silpa == '')) {
+                        $persen_silpa= 0;
+                    } else {
+                        $persen_silpa= $nil_silpa / $ang_silpa * 100;
                     }
                 @endphp
                     @foreach ($rincian as $row)
@@ -196,7 +269,8 @@
                                 $kode5 = "'XXXXXXXX'";
                             }
                             
-                            $nilai = collect(DB::select("
+                            if($periodebulan=="periode"){
+                                $nilai = collect(DB::select("
                                     SELECT sum(anggaran) as anggaran, sum(realisasi) as realisasi 
                                     FROM
                                     (
@@ -207,9 +281,26 @@
                                     union all
                                     SELECT 0 anggaran ,SUM($jenis) realisasi
                                     FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
-                                    WHERE MONTH(tgl_voucher)<=$bulan and YEAR(tgl_voucher)=$tahun_anggaran and (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5)) $skpd_clause
+                                    WHERE (tgl_voucher between '$tanggal1' and '$tanggal2') and (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5)) $skpd_clause
                                     )a
                                     "))->first();
+                            }else{
+
+                                $nilai = collect(DB::select("
+                                        SELECT sum(anggaran) as anggaran, sum(realisasi) as realisasi 
+                                        FROM
+                                        (
+                                        SELECT 
+                                        sum(a.nilai) as anggaran, 0 realisasi
+                                        FROM trdrka a where (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5))
+                                        and jns_ang='$jns_ang' $skpd_clause_ang
+                                        union all
+                                        SELECT 0 anggaran ,SUM($jenis) realisasi
+                                        FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
+                                        WHERE MONTH(tgl_voucher)<=$bulan and YEAR(tgl_voucher)=$tahun_anggaran and (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5)) $skpd_clause
+                                        )a
+                                        "))->first();
+                            }
                             $anggaran = $nilai->anggaran;
                             $realisasi = $nilai->realisasi;
                             $selisih=$anggaran-$realisasi;
@@ -236,6 +327,16 @@
                                <td colspan="7" align="left" valign="top">&nbsp;</td> 
                             </tr>
                         @elseif($bold=="1")
+                            @if($kode=="6")
+                            <tr>
+                               <td align="left" valign="top"><b>{{$kode}}</b></td> 
+                               <td align="left"  valign="top"><b>{{$nama}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xa_neto}}{{rupiah($ang_netos)}}{{$ya_neto}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
+                               <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
+                               <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
+                               <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                            @else
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
                                <td align="left"  valign="top"><b>{{$nama}}</b></td> 
@@ -245,6 +346,7 @@
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
                             </tr>
+                            @endif
                         @elseif($bold=="2")
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
@@ -309,8 +411,8 @@
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
-                               <td align="right" valign="top"><b>{{rupiah($ang_surplus)}}</b></td> 
-                               <td align="right" valign="top"><b>{{rupiah($nil_surplus)}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xa_surplus}}{{rupiah($ang_surpluss)}}{{$ya_surplus}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xn_surplus}}{{rupiah($nil_surpluss)}}{{$yn_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_surplus}}{{rupiah($sel_surplus)}}{{$y_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_surplus}}{{rupiah($sel_surplus)}}{{$y_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_surplus)}}</b></td>
@@ -319,11 +421,21 @@
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
-                               <td align="right" valign="top"><b>{{rupiah($ang_neto)}}</b></td> 
-                               <td align="right" valign="top"><b>{{rupiah($nil_neto)}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xa_neto}}{{rupiah($ang_netos)}}{{$ya_neto}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                            </tr>
+                        @elseif($bold=="777")
+                            <tr>
+                               <td align="left" valign="top"><b></b></td> 
+                               <td align="right"  valign="top"><b>{{$nama}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xa_silpa}}{{rupiah($ang_silpas)}}{{$ya_silpa}}</b></td> 
+                               <td align="right" valign="top"><b>{{$xn_silpa}}{{rupiah($nil_silpas)}}{{$yn_silpa}}</b></td> 
+                               <td align="right" valign="top"><b>{{$x_silpa}}{{rupiah($sel_silpa)}}{{$y_silpa}}</b></td> 
+                               <td align="right" valign="top"><b>{{$x_silpa}}{{rupiah($sel_silpa)}}{{$y_silpa}}</b></td> 
+                               <td align="right" valign="top"><b>{{rupiah($persen_silpa)}}</b></td>
                             </tr>
                         @else
                         @endif

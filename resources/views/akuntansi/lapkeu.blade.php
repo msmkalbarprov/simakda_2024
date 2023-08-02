@@ -671,6 +671,10 @@
                     alert('Tanggal Tanda Tangan tidak boleh kosong!');
                     return;
                 }
+                if (!ttd) {
+                    alert('PA/KPA tidak boleh kosong!');
+                    return;
+                }
                 if (!jenis_data) {
                     alert('jenis Data tidak boleh kosong!');
                     return;

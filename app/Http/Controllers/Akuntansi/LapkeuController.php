@@ -153,13 +153,14 @@ class LapkeuController extends Controller
 
 
         // dd($jns_rincian);
-        if ($kd_skpd == '') {
+        if ($skpdunit == "keseluruhan") {
             $kd_skpd        = "";
             $skpd_clause = "";
             $skpd_clauses = "";
             $skpd_clause_prog = "";
             $skpd_clause_ang = "";
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
+            $ttd            = "-";
         } else {
             if ($skpdunit == "unit") {
                 $kd_skpd = $kd_skpd;
@@ -171,6 +172,7 @@ class LapkeuController extends Controller
             $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            $ttd            = $request->ttd;
         }
         $tahun_anggaran = tahun_anggaran();
 
@@ -200,7 +202,7 @@ class LapkeuController extends Controller
         }else if ($bulan=="2"){
             $judul = "SEMESTER KEDUA";
         }else{
-            $Judul = "bulan tidak diketahui";
+            $judul = "bulan tidak diketahui";
         }
         $bulan2 = 12 - $bulan;
         // dd(left($kd_skpd,3));
@@ -869,7 +871,6 @@ class LapkeuController extends Controller
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', -1);
         $tanggal_ttd    = $request->tgl_ttd;
-        $ttd            = $request->ttd;
         $bulan          = $request->bulan;
         $enter          = $request->spasi;
         $cetak          = $request->cetak;
@@ -884,13 +885,14 @@ class LapkeuController extends Controller
 
 
         // dd($jns_rincian);
-        if ($kd_skpd == '') {
+        if ($skpdunit == "keseluruhan") {
             $kd_skpd        = "";
             $skpd_clause = "";
             $skpd_clauses = "";
             $skpd_clause_prog = "";
             $skpd_clause_ang = "";
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
+            $ttd            = "-";
         } else {
             if ($skpdunit == "unit") {
                 $kd_skpd = $kd_skpd;
@@ -902,6 +904,7 @@ class LapkeuController extends Controller
             $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
             $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            $ttd            = $request->ttd;
         }
 
         $tahun_anggaran = tahun_anggaran();
@@ -932,7 +935,7 @@ class LapkeuController extends Controller
         }else if ($bulan=="2"){
             $judul = "SEMESTER KEDUA";
         }else{
-            $Judul = "bulan tidak diketahui";
+            $judul = "bulan tidak diketahui";
         }
         $bulan2 = 12 - $bulan;
         // dd(left($kd_skpd,3));
