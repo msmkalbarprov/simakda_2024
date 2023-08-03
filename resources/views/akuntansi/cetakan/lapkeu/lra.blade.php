@@ -151,11 +151,20 @@
                 $n2 = $n2 == '-' ? "'-'" : $n2;
                 $n3 = $row4->kode_3;
                 $n3 = $n3 == '-' ? "'-'" : $n3;
-                if ($skpdunit=="unit") {
-                    
-                    $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit($bulan,'$jns_ang',$thn_ang,'$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
-                }else if ($skpdunit=="skpd") {
-                    $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit_tgl('$tanggal1','$tanggal2','$jns_ang','$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+                if ($periodebulan=="bulan") {
+                    if($skpdunit=="keseluruhan"){
+                        $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda($bulan,'$jns_ang',$thn_ang) b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+
+                    }else{
+                        $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit($bulan,'$jns_ang',$thn_ang,'$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+
+                    }
+                }else if ($periodebulan=="periode") {
+                    if($skpdunit=="keseluruhan"){
+                        $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_tgl('$tanggal1','$tanggal2','$jns_ang') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+                    }else{
+                        $nilainya = collect(DB::select("SELECT isnull(SUM(case when LEFT(kd_rek6,2) in ('51','52','62') and $parent=1 then b.anggaran*-1 else b.anggaran end),0) as anggaran, ISNULL(SUM($normal),0) as nilai FROM data_realisasi_n_pemda_unit_tgl('$tanggal1','$tanggal2','$jns_ang','$kd_skpd') b WHERE (left(b.kd_rek6,4) in ($n) or left(b.kd_rek6,6) in ($n2) or left(b.kd_rek6,8) in ($n3))"))->first();
+                    }
                 }
 
                 $nilai = $nilainya->nilai;
