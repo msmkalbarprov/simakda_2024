@@ -683,7 +683,7 @@
                 // alert(jenis_data);
                 let url ='';
 
-                if (jenis_data == 5) {
+                if (jenis_data == 5 || jenis_data == 4 ) {
                     url             = new URL("{{ route('laporan_akuntansi.lapkeu.semester_jurnal') }}");
                 }else{
                     url             = new URL("{{ route('laporan_akuntansi.lapkeu.semester') }}");

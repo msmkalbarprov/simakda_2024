@@ -957,10 +957,27 @@ class LapkeuController extends Controller
         // rincian
 
         if ($periodebulan == 'periode') {
-            
-            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+            if ($jenis_data==4) {
+                $sus = collect(DB::select("
+                    SELECT SUM(CASE WHEN left(kd_rek6,1)='4' THEN (anggaran) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,1)='5' THEN (anggaran) ELSE 0 END) as ang_surplus,
+                    SUM(CASE WHEN left(kd_rek6,1)='4' THEN (realisasi) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,1)='5' THEN (realisasi) ELSE 0 END) as nil_surplus,
+                    SUM(CASE WHEN left(kd_rek6,2)='61' THEN (anggaran) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,2)='62' THEN (anggaran) ELSE 0 END) as ang_neto,
+                    SUM(CASE WHEN left(kd_rek6,2)='61' THEN (realisasi) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,2)='62' THEN (realisasi) ELSE 0 END) as nil_neto 
+                from data_lra_spj_tgl('$tanggal1','$jns_ang','$tanggal2')  $skpd_clauses"))->first();
+            }else{
+                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+            }
         }else{
-            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+            if ($jenis_data==4) {
+                $sus = collect(DB::select("
+                    SELECT SUM(CASE WHEN left(kd_rek6,1)='4' THEN (anggaran) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,1)='5' THEN (anggaran) ELSE 0 END) as ang_surplus,
+                    SUM(CASE WHEN left(kd_rek6,1)='4' THEN (realisasi) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,1)='5' THEN (realisasi) ELSE 0 END) as nil_surplus,
+                    SUM(CASE WHEN left(kd_rek6,2)='61' THEN (anggaran) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,2)='62' THEN (anggaran) ELSE 0 END) as ang_neto,
+                    SUM(CASE WHEN left(kd_rek6,2)='61' THEN (realisasi) ELSE 0 END) - SUM(CASE WHEN left(kd_rek6,2)='62' THEN (realisasi) ELSE 0 END) as nil_neto 
+                from data_lra_spj_bulan($bulan,'$jns_ang',$tahun_anggaran)  $skpd_clauses"))->first();
+            }else{
+                $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+            }
         }
         $rincian = DB::select("SELECT * from map_lra_semester");
             
@@ -985,7 +1002,8 @@ class LapkeuController extends Controller
                 'tahun_anggaran1'    => $tahun_anggaran1,
                 'jns_ang'           => $jns_ang,
                 'skpd_clause_ang'   => $skpd_clause_ang,
-                'skpd_clause'       => $skpd_clause,     
+                'skpd_clause'       => $skpd_clause, 
+                'skpd_clauses'       => $skpd_clauses,     
                 'bulan'             => $bulan,
                 'bulan2'            => $bulan2,
                 'judul'             => $judul,
@@ -995,8 +1013,11 @@ class LapkeuController extends Controller
                 'jenis'             => $jns_rincian,
                 'sus'               => $sus
             ];
-        
-        $view =  view('akuntansi.cetakan.lapkeu.semester_jurnal')->with($data);
+        if ($jenis_data==4) {
+            $view =  view('akuntansi.cetakan.lapkeu.semester_spj')->with($data);
+        }else{
+            $view =  view('akuntansi.cetakan.lapkeu.semester_jurnal')->with($data);
+        }
         
 
         if ($cetak == '1') {

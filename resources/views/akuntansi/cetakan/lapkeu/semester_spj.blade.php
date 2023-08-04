@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LRA JURNAL SAP SEMESTER</title>
+    <title>LRA SPJ SAP SEMESTER</title>
     <style>
         table {
             border-collapse: collapse
@@ -269,34 +269,14 @@
                             if($periodebulan=="periode"){
                                 $nilai = collect(DB::select("
                                     SELECT sum(anggaran) as anggaran, sum(realisasi) as realisasi 
-                                    FROM
-                                    (
-                                    SELECT 
-                                    sum(a.nilai) as anggaran, 0 realisasi
-                                    FROM trdrka a where (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5))
-                                    and jns_ang='$jns_ang' $skpd_clause_ang
-                                    union all
-                                    SELECT 0 anggaran ,SUM($jenis) realisasi
-                                    FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
-                                    WHERE (tgl_voucher between '$tanggal1' and '$tanggal2') and (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5)) $skpd_clause
-                                    )a
+                                    FROM data_lra_spj_tgl('$tanggal1','$jns_ang','$tanggal2') where (LEFT(kd_rek6,1) in ($kode1) or LEFT(kd_rek6,2) in ($kode2) or LEFT(kd_rek6,4) in ($kode3) or LEFT(kd_rek6,6) in ($kode4) or LEFT(kd_rek6,8) in ($kode5)) $skpd_clause_ang 
                                     "))->first();
                             }else{
 
                                 $nilai = collect(DB::select("
                                         SELECT sum(anggaran) as anggaran, sum(realisasi) as realisasi 
-                                        FROM
-                                        (
-                                        SELECT 
-                                        sum(a.nilai) as anggaran, 0 realisasi
-                                        FROM trdrka a where (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5))
-                                        and jns_ang='$jns_ang' $skpd_clause_ang
-                                        union all
-                                        SELECT 0 anggaran ,SUM($jenis) realisasi
-                                        FROM trdju_pkd a INNER JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
-                                        WHERE MONTH(tgl_voucher)<=$bulan and YEAR(tgl_voucher)=$tahun_anggaran and (LEFT(a.kd_rek6,1) in ($kode1) or LEFT(a.kd_rek6,2) in ($kode2) or LEFT(a.kd_rek6,4) in ($kode3) or LEFT(a.kd_rek6,6) in ($kode4) or LEFT(a.kd_rek6,8) in ($kode5)) $skpd_clause
-                                        )a
-                                        "))->first();
+                                    FROM data_lra_spj_bulan($bulan,'$jns_ang',$tahun_anggaran) where (LEFT(kd_rek6,1) in ($kode1) or LEFT(kd_rek6,2) in ($kode2) or LEFT(kd_rek6,4) in ($kode3) or LEFT(kd_rek6,6) in ($kode4) or LEFT(kd_rek6,8) in ($kode5)) $skpd_clause_ang 
+                                    "))->first();
                             }
                             $anggaran = $nilai->anggaran;
                             $realisasi = $nilai->realisasi;
