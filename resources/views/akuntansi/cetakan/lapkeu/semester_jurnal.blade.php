@@ -384,6 +384,16 @@
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
                                <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
                             </tr>
+                        @elseif(strlen($bold)==4)
+                            <tr>
+                               <td align="left" valign="top"><b>{{$kode}}</b></td> 
+                               <td align="left"  valign="top"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</b></td> 
+                               <td align="right" valign="top"><b>{{rupiah($anggaran)}}</b></td> 
+                               <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
+                               <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
+                               <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                            </tr>
                         @elseif(strlen($bold)==3)
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
@@ -404,7 +414,7 @@
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
                                <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
                             </tr>
-                        @elseif($bold=="8888")
+                        @elseif($bold=="88888")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
@@ -414,7 +424,7 @@
                                <td align="right" valign="top"><b>{{rupiah($persen_surplus)}}</b></td>
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
-                        @elseif($bold=="9999")
+                        @elseif($bold=="99999")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
@@ -424,7 +434,7 @@
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
-                        @elseif($bold=="7777")
+                        @elseif($bold=="77777")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
