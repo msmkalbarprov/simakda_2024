@@ -32,7 +32,7 @@ class PenerimaController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penerima.show_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="' . route("penerima.edit_penerima", ['rekening' => Crypt::encryptString($row->rekening), 'kd_skpd' => Crypt::encryptString($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->rekening .'|'.$row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->rekening . '|' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -124,15 +124,39 @@ class PenerimaController extends Controller
         $rekening = Crypt::decryptString($rekening);
         $kd_skpd = Crypt::decryptString($kd_skpd);
 
-        $data_awal = DB::table('ms_rekening_bank_online')->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])->first();
+        $data_awal = DB::table('ms_rekening_bank_online')
+            ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
+            ->first();
 
         $skpd = Auth::user()->kd_skpd;
         $kd_skpd = substr($skpd, 0, 17);
 
-        $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
-        $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);
-        $perusahaan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan2);
-        $perusahaan4 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan3);
+        $perusahaan1 = DB::table('ms_perusahaan')
+            ->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])
+            ->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
+
+        $perusahaan2 = DB::table('trhspp')
+            ->select('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->whereRaw('LEN(nmrekan)>1')
+            ->where('kd_skpd', $skpd)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->unionAll($perusahaan1);
+
+        $perusahaan3 = DB::table('trhtrmpot_cmsbank')
+            ->select('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->whereRaw('LEN(nmrekan)>1')
+            ->where('kd_skpd', $skpd)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->unionAll($perusahaan2);
+
+        $perusahaan4 = DB::table('trhtrmpot')
+            ->select('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->whereRaw('LEN(nmrekan)>1')
+            ->where('kd_skpd', $skpd)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->unionAll($perusahaan3);
+
         $result = DB::table(DB::raw("({$perusahaan4->toSql()}) AS sub"))
             ->select("nmrekan", "pimpinan", "npwp", "alamat")
             ->mergeBindings($perusahaan4)
@@ -143,12 +167,17 @@ class PenerimaController extends Controller
             ->orderBy('alamat', 'ASC')
             ->get();
 
+        $cek = DB::table('trhspp')
+            ->where(['no_rek' => $data_awal->rekening, 'kd_skpd' => $data_awal->kd_skpd])
+            ->count();
+
         $data = [
             'data_penerima' => $data_awal,
             'daftar_rekanan' => $result,
             'daftar_bank' => DB::table('ms_bank_online')->get(),
             'nama_bank' => DB::table('ms_bank_online')->where('kd_bank', $data_awal->kd_bank)->first(),
             'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
+            'cek' => $cek
         ];
 
         return view('master.penerima.edit')->with($data);
@@ -189,12 +218,12 @@ class PenerimaController extends Controller
 
     public function destroy($id)
     {
-        
-        $idnew = explode("|",$id);
+
+        $idnew = explode("|", $id);
         $kd_skpd = $idnew[1];
         $norek = $idnew[0];
-        
-        $data = DB::table('ms_rekening_bank_online')->where(['rekening' => $norek,'kd_skpd' => $kd_skpd])->delete();
+
+        $data = DB::table('ms_rekening_bank_online')->where(['rekening' => $norek, 'kd_skpd' => $kd_skpd])->delete();
         if ($data) {
             return response()->json([
                 'message' => '1'
@@ -210,7 +239,7 @@ class PenerimaController extends Controller
     {
         if ($request->ajax()) {
             $id = $request->id;
-            $idnew = explode("|",$id);
+            $idnew = explode("|", $id);
             $kd_skpd = $idnew[1];
             $norek = $idnew[0];
             $rekening = DB::table('ms_rekening_bank_online')->select('rekening')->where('rekening', $norek)->first();

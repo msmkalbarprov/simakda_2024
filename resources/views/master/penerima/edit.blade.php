@@ -10,6 +10,13 @@
                         method="post">
                         @method('PUT')
                         @csrf
+
+                        @if ($cek > 0)
+                            <div class="alert alert-warning alert-block">
+                                <b style="font-size:16px">Sudah di Buat SPP!!Tidak dapat diedit!!</b>
+                            </div>
+                        @endif
+
                         <!-- Bank -->
                         <div class="mb-3 row">
                             <label for="bank" class="col-md-2 col-form-label">Bank</label>
@@ -300,7 +307,8 @@
                         </div>
                         <!-- SIMPAN -->
                         <div style="float: right;">
-                            <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
+                            <button type="submit" id="save" class="btn btn-primary btn-md"
+                                {{ $cek > 0 ? 'hidden' : '' }}>Simpan</button>
                             <a href="{{ route('penerima.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </form>
