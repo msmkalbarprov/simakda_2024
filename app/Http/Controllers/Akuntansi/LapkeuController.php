@@ -883,7 +883,6 @@ class LapkeuController extends Controller
         $kd_skpd        = $request->kd_skpd;
         $jns_rincian = $request->panjang_data;;
 
-
         // dd($jns_rincian);
         if ($skpdunit == "keseluruhan") {
             $kd_skpd        = "";
@@ -908,6 +907,21 @@ class LapkeuController extends Controller
         }
 
         $tahun_anggaran = tahun_anggaran();
+        $tahun_anggaran1=$tahun_anggaran-1;
+        if ($periodebulan=="bulan") {
+            $modtahun= $tahun_anggaran%4;
+            
+                if ($modtahun = 0){
+                    $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+                }else {
+                    $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+                }
+             
+             $arraybulan=explode(".",$nilaibulan);
+             $nm_bln = $arraybulan[$bulan];
+        }else{
+            $nm_bln="";
+        }
 
         // TANDA TANGAN
         if ($ttd == '0') {
@@ -968,6 +982,7 @@ class LapkeuController extends Controller
                 'tanggal_ttd'       => $tanggal_ttd,
                 'tandatangan'       => $tandatangan,
                 'tahun_anggaran'    => $tahun_anggaran,
+                'tahun_anggaran1'    => $tahun_anggaran1,
                 'jns_ang'           => $jns_ang,
                 'skpd_clause_ang'   => $skpd_clause_ang,
                 'skpd_clause'       => $skpd_clause,     
@@ -975,6 +990,7 @@ class LapkeuController extends Controller
                 'bulan2'            => $bulan2,
                 'judul'             => $judul,
                 'pilih'             => $pilih,
+                'nm_bln'             => $nm_bln,
                 'jenis_ttd'         => $ttd,
                 'jenis'             => $jns_rincian,
                 'sus'               => $sus

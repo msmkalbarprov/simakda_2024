@@ -47,20 +47,16 @@
             <td rowspan="3" align="center" style="border-right:hidden">
                 <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
             </td>
-            <td align="center" style="border-left:hidden;border-bottom:hidden"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT </strong></td>
         </tr>
         @if($periodebulan=="bulan")
         <tr>
-            <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden"><b>LAPORAN REALISASI {{$judul}} APBD DAN PROGNOSIS<BR> {{$bulan2}} BULAN BERIKUTNYA </b>
+            <td align="center" style="border-left:hidden;"><b>PEMERINTAH PROVINSI KALIMANTAN BARAT<BR>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH<BR>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN {{$nm_bln}} {{$tahun_anggaran}} DAN {{$tahun_anggaran1}} </b>
         </tr>
         @else
         <tr>
-            <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden"><b>LAPORAN REALISASI {{tgl_format_oyoy($tanggal1)}} S.D {{tgl_format_oyoy($tanggal2)}} APBD DAN PROGNOSIS<BR> $bulan2 BULAN BERIKUTNYA </b>
+            <td align="center" style="border-left:hidden;"><b>PEMERINTAH PROVINSI KALIMANTAN BARAT<BR>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH<BR>UNTUK {{tgl_format_oyoy($tanggal1)}} S.D {{tgl_format_oyoy($tanggal2)}} </b>
         </tr>
         @endif
-        <tr>
-            <td align="center" style="border-left:hidden;border-top:hidden" ><b>TAHUN ANGGARAN {{$tahun_anggaran}}</b>
-        </tr>
     </TABLE>
     @if($skpdunit=="skpd")
         <TABLE style="border-collapse:collapse;font-family:Arial;font-size:12px" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
@@ -116,9 +112,9 @@
                 @else
                 <td width="15%" align="center" bgcolor="#CCCCCC" ><b>REALISASI</b></td>
                 @endif
-                <td width="15%" align="center" bgcolor="#CCCCCC" ><b>SISA ANGGARAN</b></td>
-                <td width="15%" align="center" bgcolor="#CCCCCC" ><b>PROGNOSIS</b></td>
+                <td width="15%" align="center" bgcolor="#CCCCCC" ><b>KURANG/LEBIH</b></td>
                 <td width="7%" align="center" bgcolor="#CCCCCC" ><b>%</b></td>
+                <td width="15%" align="center" bgcolor="#CCCCCC" ><b>{{$tahun_anggaran1}}</b></td>
             </tr>
             <tr>
                <td align="center" bgcolor="#CCCCCC" >1</td> 
@@ -152,7 +148,7 @@
                         $nil_surpluss=$nil_surplus;
                         $yn_surplus="";
                     }
-                    $selisih_surplus=$ang_surplus-$nil_surplus;
+                    $selisih_surplus=$nil_surplus-$ang_surplus;
                     if($selisih_surplus<0){
                         $x_surplus="(";
                         $sel_surplus=$selisih_surplus*-1;
@@ -188,7 +184,7 @@
                         $nil_netos=$nil_neto;
                         $yn_neto="";
                     }
-                    $selisih_neto=$ang_neto-$nil_neto;
+                    $selisih_neto=$nil_neto-$ang_neto;
                     if($selisih_neto<0){
                         $x_neto="(";
                         $sel_neto=$selisih_neto*-1;
@@ -224,7 +220,7 @@
                         $nil_silpas=$nil_silpa;
                         $yn_silpa="";
                     }
-                    $selisih_silpa=$ang_silpa-$nil_silpa;
+                    $selisih_silpa=$nil_silpa-$ang_silpa;
                     if($selisih_silpa<0){
                         $x_silpa="(";
                         $sel_silpa=$selisih_silpa*-1;
@@ -252,6 +248,7 @@
                             $kode4 = $row->kode4;
                             $kode5 = $row->kode5;
                             $jenis = $row->jenis;
+                            $thn_1 = $row->thn_1;
 
                             if ($kode1 == '') {
                                 $kode1 = "'X'";
@@ -303,7 +300,7 @@
                             }
                             $anggaran = $nilai->anggaran;
                             $realisasi = $nilai->realisasi;
-                            $selisih=$anggaran-$realisasi;
+                            $selisih=$realisasi-$anggaran;
                             if($selisih<0){
                                 $x="(";
                                 $sel=$selisih*-1;
@@ -334,8 +331,8 @@
                                <td align="right" valign="top"><b>{{$xa_neto}}{{rupiah($ang_netos)}}{{$ya_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             @else
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
@@ -343,8 +340,8 @@
                                <td align="right" valign="top"><b>{{rupiah($anggaran)}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
                             @endif
                         @elseif($bold=="2")
@@ -354,8 +351,8 @@
                                <td align="right" valign="top"><b>{{rupiah($anggaran)}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
                         @elseif($bold=="3")
                             <tr>
@@ -364,18 +361,18 @@
                                <td align="right" valign="top">{{rupiah($anggaran)}}</td> 
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
-                               <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
                             </tr>
-                        @elseif($bold=="33")
+                        @elseif(strlen($bold)==2)
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
-                               <td align="left"  valign="top"><b>&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</b></td> 
+                               <td align="left"  valign="top"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($anggaran)}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
                         @elseif($bold=="4")
                             <tr>
@@ -384,18 +381,18 @@
                                <td align="right" valign="top">{{rupiah($anggaran)}}</td> 
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
-                               <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
                             </tr>
-                        @elseif($bold=="44")
+                        @elseif(strlen($bold)==3)
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
-                               <td align="left"  valign="top"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</b></td> 
+                               <td align="left"  valign="top"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$nama}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($anggaran)}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
                         @elseif($bold=="5")
                             <tr>
@@ -404,38 +401,38 @@
                                <td align="right" valign="top">{{rupiah($anggaran)}}</td> 
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
-                               <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
                             </tr>
-                        @elseif($bold=="888")
+                        @elseif($bold=="8888")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
                                <td align="right" valign="top"><b>{{$xa_surplus}}{{rupiah($ang_surpluss)}}{{$ya_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{$xn_surplus}}{{rupiah($nil_surpluss)}}{{$yn_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_surplus}}{{rupiah($sel_surplus)}}{{$y_surplus}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x_surplus}}{{rupiah($sel_surplus)}}{{$y_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_surplus)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
-                        @elseif($bold=="999")
+                        @elseif($bold=="9999")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
                                <td align="right" valign="top"><b>{{$xa_neto}}{{rupiah($ang_netos)}}{{$ya_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
-                        @elseif($bold=="777")
+                        @elseif($bold=="7777")
                             <tr>
                                <td align="left" valign="top"><b></b></td> 
                                <td align="right"  valign="top"><b>{{$nama}}</b></td> 
                                <td align="right" valign="top"><b>{{$xa_silpa}}{{rupiah($ang_silpas)}}{{$ya_silpa}}</b></td> 
                                <td align="right" valign="top"><b>{{$xn_silpa}}{{rupiah($nil_silpas)}}{{$yn_silpa}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_silpa}}{{rupiah($sel_silpa)}}{{$y_silpa}}</b></td> 
-                               <td align="right" valign="top"><b>{{$x_silpa}}{{rupiah($sel_silpa)}}{{$y_silpa}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_silpa)}}</b></td>
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
                             </tr>
                         @else
                         @endif
