@@ -128,7 +128,8 @@
                             <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>
                             <div class="col-md-10">
                                 <input class="form-control" value="{{ $data_penerima->rekening }}" type="text"
-                                    placeholder="Silahkan isi dengan nomor rekening" id="rekening" name="rekening">
+                                    placeholder="Silahkan isi dengan nomor rekening" id="rekening" name="rekening"
+                                    {{ $cek > 0 ? 'disabled' : '' }}>
                             </div>
                         </div>
                         <!-- Nama Pemilik/Penerima -->
@@ -136,7 +137,8 @@
                             <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik/Penerima</label>
                             <div class="col-md-10">
                                 <input class="form-control" type="text" value="{{ $data_penerima->nm_rekening }}"
-                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening">
+                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening"
+                                    {{ $cek > 0 ? 'disabled' : '' }}>
                             </div>
                         </div>
                         <!-- Cek Rekening -->
@@ -307,8 +309,7 @@
                         </div>
                         <!-- SIMPAN -->
                         <div style="float: right;">
-                            <button type="submit" id="save" class="btn btn-primary btn-md"
-                                {{ $cek > 0 ? 'hidden' : '' }}>Simpan</button>
+                            <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('penerima.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </form>
