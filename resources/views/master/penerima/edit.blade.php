@@ -3,6 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (session()->has('message'))
+                <div class="alert {{ session('alert') ?? 'alert-info' }}">
+                    {{ session('message') }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <form
@@ -11,11 +16,11 @@
                         @method('PUT')
                         @csrf
 
-                        @if ($cek > 0)
+                        {{-- @if ($cek > 0)
                             <div class="alert alert-warning alert-block">
                                 <b style="font-size:16px">Sudah di Buat SPP!!Tidak dapat diedit!!</b>
                             </div>
-                        @endif
+                        @endif --}}
 
                         <!-- Bank -->
                         <div class="mb-3 row">
@@ -128,8 +133,9 @@
                             <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>
                             <div class="col-md-10">
                                 <input class="form-control" value="{{ $data_penerima->rekening }}" type="text"
-                                    placeholder="Silahkan isi dengan nomor rekening" id="rekening" name="rekening"
-                                    {{ $cek > 0 ? 'disabled' : '' }}>
+                                    placeholder="Silahkan isi dengan nomor rekening" id="rekening" name="rekening">
+                                <input class="form-control" value="{{ $data_penerima->rekening }}" type="text"
+                                    id="rekening_lama" name="rekening_lama" hidden>
                             </div>
                         </div>
                         <!-- Nama Pemilik/Penerima -->
@@ -137,8 +143,7 @@
                             <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik/Penerima</label>
                             <div class="col-md-10">
                                 <input class="form-control" type="text" value="{{ $data_penerima->nm_rekening }}"
-                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening"
-                                    {{ $cek > 0 ? 'disabled' : '' }}>
+                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening">
                             </div>
                         </div>
                         <!-- Cek Rekening -->

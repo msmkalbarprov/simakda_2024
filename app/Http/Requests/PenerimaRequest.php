@@ -41,7 +41,8 @@ class PenerimaRequest extends FormRequest
             'rekanan' => 'sometimes',
             'pimpinan' => 'sometimes',
             'alamat' => 'sometimes',
-            'keperluan' => 'sometimes'
+            'keperluan' => 'sometimes',
+            'rekening_lama' => 'sometimes',
         ];
 
         $rules1 = [
@@ -61,7 +62,8 @@ class PenerimaRequest extends FormRequest
             'rekanan' => 'sometimes',
             'pimpinan' => 'sometimes',
             'alamat' => 'sometimes',
-            'keperluan' => 'sometimes'
+            'keperluan' => 'sometimes',
+            'rekening_lama' => 'sometimes',
         ];
 
         if (request()->isMethod('post')) {

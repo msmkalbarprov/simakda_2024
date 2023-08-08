@@ -190,6 +190,11 @@ class PenerimaController extends Controller
 
         // $input = array_map('htmlentities', $request->validated());
         $input = $request->validated();
+
+        if ($input['no_rekening_validasi'] != $input['rekening_lama']) {
+            return redirect()->back()->withInput()
+                ->with(['message' => 'Rekening tidak boleh beda dengan yang tersimpan', 'alert' => 'alert-danger']);
+        }
         // dd($input);
         DB::table('ms_rekening_bank_online')
             ->where(['rekening' => $rekening, 'kd_skpd' => $kd_skpd])
