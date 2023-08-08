@@ -754,12 +754,12 @@
             $('#total_belanja').val(null);
             $('#total_input_rekening').val(null);
 
-            // let beban = this.value;
-            // if (beban == 1) {
-            //     $('#input_mbiz').show();
-            // } else {
-            //     $('#input_mbiz').hide();
-            // }
+            let beban = this.value;
+            if (beban == 1) {
+                $('#input_mbiz').show();
+            } else {
+                $('#input_mbiz').hide();
+            }
         });
 
         $('#rek_tujuan').on('select2:select', function() {
@@ -973,10 +973,10 @@
                 return;
             }
 
-            // if (beban == '1' && !trx_mbiz) {
-            //     alert('Silahkan pilih transaksi MBIZ!');
-            //     return;
-            // }
+            if (beban == '1' && !trx_mbiz) {
+                alert('Silahkan pilih transaksi MBIZ!');
+                return;
+            }
 
             if (!keterangan) {
                 alert('Keterangan Tidak Boleh Kosong');
@@ -998,10 +998,10 @@
                 return;
             }
 
-            // if (trx_mbiz == '1' && !invoice) {
-            //     alert('Silahkan isi terlebih dahulu invoice!');
-            //     return;
-            // }
+            if (trx_mbiz == '1' && !invoice) {
+                alert('Silahkan isi terlebih dahulu invoice!');
+                return;
+            }
 
             let response = {
                 no_bukti,
