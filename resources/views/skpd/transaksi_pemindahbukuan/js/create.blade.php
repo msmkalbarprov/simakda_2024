@@ -10,6 +10,7 @@
 
         $('#label_invoice').hide();
         $('#input_invoice').hide();
+        $('#ket_mbiz').hide();
 
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
@@ -226,9 +227,12 @@
             if (trx_mbiz == 1) {
                 $('#label_invoice').show();
                 $('#input_invoice').show();
+                $('#ket_mbiz').show();
+                
             } else {
                 $('#label_invoice').hide();
                 $('#input_invoice').hide();
+                $('#ket_mbiz').hide();
             }
         });
 

@@ -106,6 +106,7 @@
                     </div>
                     {{-- Transaksi MBIZ dan Invoice --}}
                     <div class="mb-3 row" id="ket_mbiz">
+                        Catata:
                         <ul>
                             <li class="col-md-12">
                                 Belanja dan pembayaran melalui mbizmarket (cms bank kalbar) wajib mengisi invoice dari mbizmarket
