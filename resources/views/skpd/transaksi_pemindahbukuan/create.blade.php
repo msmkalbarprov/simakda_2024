@@ -109,16 +109,22 @@
                         Catatan:
                         <ul>
                             <li class="col-md-12">
-                                Belanja dan pembayaran melalui mbizmarket (cms bank kalbar) wajib mengisi invoice dari mbizmarket
+                                Pilihan transaksi mbizmarket ini penerapan dari PMK-58/PMK.03/2022 
                             </li>
                             <li class="col-md-12">
-                                Mbizmarket sebagai wapu
+                                Pilihan transaksi mbizmarket ini digunakan apabila dalam MBIZMARKET sudah diterapkan pembayaran via cms Bank Kalbar 
+                            </li>
+                            <li class="col-md-12">
+                                Pilih <b>Ya</b> Jika belanja melalui mbizmarket dan pembayarannya menggunakan <b>cms bank kalbar</b> dalam aplikasi MBIZMARKET bukan cms dalam SIMAKDA
+                            </li>
+                            <li>
+                                Pilih <b>Ya</b> maka wajib mengisi invoice dari mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Mbizmarket sebagai wapu sehingga Bendahara pengeluaran tidak melakukan pembayaran pajak karena nilai total transaksi sudah termasuk nilai pajak
                             </li>
                             <li class="col-md-12">
                                 Nilai yang diinput adalah nilai total transaksi di invoice mbizmarket
-                            </li>
-                            <li class="col-md-12">
-                                Bendahara tidak melakukan pembayaran pajak
                             </li>
                             <li class="col-md-12">
                                 Untuk informasi lebih lanjut bisa menghubungi bidang perbendaharaan
