@@ -90,7 +90,7 @@
                     </div>
                     {{-- Transaksi MBIZ dan Invoice --}}
                     <div class="mb-3 row" id="input_mbiz">
-                        <label for="trx_mbiz" class="col-md-2 col-form-label">Transaksi MBIZ</label>
+                        <label for="trx_mbiz" class="col-md-2 col-form-label">Transaksi MBIZ(CMS)</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="trx_mbiz"
                                 name="trx_mbiz">
@@ -103,6 +103,27 @@
                         <div class="col-md-4" id="input_invoice">
                             <input class="form-control" type="text" id="invoice" name="invoice" required>
                         </div>
+                    </div>
+                    {{-- Transaksi MBIZ dan Invoice --}}
+                    <div class="mb-3 row" id="ket_mbiz">
+                        <ul>
+                            <li class="col-md-12">
+                                Belanja dan pembayaran melalui mbizmarket (cms bank kalbar) wajib mengisi invoice dari mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Mbizmarket sebagai wapu
+                            </li>
+                            <li class="col-md-12">
+                                Nilai yang diinput adalah nilai total transaksi di invoice mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Bendahara tidak melakukan pembayaran pajak
+                            </li>
+                            <li class="col-md-12">
+                                Untuk informasi lebih lanjut bisa menghubungi bidang perbendaharaan
+                            </li>
+                        </ul>
+                        
                     </div>
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
