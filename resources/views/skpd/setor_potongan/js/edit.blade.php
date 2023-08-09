@@ -224,6 +224,54 @@
             })
         });
 
+        $('#simpan_rekanan').on('click', function() {
+            let id_terima = document.getElementById('id_terima_rekanan').value;
+            let id_setor = document.getElementById('id_setor_rekanan').value;
+            let rekanan = document.getElementById('rekanan_edit').value;
+            let no_terima = document.getElementById('no_terima').value;
+            let no_bukti = document.getElementById('no_bukti').value;
+            let kd_rek6 = document.getElementById('kd_rek6_rekanan').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+
+            if (!id_terima) {
+                alert('ID Terima Potongan tidak ada');
+                return;
+            }
+            if (!id_setor) {
+                alert('ID Setor Potongan tidak ada');
+                return;
+            }
+            if (!rekanan) {
+                alert('Silahkan pilih rekanan');
+                return;
+            }
+            // EDIT REKANAN
+            $.ajax({
+                url: "{{ route('skpd.setor_potongan.edit_rekanan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    id_terima: id_terima,
+                    id_setor: id_setor,
+                    rekanan: rekanan,
+                    no_terima: no_terima,
+                    kd_rek6: kd_rek6,
+                    kd_skpd: kd_skpd,
+                    no_bukti: no_bukti,
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('OK');
+                        list_potongan.ajax.reload();
+                        $('#modal_rekanan').modal('hide');
+                    } else {
+                        alert('Simpan Gagal');
+                        return;
+                    }
+                }
+            })
+        });
+
         $('#simpan_potongan').on('click', function() {
             let no_bukti = document.getElementById('no_bukti').value;
             let tgl_bukti = document.getElementById('tgl_bukti').value;
@@ -371,5 +419,12 @@
         $('#id_billing_validasi').val(ebilling);
         $('#simpan_ntpn').prop('disabled', true);
         $('#modal_ntpn').modal('show');
+    }
+
+    function editRekanan(id, kd_rek6, nm_rek6, npwp, nilai, ntpn, ebilling) {
+        $('#id_terima_rekanan').val(id);
+        $('#id_setor_rekanan').val(id);
+        $('#kd_rek6_rekanan').val(kd_rek6);
+        $('#modal_rekanan').modal('show');
     }
 </script>

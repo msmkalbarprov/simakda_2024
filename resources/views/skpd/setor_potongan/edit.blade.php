@@ -299,6 +299,59 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Rekanan --}}
+    <div id="modal_rekanan" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">EDIT REKANAN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- Id Terima Potongan dan Id Setor Potongan --}}
+                    <div class="mb-3 row">
+                        <label for="id_terima_rekanan" class="col-md-2 col-form-label">ID Terima Potongan</label>
+                        <div class="col-md-4">
+                            <input type="text" readonly class="form-control" id="id_terima_rekanan"
+                                name="id_terima_rekanan">
+                        </div>
+                        <label for="id_setor_rekanan" class="col-md-2 col-form-label">ID Setor Potongan</label>
+                        <div class="col-md-4">
+                            <input type="text" readonly class="form-control" id="id_setor_rekanan"
+                                name="id_setor_rekanan">
+                            <input type="text" readonly class="form-control" id="kd_rek6_rekanan"
+                                name="kd_rek6_rekanan" hidden>
+                        </div>
+                    </div>
+                    {{-- Rekanan --}}
+                    <div class="mb-3 row">
+                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="rekanan_edit"
+                                name="rekanan_edit">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                @foreach ($daftar_rekanan as $rekanan)
+                                    <option value="{{ $rekanan->nmrekan }}" data-pimpinan="{{ $rekanan->pimpinan }}"
+                                        data-npwp="{{ $rekanan->npwp }}" data-alamat="{{ $rekanan->alamat }}">
+                                        {{ $rekanan->nmrekan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    {{-- Simpan dan Keluar --}}
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-md btn-primary" id="simpan_rekanan">Simpan</button>
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     @include('skpd.setor_potongan.js.edit');

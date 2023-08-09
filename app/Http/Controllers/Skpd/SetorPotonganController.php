@@ -34,8 +34,10 @@ class SetorPotonganController extends Controller
         $no_terima = $request->no_terima;
 
         $data = DB::table('trdtrmpot')->where(['no_bukti' => $no_terima, 'kd_skpd' => $kd_skpd])->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="javascript:void(0);" onclick="tambahNtpn(' . $row->id . ',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->npwp . '\',\'' . $row->nilai . '\',\'' . $row->ntpn . '\',\'' . $row->ebilling . '\');" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="editRekanan(' . $row->id . ',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->npwp . '\',\'' . $row->nilai . '\',\'' . $row->ntpn . '\',\'' . $row->ebilling . '\');" class="btn btn-warning btn-sm"><i class="fas fa-eye"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="tambahNtpn(' . $row->id . ',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->npwp . '\',\'' . $row->nilai . '\',\'' . $row->ntpn . '\',\'' . $row->ebilling . '\');" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -161,10 +163,25 @@ class SetorPotonganController extends Controller
             $join->on('a.no_bukti', '=', 'b.no_bukti');
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->select('a.*')->first();
+
+        $rekanan1 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->take(5);
+
+        $rekanan2 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->take(5)->unionAll($rekanan1);
+
+        $rekanan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($rekanan2);
+
+        // $rekanan4 = DB::query()->select(DB::raw("'Input Manual' as nmrekan"), DB::raw("'' as pimpinan"), DB::raw("'' as npwp"), DB::raw("'' as alamat"))->unionAll($rekanan3);
+
+        $rekanan = DB::table(DB::raw("({$rekanan3->toSql()}) AS sub"))
+            ->select('*')
+            ->mergeBindings($rekanan3)
+            ->get();
+
         $data = [
             'data_setor' => $setor,
             'tahun_anggaran' => tahun_anggaran(),
-            'total_potongan' => DB::table('trdtrmpot')->select(DB::raw("sum(nilai) as nilai"))->where(['no_bukti' => $setor->no_terima, 'kd_skpd' => $kd_skpd])->first()
+            'total_potongan' => DB::table('trdtrmpot')->select(DB::raw("sum(nilai) as nilai"))->where(['no_bukti' => $setor->no_terima, 'kd_skpd' => $kd_skpd])->first(),
+            'daftar_rekanan' => $rekanan
         ];
 
         return view('skpd.setor_potongan.edit')->with($data);
@@ -178,10 +195,12 @@ class SetorPotonganController extends Controller
         DB::beginTransaction();
         try {
             // TRHSTRPOT
-            DB::table('trhstrpot')->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $data['no_bukti']])->update([
-                'tgl_bukti' => $data['tgl_bukti'],
-                'pay' => $data['pembayaran'],
-            ]);
+            DB::table('trhstrpot')
+                ->where(['kd_skpd' => $kd_skpd, 'no_bukti' => $data['no_bukti']])
+                ->update([
+                    'tgl_bukti' => $data['tgl_bukti'],
+                    'pay' => $data['pembayaran'],
+                ]);
 
             DB::commit();
             return response()->json([
@@ -226,6 +245,42 @@ class SetorPotonganController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => '0'
+            ]);
+        }
+    }
+
+    public function editRekanan(Request $request)
+    {
+        $id_terima = $request->id_terima;
+        $id_setor = $request->id_setor;
+        $rekanan = $request->rekanan;
+        $kd_rek6 = $request->kd_rek6;
+        $kd_skpd = $request->kd_skpd;
+        $no_terima = $request->no_terima;
+        $no_bukti = $request->no_bukti;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trdtrmpot')
+                ->where(['no_bukti' => $no_terima, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rek6, 'id' => $id_terima])
+                ->update([
+                    'rekanan' => $rekanan,
+                ]);
+
+            DB::table('trdstrpot')
+                ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rek6, 'id_terima' => $id_terima])
+                ->update([
+                    'rekanan' => $rekanan,
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0',
             ]);
         }
     }

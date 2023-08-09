@@ -559,6 +559,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit/{no_bukti?}', [SetorPotonganController::class, 'edit'])->where('no_bukti', '(.*)')->name('skpd.setor_potongan.edit');
             Route::post('edit_potongan', [SetorPotonganController::class, 'editPotongan'])->name('skpd.setor_potongan.edit_potongan');
             Route::post('hapus_potongan', [SetorPotonganController::class, 'hapusPotongan'])->name('skpd.setor_potongan.hapus_potongan');
+
+            Route::post('edit_rekanan', [SetorPotonganController::class, 'editRekanan'])->name('skpd.setor_potongan.edit_rekanan');
         });
         // Pelimpahan
         Route::group(['prefix' => 'pelimpahan'], function () {
