@@ -34,36 +34,49 @@
 </head>
 
 <!-- <body onload="window.print()"> -->
+
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+        border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
-            <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
+                <img src="{{ asset('template/assets/images/' . $header->logo_pemda_hp) }}" width="75"
+                    height="100" />
             </td>
-            <td align="left" style="font-size:14px" width="93%">&nbsp;</td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>SKPD {{ $skpd->nm_skpd }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td></tr>
-            <tr>
-            <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td></tr>
-            </table>
+            <td align="left" style="font-size:14px" width="93%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px" width="93%"><strong>PEMERINTAH
+                    {{ strtoupper($header->nm_pemda) }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px"><strong>SKPD {{ $skpd->nm_skpd }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px"><strong>TAHUN ANGGARAN {{ tahun_anggaran() }}</strong></td>
+        </tr>
+        <tr>
+            <td align="left" style="font-size:14px"><strong>&nbsp;</strong></td>
+        </tr>
+    </table>
     <hr>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center"
+        border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td style="text-align: center"><b>LAPORAN PERTANGGUNGJAWABAN BENDAHARA PENERIMAAN</b></td>
         </tr>
         <tr>
-            <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(tanggal_indonesia($tanggal1)) }} s/d {{ strtoupper(tanggal_indonesia($tanggal2)) }}</b></td>
+            <td style="text-align: center;padding-bottom:30px"><b>PERIODE {{ strtoupper(tanggal_indonesia($tanggal1)) }}
+                    s/d {{ strtoupper(tanggal_indonesia($tanggal2)) }}</b></td>
         </tr>
     </table>
     {{-- isi --}}
-    <table style='border-collapse:collapse;' width='100%' align='center' border='1' cellspacing='1' cellpadding='$spasi'>
-		<thead>		   
+    <table style='border-collapse:collapse;' width='100%' align='center' border='1' cellspacing='1'
+        cellpadding='$spasi'>
+        <thead>
             <tr>
-                <td align='center' bgcolor='#CCCCCC' rowspan='2' width='5%' style='font-size:12px'>Kode<br>Rekening</td>
+                <td align='center' bgcolor='#CCCCCC' rowspan='2' width='5%' style='font-size:12px'>
+                    Kode<br>Rekening</td>
                 <td align='center' bgcolor='#CCCCCC' rowspan='2' width='15%' style='font-size:12px'>Uraian</td>
                 <td align='center' bgcolor='#CCCCCC' rowspan='2' style='font-size:12px'>Jumlah<br>Anggaran</td>
                 <td align='center' bgcolor='#CCCCCC' colspan='3' style='font-size:12px'>Sampai dengan Bulan Lalu</td>
@@ -77,11 +90,14 @@
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Penerimaan</td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Penyetoran</td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Sisa</td>
-                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Jumlah<br>Anggaran<br>yang<br>Terealisasi</td>                
-                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Jumlah<br>Anggaran<br>yang telah<br>Disetor</td>
+                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Jumlah<br>Anggaran<br>yang<br>Terealisasi
+                </td>
+                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Jumlah<br>Anggaran<br>yang telah<br>Disetor
+                </td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Sisa yang<br>Belum<br>Disetor</td>
-                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Sisa Anggaran yang<br>Belum<br>Terealisasi/Pelam-<br>pauan Anggaran</td>                                
-            </tr>            
+                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>Sisa Anggaran
+                    yang<br>Belum<br>Terealisasi/Pelam-<br>pauan Anggaran</td>
+            </tr>
             <tr>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>1</td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>2</td>
@@ -95,206 +111,359 @@
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>10=(4+7)</td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>11=(5+8)</td>
                 <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>12=(11-10)</td>
-                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>13=(3-10)</td>                
+                <td align='center' bgcolor='#CCCCCC' style='font-size:12px'>13=(3-10)</td>
             </tr>
-		</thead>
-                @php
-                    $lcterima_ini=0;
-                    $lckeluar_ini=0;
-                    $lcprog_lama="";
-                    $lckeg_lama="";
-                    $ln_jlh1 =0;
-                    $ln_jlh2 =0;
-                    $ln_jlh3 =0;
-                    $ln_jlh4 =0;
-                    $ln_jlh5 =0;
-                    $ln_jlh6 =0;
-                    $ln_jlh7 =0;
-                    $ln_jlh8 =0;
-                    $ln_jlh9 =0;
-                    $ln_jlh10 =0;
-                    $ln_jlh11 =0;
-                @endphp
-                    @foreach ($rincian as $row)
-                        @php
-                            $kode = $row->kode;
-                            $nama = $row->nama;
-						    $leng = strlen($kode);
-                            
-                        @endphp
+        </thead>
+        @php
+            $lcterima_ini = 0;
+            $lckeluar_ini = 0;
+            $lcprog_lama = '';
+            $lckeg_lama = '';
+            $ln_jlh1 = 0;
+            $ln_jlh2 = 0;
+            $ln_jlh3 = 0;
+            $ln_jlh4 = 0;
+            $ln_jlh5 = 0;
+            $ln_jlh6 = 0;
+            $ln_jlh7 = 0;
+            $ln_jlh8 = 0;
+            $ln_jlh9 = 0;
+            $ln_jlh10 = 0;
+            $ln_jlh11 = 0;
+        @endphp
+        @foreach ($rincian as $row)
+            @php
+                $kode = $row->kode;
+                $nama = $row->nama;
+                $leng = strlen($kode);
+
+            @endphp
 
 
-                       @if ($kd_skpd=='1.02.0.00.0.00.02.0000' || $kd_skpd=='1.02.0.00.0.00.03.0000')
-
-                            @switch($leng)
-                                @case(12)
-                                    <tr>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{dotrek($kode)}}</b></td>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{$nama}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_lalu)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_lalu*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->terima_lalu))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_ini)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_ini*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_ini*-1)-($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->keluar_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah((($row->keluar_lalu+$row->keluar_ini)+($row->terima_lalu+$row->terima_ini))*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</td>
-                                    </tr>
-                                        @php
-                                            $ln_jlh1 = $ln_jlh1+$row->anggaran;
-                                            $ln_jlh2 = $ln_jlh2+$row->terima_lalu;
-                                            $ln_jlh3 = $ln_jlh3+$row->keluar_lalu;
-                                            $ln_jlh4 = $ln_jlh3+$ln_jlh2;
-                                            $ln_jlh5 = $ln_jlh5+$row->terima_ini;
-                                            $ln_jlh6 = $ln_jlh6+$row->keluar_ini*-1;
-                                            $ln_jlh8 = $ln_jlh5+$ln_jlh2;
-                                            $ln_jlh11 = $ln_jlh1-$ln_jlh8;
-                                        @endphp
-                                    @break
-                                @case(8)
-                                    <tr>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{dotrek($kode)}}</b></td>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{$nama}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_lalu)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_lalu*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->terima_lalu))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_ini)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_ini*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_ini*-1)-($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->keluar_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah((($row->keluar_lalu+$row->keluar_ini)+($row->terima_lalu+$row->terima_ini))*-1)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</td>
-                                    </tr>
-                                    @break
-                                    @case(2)
-                                        <tr>
-                                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{dotrek($kode)}}</b></td>
-                                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{$nama}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_lalu)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_lalu*-1)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->terima_lalu))}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_ini)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_ini*-1)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_ini*-1)-($row->terima_ini))}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu*-1)-($row->keluar_ini))}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah((($row->keluar_lalu+$row->keluar_ini)+($row->terima_lalu+$row->terima_ini))*-1)}}</td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</td>
-                                        </tr>
-                                    @break
-                                @default
-                                    <tr>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'><b>{{dotrek($kode)}}</b></td>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'><b> {{$nama}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->anggaran)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->terima_lalu)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_lalu*-1)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu*-1)-($row->terima_lalu))}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->terima_ini)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_ini*-1)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_ini*-1)-($row->terima_ini))}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu*-1)-($row->keluar_ini))}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah((($row->keluar_lalu+$row->keluar_ini)+($row->terima_lalu+$row->terima_ini))*-1)}}</b></td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</b></td>
-                                    </tr>
-                            @endswitch
-                              
-                                                        
-                       @else
-                            @switch($leng)
-                                @case(12)
-                                    <tr>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{dotrek($kode)}}</b></td>
-                                        <td valign='top' align='left' style='font-size:12px;border-top:none'>{{$nama}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_lalu)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_lalu)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu)-($row->terima_lalu))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->terima_ini)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->keluar_ini)}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_ini)-($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu)+($row->keluar_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah(($row->keluar_lalu+$row->keluar_ini)-($row->terima_lalu+$row->terima_ini))}}</td>
-                                        <td valign='top' align='right' style='font-size:12px;border-top:none'>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</td>
-                                    </tr>
-                                        @php
-                                            $ln_jlh1 = $ln_jlh1+$row->anggaran;
-                                            $ln_jlh2 = $ln_jlh2+$row->terima_lalu;
-                                            $ln_jlh3 = $ln_jlh3+$row->keluar_lalu;
-                                            $ln_jlh4 = $ln_jlh3-$ln_jlh2;
-                                            $ln_jlh5 = $ln_jlh5+$row->terima_ini;
-                                            $ln_jlh6 = $ln_jlh6+$row->keluar_ini;
-                                            $ln_jlh7 = $ln_jlh6-$ln_jlh5;
-                                            $ln_jlh8 = $ln_jlh5+$ln_jlh2;
-                                            $ln_jlh9 = $ln_jlh6+$ln_jlh3;
-                                            $ln_jlh10 = $ln_jlh9-$ln_jlh8;
-                                            $ln_jlh11 = $ln_jlh1-$ln_jlh8;
-                                        @endphp
-                                    @break
-                                @default
-                                        <tr>
-                                            <td valign='top' align='left' style='font-size:12px;border-top:none'><b>{{dotrek($kode)}}</b></td>
-                                            <td valign='top' align='left' style='font-size:12px;border-top:none'><b> {{$nama}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->anggaran)}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->terima_lalu)}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_lalu)}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu)-($row->terima_lalu))}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->terima_ini)}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->keluar_ini)}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_ini)-($row->terima_ini))}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->terima_lalu)+($row->terima_ini))}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu)+($row->keluar_ini))}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah(($row->keluar_lalu+$row->keluar_ini)-($row->terima_lalu+$row->terima_ini))}}</b></td>
-                                            <td valign='top' align='right' style='font-size:12px;border-top:none'><b>{{rupiah($row->anggaran-($row->terima_lalu+$row->terima_ini))}}</b></td>
-                                        </tr>
-                            @endswitch
-                       @endif          
-                    @endforeach
-                    @if ($kd_skpd=='1.02.0.00.0.00.02.0000' || $kd_skpd=='1.02.0.00.0.00.03.0000')
-                        @php
-                            $ln_jlh7 = $ln_jlh6-$ln_jlh5;
-                            $ln_jlh9 = $ln_jlh6*-1+$ln_jlh3;
-                            $ln_jlh10 = ($ln_jlh9+$ln_jlh8)*-1;
-                        @endphp
+            @if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000')
+                @switch($leng)
+                    @case(12)
                         <tr>
-                            <td valign='top' bgcolor='#CCCCCC' align='center' colspan='2' style='font-size:12px'><b>J U M L A H</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh1)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh2)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh3*-1)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh4*-1)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh5)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh6)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh7)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh8)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh9*-1)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh10)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh11)}}</b></td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ $nama }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1 - $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu + $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->keluar_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah(($row->keluar_lalu + $row->keluar_ini + ($row->terima_lalu + $row->terima_ini)) * -1) }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}</td>
                         </tr>
-                    @else
+                        @php
+                            $ln_jlh1 = $ln_jlh1 + $row->anggaran;
+                            $ln_jlh2 = $ln_jlh2 + $row->terima_lalu;
+                            $ln_jlh3 = $ln_jlh3 + $row->keluar_lalu;
+                            $ln_jlh4 = $ln_jlh3 + $ln_jlh2;
+                            $ln_jlh5 = $ln_jlh5 + $row->terima_ini;
+                            $ln_jlh6 = $ln_jlh6 + $row->keluar_ini * -1;
+                            $ln_jlh8 = $ln_jlh5 + $ln_jlh2;
+                            $ln_jlh11 = $ln_jlh1 - $ln_jlh8;
+                        @endphp
+                    @break
+
+                    @case(8)
                         <tr>
-                            <td valign='top' bgcolor='#CCCCCC' align='center' colspan='2' style='font-size:12px'><b>J U M L A H</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh1)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh2)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh3)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh4)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh5)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh6)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh7)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh8)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh9)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh10)}}</b></td>
-                            <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'><b>{{rupiah($ln_jlh11)}}</b></td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ $nama }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1 - $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu + $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->keluar_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah(($row->keluar_lalu + $row->keluar_ini + ($row->terima_lalu + $row->terima_ini)) * -1) }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}</td>
                         </tr>
-                    @endif
-   
+                    @break
+
+                    @case(2)
+                        <tr>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ $nama }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini * -1 - $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu + $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu * -1 - $row->keluar_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah(($row->keluar_lalu + $row->keluar_ini + ($row->terima_lalu + $row->terima_ini)) * -1) }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}</td>
+                        </tr>
+                    @break
+
+                    @default
+                        <tr>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>
+                                <b>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'><b>
+                                    {{ $nama }}</b></td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->anggaran) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_lalu) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu * -1) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu * -1 - $row->terima_lalu) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_ini * -1) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_ini * -1 - $row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_lalu + $row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu * -1 - $row->keluar_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah(($row->keluar_lalu + $row->keluar_ini + ($row->terima_lalu + $row->terima_ini)) * -1) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}</b>
+                            </td>
+                        </tr>
+                @endswitch
+            @else
+                @switch($leng)
+                    @case(12)
+                        <tr>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>{{ $nama }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu - $row->terima_lalu) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_ini - $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->terima_lalu + $row->terima_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu + $row->keluar_ini) }}</td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->keluar_lalu + $row->keluar_ini - ($row->terima_lalu + $row->terima_ini)) }}
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                {{ rupiah($row->anggaran - ($row->keluar_lalu - $row->terima_lalu + ($row->keluar_ini - $row->terima_ini))) }}
+                            </td>
+                        </tr>
+                        @php
+                            $ln_jlh1 = $ln_jlh1 + $row->anggaran;
+                            $ln_jlh2 = $ln_jlh2 + $row->terima_lalu;
+                            $ln_jlh3 = $ln_jlh3 + $row->keluar_lalu;
+                            $ln_jlh4 = $ln_jlh3 - $ln_jlh2;
+                            $ln_jlh5 = $ln_jlh5 + $row->terima_ini;
+                            $ln_jlh6 = $ln_jlh6 + $row->keluar_ini;
+                            $ln_jlh7 = $ln_jlh6 - $ln_jlh5;
+                            $ln_jlh8 = $ln_jlh5 + $ln_jlh2;
+                            $ln_jlh9 = $ln_jlh6 + $ln_jlh3;
+                            $ln_jlh10 = $ln_jlh9 - $ln_jlh8;
+                            $ln_jlh11 = $ln_jlh1 - $ln_jlh8 - $ln_jlh9;
+                        @endphp
+                    @break
+
+                    @default
+                        <tr>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'>
+                                <b>{{ dotrek($kode) }}</b>
+                            </td>
+                            <td valign='top' align='left' style='font-size:12px;border-top:none'><b>
+                                    {{ $nama }}</b></td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->anggaran) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_lalu) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu - $row->terima_lalu) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_ini - $row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->terima_lalu + $row->terima_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu + $row->keluar_ini) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->keluar_lalu + $row->keluar_ini - ($row->terima_lalu + $row->terima_ini)) }}</b>
+                            </td>
+                            <td valign='top' align='right' style='font-size:12px;border-top:none'>
+                                <b>{{ rupiah($row->anggaran - ($row->keluar_lalu - $row->terima_lalu + ($row->keluar_ini - $row->terima_ini))) }}</b>
+                            </td>
+                        </tr>
+                @endswitch
+            @endif
+        @endforeach
+        @if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000')
+            @php
+                $ln_jlh7 = $ln_jlh6 - $ln_jlh5;
+                $ln_jlh9 = $ln_jlh6 * -1 + $ln_jlh3;
+                $ln_jlh10 = ($ln_jlh9 + $ln_jlh8) * -1;
+            @endphp
+            <tr>
+                <td valign='top' bgcolor='#CCCCCC' align='center' colspan='2' style='font-size:12px'><b>J U M
+                        L A H</b></td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh1) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh2) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh3 * -1) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh4 * -1) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh5) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh6) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh7) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh8) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh9 * -1) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh10) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh11) }}</b>
+                </td>
+            </tr>
+        @else
+            <tr>
+                <td valign='top' bgcolor='#CCCCCC' align='center' colspan='2' style='font-size:12px'><b>J U M
+                        L A H</b></td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh1) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh2) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh3) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh4) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh5) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh6) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh7) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh8) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh9) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh10) }}</b>
+                </td>
+                <td valign='top' bgcolor='#CCCCCC' align='right' style='font-size:12px'>
+                    <b>{{ rupiah($ln_jlh11) }}</b>
+                </td>
+            </tr>
+        @endif
+
 
     </table>
     {{-- isi --}}
@@ -307,7 +476,7 @@
                 </td>
                 <td style="margin: 2px 0px;text-align: center;">
                     {{ $daerah->daerah }},
-                        {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
+                    {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
                 </td>
             </tr>
             <tr>
