@@ -76,17 +76,17 @@ class TransaksiPemindahbukuanController extends Controller
                 ->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])
                 ->delete();
 
-            // if ($data['beban'] == '1' && $data['trx_mbiz'] == '1') {
-            //     $invoice = $data['invoice'];
-            // } else {
-            //     $invoice = '';
-            // }
+            if ($data['beban'] == '1' && $data['trx_mbiz'] == '1') {
+                $invoice = $data['invoice'];
+            } else {
+                $invoice = '';
+            }
 
-            // if ($data['beban'] == '1') {
-            //     $trx_mbiz = $data['trx_mbiz'];
-            // } else {
-            //     $trx_mbiz = '';
-            // }
+            if ($data['beban'] == '1') {
+                $trx_mbiz = $data['trx_mbiz'];
+            } else {
+                $trx_mbiz = '';
+            }
 
             DB::table('trhtransout')
                 ->insert([
@@ -108,8 +108,8 @@ class TransaksiPemindahbukuanController extends Controller
                     'no_kas_pot' => $no_urut,
                     'panjar' => '0',
                     'no_sp2d' => $data['sp2d'],
-                    // 'trx_mbiz' => $trx_mbiz,
-                    // 'no_invoice' => $invoice,
+                    'trx_mbiz' => $trx_mbiz,
+                    'no_invoice' => $invoice,
                 ]);
 
             // TRDTRANSOUT
