@@ -1954,7 +1954,7 @@
 
         function cari_bendahara(kd_skpd) {
             $.ajax({
-                url: "{{ route('skpd.laporan_bendahara_penerimaan.bendahara') }}",
+                url: "{{ route('skpd.laporan_bendahara.bendahara') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
@@ -1963,7 +1963,7 @@
                 success: function(data) {
                     $('#bendahara').empty();
                     $('#bendahara').append(
-                        `<option value="" disabled selected>Pilih Bendahara Penerimaan</option>`
+                        `<option value="" disabled selected>Pilih Bendahara Pengeluaran</option>`
                     );
                     $.each(data, function(index, data) {
                         $('#bendahara').append(
