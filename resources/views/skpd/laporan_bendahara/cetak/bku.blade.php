@@ -162,7 +162,7 @@
                                 {{ $no_bku }}</td>
                             <td align="left"
                                 style="font-size:14px;border-bottom:dashed 1px gray;border-top:solid 1px gray">
-                                {{ $data->uraian }}</td>
+                                {!! $data->uraian !!}</td>
 
                             @if (empty($data->terima) or $data->terima == 0)
                                 <td align="right"
@@ -206,7 +206,7 @@
                                 style="font-size:14px;border-bottom:none 1px gray;border-top:none 1px gray"></td>
                             <td align="left"
                                 style="font-size:14px;border-bottom:dashed 1px gray;border-top:dashed 1px gray">
-                                {{ $data->uraian }}</td>
+                                {!! $data->uraian !!}</td>
                             @if (empty($data->terima) or $data->terima == 0)
                                 <td align="right"
                                     style="font-size:14px;border-bottom:dashed 1px gray;border-top:dashed 1px gray">
