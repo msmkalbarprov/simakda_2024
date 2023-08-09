@@ -109,7 +109,7 @@ class TransaksiPemindahbukuanController extends Controller
                     'panjar' => '0',
                     'no_sp2d' => $data['sp2d'],
                     'trx_mbiz' => $trx_mbiz,
-                    'no_invoice' => $invoice,
+                    'invoice' => $invoice,
                 ]);
 
             // TRDTRANSOUT
@@ -163,7 +163,8 @@ class TransaksiPemindahbukuanController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+                'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }
