@@ -273,6 +273,13 @@ class SetorPotonganController extends Controller
                     'rekanan' => $rekanan,
                 ]);
 
+            DB::table('trhstrpot')
+                ->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd, 'no_terima' => $no_terima])
+                ->update([
+                    'nmrekan' => $rekanan,
+                ]);
+
+
             DB::commit();
             return response()->json([
                 'message' => '1'
