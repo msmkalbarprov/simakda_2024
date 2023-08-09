@@ -156,6 +156,33 @@
                         <td valign="top" align="left">{{ invoice($rincian->no_spm) }}</td>
                         <td></td>
                     </tr>
+                @elseif($rincian->urut == 2)
+                    <tr>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td width="150" valign="top" align="left" style="border-top:hidden;">
+                            {{ $rincian->kode_belanja }}</td>
+                        <td width="150" valign="top" align="center" style="border-top:hidden;">
+                            {{ $rincian->kd_rek6 }}</td>
+                        <td width="150" valign="top" align="left" style="border-top:hidden;">
+                            {{ $jenis_pajak }}
+                        </td>
+                        <td width="150" valign="top" align="right" style="border-top:hidden;">
+                            {{ rupiah($rincian->nilai_pot) }}</td>
+                        <td width="150" valign="top" align="left" style="border-top:hidden;">
+                            {{ $rincian->npwp }}</td>
+                        <td width="150" valign="top" align="left" style="border-top:hidden;">
+                            {{ $rincian->nmrekan }}</td>
+                        <td align="right" style="border-top:hidden;">{{ $rincian->ntpn }}</td>
+                        <td align="right" style="border-top:hidden;">{{ $rincian->ebilling }}</td>
+                        <td align="right" style="border-top:hidden;"></td>
+                        <td style="border-top:hidden;" width="150" valign="top" align="left">
+                            {{ $rincian->ket }}
+                        </td>
+                    </tr>
                 @else
                     <tr>
                         <td align="right" style="border-top:hidden;"></td>
