@@ -153,7 +153,7 @@
                         <td align="left"></td>
                         <td align="left"></td>
                         <td valign="top" align="left"> </td>
-                        <td valign="top" align="left">{{ invoice($rincian->no_spm) }}</td>
+                        <td valign="top" align="left"></td>
                         <td></td>
                     </tr>
                 @elseif($rincian->urut == 2)
