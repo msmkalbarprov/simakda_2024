@@ -43,7 +43,7 @@ class LaporanDthController extends Controller
 
         $rincian = DB::select("SELECT 1 urut, c.no_spm,c.nilai,a.no_sp2d,x.nil_trans as nilai_belanja,'' no_bukti,'' kode_belanja,
             '' as kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
-            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan
+            '' as nmrekan,z.banyak, ''ket,c.jns_spp, '' ntpn,''ebilling,''keperluan,'' invoice
             FROM trhstrpot a
             INNER JOIN trdstrpot b
             ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
@@ -70,11 +70,23 @@ class LaporanDthController extends Controller
             a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek_trans as kode_belanja,RTRIM(a.kd_rek6),'' as jenis_pajak,a.nilai as nilai_pot,b.npwp,
             b.nmrekan,0 banyak,
             'No Set: '+a.no_bukti as ket,
-            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan
+            '' jns_spp, a.ntpn,a.ebilling,b.ket as keperluan,'' as invoice
             FROM trdstrpot a JOIN trhstrpot b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
             WHERE b.kd_skpd =  ? AND month(b.tgl_bukti)= ?
             AND RTRIM(a.kd_rek6) IN ('210106010001','210105010001','210105020001','210105030001','210109010001' )
-            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6 ", [$kd_skpd, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan]);
+
+            UNION ALL
+             SELECT 3 as urut, '' as no_spm,0 as nilai,b.no_sp2d as no_sp2d,0 as nilai_belanja,
+            a.no_bukti, kd_sub_kegiatan+'.'+a.kd_rek6 as kode_belanja,'' kd_rek6,'' as jenis_pajak,0 as nilai_pot,'' as npwp,
+            '' as nmrekan,0 banyak,
+            'No Set: '+a.no_bukti as ket,
+            '' jns_spp,'' as ntpn,'' as ebilling,b.ket as keperluan,b.invoice
+            FROM trdtransout a JOIN trhtransout b ON a.no_bukti = b.no_bukti and a.kd_skpd=b.kd_skpd
+            WHERE b.kd_skpd =  ? AND month(b.tgl_bukti)= ?
+            AND b.trx_mbiz='1'
+            ORDER BY no_sp2d,urut,no_spm,kode_belanja,kd_rek6
+
+             ", [$kd_skpd, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan]);
 
         // KIRIM KE VIEW
         $data = [

@@ -81,6 +81,7 @@
                 <td rowspan="2" bgcolor="#CCCCCC" align="center">Nama Rekanan</td>
                 <td rowspan="2" bgcolor="#CCCCCC" align="center">NTPN</td>
                 <td rowspan="2" bgcolor="#CCCCCC" align="center">No Billing</td>
+                <td rowspan="2" bgcolor="#CCCCCC" align="center" style="width: 200px">No Invoice</td>
                 <td rowspan="2" bgcolor="#CCCCCC" align="center">Ket</td>
             </tr>
             <tr>
@@ -152,6 +153,7 @@
                         <td align="left"></td>
                         <td align="left"></td>
                         <td valign="top" align="left"> </td>
+                        <td valign="top" align="left">{{ invoice($rincian->no_spm) }}</td>
                         <td></td>
                     </tr>
                 @else
@@ -176,6 +178,7 @@
                             {{ $rincian->nmrekan }}</td>
                         <td align="right" style="border-top:hidden;">{{ $rincian->ntpn }}</td>
                         <td align="right" style="border-top:hidden;">{{ $rincian->ebilling }}</td>
+                        <td align="right" style="border-top:hidden;">{{ $rincian->invoice }}</td>
                         <td style="border-top:hidden;" width="150" valign="top" align="left">
                             {{ $rincian->ket }}
                         </td>
@@ -197,6 +200,7 @@
                 <td width="150" bgcolor="#CCCCCC" align="center"></td>
                 <td width="150" bgcolor="#CCCCCC" align="center"></td>
                 <td width="150" bgcolor="#CCCCCC" align="right">{{ rupiah($tot_nilai_pot) }}</td>
+                <td width="150" bgcolor="#CCCCCC" align="center"></td>
                 <td width="150" bgcolor="#CCCCCC" align="center"></td>
                 <td width="150" bgcolor="#CCCCCC" align="center"></td>
                 <td width="150" bgcolor="#CCCCCC" align="center"></td>
