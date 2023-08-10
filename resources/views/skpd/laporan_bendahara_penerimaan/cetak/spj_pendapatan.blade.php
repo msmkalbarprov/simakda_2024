@@ -136,7 +136,7 @@
                 $kode = $row->kode;
                 $nama = $row->nama;
                 $leng = strlen($kode);
-
+                
             @endphp
 
 
@@ -319,7 +319,7 @@
                                 {{ rupiah($row->keluar_lalu + $row->keluar_ini - ($row->terima_lalu + $row->terima_ini)) }}
                             </td>
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
-                                {{ rupiah($row->anggaran - ($row->keluar_lalu - $row->terima_lalu + ($row->keluar_ini - $row->terima_ini))) }}
+                                {{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}
                             </td>
                         </tr>
                         @php
@@ -333,7 +333,7 @@
                             $ln_jlh8 = $ln_jlh5 + $ln_jlh2;
                             $ln_jlh9 = $ln_jlh6 + $ln_jlh3;
                             $ln_jlh10 = $ln_jlh9 - $ln_jlh8;
-                            $ln_jlh11 = $ln_jlh1 - $ln_jlh8 - $ln_jlh9;
+                            $ln_jlh11 = $ln_jlh1 - $ln_jlh8;
                         @endphp
                     @break
 
@@ -375,7 +375,7 @@
                                 <b>{{ rupiah($row->keluar_lalu + $row->keluar_ini - ($row->terima_lalu + $row->terima_ini)) }}</b>
                             </td>
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
-                                <b>{{ rupiah($row->anggaran - ($row->keluar_lalu - $row->terima_lalu + ($row->keluar_ini - $row->terima_ini))) }}</b>
+                                <b>{{ rupiah($row->anggaran - ($row->terima_lalu + $row->terima_ini)) }}</b>
                             </td>
                         </tr>
                 @endswitch
