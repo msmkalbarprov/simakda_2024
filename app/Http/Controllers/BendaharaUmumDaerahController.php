@@ -6473,13 +6473,13 @@ class BendaharaUmumDaerahController extends Controller
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
             ->whereRaw("left(kd_rek6,1)='5' and kd_sub_kegiatan NOT IN (?,?,?) and jns_ang=? ", ['1.01.02.1.01.53', '1.01.02.1.02.46', '1.01.02.1.03.52', $req['anggaran']])
-            // ->where(function ($query) use ($req) {
-            //     if ($req['dengan'] == 'true') {
-            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
-            //     } elseif ($req['tanpa'] == 'true') {
-            //         $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
-            //     }
-            // })
+            ->where(function ($query) use ($req) {
+                if ($req['dengan'] == 'true') {
+                    $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
+                } elseif ($req['tanpa'] == 'true') {
+                    $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
+                }
+            })
             ->where(function ($query) use ($req) {
                 if ($req['dengan_skpkd'] == 'true') {
                 } else {
