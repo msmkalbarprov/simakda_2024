@@ -6478,6 +6478,8 @@ class BendaharaUmumDaerahController extends Controller
                     $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
                 } elseif ($req['tanpa'] == 'true') {
                     $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
+                } elseif ($req['dengan_skpkd'] == 'true') {
+                    $query->whereRaw("LEFT(kd_rek6,1) in ('5') and right(kd_rek6,7) not in ('9999999','8888888')");
                 }
             })
             ->where(function ($query) use ($req) {
