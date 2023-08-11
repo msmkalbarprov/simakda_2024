@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
 {{-- <body> --}}
 
     <table  style="border-collapse:collapse;font-family:Arial" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
