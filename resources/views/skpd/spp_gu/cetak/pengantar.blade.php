@@ -120,7 +120,7 @@
         <tr>
             <td>e. &nbsp;Jumlah Sisa Dana SPD</td>
             <td>:</td>
-            <td>Rp. {{ rupiah($spp->spd - $spp->spp) }}</td>
+            <td>Rp. {{ rupiah($totalspd - $spp->spp) }}</td>
         </tr>
         <tr>
             <td style="text-align: center">(terbilang)</td>

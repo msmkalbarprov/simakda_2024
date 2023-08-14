@@ -197,7 +197,7 @@ class SppGuController extends Controller
             $spd = $data['no_spd'];
 
             // if ($cek->jml >= 1000) {
-            DB::insert("INSERT INTO trdspp (no_spp,kd_rek6,nm_rek6,nilai,kd_skpd,nm_skpd,kd_sub_kegiatan,nm_sub_kegiatan,no_spd,no_bukti,kd_bidang,sumber,kd)
+            DB::insert("INSERT INTO trdspp (no_spp,kd_rek6,nm_rek6,nilai,kd_skpd,nm_skpd,kd_sub_kegiatan,nm_sub_kegiatan,no_spd,no_bukti,kd_bidang,sumber,kd,kkpd)
                         SELECT
                         '$no_spp' no_spp,
                         kd_rek6,
@@ -206,7 +206,7 @@ class SppGuController extends Controller
                         kd_bp_skpd,
                         (select nm_skpd from ms_skpd where ms_skpd.kd_skpd=trlpj.kd_bp_skpd)as nm_skpd,
                         kd_sub_kegiatan,
-                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj.kd_rek6 and trdtransout.no_bukti=trlpj.no_bukti and trdtransout.nilai=trlpj.nilai)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows
+                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj.kd_rek6 and trdtransout.no_bukti=trlpj.no_bukti and trdtransout.nilai=trlpj.nilai)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows, kkpd
                          from trlpj where no_lpj=?", [$no_spp, $data['no_lpj']]);
             // } else {
             //     $data_lpj = DB::table('trlpj as a')
@@ -404,6 +404,68 @@ class SppGuController extends Controller
 
         $daerah = DB::table('sclient')->select('tgl_rka', 'provinsi', 'kab_kota', 'daerah', 'thn_ang', 'nogub_susun', 'nogub_p1', 'nogub_p2', 'nogub_p3', 'nogub_p4', 'nogub_p5', 'nogub_perubahan', 'nogub_perubahan2', 'nogub_perubahan3', 'nogub_perubahan4', 'nogub_perubahan5')->where('kd_skpd', $kd_skpd)->first();
 
+        $revisi1 = DB::table('trhspd')
+            ->select(DB::raw("MAX(revisi_ke) as revisi"))
+            ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])
+            ->where('tgl_spd', '<=', $tgl_spd)
+            ->first();
+
+        $revisi2 = DB::table('trhspd')
+            ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+            ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])
+            ->where('tgl_spd', '<=', $tgl_spd)
+            ->first();
+
+        $revisi3 = DB::table('trhspd')
+            ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+            ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])
+            ->where('tgl_spd', '<=', $tgl_spd)
+            ->first();
+
+        $revisi4 = DB::table('trhspd')
+            ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+            ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])
+            ->where('tgl_spd', '<=', $tgl_spd)
+            ->first();
+
+        $data_spp1 = DB::table('trdspd as a')
+            ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
+            ->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tgl_spd' AND bulan_akhir = '3' AND revisi_ke = '$revisi1->revisi' ")
+            ->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))
+            ->groupBy('a.no_spd', 'b.tgl_spd');
+
+        $data_spp2 = DB::table('trdspd as a')
+            ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
+            ->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tgl_spd' AND bulan_akhir = '6' AND revisi_ke = '$revisi2->revisi' ")
+            ->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))
+            ->groupBy('a.no_spd', 'b.tgl_spd')
+            ->unionAll($data_spp1);
+
+        $data_spp3 = DB::table('trdspd as a')
+            ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
+            ->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tgl_spd' AND bulan_akhir = '9' AND revisi_ke = '$revisi3->revisi' ")
+            ->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))
+            ->groupBy('a.no_spd', 'b.tgl_spd')
+            ->unionAll($data_spp2);
+
+        $data_spp4 = DB::table('trdspd as a')
+            ->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')
+            ->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tgl_spd' AND bulan_akhir = '12' AND revisi_ke = '$revisi4->revisi' ")
+            ->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))
+            ->groupBy('a.no_spd', 'b.tgl_spd')
+            ->unionAll($data_spp3);
+
+        $result = DB::table(DB::raw("({$data_spp4->toSql()}) AS sub"))
+            ->select("no_spd", "tgl_spd", "nilai")
+            ->mergeBindings($data_spp4)
+            ->get();
+
+        $totalspd = 0;
+
+        foreach ($result as $nilai) {
+            $totalspd += $nilai->nilai;
+        }
+
         $data = [
             'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'tahun_anggaran' => tahun_anggaran(),
@@ -418,6 +480,7 @@ class SppGuController extends Controller
             'peng' => $peng,
             'daerah' => $daerah,
             'tanpa' => $tanpa,
+            'totalspd' => $totalspd,
             'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
         ];
         $view = view('skpd.spp_gu.cetak.pengantar')->with($data);
