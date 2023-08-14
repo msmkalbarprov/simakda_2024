@@ -239,7 +239,7 @@
                         <label for="nik" class="col-md-2 col-form-label">NIK</label>
                         <div class="col-md-4">
                             <div class="md-form input-group mt-md-0 mb-0">
-                                <input type="text" class="form-control" id="nik">
+                                <input type="text" class="form-control" id="nik" maxlength="16">
                                 @error('nik')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
