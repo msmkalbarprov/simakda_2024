@@ -160,7 +160,7 @@ class TransaksiKKPDController extends Controller
                 UNION ALL
                 SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
                 UNION ALL
-                SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhsp2d c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd WHERE status_bud=? and a.kode=? and c.kd_skpd=?)z", ['1', $kd_skpd, $kd_skpd, '1', 'KKPD', $kd_skpd]))->first();
+                SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhsp2d c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd WHERE status_bud=? and a.kkpd=? and c.kd_skpd=?)z", ['1', $kd_skpd, $kd_skpd, '1', 'KKPD', $kd_skpd]))->first();
 
 
         return response()->json([
