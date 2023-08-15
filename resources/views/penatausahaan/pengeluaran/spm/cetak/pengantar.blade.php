@@ -84,7 +84,8 @@
         <tr>
             <td>
                 Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun {{ $tahun_anggaran }},
+                {{ nogub($status_anggaran->jns_ang, $kd_skpd) }} tentang Penjabaran APBD Tahun Anggaran
+                {{ $tahun_anggaran }},
                 bersama ini kami mengajukan Surat Perintah Membayar @if ($beban == '1')
                     (SPM-UP)
                 @elseif ($beban == '2')
