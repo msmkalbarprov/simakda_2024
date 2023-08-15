@@ -91,9 +91,9 @@
                 Persediaan sebagai berikut: --}}
 
                 Dengan memperhatikan Peraturan Gubernur Kalimantan Barat Nomor 96 Tahun 2022 Tanggal 30 Desember 2022
-                tentang Penjabaran APBD Tahun {{ tahun_anggaran() }}, bersama ini kami mengajukan Surat Permintaan
-                Pembayaran Ganti Uang
-                Persediaan sebagai berikut:
+                tentang Penjabaran APBD Tahun Anggaran {{ tahun_anggaran() }}, bersama ini kami mengajukan Surat
+                Permintaan Pembayaran
+                Ganti Uang Persediaan sebagai berikut:
             </td>
         </tr>
     </table>
