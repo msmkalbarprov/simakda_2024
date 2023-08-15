@@ -107,11 +107,39 @@
                                 </option>
                             </select>
                         </div>
-                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice</label>
+                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice/No. Purchase Order</label>
                         <div class="col-md-4" id="input_invoice">
                             <input class="form-control" type="text" id="invoice" name="invoice" required
                                 value="{{ $data_transaksi->invoice }}">
                         </div>
+                    </div>
+                    {{-- Transaksi MBIZ dan Invoice --}}
+                    <div class="mb-3 row" id="ket_mbiz">
+                        Catatan:
+                        <ul>
+                            <li class="col-md-12">
+                                Pilihan transaksi mbizmarket ini penerapan dari PMK-58/PMK.03/2022 
+                            </li>
+                            <li class="col-md-12">
+                                Pilihan transaksi mbizmarket ini digunakan apabila dalam MBIZMARKET sudah diterapkan pembayaran via cms Bank Kalbar 
+                            </li>
+                            <li class="col-md-12">
+                                Pilih <b>Ya</b> Jika belanja melalui mbizmarket dan pembayarannya menggunakan <b>cms bank kalbar</b> dalam aplikasi MBIZMARKET bukan cms dalam SIMAKDA
+                            </li>
+                            <li>
+                                Pilih <b>Ya</b> maka wajib mengisi invoice dari mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Mbizmarket sebagai wapu sehingga Bendahara pengeluaran tidak melakukan pembayaran pajak karena nilai total transaksi sudah termasuk nilai pajak
+                            </li>
+                            <li class="col-md-12">
+                                Nilai yang diinput adalah nilai total transaksi di invoice mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Untuk informasi lebih lanjut bisa menghubungi bidang perbendaharaan
+                            </li>
+                        </ul>
+                        
                     </div>
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">

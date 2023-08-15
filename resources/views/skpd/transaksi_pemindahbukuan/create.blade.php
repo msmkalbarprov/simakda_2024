@@ -99,7 +99,7 @@
                                 <option value='0'>TIDAK</option>
                             </select>
                         </div>
-                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice</label>
+                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice/No. Purchase Order</label>
                         <div class="col-md-4" id="input_invoice">
                             <input class="form-control" type="text" id="invoice" name="invoice" required>
                         </div>
