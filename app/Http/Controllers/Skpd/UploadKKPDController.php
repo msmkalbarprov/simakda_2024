@@ -312,6 +312,7 @@ class UploadKKPDController extends Controller
         ob_start();
         $no_upload = $request->no_upload;
         $kd_skpd = Auth::user()->kd_skpd;
+        $tahun = tahun_anggaran();
 
         $obskpd = DB::table('ms_skpd')
             ->select('obskpd')
@@ -319,44 +320,40 @@ class UploadKKPDController extends Controller
             ->first();
 
         $query1 = DB::table('trhupload_kkpd as a')
-            ->leftJoin('trdupload_kkpd as b', function ($join) {
+            ->join('trdupload_kkpd as b', function ($join) {
                 $join->on('a.no_upload', '=', 'b.no_upload');
                 $join->on('a.kd_skpd', '=', 'b.kd_bp');
             })
-            ->leftJoin('trdtransout_transfercms as c', function ($join) {
-                $join->on('b.no_voucher', '=', 'c.no_voucher');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-                $join->on('b.tgl_voucher', '=', 'c.tgl_voucher');
-            })
-            ->leftJoin('ms_rekening_bank_online as d', function ($join) {
-                $join->on('b.kd_bp', '=', 'd.kd_skpd');
-                $join->on(DB::raw("RTRIM(c.rekening_tujuan)"), '=', DB::raw("RTRIM(d.rekening)"));
-            })
-            ->leftJoin('trdtransout_kkpd as e', function ($join) {
+            ->join('trdtransout_kkpd as e', function ($join) {
                 $join->on('b.kd_skpd', '=', 'e.kd_skpd');
                 $join->on('b.no_voucher', '=', 'e.no_voucher');
             })
-            ->leftJoin('ms_bank_online as f', function ($join) {
-                $join->on('d.kd_bank', '=', 'f.kd_bank');
-                $join->on('d.bic', '=', 'f.bic');
+            ->join('trhtransout_kkpd as f', function ($join) {
+                $join->on('f.kd_skpd', '=', 'e.kd_skpd');
+                $join->on('f.no_voucher', '=', 'e.no_voucher');
             })
-            ->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload, 'f.bic' => 'PDKBIDJ1'])
-            ->select(
-                'a.tgl_upload',
-                'a.kd_skpd',
-                DB::raw("(SELECT obskpd FROM ms_skpd WHERE kd_skpd=b.kd_skpd) as nm_skpd"),
-                'b.rekening_awal',
-                'c.nm_rekening_tujuan',
-                'c.rekening_tujuan',
-                'c.nilai',
-                DB::raw("(REPLACE(b.ket_tujuan, '2023.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan"),
-                'b.no_upload_tgl'
-            );
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload])
+            ->selectRaw(
+                "a.no_upload,
+                a.tgl_upload,
+                a.kd_skpd,
+                (SELECT obskpd FROM ms_skpd WHERE kd_skpd=b.kd_skpd) as nm_skpd,
+                b.rekening_awal,
+                '' as nm_rekening_tujuan,
+                '' as rekening_tujuan,
+                SUM(e.nilai) as nilai,
+                SUM(f.potongan) as potongan,
+                a.no_upload+'/' + (select CAST(DATEPART(MONTH, CAST(a.tgl_upload AS DATETIME)) AS VARCHAR(4))) + '/$tahun/KKPD' as ket_tujuan,
+                b.no_upload_tgl"
+            )
+            ->groupBy('a.no_upload', 'a.tgl_upload', 'a.kd_skpd', 'b.kd_skpd', 'b.rekening_awal', 'b.ket_tujuan', 'e.kd_sub_kegiatan', 'b.no_upload_tgl');
+
+        // (REPLACE(b.ket_tujuan, '2023.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan,
 
         $query = DB::table(DB::raw("({$query1->toSql()}) AS sub"))
-            ->select('*')
+            ->selectRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,SUM(nilai-potongan) as nilai,ket_tujuan,no_upload_tgl")
             ->mergeBindings($query1)
-            ->groupBy('tgl_upload', 'kd_skpd', 'nm_skpd', 'rekening_awal', 'nm_rekening_tujuan', 'rekening_tujuan', 'nilai', 'ket_tujuan', 'no_upload_tgl')
+            ->groupByRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,ket_tujuan,no_upload_tgl")
             ->get();
 
         foreach ($query as $data) {

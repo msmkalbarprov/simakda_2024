@@ -39,6 +39,10 @@
                     name: 'nilai',
                 },
                 {
+                    data: 'kkpd',
+                    name: 'kkpd',
+                },
+                {
                     data: 'aksi',
                     name: 'aksi'
                 }
@@ -76,6 +80,7 @@
                             'nilai': new Intl.NumberFormat('id-ID', {
                                 minimumFractionDigits: 2
                             }).format(data.nilai),
+                            'kkpd': data.kkpd,
                             'aksi': `<a href="javascript:void(0);" onclick="hapus('${data.no_bukti}','${data.kd_rek6}','${data.nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
                         }).draw();
                         total += parseFloat(data.nilai);
@@ -105,6 +110,7 @@
                 alert("No LPJ harus diisi dengan benar!");
                 return;
             }
+
             let no_lpj_simpan = document.getElementById('no_lpj_simpan').value;
             let tgl_lpj = document.getElementById('tgl_lpj').value;
             let tgl_awal = document.getElementById('tgl_awal').value;
@@ -122,6 +128,7 @@
                     kdrek6: value.kdrek6,
                     nmrek6: value.nmrek6,
                     nilai: rupiah(value.nilai),
+                    kkpd: value.kkpd,
                 };
                 return data;
             });

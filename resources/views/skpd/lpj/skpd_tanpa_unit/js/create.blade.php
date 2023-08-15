@@ -39,6 +39,10 @@
                     name: 'nilai',
                 },
                 {
+                    data: 'kkpd',
+                    name: 'kkpd',
+                },
+                {
                     data: 'aksi',
                     name: 'aksi'
                 }
@@ -76,6 +80,7 @@
                             'nilai': new Intl.NumberFormat('id-ID', {
                                 minimumFractionDigits: 2
                             }).format(data.nilai),
+                            'kkpd': data.kkpd,
                             'aksi': `<a href="javascript:void(0);" onclick="hapus('${data.no_bukti}','${data.kd_rek6}','${data.nilai}')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>`,
                         }).draw();
                         total += parseFloat(data.nilai);
@@ -126,23 +131,26 @@
                 alert('Total SPD tidak mencukupi...!!!');
                 return;
             }
+            let status = '';
             // IKUT PERATURAN PERMENDAGRI 77
             $.ajax({
                 url: "{{ route('lpj.skpd_tanpa_unit.cek_kendali') }}",
                 type: "POST",
                 dataType: 'json',
+                async: false,
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value
                 },
                 success: function(response) {
-                    if (response.status != 1 || response.status != '1') {
-                        if (total < nilai_min_gu) {
-                            alert('LPJ Belum Mencapai 50%');
-                            return;
-                        }
-                    }
+                    status = response.status;
                 }
-            })
+            });
+
+            if ((status != 1 || status != '1') && total <
+                nilai_min_gu) {
+                alert('LPJ Belum Mencapai 50%');
+                return;
+            }
 
             let no_lpj = document.getElementById('no_lpj').value;
             if (no_lpj < 0) {
@@ -168,6 +176,7 @@
                     kdrek6: value.kdrek6,
                     nmrek6: value.nmrek6,
                     nilai: rupiah(value.nilai),
+                    kkpd: value.kkpd,
                 };
                 return data;
             });

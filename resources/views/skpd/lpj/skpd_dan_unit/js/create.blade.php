@@ -132,23 +132,32 @@
                 $('#simpan').prop('disabled', true);
                 return;
             }
+            let status = '';
             // IKUT PERATURAN PERMENDAGRI 77
             $.ajax({
                 url: "{{ route('lpj.skpd_tanpa_unit.cek_kendali') }}",
                 type: "POST",
                 dataType: 'json',
+                async: false,
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value
                 },
                 success: function(response) {
-                    if (response.status != 1 || response.status != '1') {
-                        if (total < nilai_min_gu) {
-                            alert('LPJ Belum Mencapai 50%');
-                            return;
-                        }
-                    }
+                    // if (response.status != 1 || response.status != '1') {
+                    //     if (total < nilai_min_gu) {
+                    //         alert('LPJ Belum Mencapai 50%');
+                    //         return;
+                    //     }
+                    // }
+                    status = response.status;
                 }
-            })
+            });
+
+            if ((status != 1 || status != '1') && total <
+                nilai_min_gu) {
+                alert('LPJ Belum Mencapai 50%');
+                return;
+            }
 
             let kd_skpd = document.getElementById('kd_skpd').value;
 

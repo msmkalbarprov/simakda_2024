@@ -162,6 +162,7 @@
                                 <th>Rekening</th>
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
+                                <th>KKPD</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -174,6 +175,7 @@
                                     <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->nm_rek6 }}</td>
                                     <td>{{ rupiah($detail->nilai) }}</td>
+                                    <td>{{ $detail->kkpd }}</td>
                                     <td>
                                         <a href="javascript:void(0);"
                                             onclick="hapus({{ $detail->no_bukti }},{{ $detail->kd_rek6 }},{{ $detail->nilai }})"

@@ -147,6 +147,7 @@
                                 <th>Rekening</th>
                                 <th>Nama Rekening</th>
                                 <th>Nilai</th>
+                                <th>KKPD</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

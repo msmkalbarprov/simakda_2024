@@ -92,7 +92,7 @@ class LPJController extends Controller
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
+            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1,kkpd")
             ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar not in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd]);
 
         $data2 = DB::table('trdtransout as a')
@@ -100,7 +100,7 @@ class LPJController extends Controller
                 $join->on('a.no_bukti', '=', 'b.no_bukti');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1")
+            ->selectRaw("b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1,kkpd")
             ->whereRaw("(a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?", [$tgl_awal, $tgl_akhir, $kd_skpd])
             ->unionAll($data1);
 
@@ -226,6 +226,7 @@ class LPJController extends Controller
                         'nilai' => $rincian_data[$data]['nilai'],
                         'kd_bp_skpd' => $kd_skpd,
                         'no_lpj_unit' => $no_lpj,
+                        'kkpd' => $rincian_data[$data]['kkpd'],
                     ];
                     DB::table('trlpj')->insert($data);
                 }
@@ -334,6 +335,7 @@ class LPJController extends Controller
                             'nilai' => $value['nilai'],
                             'kd_bp_skpd' => $data['kd_skpd'],
                             'no_lpj_unit' => $no_lpj,
+                            'kkpd' => $data['kkpd'],
                         ];
                     }, $data['detail_lpj']));
             }
@@ -1353,12 +1355,12 @@ class LPJController extends Controller
         //     ->orderByRaw("kd_skpd,tgl_bukti,kd_sub_kegiatan, kd_rek6, cast(no_bukti as int)")
         //     ->get();
 
-        $data = DB::select("SELECT * FROM (SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1 FROM trdtransout a inner join trhtransout b on
+        $data = DB::select("SELECT * FROM (SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1,kkpd FROM trdtransout a inner join trhtransout b on
                    a.no_bukti=b.no_bukti AND a.kd_skpd = b.kd_skpd WHERE (a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar not in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?
 
                    UNION ALL
 
-                   SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1 FROM trdtransout a inner join trhtransout b on
+                   SELECT b.kd_skpd,b.tgl_bukti,a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_rek6,a.nm_rek6,a.no_bukti,a.nilai,a.kd_skpd as kd_skpd1,kkpd FROM trdtransout a inner join trhtransout b on
                    a.no_bukti=b.no_bukti AND a.kd_skpd = b.kd_skpd WHERE (a.no_bukti+a.kd_sub_kegiatan+a.kd_rek6+a.kd_skpd) NOT IN(SELECT (no_bukti+kd_sub_kegiatan+kd_rek6+kd_skpd) FROM trlpj) AND b.panjar in ('3','5') AND b.tgl_bukti >= ? and b.tgl_bukti <= ? and b.jns_spp='1' and b.kd_skpd=?
                    )z
                    ORDER BY  kd_skpd,tgl_bukti,kd_sub_kegiatan, kd_rek6, cast(no_bukti as int)", [$tgl_awal, $tgl_akhir, $kd_skpd, $tgl_awal, $tgl_akhir, $kd_skpd]);
@@ -1451,6 +1453,7 @@ class LPJController extends Controller
                         'nilai' => $rincian_data[$data]['nilai'],
                         'kd_bp_skpd' => '',
                         'no_lpj_unit' => $no_lpj,
+                        'kkpd' => $rincian_data[$data]['kkpd'],
                     ];
                     DB::table('trlpj')->insert($data);
                 }
@@ -1578,6 +1581,7 @@ class LPJController extends Controller
                         'nilai' => $rincian_data[$data]['nilai'],
                         'kd_bp_skpd' => '',
                         'no_lpj_unit' => $no_lpj,
+                        'kkpd' => $rincian_data[$data]['kkpd'],
                     ];
                     DB::table('trlpj')->insert($data);
                 }
