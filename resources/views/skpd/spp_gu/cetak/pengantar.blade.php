@@ -84,10 +84,15 @@
     <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
             <td style="text-align: justify">
-                Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                tentang APBD atas Peraturan Gubernur Nomor 96 Tahun 2022 tanggal 30 Desember 2022 tentang Penjabaran
+                {{-- Dengan memperhatikan Peraturan Gubernur Kalimantan Barat Nomor 96 Tahun 2022 tanggal 30 Desember 2022
+                tentang Penjabaran
                 APBD Tahun Anggaran {{ tahun_anggaran() }}, bersama ini kami mengajukan Surat Permintaan Pembayaran
                 Ganti Uang
+                Persediaan sebagai berikut: --}}
+
+                Dengan memperhatikan Peraturan Gubernur Kalimantan Barat Nomor 96 Tahun 2022 Tanggal 30 Desember 2022
+                tentang Penjabaran APBD Tahun {{ tahun_anggaran() }}, bersama ini kami mengajukan Surat Permintaan
+                Pembayaran Ganti Uang
                 Persediaan sebagai berikut:
             </td>
         </tr>
