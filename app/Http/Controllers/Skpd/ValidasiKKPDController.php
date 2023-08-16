@@ -144,8 +144,8 @@ class ValidasiKKPDController extends Controller
                         where a.kd_skpd=? and no_validasi=?) AS Table_B ON trhtransout_kkpd.no_voucher = Table_B.no_voucher AND trhtransout_kkpd.kd_skpd = Table_B.kd_skpd
                         where left(trhtransout_kkpd.kd_skpd,17)=left(?,17)", [$kd_skpd, $no_validasi, $kd_skpd]);
 
-            DB::insert("INSERT INTO trhtransout (no_kas, tgl_kas, no_bukti, tgl_bukti, no_sp2d, ket, username, tgl_update, kd_skpd, nm_skpd, total, no_tagih, sts_tagih, tgl_tagih, jns_spp, pay, no_kas_pot, panjar, no_panjar, kkpd)
-                                    SELECT b.no_bukti as no_kas, b.tgl_validasi as tgl_kas, a.no_bukti, a.tgl_bukti, a.no_sp2d, a.ket, b.kd_skpd as username, a.tgl_update, b.kd_skpd, a.nm_skpd, a.total, a.no_tagih, a.sts_tagih, a.tgl_tagih, a.jns_spp, a.pay, a.no_kas_pot, a.panjar, a.no_panjar,'1' kkpd
+            DB::insert("INSERT INTO trhtransout (no_kas, tgl_kas, no_bukti, tgl_bukti, no_sp2d, ket, username, tgl_update, kd_skpd, nm_skpd, total, no_tagih, sts_tagih, tgl_tagih, jns_spp, pay, no_kas_pot, panjar, no_panjar, kkpd,trx_mbiz,invoice)
+                                    SELECT b.no_bukti as no_kas, b.tgl_validasi as tgl_kas, a.no_bukti, a.tgl_bukti, a.no_sp2d, a.ket, b.kd_skpd as username, a.tgl_update, b.kd_skpd, a.nm_skpd, a.total, a.no_tagih, a.sts_tagih, a.tgl_tagih, a.jns_spp, a.pay, a.no_kas_pot, a.panjar, a.no_panjar,'1' kkpd,a.trx_mbiz,a.invoice
                                     FROM trhtransout_kkpd a left join trvalidasi_kkpd b on b.no_voucher=a.no_voucher and a.kd_skpd=b.kd_skpd
                                     WHERE b.no_validasi=? and b.kd_skpd=?", [$no_validasi, $kd_skpd]);
 

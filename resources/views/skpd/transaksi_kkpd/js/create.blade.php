@@ -5,6 +5,13 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        $('#input_mbiz').hide();
+
+        $('#label_invoice').hide();
+        $('#input_invoice').hide();
+        $('#ket_mbiz').hide();
+
         $('#volume').prop('disabled', true);
         $('#satuan').prop('disabled', true);
 
@@ -35,6 +42,21 @@
         $('.select2-modal').select2({
             dropdownParent: $('#modal_kegiatan .modal-content'),
             theme: 'bootstrap-5'
+        });
+
+        $('#trx_mbiz').on('select2:select', function() {
+            let trx_mbiz = this.value;
+
+            if (trx_mbiz == 1) {
+                $('#label_invoice').show();
+                $('#input_invoice').show();
+                $('#ket_mbiz').show();
+
+            } else {
+                $('#label_invoice').hide();
+                $('#input_invoice').hide();
+                $('#ket_mbiz').hide();
+            }
         });
 
         $('#beban').on('select2:select', function() {
@@ -70,6 +92,12 @@
             $('#potongan_ls').val(null);
             $('#total_sisa').val(null);
             cari_kegiatan(beban, kd_skpd);
+
+            if (beban == 1) {
+                $('#input_mbiz').show();
+            } else {
+                $('#input_mbiz').hide();
+            }
         });
 
         let tabel_rekening = $('#input_rekening').DataTable({
@@ -389,6 +417,7 @@
             let volume = document.getElementById('volume').value;
             let satuan = document.getElementById('satuan').value;
 
+
             let sisa_anggaran = rupiah(document.getElementById('sisa_anggaran').value);
             let nilai = angka(document.getElementById('nilai').value);
             let potongan = angka(document.getElementById('potongan').value);
@@ -660,6 +689,8 @@
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let rekening = document.getElementById('rekening').value;
             let ketcms = document.getElementById('ketcms').value;
+            let trx_mbiz = document.getElementById('trx_mbiz').value;
+            let invoice = document.getElementById('invoice').value;
 
             let total_belanja = rupiah(document.getElementById('total_belanja').value);
             let total_potongan = rupiah(document.getElementById('total_potongan').value);
@@ -759,6 +790,16 @@
                 return;
             }
 
+            if (beban == '1' && !trx_mbiz) {
+                alert('Silahkan pilih transaksi MBIZ!');
+                return;
+            }
+
+            if (trx_mbiz == '1' && !invoice) {
+                alert('Silahkan isi terlebih dahulu invoice!');
+                return;
+            }
+
             let response = {
                 no_bukti,
                 tgl_voucher,
@@ -772,7 +813,9 @@
                 ketcms,
                 sp2d,
                 rincian_rekening,
-                total_potongan
+                total_potongan,
+                trx_mbiz,
+                invoice,
             };
 
             $('#simpan_cms').prop('disabled', true);

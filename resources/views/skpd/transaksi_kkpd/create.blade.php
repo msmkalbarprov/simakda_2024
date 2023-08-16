@@ -82,6 +82,53 @@
                             <textarea name="keterangan" id="keterangan" rows="4" class="form-control"></textarea>
                         </div>
                     </div>
+                    {{-- Transaksi MBIZ dan Invoice --}}
+                    <div class="mb-3 row" id="input_mbiz">
+                        <label for="trx_mbiz" class="col-md-2 col-form-label">Transaksi MBIZ(CMS)</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple" style="width: 100%" id="trx_mbiz"
+                                name="trx_mbiz">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">YA</option>
+                                <option value='0'>TIDAK</option>
+                            </select>
+                        </div>
+                        <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice/No. Purchase
+                            Order</label>
+                        <div class="col-md-4" id="input_invoice">
+                            <input class="form-control" type="text" id="invoice" name="invoice" required>
+                        </div>
+                    </div>
+                    {{-- Transaksi MBIZ dan Invoice --}}
+                    <div class="mb-3 row" id="ket_mbiz">
+                        Catatan:
+                        <ul>
+                            <li class="col-md-12">
+                                Pilihan transaksi mbizmarket ini penerapan dari PMK-58/PMK.03/2022
+                            </li>
+                            <li class="col-md-12">
+                                Pilihan transaksi mbizmarket ini digunakan apabila dalam MBIZMARKET sudah diterapkan
+                                pembayaran via cms Bank Kalbar
+                            </li>
+                            <li class="col-md-12">
+                                Pilih <b>Ya</b> Jika belanja melalui mbizmarket dan pembayarannya menggunakan <b>cms bank
+                                    kalbar</b> dalam aplikasi MBIZMARKET bukan cms dalam SIMAKDA
+                            </li>
+                            <li>
+                                Pilih <b>Ya</b> maka wajib mengisi invoice dari mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Mbizmarket sebagai wapu sehingga Bendahara pengeluaran tidak melakukan pembayaran pajak
+                                karena nilai total transaksi sudah termasuk nilai pajak
+                            </li>
+                            <li class="col-md-12">
+                                Nilai yang diinput adalah nilai total transaksi di invoice mbizmarket
+                            </li>
+                            <li class="col-md-12">
+                                Untuk informasi lebih lanjut bisa menghubungi bidang perbendaharaan
+                            </li>
+                        </ul>
+                    </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_cms" class="btn btn-primary btn-md">Simpan</button>

@@ -421,6 +421,18 @@ class TransaksiKKPDController extends Controller
                 ]);
             }
 
+            if ($data['beban'] == '1' && $data['trx_mbiz'] == '1') {
+                $invoice = $data['invoice'];
+            } else {
+                $invoice = '';
+            }
+
+            if ($data['beban'] == '1') {
+                $trx_mbiz = $data['trx_mbiz'];
+            } else {
+                $trx_mbiz = '';
+            }
+
             DB::table('trhtransout_kkpd')
                 ->where(['kd_skpd' => $data['kd_skpd'], 'no_voucher' => $data['no_bukti']])
                 ->delete();
@@ -454,6 +466,8 @@ class TransaksiKKPDController extends Controller
                     'status_verifikasi' => '0',
                     'ket_tujuan' => $data['ketcms'],
                     'potongan' => $data['total_potongan'],
+                    'trx_mbiz' => $trx_mbiz,
+                    'invoice' => $invoice,
                 ]);
 
             DB::table('trdtransout_kkpd')
