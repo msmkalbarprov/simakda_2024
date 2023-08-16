@@ -143,6 +143,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="lralo">
+                <div class="card-body">
+                    {{ 'Selisih LRA dan LO' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
     </div>
     @if (Auth::user()->role == '1006' || Auth::user()->role == '1022')
         <div class="row">
@@ -228,12 +240,20 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_mandatory .modal-content'),
             });
+            $(".select_lralo").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_lralo .modal-content'),
+            });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
             document.getElementById('baris_skpd_rekonba').hidden = true; // Hide
             document.getElementById('baris_periode1').hidden = true; // Hide
             document.getElementById('baris_periode2').hidden = true; // Hide
             document.getElementById('baris_bulan').hidden = true; // Hide
+            document.getElementById('baris_skpd_lralo').hidden = true; // Hide
+            document.getElementById('baris_periode1_lralo').hidden = true; // Hide
+            document.getElementById('baris_periode2_lralo').hidden = true; // Hide
+            document.getElementById('baris_bulan_lralo').hidden = true; // Hide
 
 
 
@@ -308,6 +328,12 @@
                 $("#labelcetak_semester").html("Cetak Mandatory");
                 // document.getElementById('row-hidden').hidden = true; // Hide
             });
+            $('#lralo').on('click', function() {
+                // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+                $('#modal_cetak_lralo').modal('show');
+                $("#labelcetak_semester").html("Cetak LRALO");
+                // document.getElementById('row-hidden').hidden = true; // Hide
+            });
         }
         // onclick card end
 
@@ -338,8 +364,22 @@
                 document.getElementById('baris_skpd_rekonba').hidden = false; // show
             }
         });
+        //lralo
+        $('input:radio[name="pilihan_lralo"]').change(function() {
 
-        // cari periode
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            if ($(this).val() == 'keseluruhan') {
+                document.getElementById('baris_skpd_lralo').hidden = true; // Hide
+            } else if ($(this).val() == 'skpd') {
+                cari_skpdbb('skpd')
+                document.getElementById('baris_skpd_lralo').hidden = false; // show
+            } else {
+                cari_skpdbb('unit')
+                document.getElementById('baris_skpd_lralo').hidden = false; // show
+            }
+        });
+
+        // cari periode neraca saldo
         $('input:radio[name="pilihanperiode"]').change(function() {
             if ($(this).val() == 'tahun') {
                 document.getElementById('baris_periode1').hidden = true; // Hide
@@ -353,6 +393,22 @@
                 document.getElementById('baris_periode1').hidden = true; // show
                 document.getElementById('baris_periode2').hidden = true; // Hide
                 document.getElementById('baris_bulan').hidden = false; // Hide
+            }
+        });
+        // cari periode lralo
+        $('input:radio[name="pilihanperiode_lralo"]').change(function() {
+            if ($(this).val() == 'tahun') {
+                document.getElementById('baris_periode1_lralo').hidden = true; // Hide
+                document.getElementById('baris_periode2_lralo').hidden = true; // Hide
+                document.getElementById('baris_bulan_lralo').hidden = true; // Hide
+            } else if ($(this).val() == 'periode') {
+                document.getElementById('baris_periode1_lralo').hidden = false; // show
+                document.getElementById('baris_periode2_lralo').hidden = false; // Hide
+                document.getElementById('baris_bulan_lralo').hidden = true; // Hide
+            } else {
+                document.getElementById('baris_periode1_lralo').hidden = true; // show
+                document.getElementById('baris_periode2_lralo').hidden = true; // Hide
+                document.getElementById('baris_bulan_lralo').hidden = false; // Hide
             }
         });
 
@@ -480,6 +536,14 @@
                         `<option value="" disabled selected>Pilih SKPD</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_skpd_ju').append(
+                            `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
+                        );
+                    })
+                    $('#kd_skpd_lralo').empty();
+                    $('#kd_skpd_lralo').append(
+                        `<option value="" disabled selected>Pilih SKPD</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_skpd_lralo').append(
                             `<option value="${data.kd_skpd}" data-nama="${data.nm_skpd}">${data.kd_skpd} | ${data.nm_skpd}</option>`
                         );
                     })
@@ -740,6 +804,26 @@
                 searchParams.append("format", format);
                 searchParams.append("anggaran", anggaran);
                 window.open(url.toString(), "_blank");
+            } else if (labelcetak_semester == 'Cetak LRALO') {
+                let tanggal1 = document.getElementById('tanggal1_lralo').value;
+                let tanggal2 = document.getElementById('tanggal2_lralo').value;
+                let kd_skpd = document.getElementById('kd_skpd_lralo').value;
+                let bulan = document.getElementById('bulan_lralo').value;
+                let skpdunit                 = $('input:radio[name="pilihan_lralo"]:checked').val();
+                let periodebulan             = $('input:radio[name="pilihanperiode_lralo"]:checked').val();
+
+
+                let url = new URL("{{ route('laporan_akuntansi.clralo') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("bulan", bulan);
+                searchParams.append("skpdunit", skpdunit);
+                searchParams.append("periodebulan", periodebulan);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+
             } else {
                 alert('-' + jns_cetak + '- Tidak ada cetakan');
             }

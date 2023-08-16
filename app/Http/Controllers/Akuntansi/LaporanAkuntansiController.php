@@ -3439,4 +3439,119 @@ class LaporanAkuntansiController extends Controller
             return view('akuntansi.cetakan.mandatory_rinci')->with($data);
         }
     }
+
+    public function cetak_lralo(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $tgl1           = $request->tanggal1;
+        $tgl2           = $request->tanggal2;
+        $bulan          = $request->bulan;
+        $skpdunit       = $request->skpdunit;
+        $periodebulan   = $request->periodebulan;
+        $cetak          = $request->cetak;
+        $thn_ang        = tahun_anggaran();
+        $thn_ang1       = $thn_ang - 1;
+        $thn_ang2       = $thn_ang1 - 1;
+        $kd_skpd        = $request->kd_skpd;
+        $bulan_asli     = $bulan;
+        // $kd_skpd        = Auth::user()->kd_skpd;
+        if ($periodebulan == "periode") {
+            $periode = "(tgl_voucher between '$tgl1' and '$tgl2') and ";
+            $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
+            $nm_bln = tgl_format_oyoy($tgl1);
+        } else {
+            $modtahun = $thn_ang % 4;
+
+            if ($modtahun = 0) {
+                $nilaibulan = ".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            } else {
+                $nilaibulan = ".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+            $arraybulan = explode(".", $nilaibulan);
+            $nm_bln = $arraybulan[$bulan];
+            if (strlen($bulan) == 1) {
+                $bulan = "0" . $bulan;
+            } else {
+                $bulan = $bulan;
+            }
+            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
+            $periode1 = "year (tgl_voucher)<='$thn_ang1' and ";
+        }
+        // dd(strlen($bulan));
+
+        if ($skpdunit == "keseluruhan") {
+            $skpd        = "Auth::user()->kd_skpd";
+            $skpd_clause = "";
+        } else {
+            $skpd        = $request->kd_skpd;
+            $skpd_clause = "and left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+        }
+
+        // dd($kd_skpd);
+
+        $query = DB::select("SELECT kd_rek6,nm_rek6,sum(lra)lra,sum(lo)lo
+                from(select kd_rek6, nm_rek6, 
+                (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                    where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra , 
+                (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                    where $periode kd_rek6=z.map_lo $skpd_clause )lo 
+                from ms_rek6 z
+                where left(kd_rek6,1)='5')a 
+                group by kd_rek6,nm_rek6
+                order by kd_rek6");
+
+
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'         => $query,
+            'daerah'        => $sc,
+            'nogub'         => $nogub,
+            'tgl1'          => $tgl1,
+            'tgl2'          => $tgl2,
+            'thn_ang'       => $thn_ang,
+            'thn_ang1'      => $thn_ang1,
+            'thn_ang2'      => $thn_ang2,
+            'skpd'          => $skpd,
+            'skpdunit'      => $skpdunit,
+            'periodebulan'  => $periodebulan,
+            'nm_bln'        => $nm_bln,
+            'bulan'         => $bulan,
+            'cetak'         => $cetak,
+            'bulan_asli'    => $bulan_asli
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+        $view =  view('akuntansi.cetakan.selisih_lralo')->with($data);
+        // }
+
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('SELISIH_LRALO.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="SELISIH_LRALO.xls"');
+            return $view;
+        }
+    }
 }
