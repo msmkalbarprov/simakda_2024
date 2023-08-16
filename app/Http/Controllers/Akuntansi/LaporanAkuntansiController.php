@@ -839,7 +839,7 @@ class LaporanAkuntansiController extends Controller
         $bulan_asli = $bulan;
         // $kd_skpd        = Auth::user()->kd_skpd;
         if ($periodebulan == "periode") {
-            $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
+            $periode = "(tgl_voucher between '$tgl1' and '$tgl2') and ";
             $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
             $nm_bln = tgl_format_oyoy($tgl1);
         } else {
@@ -924,6 +924,8 @@ class LaporanAkuntansiController extends Controller
             'nogub'     => $nogub,
             'dcetak'    => $tgl1,
             'dcetak2'   => $tgl2,
+            'tgl1'    => $tgl1,
+            'tgl2'   => $tgl2,
             'thn_ang'   => $thn_ang,
             'thn_ang1'  => $thn_ang1,
             'thn_ang2'  => $thn_ang2,
@@ -975,7 +977,7 @@ class LaporanAkuntansiController extends Controller
         $thn_ang2 = $thn_ang1 - 1;
 
         if ($periodebulan == "periode") {
-            $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
+            $periode = "(tgl_voucher between '$tgl1' and '$tgl2') and ";
             $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
             $nm_bln = tgl_format_oyoy($tgl1);
         } else {
@@ -1046,6 +1048,8 @@ class LaporanAkuntansiController extends Controller
             'periodebulan'    => $periodebulan,
             'dcetak'    => $tgl1,
             'dcetak2'   => $tgl2,
+            'tgl1'    => $tgl1,
+            'tgl2'   => $tgl2,
             'thn_ang'   => $thn_ang,
             'thn_ang1'  => $thn_ang1,
             'nm_bln'    => $nm_bln,
