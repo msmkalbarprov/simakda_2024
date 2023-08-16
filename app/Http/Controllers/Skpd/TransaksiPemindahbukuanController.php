@@ -44,10 +44,19 @@ class TransaksiPemindahbukuanController extends Controller
         $data = [
             'rekening_awal' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->get(),
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'daftar_kegiatan' => DB::table('trdrka as a')->join('trskpd as b', function ($join) {
-                $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))->where(['a.kd_skpd' => $kd_skpd, 'b.status_sub_kegiatan' => '1', 'b.jns_ang' => $jns_ang])->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')->orderBy('a.kd_sub_kegiatan')->get(),
+            'daftar_kegiatan' => DB::table('trdrka as a')
+                ->join('trskpd as b', function ($join) {
+                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('ms_sub_kegiatan as c', function ($join) {
+                    $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
+                })
+                ->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', DB::raw("SUM(a.nilai) as total"))
+                ->where(['a.kd_skpd' => $kd_skpd, 'b.status_sub_kegiatan' => '1', 'b.jns_ang' => $jns_ang, 'c.jns_sub_kegiatan' => '5'])
+                ->groupBy('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan')
+                ->orderBy('a.kd_sub_kegiatan')
+                ->get(),
             'data_rek_tujuan' => DB::table('ms_rekening_bank_online as a')->where(['kd_skpd' => $kd_skpd])->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nmbank"))->orderBy('a.nm_rekening')->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->get(),
             'persen' => DB::table('config_app')->select('persen_kkpd', 'persen_tunai')->first(),
