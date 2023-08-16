@@ -93,6 +93,10 @@
             <TD width="15%" align="right">{{ $a }}{{ rupiah($saldox) }}{{ $b }}</TD>
         </TR>
         @php
+        $count=count($query);
+        @endphp
+        @if ($count > 0)
+        @php
             $idx = 1;
             $jdebet = 0;
             $jkredit = 0;
@@ -152,7 +156,7 @@
             @php
                 $jdebet = $jdebet + $debet;
                 $jkredit = $jkredit + $kredit;
-                $jsaldo = $saldo;
+                $jsaldo = $jsaldo + $saldo;
             @endphp
         @endforeach
 
@@ -194,6 +198,9 @@
             <TD width="15%" align="right"> {{ $i }} {{ rupiah($jsaldo1) }} {{ $j }} </TD>
         </TR>
     </TABLE>
+    @else
+    </TABLE>
+    @endif
 
 </body>
 
