@@ -228,7 +228,7 @@
                 $('#label_invoice').show();
                 $('#input_invoice').show();
                 $('#ket_mbiz').show();
-                
+
             } else {
                 $('#label_invoice').hide();
                 $('#input_invoice').hide();
@@ -763,6 +763,7 @@
                 $('#input_mbiz').show();
             } else {
                 $('#input_mbiz').hide();
+                $('#ket_mbiz').hide();
             }
         });
 
