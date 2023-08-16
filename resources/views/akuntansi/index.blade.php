@@ -546,6 +546,8 @@
                 let kd_skpd_ns = document.getElementById('kd_skpd_ns').value;
                 let bulan_ns = document.getElementById('bulan_ns').value;
                 let rek1 = document.getElementById('rek1').value;
+                let skpdunit                 = $('input:radio[name="inlineRadioOptions"]:checked').val();
+                let periodebulan             = $('input:radio[name="pilihanperiode"]:checked').val();
 
                 if (!rek1) {
                     alert('Rekening tidak boleh kosong!');
@@ -556,7 +558,9 @@
                 let searchParams = url.searchParams;
                 searchParams.append("tanggal1_ns", tanggal1_ns);
                 searchParams.append("tanggal2_ns", tanggal2_ns);
+                searchParams.append("skpdunit", skpdunit);
                 searchParams.append("bulan_ns", bulan_ns);
+                searchParams.append("periodebulan", periodebulan);
                 searchParams.append("kd_skpd_ns", kd_skpd_ns);
                 searchParams.append("rek1", rek1);
                 searchParams.append("cetak", jns_cetak);

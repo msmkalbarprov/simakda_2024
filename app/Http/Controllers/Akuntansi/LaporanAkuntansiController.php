@@ -830,12 +830,15 @@ class LaporanAkuntansiController extends Controller
         $cetak          = $request->cetak;
         $skpd        = $request->kd_skpd_ns;
         $rek1          = $request->rek1;
+        $skpdunit          = $request->skpdunit;
+        $periodebulan          = $request->periodebulan;
         $thn_ang = tahun_anggaran();
         $thn_ang1 = $thn_ang - 1;
         $thn_ang2 = $thn_ang1 - 1;
         $kd_skpd        = $request->kd_skpd_ns;
+        $bulan_asli = $bulan;
         // $kd_skpd        = Auth::user()->kd_skpd;
-        if ($bulan == '') {
+        if ($periodebulan == "periode") {
             $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
             $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
             $nm_bln = tgl_format_oyoy($tgl1);
@@ -859,7 +862,7 @@ class LaporanAkuntansiController extends Controller
         }
         // dd(strlen($bulan));
 
-        if ($kd_skpd == '') {
+        if ($skpdunit == "keseluruhan") {
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause = "";
         } else {
@@ -922,11 +925,16 @@ class LaporanAkuntansiController extends Controller
             'dcetak'    => $tgl1,
             'dcetak2'   => $tgl2,
             'thn_ang'   => $thn_ang,
-            'thn_ang1'   => $thn_ang1,
+            'thn_ang1'  => $thn_ang1,
+            'thn_ang2'  => $thn_ang2,
             'skpd'      => $skpd,
+            'skpdunit'   => $skpdunit,
+            'periodebulan'   => $periodebulan,
             'rek1'      => $rek1,
-            'nm_bln'      => $nm_bln,
-            'bulan'      => $bulan
+            'nm_bln'    => $nm_bln,
+            'bulan'     => $bulan,
+            'cetak'     => $cetak,
+            'bulan_asli'     => $bulan_asli
         ];
         // if($format=='sap'){
         //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
@@ -950,6 +958,112 @@ class LaporanAkuntansiController extends Controller
             header('Content-Disposition: attachement; filename="NERACA SALDO.xls"');
             return $view;
         }
+    }
+
+    public function cetak_ns_rinci(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $kd_rek        = $request->kd_rek;
+        $periodebulan  = $request->periodebulan;
+        $tgl1  = $request->dcetak;
+        $tgl2  = $request->dcetak2;
+        $bulan  = $request->bulan;
+
+        $thn_ang = tahun_anggaran();
+        $thn_ang1 = $thn_ang - 1;
+        $thn_ang2 = $thn_ang1 - 1;
+
+        if ($periodebulan == "periode") {
+            $periode = "(tgl_voucher between $tgl1 and $tgl2) and ";
+            $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
+            $nm_bln = tgl_format_oyoy($tgl1);
+        } else {
+            $modtahun = $thn_ang % 4;
+
+            if ($modtahun = 0) {
+                $nilaibulan = ".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            } else {
+                $nilaibulan = ".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+            $arraybulan = explode(".", $nilaibulan);
+            $nm_bln = $arraybulan[$bulan];
+            if (strlen($bulan) == 1) {
+                $bulan = "0" . $bulan;
+            } else {
+                $bulan = $bulan;
+            }
+            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
+            $periode1 = "year (tgl_voucher)<='$thn_ang1' and ";
+        }
+        // dd(strlen($bulan));
+
+        $query = DB::select("SELECT kd_skpd,nm_skpd,kd_rek, (SELECT nm_rek6 from ms_rek6 where kd_rek6=x.kd_rek)nm_rek, SaldoAwal,debet,kredit,
+                            SUM(case when left(kd_rek,1)='1' then SaldoAwal+debet-kredit
+                            when left(kd_rek,1) in ('2','3') then SaldoAwal+kredit-debet
+                            when left(kd_rek,1) in ('4','7') then kredit-debet
+                            when left(kd_rek,1) in ('5','6','8') then debet-kredit else 0 end ) as saldoakhir
+                            from
+                            (
+                                select kd_skpd,nm_skpd,kd_rek,
+                                SUM(case when left(kd_rek,1)='1' then debetaw-kreditaw
+                                when left(kd_rek,1) in ('2','3') then kreditaw-debetaw
+                                when left(kd_rek,1) in ('4','7') then kreditaw-debetaw
+                                when left(kd_rek,1) in ('5','6','8') then debetaw-kreditaw else 0 end ) as SaldoAwal,SUM(debet) AS debet,SUM(kredit) AS kredit,(SUM(debet)-SUM(kredit)) as saldoakhir
+                                from (
+                                    Select kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd) nm_skpd,kd_rek6 as kd_rek,SUM(b.debet) AS debet,SUM(b.kredit) AS kredit,0 as debetaw, 0 as kreditaw 
+                                    from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                                    where $periode kd_rek6='$kd_rek' 
+                                    group by kd_skpd,kd_rek6
+                                    union all
+                                    Select kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd) nm_skpd,
+                                    kd_rek6 as kd_rek,0 as debet, 0 as kredit,SUM(b.debet) AS debetaw,SUM(b.kredit) AS kreditaw from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher
+                                    and b.kd_unit=a.kd_skpd where $periode1 kd_rek6='$kd_rek'
+                                    group by kd_skpd,kd_rek6
+                                )a
+                                group by kd_skpd,nm_skpd,kd_rek
+                            )x
+                            group by kd_skpd,nm_skpd,kd_rek,SaldoAwal,debet, kredit
+                            order by kd_skpd,nm_skpd,kd_rek");
+
+
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'     => $query,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'periodebulan'    => $periodebulan,
+            'dcetak'    => $tgl1,
+            'dcetak2'   => $tgl2,
+            'thn_ang'   => $thn_ang,
+            'thn_ang1'  => $thn_ang1,
+            'nm_bln'    => $nm_bln,
+            'kd_rek'    => $kd_rek,
+            'bulan'     => $bulan
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+        $view =  view('akuntansi.cetakan.neraca_saldo_rinci')->with($data);
+        // }
+
+        return $view;
+        
     }
 
     public function cetak_ped(Request $request)

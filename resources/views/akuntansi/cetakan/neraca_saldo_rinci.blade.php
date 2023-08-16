@@ -47,27 +47,7 @@
         <TR>
             <td align="center"><strong>PERIODE {{tgl_format_oyoy($tgl1)}} s/d {{tgl_format_oyoy($tgl2)}} </strong></td>
         </TR>
-        @if($skpdunit=="keseluruhan")
-            <tr>
-                <td colspan="5" align="justify" style="font-size:12px">
-                <br>
-                
-                <br>
-                <br>
-                    
-                </td>
-            </tr>
-        @else
-            <tr>
-                <td colspan="5" align="justify" style="font-size:12px">
-                <br>
-                SKPD : $skpd - $nm_skpd
-                <br>
-                <br>
-                    
-                </td>
-            </tr>
-        @endif
+        
     </TABLE>
     @else
         <table style="border-collapse:collapse;" width="100%" align="center" border="0" cellspacing="0" cellpadding="4">
@@ -80,42 +60,24 @@
             <TR>
                 <td align="center"><strong>PER {{$nm_bln}} {{$thn_ang}} DAN {{$thn_ang1}} </strong></td>
             </TR>
-            @if($skpdunit=="keseluruhan")
-                <tr>
-                    <td colspan="5" align="justify" style="font-size:12px">
-                    <br>
-                    
-                    <br>
-                    <br>
-                        
-                    </td>
-                </tr>
-            @else
-                <tr>
-                    <td colspan="5" align="justify" style="font-size:12px">
-                    <br>
-                    SKPD : {{$skpd}} - {{nama_skpd($skpd)}}
-                    <br>
-                    <br>
-                        
-                    </td>
-                </tr>
-            @endif
+            <tr>
+                <td colspan="5" align="justify" style="font-size:15px">
+                <br>
+                    Kode Rekening : {{$kd_rek}} - {{nama_rekening($kd_rek)}}
+                <br>
+                <br>
+                </td>
+            </tr>
         </TABLE>
     @endif
     <table style="border-collapse:collapse;" width="100%" align="center" border="1" cellspacing="0" cellpadding="4">
         <thead>                       
             <tr>
-                <td rowspan="2"  bgcolor="#CCCCCC" width="10%" align="center"><b>Kode Rekening</b></td>
-                <td rowspan="2" bgcolor="#CCCCCC" width="45%" align="center"><b>Nama Rekening</b></td>
+                <td rowspan="2"  bgcolor="#CCCCCC" width="10%" align="center"><b>Kode SKPD</b></td>
+                <td rowspan="2" bgcolor="#CCCCCC" width="45%" align="center"><b>Nama SKPD</b></td>
                 <td rowspan="2" bgcolor="#CCCCCC" width="15%" align="center"><b>Saldo Awal</b></td>
                 <td colspan="2" bgcolor="#CCCCCC" width="40%" align="center"><b>Jumlah</b></td>
                 <td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>Saldo Akhir</b></td>
-                @if($skpdunit=="keseluruhan" && $cetak==1)
-                <td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>Rincian</b></td>
-                @else
-                @endif
-
             </tr>
             <tr>
                 <td bgcolor="#CCCCCC" width="25%" align="center"><b>Debit</b></td>
@@ -153,8 +115,8 @@
     @endphp
     @foreach($query as $res)
         @php
-                $kd_rek     =$res->kd_rek;
-                $nm_rek     =$res->nm_rek;
+                $kd_skpd     =$res->kd_skpd;
+                $nm_skpd     =$res->nm_skpd;
                 $debet      =$res->debet;
                 $kredit     =$res->kredit;
                 $saldoawal  =$res->SaldoAwal;
@@ -187,8 +149,8 @@
                 $saldoakhirres= rupiah($saldoakhirres);
         @endphp
             <tr>
-                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="center">{{$kd_rek}}</td>                                     
-                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">{{$nm_rek}}</td>
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="center">{{$kd_skpd}}</td>                                     
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">{{$nm_skpd}}</td>
 
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"align="right">{{$min1}}{{$saldoawalres}}{{$min2}}</td>
 
@@ -196,11 +158,7 @@
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right">{{$kreditres}}</td>
 
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$min3}}{{$saldoakhirres}}{{$min4}}</td>
-                @if($skpdunit=="keseluruhan" && $cetak==1)
-                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right"><button type="button" href="javascript:void(0);" onclick="rinci('{{$kd_rek}}','{{$dcetak}}','{{$dcetak2}}', '{{$bulan_asli}}','{{$periodebulan}}')">Rinci</button>
-                </td>
-                @else
-                @endif
+                
             </tr>
         @php
            $tsaldoawal =$tsaldoawal+$saldoawal;
@@ -238,28 +196,16 @@
         $tkreditres= rupiah($tkredit);
         $tsaldoakhirres= rupiah($tsaldoakhirres);
     @endphp
-            <tr>                        
+            <TR>                        
                 <td colspan="2"style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">TOTAL</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"align="right">{{$min5}}{{$tsaldoawalres}}{{$min6}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right">{{$tdebetres}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right">{{$tkreditres}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$min7}}{{$tsaldoakhirres}}{{$min8}}</td>
-            </tr>
+            </TR>
     </TABLE>
     
 </body>
 
 </html>
-<script type="text/javascript">
-    function rinci(kd_rek,dcetak,dcetak2,bulan_asli,periodebulan) {
-        let url             = new URL("{{ route('laporan_akuntansi.cns_rinci') }}");
-        let searchParams    = url.searchParams;
-        searchParams.append("kd_rek", kd_rek);
-        searchParams.append("dcetak", dcetak);
-        searchParams.append("dcetak2", dcetak2);
-        searchParams.append("bulan", bulan_asli);
-        searchParams.append("periodebulan", periodebulan);
-        window.open(url.toString(), "_blank");
-    }
 
-</script>
