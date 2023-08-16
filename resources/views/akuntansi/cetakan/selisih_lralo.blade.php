@@ -106,11 +106,13 @@
     <table style="border-collapse:collapse;" width="100%" align="center" border="1" cellspacing="0" cellpadding="4">
         <thead>                       
             <tr>
-                <td bgcolor="#CCCCCC" width="10%" align="center"><b>Kode Rekening</b></td>
-                <td bgcolor="#CCCCCC" width="45%" align="center"><b>Nama Rekening</b></td>
-                <td bgcolor="#CCCCCC" width="15%" align="center"><b>Realisasi LRA</b></td>
-                <td bgcolor="#CCCCCC" width="40%" align="center"><b>Realisasi LO</b></td>
-                <td bgcolor="#CCCCCC" width="20%" align="center"><b>Selisih</b></td>
+                <td bgcolor="#CCCCCC" width="5%" align="center"><b>Kode Rekening LRA</b></td>
+                <td bgcolor="#CCCCCC" width="25%" align="center"><b>Nama Rekening LRA</b></td>
+                <td bgcolor="#CCCCCC" width="10%" align="center"><b>Realisasi LRA</b></td>
+                <td bgcolor="#CCCCCC" width="5%" align="center"><b>Kode Rekening LO</b></td>
+                <td bgcolor="#CCCCCC" width="25%" align="center"><b>Nama Rekening LO</b></td>
+                <td bgcolor="#CCCCCC" width="10%" align="center"><b>Realisasi LO</b></td>
+                <td bgcolor="#CCCCCC" width="10%" align="center"><b>Selisih</b></td>
 
             </tr>
                         
@@ -121,16 +123,20 @@
                 <td style="border-top: none;"></td>
                 <td style="border-top: none;"></td>
                 <td style="border-top: none;"></td>
+                <td style="border-top: none;"></td> 
+                <td style="border-top: none;"></td>
                 <td style="border-top: none;"></td>                                            
             </tr>
         </tfoot>
                    
             <tr>   
-                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="5%" align="center">&nbsp;</td>
-                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="55%" align="center">&nbsp;</td>                            
-                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="15%" align="center">&nbsp;</td>
-                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="20%" align="center">&nbsp;</td>
-                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="20%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="25%" align="center">&nbsp;</td>                            
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="25%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%" align="center">&nbsp;</td>
+                <td style="vertical-align:top;border-top: none;border-bottom: none;" width="10%" align="center">&nbsp;</td>
                            
             </tr>
     @php
@@ -142,6 +148,8 @@
         @php
             $kd_rek6    =$res->kd_rek6;
             $nm_rek6    =$res->nm_rek6;
+            $kd_lo      =$res->kd_lo;
+            $nm_lo      =$res->nm_lo;
             $lra        =$res->lra;
             $lo         =$res->lo;
             $selisih    =$lra-$lo;
@@ -182,6 +190,8 @@
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="center">{{$kd_rek6}}</td>                                     
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">{{$nm_rek6}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"align="right">{{$alra}}{{rupiah($lrares)}}{{$blra}}</td>
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="center">{{$kd_lo}}</td>                                     
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">{{$nm_lo}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$alo}}{{rupiah($lores)}}{{$blo}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$as}}{{rupiah($selisihres)}}{{$bs}}</td>
             </tr>
@@ -226,7 +236,8 @@
     @endphp
             <tr>                        
                 <td colspan="2"style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">TOTAL</td>
-                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"align="right">{{$clra}}{{rupiah($tlrares)}}{{$dlra}}</td>
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"align="right">{{$clra}}{{rupiah($tlrares)}}{{$dlra}}</td>                        
+                <td colspan="2"style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%"></td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$clo}}{{rupiah($tlores)}}{{$dlo}}</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$cselisih}}{{rupiah($tselisihres)}}{{$dselisih}}</td>
             </tr>

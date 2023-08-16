@@ -3490,16 +3490,16 @@ class LaporanAkuntansiController extends Controller
 
         // dd($kd_skpd);
 
-        $query = DB::select("SELECT kd_rek6,nm_rek6,sum(lra)lra,sum(lo)lo
-                from(select kd_rek6, nm_rek6, 
+        $query = DB::select("SELECT kd_rek6,nm_rek6,sum(lra)lra,map_lo kd_lo,(select nm_rek6 from ms_rek6 where kd_rek6=a.map_lo)nm_lo,sum(lo)lo
+                from(select kd_rek6, nm_rek6, map_lo,
                 (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
                     where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra , 
                 (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
                     where $periode kd_rek6=z.map_lo $skpd_clause )lo 
                 from ms_rek6 z
                 where left(kd_rek6,1)='5')a 
-                group by kd_rek6,nm_rek6
-                order by kd_rek6");
+                group by kd_rek6,nm_rek6,map_lo
+                order by kd_rek6,map_lo");
 
 
         $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
