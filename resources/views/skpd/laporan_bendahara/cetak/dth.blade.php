@@ -195,7 +195,7 @@
                         <td width="150" valign="top" align="center" style="border-top:hidden;">
                             {{ $rincian->kd_rek6 }}</td>
                         <td width="150" valign="top" align="left" style="border-top:hidden;">
-                            {{ $jenis_pajak }}
+                            {{-- {{ $jenis_pajak }} --}}
                         </td>
                         <td width="150" valign="top" align="right" style="border-top:hidden;">
                             {{ rupiah($rincian->nilai_pot) }}</td>
