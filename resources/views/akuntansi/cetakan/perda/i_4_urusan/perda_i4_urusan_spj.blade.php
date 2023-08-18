@@ -53,7 +53,7 @@
                 </td>
                 <td align="center" width="50%" style="border-left:hidden;border-right:hidden;border-bottom:hidden"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
                 <td rowspan="4" align="center" style="border-left:hidden" width="25%">
-                    &nbsp;aaa
+                    &nbsp;
                 </td>
                 
             </tr>
