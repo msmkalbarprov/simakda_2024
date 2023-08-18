@@ -296,7 +296,7 @@ class PencairanSp2dController extends Controller
                         return [
                             'kd_skpd' => $opd,
                             'no_sts' => $no_sts,
-                            'kd_rek6' => $value['kd_rek6'],
+                            'kd_rek6' => $value['kd_trans'],
                             'rupiah' => $value['nilai'],
                             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
                         ];
