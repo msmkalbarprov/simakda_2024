@@ -156,7 +156,7 @@
             @php
                 $jdebet = $jdebet + $debet;
                 $jkredit = $jkredit + $kredit;
-                $jsaldo = $jsaldo + $saldo;
+                $jsaldo = $saldo;
             @endphp
         @endforeach
 
