@@ -24,7 +24,7 @@ class LaporanBendaharaPenerimaanController extends Controller
             'daftar_rekening' => DB::select("SELECT * FROM (SELECT '' kd_rek6, '' nm_rek6 UNION ALL SELECT a.kd_rek6, (select nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) nm_rek6 from tr_terima a group by a.kd_rek6) x order by kd_rek6"),
             'daftar_skpd' => DB::table('ms_skpd')
                 ->where(function ($query) use ($role, $kd_skpd) {
-                    if ($role == '1006' || $role == '1016') {
+                    if ($role == '1006' || $role == '1016' || $role == '1010') {
                     } else {
                         $query->where(['kd_skpd' => $kd_skpd]);
                     }
