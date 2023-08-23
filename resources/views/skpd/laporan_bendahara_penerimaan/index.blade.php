@@ -703,6 +703,7 @@
                 searchParams.append("rekening", rekening);
                 searchParams.append("tipe", tipe);
                 searchParams.append("jenis_print", jenis_print);
+                searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("cetak", jns_cetak);
 
                 window.open(url.toString(), "_blank");
