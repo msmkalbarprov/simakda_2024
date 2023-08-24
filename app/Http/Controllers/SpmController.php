@@ -461,7 +461,13 @@ class SpmController extends Controller
                 ->setOption('margin-left', 15)
                 ->setOption('margin-right', 15);
             return $pdf->stream('laporan.pdf');
-        } else {
+        }elseif($jenis_print == 'excel'){
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="kelengkapan_spm.xls"');
+            return $view;
+        }
+        else {
             return $view;
         }
     }

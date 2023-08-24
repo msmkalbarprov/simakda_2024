@@ -246,6 +246,8 @@
                                 name="kelengkapan">Layar</button>
                             <button type="button" class="btn btn-warning btn-md kelengkapan" data-jenis="download"
                                 name="kelengkapan">Download</button>
+                                <button type="button" class="btn btn-secondary btn-md kelengkapan" data-jenis="excel"
+                                name="kelengkapan">Excel</button>
                         </div>
                         <label for="lampiran" class="col-md-2 col-form-label">Lampiran</label>
                         <div class="col-md-4">
