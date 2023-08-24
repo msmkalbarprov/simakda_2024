@@ -252,7 +252,7 @@ class LaporanAkuntansiController extends Controller
         if ($kd_sub_kegiatan=="") {
             $where ="kd_unit='$kd_skpd'";
         }else{
-            $where ="kd_sub_kegiatan= '$$kd_sub_kegiatan' and a.kd_rek6 is not null and a.kd_rek6!=''";
+            $where ="kd_sub_kegiatan= '$kd_sub_kegiatan' and a.kd_rek6 is not null and a.kd_rek6!=''";
         }
         // dd($kd_sub_kegiatan);
 
