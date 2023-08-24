@@ -1648,6 +1648,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('cari_ttd', [LaporanAkuntansiController::class, 'cariTtd'])->name('laporan_akuntansi.ttd');
         Route::post('cariPaKpa', [LaporanAkuntansiController::class, 'cariPaKpa'])->name('laporan_akuntansi.pakpa');
         Route::post('ttd_kasubbid', [LaporanAkuntansiController::class, 'ttd_kasubbid'])->name('laporan_akuntansi.ttd_kasubbid');
+        Route::post('cari_sub_kegiatan', [LaporanAkuntansiController::class, 'carisub_kegiatan'])->name('laporan_akuntansi.subkegiatan');
+        Route::post('cari_rek6bb', [LaporanAkuntansiController::class, 'carirek6bb'])->name('laporan_akuntansi.rek6bb');
         Route::post('cari_rek6', [LaporanAkuntansiController::class, 'carirek6'])->name('laporan_akuntansi.rek6');
         Route::post('cari_rek1', [LaporanAkuntansiController::class, 'carirek1'])->name('laporan_akuntansi.rek1');
         Route::post('cari_ttd_bud', [LaporanAkuntansiController::class, 'cari_ttd_bud'])->name('laporan_akuntansi.cari_ttd_bud');
@@ -1756,6 +1758,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         // input
         Route::group(['prefix' => 'input_lamp_neraca'], function () {
             Route::get('', [lampneracaController::class, 'input_lamp_neraca'])->name('lamp_neraca.input_lamp_neraca.inputan');
+            Route::post('load_input_lamp_neraca', [lampneracaController::class, 'load_input_lamp_neraca'])->name('input_lamp_neraca.load');
         });
     });
 
