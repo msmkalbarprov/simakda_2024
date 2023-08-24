@@ -560,15 +560,17 @@
             })
         }
         $('#kd_sub_kegiatan').on('select2:select', function() {
+            let kd_skpd = $('#kd_skpd').val();
             let kd_sub_kegiatan = this.value;
-            cari_rek6bb(kd_sub_kegiatan);
+            cari_rek6bb(kd_skpd, kd_sub_kegiatan);
         }); 
 
-        function cari_rek6bb(kd_sub_kegiatan) {
+        function cari_rek6bb(kd_skpd, kd_sub_kegiatan) {
             $.ajax({
                 url: "{{ route('laporan_akuntansi.rek6bb') }}",
                 type: "POST",
                 data: {
+                    kd_skpd: kd_skpd,
                     kd_sub_kegiatan: kd_sub_kegiatan
                 }, 
                 dataType: 'json',

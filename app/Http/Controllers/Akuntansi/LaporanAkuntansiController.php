@@ -236,16 +236,27 @@ class LaporanAkuntansiController extends Controller
     {
         $kd_skpd        = $request->kd_skpd;
 
-        $data = DB::select("SELECT kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan)nm_sub_kegiatan from trdju_pkd a where kd_unit= ? and kd_sub_kegiatan is not null and kd_sub_kegiatan!=''group by kd_sub_kegiatan order by kd_sub_kegiatan", [$kd_skpd]);
+        $data = DB::select("SELECT ''kd_sub_kegiatan ,'Tanpa Sub Kegiatan' nm_sub_kegiatan
+                union all
+                SELECT kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan)nm_sub_kegiatan 
+                from trdju_pkd a 
+                where kd_unit= ? and kd_sub_kegiatan is not null and kd_sub_kegiatan!=''group by kd_sub_kegiatan 
+                order by kd_sub_kegiatan", [$kd_skpd]);
         return response()->json($data);
     }
 
     public function carirek6bb(Request $request)
     {
+        $kd_skpd        = $request->kd_skpd;
         $kd_sub_kegiatan        = $request->kd_sub_kegiatan;
+        if ($kd_sub_kegiatan=="") {
+            $where ="kd_unit='$kd_skpd'";
+        }else{
+            $where ="kd_sub_kegiatan= '$$kd_sub_kegiatan' and a.kd_rek6 is not null and a.kd_rek6!=''";
+        }
         // dd($kd_sub_kegiatan);
 
-        $data = DB::select("SELECT a.kd_rek6 , b.nm_rek6 from trdju_pkd a inner join ms_rek6 b on a.kd_rek6=b.kd_rek6 where kd_sub_kegiatan= ? and a.kd_rek6 is not null and a.kd_rek6!='' group by a.kd_rek6,b.nm_rek6 order by a.kd_rek6,b.nm_rek6", [$kd_sub_kegiatan]);
+        $data = DB::select("SELECT a.kd_rek6 , b.nm_rek6 from trdju_pkd a inner join ms_rek6 b on a.kd_rek6=b.kd_rek6 where $where group by a.kd_rek6,b.nm_rek6 order by a.kd_rek6,b.nm_rek6");
         return response()->json($data);
     }
 
@@ -741,49 +752,53 @@ class LaporanAkuntansiController extends Controller
         $kd_sub_kegiatan        = $request->kd_sub_kegiatan;
         $rek6          = $request->rek6;
         // $kd_skpd        = Auth::user()->kd_skpd;
-
+        if ($kd_sub_kegiatan=="") {
+            $sub_kegiatan ="";
+        }else{
+            $sub_kegiatan ="and kd_sub_kegiatan='$kd_sub_kegiatan'";
+        }
 
         $thn_ang = tahun_anggaran();
 
         if ((substr($rek6, 0, 1) == '9') or (substr($rek6, 0, 1) == '8') or (substr($rek6, 0, 1) == '4') or (substr($rek6, 0, 1) == '5') or (substr($rek6, 0, 1) == '7')) {
-            $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' and b.tgl_voucher < '$dcetak'   AND YEAR(b.tgl_voucher)='$thn_ang'"))->first();
+            $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' $sub_kegiatan and b.tgl_voucher < '$dcetak'   AND YEAR(b.tgl_voucher)='$thn_ang'"))->first();
         } else if ($rek6 == '310101010001') {
             $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit from (
 
                     select sum(debet) debet, sum(kredit) kredit
                     from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                    where kd_rek6='310101010001' and reev='0' and kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' and tgl_voucher < '$dcetak'
+                    where kd_rek6='310101010001' and reev='0' and kd_skpd='$skpd' $sub_kegiatan and tgl_voucher < '$dcetak'
                     union all
                     select sum(debet) debet, sum(kredit) kredit
                     from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                    where kd_rek6='310101010001' and reev not in ('0') and kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' and tgl_voucher < '$dcetak'
+                    where kd_rek6='310101010001' and reev not in ('0') and kd_skpd='$skpd' $sub_kegiatan and tgl_voucher < '$dcetak'
                     ) a "))->first();
         } else if ($rek6 == '310102010001') {
             $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit from (
                     select sum(debet) debet, sum(kredit) kredit
                     from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                    where left(kd_rek6,1) in ('7','8') and kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' and tgl_voucher < '$dcetak'
+                    where left(kd_rek6,1) in ('7','8') and kd_skpd='$skpd' $sub_kegiatan and tgl_voucher < '$dcetak'
 
                     ) a "))->first();
         } else {
-            $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' and b.tgl_voucher < '$dcetak'   "))->first();
+            $csql3 = collect(DB::select("SELECT sum(a.debet) as debet,sum(a.kredit) as kredit FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' $sub_kegiatan and b.tgl_voucher < '$dcetak'   "))->first();
         }
 
 
         $idx = 1;
         if ($rek6 == '310101010001') {
             $query = DB::select("SELECT kd_rek6, debet, kredit, tgl_voucher, ket, no_voucher FROM (
-                                           SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='310101010001' AND b.kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'
+                                           SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='310101010001' AND b.kd_skpd='$skpd' $sub_kegiatan AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'
                                            ) a
                                            ORDER BY tgl_voucher, debet-kredit");
         } else if ($rek6 == '310102010001') {
             $query = DB::select("SELECT kd_rek6, debet, kredit, tgl_voucher, ket, no_voucher FROM (
 
-                                           SELECT '310102010001' kd_rek6, SUM(a.debet) debet, SUM(a.kredit) kredit, b.tgl_voucher, 'SURPLUS/DEFISIT LO ('+b.ket+' )' ket, 'SURPLUS/DEFISIT LO - '+b.no_voucher as no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE LEFT(a.kd_rek6,1) IN ('7','8') AND b.kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'
+                                           SELECT '310102010001' kd_rek6, SUM(a.debet) debet, SUM(a.kredit) kredit, b.tgl_voucher, 'SURPLUS/DEFISIT LO ('+b.ket+' )' ket, 'SURPLUS/DEFISIT LO - '+b.no_voucher as no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE LEFT(a.kd_rek6,1) IN ('7','8') AND b.kd_skpd='$skpd' $sub_kegiatan AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'
                                            GROUP BY b.tgl_voucher, b.no_voucher, b.ket) a
                                            ORDER BY tgl_voucher, debet-kredit");
         } else {
-            $query = DB::select("SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and kd_sub_kegiatan='$kd_sub_kegiatan' AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'  ORDER BY b.tgl_voucher,
+            $query = DB::select("SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' $sub_kegiatan AND b.tgl_voucher>='$dcetak' AND b.tgl_voucher<='$dcetak2'  ORDER BY b.tgl_voucher,
                                            case when left('$rek6',1) in (1,5,6,9) then kredit-debet else debet-kredit end");
             //$query = $this->db->query("SELECT a.kd_rek6,a.debet,a.kredit,b.tgl_voucher,b.ket,b.no_voucher FROM trdju_pkd a LEFT JOIN trhju_pkd b ON a.no_voucher=b.no_voucher WHERE a.kd_rek6='$rek6' AND b.kd_skpd='$skpd' and b.tgl_voucher>='$dcetak' and b.tgl_voucher<='$dcetak2' and a.pos='1' ORDER by b.tgl_voucher, convert(b.no_voucher,unsigned)");
         }

@@ -45,10 +45,13 @@
             <TD align="left" width="20%">SKPD</TD>
             <TD align="left" width="80%">: {{ $skpd }} {{ nama_skpd($skpd) }}</TD>
         </TR>
-        <TR>
-            <TD align="left" width="20%">Sub Kegiatan</TD>
-            <TD align="left" width="80%">: {{ $kd_sub_kegiatan }} {{ nama_sub_kegiatan($kd_sub_kegiatan) }}</TD>
-        </TR>
+        @if($kd_sub_kegiatan!="")
+            <TR>
+                <TD align="left" width="20%">Sub Kegiatan</TD>
+                <TD align="left" width="80%">: {{ $kd_sub_kegiatan }} {{ nama_sub_kegiatan($kd_sub_kegiatan) }}</TD>
+            </TR>
+        @else
+        @endif
         <TR>
             <TD align="left" width="20%">Rekening</TD>
             <TD align="left" width="80%">: {{ $rek6 }} {{ nama_rekening($rek6) }}</TD>
