@@ -629,7 +629,8 @@
                 let tanggal1 = document.getElementById('tanggal1').value;
                 let tanggal2 = document.getElementById('tanggal2').value;
                 let kd_skpd = document.getElementById('kd_skpd').value;
-                let rek6 = document.getElementById('rek6').value;
+                let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+                let rek6 = document.getElementById('rek6bb').value;
 
                 // PERINGATAN
                 if (!tanggal1) {
@@ -654,6 +655,7 @@
                 searchParams.append("tanggal1", tanggal1);
                 searchParams.append("tanggal2", tanggal2);
                 searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("kd_sub_kegiatan", kd_sub_kegiatan);
                 searchParams.append("rek6", rek6);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");

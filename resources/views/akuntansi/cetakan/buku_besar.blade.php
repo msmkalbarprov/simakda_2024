@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
     {{-- <body> --}}
     <TABLE width="100%">
         <TR>
@@ -44,6 +44,10 @@
         <TR>
             <TD align="left" width="20%">SKPD</TD>
             <TD align="left" width="80%">: {{ $skpd }} {{ nama_skpd($skpd) }}</TD>
+        </TR>
+        <TR>
+            <TD align="left" width="20%">Sub Kegiatan</TD>
+            <TD align="left" width="80%">: {{ $kd_sub_kegiatan }} {{ nama_sub_kegiatan($kd_sub_kegiatan) }}</TD>
         </TR>
         <TR>
             <TD align="left" width="20%">Rekening</TD>
