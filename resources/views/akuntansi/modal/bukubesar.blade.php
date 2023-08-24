@@ -13,6 +13,7 @@
 
                 <div class="mb-3 row">
                     
+
                     {{-- PERIODE --}}
                         
 
@@ -25,8 +26,6 @@
                             <input type="date" id="tanggal2" name="tanggal2" class="form-control">
                             
                         </div>
-                </div>
-                <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">SKPD</label>
                         <select class="form-control select_lbb @error('rek6') is-invalid @enderror"
@@ -37,13 +36,25 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+                <div class="mb-3 row">
                     <div class="col-md-6">
-                        <label for="rek6" class="form-label">Rekening</label>
-                        <select class="form-control select_lbb @error('rek6') is-invalid @enderror"
-                            style=" width: 100%;" id="rek6" name="rek6">
+                        <label for="kd_sub_kegiatan" class="form-label">Sub Kegiatan</label>
+                        <select class="form-control select_lbb @error('kd_sub_kegiatan') is-invalid @enderror"
+                            style=" width: 100%;" id="kd_sub_kegiatan" name="kd_sub_kegiatan">
                             <option value="" disabled selected>Silahkan Pilih</option>
                         </select>
-                        @error('rek6')
+                        @error('kd_sub_kegiatan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="rek6bb" class="form-label">Rekening</label>
+                        <select class="form-control select_lbb @error('rek6bb') is-invalid @enderror"
+                            style=" width: 100%;" id="rek6bb" name="rek6bb">
+                            <option value="" disabled selected>Silahkan Pilih</option>
+                        </select>
+                        @error('rek6bb')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

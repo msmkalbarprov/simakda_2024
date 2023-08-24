@@ -193,7 +193,7 @@
                 }
             });
 
-            cari_rek6();
+            // cari_rek6();
             cari_skpdbb();
             cari_rek1();
             ttd_bud();
@@ -412,24 +412,7 @@
             }
         });
 
-        function cari_rek6() {
-            $.ajax({
-                url: "{{ route('laporan_akuntansi.rek6') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function(data) {
-                    // console.log(data);
-                    $('#rek6').empty();
-                    $('#rek6').append(
-                        `<option value="" disabled selected>Pilih Rekening</option>`);
-                    $.each(data, function(index, data) {
-                        $('#rek6').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
-                        );
-                    })
-                }
-            })
-        }
+        
 
         function ttd_bud() {
             $.ajax({
@@ -550,6 +533,77 @@
                 }
             })
         }
+        $('#kd_skpd').on('select2:select', function() {
+            let kd_skpd = this.value;
+            cari_sub_kegiatan(kd_skpd);
+        }); 
+
+        function cari_sub_kegiatan(kd_skpd) {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.subkegiatan') }}",
+                type: "POST",
+                data: {
+                    kd_skpd: kd_skpd
+                }, 
+                dataType: 'json',
+                success: function(data) {
+                    // console.log(data);
+                    $('#kd_sub_kegiatan').empty();
+                    $('#kd_sub_kegiatan').append(
+                        `<option value="" disabled selected>Pilih Sub Kegiatan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#kd_sub_kegiatan').append(
+                            `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
+                        );
+                    })
+                }
+            })
+        }
+        $('#kd_sub_kegiatan').on('select2:select', function() {
+            let kd_sub_kegiatan = this.value;
+            cari_rek6bb(kd_sub_kegiatan);
+        }); 
+
+        function cari_rek6bb(kd_sub_kegiatan) {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.rek6bb') }}",
+                type: "POST",
+                data: {
+                    kd_sub_kegiatan: kd_sub_kegiatan
+                }, 
+                dataType: 'json',
+                success: function(data) {
+                    // console.log(data);
+                    $('#rek6bb').empty();
+                    $('#rek6bb').append(
+                        `<option value="" disabled selected>Pilih Rekening</option>`);
+                    $.each(data, function(index, data) {
+                        $('#rek6bb').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        );
+                    })
+                }
+            })
+        } 
+        function cari_rek6() {
+            $.ajax({
+                url: "{{ route('laporan_akuntansi.rek6') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    // console.log(data);
+                    $('#rek6').empty();
+                    $('#rek6').append(
+                        `<option value="" disabled selected>Pilih Rekening</option>`);
+                    $.each(data, function(index, data) {
+                        $('#rek6').append(
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                        );
+                    })
+                }
+            })
+        } 
+
         $('.bku_layar').on('click', function() {
             Cetak(1)
         });

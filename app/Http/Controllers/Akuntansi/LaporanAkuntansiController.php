@@ -232,9 +232,25 @@ class LaporanAkuntansiController extends Controller
         return response()->json($data);
     }
 
+    public function carisub_kegiatan(Request $request)
+    {
+        $kd_skpd        = $request->kd_skpd;
+
+        $data = DB::select("SELECT kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan)nm_sub_kegiatan from trdju_pkd a where kd_unit= ? and kd_sub_kegiatan is not null and kd_sub_kegiatan!=''group by kd_sub_kegiatan order by kd_sub_kegiatan", [$kd_skpd]);
+        return response()->json($data);
+    }
+
+    public function carirek6bb(Request $request)
+    {
+        $kd_sub_kegiatan        = $request->kd_sub_kegiatan;
+        // dd($kd_sub_kegiatan);
+
+        $data = DB::select("SELECT a.kd_rek6 , b.nm_rek6 from trdju_pkd a inner join ms_rek6 b on a.kd_rek6=b.kd_rek6 where kd_sub_kegiatan= ? and a.kd_rek6 is not null and a.kd_rek6!='' group by a.kd_rek6,b.nm_rek6 order by a.kd_rek6,b.nm_rek6", [$kd_sub_kegiatan]);
+        return response()->json($data);
+    }
+
     public function carirek6(Request $request)
     {
-
         $data           = DB::table('ms_rek6')
             ->orderBy('kd_rek6')->get();
         return response()->json($data);
