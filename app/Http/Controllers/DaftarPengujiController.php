@@ -71,7 +71,7 @@ class DaftarPengujiController extends Controller
                 $join->on('a.no_uji', '=', 'c.no_uji');
             })
             ->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')
-            ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'a.status')
+            ->select('a.no_uji', 'a.tgl_uji', 'a.no_sp2d', 'b.tgl_sp2d', 'no_spm', 'tgl_spm', 'nilai', 'bank', 'a.status', 'a.ket_payment')
             ->selectRaw("(SELECT TRIM(bic) from ms_bank a where bank=a.kode) as bic")
             ->where(['a.no_uji' => $no_advice])
             ->orderBy('a.no_sp2d')
@@ -80,6 +80,7 @@ class DaftarPengujiController extends Controller
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->status == 0 || $row->status == 3) {
                 $btn = '<button type="button" onclick="deleteData(\'' . $row->no_sp2d . '\',\'' . $row->no_spm . '\',\'' . $row->status . '\')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>';
+                $btn .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" style="margin-left:4px;border-radius:20px" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $row->ket_payment . '"><i class="uil-exclamation-triangle"></i></a>';
             } else {
                 $btn = '';
             }
