@@ -793,6 +793,14 @@
                 alert('NPWP tidak boleh kosong');
                 return;
             }
+            if (!kode_akun_potongan) {
+                alert('Kode Akun Potongan tidak boleh kosong');
+                return;
+            }
+            if (!kode_akun_transaksi) {
+                alert('Kode Akun Transaksi tidak boleh kosong');
+                return;
+            }
 
             if (jumlah_bayar.toString().length > 12) {
                 alert('Jumlah bayar terlalu besar');
