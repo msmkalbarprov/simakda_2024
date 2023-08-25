@@ -1061,7 +1061,12 @@
                         $('#create_billing').prop('disabled', false);
                     } else {
                         alert(data1.data[0].message);
-                        $('#create_billing').prop('disabled', false);
+                        return;
+                    }
+                    if (data1.status == 'false') {
+                        alert(data1.message);
+                        $("#nama_wajib_pajak").prop('disabled', true);
+                        $("#alamat_wajib_pajak").prop('disabled', true);
                     }
                 }
             })

@@ -203,46 +203,46 @@ class BankKalbarController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($potongan->data[0]->response_code == "00") {
-                $inputtgl = date('Y-m-d H:i:s', strtotime($potongan->data[0]->data->tanggalExpiredBilling));
-                DB::table('trspmpot')->insert([
-                    'no_spm' => $no_spm,
-                    'kd_skpd' => $kd_skpd,
-                    'kd_rek6' => $kode_akun_potongan,
-                    'map_pot' => $kode_akun_potongan,
-                    'nm_rek6' => $nama_akun_potongan,
-                    'nilai' => $jumlah_bayar,
-                    'kd_trans' => $kode_akun_transaksi,
-                    'nomorPokokWajibPajak' => $npwp,
-                    'namaWajibPajak' => $nama_wajib_pajak,
-                    'alamatWajibPajak' => $alamat_wajib_pajak,
-                    'kota' => $kota,
-                    'nik' => $nik,
-                    'kodeMap' => $kode_map,
-                    'keteranganKodeMap' => $nama_map,
-                    'kodeSetor' => $kode_setor,
-                    'keteranganKodeSetor' => $nama_setor,
-                    'masaPajak' => $masa_pajak,
-                    'tahunPajak' => $tahun_pajak,
-                    'jumlahBayar' => $jumlah_bayar,
-                    'nomorObjekPajak' => $nop,
-                    'nomorSK' => $no_sk,
-                    'nomorPokokWajibPajakPenyetor' => $npwp_setor,
-                    'nomorPokokWajibPajakRekanan' => $npwp_rekanan,
-                    'nikRekanan' => $nik_rekanan,
-                    'nomorFakturPajak' => $no_faktur,
-                    'idBilling' => $potongan->data[0]->data->idBilling,
-                    // 'idBilling' => '12131',
-                    'tanggalExpiredBilling' => $inputtgl,
-                    // 'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
-                    'jenis' => '2',
-                    'username' => Auth::user()->nama,
-                    'last_update' => date('Y-m-d H:i:s')
-                ]);
-                DB::commit();
-                curl_close($curl);
-                return response()->json($response);
-            }
+            // if ($potongan->data[0]->response_code == "00") {
+            $inputtgl = date('Y-m-d H:i:s', strtotime($potongan->data[0]->data->tanggalExpiredBilling));
+            DB::table('trspmpot')->insert([
+                'no_spm' => $no_spm,
+                'kd_skpd' => $kd_skpd,
+                'kd_rek6' => $kode_akun_potongan,
+                'map_pot' => $kode_akun_potongan,
+                'nm_rek6' => $nama_akun_potongan,
+                'nilai' => $jumlah_bayar,
+                'kd_trans' => $kode_akun_transaksi,
+                'nomorPokokWajibPajak' => $npwp,
+                'namaWajibPajak' => $nama_wajib_pajak,
+                'alamatWajibPajak' => $alamat_wajib_pajak,
+                'kota' => $kota,
+                'nik' => $nik,
+                'kodeMap' => $kode_map,
+                'keteranganKodeMap' => $nama_map,
+                'kodeSetor' => $kode_setor,
+                'keteranganKodeSetor' => $nama_setor,
+                'masaPajak' => $masa_pajak,
+                'tahunPajak' => $tahun_pajak,
+                'jumlahBayar' => $jumlah_bayar,
+                'nomorObjekPajak' => $nop,
+                'nomorSK' => $no_sk,
+                'nomorPokokWajibPajakPenyetor' => $npwp_setor,
+                'nomorPokokWajibPajakRekanan' => $npwp_rekanan,
+                'nikRekanan' => $nik_rekanan,
+                'nomorFakturPajak' => $no_faktur,
+                'idBilling' => $potongan->data[0]->data->idBilling,
+                // 'idBilling' => '12131',
+                'tanggalExpiredBilling' => $inputtgl,
+                // 'tanggalExpiredBilling' => date('Y-m-d H:i:s'),
+                'jenis' => '2',
+                'username' => Auth::user()->nama,
+                'last_update' => date('Y-m-d H:i:s')
+            ]);
+            DB::commit();
+            curl_close($curl);
+            return response()->json($response);
+            // }
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json($response);
