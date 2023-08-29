@@ -407,6 +407,17 @@
                                 <option value="SP2D">Register SP2D</option>
                             </select>
                         </div>
+                        <div class="col-md-6">
+                            <label for="pil_jenis_sp2d" class="form-label">Pilih Jenis SP2D</label>
+                            <select class="form-control select2-modal" id="pil_jenis_sp2d" name="pil_jenis_sp2d">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">SP2D TERBIT</option>
+                                <option value="2">SP2D LUNAS</option>
+                                <option value="3">SP2D ADVICE</option>
+                                <option value="4">SP2D BELUM CAIR</option>
+                                <option value="5">SP2D BELUM ADVICE</option>
+                            </select>
+                        </div>
                     </div>
                     {{-- Margin --}}
                     <div class="mb-3 row">
@@ -671,6 +682,10 @@
                 theme: 'bootstrap-5'
             });
             $('#pil_sppspmsp2d').select2({
+                dropdownParent: $('#modal_cetak'),
+                theme: 'bootstrap-5'
+            });
+            $('#pil_jenis_sp2d').select2({
                 dropdownParent: $('#modal_cetak'),
                 theme: 'bootstrap-5'
             });
@@ -1237,6 +1252,7 @@
             let regpajak1 = document.getElementById('pil_reg_pajak').value;
             let regpajak2 = document.getElementById('pil_reg_pajak2').value;
             let regsppspmsp2d = document.getElementById('pil_sppspmsp2d').value;
+            let jenis_sp2d = document.getElementById('pil_jenis_sp2d').value;
             let jenis_cetak = document.getElementById('labelcetak').textContent
             let jenis_cetak2 = document.getElementById('labelcetak2').textContent
             let jenis_cetak3 = document.getElementById('jns_cetaksubrincianobjek').value
@@ -1572,6 +1588,7 @@
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
+                searchParams.append("jenis_sp2d", jenis_sp2d);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak BKU Permendagri 13') {
 

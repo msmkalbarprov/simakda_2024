@@ -26,6 +26,8 @@ class RegisterSppSpmSp2dController extends Controller
         $jenis_reg      = $request->jenis_reg;
         $kd_skpd        = $request->kd_skpd;
         $cetak          = $request->cetak;
+        $jenis_sp2d          = $request->jenis_sp2d;
+
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
@@ -33,6 +35,20 @@ class RegisterSppSpmSp2dController extends Controller
         $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         $nm_skpd = cari_nama($kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd');
+
+        if ($jenis_sp2d == null) {
+            $jenis = '';
+        } else if ($jenis_sp2d == '1') {
+            $jenis = '';
+        } else if ($jenis_sp2d == '2') {
+            $jenis = "and status_bud='1'";
+        } else if ($jenis_sp2d == '3') {
+            $jenis = "and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)";
+        } else if ($jenis_sp2d == '4') {
+            $jenis = "and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji) and status_bud <> 1";
+        } else if ($jenis_sp2d == '5') {
+            $jenis = "and no_sp2d NOT IN (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)";
+        }
 
         if ($jenis_reg == 'SPP') {
             $rincian = DB::select("SELECT a.tgl_spp as tanggal,a.no_spp as nomor,a.keperluan,a.jns_spp,SUM(b.nilai) nilai
@@ -58,7 +74,7 @@ class RegisterSppSpmSp2dController extends Controller
                                         INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
                                         INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd=d.kd_skpd
                                         WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.tgl_sp2d)<= ?
-                                        and a.kd_skpd= ?
+                                        and a.kd_skpd= ? $jenis
                                         GROUP BY a.tgl_sp2d,a.no_sp2d,a.no_spm,a.no_spp,a.keperluan,a.jns_spp
                                         ORDER BY a.tgl_sp2d,a.no_sp2d", [$bulan, $kd_skpd]);
         }
