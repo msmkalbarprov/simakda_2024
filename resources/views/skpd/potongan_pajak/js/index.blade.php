@@ -36,11 +36,11 @@
                     name: 'tgl_bukti'
                 },
                 {
-                    data: null,
+                    data: 'ket',
                     name: 'ket',
-                    render: function(data, type, row, meta) {
-                        return data.ket.substr(0, 10) + '.....';
-                    }
+                    // render: function(data, type, row, meta) {
+                    //     return data.ket.substr(0, 10) + '.....';
+                    // }
                 },
                 {
                     data: 'status',
