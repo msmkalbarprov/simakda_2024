@@ -46,6 +46,9 @@ class PotonganPajakController extends Controller
             ->where(function ($query) {
                 $query->where('a.no_panjar', '<>', '1')->orWhereNull('a.no_panjar');
             })
+            ->where(function ($query) {
+                $query->where('a.trx_mbiz', '<>', '1')->orWhereNull('a.trx_mbiz');
+            })
             ->select('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd', 'a.trx_mbiz', DB::raw("SUM(b.nilai) as nilai"))
             ->groupBy('a.no_bukti', 'tgl_bukti', 'a.no_sp2d', 'a.ket', 'a.kd_skpd', 'a.trx_mbiz');
 
