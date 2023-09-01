@@ -2465,6 +2465,7 @@
             let kasda = document.getElementById('kasda_register_sp2d').checked;
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
             let margin_kiri = document.getElementById('margin_kiri').value;
             let margin_kanan = document.getElementById('margin_kanan').value;
             let margin_atas = document.getElementById('margin_atas').value;
@@ -2529,6 +2530,11 @@
                 return;
             }
 
+            if (!tglcetak) {
+                alert('Silahkan Pilih Tanggal Cetak!');
+                return;
+            }
+
             let url = new URL("{{ route('laporan_bendahara_umum.register_sp2d') }}");
             let searchParams = url.searchParams;
             searchParams.append("pilihan", pilihan);
@@ -2543,6 +2549,7 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("tglcetak", tglcetak);
             searchParams.append("jenis_print", jenis_print);
             searchParams.append("margin_kiri", margin_kiri);
             searchParams.append("margin_kanan", margin_kanan);
@@ -2603,6 +2610,7 @@
             let kasda = document.getElementById('kasda_register_sp2d').checked;
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
             let margin_kiri = document.getElementById('margin_kiri').value;
             let margin_kanan = document.getElementById('margin_kanan').value;
             let margin_atas = document.getElementById('margin_atas').value;
@@ -2667,6 +2675,11 @@
                 return;
             }
 
+            if (!tglcetak) {
+                alert('Silahkan Pilih Tanggal Cetak!');
+                return;
+            }
+
             let url = new URL("{{ route('laporan_bendahara_umum.realisasi_sp2d') }}");
             let searchParams = url.searchParams;
             searchParams.append("pilihan", pilihan);
@@ -2681,6 +2694,7 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("tglcetak", tglcetak);
             searchParams.append("jenis_print", jenis_print);
             searchParams.append("margin_kiri", margin_kiri);
             searchParams.append("margin_kanan", margin_kanan);
@@ -2742,6 +2756,7 @@
             let dengan = document.getElementById('dengan_register_sp2d').checked;
             let tanpa = document.getElementById('tanpa_register_sp2d').checked;
             let dengan_skpkd = document.getElementById('dengan_skpkd_register_sp2d').checked;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
             let jenis_print = $(this).data("jenis");
 
             let margin_kiri = document.getElementById('margin_kiri').value;
@@ -2807,6 +2822,11 @@
                 return;
             }
 
+            if (!tglcetak) {
+                alert('Silahkan Pilih Tanggal Cetak!');
+                return;
+            }
+
             let url = new URL("{{ route('laporan_bendahara_umum.realisasiskpd_sp2d') }}");
             let searchParams = url.searchParams;
             searchParams.append("pilihan", pilihan);
@@ -2821,6 +2841,7 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("tglcetak", tglcetak);
             searchParams.append("dengan_skpkd", dengan_skpkd);
             searchParams.append("margin_kiri", margin_kiri);
             searchParams.append("margin_kanan", margin_kanan);
@@ -2838,9 +2859,15 @@
             let margin_kanan = document.getElementById('margin_kanan').value;
             let margin_atas = document.getElementById('margin_atas').value;
             let margin_bawah = document.getElementById('margin_bawah').value;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
 
             if (!ttd) {
                 alert('Silahkan Pilih Penandatangan!');
+                return;
+            }
+
+            if (!tglcetak) {
+                alert('Silahkan Pilih Tanggal Cetak!');
                 return;
             }
 
@@ -2852,6 +2879,7 @@
             searchParams.append("margin_atas", margin_atas);
             searchParams.append("margin_bawah", margin_bawah);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("tglcetak", tglcetak);
             window.open(url.toString(), "_blank");
         });
 
@@ -2897,6 +2925,7 @@
             let margin_kanan = document.getElementById('margin_kanan').value;
             let margin_atas = document.getElementById('margin_atas').value;
             let margin_bawah = document.getElementById('margin_bawah').value;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
             let jenis_print = $(this).data("jenis");
 
             if (keseluruhan || skpd) {
@@ -2955,6 +2984,11 @@
                 return;
             }
 
+            if (!tglcetak) {
+                alert('Silahkan Pilih Tanggal Cetak!');
+                return;
+            }
+
             let url = new URL("{{ route('laporan_bendahara_umum.register_sp2d_batal') }}");
             let searchParams = url.searchParams;
             searchParams.append("pilihan", pilihan);
@@ -2969,6 +3003,7 @@
             searchParams.append("kasda", kasda);
             searchParams.append("dengan", dengan);
             searchParams.append("tanpa", tanpa);
+            searchParams.append("tglcetak", tglcetak);
             searchParams.append("jenis_print", jenis_print);
             searchParams.append("margin_kiri", margin_kiri);
             searchParams.append("margin_kanan", margin_kanan);

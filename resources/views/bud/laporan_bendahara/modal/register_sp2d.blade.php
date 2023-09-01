@@ -162,6 +162,15 @@
                         </select>
                     </div>
                 </div>
+                {{-- Tanggal Cetak --}}
+                <div class="mb-3 row">
+                    <div class="col-md-2">
+                        <label for="tglcetak" class="form-label">Tanggal Cetak</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input type="date" id="tglcetak_register_sp2d" class="form-control">
+                    </div>
+                </div>
                 {{-- Margin --}}
                 <div class="mb-3 row">
                     <label for="sptb" class="col-md-12 col-form-label">

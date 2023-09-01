@@ -6058,7 +6058,9 @@ class BendaharaUmumDaerahController extends Controller
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
             'data_awal' => $req,
-            'register_sp2d' => $register_sp2d
+            'register_sp2d' => $register_sp2d,
+            // 'tanggal' => $req['tglcetak'],
+            // 'tanda_tangan' => $req['tglcetak'],
         ];
 
         $view = view('bud.laporan_bendahara.cetak.register_sp2d')->with($data);
@@ -6442,6 +6444,8 @@ class BendaharaUmumDaerahController extends Controller
             'pilihan' => $req['pilihan'],
             'data_awal' => $req,
             'register_sp2d' => $realisasi_sp2d,
+            // 'tanggal' => $req['tglcetak'],
+            // 'tanda_tangan' => $req['tglcetak'],
         ];
 
         $view = view('bud.laporan_bendahara.cetak.realisasi_sp2d')->with($data);
@@ -6700,7 +6704,9 @@ class BendaharaUmumDaerahController extends Controller
             'nama_anggaran' => DB::table('tb_status_anggaran')
                 ->select('nama')
                 ->where(['kode' => $req['anggaran']])
-                ->first()
+                ->first(),
+            'tanggal' => $req['tglcetak'],
+            // 'tanda_tangan' => $req['tglcetak'],
         ];
 
         $view = view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
@@ -6763,7 +6769,9 @@ class BendaharaUmumDaerahController extends Controller
             'tanda_tangan' => DB::table('ms_ttd')
                 ->where(['nip' => $req['ttd']])
                 ->whereIn('kode', ['BUD'])
-                ->first()
+                ->first(),
+            // 'tanggal' => $req['tglcetak'],
+            // 'tanda_tangan' => $req['tglcetak'],
         ];
 
         $view = view('bud.laporan_bendahara.cetak.format_bpk')->with($data);
@@ -6835,7 +6843,9 @@ class BendaharaUmumDaerahController extends Controller
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'pilihan' => $req['pilihan'],
             'data_awal' => $req,
-            'register_sp2d' => $register_sp2d
+            'register_sp2d' => $register_sp2d,
+            // 'tanggal' => $req['tglcetak'],
+            // 'tanda_tangan' => $req['tglcetak'],
         ];
 
         $view = view('bud.laporan_bendahara.cetak.register_sp2d_batal')->with($data);
