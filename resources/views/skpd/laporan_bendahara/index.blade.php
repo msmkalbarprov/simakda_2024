@@ -419,6 +419,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="mb-3 row" id="row-hidden5">
+                        <div class="col-md-6">
+                            <label for="pil_akumulasi" class="form-label">Pilih Format</label>
+                            <select class="form-control select2-modal" id="pil_akumulasi" name="pil_akumulasi">
+                                <option value="1">Akumulasi</option>
+                                <option value="2">Per Bulan</option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- Margin --}}
                     <div class="mb-3 row">
                         <label for="sptb" class="col-md-12 col-form-label">
@@ -689,6 +698,10 @@
                 dropdownParent: $('#modal_cetak'),
                 theme: 'bootstrap-5'
             });
+            $('#pil_akumulasi').select2({
+                dropdownParent: $('#modal_cetak'),
+                theme: 'bootstrap-5'
+            });
             $('#jns_cetaksubrincianobjek').select2({
                 dropdownParent: $('#modal_cetak2'),
                 theme: 'bootstrap-5'
@@ -753,6 +766,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
         $('#lapspj').on('click', function() {
@@ -764,6 +778,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapspja').on('click', function() {
@@ -775,6 +790,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapbpbank').on('click', function() {
@@ -787,6 +803,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -800,6 +817,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -813,6 +831,7 @@
             document.getElementById('row-hidden2').hidden = false; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -826,6 +845,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -838,6 +858,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapkasab').on('click', function() {
@@ -851,6 +872,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapdth').on('click', function() {
@@ -864,6 +886,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapregpajak').on('click', function() {
@@ -877,6 +900,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = false; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapregcp').on('click', function() {
@@ -890,6 +914,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapregsppspm').on('click', function() {
@@ -902,6 +927,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = false; // Hide
+            document.getElementById('row-hidden5').hidden = false; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -924,6 +950,7 @@
             document.getElementById('periode1').hidden = false; // Hide
             document.getElementById('periode2').hidden = false; // Hide
             document.getElementById('periode0').hidden = true; // show
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#lapkartukendali').on('click', function() {
@@ -945,6 +972,7 @@
             document.getElementById('periode1').hidden = true; // Hide
             document.getElementById('periode2').hidden = true; // Hide
             document.getElementById('periode0').hidden = false; // show
+            document.getElementById('row-hidden5').hidden = true; // Hide
         });
 
         $('#bku13').on('click', function() {
@@ -957,6 +985,7 @@
             document.getElementById('row-hidden2').hidden = true; // Hide
             document.getElementById('row-hidden3').hidden = true; // Hide
             document.getElementById('row-hidden4').hidden = true; // Hide
+            document.getElementById('row-hidden5').hidden = true; // Hide
             cari_skpd(kd_skpd, 'unit');
         });
 
@@ -1275,6 +1304,8 @@
             let margin_kiri = document.getElementById('margin_kiri').value;
             let margin_kanan = document.getElementById('margin_kanan').value;
 
+            let pil_akumulasi = document.getElementById('pil_akumulasi').value;
+
 
             if (jenis_cetak2 == 'Cetak Buku Sub Rincian Objek') {
                 if (!bendahara2) {
@@ -1589,6 +1620,7 @@
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("jenis_sp2d", jenis_sp2d);
+                searchParams.append("pil_akumulasi", pil_akumulasi);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak BKU Permendagri 13') {
 

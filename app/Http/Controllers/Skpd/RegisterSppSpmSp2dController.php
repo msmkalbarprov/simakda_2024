@@ -26,7 +26,8 @@ class RegisterSppSpmSp2dController extends Controller
         $jenis_reg      = $request->jenis_reg;
         $kd_skpd        = $request->kd_skpd;
         $cetak          = $request->cetak;
-        $jenis_sp2d          = $request->jenis_sp2d;
+        $jenis_sp2d     = $request->jenis_sp2d;
+        $pil_akumulasi  = $request->pil_akumulasi;
 
         $tahun_anggaran = tahun_anggaran();
 
@@ -50,11 +51,17 @@ class RegisterSppSpmSp2dController extends Controller
             $jenis = "and no_sp2d NOT IN (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)";
         }
 
+        if ($pil_akumulasi == '1') {
+            $pilihan = '<=';
+        } else {
+            $pilihan = '=';
+        }
+
         if ($jenis_reg == 'SPP') {
             $rincian = DB::select("SELECT a.tgl_spp as tanggal,a.no_spp as nomor,a.keperluan,a.jns_spp,SUM(b.nilai) nilai
                         FROM trhspp a
                         INNER JOIN trdspp b ON a.kd_skpd=b.kd_skpd AND a.no_spp=b.no_spp
-                        WHERE (a.sp2d_batal=0 OR a.sp2d_batal is NULL) and  month(a.tgl_spp)<= ?
+                        WHERE (a.sp2d_batal=0 OR a.sp2d_batal is NULL) and  month(a.tgl_spp)$pilihan ?
                         and a.kd_skpd= ?
                         GROUP BY a.tgl_spp,a.no_spp,a.keperluan,a.jns_spp
                         ORDER BY a.tgl_spp,a.no_spp", [$bulan, $kd_skpd]);
@@ -63,7 +70,7 @@ class RegisterSppSpmSp2dController extends Controller
                                     FROM trhspm a
                                     INNER JOIN trhspp b ON a.no_spp=b.no_spp AND a.kd_skpd=b.kd_skpd
                                     INNER JOIN trdspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
-                                    WHERE (b.sp2d_batal=0 OR b.sp2d_batal is NULL) and month(a.tgl_spm)<= ?
+                                    WHERE (b.sp2d_batal=0 OR b.sp2d_batal is NULL) and month(a.tgl_spm)$pilihan ?
                                     and a.kd_skpd= ?
                                     GROUP BY a.tgl_spm,a.no_spm,a.keperluan,a.jns_spp
                                     ORDER BY a.tgl_spm,a.no_spm", [$bulan, $kd_skpd]);
@@ -73,7 +80,7 @@ class RegisterSppSpmSp2dController extends Controller
                                         INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd=b.kd_skpd
                                         INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
                                         INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd=d.kd_skpd
-                                        WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.tgl_sp2d)<= ?
+                                        WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.tgl_sp2d)$pilihan ?
                                         and a.kd_skpd= ? $jenis
                                         GROUP BY a.tgl_sp2d,a.no_sp2d,a.no_spm,a.no_spp,a.keperluan,a.jns_spp
                                         ORDER BY a.tgl_sp2d,a.no_sp2d", [$bulan, $kd_skpd]);
