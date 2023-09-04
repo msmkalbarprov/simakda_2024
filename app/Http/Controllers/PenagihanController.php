@@ -923,36 +923,84 @@ class PenagihanController extends Controller
 
     public function simpanPenagihan(Request $request)
     {
-        $no_bukti = $request->no_bukti;
+        $data = $request->data;
         $kd_skpd = Auth::user()->kd_skpd;
         DB::beginTransaction();
         try {
-            $cek_simpan = DB::table('trhtagih')->select('no_bukti')->where(['no_bukti' => $no_bukti, 'kd_skpd' => $kd_skpd])->count();
+            // CEK NILAI KONTRAK 1
+            $kontrak_lalu = DB::table('trhtagih')
+                ->select(DB::raw('ISNULL(SUM(total),0) as total'))
+                ->where('kontrak', $data['no_kontrak'])
+                ->first()
+                ->total;
+
+            $cek = $data['total_nilai'] + $kontrak_lalu;
+
+            $nilai_kontrak = DB::table('ms_kontrak')
+                ->select(DB::raw('ISNULL(SUM(nilai),0) as nilai'))
+                ->where(['no_kontrak' => $data['no_kontrak'], 'kd_skpd' => $kd_skpd])
+                ->first()
+                ->nilai;
+
+            if ($cek > $nilai_kontrak) {
+                return response()->json([
+                    'message' => '4'
+                ]);
+            }
+
+            $cek_simpan = DB::table('trhtagih')
+                ->select('no_bukti')
+                ->where(['no_bukti' => $data['no_bukti'], 'kd_skpd' => $kd_skpd])
+                ->count();
             if ($cek_simpan > 0) {
                 return response()->json([
                     'message' => '1'
                 ]);
             }
-            DB::table('trhtagih')->insert([
-                'no_bukti' => $request->no_bukti,
-                'tgl_bukti' => $request->tgl_bukti,
-                'ket' => $request->ket,
-                'username' => '',
-                'tgl_update' => '',
-                'kd_skpd' => $request->kd_skpd,
-                'nm_skpd' => $request->nm_skpd,
-                'total' => $request->total_nilai,
-                'no_tagih' => '',
-                'sts_tagih' => $request->cstatus,
-                'status' => $request->status_bayar,
-                'tgl_tagih' => $request->ctgltagih,
-                'jns_spp' => $request->cjenis,
-                'jenis' => isset($request->jenis) ? $request->jenis : '',
-                'kontrak' => $request->no_kontrak,
-                'jns_trs' => $request->jns_trs,
-                'ket_bast' => $request->ket_bast,
-                'nm_rekanan' => $request->rekanan,
-            ]);
+            DB::table('trhtagih')
+                ->insert([
+                    'no_bukti' => $data['no_bukti'],
+                    'tgl_bukti' => $data['tgl_bukti'],
+                    'ket' => $data['ket'],
+                    'username' => '',
+                    'tgl_update' => '',
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nm_skpd' => $data['nm_skpd'],
+                    'total' => $data['total_nilai'],
+                    'no_tagih' => '',
+                    'sts_tagih' => $data['cstatus'],
+                    'status' => $data['status_bayar'],
+                    'tgl_tagih' => $data['ctgltagih'],
+                    'jns_spp' => $data['cjenis'],
+                    'jenis' => isset($data['jenis']) ? $data['jenis'] : '',
+                    'kontrak' => $data['no_kontrak'],
+                    'jns_trs' => $data['jns_trs'],
+                    'ket_bast' => $data['ket_bast'],
+                    'nm_rekanan' => $data['rekanan'],
+                ]);
+
+            if (isset($data['rincian_penagihan'])) {
+                DB::table('trdtagih')
+                    ->insert(array_map(function ($value) {
+                        return [
+                            'no_bukti' => $value['no_bukti'],
+                            'no_sp2d' => $value['no_sp2d'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'nm_sub_kegiatan' => $value['nm_sub_kegiatan'],
+                            'kd_rek6' => $value['kd_rek6'],
+                            'kd_rek' => $value['kd_rek'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_skpd' => $value['kd_skpd'],
+                            'sumber' => $value['sumber'],
+                        ];
+                    }, $data['rincian_penagihan']));
+            }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $data['no_bukti'], 'username' => Auth::user()->nama])
+                ->delete();
+
             DB::commit();
             return response()->json([
                 'message' => '2'

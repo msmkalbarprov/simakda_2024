@@ -784,10 +784,68 @@
                 alert("Nomor Kontrak Tidak Boleh Kosong", "error");
                 return;
             }
+            if (tahun != tahun_anggaran) {
+                alert('Tahun tidak sama dengan tahun Anggaran');
+                return;
+            }
+            if (cstatus == false) {
+                cstatus = 0;
+            } else {
+                cstatus = 1;
+            }
             let cek = 0;
-            cek_nilai_kontrak(no_bukti, no_kontrak, ket, ket_bast, total_nilai, sisa_kontrak, tgl_bukti,
-                no_tersimpan, status_bayar, kd_skpd, nm_skpd, jenis, rekanan, cjenis, cstatus,
-                rincian_penagihan, tahun_anggaran, tahun, ctagih, ctgltagih, jns_trs, cek);
+            // cek_nilai_kontrak(no_bukti, no_kontrak, ket, ket_bast, total_nilai, sisa_kontrak, tgl_bukti,
+            //     no_tersimpan, status_bayar, kd_skpd, nm_skpd, jenis, rekanan, cjenis, cstatus,
+            //     rincian_penagihan, tahun_anggaran, tahun, ctagih, ctgltagih, jns_trs, cek);
+
+            let data = {
+                no_bukti,
+                no_kontrak,
+                ket,
+                ket_bast,
+                total_nilai,
+                sisa_kontrak,
+                tgl_bukti,
+                no_tersimpan,
+                status_bayar,
+                kd_skpd,
+                nm_skpd,
+                jenis,
+                rekanan,
+                cjenis,
+                cstatus,
+                rincian_penagihan,
+                tahun_anggaran,
+                tahun,
+                ctagih,
+                ctgltagih,
+                jns_trs,
+                cek
+            };
+
+            $.ajax({
+                url: "{{ route('penagihan.simpan_penagihan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    data: data
+                },
+                success: function(data) {
+                    if (data.message == '0') {
+                        alert('Gagal Simpan..!!');
+                        $('#simpan_penagihan').prop('disabled', false);
+                    } else if (data.message == '1') {
+                        alert('Data Sudah Ada..!!');
+                        $('#simpan_penagihan').prop('disabled', false);
+                    } else if (data.message == '4') {
+                        alert("Nilai Penagihan Melebihi Inputan Master Kontrak.!!");
+                        $('#simpan_penagihan').prop('disabled', false);
+                    } else if (data.message == '2') {
+                        alert('Data Tersimpan..!!');
+                        window.location.href = "{{ route('penagihan.index') }}";
+                    }
+                }
+            })
         });
 
         function cek_nilai_kontrak(no_bukti, no_kontrak, ket, ket_bast, total_nilai, sisa_kontrak, tgl_bukti,
