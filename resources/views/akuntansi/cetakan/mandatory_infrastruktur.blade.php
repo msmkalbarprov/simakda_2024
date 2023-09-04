@@ -37,7 +37,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
     {{-- <body> --}}
 
 
@@ -273,7 +273,7 @@ a
                                 <td class="angka">{{ rupiah($realisasi) }}</td>
                                 <td style="text-align: center">{{ rupiah($persen) }}</td>
                             </tr>
-                        @elseif ($nor == 12)
+                        @elseif ($nor == 13)
                             @php
                                 $anggaranB = $anggaran;
                                 $realisasiB = $realisasi;
