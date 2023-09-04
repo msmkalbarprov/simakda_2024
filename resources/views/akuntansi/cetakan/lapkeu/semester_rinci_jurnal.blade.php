@@ -55,7 +55,7 @@
         </tr>
         @else
         <tr>
-            <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden"><b>LAPORAN REALISASI {{tgl_format_oyoy($tanggal1)}} S.D {{tgl_format_oyoy($tanggal2)}} APBD DAN PROGNOSIS<BR> $bulan2 BULAN BERIKUTNYA </b>
+            <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden"><b>LAPORAN REALISASI {{tgl_format_oyoy($tanggal1)}} S.D {{tgl_format_oyoy($tanggal2)}} APBD DAN PROGNOSIS
         </tr>
         @endif
         <tr>

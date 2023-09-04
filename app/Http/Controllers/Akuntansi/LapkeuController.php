@@ -967,6 +967,7 @@ class LapkeuController extends Controller
             }else{
                 $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
             }
+            
         }else{
             if ($jenis_data==4) {
                 $sus = collect(DB::select("
@@ -1090,18 +1091,23 @@ class LapkeuController extends Controller
         $operator = "<=";
         if ($bulan=="1"||$bulan=="2"||$bulan=="4"||$bulan=="5"||$bulan=="7"||$bulan=="8"||$bulan=="10"||$bulan=="11") {
             $judul  = BULAN($bulan);
+            $bulan2 = 12 - $bulan;
         }else if ($bulan=="3"){
             $judul = "TRIWULAN I";
+            $bulan2 = 12 - $bulan;
         }else if ($bulan=="6"){
             $judul = "SEMESTER PERTAMA";
+            $bulan2 = 12 - $bulan;
         }else if ($bulan=="9"){
             $judul = "TRIWULAN III";
+            $bulan2 = 12 - $bulan;
         }else if ($bulan=="2"){
             $judul = "SEMESTER KEDUA";
+            $bulan2 = 12 - $bulan;
         }else{
-            $Judul = "bulan tidak diketahui";
+            $judul = "$tanggal1 S/D $tanggal2";
+            $bulan2 = "";
         }
-        $bulan2 = 12 - $bulan;
         // dd(left($kd_skpd,3));
 
         // rincian
