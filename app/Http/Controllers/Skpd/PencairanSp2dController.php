@@ -296,7 +296,7 @@ class PencairanSp2dController extends Controller
                         return [
                             'kd_skpd' => $opd,
                             'no_sts' => $no_sts,
-                            'kd_rek6' => $value['kd_trans'],
+                            'kd_rek6' => $value['kd_rek6']== '410411010001' ? $value['kd_rek6'] : $value['kd_trans'], //permintaan bg sandi 04/09/2023 denda keterlambatan tetap rek 4 dan utang belanja rek trx
                             'rupiah' => $value['nilai'],
                             'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
                         ];
