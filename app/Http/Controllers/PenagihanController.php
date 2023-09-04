@@ -1020,13 +1020,12 @@ class PenagihanController extends Controller
             })->where('a.no_bukti', $no_bukti)->get(),
             'daftar_kontrak' => DB::table('ms_kontrak as z')->where('z.kd_skpd', $data_tagih->kd_skpd)
                 ->select('z.no_kontrak', 'z.nilai', DB::raw("(SELECT SUM(nilai) FROM trhtagih a INNER JOIN trdtagih b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE kontrak=z.no_kontrak) as lalu"))->orderBy('z.no_kontrak', 'ASC')->get(),
-            'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
             'daftar_rekanan' => DB::table('ms_rekening_bank_online')->where('kd_skpd', $data_tagih->kd_skpd)->orderBy('rekening', 'ASC')->get(),
             'daftar_sub_kegiatan' => DB::table('trskpd as a')
                 ->select('a.total', 'a.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'a.kd_program', DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=a.kd_program) as nm_program"))
                 ->join('ms_sub_kegiatan AS b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->where(['a.kd_skpd' => $data_tagih->kd_skpd, 'a.status_sub_kegiatan' => '1', 'a.jns_ang' => $status_anggaran->jns_ang, 'b.jns_sub_kegiatan' => '5'])->get(),
-            'kontrak' => DB::table('ms_kontrak')->where('no_kontrak', $data_tagih->kontrak)->first(),
+            'kontrak' => DB::table('ms_kontrak')->where(['no_kontrak' => $data_tagih->kontrak, 'kd_skpd' => $data_tagih->kd_skpd])->first(),
         ];
 
         return view('penatausahaan.pengeluaran.penagihan.edit')->with($data);
