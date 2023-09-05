@@ -1301,75 +1301,89 @@ class LraController extends Controller
         $arraybulan = explode(".", $nilaibulan);
         $nm_bln = $arraybulan[$bulan];
 
+        $map = DB::select("SELECT * FROM map_lak_prov_permen77 ORDER BY seq");
+
+        $sql_pfk_masuk = collect(DB::select("SELECT sum(nilai) nilai 
+                from (
+                select sum(a.nilai) nilai 
+                from trdtrmpot a inner join trhtrmpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd 
+                where a.kd_skpd<>'' and b.jns_spp in ('1','2','3','4','5','6') and 
+                left(a.kd_rek6,12) in ('210106010001','210105010001','210105020001','210105030001','210109010001','210108010001','210107010001 ','210103010001','210104010001','210102010001') 
+                and year(b.tgl_bukti)=$thn_ang and month(b.tgl_bukti)<=$bulan)a"))->first();
+        $pfk_masuk = $sql_pfk_masuk->nilai;
+
+        $sql_pfk_keluar = collect(DB::select("SELECT sum(nilai) nilai from (
+                    select sum(a.nilai) nilai from trdstrpot a inner join trhstrpot b on a.no_bukti=b.no_bukti and 
+                    a.kd_skpd=b.kd_skpd where a.kd_skpd<>'' and b.jns_spp in ('1','2','3','4','5','6') and left(a.kd_rek6,12) in ('210106010001','210105010001','210105020001','210105030001','210109010001','2111001','2110901','2111101','210108010001','210107010001 ','210103010001','210104010001','210102010001') and year(b.tgl_bukti)=$thn_ang and month(b.tgl_bukti)<=$bulan)a"))->first();
+        $pfk_keluar = $sql_pfk_keluar->nilai;
+        $pfk_bersih = $pfk_masuk-$pfk_keluar;
+        //operasi bersih seq 170
+        $sqlseq170 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='170'"))->first();
+        $kode_1_seq170 = $sqlseq170->kode_1;
+        $kode_2_seq170 = $sqlseq170->kode_2;
+        $kode_3_seq170 = $sqlseq170->kode_3;
+        $kecuali_1_seq170 = $sqlseq170->kecuali_1;
+        $kecuali_2_seq170 = $sqlseq170->kecuali_2;
+        $kecuali_3_seq170 = $sqlseq170->kecuali_3;
+        $ob170 = collect(DB::select("SELECT SUM(nilai) nilai
+                    from(
+                    SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kode_1_seq170) 
+                    or left(kd_rek6,6) in ($kode_2_seq170) 
+                    or left(kd_rek6,8) in ($kode_3_seq170))
+                    union all
+                    SELECT SUM(realisasi*-1) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kecuali_1_seq170) 
+                    or left(kd_rek6,6) in ($kecuali_2_seq170) 
+                    or left(kd_rek6,8) in ($kecuali_3_seq170)))a"))->first();
+        $operasi_bersih = $ob170->nilai;
+        //
+        //investasi bersih seq 275
+        $sqlseq275 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='275'"))->first();
+        $kode_1_seq275 = $sqlseq275->kode_1;
+        $kode_2_seq275 = $sqlseq275->kode_2;
+        $kode_3_seq275 = $sqlseq275->kode_3;
+        $kecuali_1_seq275 = $sqlseq275->kecuali_1;
+        $kecuali_2_seq275 = $sqlseq275->kecuali_2;
+        $kecuali_3_seq275 = $sqlseq275->kecuali_3;
+        $ob275 = collect(DB::select("SELECT SUM(nilai) nilai
+                    from(
+                    SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kode_1_seq275) 
+                    or left(kd_rek6,6) in ($kode_2_seq275) 
+                    or left(kd_rek6,8) in ($kode_3_seq275))
+                    union all
+                    SELECT SUM(realisasi*-1) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kecuali_1_seq275) 
+                    or left(kd_rek6,6) in ($kecuali_2_seq275) 
+                    or left(kd_rek6,8) in ($kecuali_3_seq275)))a"))->first();
+        $investasi_bersih = $ob275->nilai;
+        //
+        //pendanaan bersih seq 360
+        $sqlseq360 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='360'"))->first();
+        $kode_1_seq360 = $sqlseq360->kode_1;
+        $kode_2_seq360 = $sqlseq360->kode_2;
+        $kode_3_seq360 = $sqlseq360->kode_3;
+        $kecuali_1_seq360 = $sqlseq360->kecuali_1;
+        $kecuali_2_seq360 = $sqlseq360->kecuali_2;
+        $kecuali_3_seq360 = $sqlseq360->kecuali_3;
+        $ob360 = collect(DB::select("SELECT SUM(nilai) nilai
+                    from(
+                    SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kode_1_seq360) 
+                    or left(kd_rek6,6) in ($kode_2_seq360) 
+                    or left(kd_rek6,8) in ($kode_3_seq360))
+                    union all
+                    SELECT SUM(realisasi*-1) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kecuali_1_seq360) 
+                    or left(kd_rek6,6) in ($kecuali_2_seq360) 
+                    or left(kd_rek6,8) in ($kecuali_3_seq360)))a"))->first();
+        $pendanaan_bersih = $ob360->nilai;
+        //
+        //naik turun kas seq 405
+        $naik_turun_kas = $operasi_bersih+$investasi_bersih+$pendanaan_bersih+$pfk_bersih;
 
 
-
-        $anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd='$kd_skpd' and status=1 order by tgl_dpa DESC"))->first();
-
-
-        $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
-                        from(
-                        --2 surplus lo
-                        select sum(nilai_pen-nilai_bel) nilai,0 nilai_lalu
-                        from(
-                            select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') $skpd_clauses
-                            union all
-                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('8') $skpd_clauses
-                            )a
-                            union all
-                            -- 2 surplus lo lalu
-                            select 0 nilai,isnull(sum(nilai_pen-nilai_bel),0) nilai_lalu
-                            from(
-                            select sum(kredit-debet) as nilai_pen,0 nilai_bel
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                            where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('7') $skpd_clauses
-                            union all
-                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                            where year(tgl_voucher)=$thn_ang1 and left(kd_rek6,1) in ('8') $skpd_clauses
-                            )a
-                        )a"))->first();
-
-        $koreksi = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
-                        from(
-                            --5 nilai lpe 1
-                            select isnull(sum(kredit-debet),0) nilai , 0 nilai_lalu
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$bulan $skpd_clauses
-                            union all
-                            --5 nilai lpe 1 lalu
-                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang1 $skpd_clauses
-                        )a"))->first();
-
-        $selisih = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
-                        from(
-                            --6 nilai dr
-                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where  reev='1' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan
-                            union all
-                            --6 nilai dr lalu
-                            select 0 nilai, isnull(sum(kredit-debet),0) nilai_lalu
-                            from trhju a inner join trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit
-                            where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang1
-                        )a"))->first();
-
-        $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
-                        from(
-                            --7 nilai lpe2
-                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan $skpd_clauses
-                            union all
-                            --7 nilai lpe2 lalu
-                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
-                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang1 $skpd_clauses
-                        )a"))->first();
 
 
 
@@ -1381,27 +1395,24 @@ class LraController extends Controller
 
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            // 'ekuitas_awal'      => $ekuitas_awal,
-            'ekuitas_awal'      => $ekuitas_awal->nilai,
-            'ekuitas_awal_lalu'      => $ekuitas_awal->nilai_lalu,
-            'surdef'            => $surdef->nilai,
-            'surdef_lalu'            => $surdef->nilai_lalu,
-            'koreksi'           => $koreksi->nilai,
-            'koreksi_lalu'           => $koreksi->nilai_lalu,
-            'selisih'           => $selisih->nilai,
-            'selisih_lalu'           => $selisih->nilai_lalu,
-            'lain'              => $lain->nilai,
-            'lain_lalu'              => $lain->nilai_lalu,
+            'map'               => $map,
+            'pfk_masuk'         => $pfk_masuk,
+            'pfk_keluar'        => $pfk_keluar,
+            'pfk_bersih'        => $pfk_bersih,
+            'operasi_bersih'    => $operasi_bersih,
+            'investasi_bersih'  => $investasi_bersih,
+            'pendanaan_bersih'  => $pendanaan_bersih,
+            'naik_turun_kas'    => $naik_turun_kas,
             'enter'             => $enter,
             'daerah'            => $daerah,
             'bulan'             => $bulan,
             'kd_skpd'           => $kd_skpd,
             'nm_bln'            => $nm_bln,
             'thn_ang'           => $thn_ang,
-            'thn_ang1'         => $thn_ang1
+            'thn_ang1'          => $thn_ang1
         ];
         // dd($data['ekuitas_awal']->nilai);
-        $view =  view('akuntansi.cetakan.lpe')->with($data);
+        $view =  view('akuntansi.cetakan.lak')->with($data);
 
 
         if ($cetak == '1') {
