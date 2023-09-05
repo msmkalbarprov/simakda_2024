@@ -159,6 +159,16 @@
                 dropdownParent: $('#modal_cetak_lpe .modal-content'),
                 
             });
+            $(".select_lak").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_lak .modal-content'),
+                
+            });
+            $(".select_lpsal").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_lpsal .modal-content'),
+                
+            });
             // hidden
             document.getElementById('baris_skpd').hidden = true; // Hide
             document.getElementById('baris_periode1').hidden = true; // Hide
@@ -231,6 +241,18 @@
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_lpe').modal('show');
             $("#labelcetak_semester").html("Cetak LPE");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#lak').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_lak').modal('show');
+            $("#labelcetak_semester").html("Cetak LAK");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+        $('#lpsal').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_lpsal').modal('show');
+            $("#labelcetak_semester").html("Cetak LPSAL");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
 
@@ -520,6 +542,36 @@
                 searchParams.append("bulan", bulan);
                 searchParams.append("kd_skpd", kd_skpd);
                 searchParams.append("skpdunit", skpdunit);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak LAK') {
+                let bulan             = document.getElementById('bulan_lak').value;
+
+                
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lak') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("bulan", bulan);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak LPSAL') {
+                let bulan             = document.getElementById('bulan_lpsal').value;
+
+                
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+
+                let url             = new URL("{{ route('laporan_akuntansi.konsolidasi.cetak_lpsal') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("bulan", bulan);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             
