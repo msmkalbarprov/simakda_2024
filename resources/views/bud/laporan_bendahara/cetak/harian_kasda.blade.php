@@ -123,12 +123,25 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="angka">Saldo Lalu</td>
+                <td></td>
+                <td></td>
+                <td class="angka">{{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar) }}</td>
+            </tr>
             @php
+                $hasil = $kasda_lalu->masuk - $kasda_lalu->keluar;
                 $total_masuk = 0;
                 $total_keluar = 0;
             @endphp
             @foreach ($data_kasda as $data)
                 @php
+                    $hasil = $hasil + $data->masuk - $data->keluar;
                     $total_masuk += $data->masuk;
                     $total_keluar += $data->keluar;
                 @endphp
@@ -171,6 +184,7 @@
                         {{ rupiah($data->keluar) }}
                     </td>
                     <td class="angka">
+                        {{ rupiah($hasil) }}
                     </td>
                 </tr>
             @endforeach
@@ -212,7 +226,10 @@
             <td>Rekapitulasi posisi kas di BUD</td>
         </tr>
         <tr>
-            <td>Saldo Bank 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
+            {{-- <td>Saldo Bank 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            </td> --}}
+            <td>Saldo Rekening Koran &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
                 {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
             </td>
         </tr>
