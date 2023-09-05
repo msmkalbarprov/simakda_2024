@@ -234,11 +234,16 @@
             </td>
         </tr>
         <tr>
-            <td>Saldo Bank 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: -</td>
+            {{-- <td>Saldo Bank 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: -</td> --}}
+            <td>Saldo Setara Kas
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                Rp {{ rupiah($setara_kas) }}</td>
         </tr>
         <tr>
-            <td>Total Saldo Kas &nbsp;&nbsp;&nbsp;: Rp
-                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            <td>Total Saldo Kas
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar) + $setara_kas) }}
             </td>
         </tr>
     </table>
