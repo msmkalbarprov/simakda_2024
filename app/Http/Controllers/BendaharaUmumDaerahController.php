@@ -5463,7 +5463,7 @@ class BendaharaUmumDaerahController extends Controller
             SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and $c
             ORDER BY urut,urut1");
 
-        $setara_kas = collect(DB::select("SELECT isnull(sum(nilai),0) as nilai FROM penerimaan_non_sp2d w WHERE w.nomor='43210' and $c"))
+        $setara_kas = collect(DB::select("SELECT isnull(sum(nilai),0) as nilai FROM pengeluaran_non_sp2d w WHERE w.nomor='43210' and $c"))
             ->first()
             ->nilai;
 
