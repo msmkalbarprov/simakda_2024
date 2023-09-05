@@ -7,10 +7,58 @@
             </div>
             <div class="modal-body">
                 {{-- Tanggal --}}
-                <div class="mb-3 row">
+                {{-- <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="" class="form-label">Tanggal</label>
                         <input type="date" id="tgl_harian_kasda" class="form-control">
+                    </div>
+                </div> --}}
+                {{-- Pilihan --}}
+                <div class="mb-3 row" id="row-hidden">
+                    <div class="col-md-6">
+                        <label for="kd_skpd" class="form-label">Pilih</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                id="pilihan_periode_harian_kasda" value="2">
+                            <label class="form-check-label" for="pilihan">PERIODE</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                id="pilihan_bulan_harian_kasda" value="3">
+                            <label class="form-check-label" for="pilihan">BULAN</label>
+                        </div>
+                    </div>
+                </div>
+                {{-- PERIODE --}}
+                <div class="mb-3 row" id="pilih_periode_harian_kasda">
+                    <div class="col-md-6">
+                        <label for="" class="form-label">Periode 1</label>
+                        <input type="date" id="periode1_harian_kasda" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="form-label">Periode 2</label>
+                        <input type="date" id="periode2_harian_kasda" class="form-control">
+                    </div>
+                </div>
+                {{-- BULAN --}}
+                <div class="mb-3 row" id="pilih_bulan_harian_kasda">
+                    <div class="col-md-6">
+                        <label for="periode" class="form-label">Bulan</label>
+                        <select class="form-control select2-harian_kasda" style=" width: 100%;" id="bulan_harian_kasda">
+                            <option value="" disabled selected>Silahkan Pilih</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
                     </div>
                 </div>
                 {{-- Kuasa BUD --}}
@@ -48,7 +96,8 @@
                             data-jenis="layar">Layar</button>
                         <button type="button" class="btn btn-dark btn-md cetak_harian_kasda"
                             data-jenis="excel">Excel</button>
-                        <button type="button" class="btn btn-md btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-md btn-secondary"
+                            data-bs-dismiss="modal">Tutup</button>
                     </div>
                 </div>
             </div>

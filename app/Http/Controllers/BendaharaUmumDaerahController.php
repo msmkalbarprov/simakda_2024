@@ -5155,11 +5155,16 @@ class BendaharaUmumDaerahController extends Controller
 
     public function harianKasda(Request $request)
     {
+        ini_set('max_execution_time', -1);
         $tgl = $request->tgl;
         $halaman = $request->halaman;
         $spasi = $request->spasi;
         $ttd = $request->ttd;
         $jenis_print = $request->jenis_print;
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $bulan = $request->bulan;
 
         if ($tgl == '2022-01-01' || $tgl == '2022-1-1') {
             $saldoawal = "SELECT '2022-01-01' as urut,0 as urut1,0 as kode,'0' as nomor,uraian,nilai as masuk,0 as keluar from buku_kas
@@ -5175,144 +5180,183 @@ class BendaharaUmumDaerahController extends Controller
             $saldoawals = "";
         }
 
-        $kas_kasda_lalu = collect(DB::select("SELECT SUM(masuk)as masuk, sum(keluar)as keluar FROM (
+        // simpan di helper harian_kasda
+
+        // TERBARU PERMINTAAN KAK ENI 09/05/2023 PERBULAN ATAU PER PERIODE
+
+        if ($pilihan == '1') {
+            // BULAN
+            $x = "MONTH(tgl_kas_bud)<'$bulan'";
+            $y = "MONTH(a.tgl_kas)<'$bulan'";
+            $z = "MONTH(tanggal)<'$bulan'";
+
+            $a = "MONTH(tgl_kas_bud)='$bulan'";
+            $b = "MONTH(a.tgl_kas)='$bulan'";
+            $c = "MONTH(tanggal)='$bulan'";
+
+            $e = "MONTH(tanggal)<='$bulan'";
+        } else {
+            // PERIODE
+            $x = "tgl_kas_bud<'$periode1'";
+            $y = "a.tgl_kas<'$periode1'";
+            $z = "tanggal<'$periode1'";
+
+            $a = "tgl_kas_bud BETWEEN '$periode1' AND '$periode2'";
+            $b = "a.tgl_kas BETWEEN '$periode1' AND '$periode2'";
+            $c = "tanggal BETWEEN '$periode1' AND '$periode2'";
+
+            $e = "tanggal<='$periode1'";
+        }
+
+        $kas_kasda_lalu1 = collect(DB::select("SELECT SUM(masuk)as masuk, sum(keluar)as keluar FROM (
 			SELECT tgl_kas_bud as urut,
-		no_kas_bud as urut1,
-		1 as kode,
-		no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a inner join trdspp b
-		on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where status_bud=1 and tgl_kas_bud<?
-		group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan
-		UNION ALL
-		$saldoawals
-		-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
-		SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-		WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and tgl_kas<?
-		GROUP BY a.tgl_kas,a.no_kas,keterangan
+            no_kas_bud as urut1,
+            1 as kode,
+            no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a inner join trdspp b
+            on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where status_bud=1 and $x
+            group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan
+            UNION ALL
+            $saldoawals
+            -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+            SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and $y
+            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		-- 4104	LAIN-LAIN PAD YANG SAH
-		-- 4102	RETRIBUSI DAERAH
-		-- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
-		-- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
-		-- 4301	PENDAPATAN HIBAH
-		-- 4101	PAJAK DAERAH
-		SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-						FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-						LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
-						WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and a.tgl_kas<?
-						GROUP BY a.tgl_kas,a.no_kas,keterangan
+            UNION ALL
+            -- 4104	LAIN-LAIN PAD YANG SAH
+            -- 4102	RETRIBUSI DAERAH
+            -- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
+            -- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
+            -- 4301	PENDAPATAN HIBAH
+            -- 4101	PAJAK DAERAH
+            SELECT a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                            LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+                            WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and $y
+                            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		-- CP
-		SELECT  a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-		WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and a.tgl_kas<?
-		GROUP BY a.tgl_kas,a.no_kas,keterangan
+            UNION ALL
+            -- CP
+            SELECT  a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and $y
+            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		--PENGELUARAN NON SP2D
-		SELECT tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where tanggal<?
+            UNION ALL
+            --PENGELUARAN NON SP2D
+            SELECT tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where $z
 
-		UNION ALL
-		-- RESTITUSI
-		SELECT tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
-		FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and tgl_kas<?
+            UNION ALL
+            -- RESTITUSI
+            SELECT tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
+            FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and $y
 
-		UNION ALL
-		-- KOREKSI
-		SELECT tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where tanggal<?
+            UNION ALL
+            -- KOREKSI
+            SELECT tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where $z
 
-		UNION ALL
-		-- KOREKSI PENGELUARAN
-		SELECT tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where tanggal<?
+            UNION ALL
+            -- KOREKSI PENGELUARAN
+            SELECT tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where $z
 
-		UNION ALL
-		-- DEPOSITO
-		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and tanggal<?
+            UNION ALL
+            -- DEPOSITO
+            SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and $z
 
-		UNION ALL
-		-- PENERIMAAN NON SP2D
-		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and tanggal<?
+            UNION ALL
+            -- PENERIMAAN NON SP2D
+            SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and $z
 
-		UNION ALL
-		-- KOREKSI PENERIMAAN
-		SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal<?
-		)zz
-		", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
+            UNION ALL
+            -- KOREKSI PENERIMAAN
+            SELECT tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and $z
+            )zz
+            "))
+            ->first();;
 
-        $kas_kasda = DB::select("SELECT 'sp2d' as jenis,c.jns_spp,c.jns_beban, tgl_kas_bud as urut,no_kas_bud as urut1, 1 as kode,
-		no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a
-		inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-		inner join trhspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
-		where status_bud=1 and tgl_kas_bud=?
-		group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan,c.jns_spp,c.jns_beban
-		UNION ALL
-		$saldoawal
-		-- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
-		SELECT 'LLPADYS' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
-		WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and tgl_kas=?
-		GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		-- 4104	LAIN-LAIN PAD YANG SAH
-		-- 4102	RETRIBUSI DAERAH
-		-- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
-		-- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
-		-- 4301	PENDAPATAN HIBAH
-		-- 4101	PAJAK DAERAH
-		SELECT 'PAD' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-						FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-						LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
-						WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and a.tgl_kas=?
-						GROUP BY a.tgl_kas,a.no_kas,keterangan
+        $kas_kasda1 = DB::select("SELECT 'sp2d' as jenis,c.jns_spp,c.jns_beban, tgl_kas_bud as urut,no_kas_bud as urut1, 1 as kode,
+            no_sp2d as nomor,a.keperluan as uraian,0 as masuk ,sum(b.nilai) as keluar from trhsp2d a
+            inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+            inner join trhspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
+            where status_bud=1 and $a
+            group by tgl_kas_bud,no_kas_bud,no_sp2d,a.keperluan,c.jns_spp,c.jns_beban
+            UNION ALL
+            $saldoawal
+            -- LAIN-LAIN PENDAPATAN ASLI DAERAH YANG SAH
+            SELECT 'LLPADYS' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas AND a.kd_skpd=b.kd_skpd
+            WHERE LEFT(b.kd_rek6,1) IN ('5','1') and pot_khusus=3  and $b
+            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		-- CP
-		SELECT  'CP' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
-		FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-		WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and a.tgl_kas=?
-		GROUP BY a.tgl_kas,a.no_kas,keterangan
+            UNION ALL
+            -- 4104	LAIN-LAIN PAD YANG SAH
+            -- 4102	RETRIBUSI DAERAH
+            -- 4103	HASIL PENGELOLAAN KEKAYAAN DAERAH YANG DIPISAHKAN
+            -- 4201	PENDAPATAN TRANSFER PEMERINTAH PUSAT
+            -- 4301	PENDAPATAN HIBAH
+            -- 4101	PAJAK DAERAH
+            SELECT 'PAD' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,3 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+                            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                            LEFT JOIN ms_rek3 c ON LEFT(b.kd_rek6,4)=c.kd_rek3
+                            WHERE LEFT(b.kd_rek6,1) IN ('4') and  b.kd_rek6 not in ('420101040001','420101040002','420101040003','410416010001') and $b
+                            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		--PENGELUARAN NON SP2D
-		SELECT 'keluarnonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where tanggal=?
+            UNION ALL
+            -- CP
+            SELECT  'CP' as jenis,'' as jns_spp, '' as jns_beban, a.tgl_kas,a.no_kas,2 as kode,a.no_kas,a.keterangan,SUM(rupiah) as masuk,0 as keluar
+            FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b ON a.no_kas=b.no_kas and a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+            WHERE LEFT(b.kd_rek6,1) IN ('5','1','2') and pot_khusus<>3 and $b
+            GROUP BY a.tgl_kas,a.no_kas,keterangan
 
-		UNION ALL
-		-- RESTITUSI
-		SELECT 'restitusi' as jenis,'' as jns_spp, '' as jns_beban, tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
-		FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and tgl_kas=?
+            UNION ALL
+            --PENGELUARAN NON SP2D
+            SELECT 'keluarnonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,CAST(nomor as VARCHAR),keterangan,0,nilai FROM pengeluaran_non_sp2d x where $c
 
-		UNION ALL
-		-- KOREKSI
-		SELECT 'koreksi' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where tanggal=?
+            UNION ALL
+            -- RESTITUSI
+            SELECT 'restitusi' as jenis,'' as jns_spp, '' as jns_beban, tgl_kas,a.no_kas,3,a.no_kas,keterangan,0,rupiah
+            FROM trdrestitusi b inner join trhrestitusi a on a.kd_skpd=b.kd_skpd and a.no_kas=b.no_kas and a.no_sts=b.no_sts WHERE a.jns_trans=3 and $b
 
-		UNION ALL
-		-- KOREKSI PENGELUARAN
-		SELECT 'koreksipengeluaran' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where tanggal=?
+            UNION ALL
+            -- KOREKSI
+            SELECT 'koreksi' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],3,[no],keterangan,nilai,0 FROM	 trkasout_ppkd w where $c
 
-		UNION ALL
-		-- DEPOSITO
-		SELECT'deposito' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and tanggal=?
+            UNION ALL
+            -- KOREKSI PENGELUARAN
+            SELECT 'koreksipengeluaran' as jenis,'' as jns_spp, '' as jns_beban, tanggal,[no],2,[no],keterangan,0,nilai FROM	 trkoreksi_pengeluaran w where $c
 
-		UNION ALL
-		-- PENERIMAAN NON SP2D
-		SELECT 'terimanonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and tanggal=?
+            UNION ALL
+            -- DEPOSITO
+            SELECT'deposito' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='1' and $c
 
-		UNION ALL
-		-- KOREKSI PENERIMAAN
-		SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal=?
-		ORDER BY urut,urut1", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+            UNION ALL
+            -- PENERIMAAN NON SP2D
+            SELECT 'terimanonsp2d' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM penerimaan_non_sp2d w WHERE w.jenis='2' and $c
+
+            UNION ALL
+            -- KOREKSI PENERIMAAN
+            SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and $c
+            ORDER BY urut,urut1");
+
+        $setara_kas = collect(DB::select("SELECT isnull(sum(nilai),0) as nilai FROM pengeluaran_non_sp2d w WHERE w.nomor='43210' and $e"))
+            ->first()
+            ->nilai;
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'tanggal' => $tgl,
-            'data_kasda' => $kas_kasda,
-            'kasda_lalu' => $kas_kasda_lalu,
+            'data_kasda' => $kas_kasda1,
+            'kasda_lalu' => $kas_kasda_lalu1,
             'tanda_tangan' => DB::table('ms_ttd')
                 ->where(['kode' => 'BUD', 'nip' => $ttd])
                 ->first(),
+            'pilihan' => $pilihan,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'bulan' => $bulan,
+            'setara_kas' => $setara_kas
         ];
 
         $judul = 'KAS HARIAN KASDA';

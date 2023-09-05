@@ -2144,29 +2144,82 @@
         // CETAKAN REGISTER KOREKSI PENERIMAAN
 
         // CETAKAN KAS HARIAN KASDA
+
+        $('#pilih_periode_harian_kasda').hide();
+        $('#pilih_bulan_harian_kasda').hide();
+
         $('#harian_kasda').on('click', function() {
             $('#modal_harian_kasda').modal('show');
         });
 
+        $('#pilihan_periode_harian_kasda').on('click', function() {
+            $('#bulan_harian_kasda').val(null).change();
+            $('#pilih_bulan_harian_kasda').hide();
+            $('#pilih_periode_harian_kasda').show();
+        });
+
+        $('#pilihan_bulan_harian_kasda').on('click', function() {
+            $('#periode1_harian_kasda').val(null);
+            $('#periode2_harian_kasda').val(null);
+            $('#pilih_periode_harian_kasda').hide();
+            $('#pilih_bulan_harian_kasda').show();
+        });
+
         $('.cetak_harian_kasda').on('click', function() {
-            let tgl = document.getElementById('tgl_harian_kasda').value;
+            // let tgl = document.getElementById('tgl_harian_kasda').value;
             let halaman = document.getElementById('halaman_harian_kasda').value;
             let spasi = document.getElementById('spasi_harian_kasda').value;
             let ttd = document.getElementById('ttd_harian_kasda').value;
             let jenis_print = $(this).data("jenis");
 
-            if (!tgl) {
-                alert("Silahkan Pilih Tanggal!");
+            let pilih_bulan = document.getElementById('pilihan_bulan_harian_kasda').checked;
+            let pilih_periode = document.getElementById('pilihan_periode_harian_kasda').checked;
+
+            if (pilih_bulan == false && pilih_periode == false) {
+                alert('Silahkan Pilih Bulan atau Periode!');
                 return;
+            }
+
+            let periode1 = document.getElementById('periode1_harian_kasda').value;
+            let periode2 = document.getElementById('periode2_harian_kasda').value;
+            let bulan = document.getElementById('bulan_harian_kasda').value;
+
+            // if (!tgl) {
+            //     alert("Silahkan Pilih Tanggal!");
+            //     return;
+            // }
+
+            if (pilih_bulan) {
+                if (!bulan) {
+                    alert('Silahkan Pilih Bulan!');
+                    return;
+                }
+            }
+            if (pilih_periode) {
+                if (!periode1 || !periode2) {
+                    alert('Silahkan Pilih Periode!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (pilih_bulan) {
+                pilihan = '1';
+            } else if (pilih_periode) {
+                pilihan = '2';
             }
 
             let url = new URL("{{ route('laporan_bendahara_umum.harian_kasda') }}");
             let searchParams = url.searchParams;
-            searchParams.append("tgl", tgl);
+            // searchParams.append("tgl", tgl);
             searchParams.append("halaman", halaman);
             searchParams.append("spasi", spasi);
             searchParams.append("ttd", ttd);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("bulan", bulan);
             window.open(url.toString(), "_blank");
         });
         //CETAKAN KAS HARIAN KASDA

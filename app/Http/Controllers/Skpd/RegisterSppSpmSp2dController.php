@@ -41,14 +41,19 @@ class RegisterSppSpmSp2dController extends Controller
             $jenis = '';
         } else if ($jenis_sp2d == '1') {
             $jenis = '';
+            $tanggal = 'tgl_sp2d';
         } else if ($jenis_sp2d == '2') {
             $jenis = "and status_bud='1'";
+            $tanggal = 'tgl_kas_bud';
         } else if ($jenis_sp2d == '3') {
             $jenis = "and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)";
+            $tanggal = 'tgl_sp2d';
         } else if ($jenis_sp2d == '4') {
             $jenis = "and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji) and status_bud <> 1";
+            $tanggal = 'tgl_sp2d';
         } else if ($jenis_sp2d == '5') {
             $jenis = "and no_sp2d NOT IN (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)";
+            $tanggal = 'tgl_sp2d';
         }
 
         if ($pil_akumulasi == '1') {
@@ -80,7 +85,7 @@ class RegisterSppSpmSp2dController extends Controller
                                         INNER JOIN trhspm b ON a.no_spm=b.no_spm AND a.kd_skpd=b.kd_skpd
                                         INNER JOIN trhspp c ON b.no_spp=c.no_spp AND b.kd_skpd=c.kd_skpd
                                         INNER JOIN trdspp d ON c.no_spp=d.no_spp AND c.kd_skpd=d.kd_skpd
-                                        WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.tgl_sp2d)$pilihan ?
+                                        WHERE (c.sp2d_batal=0 OR c.sp2d_batal is NULL) and month(a.$tanggal)$pilihan ?
                                         and a.kd_skpd= ? $jenis
                                         GROUP BY a.tgl_sp2d,a.no_sp2d,a.no_spm,a.no_spp,a.keperluan,a.jns_spp
                                         ORDER BY a.tgl_sp2d,a.no_sp2d", [$bulan, $kd_skpd]);

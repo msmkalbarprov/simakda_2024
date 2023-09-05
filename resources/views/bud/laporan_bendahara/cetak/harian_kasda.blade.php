@@ -77,12 +77,31 @@
 
     <table style="width: 100%" align="center">
         <tr>
-            <td style="width: 10%">Hari</td>
-            <td>: {{ hari(\Carbon\Carbon::parse($tanggal)->format('D')) }}</td>
+            @if ($pilihan == '1')
+                <td style="width: 10%">Bulan</td>
+                <td>
+                    : {{ bulan($bulan) }}
+                </td>
+            @else
+                <td style="width: 10%">Periode</td>
+                <td>
+                    : {{ hari(\Carbon\Carbon::parse($periode1)->format('D')) }}
+                </td>
+            @endif
+
         </tr>
         <tr>
-            <td style="width: 10%">Tanggal</td>
-            <td>: {{ tanggal($tanggal) }}</td>
+            @if ($pilihan == '1')
+                <td style="width: 10%">Bulan</td>
+                <td>
+                    : {{ bulan($bulan) }}
+                </td>
+            @else
+                <td style="width: 10%">Periode</td>
+                <td>
+                    : {{ tanggal($periode1) }} s/d {{ tanggal($periode2) }}
+                </td>
+            @endif
         </tr>
     </table>
 
@@ -90,10 +109,12 @@
         <thead>
             <tr>
                 <th rowspan="2"><b>No.</b></th>
+                <th rowspan="2" style="width: 5%"><b>Tanggal</b></th>
                 <th colspan="3"><b>No. Bukti Transaksi</b></th>
                 <th rowspan="2"><b>Uraian</b></th>
                 <th rowspan="2"><b>Penerimaan</b></th>
                 <th rowspan="2"><b>Pengeluaran</b></th>
+                <th rowspan="2"><b>Saldo</b></th>
             </tr>
             <tr>
                 <th>SP2D</th>
@@ -102,17 +123,33 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="angka">Saldo Lalu</td>
+                <td></td>
+                <td></td>
+                <td class="angka">{{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar) }}</td>
+            </tr>
             @php
+                $hasil = $kasda_lalu->masuk - $kasda_lalu->keluar;
                 $total_masuk = 0;
                 $total_keluar = 0;
             @endphp
             @foreach ($data_kasda as $data)
                 @php
+                    $hasil = $hasil + $data->masuk - $data->keluar;
                     $total_masuk += $data->masuk;
                     $total_keluar += $data->keluar;
                 @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
+                    <td>
+                        {{ $data->urut }}
+                    </td>
                     <td>
                         @if ($data->kode == 1)
                             {{ $data->nomor }}
@@ -146,33 +183,40 @@
                     <td class="angka">
                         {{ rupiah($data->keluar) }}
                     </td>
+                    <td class="angka">
+                        {{ rupiah($hasil) }}
+                    </td>
                 </tr>
             @endforeach
             <tr>
-                <td class="angka" colspan="5" style="border-left:hidden;border-bottom:hidden">Jumlah</td>
+                <td class="angka" colspan="6" style="border-left:hidden;border-bottom:hidden">Jumlah</td>
                 <td class="angka">{{ rupiah($total_masuk) }}</td>
                 <td class="angka">{{ rupiah($total_keluar) }}</td>
+                <td class="angka"></td>
             </tr>
             <tr>
-                <td class="angka" colspan="5" style="border-top:hidden;border-left:hidden;">Perubahan posisi
+                <td class="angka" colspan="6" style="border-top:hidden;border-left:hidden;">Perubahan posisi
                     kas hari ini</td>
                 <td class="angka">{{ rupiah($kasda_lalu->masuk + $total_masuk) }}</td>
                 <td class="angka">{{ rupiah($kasda_lalu->keluar + $total_keluar) }}</td>
+                <td class="angka"></td>
             </tr>
             <tr>
-                <td class="angka" colspan="5" style="border-top:hidden;border-left:hidden;">Posisi Kas (H-1)
+                <td class="angka" colspan="6" style="border-top:hidden;border-left:hidden;">Posisi Kas (H-1)
                 </td>
                 <td style="border-right: hidden"></td>
                 <td class="angka">{{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar) }}</td>
+                <td class="angka"></td>
             </tr>
             <tr>
-                <td class="angka" colspan="5" style="border-top:hidden;border-left:hidden;border-bottom:hidden;">
+                <td class="angka" colspan="6" style="border-top:hidden;border-left:hidden;border-bottom:hidden;">
                     Posisi Kas (H)
                 </td>
                 <td style="border-right: hidden"></td>
                 <td class="angka">
                     {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
                 </td>
+                <td class="angka"></td>
             </tr>
         </tbody>
     </table>
@@ -182,16 +226,24 @@
             <td>Rekapitulasi posisi kas di BUD</td>
         </tr>
         <tr>
-            <td>Saldo Bank 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
+            {{-- <td>Saldo Bank 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            </td> --}}
+            <td>Saldo Rekening Koran &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Rp
                 {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
             </td>
         </tr>
         <tr>
-            <td>Saldo Bank 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: -</td>
+            {{-- <td>Saldo Bank 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: -</td> --}}
+            <td>Saldo Setara Kas
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                Rp {{ rupiah($setara_kas) }}</td>
         </tr>
         <tr>
-            <td>Total Saldo Kas &nbsp;&nbsp;&nbsp;: Rp
-                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar)) }}
+            <td>Total Saldo Kas
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                Rp
+                {{ rupiah($kasda_lalu->masuk - $kasda_lalu->keluar + ($total_masuk - $total_keluar) + $setara_kas) }}
             </td>
         </tr>
     </table>
