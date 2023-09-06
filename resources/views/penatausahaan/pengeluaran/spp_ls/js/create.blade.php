@@ -1104,6 +1104,7 @@
                         $("#total").val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(akumulasi));
+                        $('#tgl_spp').prop('disabled', true);
                     }
                 },
                 complete: function(data) {
