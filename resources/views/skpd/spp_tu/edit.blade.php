@@ -26,7 +26,7 @@
                         <label for="tgl_spp" class="col-md-2 col-form-label">Tanggal SPP</label>
                         <div class="col-md-4">
                             <input class="form-control" type="date" id="tgl_spp" name="tgl_spp" required
-                                value="{{ $spp->tgl_spp }}">
+                                value="{{ $spp->tgl_spp }}" readonly>
                             <input class="form-control" type="date" id="tgl_lalu" name="tgl_lalu" required readonly
                                 hidden value="{{ tanggal_spp_lalu() }}">
                             <input class="form-control" type="text" id="no_urut" name="no_urut" required readonly

@@ -519,6 +519,8 @@
                         $('#total_sumber').val(null);
                         $('#lalu_sumber').val(null);
                         $('#sisa_sumber').val(null);
+
+                        $('#tgl_spp').prop('disabled', true);
                     }
                 },
                 complete: function(data) {

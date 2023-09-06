@@ -693,6 +693,7 @@
                         $('#kd_sub_kegiatan').val("");
                         $('#kode_rekening').empty();
                         $('#sumber_dana').empty();
+                        $('#tgl_bukti').prop('disabled', true);
                     }
                 },
                 complete: function(data) {
