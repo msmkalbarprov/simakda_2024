@@ -27,7 +27,7 @@
                         <label for="tgl_bukti" class="col-md-2 col-form-label">Tanggal Penagihan</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control" value="{{ $data_tagih->tgl_bukti }}" id="tgl_bukti"
-                                name="tgl_bukti">
+                                name="tgl_bukti" readonly>
                         </div>
                     </div>
                     <!-- Kode SKPD Nama SKPD -->

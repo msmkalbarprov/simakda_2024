@@ -75,7 +75,7 @@
                         <label for="tgl_spp" class="col-md-2 col-form-label">Tanggal SPP</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control" value="{{ $sppls->tgl_spp }}" id="tgl_spp"
-                                name="tgl_spp">
+                                name="tgl_spp" readonly>
                             <input type="date" class="form-control" id="tgl_spp_lalu" name="tgl_spp_lalu" hidden
                                 value="{{ $data_tgl->tgl_spp }}">
                         </div>
