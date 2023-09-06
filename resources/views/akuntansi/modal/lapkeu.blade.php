@@ -789,12 +789,13 @@
 
                 <div class="mb-3 row">
                     <div class="col-md-6">
-                        <label for="ttd" class="form-label">Tanda Tangan</label>
-                        <select class="form-control select_semesterrinci @error('ttd') is-invalid @enderror"
-                            style=" width: 100%;" id="ttd_semesterrinci" name="ttd_semesterrinci">
-                            <option value="SUTARMIDJI">SUTARMIDJI</option>
+                        <label for="pa_kpa_rinci" class="form-label">PA/KPA</label>
+                        <select class="form-control select_semesterrinci @error('pa_kpa_rinci') is-invalid @enderror"
+                            style=" width: 100%;" id="pa_kpa_rinci" name="pa_kpa_rinci">
+                            <option value="" disabled selected>Silahkan Pilihh</option>
+                            <option value="-">SUTARMIDJI</option>
                         </select>
-                        @error('ttd')
+                        @error('pa_kpa_rinci')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

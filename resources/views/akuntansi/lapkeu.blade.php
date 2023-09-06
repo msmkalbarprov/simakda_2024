@@ -466,6 +466,11 @@
         $('#kd_skpd_semester').on('select2:select', function() {
             let kd_skpd = this.value;
             cari_pakpa(kd_skpd);
+        });
+
+        $('#kd_skpd_semesterrinci').on('select2:select', function() {
+            let kd_skpd = this.value;
+            cari_pakpa(kd_skpd);
         });        
 
 
@@ -503,9 +508,19 @@
                 success: function(data) {
                     $('#pa_kpa').empty();
                     $('#pa_kpa').append(
-                        `<option value="" disabled selected>Pilih PA/KPA</option>`);
+                        `<option value="" disabled selected>Pilih PA/KPA</option>
+                        <option value="0">Tanpa Tanda Tangan</option>`);
                     $.each(data, function(index, data) {
                         $('#pa_kpa').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                    $('#pa_kpa_rinci').empty();
+                    $('#pa_kpa_rinci').append(
+                        `<option value="" disabled selected>Pilih PA/KPA</option>
+                        <option value="0">Tanpa Tanda Tangan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pa_kpa_rinci').append(
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
@@ -709,7 +724,7 @@
                 let tanggal1                 = document.getElementById('tanggal1_semesterrinci').value;
                 let tanggal2                 = document.getElementById('tanggal2_semesterrinci').value;
                 let tgl_ttd                  = document.getElementById('tgl_ttd_semesterrinci').value;
-                let ttd                      = document.getElementById('ttd_semesterrinci').value;
+                let ttd                      = document.getElementById('pa_kpa_rinci').value;
                 let jns_anggaran             = document.getElementById('jns_anggaran_semesterrinci').value;
                 let jenis_data               = document.getElementById('jenis_data_semesterrinci').value;
                 let panjang_data             = document.getElementById('panjang_data_semesterrinci').value;

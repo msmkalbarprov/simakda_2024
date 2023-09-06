@@ -924,7 +924,7 @@ class LapkeuController extends Controller
         }
 
         // TANDA TANGAN
-        if ($ttd == '0') {
+        if ($ttd == "0") {
             $tandatangan = "";
         } else {
             // $tandatangan = DB::table('ms_ttd')
@@ -1060,7 +1060,9 @@ class LapkeuController extends Controller
             $skpd_clauses = "";
             $skpd_clause_prog = "";
             $skpd_clause_ang = "";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
         } else {
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
             if ($skpdunit == "unit") {
                 $kd_skpd = $kd_skpd;
             } else if ($skpdunit == "skpd") {
@@ -1077,14 +1079,15 @@ class LapkeuController extends Controller
         $tahun_anggaran = tahun_anggaran();
 
         // TANDA TANGAN
-        if ($ttd == '0') {
+        if ($ttd == "0") {
             $tandatangan = "";
         } else {
-            $tandatangan = DB::table('ms_ttd')
-                ->select('nama', 'nip', 'jabatan', 'pangkat')
-                ->where('nama', $ttd)
-                ->whereIn('kode', ['1'])
-                ->first();
+            // $tandatangan = DB::table('ms_ttd')
+            //     ->select('nama', 'nip', 'jabatan', 'pangkat')
+            //     ->where('nip', $ttd)
+            //     ->whereIn('kode', ['1'])
+            //     ->first();
+            $tandatangan = collect(DB::select("SELECT top 1 nama,nip,jabatan,pangkat from ms_ttd where nip='$ttd'"))->first();
         }
         $isi    = "sd_bulan_ini";
         $pilih  = "S/D";
@@ -1750,7 +1753,6 @@ class LapkeuController extends Controller
 
 
 
-        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
         // dd($sus);
         if ($jenis_data == 5 && $kd_skpd!= "") {
             $data = [
