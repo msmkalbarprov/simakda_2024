@@ -120,6 +120,14 @@ class TerimaSp2dController extends Controller
 
         $sp2d = cari_sp2d($sp2d, '10', $kd_skpd);
 
+        $cek_callback = DB::table('trhsp2d as a')
+            ->select('b.status', 'b.ket_payment')
+            ->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')
+            ->where(['a.no_sp2d' => $no_sp2d])
+            ->first();
+
+        // dd($cek_callback);
+
         $data = [
             'sp2d' => DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->first(),
             'daerah' => DB::table('sclient')->select('provinsi')->where(['kd_skpd' => $data_sp2d->kd_skpd])->first(),
@@ -140,7 +148,8 @@ class TerimaSp2dController extends Controller
             'sub_kegiatan' => $sp2d,
             'potongan1' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '1', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),
             'potongan2' => DB::table('trspmpot as a')->join('ms_pot as b', 'a.map_pot', '=', 'b.map_pot')->where(['a.no_spm' => $data_sp2d->no_spm, 'kelompok' => '2', 'kd_skpd' => $data_sp2d->kd_skpd])->get(),
-            'kd_skpd' => $kd_skpd
+            'kd_skpd' => $kd_skpd,
+            'cek' => $cek_callback
         ];
 
         return view('skpd.terima_sp2d.show')->with($data);

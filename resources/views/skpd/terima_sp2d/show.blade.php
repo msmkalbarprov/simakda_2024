@@ -10,18 +10,24 @@
                 </div>
                 <div class="card-body">
                     @csrf
+                    <div class="alert alert-warning alert-block">
+                        <b style="font-size:16px">
+                            Informasi SP2D di Bank Kalbar : {{ $cek->ket_payment }}
+                        </b>
+                    </div>
+
                     {{-- No Cair --}}
                     <div class="mb-3 row">
                         <div class="col-md-12">
                             <a href="{{ route('terima_sp2d.index') }}" class="btn btn-warning btn-md">Kembali</a>
                             @if ($sp2d->status == '1')
                             @elseif ($sp2d->status_terima == '1')
-                                <button class="btn btn-md btn-primary" id="batal_terima"
-                                    style="border: 1px solid black">BATAL
+                                <button class="btn btn-md btn-primary" id="batal_terima" style="border: 1px solid black"
+                                    {{ $cek->status != '2' ? 'disabled' : '' }}>BATAL
                                     TERIMA</button>
                             @else
-                                <button class="btn btn-md btn-primary" id="terima_sp2d"
-                                    style="border: 1px solid black">TERIMA SP2D</button>
+                                <button class="btn btn-md btn-primary" id="terima_sp2d" style="border: 1px solid black"
+                                    {{ $cek->status != '2' ? 'disabled' : '' }}>TERIMA SP2D</button>
                             @endif
                         </div>
                     </div>
