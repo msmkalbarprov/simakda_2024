@@ -8,6 +8,8 @@
                     <button class="btn btn-success btn-md" style="pointer-events: none">SP2D Sudah Cair</button>
                     <button class="btn btn-light btn-md" style="pointer-events: none;border:1px solid black">SP2D Belum
                         Cair</button>
+                    <button class="btn btn-primary btn-md" id="filter"><i class="fa fa-filter"></i>Filter</button>
+                    <input type="hidden" name="tipe" id="tipe">
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -24,42 +26,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @php
-                                        $no = 0;
-                                    @endphp
-                                    @foreach ($cair_sp2d->chunk(5) as $data)
-                                        @foreach ($data as $sp2d)
-                                            @if ($sp2d->status_bud == '1')
-                                                <tr>
-                                                    <td>{{ ++$no }}</td>
-                                                    <td style="background-color:#4bbe68;color:white">{{ $sp2d->no_sp2d }}
-                                                    </td>
-                                                    <td style="background-color:#4bbe68;color:white">{{ $sp2d->no_spm }}
-                                                    </td>
-                                                    <td style="background-color:#4bbe68;color:white">
-                                                        {{ tanggal($sp2d->tgl_sp2d) }}</td>
-                                                    <td style="background-color:#4bbe68;color:white">{{ $sp2d->kd_skpd }}
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ route('pencairan_sp2d.tampil', $sp2d->no_sp2d) }}"
-                                                            class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
-                                                    </td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td>{{ ++$no }}</td>
-                                                    <td>{{ $sp2d->no_sp2d }}</td>
-                                                    <td>{{ $sp2d->no_spm }}</td>
-                                                    <td>{{ tanggal($sp2d->tgl_sp2d) }}</td>
-                                                    <td>{{ $sp2d->kd_skpd }}</td>
-                                                    <td>
-                                                        <a href="{{ route('pencairan_sp2d.tampil', $sp2d->no_sp2d) }}"
-                                                            class="btn btn-info btn-sm"><i class="uil-eye"></i></a>
-                                                    </td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
-                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -69,6 +35,36 @@
         </div> <!-- end col -->
     </div>
 
+    <div id="modal_filter" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">FILTER</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-md btn-info filter" data-jenis="online_cair">
+                                SP2D ONLINE CAIR
+                            </button>
+                            <button type="button" class="btn btn-md btn-danger filter" data-jenis="online_blmcair">
+                                SP2D ONLINE BELUM CAIR
+                            </button>
+                            <button type="button" class="btn btn-md btn-info filter" data-jenis="offline_cair">
+                                SP2D OFFLINE CAIR
+                            </button>
+                            <button type="button" class="btn btn-md btn-danger filter" data-jenis="offline_blmcair">
+                                SP2D OFFLINE BELUM CAIR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <style>

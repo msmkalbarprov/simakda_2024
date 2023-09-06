@@ -16,9 +16,29 @@ class PencairanSp2dController extends Controller
         return view('penatausahaan.pengeluaran.pencairan_sp2d.index');
     }
 
-    public function loadData()
+    public function loadData(Request $request)
     {
-        $data = DB::table('trhsp2d as a')->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')->select('a.no_sp2d', 'tgl_sp2d', 'no_spm', 'tgl_spm', 'no_spp', 'tgl_spp', 'kd_skpd', 'nm_skpd', 'jns_spp', 'keperluan', 'bulan', 'no_spd', 'bank', 'nmrekan', 'no_rek', 'npwp', 'no_kas', 'no_kas_bud', 'tgl_kas', 'tgl_kas_bud', 'nocek', 'status_bud', 'jenis_beban', 'no_spd', 'no_uji')->orderBy('a.no_sp2d')->orderBy('kd_skpd')->get();
+        $tipe = $request->tipe;
+
+        $data = DB::table('trhsp2d as a')
+            ->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')
+            ->join('trhuji as c', 'b.no_uji', '=', 'c.no_uji')
+            ->select('a.no_sp2d', 'a.tgl_sp2d', 'a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.no_kas', 'a.no_kas_bud', 'a.tgl_kas', 'a.tgl_kas_bud', 'a.nocek', 'a.status_bud', 'a.jenis_beban', 'a.no_spd', 'b.no_uji')
+            ->where(function ($query) use ($tipe) {
+                if ($tipe == 'online_cair') {
+                    $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['1', '1']);
+                } else if ($tipe == 'online_blmcair') {
+                    $query->whereRaw("c.sp2d_online=? and a.status_bud<>?", ['1', '1']);
+                } else if ($tipe == 'offline_cair') {
+                    $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['0', '1']);
+                } else if ($tipe == 'offline_blmcair') {
+                    $query->whereRaw("c.sp2d_online=? and a.status_bud<>?", ['0', '1']);
+                }
+            })
+            ->orderBy('a.no_sp2d')
+            ->orderBy('kd_skpd')
+            ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("pencairan_sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
             return $btn;

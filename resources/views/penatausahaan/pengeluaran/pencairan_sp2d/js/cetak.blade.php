@@ -5,7 +5,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#cair_sp2d').DataTable({
+
+        let cair_sp2d = $('#cair_sp2d').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
@@ -14,6 +15,9 @@
             ajax: {
                 "url": "{{ route('pencairan_sp2d.load_data') }}",
                 "type": "POST",
+                "data": function(d) {
+                    d.tipe = document.getElementById('tipe').value;
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_bud == 1) {
@@ -268,6 +272,17 @@
                     }
                 })
             }
+        });
+
+        $('#filter').on('click', function() {
+            $('#modal_filter').modal('show');
+        });
+
+        $('.filter').on('click', function() {
+            let jenis = $(this).data("jenis");
+            $('#tipe').val(jenis);
+            cair_sp2d.ajax.reload();
+            $('#modal_filter').modal('hide');
         });
 
     });
