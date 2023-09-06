@@ -127,6 +127,7 @@
             $seq     =$row->seq;
             $bold     =$row->bold;
             $uraian   =$row->uraian;
+            $tambah   =$row->tambah;
             $thn_m1     =$row->thn_m1;
             if($thn_m1<0){
                 $x1="(";
@@ -171,7 +172,7 @@
                     WHERE (left(kd_rek6,4) in ($kecuali_1) 
                     or left(kd_rek6,6) in ($kecuali_2) 
                     or left(kd_rek6,8) in ($kecuali_3)))a"))->first();
-            $nilai = $nilainya->nilai;
+            $nilai = $nilainya->nilai+$tambah;
             if($nilai<0){
                 $x="(";
                 $nilaii=$nilai*-1;
