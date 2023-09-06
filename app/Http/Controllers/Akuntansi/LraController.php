@@ -1318,13 +1318,14 @@ class LraController extends Controller
         $pfk_keluar = $sql_pfk_keluar->nilai;
         $pfk_bersih = $pfk_masuk-$pfk_keluar;
         //operasi bersih seq 170
-        $sqlseq170 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='170'"))->first();
+        $sqlseq170 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3,tambah from map_lak_prov_permen77 where seq='170'"))->first();
         $kode_1_seq170 = $sqlseq170->kode_1;
         $kode_2_seq170 = $sqlseq170->kode_2;
         $kode_3_seq170 = $sqlseq170->kode_3;
         $kecuali_1_seq170 = $sqlseq170->kecuali_1;
         $kecuali_2_seq170 = $sqlseq170->kecuali_2;
         $kecuali_3_seq170 = $sqlseq170->kecuali_3;
+        $tambah_seq170 = $sqlseq170->tambah;
         $ob170 = collect(DB::select("SELECT SUM(nilai) nilai
                     from(
                     SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
@@ -1336,16 +1337,17 @@ class LraController extends Controller
                     WHERE (left(kd_rek6,4) in ($kecuali_1_seq170) 
                     or left(kd_rek6,6) in ($kecuali_2_seq170) 
                     or left(kd_rek6,8) in ($kecuali_3_seq170)))a"))->first();
-        $operasi_bersih = $ob170->nilai;
+        $operasi_bersih = $ob170->nilai+$tambah_seq170;
         //
         //investasi bersih seq 275
-        $sqlseq275 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='275'"))->first();
+        $sqlseq275 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3,tambah from map_lak_prov_permen77 where seq='275'"))->first();
         $kode_1_seq275 = $sqlseq275->kode_1;
         $kode_2_seq275 = $sqlseq275->kode_2;
         $kode_3_seq275 = $sqlseq275->kode_3;
         $kecuali_1_seq275 = $sqlseq275->kecuali_1;
         $kecuali_2_seq275 = $sqlseq275->kecuali_2;
         $kecuali_3_seq275 = $sqlseq275->kecuali_3;
+        $tambah_seq275 = $sqlseq275->tambah;
         $ob275 = collect(DB::select("SELECT SUM(nilai) nilai
                     from(
                     SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
@@ -1357,16 +1359,17 @@ class LraController extends Controller
                     WHERE (left(kd_rek6,4) in ($kecuali_1_seq275) 
                     or left(kd_rek6,6) in ($kecuali_2_seq275) 
                     or left(kd_rek6,8) in ($kecuali_3_seq275)))a"))->first();
-        $investasi_bersih = $ob275->nilai;
+        $investasi_bersih = $ob275->nilai+$tambah_seq275;
         //
         //pendanaan bersih seq 360
-        $sqlseq360 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3 from map_lak_prov_permen77 where seq='360'"))->first();
+        $sqlseq360 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3,tambah from map_lak_prov_permen77 where seq='360'"))->first();
         $kode_1_seq360 = $sqlseq360->kode_1;
         $kode_2_seq360 = $sqlseq360->kode_2;
         $kode_3_seq360 = $sqlseq360->kode_3;
         $kecuali_1_seq360 = $sqlseq360->kecuali_1;
         $kecuali_2_seq360 = $sqlseq360->kecuali_2;
         $kecuali_3_seq360 = $sqlseq360->kecuali_3;
+        $tambah_seq360 = $sqlseq360->tambah;
         $ob360 = collect(DB::select("SELECT SUM(nilai) nilai
                     from(
                     SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
@@ -1378,7 +1381,7 @@ class LraController extends Controller
                     WHERE (left(kd_rek6,4) in ($kecuali_1_seq360) 
                     or left(kd_rek6,6) in ($kecuali_2_seq360) 
                     or left(kd_rek6,8) in ($kecuali_3_seq360)))a"))->first();
-        $pendanaan_bersih = $ob360->nilai;
+        $pendanaan_bersih = $ob360->nilai+$tambah_seq360;
         //
         //naik turun kas seq 405
         $naik_turun_kas = $operasi_bersih+$investasi_bersih+$pendanaan_bersih+$pfk_bersih;
