@@ -1385,6 +1385,29 @@ class LraController extends Controller
         //
         //naik turun kas seq 405
         $naik_turun_kas = $operasi_bersih+$investasi_bersih+$pendanaan_bersih+$pfk_bersih;
+        //
+        //saldo awal kas seq 410
+        $sqlseq410 = collect(DB::select("SELECT isnull(kode_1,'999') kode_1, isnull(kode_2,'999') kode_2 , isnull(kode_3,'999') kode_3, isnull(kecuali_1,'999') kecuali_1, isnull(kecuali_2,'999') kecuali_2, isnull(kecuali_3,'999') kecuali_3,tambah from map_lak_prov_permen77 where seq='410'"))->first();
+        $kode_1_seq410 = $sqlseq410->kode_1;
+        $kode_2_seq410 = $sqlseq410->kode_2;
+        $kode_3_seq410 = $sqlseq410->kode_3;
+        $kecuali_1_seq410 = $sqlseq410->kecuali_1;
+        $kecuali_2_seq410 = $sqlseq410->kecuali_2;
+        $kecuali_3_seq410 = $sqlseq410->kecuali_3;
+        $tambah_seq410 = $sqlseq410->tambah;
+        $ob410 = collect(DB::select("SELECT SUM(nilai) nilai
+                    from(
+                    SELECT SUM(realisasi) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kode_1_seq410) 
+                    or left(kd_rek6,6) in ($kode_2_seq410) 
+                    or left(kd_rek6,8) in ($kode_3_seq410))
+                    union all
+                    SELECT SUM(realisasi*-1) as nilai FROM Data_realisasi_tanpa_anggaran($bulan,$thn_ang)
+                    WHERE (left(kd_rek6,4) in ($kecuali_1_seq410) 
+                    or left(kd_rek6,6) in ($kecuali_2_seq410) 
+                    or left(kd_rek6,8) in ($kecuali_3_seq410)))a"))->first();
+        $saldo_akhir_kas = $ob410->nilai+$tambah_seq410+$naik_turun_kas;
+        //
 
 
 
@@ -1406,6 +1429,7 @@ class LraController extends Controller
             'investasi_bersih'  => $investasi_bersih,
             'pendanaan_bersih'  => $pendanaan_bersih,
             'naik_turun_kas'    => $naik_turun_kas,
+            'saldo_akhir_kas'   => $saldo_akhir_kas,
             'enter'             => $enter,
             'daerah'            => $daerah,
             'bulan'             => $bulan,

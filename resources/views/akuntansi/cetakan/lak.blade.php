@@ -119,6 +119,16 @@
             $yntk="";
         }
 
+        if($saldo_akhir_kas<0){
+            $xsak="(";
+            $saldo_akhir_kass=$saldo_akhir_kas*-1;
+            $ysak=")";
+        }else{
+            $xsak="";
+            $saldo_akhir_kass=$saldo_akhir_kas;
+            $ysak="";
+        }
+
     @endphp
     @foreach($map as $row)
         @php
@@ -256,6 +266,13 @@
                     <td valign="top"  width="5%" align="center" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$no}}</td>
                     <td valign="top"  width="65%"  align="left" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
                     <td valign="top"  width="15%" align="right" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$xntk}}{{rupiah($naik_turun_kass)}}{{$yntk}}</td>
+                    <td valign="top"  width="15%" align="right" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$x1}}{{rupiah($nilai_sbl)}}{{$y1}}</td>
+                </tr>
+            @elseif($seq==420)
+                <tr>
+                    <td valign="top"  width="5%" align="center" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$no}}</td>
+                    <td valign="top"  width="65%"  align="left" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
+                    <td valign="top"  width="15%" align="right" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$xsak}}{{rupiah($saldo_akhir_kass)}}{{$ysak}}</td>
                     <td valign="top"  width="15%" align="right" style="font-size:14px;border-bottom:none;border-top: solid 1px black;">{{$x1}}{{rupiah($nilai_sbl)}}{{$y1}}</td>
                 </tr>
             @else
