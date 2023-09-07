@@ -115,6 +115,12 @@
             let ppkd = document.getElementById('ppkd').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+
             let jenis_print = $(this).data("jenis");
             let tanpa;
             if (tanpa_tanggal == false) {
@@ -144,7 +150,11 @@
             searchParams.append("ppkd", ppkd);
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("tanpa", tanpa);
-            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("jenis_print", jenis_print)
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_kiri", margin_kiri);
             window.open(url.toString(), "_blank");
         });
 
@@ -158,6 +168,12 @@
             let ppkd = document.getElementById('ppkd').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tanpa_tanggal = document.getElementById('tanpa_tanggal').checked;
+
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+
             let jenis_print = $(this).data("jenis");
             let tanpa;
             if (tanpa_tanggal == false) {
@@ -188,6 +204,10 @@
             searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("tanpa", tanpa);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_kiri", margin_kiri);
             window.open(url.toString(), "_blank");
         });
 
