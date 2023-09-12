@@ -439,7 +439,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)$skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 3) { // SP2D LUNAS
                 if ($periodebulan == 'periode') {
@@ -1057,7 +1057,7 @@ class LapkeuController extends Controller
         $kd_skpd        = $request->kd_skpd;
         // $jns_rincian = 4;
         // dd($skpdunit);
-        if ($kd_skpd == '') {
+        if ($skpdunit == "keseluruhan") {
             $kd_skpd        = "";
             $skpd_clause = "";
             $skpd_clauses = "";
@@ -1367,7 +1367,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)$skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 3) { // SP2D LUNAS
                 if ($periodebulan == 'periode') {
