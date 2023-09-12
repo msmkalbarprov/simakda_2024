@@ -463,6 +463,11 @@
             })
         }
 
+        $('#kd_skpd').on('select2:select', function() {
+            let kd_skpd = this.value;
+            cari_pakpa(kd_skpd);
+        });
+
         $('#kd_skpd_semester').on('select2:select', function() {
             let kd_skpd = this.value;
             cari_pakpa(kd_skpd);
@@ -524,6 +529,15 @@
                             `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
                         );
                     })
+                    $('#pa_kpa_lra').empty();
+                    $('#pa_kpa_lra').append(
+                        `<option value="" disabled selected>Pilih PA/KPA</option>
+                        <option value="0">Tanpa Tanda Tangan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pa_kpa_lra').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
                 }
             })
         }
@@ -555,7 +569,7 @@
                 let tanggal1                 = document.getElementById('tanggal1').value;
                 let tanggal2                 = document.getElementById('tanggal2').value;
                 let tgl_ttd                  = document.getElementById('tgl_ttd').value;
-                let ttd                      = document.getElementById('ttd').value;
+                let ttd                      = document.getElementById('pa_kpa_lra').value;
                 let jns_anggaran             = document.getElementById('jns_anggaran').value;
                 let periodebulan             = $('input:radio[name="pilihanperiode"]:checked').val();
                 let skpdunit                 = $('input:radio[name="inlineRadioOptions"]:checked').val();

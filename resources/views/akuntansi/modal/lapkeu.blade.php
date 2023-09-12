@@ -113,12 +113,13 @@
 
                 <div class="mb-3 row">
                     <div class="col-md-6">
-                        <label for="ttd" class="form-label">Tanda Tangan</label>
-                        <select class="form-control select2 @error('ttd') is-invalid @enderror"
-                            style=" width: 100%;" id="ttd" name="ttd">
-                            <option value="" disabled selected>Silahkan Pilih</option>
+                        <label for="pa_kpa_lra" class="form-label">PA/KPA</label>
+                        <select class="form-control select2 @error('pa_kpa_lra') is-invalid @enderror"
+                            style=" width: 100%;" id="pa_kpa_lra" name="pa_kpa_lra">
+                            <option value="" disabled selected>Silahkan Pilihh</option>
+                            <option value="-">SUTARMIDJI</option>
                         </select>
-                        @error('ttd')
+                        @error('pa_kpa_lra')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -590,7 +591,6 @@
                         </div>
                 </div>
 
-                {{-- SKPD --}}
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="jns_anggaran_semester" class="form-label">Jenis Anggaran</label>

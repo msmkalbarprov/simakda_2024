@@ -62,14 +62,17 @@ class LapkeuController extends Controller
          $nm_bln = $arraybulan[$bulan];
 
         // TANDA TANGAN
-        if($ttd == '0'){
-            $tandatangan="";
-        }else{
-            $tandatangan = DB::table('ms_ttd')
-                            ->select('nama', 'nip', 'jabatan', 'pangkat')
-                            ->where('nip', $ttd)
-                            ->first();
+        if ($ttd == '0') {
+            $tandatangan = "";
+        } else {
+            // $tandatangan = DB::table('ms_ttd')
+            //     ->select('nama', 'nip', 'jabatan', 'pangkat')
+            //     ->where('nip', $ttd)
+            //     ->whereIn('kode', ['1'])
+            //     ->first();
+            $tandatangan = collect(DB::select("SELECT top 1 nama,nip,jabatan,pangkat from ms_ttd where nip='$ttd'"))->first();
         }
+        // dd($tandatangan);
         
 
         $map_lra = DB::select("SELECT a.seq,a.cetak,a.bold,a.parent,a.nor,a.uraian,isnull(a.kode_1,'-') as kode_1,isnull(a.kode_2,'-') as kode_2,isnull(a.kode_3,'-') as kode_3,thn_m1 AS lalu FROM map_lra_skpd a 

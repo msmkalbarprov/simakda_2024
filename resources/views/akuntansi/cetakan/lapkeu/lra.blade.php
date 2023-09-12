@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
     {{-- <body> --}}
 
     <table style="border-collapse:collapse;" width="100%" align="center" border="0" cellspacing="0" cellpadding="4">
@@ -323,50 +323,49 @@
         @endforeach
 
 
-        @if ($jenis_ttd != 0)
-            <div style="padding-top:20px">
-                <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;"
-                            width='50%'>
-                            &nbsp;
-                        </td>
-                        <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;"
-                            width='50%'>
-                            {{ $daerah->daerah }},
+        @if ($jenis_ttd !="0")
+        <div style="padding-top:20px">
+            <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;" width='50%'>
+                        &nbsp;
+                    </td>
+                    <td style="font-size:14px;font-family:Open Sans;margin: 2px 0px;text-align: center;" width='50%'>
+                        {{ $daerah->daerah }},
                             {{ \Carbon\Carbon::parse($tanggal_ttd)->locale('id')->isoFormat('DD MMMM Y') }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
-                        </td>
-                        <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
-                            {{ ucwords(strtolower($tandatangan->jabatan)) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"><b></b></td>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;">
-                            <b><u>{{ $tandatangan->nama }}</u></b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                        <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
-                    </tr>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
+                    </td>
+                    <td style="font-size:14px;font-family:Open Sans;padding-bottom: 50px;text-align: center;">
+                        {{ ucwords(strtolower($tandatangan->jabatan)) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"><b></b></td>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"><b><u>{{ $tandatangan->nama }}</u></b></td>
+                </tr>
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                    @if($tandatangan->nip != "-")
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;">NIP. {{$tandatangan->nip}}</td>
+                    @endif
+                </tr>
+                <tr>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                    <td style="font-size:14px;font-family:Open Sans;text-align: center;"></td>
+                </tr>
 
-                </table>
-            </div>
-        @endif
-        {{-- tanda tangan --}}
+            </table>
+        </div>
+    @else
+    @endif
+    {{-- tanda tangan --}}
 
 </body>
 
