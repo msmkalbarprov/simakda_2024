@@ -714,7 +714,7 @@ class BendaharaUmumDaerahController extends Controller
             ->unionAll($bku13);
 
         if (isset($saldo)) {
-            $bku15 = $bku14->unionAll($saldo);
+            $bku15 = $bku14;
         } else {
             $bku15 = $bku14;
         }
@@ -908,7 +908,7 @@ class BendaharaUmumDaerahController extends Controller
             ->first();
 
         $total_saldo_awal = DB::table('buku_kas')->select('nilai')->where(['nomor' => '0'])->first();
-        if ($tgl == "2021-01-01") {
+        if ($tgl == "2023-01-01") {
             $saldo_awal = 0;
         } else {
             $saldo_awal = $total_saldo_awal->nilai;

@@ -86,10 +86,15 @@
             @php
                 $total_terima = 0;
                 $total_keluar = 0;
+                $number = 1;
+                $no = $number - 1;
             @endphp
             @foreach ($data_bku as $bku)
+                @php
+                    $no += 1;
+                @endphp
                 <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
+                    <td style="text-align: center">{{ $no }}</td>
                     <td>{{ $bku->nama }}</td>
                     <td class="angka">
                         @if ($bku->jenis == '1')
@@ -172,7 +177,7 @@
                 $keluar = $total_bku->klr_sbl + $total_keluar;
             @endphp
             <td>
-                Oleh kami didapat dalam kas Rp. {{ rupiah($terima - $keluar) }}
+                Oleh kami didapat dalam kas <b>Rp. {{ rupiah($terima - $keluar) }}</b>
             </td>
         </tr>
         <tr>
