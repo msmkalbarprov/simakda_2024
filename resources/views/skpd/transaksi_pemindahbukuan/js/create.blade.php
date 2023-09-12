@@ -1154,7 +1154,9 @@
                         `<option value="" disabled selected>Pilih Rekening</option>`);
                     $.each(data, function(index, data) {
                         $('#kd_rekening').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" data-sp2d="${data.sp2d}" data-anggaran="${data.anggaran}" data-lalu="${data.lalu}">${data.kd_rek6} | ${data.nm_rek6} | ${data.lalu}</option>`
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" data-sp2d="${data.sp2d}" data-anggaran="${data.anggaran}" data-lalu="${data.lalu}">${data.kd_rek6} | ${data.nm_rek6} | ${new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                        }).format(data.lalu)}</option>`
                         );
                     })
                 },
