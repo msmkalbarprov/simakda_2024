@@ -35,6 +35,7 @@ class DaftarPengujiController extends Controller
     {
         $data = DB::table('trhuji as a')
             ->select('a.no_uji', 'a.tgl_uji', 'a.status_bank')
+            ->selectRaw("(select count(*)as nilai from trduji where no_uji=a.no_uji and status='4') as status_dorman")
             ->groupBy('a.no_uji', 'a.tgl_uji', 'a.status_bank')
             ->orderBy('a.tgl_uji')
             ->orderByRaw("cast(left(a.no_uji,len(a.no_uji)-8) as int)")
@@ -54,6 +55,11 @@ class DaftarPengujiController extends Controller
             }
             if ($row->status_bank == 5 || $row->status_bank == '5') {
                 $btn .= '<a href="javascript:void(0);" onclick="hapusData(\'' . $row->no_uji . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Sudah Dikirim"><i class="uil-trash"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            if ($row->status_dorman > 0) {
+                $btn = '<a href="' . route("daftar_penguji.tampil", Crypt::encryptString($row->no_uji)) . '" class="btn btn-warning btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Daftar Penguji"><i class="uil-edit"></i></a>';
             } else {
                 $btn .= '';
             }
@@ -78,7 +84,7 @@ class DaftarPengujiController extends Controller
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            if ($row->status == 0 || $row->status == 3) {
+            if ($row->status == 0 || $row->status == 3 || $row->status == 4) {
                 $btn = '<button type="button" onclick="deleteData(\'' . $row->no_sp2d . '\',\'' . $row->no_spm . '\',\'' . $row->status . '\')" class="btn btn-danger btn-sm"><i class="uil-trash"></i></button>';
                 $btn .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" style="margin-left:4px;border-radius:20px" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $row->ket_payment . '"><i class="uil-exclamation-triangle"></i></a>';
             } else {
