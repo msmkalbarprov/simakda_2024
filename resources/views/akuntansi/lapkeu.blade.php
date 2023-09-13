@@ -18,85 +18,102 @@
         </div>
     </div>
     <!-- end page title -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="semester">
-                <div class="card-body">
-                    {{ 'Laporan Triwulan / Semester' }}
-                    <a class="card-block stretched-link" href="#">
+    @if(Auth::user()->role == '1027')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="semester">
+                    <div class="card-body">
+                        {{ 'Laporan Triwulan / Semester' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="semesterrinci">
-                <div class="card-body">
-                    {{ 'Laporan Triwulan / Semester Rinci' }}
-                    <a class="card-block stretched-link" href="#">
+    @else
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="semester">
+                    <div class="card-body">
+                        {{ 'Laporan Triwulan / Semester' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="semesterrinci">
+                    <div class="card-body">
+                        {{ 'Laporan Triwulan / Semester Rinci' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lo">
-                <div class="card-body">
-                    {{ 'Laporan Operasional' }}
-                    <a class="card-block stretched-link" href="#">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lo">
+                    <div class="card-body">
+                        {{ 'Laporan Operasional' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lra">
+                    <div class="card-body">
+                        {{ 'Laporan LRA' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lra">
-                <div class="card-body">
-                    {{ 'Laporan LRA' }}
-                    <a class="card-block stretched-link" href="#">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lpe">
+                    <div class="card-body">
+                        {{ 'LPE' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="neraca">
+                    <div class="card-body">
+                        {{ 'NERACA' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lpe">
-                <div class="card-body">
-                    {{ 'LPE' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="neraca">
-                <div class="card-body">
-                    {{ 'NERACA' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    @endif
 
    
     {{-- modal cetak SPJ  --}}
