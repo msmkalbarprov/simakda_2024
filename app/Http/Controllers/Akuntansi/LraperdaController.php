@@ -155,7 +155,7 @@ class LraperdaController extends Controller
                 FROM trdrka a LEFT JOIN jurnal_rekap r ON a.kd_skpd = r.kd_skpd AND a.kd_sub_kegiatan = r.kd_sub_kegiatan AND a.kd_rek6 = r.kd_rek6 
                 WHERE LEFT(a.kd_rek6, 1) = '4' and jns_ang='$jns_ang'"
                 ))->first();
-            $belanja = collect(DB::select("SELECT SUM(a.nilai) AS nilai_ag, SUM(r.kredit - r.debet) AS nilai_real 
+            $belanja = collect(DB::select("SELECT SUM(a.nilai) AS nilai_ag, SUM(r.debet - r.kredit) AS nilai_real 
                 FROM trdrka a LEFT JOIN jurnal_rekap r ON a.kd_skpd = r.kd_skpd AND a.kd_sub_kegiatan = r.kd_sub_kegiatan AND a.kd_rek6 = r.kd_rek6 
                 WHERE LEFT(a.kd_rek6, 1) = '5' and jns_ang='$jns_ang'"
                 ))->first();
