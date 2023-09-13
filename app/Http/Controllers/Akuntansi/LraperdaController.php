@@ -164,15 +164,31 @@ class LraperdaController extends Controller
                     )a
                     where  LEFT(kd_rek6,1)='4'"
                 ))->first();
-            $belanja = collect(DB::select("SELECT SUM(a.nilai) AS nilai_ag, SUM(r.debet - r.kredit) AS nilai_real 
-                FROM trdrka a LEFT JOIN jurnal_rekap r ON a.kd_skpd = r.kd_skpd AND a.kd_sub_kegiatan = r.kd_sub_kegiatan AND a.kd_rek6 = r.kd_rek6 
-                WHERE LEFT(a.kd_rek6, 1) = '5' and jns_ang='$jns_ang'"
+            $belanja = collect(DB::select("SELECT SUM(nilai) AS nilai_ag, SUM(debet - kredit) AS nilai_real 
+                    FROM (
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai)nilai,0 debet,0 kredit
+                    from trdrka 
+                    where jns_ang = '$jns_ang' 
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    union all
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,0 nilai,sum(debet) debet,sum(kredit) kredit
+                    from jurnal_rekap
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    )a
+                    where  LEFT(kd_rek6,1)='5'"
                 ))->first();
-            $daftar_lra = DB::select("SELECT SUM(a.nilai) AS nilai_ag, SUM(r.debet - r.kredit) AS nilai_real
-                  FROM trdrka a
-                  LEFT JOIN jurnal_rekap r ON a.kd_skpd = r.kd_skpd AND a.kd_sub_kegiatan = r.kd_sub_kegiatan AND a.kd_rek6 = r.kd_rek6
-                  WHERE LEFT(a.kd_rek6, 1) = '5'");
-                $daftar_lra = DB::select(
+            $daftar_lra = DB::select("SELECT SUM(a.nilai) AS nilai_ag, SUM(debet - kredit) AS nilai_real
+                    FROM (
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai)nilai,0 debet,0 kredit
+                    from trdrka 
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    union all
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,0 nilai,sum(debet) debet,sum(kredit) kredit
+                    from jurnal_rekap
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    )a
+                    where  LEFT(kd_rek6,1)='5'");
+            $daftar_lra = DB::select(
                   "SELECT * FROM (
                     SELECT
                       CONCAT(kd_rek1, kd_urusan) AS ikey, kd_urusan AS kode, nm_urusan AS nama,
