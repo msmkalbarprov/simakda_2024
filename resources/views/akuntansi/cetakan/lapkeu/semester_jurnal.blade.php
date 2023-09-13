@@ -50,7 +50,10 @@
         </tr>
         @if($periodebulan=="bulan")
         <tr>
-            <td align="center" style="border-left:hidden;"><b>PEMERINTAH PROVINSI KALIMANTAN BARAT<BR>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH<BR>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN {{$nm_bln}} {{$tahun_anggaran}} DAN {{$tahun_anggaran1}} </b>
+            <td align="center" style="border-left:hidden;"><b>PEMERINTAH PROVINSI KALIMANTAN BARAT<BR>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH<BR>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN {{$nm_bln}} {{$tahun_anggaran}} 
+            @if($skpdunit=="keseluruhan")
+             DAN {{$tahun_anggaran1}} 
+            @endif</b>
         </tr>
         @else
         <tr>
@@ -114,16 +117,22 @@
                 @endif
                 <td width="15%" align="center" bgcolor="#CCCCCC" ><b>KURANG/LEBIH</b></td>
                 <td width="7%" align="center" bgcolor="#CCCCCC" ><b>%</b></td>
+                @if($skpdunit=="keseluruhan")
                 <td width="15%" align="center" bgcolor="#CCCCCC" ><b>{{$tahun_anggaran1}}</b></td>
+                @else
+                @endif
             </tr>
             <tr>
-               <td align="center" bgcolor="#CCCCCC" >1</td> 
-               <td align="center" bgcolor="#CCCCCC" >2</td> 
-               <td align="center" bgcolor="#CCCCCC" >3</td> 
-               <td align="center" bgcolor="#CCCCCC" >4</td> 
-               <td align="center" bgcolor="#CCCCCC" >5</td> 
-               <td align="center" bgcolor="#CCCCCC" >6</td> 
-               <td align="center" bgcolor="#CCCCCC" >7</td> 
+                <td align="center" bgcolor="#CCCCCC" >1</td> 
+                <td align="center" bgcolor="#CCCCCC" >2</td> 
+                <td align="center" bgcolor="#CCCCCC" >3</td> 
+                <td align="center" bgcolor="#CCCCCC" >4</td> 
+                <td align="center" bgcolor="#CCCCCC" >5</td> 
+                <td align="center" bgcolor="#CCCCCC" >6</td> 
+                @if($skpdunit=="keseluruhan")
+                <td align="center" bgcolor="#CCCCCC" >7</td> 
+                @else
+                @endif
             </tr>
         </thead>
                 @php
@@ -332,7 +341,9 @@
                                <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             @else
                             <tr>
                                <td align="left" valign="top"><b>{{$kode}}</b></td> 
@@ -341,7 +352,9 @@
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                             @endif
                         @elseif($bold=="2")
@@ -352,7 +365,9 @@
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @elseif($bold=="3")
                             <tr>
@@ -362,7 +377,9 @@
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
+                               @endif
                             </tr>
                         @elseif(strlen($bold)==2)
                             <tr>
@@ -372,7 +389,9 @@
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @elseif($bold=="4")
                             <tr>
@@ -382,7 +401,9 @@
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
+                               @endif
                             </tr>
                         @elseif(strlen($bold)==4)
                             <tr>
@@ -392,7 +413,9 @@
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
-                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @if($skpdunit=="keseluruhan")
+                               <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td>
+                               @endif 
                             </tr>
                         @elseif(strlen($bold)==3)
                             <tr>
@@ -402,7 +425,9 @@
                                <td align="right" valign="top"><b>{{rupiah($realisasi)}}</b></td> 
                                <td align="right" valign="top"><b>{{$x}}{{rupiah($sel)}}{{$y}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @elseif($bold=="5")
                             <tr>
@@ -412,7 +437,9 @@
                                <td align="right" valign="top">{{rupiah($realisasi)}}</td> 
                                <td align="right" valign="top">{{$x}}{{rupiah($sel)}}{{$y}}</td> 
                                <td align="right" valign="top">{{rupiah($persen)}}</td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top">{{rupiah($thn_1)}}</td> 
+                               @endif
                             </tr>
                         @elseif($bold=="88888")
                             <tr>
@@ -422,7 +449,9 @@
                                <td align="right" valign="top"><b>{{$xn_surplus}}{{rupiah($nil_surpluss)}}{{$yn_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_surplus}}{{rupiah($sel_surplus)}}{{$y_surplus}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_surplus)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @elseif($bold=="99999")
                             <tr>
@@ -432,7 +461,9 @@
                                <td align="right" valign="top"><b>{{$xn_neto}}{{rupiah($nil_netos)}}{{$yn_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_neto}}{{rupiah($sel_neto)}}{{$y_neto}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_neto)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @elseif($bold=="77777")
                             <tr>
@@ -442,7 +473,9 @@
                                <td align="right" valign="top"><b>{{$xn_silpa}}{{rupiah($nil_silpas)}}{{$yn_silpa}}</b></td> 
                                <td align="right" valign="top"><b>{{$x_silpa}}{{rupiah($sel_silpa)}}{{$y_silpa}}</b></td> 
                                <td align="right" valign="top"><b>{{rupiah($persen_silpa)}}</b></td>
+                               @if($skpdunit=="keseluruhan")
                                <td align="right" valign="top"><b>{{rupiah($thn_1)}}</b></td> 
+                               @endif
                             </tr>
                         @else
                         @endif
