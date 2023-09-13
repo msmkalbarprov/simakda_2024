@@ -203,13 +203,23 @@ class LraperdaController extends Controller
 
                     SELECT
                       CONCAT(LEFT(a.kd_rek6, 1), kd_bidang_urusan) AS ikey, kd_bidang_urusan AS kode, nm_bidang_urusan AS nama,
-                      SUM(a.nilai), SUM(CASE LEFT(r.kd_rek6, 1) WHEN '4' THEN r.kredit - r.debet WHEN '5' THEN r.debet - r.kredit END),
+                      SUM(a.nilai), SUM(CASE LEFT(a.kd_rek6, 1) WHEN '4' THEN a.kredit - a.debet WHEN '5' THEN a.debet - a.kredit END),
                       1 is_bold, 'bidang_urusan' AS jenis
                     FROM ms_urusan mu
                     JOIN ms_bidang_urusan mbu ON mu.kd_urusan = mbu.kd_urusan
-                    JOIN trdrka a ON mbu.kd_bidang_urusan = LEFT(a.kd_sub_kegiatan, 4)
-                    LEFT JOIN jurnal_rekap r ON a.kd_skpd = r.kd_skpd AND a.kd_sub_kegiatan = r.kd_sub_kegiatan AND a.kd_rek6 = r.kd_rek6
-                    WHERE LEFT(a.kd_rek6, 1) IN ('4', '5')
+                    JOIN (select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai)nilai,sum(debet) debet,sum(kredit)kredit
+                    from(
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai)nilai,0 debet,0 kredit
+                    from trdrka 
+                    where jns_ang = '$jns_ang' 
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    union all
+                    select kd_skpd,kd_sub_kegiatan,kd_rek6,0 nilai,sum(debet) debet,sum(kredit) kredit
+                    from jurnal_rekap
+                    group by  kd_skpd,kd_sub_kegiatan,kd_rek6
+                    )a
+                    where  LEFT(kd_rek6,1) in ('4','5')
+                    group by kd_skpd,kd_sub_kegiatan,kd_rek6)a ON mbu.kd_bidang_urusan = LEFT(a.kd_sub_kegiatan, 4)
                     GROUP BY kd_bidang_urusan, nm_bidang_urusan, LEFT(a.kd_rek6, 1)
 
                     UNION ALL
