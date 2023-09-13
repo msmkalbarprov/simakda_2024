@@ -90,13 +90,13 @@
                     </div>
                     {{-- Transaksi MBIZ dan Invoice --}}
                     <div class="mb-3 row" id="input_mbiz">
-                        <label for="trx_mbiz" class="col-md-2 col-form-label">PMK</label>
+                        <label for="trx_mbiz" class="col-md-2 col-form-label">Transaksi MBIZ(CMS)</label>
                         <div class="col-md-4">
                             <select class="form-control select2-multiple" style="width: 100%" id="trx_mbiz"
                                 name="trx_mbiz">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="1">58</option>
-                                <option value='0'>59</option>
+                                <option value="1">YA (PMK 58)</option>
+                                <option value='0'>TIDAK</option>
                             </select>
                         </div>
                         <label for="invoice" class="col-md-2 col-form-label" id="label_invoice">Invoice/No. Purchase
@@ -117,11 +117,11 @@
                                 pembayaran via cms Bank Kalbar
                             </li>
                             <li class="col-md-12">
-                                Pilih <b>58</b> Jika belanja melalui mbizmarket dan pembayarannya menggunakan <b>cms bank
+                                Pilih <b>Ya</b> Jika belanja melalui mbizmarket dan pembayarannya menggunakan <b>cms bank
                                     kalbar</b> dalam aplikasi MBIZMARKET bukan cms dalam SIMAKDA
                             </li>
                             <li>
-                                Pilih <b>58</b> maka wajib mengisi invoice dari mbizmarket
+                                Pilih <b>Ya</b> maka wajib mengisi invoice dari mbizmarket
                             </li>
                             <li class="col-md-12">
                                 Mbizmarket sebagai wapu sehingga Bendahara pengeluaran tidak melakukan pembayaran pajak
