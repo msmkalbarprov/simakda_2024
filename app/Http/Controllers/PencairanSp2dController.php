@@ -28,11 +28,11 @@ class PencairanSp2dController extends Controller
                 if ($tipe == 'online_cair') {
                     $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['1', '1']);
                 } else if ($tipe == 'online_blmcair') {
-                    $query->whereRaw("c.sp2d_online=? and a.status_bud<>?", ['1', '1']);
+                    $query->whereRaw("c.sp2d_online=? and (a.status_bud<>? or a.status_bud is null)", ['1', '1']);
                 } else if ($tipe == 'offline_cair') {
                     $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['0', '1']);
                 } else if ($tipe == 'offline_blmcair') {
-                    $query->whereRaw("c.sp2d_online=? and a.status_bud<>?", ['0', '1']);
+                    $query->whereRaw("c.sp2d_online=? and (a.status_bud<>? or a.status_bud is null)", ['0', '1']);
                 }
             })
             ->orderBy('a.no_sp2d')
