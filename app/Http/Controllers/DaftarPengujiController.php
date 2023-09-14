@@ -35,7 +35,7 @@ class DaftarPengujiController extends Controller
     {
         $data = DB::table('trhuji as a')
             ->select('a.no_uji', 'a.tgl_uji', 'a.status_bank')
-            ->selectRaw("(select count(*)as nilai from trduji where no_uji=a.no_uji and status='4') as status_dorman")
+            ->selectRaw("(select count(*)as nilai from trduji where no_uji=a.no_uji and (status='4' or status='3')) as status_dorman")
             ->groupBy('a.no_uji', 'a.tgl_uji', 'a.status_bank')
             ->orderBy('a.tgl_uji')
             ->orderByRaw("cast(left(a.no_uji,len(a.no_uji)-8) as int)")
