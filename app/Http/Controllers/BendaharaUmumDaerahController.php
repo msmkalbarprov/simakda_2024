@@ -2037,7 +2037,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka , ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap, ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 // ->orderByRaw("cast(a.kd_pengirim AS int)")
                 ->orderByRaw("kd_pengirim")
                 ->get();
@@ -2070,7 +2070,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap,ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 // ->orderByRaw("cast(a.kd_pengirim AS int)")
                 ->orderByRaw("kd_pengirim")
                 ->get();
@@ -2236,7 +2236,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("a.kd_pengirim,a.nm_pengirim,ISNULL(b.pkb,0) pkb, ISNULL(b.denda_pkb,0) denda_pkb, ISNULL(b.tgk_pkb,0) tgk_pkb, ISNULL(b.bbn,0) bbn, ISNULL(b.denda_bbn,0) denda_bbn,ISNULL(b.denda_bbntka,0) denda_bbntka, ISNULL(b.pka,0) pka, ISNULL(b.bbn_ka,0) bbn_ka, ISNULL(b.pap,0) pap, ISNULL(b.denda_pap,0) denda_pap, ISNULL(b.sp3,0) sp3,ISNULL(b.pbb_kb,0) pbb_kb, ISNULL(b.jumlah,0) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 // ->orderByRaw("cast(a.kd_pengirim AS int)")
                 ->orderByRaw("kd_pengirim")
                 ->get();
@@ -2271,7 +2271,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("SUM(ISNULL(b.pkb,0)) pkb, SUM(ISNULL(b.denda_pkb,0)) denda_pkb, SUM(ISNULL(b.tgk_pkb,0)) tgk_pkb, SUM(ISNULL(b.bbn,0)) bbn, SUM(ISNULL(b.denda_bbn,0)) denda_bbn,SUM(ISNULL(b.denda_bbntka,0)) denda_bbntka, SUM(ISNULL(b.pka,0)) pka, SUM(ISNULL(b.bbn_ka,0)) bbn_ka, SUM(ISNULL(b.pap,0)) pap,sum(ISNULL(b.denda_pap,0)) denda_pap, SUM(ISNULL(b.sp3,0)) sp3,SUM(ISNULL(b.pbb_kb,0)) pbb_kb, SUM(ISNULL(b.jumlah,0)) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 ->get();
         } elseif ($req['pilihan'] == '2') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -2302,7 +2302,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("SUM(ISNULL(b.pkb,0)) pkb, SUM(ISNULL(b.denda_pkb,0)) denda_pkb, SUM(ISNULL(b.tgk_pkb,0)) tgk_pkb, SUM(ISNULL(b.bbn,0)) bbn, SUM(ISNULL(b.denda_bbn,0)) denda_bbn,SUM(ISNULL(b.denda_bbntka,0)) denda_bbntka, SUM(ISNULL(b.pka,0)) pka, SUM(ISNULL(b.bbn_ka,0)) bbn_ka, SUM(ISNULL(b.pap,0)) pap,sum(ISNULL(b.denda_pap,0)) denda_pap, SUM(ISNULL(b.sp3,0)) sp3, SUM(ISNULL(b.pbb_kb,0)) pbb_kb, SUM(ISNULL(b.jumlah,0)) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 ->get();
         } elseif ($req['pilihan'] == '31') {
             $join1 = DB::table('trhkasin_ppkd as a')
@@ -2457,7 +2457,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.kd_pengirim', '=', 'b.sumber');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })->selectRaw("SUM(ISNULL(b.pkb,0)) pkb, SUM(ISNULL(b.denda_pkb,0)) denda_pkb, SUM(ISNULL(b.tgk_pkb,0)) tgk_pkb, SUM(ISNULL(b.bbn,0)) bbn, SUM(ISNULL(b.denda_bbn,0)) denda_bbn,SUM(ISNULL(b.denda_bbntka,0)) denda_bbntka, SUM(ISNULL(b.pka,0)) pka, SUM(ISNULL(b.bbn_ka,0)) bbn_ka, SUM(ISNULL(b.pap,0)) pap,sum(ISNULL(b.denda_pap,0)) denda_pap, SUM(ISNULL(b.sp3,0)) sp3, SUM(ISNULL(b.pbb_kb,0)) pbb_kb,SUM(ISNULL(b.jumlah,0)) jumlah")
-                ->whereRaw("LEFT(jns_rek,4)=?", ['4101'])
+                ->whereRaw("LEFT(jns_rek,4)=? and kd_pengirim NOT IN ('147')", ['4101'])
                 ->get();
         }
 
