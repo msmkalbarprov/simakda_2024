@@ -5,6 +5,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
+                <input type="text" id="status_input" style="border:0;width: 200px;" readonly="true;" hidden /></td>
                <h5 class="modal-title"><label  >Input Lampiran Neraca</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -28,30 +29,48 @@
      
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">SKPD</td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
-                            <input id="dn" name="dn" style="width: 130px;" >&nbsp;&nbsp;&nbsp; 
-                            <input id="nmskpd" name="nmskpd"  readonly="true" style="width:450px; border: 0;"/> 
+                        <td style="border-bottom:hidden;border-spacing: 3px;" > 
+                            <input class="form-control" id="kd_skpd" name="kd_skpd" required readonly
+                                value="{{ $data_skpd->kd_skpd }}" style="width: 200px;" >
+                        </td> 
+                    </tr> 
+                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Nama SKPD</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;" > 
+                            <input class="form-control" id="nm_skpd" name="nm_skpd"  required readonly
+                                value="{{ $data_skpd->nm_skpd }}" style="width:450px; border: 0;"/> 
                         </td> 
                     </tr> 
      
-                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
+                    <tr style="border-bottom:hidden;border-spacing: 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Nomor Lamp.</td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > <input id="nomor" name="nomor" style="width: 150px;" > 
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
+                            <input class="form-control" id="nomor" name="nomor" required readonly
+                                style="width: 200px;" >&nbsp;&nbsp;&nbsp; 
+                        </td>
                     </tr> 
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rek. Kelompok</td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
-                            <input id="rek3" name="rek3" style="width: 190px;" > &nbsp;&nbsp;&nbsp; 
-                            <input id="nm_rek3" name="nm_rek3"  readonly="true" style="width:300px; border: 0;"/> 
-                        </td> 
+                        <td  style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
+                            <select class="form-control select_lamp_neraca @error('rek3') is-invalid @enderror" style=" width: 150px;" id="rek3" name="rek3">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('rek3')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </td>
                     </tr> 
      
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening</td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
-                            <input id="rek5" name="rek5" style="width: 190px;" > &nbsp;&nbsp;&nbsp; 
-                            <input id="nm_rek5" name="nm_rek5"  readonly="true" style="width:550px; border: 0;"/> 
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
+                            <select class="form-control select_lamp_neraca @error('rek5') is-invalid @enderror" style=" width: 150px;" id="rek5" name="rek5">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('rek5')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </td> 
                     </tr>
 
@@ -60,25 +79,33 @@
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening Rinci</td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
-                            <input id="rek6" name="rek6" style="width: 190px;" > &nbsp;&nbsp;&nbsp; 
-                            <input id="nm_rek6" name="nm_rek6"  readonly="true" style="width:550px; border: 0;"/> 
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
+                            <select class="form-control select_lamp_neraca @error('rek6') is-invalid @enderror" style=" width: 150px;" id="rek6" name="rek6">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('rek6')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </td> 
                     </tr>
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td id = "rek_subrinci1" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Rekening Sub Rinci</td>
-                        <td id = "rek_subrinci0" colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" hidden = "true" > 
-                            <input id="rek7" name="rek7" style="width: 190px;" > &nbsp;&nbsp;&nbsp; 
-                            <input id="nm_rek7" name="nm_rek7"  readonly="true" style="width:550px; border: 0;"/> 
+                        <td id = "rek_subrinci0" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" hidden = "true" > 
+                            <select class="form-control select_lamp_neraca @error('rek7') is-invalid @enderror" style=" width: 150px;" id="rek7" name="rek7">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('rek7')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </td> 
                     </tr>
      
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Status Aset
                         </td>
-                        <td colspan="3" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" >
-                            <select name="status_aset" id="status_aset" class="easyui-combobox" style=" width:140px;"> 
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" >
+                            <select name="status_aset" id="status_aset" class="form-control select_lamp_neraca" style=" width:140px;"> 
                                 <option value=""> Pilih Status Aset</option>
                                 <option value="1"> Lama</option>
                                 <option value="2"> Pengadaan</option>   
@@ -150,15 +177,15 @@
                                     </tr>
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "tgl_awal1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Tgl Awal Perjanjian</td>
-                                        <td id = "tgl_awal0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="text" id="tgl_awal"/></td>
+                                        <td id = "tgl_awal0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="date" id="tgl_awal"/></td>
                                         <td id = "tgl_akhir1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Tgl Akhir Perjanjian</td>
-                                        <td id = "tgl_akhir0"style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="text" id="tgl_akhir" style="width: 140px;" /></td>
+                                        <td id = "tgl_akhir0"style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="date" id="tgl_akhir" style="width: 140px;" /></td>
                                     </tr>
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "jam1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Waktu Perjanjian</td>
-                                        <td id = "jam0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="text" id="jam" style="width: 140px;" /></td>   
+                                        <td id = "jam0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="time" id="jam" style="width: 140px;" /></td>   
                                         <td id = "realisasi_janji1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Realisasi Perjanjian</td>
-                                        <td id = "realisasi_janji0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="numeric" id="realisasi_janji"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" /></td> 
+                                        <td id = "realisasi_janji0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"><input type="text" id="realisasi_janji"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" /></td> 
                                     </tr>
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "no_polisi1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">No. Polisi</td>
@@ -175,7 +202,13 @@
                                         </td>
                                         <td id = "lokasi1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Lokasi</td>
                                         <td id = "lokasi0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input id="lokasi" name="lokasi" style="width: 190px;" >
+                                            <select class="form-control select_lamp_neraca @error('lokasi') is-invalid @enderror" style=" width: 150px;" id="lokasi" name="lokasi">
+                                                <option value="" disabled selected>Silahkan Pilih</option>
+                                            </select>
+                                            @error('lokasi')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <!-- <input id="lokasi" name="lokasi" style="width: 190px;" > -->
                                                     <!-- <select name="lokasi" id="lokasi" class="easyui-combobox" style=" width:200px;">
                                                     <option value=""> Pilih Lokasi </option>   
                                                     <option value="Kota Pontianak"> Kota Pontianak</option>
@@ -221,11 +254,11 @@
                                             <input type="numeric" id="luas"  style="width: 140px;text-align: right;" onkeyup="formatangka(this);replaceChars(document.nilai.a.value);" />
                                         </td>
                                     </tr>
-
+  
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
-                                        <td id = "harga_satuan1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Harga Satuan</td>
+                                        <td id = "harga_satuan1" style="border-bottom:double 1px red;border-spacing: 3 px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Harga Satuan</td>
                                         <td id = "harga_satuan0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="harga_satuan"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" onkeyup="javascript:hitung_saldo_awal();" />
+                                            <input type="text" id="harga_satuan"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"onkeyup="javascript:hitung_saldo_awal();" />
                                         </td>   
                                         <td id = "satuan1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Satuan</td>
                                         <td id = "satuan0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
@@ -240,18 +273,18 @@
                                         </td>
                                         <td id = "piutang_awal1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Piutang Awal</td>
                                         <td id = "piutang_awal0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="piutang_awal"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="piutang_awal"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                     </tr>
                                                 
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "piutang_koreksi1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Piutang Koreksi</td>
                                         <td id = "piutang_koreksi0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="piutang_koreksi"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" onkeyup="javascript:hitung_piutang_koreksi();"/>
+                                            <input type="tect" id="piutang_koreksi"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"onkeyup="javascript:hitung_piutang_koreksi();"/>
                                         </td>  
                                         <td id = "piutang_sudah1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Piutang Setelah Koreksi</td>
                                         <td id = "piutang_sudah0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="piutang_sudah"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))"/>
+                                            <input type="text" id="piutang_sudah"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"/>
                                         </td>
                                         <td id = "milik1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Kepemilikan (%)</td>
                                         <td id = "milik0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
@@ -269,34 +302,34 @@
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "investasi_awal1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Investasi Awal</td>
                                         <td id = "investasi_awal0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="investasi_awal"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="investasi_awal"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                         <td id = "sal_awal1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Saldo Awal</td>
                                         <td id = "sal_awal0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="text" id="sal_awal" style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))"  />
+                                            <input type="text" id="sal_awal" style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                     </tr>
                                                 
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "kurang1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Berkurang</td>
                                         <td id = "kurang0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="kurang"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="kurang"  style="width: 140px;text-align: right;"  />
                                         </td>
                                         <td id = "tambah1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Bertambah</td>
                                         <td id = "tambah0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="bertambah"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="bertambah"  style="width: 140px;text-align: right;" />
                                         </td>
                                     </tr>                                                                                                                       
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "tahun_n1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Dana/Pengadaan Tahun </td>
                                         <td id = "tahun_n0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="tahun_n"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
-                                            <a id ="hitung_asuransi1" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:hitung_asuransi();">Hitung Beban Dibayar Dimuka</a>
-                                            <a id ="hitung_pendapatan" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:hitung_pendapatan();">Hitung Pendapatan Dibayar Dimuka</a>
+                                            <input type="text" id="tahun_n"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
+                                            <a id ="hitung_asuransi1" class="btn btn-md btn-success" iconCls="icon-add" plain="true" onclick="javascript:hitung_asuransi();">Hitung Beban Dibayar Dimuka</a>
+                                            <a id ="hitung_pendapatan" class="btn btn-md btn-success" iconCls="icon-add" plain="true" onclick="javascript:hitung_pendapatan();">Hitung Pendapatan Dibayar Dimuka</a>
                                         </td>
                                         <td id = "akhir1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Saldo Akhir</td>
                                         <td id = "akhir0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="text" id="akhir" style="width: 140px;" onkeypress="return(currencyFormat(this,',','.',event))"  />
+                                            <input type="text" id="akhir" style="width: 140px;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                     </tr>
                                                 
@@ -307,22 +340,22 @@
                                         </td>
                                         <td id = "akum_penyu1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Akum. Penyusutan Lama</td>
                                         <td id = "akum_penyu0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="akum_penyu"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="akum_penyu"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                         <td id = "akum_penyub1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Akum. Penyusutan Baru</td>
                                         <td id = "akum_penyub0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="akum_penyub"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="akum_penyub"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                     </tr>   
                                                 
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "korplus1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Koreksi Tambah</td>
                                         <td id = "korplus0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="korplus"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="korplus"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                         <td id = "kormin1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Koreksi Kurang</td>
                                         <td id = "kormin0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="kormin"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" />
+                                            <input type="text" id="kormin"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                                         </td>
                                     </tr>   
                                                 
@@ -356,7 +389,7 @@
                                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
                                         <td id = "nil_kurang_excomp1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Nilai Pengurangan Excomp</td>
                                         <td id = "nil_kurang_excomp0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">
-                                            <input type="numeric" id="nil_kurang_excomp"  style="width: 140px;text-align: right;" onkeypress="return(currencyFormat(this,',','.',event))" onkeyup="formatangka(this);" />
+                                            <input type="text" id="nil_kurang_excomp"  style="width: 140px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" onkeyup="formatangka(this);" />
                                         </td>
                                     </tr>
 
@@ -379,7 +412,7 @@
                     </tr>
                     <tr>
                         <td colspan="5" align="center">
-                            <button id="simpan" class="btn btn-md btn-primary" onclick="javascript:simpan_pengesahan();">Simpan</button>
+                            <button id="simpan" class="btn btn-md btn-primary" onclick="javascript:hsimpan();">Simpan</button>
                             <button type="button" class="btn btn-dark btn-md" data-bs-dismiss="modal">Keluar</button>
                         </td>
                     </tr>

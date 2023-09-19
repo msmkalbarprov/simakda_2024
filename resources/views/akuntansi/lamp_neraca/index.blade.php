@@ -70,7 +70,20 @@
                 </div>
             </div>
         </div>
-        
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="input_neraca">
+                <div class="card-body">
+                    {{ 'Input Neraca' }}
+                    <a class="card-block stretched-link" href="{{ route('lamp_neraca.input_lamp_neraca.inputan') }}">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     

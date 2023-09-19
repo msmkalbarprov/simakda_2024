@@ -1759,6 +1759,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'input_lamp_neraca'], function () {
             Route::get('', [lampneracaController::class, 'input_lamp_neraca'])->name('lamp_neraca.input_lamp_neraca.inputan');
             Route::post('load_input_lamp_neraca', [lampneracaController::class, 'load_input_lamp_neraca'])->name('input_lamp_neraca.load');
+            Route::post('lamp_neraca_lokasi', [lampneracaController::class, 'cari_lokasi'])->name('input_lamp_neraca.cari_lokasi');
+            Route::post('lamp_neraca_rek3', [lampneracaController::class, 'cari_rek3'])->name('input_lamp_neraca.cari_rek3');
+            Route::post('lamp_neraca_rek5', [lampneracaController::class, 'cari_rek5'])->name('input_lamp_neraca.cari_rek5');
+            Route::post('lamp_neraca_rek6', [lampneracaController::class, 'cari_rek6'])->name('input_lamp_neraca.cari_rek6');
+            Route::post('lamp_neraca_rek7', [lampneracaController::class, 'cari_rek7'])->name('input_lamp_neraca.cari_rek7');
+            Route::post('input_lamp_neraca_cek_simpan', [lampneracaController::class, 'cek_simpan'])->name('input_lamp_neraca.cari_cek_simpan');
+            Route::post('input_lamp_neraca_simpan_lamp_aset', [lampneracaController::class, 'simpan_lamp_aset'])->name('input_lamp_neraca.cari_simpan_lamp_aset');
+            Route::post('input_lamp_neraca_update_lamp_aset', [lampneracaController::class, 'update_lamp_aset'])->name('input_lamp_neraca.cari_update_lamp_aset');
+            Route::post('input_lamp_neraca_hapus_lamp_aset', [lampneracaController::class, 'hapus_lamp_aset'])->name('input_lamp_neraca.cari_hapus_lamp_aset');
         });
     });
 
