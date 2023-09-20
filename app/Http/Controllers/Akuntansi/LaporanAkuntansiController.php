@@ -240,7 +240,7 @@ class LaporanAkuntansiController extends Controller
                 union all
                 SELECT kd_sub_kegiatan, (select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan)nm_sub_kegiatan 
                 from trdju_pkd a 
-                where kd_unit= ? and kd_sub_kegiatan is not null and kd_sub_kegiatan!=''group by kd_sub_kegiatan 
+                where kd_unit= ? and kd_sub_kegiatan is not null and kd_sub_kegiatan!='' group by kd_sub_kegiatan 
                 order by kd_sub_kegiatan", [$kd_skpd]);
         return response()->json($data);
     }
@@ -3557,7 +3557,7 @@ class LaporanAkuntansiController extends Controller
             'thn_ang'       => $thn_ang,
             'thn_ang1'      => $thn_ang1,
             'thn_ang2'      => $thn_ang2,
-            'skpd'          => $skpd,
+            'kd_skpd'       => $kd_skpd,
             'skpdunit'      => $skpdunit,
             'periodebulan'  => $periodebulan,
             'nm_bln'        => $nm_bln,
