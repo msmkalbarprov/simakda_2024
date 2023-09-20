@@ -82,6 +82,8 @@ use App\Http\Controllers\Skpd\BukuSetoranPenerimaanController;
 use App\Http\Controllers\Akuntansi\LaporanAkuntansiController;
 use App\Http\Controllers\Akuntansi\lamp_neraca\lampneracaController;
 use App\Http\Controllers\Akuntansi\lamp_neraca\cetaklampneracaController;
+use App\Http\Controllers\Akuntansi\kapit\kapitController;
+use App\Http\Controllers\Akuntansi\kapit\cetakkapitController;
 use App\Http\Controllers\Akuntansi\LapkeuController;
 use App\Http\Controllers\Akuntansi\LraController;
 use App\Http\Controllers\Skpd\BOS\PenerimaanBosController;
@@ -1769,6 +1771,21 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('input_lamp_neraca_simpan_lamp_aset', [lampneracaController::class, 'simpan_lamp_aset'])->name('input_lamp_neraca.cari_simpan_lamp_aset');
             Route::post('input_lamp_neraca_update_lamp_aset', [lampneracaController::class, 'update_lamp_aset'])->name('input_lamp_neraca.cari_update_lamp_aset');
             Route::post('input_lamp_neraca_hapus_lamp_aset', [lampneracaController::class, 'hapus_lamp_aset'])->name('input_lamp_neraca.cari_hapus_lamp_aset');
+        });
+    });
+
+    // Kapitalisasi
+    Route::group(['prefix' => 'kapitalisasi'], function () {
+        Route::get('', [kapitController::class, 'index'])->name('kapitalisasi.index');
+        Route::post('cari_skpd', [kapitController::class, 'cariSkpd'])->name('kapitalisasi.skpd');
+        Route::post('cari_rek_objek', [kapitController::class, 'cari_rek_objek'])->name('kapitalisasi.rekobjek');
+
+        //cetak
+        Route::get('cetak_kapitalisasi', [cetakkapitController::class, 'cetak_kapitalisasi'])->name('kapitalisasi.cetak_kapitalisasi');
+        // input
+        Route::group(['prefix' => 'input_kapitalisasi'], function () {
+            Route::get('', [kapitController::class, 'input_kapitalisasi'])->name('kapitalisasi.input_kapitalisasi.inputan');
+            Route::post('load_input_kapitalisasi', [kapitController::class, 'load_input_kapitalisasi'])->name('input_kapitalisasi.load');
         });
     });
 
