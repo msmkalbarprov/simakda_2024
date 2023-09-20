@@ -3552,6 +3552,8 @@ class LaporanAkuntansiController extends Controller
             'query'         => $query,
             'daerah'        => $sc,
             'nogub'         => $nogub,
+            'dcetak'        => $tgl1,
+            'dcetak2'       => $tgl2,
             'tgl1'          => $tgl1,
             'tgl2'          => $tgl2,
             'thn_ang'       => $thn_ang,
@@ -3587,5 +3589,103 @@ class LaporanAkuntansiController extends Controller
             header('Content-Disposition: attachement; filename="SELISIH_LRALO.xls"');
             return $view;
         }
+    }
+
+    public function cetak_lralo_rinci(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $kd_rek6        = $request->kd_rek6;
+        $kd_lo        = $request->kd_lo;
+        $periodebulan  = $request->periodebulan;
+        $tgl1  = $request->dcetak;
+        $tgl2  = $request->dcetak2;
+        $bulan  = $request->bulan;
+
+        $thn_ang = tahun_anggaran();
+        $thn_ang1 = $thn_ang - 1;
+        $thn_ang2 = $thn_ang1 - 1;
+
+        if ($periodebulan == "periode") {
+            $periode = "(tgl_voucher between '$tgl1' and '$tgl2') and ";
+            $periode1 = "year (tgl_voucher)='$thn_ang1' and ";
+            $nm_bln = tgl_format_oyoy($tgl1);
+        } else {
+            $modtahun = $thn_ang % 4;
+
+            if ($modtahun = 0) {
+                $nilaibulan = ".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            } else {
+                $nilaibulan = ".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+            }
+            $arraybulan = explode(".", $nilaibulan);
+            $nm_bln = $arraybulan[$bulan];
+            if (strlen($bulan) == 1) {
+                $bulan = "0" . $bulan;
+            } else {
+                $bulan = $bulan;
+            }
+            $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
+            $periode1 = "year (tgl_voucher)<='$thn_ang1' and ";
+        }
+        // dd(strlen($bulan));
+
+        $query = DB::select("SELECT  kd_skpd,kd_rek6,sum(lra)lra,map_lo,sum(lo)lo
+                from(select  kd_skpd,b.kd_rek6,  sum(debet-kredit)  lra ,c.map_lo , 0  lo 
+                from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                join ms_rek6 c on b.kd_rek6=c.kd_rek6
+                where $periode left(b.kd_rek6,1)='5'
+                group by  kd_skpd,b.kd_rek6, c. map_lo
+                union all
+                select  kd_skpd,c.kd_rek6,0 lra,b.kd_rek6 map_lo, sum(debet-kredit) lo 
+                from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                join ms_rek6 c on b.kd_rek6=c.map_lo
+                where $periode left(b.kd_rek6,1)='8'
+                group by kd_skpd,c. kd_rek6, b.kd_rek6)a
+                where kd_rek6='$kd_rek6'
+                group by kd_skpd,kd_rek6,map_lo
+                order by  kd_skpd,kd_rek6,map_lo");
+
+
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+
+        // dd($query);
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+
+        $data = [
+            'header'    => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'query'     => $query,
+            'daerah'    => $sc,
+            'nogub'     => $nogub,
+            'periodebulan'    => $periodebulan,
+            'dcetak'    => $tgl1,
+            'dcetak2'   => $tgl2,
+            'tgl1'    => $tgl1,
+            'tgl2'   => $tgl2,
+            'thn_ang'   => $thn_ang,
+            'thn_ang1'  => $thn_ang1,
+            'nm_bln'    => $nm_bln,
+            'kd_rek6'    => $kd_rek6,
+            'kd_lo'    => $kd_lo,
+            'bulan'     => $bulan
+        ];
+        // if($format=='sap'){
+        //     $view =  view('akuntansi.cetakan.lra_semester')->with($data);
+        // }elseif($format=='djpk'){
+        //     $view =  view('akuntansi.cetakan.lra_djpk')->with($data);
+        // }elseif($format=='p77'){
+        //     $view =  view('akuntansi.cetakan.lra_77')->with($data);
+        // }elseif($format=='sng'){
+        $view =  view('akuntansi.cetakan.lralo_rinci')->with($data);
+        // }
+
+        return $view;
+        
     }
 }

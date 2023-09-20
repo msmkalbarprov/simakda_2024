@@ -1665,6 +1665,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
 
         Route::get('mandatory', [LaporanAkuntansiController::class, 'mandatory'])->name('laporan_akuntansi.mandatory');
         Route::get('cetak_lralo', [LaporanAkuntansiController::class, 'cetak_lralo'])->name('laporan_akuntansi.clralo');
+        Route::get('cetak_lralo_rinci', [LaporanAkuntansiController::class, 'cetak_lralo_rinci'])->name('laporan_akuntansi.lralo_rinci');
 
         Route::group(['prefix' => 'konsolidasi'], function () {
             Route::get('', [LaporanAkuntansiController::class, 'konsolidasi'])->name('laporan_akuntansi.konsolidasi.konsolidasi');
