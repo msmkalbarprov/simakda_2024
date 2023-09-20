@@ -70,6 +70,21 @@ class lampneracaController extends Controller
         return response()->json($data);
     }
 
+    public function cari_rek_objek(Request $request)
+    {
+        //jaga jaga jika ini yang di pakai
+        // $data           = DB::select("SELECT kd_rek3,nm_rek3 FROM ms_rek3 WHERE (left(kd_rek3,2) in ('11','12') OR left(kd_rek3,1)='2' OR kd_rek3='313') 
+        //     UNION 
+        //     select '15' as kd_rek3, 'Aset Lainnya' as nm_rek3 union SELECT kd_rek3,nm_rek3 FROM ms_rek3 WHERE left(kd_rek3,2) in ('15')
+        //     union 
+        //     select '1103-1109' as kd_rek3, 'Keseluruhan Piutang' as nm_rek3
+        //     ORDER BY kd_rek3");
+        $data = DB::select("SELECT kd_rek3,nm_rek3 FROM ms_rek3 WHERE (left(kd_rek3,2) in ('11','12') OR left(kd_rek3,1)='2' OR kd_rek3='313')
+        ORDER BY kd_rek3");
+        return response()->json($data);
+
+    }
+
     public function cari_rek3(Request $request)
     {
         //jaga jaga jika ini yang di pakai
