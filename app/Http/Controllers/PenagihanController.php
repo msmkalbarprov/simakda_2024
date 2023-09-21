@@ -930,7 +930,7 @@ class PenagihanController extends Controller
             // CEK NILAI KONTRAK 1
             $kontrak_lalu = DB::table('trhtagih')
                 ->select(DB::raw('ISNULL(SUM(total),0) as total'))
-                ->where('kontrak', $data['no_kontrak'])
+                ->where(['kontrak' => $data['no_kontrak'], 'kd_skpd' => $kd_skpd])
                 ->first()
                 ->total;
 
