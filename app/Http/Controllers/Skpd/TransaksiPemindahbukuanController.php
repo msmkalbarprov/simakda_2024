@@ -13,6 +13,26 @@ class TransaksiPemindahbukuanController extends Controller
 {
     public function index()
     {
+        $cek1 = selisih_angkas();
+
+        $status_ang = $cek1['status_ang'];
+        $status_angkas = $cek1['status_angkas'];
+
+        $cek = DB::table('tb_status_angkas')
+            ->whereRaw("left(jns_angkas,2)=? and kode=? and status=?", [$status_ang, $status_angkas, '1'])
+            ->count();
+
+        $data = [
+            'cek' => selisih_angkas(),
+            'cek1' => $cek
+        ];
+
+        if ($cek  == 0) {
+            return view('skpd.transaksi_pemindahbukuan.index')
+                ->with($data)
+                ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
+        }
+
         return view('skpd.transaksi_pemindahbukuan.index');
     }
 

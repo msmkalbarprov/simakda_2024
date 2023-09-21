@@ -21,15 +21,31 @@ class SppLsController extends Controller
 
         $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
+        $cek1 = selisih_angkas();
+
+        $status_ang = $cek1['status_ang'];
+        $status_angkas = $cek1['status_angkas'];
+
+        $cek = DB::table('tb_status_angkas')
+            ->whereRaw("left(jns_angkas,2)=? and kode=? and status=?", [$status_ang, $status_angkas, '1'])
+            ->count();
+
         $data = [
+            'cek' => selisih_angkas(),
+            'cek1' => $cek,
             'data_spp' => DB::table('trhspp')->where('kd_skpd', $kd_skpd)->whereNotIn('jns_spp', ['1', '2', '3'])->orderByRaw("tgl_spp ASC, no_spp ASC,CAST(urut AS INT) ASC")->get(),
             'bendahara' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['KPA', 'BPP', 'BK'])->get(),
             'pptk' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PPTK', 'KPA'])->get(),
             'pa_kpa' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', $kd_skpd)->whereIn('kode', ['PA', 'KPA'])->get(),
             'ppkd' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->whereIn('kode', ['BUD', 'KPA'])->get(),
-            'cek' => selisih_angkas(),
             'kunci' => $kuncian
         ];
+
+        if ($cek  == 0) {
+            return view('penatausahaan.pengeluaran.spp_ls.index')
+                ->with($data)
+                ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
+        }
 
         return view('penatausahaan.pengeluaran.spp_ls.index')->with($data);
     }

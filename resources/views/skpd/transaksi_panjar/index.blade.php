@@ -3,10 +3,15 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (!empty($message))
+                <div class="alert alert-danger"> {{ $message }}</div>
+            @endif
             <div class="card">
                 <div class="card-header">
                     Listing Data Transaksi Panjar
-                    <a href="{{ route('transaksipanjar.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
+                    <a href="{{ route('transaksipanjar.tambah') }}"
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 || $cek1 == 0 || $cek['status_ang'] == '0' ? 'disabled' : '' }}"
+                        style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">

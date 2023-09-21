@@ -3,10 +3,14 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (!empty($message))
+                <div class="alert alert-danger"> {{ $message }}</div>
+            @endif
             <div class="card">
                 <div class="card-header">
                     List Transaksi
-                    <a href="{{ route('skpd.transaksi_tunai.create') }}" class="btn btn-primary"
+                    <a href="{{ route('skpd.transaksi_tunai.create') }}"
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 || $cek1 == 0 || $cek['status_ang'] == '0' ? 'disabled' : '' }}"
                         style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">

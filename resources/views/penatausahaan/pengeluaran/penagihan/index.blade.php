@@ -3,11 +3,14 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (!empty($message))
+                <div class="alert alert-danger"> {{ $message }}</div>
+            @endif
             <div class="card">
                 <div class="card-header">
                     <a href="{{ route('penagihan.create') }}" id="tambah_penagihan"
-                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }}" style="float: right;"
-                        {{ $kunci == 1 ? 'hidden' : '' }}>Tambah</a>
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 || $cek1 == 0 ? 'disabled' : '' }}"
+                        style="float: right;" {{ $kunci == 1 ? 'hidden' : '' }}>Tambah</a>
                     <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
                     <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
                 </div>

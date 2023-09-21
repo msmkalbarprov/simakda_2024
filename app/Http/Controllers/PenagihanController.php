@@ -20,10 +20,26 @@ class PenagihanController extends Controller
 
         $kuncian = $kunci == 1 && !in_array($role, ['1006', '1012', '1016', '1017']) ? '1' : '0';
 
+        $cek1 = selisih_angkas();
+
+        $status_ang = $cek1['status_ang'];
+        $status_angkas = $cek1['status_angkas'];
+
+        $cek = DB::table('tb_status_angkas')
+            ->whereRaw("left(jns_angkas,2)=? and kode=? and status=?", [$status_ang, $status_angkas, '1'])
+            ->count();
+
         $data = [
             'cek' => selisih_angkas(),
+            'cek1' => $cek,
             'kunci' => $kuncian
         ];
+
+        if ($cek  == 0) {
+            return view('penatausahaan.pengeluaran.penagihan.index')
+                ->with($data)
+                ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
+        }
 
         return view('penatausahaan.pengeluaran.penagihan.index')->with($data);
     }

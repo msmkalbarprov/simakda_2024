@@ -5,9 +5,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
+                    @if (!empty($message))
+                        <div class="alert alert-danger"> {{ $message }}</div>
+                    @endif
                     List Daftar Transaksi Non Tunai (CMS)
+                    {{-- kalau cek1 sama dengan 0 berarti jns ang dan jns angkas beda --}}
                     <a href="{{ route('skpd.transaksi_cms.create') }}"
-                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 ? 'disabled' : '' }} {{ $cek['status_ang'] == '0' ? 'disabled' : '' }}"
+                        class="btn btn-primary {{ $cek['selisih_angkas'] > 0 || $cek1 == 0 ? 'disabled' : '' }} {{ $cek['status_ang'] == '0' ? 'disabled' : '' }}"
                         style="float: right;">Tambah</a>
                     <input type="text" id="selisih_angkas" hidden readonly value="{{ $cek['selisih_angkas'] }}">
                     <input type="text" id="status_ang" hidden readonly value="{{ $cek['status_ang'] }}">
