@@ -33,7 +33,7 @@ class TransaksiPemindahbukuanController extends Controller
                 ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
         }
 
-        return view('skpd.transaksi_pemindahbukuan.index');
+        return view('skpd.transaksi_pemindahbukuan.index')->with($data);
     }
 
     public function loadData()

@@ -34,7 +34,7 @@ class TransaksiPanjarController extends Controller
                 ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
         }
 
-        return view('skpd.transaksi_panjar.index');
+        return view('skpd.transaksi_panjar.index')->with($data);
     }
 
     public function load()

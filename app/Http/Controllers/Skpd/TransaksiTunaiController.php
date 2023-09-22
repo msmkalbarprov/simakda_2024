@@ -33,8 +33,7 @@ class TransaksiTunaiController extends Controller
                 ->with($data)
                 ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
         }
-
-        return view('skpd.transaksi_tunai.index');
+        return view('skpd.transaksi_tunai.index')->with($data);
     }
 
     public function loadData()
