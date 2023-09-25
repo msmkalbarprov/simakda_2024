@@ -621,12 +621,18 @@ class TransaksiPanjarController extends Controller
             ->where(['jns_ang' => $status_anggaran_selanjutnya, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])
             ->first();
 
+        $nama_anggaran_selanjutnya = DB::table('tb_status_anggaran')
+            ->where(['kode' => $status_anggaran_selanjutnya])
+            ->first()
+            ->nama;
+
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $nilai_spd->total_spd,
             'transaksi' => $total_trans->total,
             'sisa_bank' => $sisa_bank->terima - $sisa_bank->keluar,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
+            'nama_anggaran_selanjutnya' => $nama_anggaran_selanjutnya,
             'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }

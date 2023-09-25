@@ -296,17 +296,21 @@
                     </div>
                     <!-- Rencana Pergeseran Anggaran -->
                     <div class="mb-3 row">
-                        <label for="total_rpa" class="col-md-2 col-form-label">Rencana Pergeseran Anggaran</label>
+                        <label for="total_rpa" class="col-md-2 col-form-label">Rencana Pergeseran Anggaran <label
+                                id="anggaran_baru"></label></label>
                         <div class="col-md-2">
-                            <input type="text" readonly class="form-control" name="total_rpa" id="total_rpa">
+                            <input type="text" readonly class="form-control" name="total_rpa" id="total_rpa"
+                                style="text-align: right">
                         </div>
-                        <label for="realisasi_rpa" class="col-md-1 col-form-label">Realisasi</label>
-                        <div class="col-md-3">
-                            <input type="text" readonly class="form-control" name="realisasi_rpa" id="realisasi_rpa">
+                        <label for="realisasi_rpa" class="col-md-2 col-form-label">Lalu</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly class="form-control" name="realisasi_rpa" id="realisasi_rpa"
+                                style="text-align: right">
                         </div>
-                        <label for="sisa_rpa" class="col-md-1 col-form-label">Sisa</label>
-                        <div class="col-md-3">
-                            <input type="text" readonly class="form-control" name="sisa_rpa" id="sisa_rpa">
+                        <label for="sisa_rpa" class="col-md-2 col-form-label">Sisa</label>
+                        <div class="col-md-2">
+                            <input type="text" readonly class="form-control" name="sisa_rpa" id="sisa_rpa"
+                                style="text-align: right">
                         </div>
                     </div>
                     <!-- Sumber Dana -->

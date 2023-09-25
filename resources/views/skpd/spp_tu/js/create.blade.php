@@ -227,6 +227,8 @@
                     status_anggaran_selanjutnya = data.status_ang_selanjutnya;
 
                     if (status_anggaran_selanjutnya != '') {
+                        document.getElementById('anggaran_baru').innerText =
+                            data.nama_anggaran_selanjutnya;
                         $('#total_rpa').val(new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(data.anggaran_selanjutnya));

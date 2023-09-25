@@ -535,6 +535,11 @@ class SppTuController extends Controller
             ->where(['jns_ang' => $status_anggaran_selanjutnya, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek6])
             ->first();
 
+        $nama_anggaran_selanjutnya = DB::table('tb_status_anggaran')
+            ->where(['kode' => $status_anggaran_selanjutnya])
+            ->first()
+            ->nama;
+
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $total_spd->total_spd,
@@ -542,6 +547,7 @@ class SppTuController extends Controller
             'anggaran' => $anggaran,
             'sumber' => $data,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
+            'nama_anggaran_selanjutnya' => $nama_anggaran_selanjutnya,
             'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }

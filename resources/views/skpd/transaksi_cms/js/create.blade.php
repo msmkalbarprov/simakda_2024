@@ -1294,6 +1294,8 @@
                     status_anggaran_selanjutnya = data.status_ang_selanjutnya;
 
                     if (status_anggaran_selanjutnya != '') {
+                        document.getElementById('anggaran_baru').innerText =
+                            data.nama_anggaran_selanjutnya;
                         let beban = document.getElementById('beban').value;
                         let total_anggaran = rupiah(document.getElementById('total_anggaran')
                             .value);

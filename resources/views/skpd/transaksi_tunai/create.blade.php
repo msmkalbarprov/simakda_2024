@@ -253,7 +253,8 @@
                     </div>
                     <!-- Rencana Pergeseran Anggaran -->
                     <div class="mb-3 row">
-                        <label for="total_rpa" class="col-md-2 col-form-label">Rencana Pergeseran Anggaran</label>
+                        <label for="total_rpa" class="col-md-2 col-form-label">Rencana Pergeseran Anggaran <label
+                                id="anggaran_baru"></label></label>
                         <div class="col-md-2">
                             <input type="text" readonly class="form-control" name="total_rpa" id="total_rpa"
                                 style="text-align: right">
