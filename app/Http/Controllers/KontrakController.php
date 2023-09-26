@@ -21,7 +21,7 @@ class KontrakController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('ms_kontrak AS a')
             ->select('a.*')
-            ->selectRaw("(SELECT count(*) as tot FROM trhtagih WHERE kontrak=a.no_kontrak) as total")
+            ->selectRaw("(SELECT count(*) as tot FROM trhtagih WHERE kontrak=a.no_kontrak and kd_skpd=a.kd_skpd) as total")
             ->leftJoin('ms_rekening_bank_online AS b', function ($join) {
                 $join->on('a.nm_rekening', '=', 'b.nm_rekening');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -126,17 +126,18 @@ class KontrakController extends Controller
     {
         $id = Crypt::decryptString($id);
         $input = array_map('htmlentities', $request->validated());
-        DB::table('ms_kontrak')->where('no_kontrak', $id)->update([
-            'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
-            'nilai' => $input['nilai'],
-            'kd_skpd' => $input['kd_skpd'],
-            'nm_kerja' => $input['nm_kerja'],
-            'tgl_kerja' => $input['tgl_kerja'],
-            'nmpel' => $input['nmpel'],
-            'nm_rekening' => $input['nm_rekening'],
-            'no_rekening' => $input['no_rekening'],
-            'pimpinan' => $input['pimpinan'],
-        ]);
+        DB::table('ms_kontrak')->where('no_kontrak', $id)
+            ->update([
+                'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
+                'nilai' => $input['nilai'],
+                'kd_skpd' => $input['kd_skpd'],
+                'nm_kerja' => $input['nm_kerja'],
+                'tgl_kerja' => $input['tgl_kerja'],
+                'nmpel' => $input['nmpel'],
+                'nm_rekening' => $input['nm_rekening'],
+                'no_rekening' => $input['no_rekening'],
+                'pimpinan' => $input['pimpinan'],
+            ]);
 
         return redirect()->route('kontrak.index');
     }
