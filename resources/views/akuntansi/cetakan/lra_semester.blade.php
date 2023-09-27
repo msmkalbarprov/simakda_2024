@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
 {{-- <body> --}}
     <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -336,6 +336,16 @@
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$a}} {{number_format($sisa1, "2", ",", ".")}} {{$b}}</b></td> 
                                 <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen, "2", ",", ".")}}</b></td> 
                             </tr>        
+                        @elseif($row->kd_rek== 6)
+                            <tr>
+                                <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="left"  valign="top"><b>{{$nm_rek}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$e}}{{ rupiah($ang_neto) }}{{$f}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$i}}{{ rupiah($nil_neto) }}{{$j}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b> {{$k}}{{ rupiah($sisa_neto) }}{{$l}}</b></td> 
+                                <td style="font-size:14px;font-family:Open Sans" align="right" valign="top"><b>{{number_format($persen_neto, "2", ",", ".")}}</b></td> 
+                            </tr>    
                         @else
                             <tr>
                                 <td style="font-size:14px;font-family:Open Sans" align="left" valign="top"><b>{{dotrek($kd_rek)}}</b></td> 
