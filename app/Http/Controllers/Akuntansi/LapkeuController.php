@@ -1852,4 +1852,195 @@ class LapkeuController extends Controller
             return $view;
         }
     }
+
+    public function cetak_semester_bpkp(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $bulan          = $request->bulan;
+        $enter          = $request->spasi;
+        $cetak          = $request->cetak;
+        $tanggal1       = $request->tanggal1;
+        $tanggal2       = $request->tanggal2;
+        $jns_ang        = $request->jenis_anggaran;
+        $periodebulan   = $request->periodebulan;
+        $skpdunit       = $request->skpdunit;
+        $kd_skpd        = $request->kd_skpd;
+        $jns_rincian    = $request->panjang_data;;
+
+        // dd($jns_rincian);
+        if ($skpdunit == "keseluruhan") {
+            $kd_skpd        = "";
+            $skpd_clause = "";
+            $skpd_clauses = "";
+            $skpd_clause_prog = "";
+            $skpd_clause_ang = "";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
+        } else {
+            if ($skpdunit == "unit") {
+                $kd_skpd = $kd_skpd;
+            } else if ($skpdunit == "skpd") {
+                $kd_skpd = substr($kd_skpd, 0, 17);
+            }
+            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+            $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        }
+
+        $tahun_anggaran = tahun_anggaran();
+        $tahun_anggaran1=$tahun_anggaran-1;
+        if ($periodebulan=="bulan") {
+            $modtahun= $tahun_anggaran%4;
+            
+                if ($modtahun = 0){
+                    $nilaibulan=".31 JANUARI.29 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+                }else {
+                    $nilaibulan=".31 JANUARI.28 FEBRUARI.31 MARET.30 APRIL.31 MEI.30 JUNI.31 JULI.31 AGUSTUS.30 SEPTEMBER.31 OKTOBER.30 NOVEMBER.31 DESEMBER";
+                }
+             
+             $arraybulan=explode(".",$nilaibulan);
+             $nm_bln = $arraybulan[$bulan];
+        }else{
+            $nm_bln="";
+        }
+
+        
+        $isi    = "sd_bulan_ini";
+        $pilih  = "S/D";
+        $operator = "<=";
+        if ($bulan=="1"||$bulan=="2"||$bulan=="4"||$bulan=="5"||$bulan=="7"||$bulan=="8"||$bulan=="10"||$bulan=="11") {
+            $judul  = BULAN($bulan);
+        }else if ($bulan=="3"){
+            $judul = "TRIWULAN I";
+        }else if ($bulan=="6"){
+            $judul = "SEMESTER PERTAMA";
+        }else if ($bulan=="9"){
+            $judul = "TRIWULAN III";
+        }else if ($bulan=="2"){
+            $judul = "SEMESTER KEDUA";
+        }else{
+            $judul = "bulan tidak diketahui";
+        }
+        $bulan2 = 12 - $bulan;
+        // dd(left($kd_skpd,3));
+
+        // rincian
+
+        if ($periodebulan == 'periode') {
+            $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
+                                    -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka
+                                            where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                            ) AS anggaran,
+                                    --realisasi
+                                    isnull((
+                                        SELECT sum(realisasi) realisasi FROM(
+                                        SELECT
+                                        b.kd_unit,
+                                        b.kd_sub_kegiatan,
+                                        b.kd_rek6,
+                                        CASE
+                                            WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit) - SUM(debet)
+                                            WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet) - SUM(kredit)
+                                            WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit) - SUM(debet)
+                                            WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet) - SUM(kredit)
+                                            ELSE 0
+                                        END AS realisasi
+                                        FROM trhju_pkd a
+                                        JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                    AND a.kd_skpd = b.kd_unit
+                                        WHERE  left(b.kd_rek6,1) IN ('4', '5', '6')
+                                        $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                        GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
+                                    ) ,0)realisasi
+                                    FROM map_lra_2023
+
+                                    where group_id <= ?
+                                    GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                    ORDER BY  map_lra_2023.id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $jns_rincian]);
+            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses", [$tanggal1, $tanggal2, $jns_ang]))->first();
+        } else {
+            $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,  -- anggaran
+                                    isnull((SELECT sum(nilai) FROM trdrka
+                                            where jns_ang= ? $skpd_clause_ang and LEFT(trdrka.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek),0
+                                            ) AS anggaran,
+                                --realisasi
+                                    isnull((
+                                        SELECT sum(realisasi) realisasi FROM(
+                                        SELECT
+                                        b.kd_unit,
+                                        b.kd_sub_kegiatan,
+                                        b.kd_rek6,
+                                        CASE
+                                            WHEN LEFT(b.kd_rek6, 1) = '4' THEN SUM(kredit-debet)
+                                            WHEN LEFT(b.kd_rek6, 1) = '5' THEN SUM(debet-kredit)
+                                            WHEN LEFT(b.kd_rek6, 2) = '61' THEN SUM(kredit-debet)
+                                            WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet-kredit)
+                                            ELSE 0
+                                        END AS realisasi
+                                        FROM trhju_pkd a
+                                        JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                    AND a.kd_skpd = b.kd_unit
+                                        WHERE  left(b.kd_rek6,1) IN ('4', '5', '6')
+                                        $skpd_clause  AND MONTH(tgl_voucher) <= ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                        GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
+                                    ) ,0)realisasi
+
+                                    FROM map_lra_2023
+
+                                    where group_id <= ?
+                                    GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
+                                    ORDER BY map_lra_2023.id,group_id, nama", [$jns_ang, $bulan, $jns_rincian]);
+            $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+        }
+        // $rincian = DB::select("SELECT * from map_lra_semester");
+            
+
+
+
+
+        // dd($sus);
+            $data = [
+                'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+                'kd_skpd'           => $kd_skpd,
+                'skpdunit'          => $skpdunit,
+                'tanggal1'          => $tanggal1,
+                'tanggal2'          => $tanggal2,
+                'periodebulan'      => $periodebulan,
+                'rincian'           => $rincian,
+                'enter'             => $enter,
+                'daerah'            => $daerah,
+                'tahun_anggaran'    => $tahun_anggaran,
+                'tahun_anggaran1'   => $tahun_anggaran1,
+                'jns_ang'           => $jns_ang,
+                'skpd_clause_ang'   => $skpd_clause_ang,
+                'skpd_clause'       => $skpd_clause, 
+                'skpd_clauses'      => $skpd_clauses,     
+                'bulan'             => $bulan,
+                'bulan2'            => $bulan2,
+                'judul'             => $judul,
+                'pilih'             => $pilih,
+                'nm_bln'            => $nm_bln,
+                'jenis'             => $jns_rincian,
+                'sus'               => $sus
+            ];
+        $view =  view('akuntansi.cetakan.lapkeu.semester_bpkp')->with($data);
+        
+        
+
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('LRA_Rincian.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="LRA_Rincian.xls"');
+            return $view;
+        }
+    }
 }

@@ -34,7 +34,7 @@
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="input_kapit">
                 <div class="card-body">
-                    {{ 'Input Neraca' }}
+                    {{ 'Input Kapitalisasi' }}
                     <a class="card-block stretched-link" href="{{ route('kapitalisasi.input_kapitalisasi.inputan') }}">
                     </a>
                     <i class="fa fa-chevron-right float-end mt-2"></i>

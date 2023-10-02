@@ -824,3 +824,126 @@
         </div>
     </div>
 </div>
+
+{{-- lra semester sap untuk bpkp--}}
+<div id="modal_cetak_semester_bpkp" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{-- Pilihan SKPD/Unit --}}
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="kd_skpd" class="form-label">Pilihan 1</label><br>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_semester_bpkp" id="pilihan0_semester_bpkp"
+                                value="keseluruhan">
+                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                        </div>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_semester_bpkp" id="pilihan1_semester_bpkp"
+                                value="skpd">
+                            <label class="form-check-label" for="pilihan">SKPD</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihan_semester_bpkp" id="pilihan2_semester_bpkp"
+                                value="unit">
+                            <label class="form-check-label" for="pilihan">Unit</label>
+                        </div>
+                    </div>
+                    {{-- Bulan --}}
+                    <div class="col-md-6" >
+                        <div id="baris_skpd_semester_bpkp">
+                            <label for="kd_skpd_semester_bpkp" class="form-label">Kode SKPD</label>
+                            <select class="form-control select_semester_bpkp  @error('kd_skpd_semester_bpkp') is-invalid @enderror"
+                                style=" width: 100%;" id="kd_skpd_semester_bpkp" name="kd_skpd_semester_bpkp">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                            </select>
+                            @error('kd_skpd_semester_bpkp')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="kd_skpd_semester_bpkp" class="form-label">Pilihan 2</label><br>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihanperiode_semester_bpkp" id="pilihan0_semester_bpkp"
+                                value="tahun">
+                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                        </div>
+                        <div class=" form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihanperiode_semester_bpkp" id="pilihan1_semester_bpkp"
+                                value="periode">
+                            <label class="form-check-label" for="pilihan">Periode</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pilihanperiode_semester_bpkp" id="pilihan2_semester_bpkp"
+                                value="bulan">
+                            <label class="form-check-label" for="pilihan">Bulan</label>
+                        </div>
+                    </div>
+                    {{-- PERIODE /BULAN --}}
+                        <div id="baris_periode1_semester_bpkp" class="col-md-3">
+                            <label for="periode1" class="form-label">Periode</label>
+                            <input type="date" id="tanggal1_semester_bpkp" name="tanggal1_semester_bpkp" class="form-control">
+                        </div>
+                        <div id="baris_periode2_semester_bpkp" class="col-md-3">
+                            <label for="periode2_semester_bpkp" class="form-label">&nbsp;</label>
+                            <input type="date" id="tanggal2_semester_bpkp" name="tanggal2_semester_bpkp" class="form-control">
+                            
+                        </div>
+                        <div id="baris_bulan_semester_bpkp" class="col-md-6">
+                            <label for="bulan_semester_bpkp" class="form-label">Bulan</label>
+                            <select name="bulan_semester_bpkp" class="form-control select_semester_bpkp" id="bulan_semester_bpkp">
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="panjang_data" class="form-label">Rincian</label>
+                        <select name="panjang_data" class="form-control select_semester_bpkp" id="panjang_data_semester_bpkp">
+                            <option value="">Silahkan Pilih</option>
+                            <option value="4">Jenis</option>
+                            <option value="6">Objek</option>
+                            <option value="8">RincianObjek</option>
+                            <option value="12">Sub Rincian Objek</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"
+                            name="bku_pdf"> PDF</button>
+                        <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
+                            name="bku_layar">Layar</button>
+                        <button type="button" class="btn btn-success btn-md bku_excel" data-jenis="excel"
+                            name="bku_excel">Excel</button>
+                        <button type="button" class="btn btn-md btn-secondary"
+                            data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

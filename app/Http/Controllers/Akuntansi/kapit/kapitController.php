@@ -78,6 +78,17 @@ class kapitController extends Controller
 
     }
 
+    public function cari_sub_kegiatan(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $jns_ang = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd=? order by tgl_dpa DESC",[$kd_skpd]))->first();
+        $data = DB::select("SELECT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.jns_kegiatan 
+                        FROM trskpd a INNER JOIN ms_sub_kegiatan b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                        where a.kd_skpd=? and a.jns_ang=?",[$kd_skpd,$jns_ang->jns_ang]);
+        return response()->json($data);
+
+    }
+
     //inputan
     public function input_kapitalisasi()
     {
@@ -104,15 +115,84 @@ class kapitController extends Controller
     public function load_input_kapitalisasi(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;  
-        $bulan   = $request->bulan;
-        // dd($id);
-        $data = DB::select("SELECT a.*, case when b.kd_rek5 is null then 0 else 1 end jenis from lamp_aset a left join (select distinct kd_rek5 from ms_rek6) b on a.kd_rek5=b.kd_rek5 where kd_skpd='$kd_skpd'");
+        $kd_sub_kegiatan   = $request->sub_kegiatan;
+        // dd($);
+        $data = DB::select("SELECT kd_sub_kegiatan,kd_rek6,nm_rek6,nil_ang,kapitalisasi,jenis,nilai_trans FROM trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd' order by kd_rek6 ");
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             
-            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban. '\',\'' . $row->jenis_aset . '\',\'' . $row->realisasi_janji . '\',\'' . $row->nama_perusahaan . '\',\'' . $row->no_polis . '\',\'' . $row->tgl_awal . '\',\'' . $row->tgl_akhir . '\',\'' . $row->jam . '\',\'' . $row->bulan . '\',\'' . $row->masa . '\',\'' . $row->tmasa . '\',\'' . $row->korplus . '\',\'' . $row->kormin . '\',\'' . $row->akum_penyu . '\',\'' . $row->sisa_umur . '\',\'' . $row->status . '\',\'' . $row->akum_penyub . '\',\'' . $row->kondisi_x . '\',\'' . $row->nil_kurang_excomp . '\',\'' . $row->status_extracomp . '\',\'' . $row->sekolah . '\',\'' . $row->kd_rek7 . '\',\'' . $row->nm_rek7 . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polis . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban. '\',\'' . $row->jenis_aset . '\',\'' . $row->realisasi_janji . '\',\'' . $row->nama_perusahaan . '\',\'' . $row->no_polis . '\',\'' . $row->tgl_awal . '\',\'' . $row->tgl_akhir . '\',\'' . $row->jam . '\',\'' . $row->bulan . '\',\'' . $row->masa . '\',\'' . $row->tmasa . '\',\'' . $row->korplus . '\',\'' . $row->kormin . '\',\'' . $row->akum_penyu . '\',\'' . $row->sisa_umur . '\',\'' . $row->status . '\',\'' . $row->akum_penyub . '\',\'' . $row->kondisi_x . '\',\'' . $row->nil_kurang_excomp . '\',\'' . $row->status_extracomp . '\',\'' . $row->sekolah . '\',\'' . $row->kd_rek7 . '\',\'' . $row->nm_rek7 . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="rinci(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function load_input_kapitalisasi_rinci(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;  
+        $kd_sub_kegiatan   = $request->kd_sub_kegiatan;
+        $kd_rek6   = $request->kd_rek6;
+        $norinci  = $kd_skpd.'.'.$kd_sub_kegiatan.'.'.$kd_rek6;
+        $data = DB::select("SELECT a.*, CAST(tahun_n+nilai as decimal(20,0)) as tot_kap, 
+                        case when left(a.kd_rek3,1)='1' and a.jumlah>=1 then CAST((tahun_n+nilai)/jumlah as decimal(20,0)) else  CAST((tahun_n+nilai)/1 as decimal(20,0)) end as tot_sat_kap,
+                        case when b.kd_rek5 is null then 0 else 1 end jenis 
+                        from trdkapitalisasi a left join 
+                        (select distinct kd_rek5 from ms_rek6) b 
+                        on a.kd_rek5=b.kd_rek5 where no_rinci='$norinci' 
+                        order by no_lamp");
+        // dd($norinci);
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
+            
+            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->no_rinci . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek5_trans . '\',\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban . '\',\'' . $row->no_polis . '\',\'' . $row->bulan . '\',\'' . $row->nilai . '\',\'' . $row->kapitalisasi . '\',\'' . $row->tot_kap . '\',\'' . $row->tot_sat_kap . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus_rinci(\'' . $row->no_rinci . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek5_trans . '\',\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban . '\',\'' . $row->no_polis . '\',\'' . $row->bulan . '\',\'' . $row->nilai . '\',\'' . $row->kapitalisasi . '\',\'' . $row->tot_kap . '\',\'' . $row->tot_sat_kap . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function refresh_simpan_tampungan_kapit(Request $request){
+        
+        $kd_skpd            = $request->kd_skpd;
+        $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
+        
+        $jns_ang = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd=? order by tgl_dpa DESC",[$kd_skpd]))->first();
+        
+            // dd($kd_sub_kegiatan);
+        $delete = DB::delete("DELETE from trkapitalisasi_tampungan where kd_sub_kegiatan='$kd_sub_kegiatan' and kd_skpd = '$kd_skpd'");
+        $insert = DB::insert("INSERT into trkapitalisasi_tampungan select kd_sub_kegiatan,kd_rek6,nm_rek6,sum(nil_ang)nil_ang,sum(kapitalisasi)kapitalisasi,jenis,'$kd_skpd' kd_skpd,sum(nilai_trans)nilai_trans from(SELECT kd_sub_kegiatan,kd_rek6,nm_rek6,0 nil_ang,kapitalisasi,jenis,0 nilai_trans FROM trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd' union select a.kd_sub_kegiatan, a.kd_rek6, a.nm_rek6, a.anggaran nil_ang,0 as kapitalisasi,'Y' as jenis, isnull(b.real_spj,0) as nilai_trans from(select a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, nilai as anggaran from trdrka a WHERE a.kd_skpd='$kd_skpd' AND a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM trdrka WHERE LEFT (kd_rek6, 1) = '5') AND a.kd_sub_kegiatan='$kd_sub_kegiatan' and a.jns_ang='$jns_ang->jns_ang' group by a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6,a.nilai) a left join (select kd_skpd, kd_sub_kegiatan, kd_rek6, sum(real_spj) as real_spj from (select c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6, sum(b.nilai) as real_spj from trdtransout b inner join trhtransout c on b.no_bukti=c.no_bukti and b.kd_skpd=c.kd_skpd where c.kd_skpd='$kd_skpd' group by c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 union all select e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, sum(d.rupiah*-1) as real_spj  from trdkasin_pkd d inner join trhkasin_pkd e on d.no_sts=e.no_sts and d.kd_skpd=e.kd_skpd where e.jns_trans=5 and LEFT(d.kd_rek6,1)=5 and e.pot_khusus <>0  and e.kd_skpd='$kd_skpd' group by e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6 union all select a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai*-1) as real_spj  from trdinlain a inner join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where pengurang_belanja=1 and a.kd_skpd='$kd_skpd' group by a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6 union all select a.kd_skpd, a.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai) as real_spj from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd WHERE a.kd_skpd='$kd_skpd' GROUP BY a.kd_skpd,a.kd_sub_kegiatan, a.kd_rek6 ) b group by kd_skpd, kd_sub_kegiatan, kd_rek6) b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6)a group by kd_sub_kegiatan,kd_rek6,nm_rek6,jenis");
+        if($insert){
+            echo '1';
+        }else{
+            echo '0';
+        }
+
+    }
+
+    public function refresh_simpan_tabel_kapit(Request $request){
+        
+        $kd_skpd            = $request->kd_skpd;
+        $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
+        
+        $delete = DB::delete("DELETE from trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' and kd_skpd = '$kd_skpd'");
+        $insert = DB::insert("INSERT into trkapitalisasi select * from trkapitalisasi_tampungan where kd_sub_kegiatan='$kd_sub_kegiatan' and kd_skpd = '$kd_skpd'");
+            // dd()
+        if($insert){
+            echo '1';
+        }else{
+            echo '0';
+        }
+
+    }
+    public function hitung_kapit_kegiatan(Request $request){
+        
+        $kd_skpd            = $request->kd_skpd;
+        $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
+        
+        $hitung = DB::exec("exec kapitalisasi_kegiatan_anguz '$kd_skpd','$kd_sub_kegiatan'");
+        if($hitung){
+            echo '1';
+        }else{
+            echo '0';
+        }
+
     }
 
     

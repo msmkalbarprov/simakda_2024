@@ -1700,6 +1700,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_semester_keu', [LapkeuController::class, 'cetak_semester'])->name('laporan_akuntansi.lapkeu.semester');
             Route::get('cetak_semester_jurnal_keu', [LapkeuController::class, 'cetak_semester_jurnal'])->name('laporan_akuntansi.lapkeu.semester_jurnal');
             Route::get('cetak_semesterrinci_keu', [LapkeuController::class, 'cetak_semester_rinci'])->name('laporan_akuntansi.lapkeu.semesterrinci');
+            Route::get('cetak_semester_bpkp_keu', [LapkeuController::class, 'cetak_semester_bpkp'])->name('laporan_akuntansi.lapkeu.semester_bpkp');
         });
     });
     // Pengesahan SPJ
@@ -1779,6 +1780,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('', [kapitController::class, 'index'])->name('kapitalisasi.index');
         Route::post('cari_skpd', [kapitController::class, 'cariSkpd'])->name('kapitalisasi.skpd');
         Route::post('cari_rek_objek', [kapitController::class, 'cari_rek_objek'])->name('kapitalisasi.rekobjek');
+        Route::post('cari_sub_kegiatan', [kapitController::class, 'cari_sub_kegiatan'])->name('kapitalisasi.sub_kegiatan');
 
         //cetak
         Route::get('cetak_kapitalisasi', [cetakkapitController::class, 'cetak_kapitalisasi'])->name('kapitalisasi.cetak_kapitalisasi');
@@ -1786,6 +1788,16 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'input_kapitalisasi'], function () {
             Route::get('', [kapitController::class, 'input_kapitalisasi'])->name('kapitalisasi.input_kapitalisasi.inputan');
             Route::post('load_input_kapitalisasi', [kapitController::class, 'load_input_kapitalisasi'])->name('input_kapitalisasi.load');
+            //refresh kegiatan
+            Route::post('refresh_kegiatan_tampungankapit', [kapitController::class, 'refresh_simpan_tampungan_kapit'])->name('input_kapitalisasi.refresh_kegiatan.simpan_tampungan');
+            Route::post('refresh_kegiatan_tabelkapit', [kapitController::class, 'refresh_simpan_tabel_kapit'])->name('input_kapitalisasi.refresh_kegiatan.refresh_simpan_tabel');
+            //
+            //hitung kapit perkegiatan
+            Route::post('hitung_kapit_kegiatan', [kapitController::class, 'hitung_kapit_kegiatan'])->name('input_kapitalisasi.hitung_kapit_kegiatan');
+            //
+            //rincian kapit
+            Route::post('load_input_kapitalisasi_rinci', [kapitController::class, 'load_input_kapitalisasi_rinci'])->name('input_kapitalisasi.rinci.load');
+            //
         });
     });
 
