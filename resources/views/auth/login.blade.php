@@ -213,7 +213,7 @@ and (-webkit-min-device-pixel-ratio: 3) {
 
                                     <div class="mt-3 text-end">
                                         <button type="submit"
-                                            class="btn btn-primary w-sm waves-effect waves-light  -,k">
+                                            class="btn btn-success w-sm waves-effect waves-light  -,k">
                                             {{ __('Login') }}
                                         </button>
                                         <a href="https://simakda.kalbarprov.go.id/sp2d" class="btn btn-dark w-sm waves-effect waves-light  -,k" target="_blank">CEK SP2D</a>
