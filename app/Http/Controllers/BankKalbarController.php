@@ -22,7 +22,7 @@ class BankKalbarController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\n    \"key\" : \"AENao6JDrf9+xCSwJks18IghphTdQuvcOBcVc7abvCo0WeZSDxm/9IPy+2EaqnVG\"\n}",
+            CURLOPT_POSTFIELDS => "{\n    \"key\" : \"04A26249DD8D33B6E1F244030C7870D7\"\n}",
             CURLOPT_HTTPHEADER => array(
                 "Content-Type: application/json"
             ),
