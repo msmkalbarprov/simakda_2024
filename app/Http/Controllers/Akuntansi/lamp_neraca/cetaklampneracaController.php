@@ -1890,7 +1890,7 @@ class cetaklampneracaController extends Controller
 
 
         // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-            // dd($sus);
+            // dd($head);
         
             $data = [
             'header'         => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),

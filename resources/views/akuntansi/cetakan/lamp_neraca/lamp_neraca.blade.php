@@ -1102,86 +1102,83 @@
         @foreach($query as $row)
             @php
                 $kode = $row->kode;
-                       $nama = $row->nama;
-                       $tahun = $row->tahun;
-                       $jenis_aset = $row->jenis_aset;
-                       $nama_perusahaan = $row->nama_perusahaan;
-                       $no_polis = $row->no_polis;
-                       $realisasi_janji = $row->realisasi_janji;
-                       $tgl_awal = $row->tgl_awal;
-                       $tgl_akhir = $row->tgl_akhir;
-                       $jam = $row->jam;
-                       $sisa_harii = $row->sisa_hari;
-                       $sal_awal = $row->sal_awal;
-                       $kurang = $row->kurang;
-                       $tambah = $row->tambah;
-                       $tahun_n = $row->tahun_n;
-                       $akhir = $sal_awal-$kurang+$tambah+$tahun_n;
-                       $keterangan = $row->keterangan;
-                       $seling = $row->seling;
-                       $sis = $row->sis;
-                       $koreksi = $row->koreksi;
-                       $audited = $akhir+$koreksi;
-                       $no_lamp = $row->no_lamp;
+               $nama = $row->nama;
+               $tahun = $row->tahun;
+               $jenis_aset = $row->jenis_aset;
+               $nama_perusahaan = $row->nama_perusahaan;
+               $no_polis = $row->no_polis;
+               $realisasi_janji = $row->realisasi_janji;
+               $tgl_awal = $row->tgl_awal;
+               $tgl_akhir = $row->tgl_akhir;
+               $jam = $row->jam;
+               $sisa_hari = $row->sisa_hari;
+               $sal_awal = $row->sal_awal;
+               $kurang = $row->kurang;
+               $tambah = $row->tambah;
+               $tahun_n = $row->tahun_n;
+               $akhir = $sal_awal-$kurang+$tambah+$tahun_n;
+               $keterangan = $row->keterangan;
+               $koreksi = $row->koreksi;
+               $audited = $akhir+$koreksi;
+               $no_lamp = $row->no_lamp;
 
-                       $hh              = substr($jam,0,2);
-                       $mm              = substr($jam,3,5);
-                       $jam_std         = ((12-$hh)*3600)+((-$mm)*60);
-                       
+               if($jam == ""){
+                    $hh = 0;
+                    $mm = 0;
+               }else{
+                   $hh              = substr($jam,0,2);
+                   $mm              = substr($jam,3,5);
 
+               }
+               $jam_std         = ((12-$hh)*3600)+((-$mm)*60);
+               
+               
+               if($jam_std<=0 && $sisa_hari!=0){
+               $sisa_hari=$sisa_hari-0.5;
+               } else if($jam_std>0 && $sisa_hari!=0){
+               $sisa_hari=$sisa_hari-1;
+               } else{
+               $sisa_hari=0;
+               }
+               
+               $realisasi_janji==0 ? $realisasi_janji = '' : $realisasi_janji=number_format($realisasi_janji,"2",",",".");
+               
+               if($no_lamp==''){
+               $sisa_hari='';
+               }
+               else if($no_lamp=='x'){
+               $sisa_hari='';
+               } else{
+               $sisa_hari=number_format($sisa_hari,"1",",",".");
+               }
+               
+               if($tgl_awal==''){
+               $tgl_awal='';
+               } else{
+               $tgl_awal=tanggal_indonesia($tgl_awal);
+               }
+               
+               if($tgl_akhir==''){
+               $tgl_akhir='';
+               } else{
+               $tgl_akhir=tanggal_indonesia($tgl_akhir);
+               }
+                                   
+               $sal_awal==0 ? $sal_awal = '' : $sal_awal=number_format($sal_awal,"2",",",".");
+               $kurang==0 ? $kurang = '' : $kurang=number_format($kurang,"2",",",".");
+               $tambah==0 ? $tambah = '' : $tambah=number_format($tambah,"2",",",".");
+               $tahun_n==0 ? $tahun_n = '' : $tahun_n=number_format($tahun_n,"2",",",".");
+               
+               $no_lamp=='' ? $akhir = '' : $akhir=number_format($akhir,"2",",",".");
+               
+               if ($koreksi < 0){
+               $min001="("; $koreksi=$koreksi*-1; $min002=")";
+               }else {
+               $min001=""; $koreksi; $min002="";
+               }            
 
-                       if($jam_std<=0 && $sisa_harii!=0){
-                       $sisa_hari=$sisa_harii-0.5;
-                       } else if($jam_std>0 && $sisa_harii!=0){
-                       $sisa_hari=$sisa_harii-1;
-                       } else{
-                       $sisa_hari=0;
-                       }
-                       $pengta=($sisa_hari!=0)?($sisa_hari/$seling)*$realisasi_janji:0;
-                       
-                       $realisasi_janji==0 ? $realisasi_janji = '' : $realisasi_janji=rupiah($realisasi_janji);
-                       
-
-                       if($no_lamp==''){
-                       $sisa_hari='';
-                       }
-                       else if($no_lamp=='x'){
-                       $sisa_hari='';
-                       } else{
-                       $sisa_hari=rupiah($sisa_hari,"1",",",".");
-                       }
-                       
-                       if($tgl_awal==''){
-                       $tgl_awal='';
-                       } else{
-                       $tgl_awal=$this->tukd_model->tanggal_ind($tgl_awal);
-                       }
-                       
-                       if($tgl_akhir==''){
-                       $tgl_akhir='';
-                       } else{
-                       $tgl_akhir=$this->tukd_model->tanggal_ind($tgl_akhir);
-                       }
-                        
-
-
-
-                       $sal_awal==0 ? $sal_awal = '' : $sal_awal=rupiah($sal_awal);
-                       $kurang==0 ? $kurang = '' : $kurang=rupiah($kurang);
-                       $tambah==0 ? $tambah = '' : $tambah=rupiah($tambah);
-                       $tahun_n==0 ? $tahun_n = '' : $tahun_n=rupiah($tahun_n);
-                       $pengta==0 ? $pengta = '' : $pengta=rupiah($pengta);
-                       
-                       $no_lamp=='' ? $akhir = '' : $akhir=rupiah($akhir);
-                       $tot_kor=$tot_kor+$koreksi;
-                       if ($koreksi < 0){
-                       $min001="("; $koreksi=$koreksi*-1; $min002=")";
-                       }else {
-                       $min001=""; $koreksi; $min002="";
-                       }            
-        
-                       $koreksi==0 ? $koreksi = '' : $koreksi=rupiah($koreksi);
-                       $no_lamp=='' ? $audited = '' : $audited=rupiah($audited);
+               $koreksi==0 ? $koreksi = '' : $koreksi=number_format($koreksi,"2",",",".");
+               $no_lamp=='' ? $audited = '' : $audited=number_format($audited,"2",",",".");
             @endphp
             @if($cetakan=="1")
                 <tr>
