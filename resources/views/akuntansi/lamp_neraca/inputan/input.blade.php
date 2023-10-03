@@ -2920,8 +2920,8 @@
 
     function hitung_asuransi(){
         var rek5            = $("#rek5").val();
-        /*alert(rek5);
-        return;*/
+        // alert(rek5);
+        // return;
         var w               = document.getElementById('sal_awal').value;
         var rj              = document.getElementById('realisasi_janji').value;
         var np              = document.getElementById('nama_perusahaan').value;
@@ -2958,7 +2958,7 @@
         var m_jam           = jam.substring(3,5);
         
         var jam_std         = ((hjam_std-h_jam)*3600)+((mjam_std-m_jam)*60)
-        
+        // alert(jam_std);
         var tahun_tgl_awal         = tgl_awal.substring(0,4);
         var tahun_tgl_akhir        = tgl_akhir.substring(0,4);
         
@@ -3105,14 +3105,15 @@
         } */
 
         if(jns_beban_sewa=='sewa'){
-            $("#tahun_n").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_n));        
-            $("#kurang").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_k)); 
+            $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_n));        
+            $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_k)); 
         }else{
 
-            $("#tahun_n").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_n));        
-            $("#kurang").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_k)); 
+            $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_n));        
+            $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_k)); 
 
         }        
+        // alert(nilai_bersih_n);
         
         //document.getElementById('tahun_n').value=nilai_bersih_n;
         //document.getElementById('kurang').value=nilai_bersih_k;
@@ -3136,7 +3137,7 @@
         }
         var koreksi=piutang_koreksi;
         piutang_sesudah=piutang-koreksi;
-        $("#piutang_sudah").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(piutang_sesudah))  
+        $("#piutang_sudah").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(piutang_sesudah))  
     }
 
     function hitung_pendapatan(){
@@ -3213,9 +3214,9 @@
 
 
 
-        $("#kurang").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai));
-        $("#tahun_n").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(dana));
-        $("#sal_awal").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(sal_awal));
+        $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai));
+        $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(dana));
+        $("#sal_awal").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(sal_awal));
         // $("#keterangan").attr("Value",blnd);
     }
 
