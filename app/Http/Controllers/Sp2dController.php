@@ -36,7 +36,7 @@ class Sp2dController extends Controller
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })->join('trhspd as c', 'a.no_spd', '=', 'c.no_spd')->whereIn('a.jns_spp', ['1', '2', '3', '4', '5', '6'])
             // ->where(['a.kd_skpd' => $kd_skpd])
-            ->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), DB::raw("(select no_uji from trduji where trduji.no_sp2d=a.no_sp2d)as no_uji"))
+            ->select('a.*', DB::raw("(CASE WHEN c.jns_beban = '5' THEN 'Belanja' ELSE 'Pembiayaan' END) as jns_spd"), DB::raw("(select no_uji from trduji where trduji.no_sp2d=a.no_sp2d)as no_uji"), DB::raw("(select status from trduji where trduji.no_sp2d=a.no_sp2d)as status_uji"))
             ->selectRaw("ISNULL((SELECT status FROM trduji WHERE a.no_sp2d=no_sp2d),0) as status_sp2d")
             ->where(function ($query) use ($kd_skpd) {
                 if (Auth::user()->is_admin == 2) {
@@ -72,6 +72,11 @@ class Sp2dController extends Controller
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Cetak SP2D"><i class="uil-print"></i></a>';
             if ($row->status_bud != 1 && $row->status_sp2d == '0') {
                 $btn .= '<a href="javascript:void(0);" onclick="batal_sp2d(\'' . $row->no_sp2d . '\',\'' . $row->jns_spp . '\',\'' . $row->kd_skpd . '\',\'' . $row->no_spm . '\',\'' . $row->no_spp . '\',\'' . $row->status_bud . '\');" class="btn btn-danger btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Batal SP2D"><i class="uil-ban"></i></a>';
+            } else {
+                $btn .= '';
+            }
+            if ($row->app_cair == 'SP2DONLINE' && $row->status_uji == '4') {
+                $btn .= '<a href="javascript:void(0);" onclick="callback(\'' . $row->no_sp2d . '\');" class="btn btn-warning btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Callback SP2D"><i class="uil-info-circle"></i></a>';
             } else {
                 $btn .= '';
             }
@@ -646,5 +651,88 @@ class Sp2dController extends Controller
             'total_potongan' => DB::table('trspmpot')->select(DB::raw("SUM(nilai) as nilai"))->where(['no_spm' => $sp2d->no_spm])->first()
         ];
         return view('penatausahaan.pengeluaran.sp2d.show')->with($data);
+    }
+
+    public function callback(Request $request)
+    {
+        $data = $request->data;
+        $kd_skpd = Auth::user()->kd_skpd;
+        // dd($data);
+        // return;
+        DB::beginTransaction();
+        try {
+            $data['detail_mpn'] = json_decode($data['detail_mpn'], true);
+            $data['detail_nonmpn'] = json_decode($data['detail_nonmpn'], true);
+            $detail_mpn = $data['detail_mpn'];
+            $detail_nonmpn = $data['detail_nonmpn'];
+            // dd($detail_mpn);
+            // CEK SP2D
+            $cek = DB::table('trduji')
+                ->where(['no_sp2d' => $data['no_sp2d']])
+                ->count();
+
+            if ($cek == '' || $cek == null || $cek == '0' || $cek == 0) {
+                return response()->json([
+                    'response_code' => '02',
+                    'status'        => true,
+                    'message'       => 'SP2D tidak tersedia',
+                    'data'          => $cek
+                ]);
+            }
+
+            $no_uji = DB::table('trduji')
+                ->where(['no_sp2d' => $data['no_sp2d']])
+                ->first()
+                ->no_uji;
+
+            DB::table('trduji')
+                ->where(['no_sp2d' => $data['no_sp2d']])
+                ->update([
+                    'status' => '2',
+                    'ket_payment' => $data['status']
+                ]);
+
+            DB::table('trhuji')
+                ->where(['no_uji' => $no_uji])
+                ->update([
+                    'status_bank' => '4'
+                ]);
+
+            if (isset($detail_mpn)) {
+                foreach ($detail_mpn as $data1) {
+                    DB::table('trspmpot')
+                        ->where(['idBilling' => $data1['id_billing'], 'no_spm' => $data['no_spm']])
+                        ->update([
+                            'status_setor' => '1',
+                            'ntpn' => $data1['ntpn'],
+                            'keterangan' => $data1['keterangan'],
+                        ]);
+                }
+            }
+
+            if (isset($detail_nonmpn)) {
+                foreach ($detail_nonmpn as $data2) {
+                    DB::table('trspmpot')
+                        ->where(['kd_rek6' => $data2['kode_map'], 'no_spm' => $data['no_spm']])
+                        ->update([
+                            'status_setor' => '1',
+                            'keterangan' => $data2['keterangan'],
+                        ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'response_code' => "00",
+                'status'         => true,
+                'message'         => "SUKSES"
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'GAGAL',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

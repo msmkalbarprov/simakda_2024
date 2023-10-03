@@ -317,6 +317,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_lampiran', [Sp2dController::class, 'cetakLampiran'])->name('sp2d.cetak_lampiran');
             Route::get('cetak_lampiran_lama', [Sp2dController::class, 'cetakLampiranLama'])->name('sp2d.cetak_lampiran_lama');
             Route::get('cetak_kelengkapan', [Sp2dController::class, 'cetakKelengkapan'])->name('sp2d.cetak_kelengkapan');
+
+            Route::post('data_callback', [BankKalbarController::class, 'dataCallback'])->name('sp2d.data_callback');
+            Route::post('callback', [Sp2dController::class, 'callback'])->name('sp2d.callback');
         });
         // Daftar Penguji
         Route::group(['prefix' => 'daftar_penguji'], function () {
