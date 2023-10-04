@@ -944,12 +944,12 @@ class LraController extends Controller
             $bulan = $bulan;
         }
 
-
+        // dd($bulan);
 
         if ($format == '1') {
 
-            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1,'$thn_ang$bulan') $skpd_clausesun"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1,'$thn_ang$bulan') $skpd_clausesun"))->first();
             $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
             $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
@@ -957,8 +957,8 @@ class LraController extends Controller
                     isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
                 FROM map_neraca_permen_77 ORDER BY seq");
         } else if ($format == '2') {
-            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
-            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
+            $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1,'$thn_ang$bulan') $skpd_clausesun"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang1,'$thn_ang$bulan') $skpd_clausesun"))->first();
             $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang1) $skpd_clausesun"))->first();
             $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
@@ -967,7 +967,8 @@ class LraController extends Controller
                 FROM map_neraca_permen_77_obyek ORDER BY seq");
         } else if ($format == '3') {
         }
-
+            // $test = "SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang1,'$thn_ang$bulan') $skpd_clausesun";
+            // dd($test);
 
 
 
