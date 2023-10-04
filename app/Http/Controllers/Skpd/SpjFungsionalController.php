@@ -71,7 +71,7 @@ class SpjFungsionalController extends Controller
             $sp2d_up_ll     = $trm_sp2d->sp2d_up_ll;
             $sp2d_up_ini    = $trm_sp2d->sp2d_up_ini;
         }
-
+        // dd($sp2d_brjs_ini);
         // terima potongan ppn
         $trmpot_pot_ppn = get_terimapotongan($kd_skpd, '210106010001', $bulan);
 
@@ -356,7 +356,7 @@ class SpjFungsionalController extends Controller
             $spj_up_ll      = $klr_spj->spj_up_ll;
             $spj_up_ini     = $klr_spj->spj_up_ini;
         }
-
+        // dd($spj_brjs_ini);
         // setor PPN
         $setor_ppn    = get_setorpotongan($kd_skpd, '210106010001', $bulan);
         foreach ($setor_ppn as $str_ppn) {
@@ -473,8 +473,8 @@ class SpjFungsionalController extends Controller
         foreach ($setor_pplain as $str_pplain) {
             $str_pplain_gaji_ll    = $str_pplain->gj_lain_lalu;
             $str_pplain_gaji_ini   = $str_pplain->gj_lain_ini;
-            $str_pplain_brjs_ini   = $str_pplain->ls_lain_lalu;
-            $str_pplain_brjs_ll    = $str_pplain->ls_lain_ini;
+            $str_pplain_brjs_ll   = $str_pplain->ls_lain_lalu;
+            $str_pplain_brjs_ini    = $str_pplain->ls_lain_ini;
             $str_pplain_up_ll      = $str_pplain->up_lain_lalu;
             $str_pplain_up_ini     = $str_pplain->up_lain_ini;
         }

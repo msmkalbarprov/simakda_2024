@@ -541,19 +541,19 @@
 
         @php
             $sub_trm_gaji_lalu = $sp2d_gj_ll + $ppn_gaji_ll + $pph21_gaji_ll + $pph22_gaji_ll + $pph23_gaji_ll + $pph4ayat2_gaji_ll + $trm_iwp_gaji_ll + $trm_taperum_gaji_ll + $trm_ppnpn_gaji_ll + $trm_dk_gaji_ll + $bos_bln_lalu + $jlain_gaji_ll;
-
+            
             $sub_trm_gaji_ini = $sp2d_gj_ini + $ppn_gaji_ini + $pph21_gaji_ini + $pph22_gaji_ini + $pph23_gaji_ini + $pph4ayat2_gaji_ini + $trm_iwp_gaji_ini + $trm_taperum_gaji_ini + $trm_ppnpn_gaji_ini + $trm_dk_gaji_ini + $bos_bln_ini + $jlain_gaji_ini;
-
+            
             $sub_trm_gaji_sini = $sub_trm_gaji_lalu + $sub_trm_gaji_ini;
-
+            
             $sub_trm_barjas_lalu = $sp2d_brjs_ll + $ppn_brjs_ll + $pph21_brjs_ll + $pph22_brjs_ll + $pph23_brjs_ll + $pph4ayat2_brjs_ll + $trm_iwp_brjs_ll + $trm_taperum_brjs_ll + $trm_ppnpn_brjs_ll + $trm_dk_brjs_ll + $blud_bln_lalu + $jlain_brjs_ll;
             $sub_trm_barjas_ini = $sp2d_brjs_ini + $ppn_brjs_ini + $pph21_brjs_ini + $pph22_brjs_ini + $pph23_brjs_ini + $pph4ayat2_brjs_ini + $trm_iwp_brjs_ini + $trm_taperum_brjs_ini + $trm_ppnpn_brjs_ini + $trm_dk_brjs_ini + $blud_bln_ini + $jlain_brjs_ini;
             $sub_trm_barjas_sini = $sub_trm_barjas_lalu + $sub_trm_barjas_ini;
-
+            
             $sub_trm_uptu_lalu = $sp2d_up_ll + $ppn_up_ll + $pph21_up_ll + $pph22_up_ll + $pph23_up_ll + $pph4ayat2_up_ll + $trm_iwp_up_ll + $trm_taperum_up_ll + $trm_ppnpn_up_ll + $trm_dk_up_ll + $pelimpahan_up_ll + $panjar_up_ll + $jlain_up_ll;
             $sub_trm_uptu_ini = $sp2d_up_ini + $ppn_up_ini + $pph21_up_ini + $pph22_up_ini + $pph23_up_ini + $pph4ayat2_up_ini + $trm_iwp_up_ini + $trm_taperum_up_ini + $trm_ppnpn_up_ini + $trm_dk_up_ini + $pelimpahan_up_ini + $panjar_up_ini + $jlain_up_ini;
             $sub_trm_uptu_sini = $sub_trm_uptu_lalu + $sub_trm_uptu_ini;
-
+            
             $sub_trm = $sub_trm_gaji_lalu + $sub_trm_gaji_ini + $sub_trm_barjas_lalu + $sub_trm_barjas_ini + $sub_trm_uptu_lalu + $sub_trm_uptu_ini;
         @endphp
         <tr>
@@ -921,19 +921,19 @@
         </tr>
         @php
             $sub_str_gaji_lalu = $spj_gaji_ll + $str_ppn_gaji_ll + $str_pph21_gaji_ll + $str_pph22_gaji_ll + $str_pph23_gaji_ll + $str_pph4ayat2_gaji_ll + $str_iwp_gaji_ll + $str_taperum_gaji_ll + $str_ppnpn_gaji_ll + $str_dk_gaji_ll + $str_bos_gj_ll + $lain_gaji_ll + $str_cp_gaji_ll + $str_hkpg_gaji_ll;
-
+            
             $sub_str_gaji_ini = $spj_gaji_ini + $str_ppn_gaji_ini + $str_pph21_gaji_ini + $str_pph22_gaji_ini + $str_pph23_gaji_ini + $str_pph4ayat2_gaji_ini + $str_iwp_gaji_ini + $str_taperum_gaji_ini + $str_ppnpn_gaji_ini + $str_dk_gaji_ini + $str_bos_gj_ini + $lain_gaji_ini + $str_cp_gaji_ini + $str_hkpg_gaji_ini;
             $sub_str_gaji_sini = $sub_str_gaji_lalu + $sub_str_gaji_ini;
-
-            $sub_str_barjas_lalu = $spj_brjs_ll + $str_ppn_brjs_ll + $str_pph21_brjs_ll + $str_pph22_brjs_ll + $str_pph23_brjs_ll + $str_pph4ayat2_brjs_ll + $str_iwp_brjs_ll + $str_taperum_brjs_ll + $str_ppnpn_brjs_ll + $str_dk_brjs_ll + $str_blud_ls_ll + $lain_brjs_ll + $str_cp_brjs_ll + $str_hkpg_brjs_ll;
-
-            $sub_str_barjas_ini = $spj_brjs_ini + $str_ppn_brjs_ini + $str_pph21_brjs_ini + $str_pph22_brjs_ini + $str_pph23_brjs_ini + $str_pph4ayat2_brjs_ini + $str_iwp_brjs_ini + $str_taperum_brjs_ini + $str_ppnpn_brjs_ini + $str_dk_brjs_ini + $str_blud_ls_ini + $lain_brjs_ini + $str_cp_brjs_ini + $str_hkpg_brjs_ini;
+            
+            $sub_str_barjas_lalu = $spj_brjs_ll + $str_ppn_brjs_ll + $str_pph21_brjs_ll + $str_pph22_brjs_ll + $str_pph23_brjs_ll + $str_pph4ayat2_brjs_ll + $str_iwp_brjs_ll + $str_taperum_brjs_ll + $str_ppnpn_brjs_ll + $str_dk_brjs_ll + $str_blud_ls_ll + $lain_brjs_ll + $str_cp_brjs_ll + $str_hkpg_brjs_ll + $str_pplain_brjs_ll;
+            
+            $sub_str_barjas_ini = $spj_brjs_ini + $str_ppn_brjs_ini + $str_pph21_brjs_ini + $str_pph22_brjs_ini + $str_pph23_brjs_ini + $str_pph4ayat2_brjs_ini + $str_iwp_brjs_ini + $str_taperum_brjs_ini + $str_ppnpn_brjs_ini + $str_dk_brjs_ini + $str_blud_ls_ini + $lain_brjs_ini + $str_cp_brjs_ini + $str_hkpg_brjs_ini + $str_pplain_brjs_ini;
             $sub_str_barjas_sini = $sub_str_barjas_lalu + $sub_str_barjas_ini;
-
+            
             $sub_str_uptu_lalu = $spj_up_ll + $str_ppn_up_ll + $str_pph21_up_ll + $str_pph22_up_ll + $str_pph23_up_ll + $str_pph4ayat2_up_ll + $str_iwp_up_ll + $str_taperum_up_ll + $str_ppnpn_up_ll + $str_dk_up_ll + $str_pelimpahan_up_ll + $str_panjar_up_ll + $lain_up_ll + $str_cp_up_ll + $str_hkpg_up_ll;
             $sub_str_uptu_ini = $spj_up_ini + $str_ppn_up_ini + $str_pph21_up_ini + $str_pph22_up_ini + $str_pph23_up_ini + $str_pph4ayat2_up_ini + $str_iwp_up_ini + $str_taperum_up_ini + $str_ppnpn_up_ini + $str_dk_up_ini + $str_pelimpahan_up_ini + $str_panjar_up_ini + $lain_up_ini + $str_cp_up_ini;
             $sub_str_uptu_sini = $sub_str_uptu_lalu + $sub_str_uptu_ini + $str_hkpg_up_ini;
-
+            
             $sub_str = $sub_str_gaji_lalu + $sub_str_gaji_ini + $sub_str_barjas_lalu + $sub_str_barjas_ini + $sub_str_uptu_lalu + $sub_str_uptu_ini;
         @endphp
         <tr>
