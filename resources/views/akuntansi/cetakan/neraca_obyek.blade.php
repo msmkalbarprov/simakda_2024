@@ -196,9 +196,9 @@
                 }
 
                 if ($ekuitas < 0){
-                    $e="("; $ekuitas=$ekuitas*-1; $f=")";
+                    $e="("; $ekuitass=$ekuitas*-1; $f=")";
                 }else {
-                    $e=""; $f="";
+                    $e=""; $ekuitass=$ekuitas; $f="";
                 }
                 if ($ekuitas_lalu < 0){
                     $g="(";  
@@ -254,7 +254,7 @@
                     <tr>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$m}}{{rupiah($ekuitas_tanpa_rkppkd)}}{{$n}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitass)}}{{$f}}</td>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_laluu)}}{{$h}}</td>
                     </tr>
                 @elseif($seq==1595)
@@ -291,7 +291,7 @@
                     <tr>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitas)}}{{$f}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$o}}{{rupiah($jeku_lalu)}}{{$p}}</td>
                     </tr>
                 @elseif($seq==1605)
