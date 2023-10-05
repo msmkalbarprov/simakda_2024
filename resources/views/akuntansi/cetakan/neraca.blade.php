@@ -199,9 +199,13 @@
                     $e=""; $f="";
                 }
                 if ($ekuitas_lalu < 0){
-                    $g="("; $ekuitas_lalu=$ekuitas_lalu*-1; $h=")";
-                }else {
-                    $g=""; $h="";
+                    $g="(";  
+                    $ekuitas_laluu=$ekuitas_lalu*-1;
+                    $h=")";
+                }else{
+                    $g=""; 
+                    $ekuitas_laluu=$ekuitas_lalu; 
+                    $h="";
                 }
                 if ($eka < 0){
                     $i="("; $eka=$eka*-1; $j=")";
@@ -224,7 +228,7 @@
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitas)}}{{$f}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_lalu)}}{{$h}}</td>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_laluu)}}{{$h}}</td>
                 </tr>
                 @elseif($seq==430)
                 <tr>
