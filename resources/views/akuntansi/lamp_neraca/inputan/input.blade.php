@@ -3039,7 +3039,7 @@
         var nilai_total_k   = nilai_hari*sisa_akhir;
         
   
-        
+        // alert(rj);
         if(jam_std<=0 && ta==tahun_tgl_awal && tahun_tgl_akhir>ta){
             nilai_bersih_n=nilai_total_n-nilai_stg_hari;
         } else if (jam_std>0 && ta==tahun_tgl_awal && tahun_tgl_akhir>ta){
@@ -3371,7 +3371,7 @@
         if (tahun_n==''){
             tahun_n=0;
         }else{
-            tahun_n=angka(tahun_n);
+            tahun_n=rupiah(tahun_n);
         }
         if (korplus==''){
             korplus=0;
