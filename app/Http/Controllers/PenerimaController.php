@@ -70,16 +70,33 @@ class PenerimaController extends Controller
         // $input = array_map('htmlentities', $request->validated());
         $input = $request->validated();
         // $input = $request->all();
-        $cek = DB::table('ms_rekening_bank_online')
-            ->where([
-                'rekening' => $input['no_rekening_validasi'],
-                'kd_skpd' => Auth::user()->kd_skpd
-            ])
-            ->count();
 
-        if ($cek > 0) {
-            return redirect()->back()->withInput()
-                ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+
+        if ($input['jenis'] == '4') {
+            $cek = DB::table('ms_rekening_bank_online')
+                ->where([
+                    'rekening' => $input['no_rekening_validasi'],
+                    'kd_skpd' => Auth::user()->kd_skpd,
+                    'nmrekan' => $input['rekanan']
+                ])
+                ->count();
+
+            if ($cek > 0) {
+                return redirect()->back()->withInput()
+                    ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+            }
+        } else {
+            $cek = DB::table('ms_rekening_bank_online')
+                ->where([
+                    'rekening' => $input['no_rekening_validasi'],
+                    'kd_skpd' => Auth::user()->kd_skpd
+                ])
+                ->count();
+
+            if ($cek > 0) {
+                return redirect()->back()->withInput()
+                    ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+            }
         }
 
         DB::table('ms_rekening_bank_online')->insert([
