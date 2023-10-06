@@ -222,7 +222,7 @@ class PenerimaController extends Controller
                 'bank' => $input['cabang'],
                 'nm_bank' => $input['nama_cabang'],
                 'kd_skpd' => $kd_skpd,
-                'jenis' => $input['jenis'],
+                // 'jenis' => $input['jenis'],
                 'npwp' => isset($input['npwp_validasi']) ? $input['npwp_validasi'] : '',
                 'nm_wp' => isset($input['nm_npwp_validasi']) ? $input['nm_npwp_validasi'] : '',
                 'kd_map' => isset($input['kode_akun']) ? $input['kode_akun'] : '',
