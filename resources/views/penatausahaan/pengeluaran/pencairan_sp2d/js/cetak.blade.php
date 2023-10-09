@@ -57,6 +57,69 @@
             ],
         });
 
+        let detail_potongan_mpn = $('#detail_potongan_mpn').DataTable({
+            responsive: true,
+            ordering: false,
+            // serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10, 50, 100],
+            columns: [{
+                    data: 'nama_akun',
+                    name: 'nama_akun',
+                },
+                {
+                    data: 'nilai_potongan',
+                    name: 'nilai_potongan',
+                },
+                {
+                    data: 'id_billing',
+                    name: 'id_billing',
+                },
+                {
+                    data: 'ntpn',
+                    name: 'ntpn',
+                },
+                {
+                    data: 'keterangan',
+                    name: 'keterangan',
+                },
+            ],
+            drawCallback: function(settings) {
+                console.log('drawCallback');
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            }
+        });
+
+        let detail_potongan_nonmpn = $('#detail_potongan_nonmpn').DataTable({
+            responsive: true,
+            ordering: false,
+            // serverSide: true,
+            processing: true,
+            lengthMenu: [5, 10, 50, 100],
+            columns: [{
+                    data: 'nama_akun',
+                    name: 'nama_akun',
+                },
+                {
+                    data: 'kode_map',
+                    name: 'kode_map',
+                    visible: false
+                },
+                {
+                    data: 'nilai_potongan',
+                    name: 'nilai_potongan',
+                },
+                {
+                    data: 'keterangan',
+                    name: 'keterangan',
+                },
+            ],
+            drawCallback: function(settings) {
+                console.log('drawCallback');
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            }
+        });
+
         $('#ttd_bud').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
@@ -285,6 +348,58 @@
             $('#modal_filter').modal('hide');
         });
 
+        $('#callback').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d_callback').value;
+            let no_spm = document.getElementById('no_spm_callback').value;
+            let status = document.getElementById('status_callback').value;
+
+            let detail_mpn1 = detail_potongan_mpn.rows().data().toArray().map((value) => {
+                let data = {
+                    nama_akun: value.nama_akun,
+                    nilai_potongan: rupiah(value.nilai_potongan),
+                    id_billing: value.id_billing,
+                    ntpn: value.ntpn,
+                    keterangan: value.keterangan,
+                };
+                return data;
+            });
+
+            let detail_nonmpn1 = detail_potongan_nonmpn.rows().data().toArray().map((value) => {
+                let data = {
+                    nama_akun: value.nama_akun,
+                    kode_map: value.kode_map,
+                    nilai_potongan: rupiah(value.nilai_potongan),
+                    keterangan: value.keterangan,
+                };
+                return data;
+            });
+
+            let detail_mpn = JSON.stringify(detail_mpn1);
+
+            let detail_nonmpn = JSON.stringify(detail_nonmpn1);
+
+            let data = {
+                no_sp2d,
+                no_spm,
+                status,
+                detail_mpn,
+                detail_nonmpn
+            };
+
+            $.ajax({
+                url: "{{ route('sp2d.callback') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    data: data
+                },
+                success: function(data) {
+                    alert(data.message);
+                    $('#modal_callback').modal('hide');
+                }
+            })
+        });
+
     });
 
     function cetak(no_sp2d, beban, kd_skpd) {
@@ -306,6 +421,73 @@
         $('#no_spp_batal').val(no_spp);
         $('#status_bud').val(status);
         $('#sp2d_batal').modal('show');
+    }
+
+    function callback(no_sp2d) {
+        let tabel1 = $('#detail_potongan_mpn').DataTable();
+        let tabel2 = $('#detail_potongan_nonmpn').DataTable();
+
+        $.ajax({
+            url: "{{ route('sp2d.data_callback') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                no_sp2d: no_sp2d,
+            },
+            beforeSend: function() {
+                $("#overlay").fadeIn(100);
+            },
+            success: function(data) {
+                let data1 = JSON.parse(data);
+                tabel1.clear().draw();
+                tabel2.clear().draw();
+
+                $('#no_sp2d_callback').val(data1.data[0].data.nomorSP2D);
+                $('#no_spm_callback').val(data1.data[0].data.nomorSPM);
+                $('#tgl_transaksi').val(data1.data[0].data.tanggalTransaksi);
+                $('#nilai_transaksi').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data1.data[0].data.jumlahNominalTransaksi));
+                $('#npwp').val(data1.data[0].data.penerima.npwp);
+                $('#skpd').val(data1.data[0].data.pengirim.namaOpd);
+                $('#penerima').val(data1.data[0].data.penerima.namaPenerima);
+                $('#rekening').val(data1.data[0].data.penerima.noRekening);
+                $('#bank').val(data1.data[0].data.penerima.namaBank);
+                $('#jumlah_bayar').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(data1.data[0].data.jumlahDibayar));
+                $('#keperluan').val(data1.data[0].data.notes);
+                $('#status_callback').val(data1.data[0].data.messageDetail);
+
+                $.each(data1.data[0].data.detailPotonganMpn, function(index, potongan_mpn) {
+                    tabel1.row.add({
+                        'nama_akun': potongan_mpn.keteranganPotongan,
+                        'nilai_potongan': new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(potongan_mpn.nominalPotongan),
+                        'id_billing': potongan_mpn.idBilling,
+                        'ntpn': potongan_mpn.ntpn,
+                        'keterangan': potongan_mpn.messageDetail
+                    }).draw();
+                });
+
+                $.each(data1.data[0].data.detailPotonganNonMpn, function(index, potongan_nonmpn) {
+                    tabel2.row.add({
+                        'nama_akun': potongan_nonmpn.keteranganKodeMap,
+                        'kode_map': potongan_nonmpn.kodeMap,
+                        'nilai_potongan': new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(potongan_nonmpn.nominalPotongan),
+                        'keterangan': potongan_nonmpn.messageDetail
+                    }).draw();
+                });
+            },
+            complete: function(data) {
+                $("#overlay").fadeOut(100);
+            }
+        });
+
+        $('#modal_callback').modal('show');
     }
 
     function deleteData(no_spp) {
@@ -331,5 +513,11 @@
         } else {
             return false;
         }
+    }
+
+    function rupiah(n) {
+        let n1 = n.split('.').join('');
+        let rupiah = n1.split(',').join('.');
+        return parseFloat(rupiah) || 0;
     }
 </script>

@@ -23,7 +23,7 @@ class PencairanSp2dController extends Controller
         $data = DB::table('trhsp2d as a')
             ->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')
             ->join('trhuji as c', 'b.no_uji', '=', 'c.no_uji')
-            ->select('a.no_sp2d', 'a.tgl_sp2d', 'a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.no_kas', 'a.no_kas_bud', 'a.tgl_kas', 'a.tgl_kas_bud', 'a.nocek', 'a.status_bud', 'a.jenis_beban', 'a.no_spd', 'b.no_uji')
+            ->select('a.no_sp2d', 'a.tgl_sp2d', 'a.no_spm', 'a.tgl_spm', 'a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.jns_spp', 'a.keperluan', 'a.bulan', 'a.no_spd', 'a.bank', 'a.nmrekan', 'a.no_rek', 'a.npwp', 'a.no_kas', 'a.no_kas_bud', 'a.tgl_kas', 'a.tgl_kas_bud', 'a.nocek', 'a.status_bud', 'a.jenis_beban', 'a.no_spd', 'b.no_uji', 'b.status as status_uji', 'a.app_cair')
             ->where(function ($query) use ($tipe) {
                 if ($tipe == 'online_cair') {
                     $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['1', '1']);
@@ -41,6 +41,11 @@ class PencairanSp2dController extends Controller
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("pencairan_sp2d.tampil", Crypt::encryptString($row->no_sp2d)) . '" class="btn btn-info btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
+            if ($row->app_cair == 'SP2DONLINE' && $row->status_uji == '4') {
+                $btn .= '<a href="javascript:void(0);" onclick="callback(\'' . $row->no_sp2d . '\');" class="btn btn-warning btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Callback SP2D"><i class="uil-info-circle"></i></a>';
+            } else {
+                $btn .= '';
+            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }

@@ -75,11 +75,6 @@ class Sp2dController extends Controller
             } else {
                 $btn .= '';
             }
-            if ($row->app_cair == 'SP2DONLINE' && $row->status_uji == '4') {
-                $btn .= '<a href="javascript:void(0);" onclick="callback(\'' . $row->no_sp2d . '\');" class="btn btn-warning btn-sm" style="margin-right:4px" data-bs-toggle="tooltip" data-bs-placement="top" title="Callback SP2D"><i class="uil-info-circle"></i></a>';
-            } else {
-                $btn .= '';
-            }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
