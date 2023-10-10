@@ -164,9 +164,9 @@ class SetorPotonganController extends Controller
             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
         })->where(['a.no_bukti' => $no_bukti, 'a.kd_skpd' => $kd_skpd])->select('a.*')->first();
 
-        $rekanan1 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->take(5);
+        $rekanan1 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat');
 
-        $rekanan2 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->take(5)->unionAll($rekanan1);
+        $rekanan2 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($rekanan1);
 
         $rekanan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw("LEN(nmrekan)>1")->where(['kd_skpd' => $kd_skpd])->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($rekanan2);
 
