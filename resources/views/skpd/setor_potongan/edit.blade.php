@@ -328,7 +328,7 @@
                     <div class="mb-3 row">
                         <label for="rekanan" class="col-md-2 col-form-label">Rekanan</label>
                         <div class="col-md-4">
-                            <select class="form-control select2-multiple" style="width: 100%" id="rekanan_edit"
+                            <select class="form-control select2-modal" style="width: 100%" id="rekanan_edit"
                                 name="rekanan_edit">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 @foreach ($daftar_rekanan as $rekanan)
