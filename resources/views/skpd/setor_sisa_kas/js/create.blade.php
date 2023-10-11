@@ -357,6 +357,11 @@
                 return;
             }
 
+            if (!no_kas) {
+                alert('No. STS Tidak Boleh Kosong!');
+                return;
+            }
+
             if (!tgl_kas) {
                 alert('Tanggal STS Tidak Boleh Kosong!');
                 return;

@@ -14,7 +14,8 @@
                     <div class="mb-3 row">
                         <label for="no_kas" class="col-md-2 col-form-label">No Kas</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_kas" name="no_kas" required readonly>
+                            <input class="form-control" type="text" id="no_kas" name="no_kas" required
+                                value="{{ $no_urut }}">
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>

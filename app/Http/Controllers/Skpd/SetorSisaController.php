@@ -45,7 +45,8 @@ class SetorSisaController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'tahun_anggaran' => tahun_anggaran(),
-            'sisa_tunai' => load_sisa_tunai()
+            'sisa_tunai' => load_sisa_tunai(),
+            'no_urut' => no_urut($kd_skpd)
         ];
 
         return view('skpd.setor_sisa_kas.create')->with($data);
@@ -276,7 +277,8 @@ class SetorSisaController extends Controller
 
         DB::beginTransaction();
         try {
-            $no_urut = no_urut($kd_skpd);
+            // $no_urut = no_urut($kd_skpd);
+            $no_urut = $data['no_kas'];
 
             DB::table('trhkasin_pkd')->where(['kd_skpd' => $kd_skpd, 'no_sts' => $no_urut])->delete();
 
