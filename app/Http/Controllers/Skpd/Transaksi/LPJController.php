@@ -1376,7 +1376,7 @@ class LPJController extends Controller
         $data = DB::select("SELECT a.kd_sub_kegiatan, c.nm_sub_kegiatan
         from trlpj a
         INNER JOIN trhlpj_unit b ON a.no_lpj_unit=b.no_lpj AND a.kd_skpd=b.kd_skpd
-        LEFT JOIN trskpd c ON a.kd_sub_kegiatan=c.kd_sub_kegiatan
+        LEFT JOIN trskpd c ON a.kd_sub_kegiatan=c.kd_sub_kegiatan and a.kd_skpd=c.kd_skpd
         WHERE a.no_lpj_unit = ? AND a.kd_skpd=?
         GROUP BY a.kd_sub_kegiatan,c.nm_sub_kegiatan
         ORDER BY a.kd_sub_kegiatan", [$no_lpj, $kd_skpd]);
