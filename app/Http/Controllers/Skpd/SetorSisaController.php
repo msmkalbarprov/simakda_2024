@@ -280,6 +280,16 @@ class SetorSisaController extends Controller
             // $no_urut = no_urut($kd_skpd);
             $no_urut = $data['no_kas'];
 
+            $cek = DB::table('trhkasin_pkd')
+                ->where(['kd_skpd' => $kd_skpd, 'no_sts' => $no_urut])
+                ->count();
+
+            if ($cek > 0) {
+                return response()->json([
+                    'message' => '2'
+                ]);
+            }
+
             DB::table('trhkasin_pkd')->where(['kd_skpd' => $kd_skpd, 'no_sts' => $no_urut])->delete();
 
             DB::table('trhju_pkd')->where(['kd_skpd' => $kd_skpd, 'no_voucher' => $no_urut])->delete();

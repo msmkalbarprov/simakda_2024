@@ -408,6 +408,10 @@
                             .no_kas);
                         window.location.href =
                             "{{ route('skpd.setor_sisa.index') }}";
+                    } else if (response.message == '2') {
+                        alert('Nomor telah digunakan!');
+                        $('#simpan_sts').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan_sts').prop('disabled', false);
