@@ -97,6 +97,11 @@ class kapitController extends Controller
         $sub_kegiatan = DB::select("SELECT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.jns_kegiatan 
                         FROM trskpd a INNER JOIN ms_sub_kegiatan b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan
                         where a.kd_skpd=? and a.jns_ang=?",[$kd_skpd,$jns_ang->jns_ang]);
+        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-'+REPLACE(kd_skpd,'.','') as nomor FROM
+            (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
+            SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
+            SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
+            WHERE kd_skpd=? GROUP BY kd_skpd)y",[$kd_skpd]))->first();
         $data = [
             'bendahara' => DB::table('ms_ttd')
                 ->whereIn('kode', ['1'])
@@ -107,7 +112,8 @@ class kapitController extends Controller
             'jns_anggaran' => jenis_anggaran(),
             'jns_anggaran2' => jenis_anggaran(),
             'kd_skpd' => $kd_skpd,
-            'sub_kegiatan' => $sub_kegiatan
+            'sub_kegiatan' => $sub_kegiatan,
+            'no_lamp' => $no_lamp
         ];
 
         return view('akuntansi.kapit.inputan.input')->with($data);
@@ -120,8 +126,9 @@ class kapitController extends Controller
         $data = DB::select("SELECT kd_sub_kegiatan,kd_rek6,nm_rek6,nil_ang,kapitalisasi,jenis,nilai_trans FROM trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd' order by kd_rek6 ");
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             
-            $btn = '<a href="javascript:void(0);" onclick="rinci(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-primary btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="rinci(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-newspaper"></i></a>';
+            $btn .= '<a href="javascript:void(0);" onclick="hapus_tr(\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nil_ang . '\',\'' . $row->kapitalisasi . '\',\'' . $row->nilai_trans . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
@@ -157,7 +164,7 @@ class kapitController extends Controller
         
             // dd($kd_sub_kegiatan);
         $delete = DB::delete("DELETE from trkapitalisasi_tampungan where kd_sub_kegiatan='$kd_sub_kegiatan' and kd_skpd = '$kd_skpd'");
-        $insert = DB::insert("INSERT into trkapitalisasi_tampungan select kd_sub_kegiatan,kd_rek6,nm_rek6,sum(nil_ang)nil_ang,sum(kapitalisasi)kapitalisasi,jenis,'$kd_skpd' kd_skpd,sum(nilai_trans)nilai_trans from(SELECT kd_sub_kegiatan,kd_rek6,nm_rek6,0 nil_ang,kapitalisasi,jenis,0 nilai_trans FROM trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd' union select a.kd_sub_kegiatan, a.kd_rek6, a.nm_rek6, a.anggaran nil_ang,0 as kapitalisasi,'Y' as jenis, isnull(b.real_spj,0) as nilai_trans from(select a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, nilai as anggaran from trdrka a WHERE a.kd_skpd='$kd_skpd' AND a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM trdrka WHERE LEFT (kd_rek6, 1) = '5') AND a.kd_sub_kegiatan='$kd_sub_kegiatan' and a.jns_ang='$jns_ang->jns_ang' group by a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6,a.nilai) a left join (select kd_skpd, kd_sub_kegiatan, kd_rek6, sum(real_spj) as real_spj from (select c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6, sum(b.nilai) as real_spj from trdtransout b inner join trhtransout c on b.no_bukti=c.no_bukti and b.kd_skpd=c.kd_skpd where c.kd_skpd='$kd_skpd' group by c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 union all select e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, sum(d.rupiah*-1) as real_spj  from trdkasin_pkd d inner join trhkasin_pkd e on d.no_sts=e.no_sts and d.kd_skpd=e.kd_skpd where e.jns_trans=5 and LEFT(d.kd_rek6,1)=5 and e.pot_khusus <>0  and e.kd_skpd='$kd_skpd' group by e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6 union all select a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai*-1) as real_spj  from trdinlain a inner join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where pengurang_belanja=1 and a.kd_skpd='$kd_skpd' group by a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6 union all select a.kd_skpd, a.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai) as real_spj from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd WHERE a.kd_skpd='$kd_skpd' GROUP BY a.kd_skpd,a.kd_sub_kegiatan, a.kd_rek6 ) b group by kd_skpd, kd_sub_kegiatan, kd_rek6) b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6)a group by kd_sub_kegiatan,kd_rek6,nm_rek6,jenis");
+        $insert = DB::insert("INSERT into trkapitalisasi_tampungan select kd_sub_kegiatan,kd_rek6,nm_rek6,sum(nil_ang)nil_ang,0 kapitalisasi,jenis,'$kd_skpd' kd_skpd,sum(nilai_trans)nilai_trans from(SELECT kd_sub_kegiatan,kd_rek6,nm_rek6,0 nil_ang,kapitalisasi,'Y'jenis,0 nilai_trans FROM trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd' union select a.kd_sub_kegiatan, a.kd_rek6, a.nm_rek6, a.anggaran nil_ang,0 as kapitalisasi,'Y' as jenis, isnull(b.real_spj,0) as nilai_trans from(select a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, nilai as anggaran from trdrka a WHERE a.kd_skpd='$kd_skpd' AND a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM trdrka WHERE LEFT (kd_rek6, 1) = '5') AND a.kd_sub_kegiatan='$kd_sub_kegiatan' and a.jns_ang='$jns_ang->jns_ang' group by a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6,a.nilai) a left join (select kd_skpd, kd_sub_kegiatan, kd_rek6, sum(real_spj) as real_spj from (select c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6, sum(b.nilai) as real_spj from trdtransout b inner join trhtransout c on b.no_bukti=c.no_bukti and b.kd_skpd=c.kd_skpd where c.kd_skpd='$kd_skpd' group by c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6 union all select e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, sum(d.rupiah*-1) as real_spj  from trdkasin_pkd d inner join trhkasin_pkd e on d.no_sts=e.no_sts and d.kd_skpd=e.kd_skpd where e.jns_trans=5 and LEFT(d.kd_rek6,1)=5 and e.pot_khusus <>0  and e.kd_skpd='$kd_skpd' group by e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6 union all select a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai*-1) as real_spj  from trdinlain a inner join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where pengurang_belanja=1 and a.kd_skpd='$kd_skpd' group by a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6 union all select a.kd_skpd, a.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai) as real_spj from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd WHERE a.kd_skpd='$kd_skpd' GROUP BY a.kd_skpd,a.kd_sub_kegiatan, a.kd_rek6 ) b group by kd_skpd, kd_sub_kegiatan, kd_rek6) b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6)a group by kd_sub_kegiatan,kd_rek6,nm_rek6,jenis");
         if($insert){
             echo '1';
         }else{
@@ -193,6 +200,136 @@ class kapitController extends Controller
             echo '0';
         }
 
+    }
+
+    public function cari_kd_rek6(Request $request)
+    {
+        $skpd     = Auth::user()->kd_skpd;
+        $cgiat    = $request->kd_sub_kegiatan;
+        
+        $jns_anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd=? order by tgl_dpa DESC",[$skpd]))->first();
+        $jns_ang = $jns_anggaran->jns_ang;
+        $data = DB::select("SELECT a.kd_sub_kegiatan, a.kd_rek6, a.nm_rek6, a.anggaran,isnull(c.kapitalisasi,0) as kapitalisasi,'Y' as jenis,a.kd_skpd, isnull(b.real_spj,0) as transaksi 
+            from
+                (select a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6, nilai as anggaran 
+                    from trdrka a 
+                    WHERE a.kd_skpd='$skpd' and kd_sub_kegiatan='$cgiat' AND LEFT (kd_rek6, 1) = '5' and jns_ang = '$jns_ang'
+                    group by a.kd_skpd, a.kd_sub_kegiatan, a.nm_sub_kegiatan, a.kd_rek6, a.nm_rek6,a.nilai
+                ) a
+                left join
+                (select kd_skpd, kd_sub_kegiatan, kd_rek6, sum(real_spj) as real_spj 
+                    from 
+                    (select c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6, sum(b.nilai) as real_spj 
+                        from trdtransout b inner join trhtransout c on b.no_bukti=c.no_bukti and b.kd_skpd=c.kd_skpd 
+                        where c.kd_skpd='$skpd'
+                        group by c.kd_skpd, b.kd_sub_kegiatan, b.kd_rek6
+                        union all
+                        select e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6, sum(d.rupiah*-1) as real_spj 
+                        from trdkasin_pkd d inner join trhkasin_pkd e on d.no_sts=e.no_sts and d.kd_skpd=e.kd_skpd
+                        where e.jns_trans=5 and LEFT(d.kd_rek6,1)=5 and e.pot_khusus <>0 and e.kd_skpd='$skpd' 
+                        group by e.kd_skpd, d.kd_sub_kegiatan, d.kd_rek6
+                        union all
+                        select a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6, sum(a.nilai*-1) as real_spj 
+                        from trdinlain a inner join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd 
+                        where pengurang_belanja=1 and a.kd_skpd='$skpd' 
+                        group by a.kd_skpd, b.kd_sub_kegiatan, a.kd_rek6 
+                    ) b group by kd_skpd, kd_sub_kegiatan, kd_rek6
+                ) b on a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan and a.kd_rek6=b.kd_rek6 
+                left join trkapitalisasi c on a.kd_skpd=c.kd_skpd and a.kd_sub_kegiatan=c.kd_sub_kegiatan and a.kd_rek6=c.kd_rek6");
+        return response()->json($data);
+    }
+
+    public function cari_kd_rek3rinci(Request $request)
+    {
+        $skpd     = Auth::user()->kd_skpd;
+        // $rek3    = $request->rek3;
+        
+        $jns_anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd=? order by tgl_dpa DESC",[$skpd]))->first();
+        $jns_ang = $jns_anggaran->jns_ang;
+        $data = DB::select("SELECT kd_rek3,nm_rek3 FROM ms_rek3 WHERE (left(kd_rek3,3)='130' and kd_rek3 !='1307'  or kd_rek3='1503' or kd_rek3='1112'
+        --OR kd_rek3='3103' OR left(kd_rek3,2)in('21','22')
+            )
+                union all
+                select  '8' kd_rek3, 'Beban' nm_rek3           
+                ORDER BY kd_rek3");
+        return response()->json($data);
+    }
+
+    public function cari_kd_rek6rinci(Request $request)
+    {
+        $skpd     = Auth::user()->kd_skpd;
+        $kdrek3    = $request->rek3;
+        
+        $jns_anggaran = collect(DB::select("SELECT TOP 1 jns_ang from trhrka where kd_skpd=? order by tgl_dpa DESC",[$skpd]))->first();
+        $jns_ang = $jns_anggaran->jns_ang;
+        $data = DB::select("SELECT b.kd_rek5,b.nm_rek5,kd_rek6,nm_rek6 FROM ms_rek6 a inner join ms_rek5 b on a.kd_rek5=b.kd_rek5
+            WHERE left(a.kd_rek5,4)='$kdrek3' 
+            union all
+            select * from (
+            select b.kd_rek5,b.nm_rek5,kd_rek6,nm_rek6 FROM ms_rek6 a inner join ms_rek5 b on a.kd_rek5=b.kd_rek5
+            WHERE left(a.kd_rek5,1)='$kdrek3' ) z where kd_rek6 between '810201010001' and '810201010051' or left(kd_rek6,8) between '81020208' and '81020209' or left(kd_rek6,6)='810203' or kd_rek6 in('810103070002','810202010062')");
+        return response()->json($data);
+    }
+
+    public function input_inputan(Request $request){
+        $kd_skpd    = $request->kd_skpd;
+        $kd_sub_kegiatan   = $request->kd_sub_kegiatan;
+        $kd_rek6    = $request->kd_rek6;
+        $nm_rek6    = nama_rekening($kd_rek6);
+        $anggaran   = $request->anggaran;
+        $kapit   = $request->kapit;
+        $trans   = $request->trans;
+        $jenis   = $request->jenis;
+        $status_input   = $request->status_input;
+        if ($status_input=="tambah"){
+            $hasil=DB::insert("INSERT into trkapitalisasi (kd_sub_kegiatan, kd_rek6, nm_rek6, nil_ang, kapitalisasi, jenis, kd_skpd, nilai_trans) values '$kd_sub_kegiatan', '$kd_rek6', '$nm_rek6', '$anggaran', '$kapit', '$jenis','$kd_skpd', '$trans'");
+            if ($hasil) {
+                $kode = "1";
+                $pesan = "'Data Tertambah'";
+            }else{
+                $kode = "0";
+                $pesan = "'Data Tidak Tertambah'";
+            }
+        } else if($status_input=="edit"){
+            $hasil=DB::update("UPDATE trkapitalisasi SET nil_ang='$anggaran', kapitalisasi='$kapit', jenis='$jenis', nilai_trans='$trans' where kd_skpd='$kd_skpd' and kd_sub_kegiatan='$kd_sub_kegiatan'and kd_rek6='$kd_rek6'");
+            if ($hasil) {
+                $kode = "1";
+                $pesan = "'Data Tersimpan'";
+            }else{
+                $kode = "0";
+                $pesan = "'Data Tidak Tersimpan'";
+            }
+        }else{
+            $kode = "0";
+            $pesan = "'Status Input Tidak Jelas'";
+        }
+
+        $msg = array('kode'=>$kode,'pesan'=>$pesan);
+        echo json_encode($msg);
+        
+    }
+
+    public function hapus_tr(Request $request){
+        $kd_skpd            = $request->kd_skpd;
+        $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
+        $kd_rek6            = $request->kd_rek6;
+        $jenis              = $request->jenis;
+        
+        // dd($jenis);
+
+        $hasil = DB::delete("DELETE from trkapitalisasi where kd_sub_kegiatan='$kd_sub_kegiatan' and kd_skpd = '$kd_skpd' and kd_rek6='$kd_rek6' and jenis='$jenis'");
+
+        if ($hasil) {
+            $kode = "1";
+            $pesan = "Data Terhapus";
+        }else{
+            $kode = "0";
+            $pesan = "Data Tidak Terhapus";
+        }
+    
+        $msg = array('kode'=>$kode,'pesan'=>$pesan);
+        echo json_encode($msg);
+        
     }
 
     

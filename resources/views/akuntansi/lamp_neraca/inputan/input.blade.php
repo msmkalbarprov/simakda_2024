@@ -123,7 +123,7 @@
             $('#nm_rek5').val(null);
             $('#rek6').val(null).change();
             $('#nm_rek6').val(null);
-            $('#tahun').val(null);
+            $('#tahun').val(null).change();
             $('#merk').val(null);
             $('#no_polisi').val(null);
             $('#fungsi').val(null);
@@ -2758,7 +2758,7 @@
         cari_rek7(kd_rek6,kd_rek7);
         $('#rek7').val(kd_rek7).change();
         $('#nm_rek7').val(nm_rek7);
-        $('#tahun').val(tahun);
+        $('#tahun').val(tahun).change();
         $('#merk').val(merk);
         $('#no_polisi').val(no_polisi);
         $('#fungsi').val(fungsi);
@@ -2915,7 +2915,7 @@
         let hrg_satuan=harga_satuan;
         saldo_awal=jum*hrg_satuan;
 
-        $("#harga_awal").attr("Value",new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(saldo_awal))
+        $("#harga_awal").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(saldo_awal))
     }
 
     function hitung_asuransi(){

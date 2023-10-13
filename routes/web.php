@@ -1860,7 +1860,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         // input
         Route::group(['prefix' => 'input_kapitalisasi'], function () {
             Route::get('', [kapitController::class, 'input_kapitalisasi'])->name('kapitalisasi.input_kapitalisasi.inputan');
+            Route::post('cari_rek6_kapit', [kapitController::class, 'cari_kd_rek6'])->name('kapitalisasi.input.kd_rek6');
+            Route::post('cari_rek3rinci_kapit', [kapitController::class, 'cari_kd_rek3rinci'])->name('kapitalisasi.input.kd_rek3rinci');
+            Route::post('cari_rek6rinci_kapit', [kapitController::class, 'cari_kd_rek6rinci'])->name('kapitalisasi.input.kd_rek6rinci');
             Route::post('load_input_kapitalisasi', [kapitController::class, 'load_input_kapitalisasi'])->name('input_kapitalisasi.load');
+            Route::post('input_kapit_inputan', [kapitController::class, 'input_inputan'])->name('input_kapit_inputan.simpan_input');
+            Route::post('input_kapit_hapus_tr', [kapitController::class, 'hapus_tr'])->name('input_kapit_inputan.hapus_tr');
             //refresh kegiatan
             Route::post('refresh_kegiatan_tampungankapit', [kapitController::class, 'refresh_simpan_tampungan_kapit'])->name('input_kapitalisasi.refresh_kegiatan.simpan_tampungan');
             Route::post('refresh_kegiatan_tabelkapit', [kapitController::class, 'refresh_simpan_tabel_kapit'])->name('input_kapitalisasi.refresh_kegiatan.refresh_simpan_tabel');
