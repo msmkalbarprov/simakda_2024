@@ -55,6 +55,7 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="beban" name="beban">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 <option value="1">UP/GU</option>
+                                <option value="3">TU</option>
                                 {{-- <option value="4">LS Gaji</option>
                                 <option value="6">LS Barang Jasa</option>
                                 <option value="5">LS Pihak Ketiga Lainnya</option> --}}
