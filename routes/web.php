@@ -118,7 +118,10 @@ use App\Http\Controllers\KoreksiDataController;
 use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
+use App\Http\Controllers\Skpd\DaftarPembayaranTagihanController;
+use App\Http\Controllers\Skpd\DaftarPengeluaranRillController;
 use App\Http\Controllers\Skpd\RestitusiController;
+use App\Http\Controllers\Skpd\SppGuKkpdController;
 use App\Http\Controllers\Skpd\UploadKKPDController;
 use App\Http\Controllers\Skpd\ValidasiKKPDController;
 use App\Http\Controllers\Skpd\VerifikasiKKPDController;
@@ -157,6 +160,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     // index, create, store, update, show, destroy
 
     Route::group(['prefix' => 'master'], function () {
+        Route::get('/cek_ntpn', [HomeController::class, 'cekNtpn'])->name('cek_ntpn.index');
         Route::resource('penerima', PenerimaController::class);
         Route::get('penerima/show/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'showPenerima'])->name('penerima.show_penerima');
         Route::get('penerima/edit/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'editPenerima'])->name('penerima.edit_penerima');
@@ -1359,6 +1363,72 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit/{no_sts?}/{kd_skpd?}', [RestitusiController::class, 'edit'])->name('restitusi.edit');
             Route::post('update', [RestitusiController::class, 'update'])->name('restitusi.update');
             Route::post('hapus', [RestitusiController::class, 'hapus'])->name('restitusi.hapus');
+        });
+
+
+        // DAFTAR PENGELUARAN DPR
+        Route::group(['prefix' => 'daftar_pengeluaran_rill'], function () {
+            // DAFTAR PENGELUARAN RILL (DPR)
+            Route::get('', [DaftarPengeluaranRillController::class, 'index'])->name('dpr.index');
+            Route::post('load_data', [DaftarPengeluaranRillController::class, 'loadData'])->name('dpr.load_data');
+            Route::get('tambah', [DaftarPengeluaranRillController::class, 'create'])->name('dpr.create');
+            Route::post('no_urut', [DaftarPengeluaranRillController::class, 'no_urut'])->name('dpr.no_urut');
+            Route::post('cek_modal', [DaftarPengeluaranRillController::class, 'cekModal'])->name('dpr.cek_modal');
+            Route::post('cariKegiatan', [DaftarPengeluaranRillController::class, 'cariKegiatan'])->name('dpr.kegiatan');
+            Route::post('cariRekening', [DaftarPengeluaranRillController::class, 'cariRekening'])->name('dpr.rekening');
+            Route::post('cariSumber', [DaftarPengeluaranRillController::class, 'cariSumber'])->name('dpr.sumber');
+            Route::post('loadDana', [DaftarPengeluaranRillController::class, 'loadDana'])->name('dpr.load_dana');
+            Route::post('statusAng', [DaftarPengeluaranRillController::class, 'statusAng'])->name('dpr.status_ang');
+            Route::post('simpan', [DaftarPengeluaranRillController::class, 'simpan'])->name('dpr.simpan');
+            Route::get('edit/{no_dpr?}/{kd_skpd?}', [DaftarPengeluaranRillController::class, 'edit'])->name('dpr.edit');
+            Route::post('update', [DaftarPengeluaranRillController::class, 'update'])->name('dpr.update');
+            Route::post('hapus', [DaftarPengeluaranRillController::class, 'hapus'])->name('dpr.hapus');
+            Route::get('cetak_list', [DaftarPengeluaranRillController::class, 'cetakList'])->name('dpr.cetak_list');
+
+            // VERIFIKASI DPR
+            Route::group(['prefix' => 'verifikasi'], function () {
+                // Verifikasi DPR
+                Route::get('', [DaftarPengeluaranRillController::class, 'indexVerifikasi'])->name('dpr.index_verifikasi');
+                Route::post('load', [DaftarPengeluaranRillController::class, 'loadVerifikasi'])->name('dpr.load_verifikasi');
+                Route::get('detail/{no_dpr?}/{kd_skpd?}', [DaftarPengeluaranRillController::class, 'detailVerifikasi'])->name('dpr.detail_verifikasi');
+                Route::post('simpan', [DaftarPengeluaranRillController::class, 'simpanVerifikasi'])->name('dpr.simpan_verifikasi');
+            });
+        });
+
+        // DAFTAR PEMBAYARAN TAGIHAN
+        Route::group(['prefix' => 'daftar_pembayaran_tagihan'], function () {
+            // DAFTAR PEMBAYARAN TAGIHAN (DPT)
+            Route::get('', [DaftarPembayaranTagihanController::class, 'index'])->name('dpt.index');
+            Route::post('load_data', [DaftarPembayaranTagihanController::class, 'loadData'])->name('dpt.load_data');
+            Route::get('tambah', [DaftarPembayaranTagihanController::class, 'create'])->name('dpt.create');
+            Route::post('no_urut', [DaftarPembayaranTagihanController::class, 'no_urut'])->name('dpt.no_urut');
+            Route::post('detail_dpr', [DaftarPembayaranTagihanController::class, 'detailDpr'])->name('dpt.detail_dpr');
+            Route::post('simpan', [DaftarPembayaranTagihanController::class, 'simpan'])->name('dpt.simpan');
+            Route::get('edit/{no_dpt?}/{kd_skpd?}', [DaftarPembayaranTagihanController::class, 'edit'])->name('dpt.edit');
+            Route::post('update', [DaftarPembayaranTagihanController::class, 'update'])->name('dpt.update');
+            Route::post('hapus', [DaftarPembayaranTagihanController::class, 'hapus'])->name('dpt.hapus');
+
+            // VERIFIKASI DPT
+            Route::group(['prefix' => 'verifikasi'], function () {
+                // Verifikasi DPT
+                Route::get('', [DaftarPembayaranTagihanController::class, 'indexVerifikasi'])->name('dpt.index_verifikasi');
+                Route::post('load', [DaftarPembayaranTagihanController::class, 'loadVerifikasi'])->name('dpt.load_verifikasi');
+                Route::post('detail', [DaftarPembayaranTagihanController::class, 'detailVerifikasi'])->name('dpt.detail_verifikasi');
+                Route::post('simpan', [DaftarPembayaranTagihanController::class, 'simpanVerifikasi'])->name('dpt.simpan_verifikasi');
+            });
+        });
+
+        // SPP GU KKPD
+        Route::group(['prefix' => 'spp_gu_kkpd'], function () {
+            Route::get('', [SppGuKkpdController::class, 'index'])->name('spp_gu_kkpd.index');
+            Route::post('load', [SppGuKkpdController::class, 'load'])->name('spp_gu_kkpd.load');
+            Route::get('tambah', [SppGuKkpdController::class, 'tambah'])->name('spp_gu_kkpd.tambah');
+            Route::post('detail', [SppGuKkpdController::class, 'detail'])->name('spp_gu_kkpd.detail');
+            Route::post('nomor', [SppGuKkpdController::class, 'nomor'])->name('spp_gu_kkpd.nomor');
+            Route::post('simpan', [SppGuKkpdController::class, 'simpan'])->name('spp_gu_kkpd.simpan');
+            Route::get('edit/{no_spp?}/{kd_skpd?}', [SppGuKkpdController::class, 'edit'])->name('spp_gu_kkpd.edit');
+            Route::post('update', [SppGuKkpdController::class, 'update'])->name('spp_gu_kkpd.update');
+            Route::post('hapus', [SppGuKkpdController::class, 'hapus'])->name('spp_gu_kkpd.hapus');
         });
     });
 

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -126,6 +128,34 @@ class HomeController extends Controller
         return view('home')->with($data);;
     }
 
+    public function cekNtpn()
+    {
+        $skpd = Auth::user()->kd_skpd;
+        $kd_skpd = substr($skpd, 0, 17);
+
+        $perusahaan1 = DB::table('ms_perusahaan')->select('nama as nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEFT(kd_skpd,17) = ?', [$kd_skpd])->groupBy('nama', 'pimpinan', 'npwp', 'alamat');
+        $perusahaan2 = DB::table('trhspp')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan1);
+        $perusahaan3 = DB::table('trhtrmpot_cmsbank')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan2);
+        $perusahaan4 = DB::table('trhtrmpot')->select('nmrekan', 'pimpinan', 'npwp', 'alamat')->whereRaw('LEN(nmrekan)>1')->where('kd_skpd', $skpd)->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')->unionAll($perusahaan3);
+        $result = DB::table(DB::raw("({$perusahaan4->toSql()}) AS sub"))
+            ->select("nmrekan", "pimpinan", "npwp", "alamat")
+            ->mergeBindings($perusahaan4)
+            ->groupBy('nmrekan', 'pimpinan', 'npwp', 'alamat')
+            ->orderBy('nmrekan', 'ASC')
+            ->orderBy('pimpinan', 'ASC')
+            ->orderBy('npwp', 'ASC')
+            ->orderBy('alamat', 'ASC')
+            ->get();
+
+        $data = [
+            'daftar_bank' => DB::table('ms_bank_online')->get(),
+            'daftar_kode_akun' => DB::table('ms_map_billing')->select('kd_map', 'nm_map')->groupBy('nm_map', 'kd_map')->get(),
+            'daftar_rekanan' => $result,
+        ];
+
+        return view('master.cek_ntpn.create')->with($data);
+    }
+
     public function pengumuman()
     {
         $data = [
@@ -223,5 +253,24 @@ class HomeController extends Controller
                 'message' => '0'
             ]);
         }
+    }
+
+
+    public function coba1(Request $request)
+    {
+        $client = DB::table('oauth_clients')
+            ->where('personal_access_client', true)
+            ->first();
+
+        $response = Http::asForm()->post(config('app.url') . '/oauth/token', [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $request->input('refresh_token'),
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
+            'scope' => '*'
+        ]);
+
+        $response['log info'] = Log::info("message");
+        return $response->json();
     }
 }
