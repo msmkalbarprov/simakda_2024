@@ -72,7 +72,7 @@
             <div class="card">
                 <div class="card-header">
                     List Rinci Kapitalisasi
-                    <input type="text" id="kd_rek6" style="border:0;width: 200px;" readonly /></td>
+                    <input type="text" id="kd_rek6" style="border:0;width: 200px;" readonly />
                     <button align="center" id="tambah_rinci" class="btn btn-md btn-primary" style="float: right;" hidden>Tambah</button>
                 </div>
                 <div class="card-body">
@@ -92,6 +92,36 @@
                                         <th style="width: 200px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Nilai Total Rinci Kapitalisasi
+                    <button align="center" id="tambah_rinci__" class="btn btn-md btn-primary" style="float: right;" hidden>Tambah</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-rep-plugin">
+                        <div class="table-responsive mb-0" data-pattern="priority-columns">
+                            <table id="list_tot_rincian" class="table" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25px;text-align:center">Total</th>
+                                        <th style="width: 50px;text-align:center">Total Transaksi</th>
+                                        <th style="width: 50px;text-align:center">Total Kapitalisasi</th>
+                                        <th style="width: 50px;text-align:center">Total Kapitalisasi Rekening</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="text" id="tot_rinci" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" readonly /></td>
+                                        <td><input type="text" id="tot_trans" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" readonly /></td>
+                                        <td><input type="text" id="tot_kapit" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" readonly /></td>
+                                        <td><input type="text" id="tot_kapit_rek" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" readonly /></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -320,10 +350,54 @@
     });
 
     $('#tambah_rinci').on('click', function() {
-        
+        status_input_rinci = 'tambah';
+        $('#status_input_rinci').val(status_input_rinci);
         $('#no_simpan').val("{{$no_lamp->nomor}}");
         $('#nomor').val("{{$no_lamp->nomor}}");
-        // tampil_nilai("");
+        $("#rek3").val(null).change();
+        $("#nm_rek3").val(null);
+        $("#rek5x").val(null).change();
+        $("#rek5").val(null).change();
+        $("#nm_rek5").val(null);
+        $("#rek6").val(null).change();
+        $("#nm_rek6").val(null);
+        $("#tahun").val(null);
+        $("#bulan").val(null);
+        $("#merk").val(null);
+        $("#no_polisi").val(null);
+        $("#fungsi").val(null);
+        $("#hukum").val(null);
+        $("#lokasi").val(null);
+        $("#alamat").val(null);
+        $("#sert").val(null);
+        $("#luas").val(null);
+        $("#satuan").val(null);
+        $("#harga_satuan").val(null);
+        $("#piutang_awal").val(null);
+        $("#piutang_koreksi").val(null);
+        $("#piutang_sudah").val(null);
+        $("#sal_awal").val(null);
+        $("#investasi_awal").val(null);
+        $("#kurang").val(null);
+        $("#tambah").val(null);
+        $("#tahun_n").val(null);
+        $("#kondisi_b").val(null);
+        $("#kondisi_rr").val(null);
+        $("#kondisi_rb").val(null);
+        $("#keterangan").val(null);
+        $("#jumlah").val(null);
+        $("#milik").val(null);
+        $("#rincian_bebas").val(null);
+        $("#no_polis").val(null);
+        $("#harga_awal").val(null);
+        $("#kapit_tot").val(null);
+        $("#kapit_rincian").val(null);
+        $("#kapit_rincian1").val(null);
+        $("#sat_kap").val(null);
+        $("#nil_kap").val(null);
+        $("#trans_tot").val(null);
+        $("#kapit_tot").val(null);
+        tampil_rek3("");
         // alert(1);
         $('#modal_input_rinci_kapit').modal('show');
     });
@@ -1854,7 +1928,9 @@
         $('#jikd_rek6').val(kd_rek6);
         // alert(kd_rek6);
         let list_table = $('#list_rinci_kapit').DataTable();
-        list_table.ajax.reload()
+        let list_table_tot = $('#list_tot_rincian').DataTable();
+        list_table.ajax.reload();
+        load_tot_rinci(kd_sub_kegiatan,kd_rek6);
     }
 
     function edit(kd_sub_kegiatan, kd_rek6, nm_rek6, nil_ang, kapitalisasi, nilai_trans, jenis) {  
@@ -1870,6 +1946,129 @@
         // tampil_nilai("");
         $('#modal_input_kapit').modal('show');
     }
+
+    function edit_rinci(no_rinci,kd_sub_kegiatan,kd_rek5_trans,no_lamp,kd_rek3,nm_rek3,kd_rek5,nm_rek5,kd_rek6,nm_rek6,tahun,merk,no_polisi,kd_sub_kegiatan,fungsi,hukum,lokasi,alamat,sert,luas,satuan,harga_satuan,piutang_awal,piutang_koreksi,piutang_sudah,investasi_awal,sal_awal,kurang,tambah,tahun_n,akhir,kondisi_b,kondisi_rr,kondisi_rb,keterangan,kd_skpd,jumlah,kepemilikan,rincian_beban,no_polis,bulan,nilai,kapitalisasi,tot_kap,tot_sat_kap,jenis) {  
+        status_input_rinci = 'edit';
+        $('#status_input_rinci').val(status_input_rinci);
+        $("#nomor").val(no_lamp);
+        $("#no_simpan").val(no_lamp);
+        $('#rek3').val(kd_rek3).change();
+        tampil_rek3(kd_rek3);
+        $('#nm_rek3').val(nm_rek3);
+        $("#rek5x").val(rek5x);
+        $("#rek5").val(kd_rek5);
+        $("#nm_rek5").val(nm_rek5);
+        cari_rek6(kd_rek3,kd_rek6);
+        $('#rek6').val(kd_rek6).change();
+        $('#nm_rek6').val(nm_rek6);
+        $("#tahun").val(tahun);
+        $("#bulan").val(bulan);
+        $("#merk").val(merk);
+        $("#no_polisi").val(no_polisi);
+        $("#fungsi").val(fungsi);
+        $("#hukum").val(hukum);
+        $("#lokasi").val(lokasi);
+        $("#alamat").val(alamat);
+        $("#sert").val(sert);
+        $("#luas").val(luas);
+        $("#satuan").val(satuan);
+        $("#harga_satuan").val(harga_satuan);
+        $("#piutang_awal").val(piutang_awal);
+        $("#piutang_koreksi").val(piutang_koreksi);
+        $("#piutang_sudah").val(piutang_sudah);
+        $("#sal_awal").val(sal_awal);
+        $("#investasi_awal").val(investasi_awal);
+        $("#kurang").val(kurang);
+        $("#tambah").val(tambah);
+        $("#tahun_n").val(tahun_n);
+        $("#kondisi_b").val(kondisi_b);
+        $("#kondisi_rr").val(kondisi_rr);
+        $("#kondisi_rb").val(kondisi_rb);
+        $("#keterangan").val(keterangan);
+        $("#jumlah").val(jumlah);
+        $("#milik").val(kepemilikan);
+        $("#rincian_bebas").val(rincian_beban);
+        $("#no_polis").val(no_polis);
+        $("#harga_awal").val(null);
+        $("#kapit_tot").val(nilai);
+        $("#kapit_rincian").val(nilai);
+        $("#kapit_rincian1").val(nilai);
+        $("#sat_kap").val(tot_sat_kap);
+        $("#nil_kap").val(tot_kap);
+
+        var ztot_trans = angka(document.getElementById('tot_trans').value);
+        // alert(ztot_trans);
+        var ztot_rinci = angka(document.getElementById('tot_rinci').value);
+        var ztahun_n= angka(tahun_n);
+        var z_sisa=(ztot_trans-ztot_rinci)+ztahun_n;
+        var z_sisa_a = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(z_sisa));
+        $("#trans_tot").val(z_sisa_a);
+
+        $('#modal_input_rinci_kapit').modal('show');
+    }
+
+    function hapus_rinci(no_rinci,kd_sub_kegiatan,kd_rek5_trans,no_lamp,kd_rek3,nm_rek3,kd_rek5,nm_rek5,kd_rek6,nm_rek6,tahun,merk,no_polisi,kd_sub_kegiatan,fungsi,hukum,lokasi,alamat,sert,luas,satuan,harga_satuan,piutang_awal,piutang_koreksi,piutang_sudah,investasi_awal,sal_awal,kurang,tambah,tahun_n,akhir,kondisi_b,kondisi_rr,kondisi_rb,keterangan,kd_skpd,jumlah,kepemilikan,rincian_beban,no_polis,bulan,nilai,kapitalisasi,tot_kap,tot_sat_kap,jenis) {  
+        var nomor       = no_lamp;
+        var status_aset = status;
+
+        if ( status_aset =='1' ){
+            alert('Data Audited Tahun Lalu tidak boleh dihapus. Hubungi Verifikator Bidang Akuntansi jika Ingin Menghapus.');
+            return;
+        }
+        
+        var urll= "{{ route('input_kapit.cari_hapus_rincian') }}";                           
+        if (nomor !=''){
+            var del=confirm('Anda yakin akan menghapus ?');
+            if  (del==true){
+                $(document).ready(function(){
+                    $.ajax({
+                        type     : "POST",
+                        url      : "{{ route('input_kapit.cari_hapus_rincian') }}",
+                        data     : ({no:nomor}),
+                        dataType : "json",
+                        success  : function(data){                    
+                            status_hapus = data.pesan;
+                            alert(status_hapus); 
+                            if ( status_hapus=='1' ){
+                                alert('Data Terhapus...!!!');
+                                let list_table = $('#list_rinci_kapit').DataTable();
+                                list_table.ajax.reload();
+                                return;
+                            }
+                            
+                            if ( status_hapus=='0' ){
+                                alert('Gagal Terhapus...!!!');
+                                let list_table = $('#list_rinci_kapit').DataTable();
+                                list_table.ajax.reload();
+                                return;
+                            }  
+                                
+                        }
+                    });
+                });             
+            }
+        } 
+    }
+
+    function load_tot_rinci(kd_sub_kegiatan,kd_rek6){
+        $.ajax({
+            url: "{{ route('input_kapitalisasi.tot_rinci.load') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                kd_sub_kegiatan: kd_sub_kegiatan,
+                kd_rek6: kd_rek6,
+            },
+            success: function(data) {
+                // console.log(data[0])
+                $('#tot_rinci').val(data[0].tot_rinci);
+                $('#tot_trans').val(data[0].tot_trans);
+                $('#tot_kapit').val(data[0].tot_kapit);
+                $('#tot_kapit_rek').val(data[0].tot_kapit_rek);
+            }
+        })
+    }
+
     function hitung_harga_satuan(){
         var transaksi = document.getElementById('trans_tot').value;
         var trans=angka(transaksi);
@@ -1980,6 +2179,324 @@
             }
     }
 
+    function hsimpan(){ 
+        var status_input_rinci     = document.getElementById('status_input_rinci').value;
+        var sub_kegiatan     = document.getElementById('sub_kegiatan').value;
+        var jikd_rek6   = document.getElementById('jikd_rek6').value;
+        var a           = document.getElementById('nomor').value;
+        var a_hide      = document.getElementById('no_simpan').value;
+        var rek3                = document.getElementById('rek3').value;
+        let rek3n                = $('#rek3').find('option:selected');
+        let nm_rek3             = rek3n.data('nama');
+        // var nm_rek3             = document.getElementById('nm_rek3').value; 
+        
+        var rek6                = document.getElementById('rek6').value;
+        // var nm_rek6             = document.getElementById('nm_rek6').value;
+        let rek6n                = $('#rek6').find('option:selected');
+        let nm_rek6             = rek6n.data('nama');
+        var dx          = document.getElementById('rek5x').value;
+        
+        var rek5        = document.getElementById('rek5').value; 
+        var nm_rek5     = document.getElementById('nm_rek5').value;
+        
+        
+        // var tahun       = document.getElementById('tahun').value; 
+
+        var tahun       = 2023; 
+        var bulan       = document.getElementById('bulan').value; 
+        var merk        = document.getElementById('merk').value; 
+        var no_polisi   = document.getElementById('no_polisi').value;
+        var fungsi      = document.getElementById('fungsi').value;
+        var hukum       = document.getElementById('hukum').value;
+        var lokasi      = document.getElementById('lokasi').value; 
+        var alamat          = document.getElementById('alamat').value;
+        var sert            = document.getElementById('sert').value;
+        var luas            = document.getElementById('luas').value;
+        var satuan          = document.getElementById('satuan').value;
+        var harga_satuan    = document.getElementById('harga_satuan').value;
+        var piutang_awal    = document.getElementById('piutang_awal').value; 
+        var piutang_koreksi = document.getElementById('piutang_koreksi').value;
+        var piutang_sudah   = document.getElementById('piutang_sudah').value;
+        var investasi_awal  = document.getElementById('investasi_awal').value;
+        var sal_awal        = document.getElementById('sal_awal').value;
+        var kurang          = document.getElementById('kurang').value;
+        var tambah          = document.getElementById('tambah').value;
+        var tahun_n         = document.getElementById('tahun_n').value;
+        var aa       = 0;
+        var kondisi_b       = document.getElementById('kondisi_b').value;
+        var kondisi_rr      = document.getElementById('kondisi_rr').value;
+        var kondisi_rb      = document.getElementById('kondisi_rb').value;
+        var keterangan      = document.getElementById('keterangan').value;
+        var skpd            = "{{ $data_skpd->kd_skpd }}";
+        var jumlah          = document.getElementById('jumlah').value;
+        var milik           = document.getElementById('milik').value;
+        var rincian_bebas   = document.getElementById('rincian_bebas').value;
+        var no_polis        = document.getElementById('no_polis').value;
+        var kapitalisasi    = document.getElementById('kapit_input').value;
+        var trans_tot      = document.getElementById('trans_tot').value;
+
+
+        if(angka(tahun_n)>angka(trans_tot)){
+            alert('Nilai Pengadaan melebihi Sisa Uang Transaksi');
+            exit();
+        }
+        
+        /*if(gg == ''){
+            alert('Jumlah Barang Tidak Boleh Kosong');
+            exit();
+        }*/
+        
+        if(tahun_n == ''){
+            alert('Nilai Pengadaan Tahun Tidak Boleh Kosong');
+            exit();
+        }
+        
+        if ( rek3.length<1 ){
+            alert("Pastikan Rek. Kelompok diisi dengan Benar") ;
+            exit();
+        }
+        
+        /*if ( d.length!=8 ){
+            alert("Pastikan Rekening diisi dengan Benar") ;
+            exit();
+        }
+        */
+        /*if ( f.length <9 && dx==1 ){
+            alert("Pastikan Rekening Rinci diisi dengan Benar") ;
+            exit();
+        }*/
+        
+        /*if ( s == '' && (b == 133) ){
+            alert("Isi Jenis Aset Terlebih Dahulu") ;
+            exit();
+        }*/
+        
+        if (luas==''){
+            luas=0;
+        }else{
+            luas=angka(luas);
+        }
+        
+        if (harga_satuan==''){
+            harga_satuan=0;
+        }else{
+            harga_satuan=angka(harga_satuan);
+        }
+        
+        if (piutang_awal==''){
+            piutang_awal=0;
+        }else{
+            piutang_awal=angka(piutang_awal);
+        }
+        
+        if (piutang_koreksi==''){
+            piutang_koreksi=0;
+        }else{
+            piutang_koreksi=angka(piutang_koreksi);
+        }
+        if (piutang_sudah==''){
+            piutang_sudah=0;
+        }else{
+            piutang_sudah=angka(piutang_sudah);
+        }
+        if (investasi_awal==''){
+            investasi_awal=0;
+        }else{
+            investasi_awal=angka(investasi_awal);
+        }
+        if (sal_awal==''){
+            sal_awal=0;
+        }else{
+            sal_awal=angka(sal_awal);
+        }
+        if (kurang==''){
+            kurang=0;
+        }else{
+            kurang=angka(kurang);
+        }
+        
+        if (tambah==''){
+            tambah=0;
+        }else{
+            tambah=angka(tambah);
+        }
+        
+        if (tahun_n==''){
+            tahun_n=0;
+        }else{
+            tahun_n=angka(tahun_n);
+        }
+
+        if (jumlah=='' && rek3=='8'){
+            jumlah=1;
+        }else if(jumlah==''){
+            jumlah=0;
+        }else{
+            jumlah=angka(jumlah);
+        }
+    
+
+        
+        if (kapitalisasi==''){
+            kapitalisasi=0;
+        }else{
+            kapitalisasi=angka(kapitalisasi);
+        }
+        if (kondisi_b==''){
+            kondisi_b=0;
+        }else{
+            kondisi_b=angka(kondisi_b);
+        }
+        if (kondisi_rr==''){
+            kondisi_rr=0;
+        }else{
+            kondisi_rr=angka(kondisi_rr);
+        }
+        if (kondisi_rb==''){
+            kondisi_rb=0;
+        }else{
+            kondisi_rb=angka(kondisi_rb);
+        }
+        
+        if ( a == '' ){
+            alert("Isi Nomor Terlebih Dahulu") ;
+            exit();
+        }
+         if ( tahun == '' ){
+            alert("Isi Tahun Terlebih Dahulu") ;
+            exit();
+        }
+        
+        if ( bulan == '' ){
+            bulan=0;
+        }else{
+            bulan=angka(bulan);
+        }
+        
+        /*if(gg != (bb+cc+dd)){
+            alert('Jumlah Barang tidak sesuai dengan Jumlah Kondisi Barang');
+            exit();
+        }*/
+        
+        var norinci  = skpd+'.'+sub_kegiatan+'.'+jikd_rek6 ;
+
+        if(status_input_rinci == "tambah"){
+            $(document).ready(function(){
+               // alert(csql);
+                $.ajax({
+                    type: "POST",   
+                    dataType : 'json',                 
+                    data: ({no:a,tabel:"lamp_aset",field:"no_lamp",tabel2:"trdkapitalisasi",field2:"no_lamp"}),
+                    url: "{{ route('input_kapit.cari_cek_simpan') }}",
+                    success:function(data){                        
+                        status_cek = data.pesan;
+                        if(status_cek==1){
+                        alert("Nomor Telah Dipakai!");
+                        exit();
+                        } 
+                        if(status_cek==0){
+                        alert("Nomor Bisa dipakai");
+        
+                            //---------
+                            lcinsert = "(no_rinci,kd_sub_kegiatan,kd_rek5_trans,no_lamp, kd_rek3, nm_rek3, kd_rek5, nm_rek5, kd_rek6, nm_rek6, tahun, bulan, merk, no_polisi, fungsi, hukum, lokasi, alamat, sert, luas, satuan, harga_satuan, piutang_awal, piutang_koreksi, piutang_sudah, investasi_awal, sal_awal, kurang, tambah, tahun_n, akhir, kondisi_b, kondisi_rr, kondisi_rb, keterangan,kd_skpd,jumlah,kepemilikan,rincian_beban,no_polis,nilai,kapitalisasi)"; 
+                            lcvalues = "('"+norinci+"','"+sub_kegiatan+"','"+jikd_rek6+"','"+a+"', '"+rek3+"', '"+nm_rek3+"', '"+rek5+"', '"+nm_rek5+"', '"+rek6+"', '"+nm_rek6+"','"+tahun+"','"+bulan+"','"+merk+"','"+no_polisi+"','"+fungsi+"','"+hukum+"','"+lokasi+"','"+alamat+"','"+sert+"',"+luas+",'"+satuan+"',"+harga_satuan+",     "+piutang_awal+",        "+piutang_koreksi+" ,    "+piutang_sudah+",       "+investasi_awal+",      "+sal_awal+", "+kurang+" ,"+tambah+", "+tahun_n+",'"+aa+"','"+kondisi_b+"','"+kondisi_rr+"',     '"+kondisi_rb+"', '"+keterangan+"', '"+skpd+"', "+jumlah+", '"+milik+"', '"+rincian_bebas+"', '"+no_polis+"','"+aa+"','"+kapitalisasi+"')";
+                            $(document).ready(function(){
+                                $.ajax({
+                                    type     : "POST",
+                                    url      : "{{ route('input_kapit.cari_simpan_rincian') }}",
+                                    data     : ({tabel:'trdkapitalisasi',kolom:lcinsert,nilai:lcvalues,cid:'no_lamp',lcid:a}),
+                                    dataType : "json",
+                                    success  : function(data){
+                                        status = data;
+                                        if (status=='0'){
+                                            alert('Gagal Simpan..!!');
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+                                            return;
+                                        } else if(status=='1'){
+                                            alert('Data Sudah Ada..!!');
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+                                            return;
+                                        } else {
+                                            alert('Data Tersimpan..!!');
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+                                            $("#no_simpan").attr("value",a);
+                                            status_input = 'edit';
+                                            return;
+                                       }
+                                    }
+                                });
+                            });   
+                           
+                            //----------
+        
+                        }
+                    }
+                });
+            });
+        } else {
+            $(document).ready(function(){
+               // alert(csql);
+                $.ajax({
+                    type: "POST",   
+                    dataType : 'json',                 
+                    data: ({no:a,tabel:"lamp_aset",field:"no_lamp",tabel2:"trdkapitalisasi",field2:"no_lamp"}),
+                    url: "{{ route('input_kapit.cari_cek_simpan') }}",
+                    success:function(data){                        
+                        status_cek = data.pesan;
+                        if(status_cek==1 && a!=a_hide){
+                            alert("Nomor Telah Dipakai!");
+                            exit();
+                        } 
+                        if(status_cek==0 || a==a_hide){
+                            alert("Nomor Bisa dipakai");
+                            lcquery = " UPDATE trdkapitalisasi SET no_rinci='"+norinci+"', kd_sub_kegiatan='"+sub_kegiatan+"',kd_rek5_trans='"+jikd_rek6+"', no_lamp ='"+a+"', kd_rek3='"+rek3+"', nm_rek3='"+nm_rek3+"', kd_rek5='"+rek5+"', nm_rek5='"+nm_rek5+"', kd_rek6='"+rek6+"', nm_rek6='"+nm_rek6+"', tahun='"+tahun+"', bulan='"+bulan+"', merk='"+merk+"', no_polisi='"+no_polisi+"', fungsi='"+fungsi+"', hukum='"+hukum+"', lokasi='"+lokasi+"', alamat='"+alamat+"', sert='"+sert+"', luas='"+luas+"', satuan='"+satuan+"', harga_satuan='"+harga_satuan+"', piutang_awal='"+piutang_awal+"', piutang_koreksi='"+piutang_koreksi+"', piutang_sudah='"+piutang_sudah+"', investasi_awal='"+investasi_awal+"', sal_awal='"+sal_awal+"', kurang='"+kurang+"', tambah='"+tambah+"', tahun_n='"+tahun_n+"', kondisi_b='"+kondisi_b+"', kondisi_rr='"+kondisi_rr+"', kondisi_rb='"+kondisi_rb+"', keterangan='"+keterangan+"',kd_skpd ='"+skpd+"',jumlah ='"+jumlah+"',kepemilikan ='"+milik+"',rincian_beban ='"+rincian_bebas+"',no_polis ='"+no_polis+"',nilai ='"+aa+"',kapitalisasi ='"+kapitalisasi+"' where no_lamp='"+a_hide+"' AND kd_skpd ='"+skpd+"' "; 
+                            $(document).ready(function(){
+                                $.ajax({
+                                    type     : "POST",
+                                    url      : "{{ route('input_kapit.cari_update_rincian') }}",
+                                    data     : ({st_query:lcquery,tabel:'trdkapitalisasi',cid:'no_lamp',lcid:a,lcid_h:a_hide}),
+                                    dataType : "json",
+                                    success  : function(data){
+                                        status=data ;
+                                                                        
+                                        if ( status=='1' ){
+                                            //alert("aaaa");
+                                            alert('Nomor  Sudah Terpakai...!!!,  Ganti Nomor ...!!!');
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+                                            return;
+                                        }
+                                        
+                                        if ( status=='2' ){
+                                            alert('Data Tersimpan...!!!');
+                                            status_input = 'edit';
+                                            $("#no_simpan").attr("value",nomor);
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+                                            return;
+                                        }
+                                        
+                                        if ( status=='0' ){
+                                            alert('Gagal Simpan...!!!');
+                                            let list_table = $('#list_rinci_kapit').DataTable();
+                                            list_table.ajax.reload();
+
+                                            return;
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            });
+                
+        }
+        
+    }
     
 </script>
 @endsection

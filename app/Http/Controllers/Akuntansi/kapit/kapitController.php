@@ -149,10 +149,32 @@ class kapitController extends Controller
         // dd($norinci);
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             
-            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->no_rinci . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek5_trans . '\',\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban . '\',\'' . $row->no_polis . '\',\'' . $row->bulan . '\',\'' . $row->nilai . '\',\'' . $row->kapitalisasi . '\',\'' . $row->tot_kap . '\',\'' . $row->tot_sat_kap . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn = '<a href="javascript:void(0);" onclick="edit_rinci(\'' . $row->no_rinci . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek5_trans . '\',\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban . '\',\'' . $row->no_polis . '\',\'' . $row->bulan . '\',\'' . $row->nilai . '\',\'' . $row->kapitalisasi . '\',\'' . $row->tot_kap . '\',\'' . $row->tot_sat_kap . '\',\'' . $row->jenis . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapus_rinci(\'' . $row->no_rinci . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek5_trans . '\',\'' . $row->no_lamp . '\',\'' . $row->kd_rek3 . '\',\'' . $row->nm_rek3 . '\',\'' . $row->kd_rek5 . '\',\'' . $row->nm_rek5 . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->tahun . '\',\'' . $row->merk . '\',\'' . $row->no_polisi . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->fungsi . '\',\'' . $row->hukum . '\',\'' . $row->lokasi . '\',\'' . $row->alamat . '\',\'' . $row->sert . '\',\'' . $row->luas . '\',\'' . $row->satuan . '\',\'' . $row->harga_satuan . '\',\'' . $row->piutang_awal . '\',\'' . $row->piutang_koreksi . '\',\'' . $row->piutang_sudah . '\',\'' . $row->investasi_awal . '\',\'' . $row->sal_awal . '\',\'' . $row->kurang . '\',\'' . $row->tambah . '\',\'' . $row->tahun_n . '\',\'' . $row->akhir . '\',\'' . $row->kondisi_b . '\',\'' . $row->kondisi_rr . '\',\'' . $row->kondisi_rb . '\',\'' . $row->keterangan . '\',\'' . $row->kd_skpd . '\',\'' . $row->jumlah . '\',\'' . $row->kepemilikan . '\',\'' . $row->rincian_beban . '\',\'' . $row->no_polis . '\',\'' . $row->bulan . '\',\'' . $row->nilai . '\',\'' . $row->kapitalisasi . '\',\'' . $row->tot_kap . '\',\'' . $row->tot_sat_kap . '\',\'' . $row->jenis . '\');" class="btn btn-danger btn-sm" style="margin-right:4px"><i class="uil-trash"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function load_input_kapitalisasi_tot_rinci(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;  
+        $kd_sub_kegiatan   = $request->kd_sub_kegiatan;
+        $kd_rek6   = $request->kd_rek6;
+        $norinci  = $kd_skpd.'.'.$kd_sub_kegiatan.'.'.$kd_rek6;
+        $data = DB::select("SELECT sum(tot_rinci)tot_rinci, sum(tot_kapit)tot_kapit, sum(tot_trans)tot_trans, sum(tot_kapit_rek)tot_kapit_rek
+            from(
+            --tot_rinci & tot_kapit
+            SELECT sum(tahun_n) as tot_rinci, SUM(nilai) as tot_kapit ,0 tot_trans, 0 tot_kapit_rek
+            from trdkapitalisasi 
+            where no_rinci='$norinci' 
+            union all
+            --tot_trans & tot_kapit_rek
+            SELECT 0 tot_rinci,0 tot_kapit,nilai_trans tot_trans,kapitalisasi tot_kapit_rek
+            FROM trkapitalisasi 
+            where kd_rek6='$kd_rek6' and kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd'
+            )a");
+        // dd($norinci);
+        return response()->json($data);
     }
 
     public function refresh_simpan_tampungan_kapit(Request $request){
@@ -332,7 +354,87 @@ class kapitController extends Controller
         
     }
 
+    public function cek_simpan(Request $request){
+        $nomor    = $request->no;
+        $tabel   = $request->tabel;
+        $field    = $request->field;
+        $field2    = $request->field2;
+        $tabel2   = $request->tabel2;
+        $kd_skpd  = Auth::user()->kd_skpd;
+        if ($field2==''){
+        $hasil=collect(DB::select("SELECT count(*) as jumlah FROM $tabel where $field='$nomor' and kd_skpd = '$kd_skpd' "))->first();
+        } else{
+        $hasil=collect(DB::select("SELECT count(*) as jumlah FROM (select $field as nomor FROM $tabel WHERE kd_skpd = '$kd_skpd' UNION ALL SELECT $field2 as nomor FROM $tabel2 WHERE kd_skpd = '$kd_skpd')a WHERE a.nomor = '$nomor'"))->first();
+        }
+        $jumlah=$hasil->jumlah; 
+        
+        if($jumlah>0){
+        $msg = array('pesan'=>'1');
+        echo json_encode($msg);
+        } else{
+        $msg = array('pesan'=>'0');
+        echo json_encode($msg);
+        }
+    }
+
+    public function simpan_rincian(Request $request){
+        
+        $tabel   = $request->tabel;
+        $lckolom = $request->kolom;
+        $lcnilai = $request->nilai;
+        $cid     = $request->cid;
+        $lcid    = $request->lcid;
+        
+        $asg = DB::insert("insert into $tabel $lckolom values $lcnilai");
+        if($asg){
+            echo '2';
+        }else{
+            echo '0';
+        }
+    }
+
+    public function update_rincian(Request $request){
+        $skpd   = Auth::user()->kd_skpd;
+        $tabel  = $request->tabel;
+        $cid    = $request->cid;
+        $lcid   = $request->lcid;
+        $lcid_h = $request->lcid_h;
+        
+        if (  $lcid <> $lcid_h ) {
+            
+           $res     = DB::select("select $cid from $tabel where $cid='$lcid' AND kd_skpd='$skpd'");
+           if ( count($res)>0 ) {
+                echo '1';
+                exit();
+           } 
+        }
+        
+        $query   = $request->st_query;
+        $asg     = DB::update("$query");
+        if ( $asg > 0 ){
+           echo '2';
+        } else {
+           echo '0';
+        }
     
+    }
+    
+    public function hapus_rincian(Request $request){
+        $kd_skpd   = Auth::user()->kd_skpd;
+        $nomor  = $request->no;
+
+        $query = DB::delete("delete from trdkapitalisasi where no_lamp='$nomor' and kd_skpd = '$kd_skpd'");
+        if ($query) {
+            return response()->json([
+                'pesan' => '1'
+            ]);
+        } else {
+            return response()->json([
+                'pesan' => '0'
+            ]);
+        }
+    
+    }
 
 
 }

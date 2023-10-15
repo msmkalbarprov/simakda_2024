@@ -1875,6 +1875,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             //
             //rincian kapit
             Route::post('load_input_kapitalisasi_rinci', [kapitController::class, 'load_input_kapitalisasi_rinci'])->name('input_kapitalisasi.rinci.load');
+            Route::post('load_input_kapitalisasi_tot_rinci', [kapitController::class, 'load_input_kapitalisasi_tot_rinci'])->name('input_kapitalisasi.tot_rinci.load');
+            Route::post('input_kapit_cek_simpan', [kapitController::class, 'cek_simpan'])->name('input_kapit.cari_cek_simpan');
+            Route::post('input_kapit_simpan_rincian', [kapitController::class, 'simpan_rincian'])->name('input_kapit.cari_simpan_rincian');
+            Route::post('input_kapit_update_rincian', [kapitController::class, 'update_rincian'])->name('input_kapit.cari_update_rincian');
+            Route::post('input_kapit_hapus_rincian', [kapitController::class, 'hapus_rincian'])->name('input_kapit.cari_hapus_rincian');
             //
         });
     });

@@ -2,6 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
+                <input type="text" id="status_input_rinci" style="border:0;width: 200px;" readonly="true;" hidden />
                 <h5 class="modal-title"><label  >Input Kapitalisasi Rinci</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -52,6 +53,11 @@
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Total Trans.</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <input  id="trans_tot" name="trans_tot" required
+                                class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">&nbsp;&nbsp;&nbsp; 
+                        </td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Total Kapit.</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
+                            <input  id="kapit_tot" name="kapit_tot" required
                                 class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">&nbsp;&nbsp;&nbsp; 
                         </td>
                     </tr> 
