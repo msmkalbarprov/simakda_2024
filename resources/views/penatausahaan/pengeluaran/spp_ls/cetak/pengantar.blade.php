@@ -106,9 +106,9 @@
                         Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:
                     @else
                         Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal
+                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 96 Tahun 2022 tanggal
                         30
-                        Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
+                        Desember 2022 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
                         kami
                         mengajukan Surat Permintaan Pembayaran Langsung Pihak Ketiga Lainnya sebagai berikut:
                     @endif
@@ -122,9 +122,9 @@
                         Pembayaran Langsung Barang dan Jasa sebagai berikut:
                     @else
                         Dengan memperhatikan Peraturan Gubernur Kalimantan Barat
-                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 155 Tahun 2020 tanggal
+                        {{ $nogub }} tentang Perubahan atas Peraturan Gubernur Nomor 96 Tahun 2022 tanggal
                         30
-                        Desember 2020 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
+                        Desember 2022 tentang Penjabaran APBD Tahun Anggaran {{ $tahun_anggaran }}. Bersama ini
                         kami
                         mengajukan Surat Permintaan Pembayaran Langsung Barang dan Jasa sebagai berikut:
                     @endif
