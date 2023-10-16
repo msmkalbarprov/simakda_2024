@@ -1973,7 +1973,7 @@ class LaporanAkuntansiController extends Controller
                   SELECT 6 nomor, '0' jns, 'Lebih Setor' uraian, 0 nilai
                   UNION ALL
                   SELECT 7 nomor, '0' jns, 'Penerimaan' uraian, SUM (nilai) nilai FROM (
-                       SELECT $terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin as nilai
+                       SELECT $terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin+$bludin as nilai
                     ) a
 
                 UNION ALL
