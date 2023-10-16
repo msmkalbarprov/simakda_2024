@@ -442,8 +442,7 @@ class TransaksiCmsController extends Controller
             UNION ALL
             SELECT tgl_sp2d AS tgl,no_sp2d AS bku,keperluan as ket,
             sum(b.nilai)-(select kkpd from ms_up where kd_skpd=a.kd_skpd)as jumlah,
-            '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=?GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
-
+            '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=? GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
             union all
             SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' and kd_skpd=?
             union all
@@ -617,7 +616,8 @@ class TransaksiCmsController extends Controller
             //     GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
             //     ) a
             // where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
-            $sisa_bank = collect(DB::select("SELECT
+
+            $data = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
             SUM(case when jns=2 then jumlah else 0 end) AS keluar
             from (
@@ -627,7 +627,7 @@ class TransaksiCmsController extends Controller
             UNION ALL
             SELECT tgl_sp2d AS tgl,no_sp2d AS bku,keperluan as ket,
             sum(b.nilai)-(select kkpd from ms_up where kd_skpd=a.kd_skpd)as jumlah,
-            '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=?GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
+            '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=? GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
 
             union all
             SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' and kd_skpd=?
