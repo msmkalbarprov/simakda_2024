@@ -130,7 +130,7 @@
                                         <td id = "tahun_oleh0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true"> 
                                             <?php $thang =  date("Y");
                                             $thang_maks = $thang + 1 ;
-                                            $thang_min = $thang - 5 ;
+                                            $thang_min = $thang - 14 ;
                                             echo '<select id="tahun" class="easyui-combobox" name="tahun" style="width:140px;">';
                                             echo "<option value=''> Pilih Tahun</option>";
                                             for ($th=$thang_min ; $th<=$thang_maks ; $th++)
