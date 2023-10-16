@@ -1880,6 +1880,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('input_kapit_simpan_rincian', [kapitController::class, 'simpan_rincian'])->name('input_kapit.cari_simpan_rincian');
             Route::post('input_kapit_update_rincian', [kapitController::class, 'update_rincian'])->name('input_kapit.cari_update_rincian');
             Route::post('input_kapit_hapus_rincian', [kapitController::class, 'hapus_rincian'])->name('input_kapit.cari_hapus_rincian');
+            Route::post('input_kapit_hitung_rincian_kapit', [kapitController::class, 'hitung_rincian_kapit'])->name('input_kapit.hitung_rincian_kapit');
             //
         });
     });

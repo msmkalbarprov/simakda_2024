@@ -215,7 +215,7 @@ class kapitController extends Controller
         $kd_skpd            = $request->kd_skpd;
         $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
         
-        $hitung = DB::exec("exec kapitalisasi_kegiatan_anguz '$kd_skpd','$kd_sub_kegiatan'");
+        $hitung = DB::statement("exec kapitalisasi_kegiatan_anguz '$kd_skpd','$kd_sub_kegiatan'");
         if($hitung){
             echo '1';
         }else{
@@ -434,6 +434,20 @@ class kapitController extends Controller
             ]);
         }
     
+    }
+
+    function hitung_rincian_kapit(Request $request){
+        $skpd     = Auth::user()->kd_skpd;
+        $giat  = $request->giat;
+        $rek  = $request->rek;
+
+        //$asg= $this->db->query("exec kapitalisasi_transfer '$skpd'");
+        $asg = DB::statement("exec rincian_kapitalisasi_anguz '$skpd','$giat','$rek'");
+        if ($asg) { 
+            echo '1';
+        }else{
+           echo '0';
+        }
     }
 
 

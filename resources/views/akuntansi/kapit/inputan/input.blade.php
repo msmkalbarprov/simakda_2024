@@ -41,7 +41,7 @@
                 <div class="card-body">
                     <button id="refresh_kegiatan" class="btn btn-md btn-primary" onclick="javascript:refresh_kegiatan();">Refresh Kegiatan</button>
                     <button id="tambah" class="btn btn-md btn-primary" >Tambah</button>
-                    <button id="hitung_kspit_kegistan" class="btn btn-md btn-primary" onclick="javascript:hitung_kapit_kegiatan();">Hitung Kapitalisasi Perkegiatan</button>
+                    <button id="hitung_kspit_kegiatan" class="btn btn-md btn-primary" onclick="javascript:hitung_kapit_kegiatan();">Hitung Kapitalisasi Perkegiatan</button>
                 </div>
             </div>
             <div class="card">
@@ -100,7 +100,7 @@
             <div class="card">
                 <div class="card-header">
                     Nilai Total Rinci Kapitalisasi
-                    <button align="center" id="tambah_rinci__" class="btn btn-md btn-primary" style="float: right;" hidden>Tambah</button>
+                    <button id="hitung_kspit_kegistan" class="btn btn-md btn-primary" onclick="javascript:hitung_rincian_kapit();">Hitung Rincian Kapitalisasi</button>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -2234,6 +2234,7 @@
         var no_polis        = document.getElementById('no_polis').value;
         var kapitalisasi    = document.getElementById('kapit_input').value;
         var trans_tot      = document.getElementById('trans_tot').value;
+        var kapit_tot      = angka(document.getElementById('kapit_tot').value);
 
 
         if(angka(tahun_n)>angka(trans_tot)){
@@ -2399,7 +2400,7 @@
         
                             //---------
                             lcinsert = "(no_rinci,kd_sub_kegiatan,kd_rek5_trans,no_lamp, kd_rek3, nm_rek3, kd_rek5, nm_rek5, kd_rek6, nm_rek6, tahun, bulan, merk, no_polisi, fungsi, hukum, lokasi, alamat, sert, luas, satuan, harga_satuan, piutang_awal, piutang_koreksi, piutang_sudah, investasi_awal, sal_awal, kurang, tambah, tahun_n, akhir, kondisi_b, kondisi_rr, kondisi_rb, keterangan,kd_skpd,jumlah,kepemilikan,rincian_beban,no_polis,nilai,kapitalisasi)"; 
-                            lcvalues = "('"+norinci+"','"+sub_kegiatan+"','"+jikd_rek6+"','"+a+"', '"+rek3+"', '"+nm_rek3+"', '"+rek5+"', '"+nm_rek5+"', '"+rek6+"', '"+nm_rek6+"','"+tahun+"','"+bulan+"','"+merk+"','"+no_polisi+"','"+fungsi+"','"+hukum+"','"+lokasi+"','"+alamat+"','"+sert+"',"+luas+",'"+satuan+"',"+harga_satuan+",     "+piutang_awal+",        "+piutang_koreksi+" ,    "+piutang_sudah+",       "+investasi_awal+",      "+sal_awal+", "+kurang+" ,"+tambah+", "+tahun_n+",'"+aa+"','"+kondisi_b+"','"+kondisi_rr+"',     '"+kondisi_rb+"', '"+keterangan+"', '"+skpd+"', "+jumlah+", '"+milik+"', '"+rincian_bebas+"', '"+no_polis+"','"+aa+"','"+kapitalisasi+"')";
+                            lcvalues = "('"+norinci+"','"+sub_kegiatan+"','"+jikd_rek6+"','"+a+"', '"+rek3+"', '"+nm_rek3+"', '"+rek5+"', '"+nm_rek5+"', '"+rek6+"', '"+nm_rek6+"','"+tahun+"','"+bulan+"','"+merk+"','"+no_polisi+"','"+fungsi+"','"+hukum+"','"+lokasi+"','"+alamat+"','"+sert+"',"+luas+",'"+satuan+"',"+harga_satuan+",     "+piutang_awal+",        "+piutang_koreksi+" ,    "+piutang_sudah+",       "+investasi_awal+",      "+sal_awal+", "+kurang+" ,"+tambah+", "+tahun_n+",'"+aa+"','"+kondisi_b+"','"+kondisi_rr+"',     '"+kondisi_rb+"', '"+keterangan+"', '"+skpd+"', "+jumlah+", '"+milik+"', '"+rincian_bebas+"', '"+no_polis+"','"+kapit_tot+"','"+kapitalisasi+"')";
                             $(document).ready(function(){
                                 $.ajax({
                                     type     : "POST",
@@ -2452,7 +2453,7 @@
                         } 
                         if(status_cek==0 || a==a_hide){
                             alert("Nomor Bisa dipakai");
-                            lcquery = " UPDATE trdkapitalisasi SET no_rinci='"+norinci+"', kd_sub_kegiatan='"+sub_kegiatan+"',kd_rek5_trans='"+jikd_rek6+"', no_lamp ='"+a+"', kd_rek3='"+rek3+"', nm_rek3='"+nm_rek3+"', kd_rek5='"+rek5+"', nm_rek5='"+nm_rek5+"', kd_rek6='"+rek6+"', nm_rek6='"+nm_rek6+"', tahun='"+tahun+"', bulan='"+bulan+"', merk='"+merk+"', no_polisi='"+no_polisi+"', fungsi='"+fungsi+"', hukum='"+hukum+"', lokasi='"+lokasi+"', alamat='"+alamat+"', sert='"+sert+"', luas='"+luas+"', satuan='"+satuan+"', harga_satuan='"+harga_satuan+"', piutang_awal='"+piutang_awal+"', piutang_koreksi='"+piutang_koreksi+"', piutang_sudah='"+piutang_sudah+"', investasi_awal='"+investasi_awal+"', sal_awal='"+sal_awal+"', kurang='"+kurang+"', tambah='"+tambah+"', tahun_n='"+tahun_n+"', kondisi_b='"+kondisi_b+"', kondisi_rr='"+kondisi_rr+"', kondisi_rb='"+kondisi_rb+"', keterangan='"+keterangan+"',kd_skpd ='"+skpd+"',jumlah ='"+jumlah+"',kepemilikan ='"+milik+"',rincian_beban ='"+rincian_bebas+"',no_polis ='"+no_polis+"',nilai ='"+aa+"',kapitalisasi ='"+kapitalisasi+"' where no_lamp='"+a_hide+"' AND kd_skpd ='"+skpd+"' "; 
+                            lcquery = " UPDATE trdkapitalisasi SET no_rinci='"+norinci+"', kd_sub_kegiatan='"+sub_kegiatan+"',kd_rek5_trans='"+jikd_rek6+"', no_lamp ='"+a+"', kd_rek3='"+rek3+"', nm_rek3='"+nm_rek3+"', kd_rek5='"+rek5+"', nm_rek5='"+nm_rek5+"', kd_rek6='"+rek6+"', nm_rek6='"+nm_rek6+"', tahun='"+tahun+"', bulan='"+bulan+"', merk='"+merk+"', no_polisi='"+no_polisi+"', fungsi='"+fungsi+"', hukum='"+hukum+"', lokasi='"+lokasi+"', alamat='"+alamat+"', sert='"+sert+"', luas='"+luas+"', satuan='"+satuan+"', harga_satuan='"+harga_satuan+"', piutang_awal='"+piutang_awal+"', piutang_koreksi='"+piutang_koreksi+"', piutang_sudah='"+piutang_sudah+"', investasi_awal='"+investasi_awal+"', sal_awal='"+sal_awal+"', kurang='"+kurang+"', tambah='"+tambah+"', tahun_n='"+tahun_n+"', kondisi_b='"+kondisi_b+"', kondisi_rr='"+kondisi_rr+"', kondisi_rb='"+kondisi_rb+"', keterangan='"+keterangan+"',kd_skpd ='"+skpd+"',jumlah ='"+jumlah+"',kepemilikan ='"+milik+"',rincian_beban ='"+rincian_bebas+"',no_polis ='"+no_polis+"',nilai ='"+kapit_tot+"',kapitalisasi ='"+kapitalisasi+"' where no_lamp='"+a_hide+"' AND kd_skpd ='"+skpd+"' "; 
                             $(document).ready(function(){
                                 $.ajax({
                                     type     : "POST",
@@ -2497,6 +2498,45 @@
         }
         
     }
+
+    function hitung_rincian_kapit(){
+        var cgiat = document.getElementById('sub_kegiatan').value;
+        var cskpd = "{{ $data_skpd->kd_skpd }}";
+        var rek   = document.getElementById('jikd_rek6').value;
+        // alert(cskpd);
+        // alert(cgiat);
+        // alert(rek);
+        // exit();
+        $(document).ready(function(){
+        $.ajax({
+            type     : 'POST',
+            dataType : 'json',
+            data     : ({giat:cgiat,skpd:cskpd,rek:rek}),
+            url      : "{{ route('input_kapit.hitung_rincian_kapit') }}",
+            
+            success  : function(data){
+                if (data = 1){
+                    alert('Selesai!');
+                    let list_table = $('#list_kapit').DataTable();
+                    let list_table_rinci = $('#list_rinci_kapit').DataTable();
+                    load_tot_rinci(cgiat,rek);
+                    list_table.ajax.reload();
+                    list_table_rinci.ajax.reload();
+                    return;
+
+                } else{
+                    alert('Gagal!');
+                    let list_table = $('#list_kapit').DataTable();
+                    let list_table_rinci = $('#list_rinci_kapit').DataTable();
+                    load_tot_rinci(cgiat,rek);
+                    list_table.ajax.reload();
+                    list_table_rinci.ajax.reload();
+                    return;
+                }
+                }    
+            });
+        });
+}
     
 </script>
 @endsection
