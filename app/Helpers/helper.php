@@ -4421,7 +4421,18 @@ function angkas_lalu_penagihan($kode, $giat, $rek)
                                     -- and u.tgl_bukti<=? (PERMINTAAN KAK MINA TANGGAL DIHAPUS)
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode]))->first();
+
+                                    UNION ALL
+                                    -- transaksi DPR
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpr c
+                                    LEFT JOIN trhdpr d ON c.no_dpr = d.no_dpr
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    -- and d.tgl_voucher<=?
+                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode, $giat, $kode, $rek]))->first();
 
     return $data;
 }
@@ -4637,4 +4648,74 @@ function harian_kasda()
             -- KOREKSI PENERIMAAN
             SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal=?
             ORDER BY urut,urut1", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+}
+
+function nama_sumber_dana($sumber)
+{
+    $nama = DB::table('sumber_dana')
+        ->select('nm_sumber_dana1')
+        ->where('kd_sumber_dana1', $sumber)
+        ->first();
+
+    return $nama->nm_sumber_dana1;
+}
+
+function nama_pembayaran($item)
+{
+    switch ($item) {
+        case '1':
+            return 'KATALOG';
+            break;
+        case '2':
+            return 'TOKO DARING';
+            break;
+        case '3':
+            return 'LPSE';
+            break;
+        case '4':
+            return 'LAIN-LAIN';
+            break;
+        default:
+            return '';
+            break;
+    }
+}
+
+function sisa_bank_kkpd1()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = collect(DB::select("SELECT
+    SUM(case when jns=1 then jumlah else 0 end) AS terima,
+    SUM(case when jns=2 then jumlah else 0 end) AS keluar
+    FROM (
+        SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status='1' and kd_skpd=?
+        UNION ALL
+        -- DPR BELUM DPT
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpr a INNER JOIN trhdpr b ON a.no_dpr=b.no_dpr AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and (b.status<>'1' or b.status is null) and (a.status='0' or a.status='1')
+        UNION ALL
+        -- DPT BELUM TRANSAKSI
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpt a INNER JOIN trhdpt b ON a.no_dpt=b.no_dpt AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
+        and b.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where b.kd_skpd=kd_skpd) and (b.status<>'1' or b.status is null)
+        UNION ALL
+        -- TRANSOUT KKPD BELUM VALIDASI
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and b.jns_spp='1' and (b.status_validasi<>'1' or b.status_validasi is null)
+        UNION ALL
+        -- TRHTRANSOUT 1
+        SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where b.kd_skpd=? and b.kkpd='1'
+        )z", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
+        ->first();
+
+    return $data;
+}
+
+function cari_rekening_awal($kd_skpd)
+{
+    $data = DB::table('ms_skpd')
+        ->select('rekening')
+        ->where(['kd_skpd' => $kd_skpd])
+        ->orderBy('kd_skpd')
+        ->first();
+
+    return $data->rekening;
 }
