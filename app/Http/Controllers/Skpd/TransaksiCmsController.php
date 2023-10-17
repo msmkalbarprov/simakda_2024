@@ -373,7 +373,7 @@ class TransaksiCmsController extends Controller
 
         // SISA BANK
         if ($beban == '1') {
-            if($kd_skpd=='5.02.0.00.0.00.02.0000' || $kd_skpd=='6.01.0.00.0.00.01.0000'){
+            if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
                 $sisa_bank = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
             SUM(case when jns=2 then jumlah else 0 end) AS keluar
@@ -439,9 +439,9 @@ class TransaksiCmsController extends Controller
             GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
             ) a
             where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
-                ->first();
-            }else{
-                    $sisa_bank = collect(DB::select("SELECT
+                    ->first();
+            } else {
+                $sisa_bank = collect(DB::select("SELECT
                     SUM(case when jns=1 then jumlah else 0 end) AS terima,
                     SUM(case when jns=2 then jumlah else 0 end) AS keluar
                     from (
@@ -501,7 +501,6 @@ class TransaksiCmsController extends Controller
                     ) a
                     where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
             }
-            
         } else {
             $sisa_bank = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
@@ -561,7 +560,7 @@ class TransaksiCmsController extends Controller
         $beban = $request->beban;
 
         if ($beban == '1') {
-            if($kd_skpd=='5.02.0.00.0.00.02.0000' || $kd_skpd=='6.01.0.00.0.00.01.0000'){
+            if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
                 $data = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
             SUM(case when jns=2 then jumlah else 0 end) AS keluar
@@ -628,8 +627,8 @@ class TransaksiCmsController extends Controller
             GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
             ) a
             where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
-                ->first();
-            }else{
+                    ->first();
+            } else {
                 $data = collect(DB::select("SELECT
                 SUM(case when jns=1 then jumlah else 0 end) AS terima,
                 SUM(case when jns=2 then jumlah else 0 end) AS keluar
@@ -690,7 +689,6 @@ class TransaksiCmsController extends Controller
                 ) a
             where  kode=?", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))->first();
             }
-            
         } else {
             $data = collect(DB::select("SELECT
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
