@@ -315,7 +315,17 @@
         </tr>
         <tr>
             <td colspan="12" align="left" style="font-size:14px;border: solid 1px white;">
-                <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Surat Berharga
+                <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Saldo Bank (KKPD)
+            </td>
+            <td align="right" style="font-size:14px;border: solid 1px white;"><b>Rp {{ rupiah($saldo_kkpd->sisa) }}
+            </td>
+            <td align="center" style="font-size:14px;border: solid 1px white;">&nbsp;</td>
+            <td align="center" style="font-size:14px;border: solid 1px white;">&nbsp;</td>
+            <td align="center" style="font-size:14px;border: solid 1px white;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="12" align="left" style="font-size:14px;border: solid 1px white;">
+                <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Surat Berharga
             </td>
             <td align="right" style="font-size:14px;border: solid 1px white;"><b>Rp
                     {{ rupiah($surat_berharga->nilai) }} </td>
@@ -325,7 +335,7 @@
         </tr>
         <tr>
             <td colspan="12" align="left" style="font-size:14px;border: solid 1px white;">
-                <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Saldo Pajak
+                <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5. Saldo Pajak
             </td>
             <td align="right" style="font-size:14px;border: solid 1px white;"><b>Rp {{ rupiah($pajak) }} </td>
             <td align="center" style="font-size:14px;border: solid 1px white;">&nbsp;</td>
