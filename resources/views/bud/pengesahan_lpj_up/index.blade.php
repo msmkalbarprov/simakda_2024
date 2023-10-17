@@ -8,6 +8,12 @@
                     List Data LPJ UP/GU
                 </div>
                 <div class="card-body">
+                    <select name="jenis" id="jenis" class="form-control select2-multiple">
+                        <option value="1">UP/GU</option>
+                        <option value="2">KKPD</option>
+                    </select>
+                </div>
+                <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="pengesahan_lpj" class="table" style="width: 100%">

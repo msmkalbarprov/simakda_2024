@@ -16,6 +16,7 @@
                 "data": function(d) {
                     d.no_lpj = document.getElementById('no_lpj').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
+                    d.kkpd = "{{ $kkpd }}"
                 },
                 "dataSrc": function(data) {
                     recordsTotal = data.data;
@@ -83,7 +84,8 @@
                 dataType: 'json',
                 data: {
                     no_lpj: no_lpj,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    kkpd: "{{ $kkpd }}"
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -109,7 +111,8 @@
                 dataType: 'json',
                 data: {
                     no_lpj: no_lpj,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    kkpd: "{{ $kkpd }}"
                 },
                 success: function(response) {
                     if (response.message == '1') {

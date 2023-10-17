@@ -1699,7 +1699,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::group(['prefix' => 'pengesahan_lpj_upgu'], function () {
             Route::get('', [PengesahanController::class, 'indexPengesahanLpjUp'])->name('pengesahan_lpj_upgu.index');
             Route::post('load', [PengesahanController::class, 'loadPengesahanLpjUp'])->name('pengesahan_lpj_upgu.load');
-            Route::get('edit/{no_lpj?}/{kd_skpd?}', [PengesahanController::class, 'editPengesahanLpjUp'])->name('pengesahan_lpj_upgu.edit');
+            Route::get('edit/{no_lpj?}/{kd_skpd?}/{kkpd?}', [PengesahanController::class, 'editPengesahanLpjUp'])->name('pengesahan_lpj_upgu.edit');
             Route::post('detail', [PengesahanController::class, 'detailPengesahanLpjUp'])->name('pengesahan_lpj_upgu.detail');
             Route::post('kegiatan', [PengesahanController::class, 'kegiatanPengesahanLpjUp'])->name('pengesahan_lpj_upgu.kegiatan');
             Route::post('setuju', [PengesahanController::class, 'setujuPengesahanLpjUp'])->name('pengesahan_lpj_upgu.setuju');
