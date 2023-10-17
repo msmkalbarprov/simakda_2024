@@ -22,41 +22,67 @@ class PengesahanController extends Controller
         return view('bud.pengesahan_lpj_up.index')->with($data);
     }
 
-    public function loadPengesahanLpjUp()
+    public function loadPengesahanLpjUp(Request $request)
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $role           = Auth::user()->role;
         $id_pengguna    = Auth::user()->id;
 
-        $data = DB::table('trhlpj as a')
-            ->selectRaw("a.*, (SELECT b.nm_skpd FROM ms_skpd b WHERE a.kd_skpd=b.kd_skpd) as nm_skpd")
-            ->where(function ($query) use ($role, $id_pengguna) {
-                if ($role == '1012' || $role == '1017') {
-                    $query->whereRaw("a.kd_skpd IN (SELECT kd_skpd FROM pengguna_skpd where id=?)", [$id_pengguna]);
-                }
-            })
-            ->where('jenis', '1')
-            ->orderBy('a.tgl_lpj')
-            ->orderBy('a.no_lpj')
-            ->get();
+        $jenis = $request->jenis;
+
+        if ($jenis == '1') {
+            $data = DB::table('trhlpj as a')
+                ->selectRaw("a.*, (SELECT b.nm_skpd FROM ms_skpd b WHERE a.kd_skpd=b.kd_skpd) as nm_skpd, '0' as kkpd")
+                ->where(function ($query) use ($role, $id_pengguna) {
+                    if ($role == '1012' || $role == '1017') {
+                        $query->whereRaw("a.kd_skpd IN (SELECT kd_skpd FROM pengguna_skpd where id=?)", [$id_pengguna]);
+                    }
+                })
+                ->where('jenis', '1')
+                ->orderBy('a.tgl_lpj')
+                ->orderBy('a.no_lpj')
+                ->get();
+        } elseif ($jenis == '2') {
+            $data = DB::table('trhlpj_kkpd as a')
+                ->selectRaw("a.*, (SELECT b.nm_skpd FROM ms_skpd b WHERE a.kd_skpd=b.kd_skpd) as nm_skpd, '1' as kkpd")
+                ->where(function ($query) use ($role, $id_pengguna) {
+                    if ($role == '1012' || $role == '1017') {
+                        $query->whereRaw("a.kd_skpd IN (SELECT kd_skpd FROM pengguna_skpd where id=?)", [$id_pengguna]);
+                    }
+                })
+                ->where('jenis', '1')
+                ->orderBy('a.tgl_lpj')
+                ->orderBy('a.no_lpj')
+                ->get();
+        }
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("pengesahan_lpj_upgu.edit", ['no_lpj' => Crypt::encrypt($row->no_lpj), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn = '<a href="' . route("pengesahan_lpj_upgu.edit", ['no_lpj' => Crypt::encrypt($row->no_lpj), 'kd_skpd' => Crypt::encrypt($row->kd_skpd), 'kkpd' => $row->kkpd]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="cetak(\'' . $row->no_lpj . '\',\'' . $row->kd_skpd . '\');" class="btn btn-dark btn-sm" style="margin-right:4px"><i class="uil-print"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
 
-    public function editPengesahanLpjUp($no_lpj, $kd_skpd)
+    public function editPengesahanLpjUp($no_lpj, $kd_skpd, $kkpd)
     {
         $no_lpj = Crypt::decrypt($no_lpj);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
-        $data = [
-            'lpj' => DB::table('trhlpj as a')
+        if ($kkpd == '0') {
+            $lpj = DB::table('trhlpj as a')
                 ->selectRaw("a.*, (SELECT b.nm_skpd FROM ms_skpd b WHERE a.kd_skpd=b.kd_skpd) as nm_skpd")
                 ->where(['jenis' => '1', 'no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
-                ->first()
+                ->first();
+        } else if ($kkpd == '1') {
+            $lpj = DB::table('trhlpj_kkpd as a')
+                ->selectRaw("a.*, (SELECT b.nm_skpd FROM ms_skpd b WHERE a.kd_skpd=b.kd_skpd) as nm_skpd")
+                ->where(['jenis' => '1', 'no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
+                ->first();
+        }
+
+        $data = [
+            'lpj' => $lpj,
+            'kkpd' => $kkpd
         ];
 
         return view('bud.pengesahan_lpj_up.edit')->with($data);
@@ -66,15 +92,28 @@ class PengesahanController extends Controller
     {
         $no_lpj = $request->no_lpj;
         $kd_skpd = $request->kd_skpd;
+        $kkpd = $request->kkpd;
 
-        $data = DB::table('trlpj as a')
-            ->join('trhlpj as b', function ($join) {
-                $join->on('a.no_lpj', '=', 'b.no_lpj');
-                $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
-            })
-            ->select('a.*')
-            ->where(['b.no_lpj' => $no_lpj, 'b.kd_skpd' => $kd_skpd, 'b.jenis' => '1'])
-            ->get();
+        if ($kkpd == '0') {
+            $data = DB::table('trlpj as a')
+                ->join('trhlpj as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.*')
+                ->where(['b.no_lpj' => $no_lpj, 'b.kd_skpd' => $kd_skpd, 'b.jenis' => '1'])
+                ->get();
+        } else {
+            $data = DB::table('trlpj_kkpd as a')
+                ->join('trhlpj_kkpd as b', function ($join) {
+                    $join->on('a.no_lpj', '=', 'b.no_lpj');
+                    $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.*')
+                ->where(['b.no_lpj' => $no_lpj, 'b.kd_skpd' => $kd_skpd, 'b.jenis' => '1'])
+                ->get();
+        }
+
 
         return DataTables::of($data)->addIndexColumn()->make(true);
     }
@@ -98,14 +137,23 @@ class PengesahanController extends Controller
     {
         $no_lpj = $request->no_lpj;
         $kd_skpd = $request->kd_skpd;
+        $kkpd = $request->kkpd;
 
         DB::beginTransaction();
         try {
-            DB::table('trhlpj')
-                ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
-                ->update([
-                    'status' => '1'
-                ]);
+            if ($kkpd == '0') {
+                DB::table('trhlpj')
+                    ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
+                    ->update([
+                        'status' => '1'
+                    ]);
+            } else {
+                DB::table('trhlpj_kkpd')
+                    ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
+                    ->update([
+                        'status' => '1'
+                    ]);
+            }
 
             DB::commit();
             return response()->json([
@@ -123,14 +171,23 @@ class PengesahanController extends Controller
     {
         $no_lpj = $request->no_lpj;
         $kd_skpd = $request->kd_skpd;
+        $kkpd = $request->kkpd;
 
         DB::beginTransaction();
         try {
-            DB::table('trhlpj')
-                ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
-                ->update([
-                    'status' => '0'
-                ]);
+            if ($kkpd == '0') {
+                DB::table('trhlpj')
+                    ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
+                    ->update([
+                        'status' => '0'
+                    ]);
+            } else {
+                DB::table('trhlpj_kkpd')
+                    ->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])
+                    ->update([
+                        'status' => '0'
+                    ]);
+            }
 
             DB::commit();
             return response()->json([
