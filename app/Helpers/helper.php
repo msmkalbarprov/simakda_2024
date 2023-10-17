@@ -3100,8 +3100,13 @@ function sisa_bank_by_bulan($kd_skpd, $bulan)
                 SUM(case when jns=1 then jumlah else 0 end) AS terima,
                 SUM(case when jns=2 then jumlah else 0 end) AS keluar
                 from (
+                SELECT tgl_sp2d AS tgl,no_sp2d AS bku,keperluan as ket,sum(b.nilai)as jumlah,'1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d NOT IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=? GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
+                UNION
+                SELECT tgl_sp2d AS tgl,no_sp2d AS bku,keperluan as ket,
+            sum(b.nilai)-(select kkpd from ms_up where kd_skpd=a.kd_skpd)as jumlah,
+            '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=? GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
 
-                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where (tunai<>1 OR tunai is null) 
+                -- SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where (tunai<>1 OR tunai is null) 
                 union
                 SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' 
                 union
