@@ -2977,19 +2977,40 @@ function sisa_bank()
     return $data;
 }
 
-function sisa_bank_kkpd()
+// saldo kkpd di bku
+function sisa_bank_kkpd($kd_skpd, $bulan)
 {
-    $kd_skpd = Auth::user()->kd_skpd;
-
-    $sisa_kkpd = collect(DB::select("SELECT
-            SUM(case when jns=1 then jumlah else 0 end) AS terima,
-            SUM(case when jns=2 then jumlah else 0 end) AS keluar
-            FROM (
-                SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status=? and kd_skpd=?
-                UNION ALL
-                SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
-                UNION ALL
-                SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhsp2d c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd WHERE status_bud=? and a.kkpd=? and c.kd_skpd=?)z", ['1', $kd_skpd, $kd_skpd, '1', 'KKPD', $kd_skpd]))->first();
+    $kd_org     = substr($kd_skpd,0.17).'.0000';
+    $sisa_kkpd  = collect(DB::select("SELECT terima-keluar as sisa FROM(
+                                SELECT
+                                SUM(case when jns=1 then jumlah else 0 end) AS terima,
+                                SUM(case when jns=2 then jumlah else 0 end) AS keluar
+                                FROM (
+                                        -- terima
+                                        -- terima UP
+                                        SELECT isnull(sum(c.kkpd),0) as jumlah,'1' as jns from trhsp2d a 
+                                        INNER JOIN up_kkpd b on a.kd_skpd=b.kd_skpd and a.no_sp2d=b.no_sp2d
+                                        INNER JOIN ms_up c on a.kd_skpd=c.kd_skpd
+                                        where a.jns_spp='2' and a.kd_skpd= ? and a.status=1 and month(tgl_kas) <= ?
+                                        UNION ALL
+                                        -- terima GU cair
+                                        SELECT isnull(sum(c.nilai),0) as jumlah,'1' as jns from trhsp2d a 
+                                        INNER JOIN up_kkpd b on a.kd_skpd=b.kd_skpd and a.no_sp2d=b.no_sp2d
+                                        INNER JOIN trdspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
+                                        where a.jns_spp='2' and a.kd_skpd= ? and c.kkpd=1 and a.status=1 and month(tgl_kas) <= ?
+                                        
+                                        -- keluar
+                                        UNION ALL
+                                        -- dropping
+                                        SELECT isnull(sum(nilai),0),'2' as jns from tr_setorpelimpahan_bank_cms 
+                                        where kd_skpd_sumber= ? and status_validasi = 1 and kkpd=1 and month(tgl_kas) <= ?
+                                        UNION ALL
+                                        -- keluar validasi cms
+                                        SELECT isnull(SUM(a.nilai),0) as jumlah,'2' as jns FROM trdtransout a INNER JOIN trhtransout b 
+                                        ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd 
+                                        WHERE b.kd_skpd= ? and b.kkpd=1 and month(tgl_bukti) <= ?
+                                        )z
+                                )zz", [$kd_skpd, $bulan, $kd_skpd, $bulan, $kd_org, $bulan, $kd_skpd, $bulan]))->first();
 
 
     return $sisa_kkpd;
