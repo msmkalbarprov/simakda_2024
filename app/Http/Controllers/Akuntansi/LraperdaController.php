@@ -640,5 +640,58 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_i6_piutang(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        
+        $cetak          = $request->cetak;
+        
+        $tahun_anggaran = tahun_anggaran();
+        $rincian = DB::select("SELECT b.nm_rek4 as nama, tahun, ISNULL(saldo_awal,0) saldo_awal, ISNULL(penambahan,0) penambahan, ISNULL(pengurangan,0) pengurangan
+                    FROM (
+                    select LEFT(kd_rek6,6) as kode, tahun, SUM(sal_awal+tahun_n) as saldo_awal, SUM(tambah) as penambahan, 
+                    SUM(kurang) as pengurangan FROM lamp_aset WHERE kd_rek3 IN ('1103','1104','1105','1106','1107','1108','1109')
+                    GROUP BY LEFT(kd_rek6,6), tahun
+                    ) a
+                    LEFT JOIN 
+                    ms_rek4 b ON  a.kode=b.kd_rek4
+                    ORDER BY tahun");
+
+            
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+        // dd($kd_skpd);
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'rincian'               => $rincian,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'tahun_anggaran'    => $tahun_anggaran
+        ];
+        $view =  view('akuntansi.cetakan.perda.perda_i6_piutang')->with($data);
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I6 PIUTANG.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I6 PIUTANG.xls"');
+            return $view;
+        }
+    }
     
 }

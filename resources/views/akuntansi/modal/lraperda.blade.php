@@ -321,11 +321,7 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd_i3_rincian" class="form-label">Pilih</label><br>
-                        <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihan_i3_rincian" id="pilihan0"
-                                value="keseluruhan">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
+                        
                         <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihan_i3_rincian" id="pilihan1"
                                 value="skpd">
@@ -403,6 +399,32 @@
                 
           
 
+                <div class="mb-3 row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"
+                            name="bku_pdf"> PDF</button>
+                        <button type="button" class="btn btn-dark btn-md bku_layar" data-jenis="layar"
+                            name="bku_layar">Layar</button>
+                        <button type="button" class="btn btn-success btn-md bku_excel" data-jenis="excel"
+                            name="bku_excel">Excel</button>
+                        <button type="button" class="btn btn-md btn-secondary"
+                            data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{--perda i.6 Piutang--}}
+<div id="modal_cetak_i6_piutang" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">Perda Lamp I.6 Piutang</label></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
                 <div class="mb-3 row">
                     <div class="col-md-12 text-center">
                         <button type="button" class="btn btn-danger btn-md bku_pdf" data-jenis="pdf"

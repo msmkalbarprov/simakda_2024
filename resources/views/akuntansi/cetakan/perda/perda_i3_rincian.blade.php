@@ -37,7 +37,7 @@
 {{-- <body> --}}
     <table style="border-collapse:collapse;font-size:11px;font-family:Arial" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
         <TR>
-            <TD colspan="3" width="100%" valign="top" align="left" >LAMPIRAN I.3 Rincian &nbsp;{{ strtoupper($nogub->ket_perda) }}</TD>
+            <TD colspan="3" width="100%" valign="top" align="left" >LAMPIRAN I.3 &nbsp;{{ strtoupper($nogub->ket_perda) }}</TD>
         </TR>
         <TR>
             <TD  colspan="3" width="100%" valign="top" align="left" >NOMOR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ strtoupper($nogub->ket_perda_no) }}</TD>

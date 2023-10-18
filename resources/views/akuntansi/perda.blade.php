@@ -189,6 +189,12 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_i3_rincian .modal-content'),
                 
+            });  
+
+            $(".select_i6_Piutang").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_i6_piutang .modal-content'),
+                
             });    
 
 
@@ -229,6 +235,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_i3_rincian').modal('show');
             $("#labelcetak_semester").html("Cetak I.3 Rincian");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#i6_piutang').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_i6_piutang').modal('show');
+            $("#labelcetak_semester").html("Cetak I.6 Piutang");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     //onclick card end
@@ -466,6 +479,12 @@
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("skpdunit", skpdunit); 
                 searchParams.append("panjang_data", panjang_data); 
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak I.6 Piutang') {
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i6_piutang') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             
             }else{
