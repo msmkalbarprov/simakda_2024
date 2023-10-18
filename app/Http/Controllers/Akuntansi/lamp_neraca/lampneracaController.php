@@ -19,7 +19,7 @@ class lampneracaController extends Controller
     public function index()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-'+REPLACE(kd_skpd,'.','') as nomor FROM
+        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
             (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
             SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
             SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
@@ -158,7 +158,7 @@ class lampneracaController extends Controller
     public function input_lamp_neraca()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-'+REPLACE(kd_skpd,'.','') as nomor FROM
+        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
             (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
             SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
             SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
