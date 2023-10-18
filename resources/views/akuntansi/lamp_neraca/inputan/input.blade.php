@@ -3245,7 +3245,7 @@
         var masa                = document.getElementById('masa').value;        
         var tmasa               = document.getElementById('tmasa').value;   
         var merk                = document.getElementById('merk').value;
-        var no_polis            = document.getElementById('no_polisi').value;
+        var no_polis            = document.getElementById('no_polis').value;
         var fungsi              = document.getElementById('fungsi').value;
         var hukum               = document.getElementById('hukum').value;
         var lokasi              = document.getElementById('lokasi').value;
