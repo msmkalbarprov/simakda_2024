@@ -3290,7 +3290,7 @@
         var kondisi_x       = document.getElementById('kondisi_x').value;
         var nil_kurang_excomp       = document.getElementById('nil_kurang_excomp').value;
 
-        alert(status_input);
+        // alert(kurang);
         //     return;
 
         if ( rek3.length!=4 ){
@@ -3359,7 +3359,7 @@
         if (kurang==''){
             kurang=0;
         }else{
-            kurang=angka(kurang);
+            kurang=rupiah(kurang);
         }
         
         if (bertambah==''){
@@ -3489,7 +3489,7 @@
             return;
         } 
         
-
+        alert(kurang);
 
         if(status_input == "tambah"){
             $(document).ready(function(){
