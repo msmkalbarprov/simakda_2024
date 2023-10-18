@@ -50,6 +50,10 @@ class DaftarPengeluaranRillController extends Controller
                 ->get()
         ];
 
+        DB::table('tb_transaksi')
+            ->where(['kd_skpd' => Auth::user()->kd_skpd, 'username' => Auth::user()->nama])
+            ->delete();
+
         return view('skpd.dpr.create')->with($data);
     }
 
@@ -277,6 +281,71 @@ class DaftarPengeluaranRillController extends Controller
         return $urut->nomor;
     }
 
+    public function simpanTampungan(Request $request)
+    {
+        $nomor = $request->nomor;
+        $kdgiat = $request->kdgiat;
+        $kdrek = $request->kdrek;
+        $nilai_tagih = $request->nilai_tagih;
+        $sumber = $request->sumber;
+
+        DB::beginTransaction();
+        try {
+            $id = DB::table('tb_transaksi')
+                ->insertGetId(
+                    [
+                        'kd_skpd' => Auth::user()->kd_skpd,
+                        'no_transaksi' => $nomor,
+                        'kd_sub_kegiatan' => $kdgiat,
+                        'kd_rek6' => $kdrek,
+                        'sumber' => $sumber,
+                        'nilai' => $nilai_tagih,
+                        'username' => Auth::user()->nama,
+                        'last_update' => date('Y-m-d H:i:s'),
+                        'no_sp2d' => '',
+                    ]
+                );
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+                'id' => $id
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusTampungan(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_rek = $request->kd_rek;
+        $sumber = $request->sumber;
+        $nama = Auth::user()->nama;
+        $kd_skpd = Auth::user()->kd_skpd;
+        $id = $request->id;
+
+        DB::beginTransaction();
+        try {
+            DB::table('tb_transaksi')
+                ->where(['no_transaksi' => $no_bukti, 'username' => $nama, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek, 'sumber' => $sumber, 'id' => $id])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
     public function simpan(Request $request)
     {
         $data = $request->data;
@@ -369,6 +438,10 @@ class DaftarPengeluaranRillController extends Controller
                 DB::table('trddpr')
                     ->insert($input_trh);
             }
+
+            DB::table('tb_transaksi')
+                ->where(['kd_skpd' => Auth::user()->kd_skpd, 'no_transaksi' => $data['no_dpr'], 'username' => Auth::user()->nama])
+                ->delete();
 
             DB::commit();
             return response()->json([

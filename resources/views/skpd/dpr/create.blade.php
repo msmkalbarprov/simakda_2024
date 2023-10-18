@@ -105,6 +105,7 @@
                                 <th>Uraian</th>
                                 <th>Kode Pembayaran</th>
                                 <th>Pembayaran</th>
+                                <th>ID</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -340,6 +341,7 @@
                                         <th>Uraian</th>
                                         <th>Kode Pembayaran</th>
                                         <th>Pembayaran</th>
+                                        <th>ID</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>

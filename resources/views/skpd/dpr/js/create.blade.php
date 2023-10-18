@@ -75,6 +75,11 @@
                     visible: false
                 },
                 {
+                    data: 'id',
+                    name: 'id',
+                    visible: false
+                },
+                {
                     data: 'aksi',
                     name: 'aksi',
                 },
@@ -145,6 +150,11 @@
                 {
                     data: 'nm_pembayaran',
                     name: 'nm_pembayaran',
+                },
+                {
+                    data: 'id',
+                    name: 'id',
+                    visible: false
                 },
                 {
                     data: 'aksi',
@@ -564,73 +574,109 @@
                 return;
             }
 
-            tabel_rekening.row.add({
-                'no_dpr': no_dpr,
-                'kd_sub_kegiatan': kd_sub_kegiatan,
-                'nm_sub_kegiatan': nm_sub_kegiatan,
-                'kd_rek6': kd_rekening,
-                'nm_rek6': nm_rekening,
-                'nilai': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(nilai),
-                'sumber': sumber,
-                'nm_sumber': nm_sumber,
-                'bukti': bukti,
-                'nm_bukti': nm_bukti,
-                'uraian': uraian,
-                'pembayaran': pembayaran,
-                'nm_pembayaran': nm_pembayaran,
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_dpr}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
+            $.ajax({
+                url: "{{ route('dpr.simpan_tampungan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    nomor: no_dpr,
+                    kdgiat: kd_sub_kegiatan,
+                    kdrek: kd_rekening,
+                    nilai_tagih: nilai,
+                    sumber: sumber,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(response) {
+                    if (response.message == '0') {
+                        alert('Data Detail Gagal Tersimpan');
+                        return;
+                    } else if (response.message == '2') {
+                        alert(
+                            'SKPD, Kegiatan, Rekening, Sumber telah ada di tampungan! Silahkan refresh!'
+                        );
+                        return;
+                    } else {
+                        // proses input ke tabel input detail spp
+                        alert('Data Detail Tersimpan');
+                        tabel_rekening.row.add({
+                            'no_dpr': no_dpr,
+                            'kd_sub_kegiatan': kd_sub_kegiatan,
+                            'nm_sub_kegiatan': nm_sub_kegiatan,
+                            'kd_rek6': kd_rekening,
+                            'nm_rek6': nm_rekening,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai),
+                            'sumber': sumber,
+                            'nm_sumber': nm_sumber,
+                            'bukti': bukti,
+                            'nm_bukti': nm_bukti,
+                            'uraian': uraian,
+                            'pembayaran': pembayaran,
+                            'nm_pembayaran': nm_pembayaran,
+                            'id': response.id,
+                            'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_dpr}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}','${response.id}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+                        }).draw();
 
-            tabel_rekening1.row.add({
-                'no_dpr': no_dpr,
-                'kd_sub_kegiatan': kd_sub_kegiatan,
-                'nm_sub_kegiatan': nm_sub_kegiatan,
-                'kd_rek6': kd_rekening,
-                'nm_rek6': nm_rekening,
-                'nilai': new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(nilai),
-                'sumber': sumber,
-                'nm_sumber': nm_sumber,
-                'bukti': bukti,
-                'nm_bukti': nm_bukti,
-                'uraian': uraian,
-                'pembayaran': pembayaran,
-                'nm_pembayaran': nm_pembayaran,
-                'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_dpr}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
-            }).draw();
+                        tabel_rekening1.row.add({
+                            'no_dpr': no_dpr,
+                            'kd_sub_kegiatan': kd_sub_kegiatan,
+                            'nm_sub_kegiatan': nm_sub_kegiatan,
+                            'kd_rek6': kd_rekening,
+                            'nm_rek6': nm_rekening,
+                            'nilai': new Intl.NumberFormat('id-ID', {
+                                minimumFractionDigits: 2
+                            }).format(nilai),
+                            'sumber': sumber,
+                            'nm_sumber': nm_sumber,
+                            'bukti': bukti,
+                            'nm_bukti': nm_bukti,
+                            'uraian': uraian,
+                            'pembayaran': pembayaran,
+                            'nm_pembayaran': nm_pembayaran,
+                            'id': response.id,
+                            'aksi': `<a href="javascript:void(0);" onclick="deleteData('${no_dpr}','${kd_sub_kegiatan}','${kd_rekening}','${sumber}','${nilai}','${response.id}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+                        }).draw();
 
-            $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_input_rekening + nilai));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(total_input_rekening + nilai));
+                        $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_input_rekening + nilai));
+                        $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(total_input_rekening + nilai));
 
-            $('#kd_rekening').val(null).change();
-            $('#nm_rekening').val(null);
-            $('#sumber').val(null).change();
-            $('#nm_sumber').val(null);
-            $('#total_spd').val(null);
-            $('#realisasi_spd').val(null);
-            $('#sisa_spd').val(null);
-            $('#total_angkas').val(null);
-            $('#realisasi_angkas').val(null);
-            $('#sisa_angkas').val(null);
-            $('#total_anggaran').val(null);
-            $('#realisasi_anggaran').val(null);
-            $('#sisa_anggaran').val(null);
-            $('#total_sumber').val(null);
-            $('#realisasi_sumber').val(null);
-            $('#sisa_sumber').val(null);
-            $('#nilai').val(null);
-            $('#uraian').val(null);
-            $('#bukti').val(null).change();
-            $('#pembayaran').val(null).change();
+                        $('#kd_sub_kegiatan').val(null).change();
+                        $('#nm_sub_kegiatan').val(null);
+                        $('#kd_rekening').empty();
+                        $('#nm_rekening').val(null);
+                        $('#sumber').empty();
+                        $('#nm_sumber').val(null);
+                        $('#total_spd').val(null);
+                        $('#realisasi_spd').val(null);
+                        $('#sisa_spd').val(null);
+                        $('#total_angkas').val(null);
+                        $('#realisasi_angkas').val(null);
+                        $('#sisa_angkas').val(null);
+                        $('#total_anggaran').val(null);
+                        $('#realisasi_anggaran').val(null);
+                        $('#sisa_anggaran').val(null);
+                        $('#total_sumber').val(null);
+                        $('#realisasi_sumber').val(null);
+                        $('#sisa_sumber').val(null);
+                        $('#nilai').val(null);
+                        $('#uraian').val(null);
+                        $('#bukti').val(null).change();
+                        $('#pembayaran').val(null).change();
 
-            $('#jenis_belanja').prop('disabled', true);
+                        $('#jenis_belanja').prop('disabled', true);
+                    }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            });
         });
 
         $('#simpan').on('click', function() {
@@ -1015,7 +1061,7 @@
         return parseFloat(rupiah) || 0;
     }
 
-    function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai) {
+    function deleteData(no_bukti, kd_sub_kegiatan, kd_rek, sumber, nilai, id) {
         let tabel = $('#input_rekening').DataTable();
         let tabel1 = $('#rincian_rekening').DataTable();
         let nilai_rekening = parseFloat(nilai);
@@ -1023,20 +1069,50 @@
         let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek + '  Nilai :  ' + nilai +
             ' ?');
         if (hapus == true) {
-            tabel.rows(function(idx, data, node) {
-                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                    data.kd_rek6 == kd_rek
-            }).remove().draw();
-            tabel1.rows(function(idx, data, node) {
-                return data.sumber == sumber && data.kd_sub_kegiatan == kd_sub_kegiatan &&
-                    data.kd_rek6 == kd_rek
-            }).remove().draw();
-            $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(nilai_sementara - nilai_rekening));
-            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
-                minimumFractionDigits: 2
-            }).format(nilai_sementara - nilai_rekening));
+            $.ajax({
+                url: "{{ route('dpr.hapus_tampungan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_bukti: no_bukti,
+                    kd_sub_kegiatan: kd_sub_kegiatan,
+                    kd_rek: kd_rek,
+                    sumber: sumber,
+                    id: id,
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(response) {
+                    if (response.message == '0') {
+                        alert('Data detail gagal dihapus');
+                        return;
+                    } else {
+                        alert('Data detail berhasil dihapus');
+                        tabel.rows(function(idx, data, node) {
+                            return data.sumber == sumber && data.kd_sub_kegiatan ==
+                                kd_sub_kegiatan &&
+                                data.kd_rek6 == kd_rek &&
+                                data.id == id
+                        }).remove().draw();
+                        tabel1.rows(function(idx, data, node) {
+                            return data.sumber == sumber && data.kd_sub_kegiatan ==
+                                kd_sub_kegiatan &&
+                                data.kd_rek6 == kd_rek &&
+                                data.id == id
+                        }).remove().draw();
+                        $('#total_input_rekening').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_sementara - nilai_rekening));
+                        $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_sementara - nilai_rekening));
+                    }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            });
         } else {
             return false;
         }

@@ -1384,6 +1384,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('cariSumber', [DaftarPengeluaranRillController::class, 'cariSumber'])->name('dpr.sumber');
             Route::post('loadDana', [DaftarPengeluaranRillController::class, 'loadDana'])->name('dpr.load_dana');
             Route::post('statusAng', [DaftarPengeluaranRillController::class, 'statusAng'])->name('dpr.status_ang');
+            Route::post('simpan_tampungan', [DaftarPengeluaranRillController::class, 'simpanTampungan'])->name('dpr.simpan_tampungan');
+            Route::post('hapus_tampungan', [DaftarPengeluaranRillController::class, 'hapusTampungan'])->name('dpr.hapus_tampungan');
             Route::post('simpan', [DaftarPengeluaranRillController::class, 'simpan'])->name('dpr.simpan');
             Route::get('edit/{no_dpr?}/{kd_skpd?}', [DaftarPengeluaranRillController::class, 'edit'])->name('dpr.edit');
             Route::post('update', [DaftarPengeluaranRillController::class, 'update'])->name('dpr.update');
