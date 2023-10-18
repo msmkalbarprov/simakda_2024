@@ -122,6 +122,7 @@ use App\Http\Controllers\Skpd\DaftarPembayaranTagihanController;
 use App\Http\Controllers\Skpd\DaftarPembayaranTagihanGabunganController;
 use App\Http\Controllers\Skpd\DaftarPengeluaranRillController;
 use App\Http\Controllers\Skpd\LPJKKPDController;
+use App\Http\Controllers\Skpd\PelimpahanGUKKPDController;
 use App\Http\Controllers\Skpd\RestitusiController;
 use App\Http\Controllers\Skpd\SppGuKkpdController;
 use App\Http\Controllers\Skpd\TransKKPDController;
@@ -595,6 +596,15 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('edit_gu/{no_kas?}', [PelimpahanController::class, 'editGu'])->where('no_kas', '(.*)')->name('skpd.pelimpahan.edit_gu');
             Route::post('update_gu', [PelimpahanController::class, 'updateGu'])->name('skpd.pelimpahan.update_gu');
             Route::post('hapus_gu', [PelimpahanController::class, 'hapusGu'])->name('skpd.pelimpahan.hapus_gu');
+            // PELIMPAHAN GU KKPD
+            Route::get('gu_kkpd', [PelimpahanGUKKPDController::class, 'indexGu'])->name('pelimpahan_gu_kkpd.index');
+            Route::post('load_gu_kkpd', [PelimpahanGUKKPDController::class, 'loadDataGu'])->name('pelimpahan_gu_kkpd.load');
+            Route::get('tambah_gu_kkpd', [PelimpahanGUKKPDController::class, 'tambahGu'])->name('pelimpahan_gu_kkpd.tambah');
+            Route::post('no_lpj_kkpd', [PelimpahanGUKKPDController::class, 'noLpj'])->name('pelimpahan_gu_kkpd.no_lpj');
+            Route::post('simpan_gu_kkpd', [PelimpahanGUKKPDController::class, 'simpanGu'])->name('pelimpahan_gu_kkpd.simpan');
+            Route::get('edit_gu_kkpd/{no_kas?}', [PelimpahanGUKKPDController::class, 'editGu'])->where('no_kas', '(.*)')->name('pelimpahan_gu_kkpd.edit');
+            Route::post('update_gu_kkpd', [PelimpahanGUKKPDController::class, 'updateGu'])->name('pelimpahan_gu_kkpd.update');
+            Route::post('hapus_gu_kkpd', [PelimpahanGUKKPDController::class, 'hapusGu'])->name('pelimpahan_gu_kkpd.hapus');
             // Upload Pelimpahan
             Route::get('upload', [PelimpahanController::class, 'upload'])->name('skpd.pelimpahan.upload');
             Route::post('load_upload', [PelimpahanController::class, 'loadUpload'])->name('skpd.pelimpahan.load_upload');
