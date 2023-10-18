@@ -2977,19 +2977,40 @@ function sisa_bank()
     return $data;
 }
 
-function sisa_bank_kkpd()
+// saldo kkpd di bku
+function sisa_bank_kkpd($kd_skpd, $bulan)
 {
-    $kd_skpd = Auth::user()->kd_skpd;
-
-    $sisa_kkpd = collect(DB::select("SELECT
-            SUM(case when jns=1 then jumlah else 0 end) AS terima,
-            SUM(case when jns=2 then jumlah else 0 end) AS keluar
-            FROM (
-                SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status=? and kd_skpd=?
-                UNION ALL
-                SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
-                UNION ALL
-                SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdspp a INNER JOIN trhspp b ON a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhsp2d c ON b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd WHERE status_bud=? and a.kkpd=? and c.kd_skpd=?)z", ['1', $kd_skpd, $kd_skpd, '1', 'KKPD', $kd_skpd]))->first();
+    $kd_org     = substr($kd_skpd,0.17).'.0000';
+    $sisa_kkpd  = collect(DB::select("SELECT terima-keluar as sisa FROM(
+                                SELECT
+                                SUM(case when jns=1 then jumlah else 0 end) AS terima,
+                                SUM(case when jns=2 then jumlah else 0 end) AS keluar
+                                FROM (
+                                        -- terima
+                                        -- terima UP
+                                        SELECT isnull(sum(c.kkpd),0) as jumlah,'1' as jns from trhsp2d a 
+                                        INNER JOIN up_kkpd b on a.kd_skpd=b.kd_skpd and a.no_sp2d=b.no_sp2d
+                                        INNER JOIN ms_up c on a.kd_skpd=c.kd_skpd
+                                        where a.jns_spp='2' and a.kd_skpd= ? and a.status=1 and month(tgl_kas) <= ?
+                                        UNION ALL
+                                        -- terima GU cair
+                                        SELECT isnull(sum(c.nilai),0) as jumlah,'1' as jns from trhsp2d a 
+                                        INNER JOIN up_kkpd b on a.kd_skpd=b.kd_skpd and a.no_sp2d=b.no_sp2d
+                                        INNER JOIN trdspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
+                                        where a.jns_spp='2' and a.kd_skpd= ? and c.kkpd=1 and a.status=1 and month(tgl_kas) <= ?
+                                        
+                                        -- keluar
+                                        UNION ALL
+                                        -- dropping
+                                        SELECT isnull(sum(nilai),0),'2' as jns from tr_setorpelimpahan_bank_cms 
+                                        where kd_skpd_sumber= ? and status_validasi = 1 and kkpd=1 and month(tgl_kas) <= ?
+                                        UNION ALL
+                                        -- keluar validasi cms
+                                        SELECT isnull(SUM(a.nilai),0) as jumlah,'2' as jns FROM trdtransout a INNER JOIN trhtransout b 
+                                        ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd 
+                                        WHERE b.kd_skpd= ? and b.kkpd=1 and month(tgl_bukti) <= ?
+                                        )z
+                                )zz", [$kd_skpd, $bulan, $kd_skpd, $bulan, $kd_org, $bulan, $kd_skpd, $bulan]))->first();
 
 
     return $sisa_kkpd;
@@ -3074,14 +3095,81 @@ function sisa_bank_by_bulan($kd_skpd, $bulan)
     //     ->whereRaw("kode = '$kd_skpd'")
     //     ->whereRaw("month(tgl) = '$bulan'")
     //     ->first();
+    if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
+        $data = collect(DB::select("SELECT terima-keluar as sisa FROM(select
+                SUM(case when jns=1 then jumlah else 0 end) AS terima,
+                SUM(case when jns=2 then jumlah else 0 end) AS keluar
+                from (
+                
+                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where (tunai<>1 OR tunai is null) 
+                and keterangan not like '%7819/GU/2023%'
+                union
+                SELECT tgl_sp2d AS tgl,no_sp2d AS bku,keperluan as ket,
+                sum(b.nilai)-(select kkpd from ms_up where kd_skpd=a.kd_skpd)as jumlah,
+                '1' AS jns,a.kd_skpd AS kode FROM trhsp2d a inner join trdspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_sp2d IN (SELECT isnull(no_sp2d,'') FROM up_kkpd where kd_skpd=?) and (b.kkpd!='1' or b.kkpd is null) and status='1' and a.jns_spp IN ('1','2') and  a.kd_skpd=? GROUP BY a.tgl_sp2d,a.no_sp2d,a.keperluan,a.kd_skpd
+                union
+                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' 
+                union
+                select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on
+                c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd=? and  d.pay='BANK' union all
+                select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
+                from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                where jns_trans IN ('5') and bank='BNK' and a.kd_skpd=?
+                GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+                union all
 
-    $data = collect(DB::select("SELECT terima-keluar as sisa FROM(select
+                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket AS ket,total-isnull(pot,0)-isnull(f.pot2,0) AS jumlah,'2' AS jns,a.kd_skpd AS kode FROM trhtransout
+                a join trhsp2d b on a.no_sp2d=b.no_sp2d left join (select no_spm, sum(nilai)pot
+                from trspmpot group by no_spm) c on b.no_spm=c.no_spm
+                left join
+                (
+                select d.no_kas,sum(e.nilai) [pot2],d.kd_skpd from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd
+                where e.kd_skpd=? and d.no_kas<>'' and d.pay='BANK' group by d.no_kas,d.kd_skpd
+                    ) f on f.no_kas=a.no_bukti and f.kd_skpd=a.kd_skpd
+                WHERE pay='BANK' and
+                (panjar not in ('1') or panjar is null)
+                union
+                select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'2' [jns],a.kd_skpd [kode] from trhstrpot a
+                join trdstrpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                where a.kd_skpd=? and a.pay='BANK' group by a.tgl_bukti,a.no_bukti,a.ket,a.kd_skpd
+                UNION
+                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan union
+                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM trhoutlain WHERE pay='BANK' union
+                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'2' AS jns,kd_skpd_sumber AS kode FROM tr_setorpelimpahan_bank union
+
+                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan WHERE status_drop!='1' union
+
+                SELECT a.tgl_kas AS tgl,a.no_panjar AS bku,a.keterangan as ket,a.nilai-isnull(b.pot2,0) AS jumlah,'2' AS jns,a.kd_skpd AS kode FROM tr_panjar a
+                    left join
+                    (
+                        select d.no_kas,sum(e.nilai) [pot2],d.kd_skpd from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd
+                        where e.kd_skpd=? and d.no_kas<>'' and d.pay='BANK' group by d.no_kas,d.kd_skpd
+                    ) b on a.no_panjar=b.no_kas and a.kd_skpd=b.kd_skpd
+                    where a.pay='BANK' and a.kd_skpd=?
+                    union all
+                    select d.tgl_bukti, d.no_bukti,d.ket [ket],sum(e.nilai) [jumlah],'1' [jns],d.kd_skpd [kode] from trhtrmpot d join trdtrmpot e on d.no_bukti=e.no_bukti and d.kd_skpd=e.kd_skpd
+            where e.kd_skpd=? and d.no_sp2d='2704/TU/2023' and d.pay='BANK' group by d.tgl_bukti,d.no_bukti,d.ket,d.kd_skpd
+                    union all
+                    select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
+                    from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd and a.kd_sub_kegiatan=b.kd_sub_kegiatan
+                    where jns_trans NOT IN ('4','2','5') and pot_khusus =0  and bank='BNK' and a.kd_skpd=?
+                    GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd union all
+                    select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '1' as jns, a.kd_skpd as kode
+                    from trhkasin_pkd a INNER JOIN trdkasin_pkd b ON a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+                    where jns_trans IN ('5') and bank='BNK' and a.kd_skpd=?
+                    GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
+                    ) a
+                where month(tgl)<=? and kode=?) a ", [$kd_skpd, $kd_skpd,$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $bulan, $kd_skpd]))->first();
+    }else{
+        $data = collect(DB::select("SELECT terima-keluar as sisa FROM(select
                 SUM(case when jns=1 then jumlah else 0 end) AS terima,
                 SUM(case when jns=2 then jumlah else 0 end) AS keluar
                 from (
 
-                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where (tunai<>1 OR tunai is null) union
-                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' union
+                SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where (tunai<>1 OR tunai is null) 
+                union
+                SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK' 
+                union
                 select c.tgl_kas [tgl],c.no_kas [bku] ,c.keterangan [ket],c.nilai [jumlah],'1' [jns],c.kd_skpd [kode] from tr_jpanjar c join tr_panjar d on
                 c.no_panjar_lalu=d.no_panjar and c.kd_skpd=d.kd_skpd where c.jns='2' and c.kd_skpd=? and  d.pay='BANK' union all
                 select a.tgl_sts as tgl,a.no_sts as bku, a.keterangan as ket, SUM(b.rupiah) as jumlah, '2' as jns, a.kd_skpd as kode
@@ -3132,6 +3220,8 @@ function sisa_bank_by_bulan($kd_skpd, $bulan)
                     GROUP BY a.tgl_sts,a.no_sts, a.keterangan,a.kd_skpd
                     ) a
                 where month(tgl)<=? and kode=?) a ", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $bulan, $kd_skpd]))->first();
+    }
+    
 
     return $data;
 }
@@ -4421,7 +4511,18 @@ function angkas_lalu_penagihan($kode, $giat, $rek)
                                     -- and u.tgl_bukti<=? (PERMINTAAN KAK MINA TANGGAL DIHAPUS)
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode]))->first();
+
+                                    UNION ALL
+                                    -- transaksi DPR
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpr c
+                                    LEFT JOIN trhdpr d ON c.no_dpr = d.no_dpr
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    -- and d.tgl_voucher<=?
+                                    )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode, $giat, $kode, $rek]))->first();
 
     return $data;
 }
@@ -4637,4 +4738,74 @@ function harian_kasda()
             -- KOREKSI PENERIMAAN
             SELECT 'koreksiterima' as jenis,'' as jns_spp, '' as jns_beban, tanggal,nomor,3,cast(nomor as VARCHAR),keterangan,nilai,0 FROM tkoreksi_penerimaan w WHERE w.jenis='1' and tanggal=?
             ORDER BY urut,urut1", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
+}
+
+function nama_sumber_dana($sumber)
+{
+    $nama = DB::table('sumber_dana')
+        ->select('nm_sumber_dana1')
+        ->where('kd_sumber_dana1', $sumber)
+        ->first();
+
+    return $nama->nm_sumber_dana1;
+}
+
+function nama_pembayaran($item)
+{
+    switch ($item) {
+        case '1':
+            return 'KATALOG';
+            break;
+        case '2':
+            return 'TOKO DARING';
+            break;
+        case '3':
+            return 'LPSE';
+            break;
+        case '4':
+            return 'LAIN-LAIN';
+            break;
+        default:
+            return '';
+            break;
+    }
+}
+
+function sisa_bank_kkpd1()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = collect(DB::select("SELECT
+    SUM(case when jns=1 then jumlah else 0 end) AS terima,
+    SUM(case when jns=2 then jumlah else 0 end) AS keluar
+    FROM (
+        SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status='1' and kd_skpd=?
+        UNION ALL
+        -- DPR BELUM DPT
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpr a INNER JOIN trhdpr b ON a.no_dpr=b.no_dpr AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and (b.status<>'1' or b.status is null) and (a.status='0' or a.status='1')
+        UNION ALL
+        -- DPT BELUM TRANSAKSI
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpt a INNER JOIN trhdpt b ON a.no_dpt=b.no_dpt AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
+        and b.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where b.kd_skpd=kd_skpd) and (b.status<>'1' or b.status is null)
+        UNION ALL
+        -- TRANSOUT KKPD BELUM VALIDASI
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and b.jns_spp='1' and (b.status_validasi<>'1' or b.status_validasi is null)
+        UNION ALL
+        -- TRHTRANSOUT 1
+        SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where b.kd_skpd=? and b.kkpd='1'
+        )z", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
+        ->first();
+
+    return $data;
+}
+
+function cari_rekening_awal($kd_skpd)
+{
+    $data = DB::table('ms_skpd')
+        ->select('rekening')
+        ->where(['kd_skpd' => $kd_skpd])
+        ->orderBy('kd_skpd')
+        ->first();
+
+    return $data->rekening;
 }

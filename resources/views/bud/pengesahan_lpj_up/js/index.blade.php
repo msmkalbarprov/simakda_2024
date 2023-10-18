@@ -6,7 +6,7 @@
             }
         });
 
-        $('#pengesahan_lpj').DataTable({
+        let pengesahan_lpj = $('#pengesahan_lpj').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('pengesahan_lpj_upgu.load') }}",
                 "type": "POST",
+                "data": function(d) {
+                    d.jenis = document.getElementById('jenis').value;
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status == 1 || data.status == 2) {
@@ -63,9 +66,17 @@
             ],
         });
 
+        $('.select2-multiple').select2({
+            theme: 'bootstrap-5'
+        });
+
         $('.select-modal').select2({
             dropdownParent: $('#modal_cetak .modal-content'),
             theme: 'bootstrap-5'
+        });
+
+        $('#jenis').on('select2:select', function() {
+            pengesahan_lpj.ajax.reload()
         });
 
         $('#pilihan').on('select2:select', function() {

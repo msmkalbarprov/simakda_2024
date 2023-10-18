@@ -34,6 +34,10 @@
     <!-- Or for RTL support -->
     <!-- CSS -->
     <link href="{{ asset('template/assets/css/toast.css') }}" rel="stylesheet" type="text/css" />
+
+    <link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css"
+        rel="stylesheet" />
+
     <style>
         .select2-container {
             width: auto !important;

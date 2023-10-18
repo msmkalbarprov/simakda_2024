@@ -247,6 +247,9 @@ class LaporanBendaharaController extends Controller
         // KAS BANK
         $kas_bank = sisa_bank_by_bulan($kd_skpd, $bulan);
 
+        // KAS KKPD
+        $kas_kkpd = sisa_bank_kkpd($kd_skpd, $bulan);
+
         // KAS SALDO BERHARGA
 
         $surat_berharga = DB::table('trhsp2d')
@@ -349,6 +352,7 @@ class LaporanBendaharaController extends Controller
             'terima'            => $terima,
             'keluar'            => $keluar,
             'saldo_bank'        => $kas_bank,
+            'saldo_kkpd'        => $kas_kkpd,
             'surat_berharga'    => $surat_berharga,
             'pajak'             => $sisa_pajak->sisa,
             'enter'             => $enter,
