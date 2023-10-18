@@ -22,7 +22,15 @@ class PelimpahanController extends Controller
     public function loadDataUp()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("CAST(no_kas as INT)"))->orderBy('kd_skpd')->get();
+
+        $data = DB::table('tr_setorpelimpahan_bank_cms')
+            ->where(['kd_skpd_sumber' => $kd_skpd])
+            ->whereRaw("(kkpd is null or kkpd!=?)", ['1'])
+            ->orderBy('tgl_kas')
+            ->orderBy(DB::raw("CAST(no_kas as INT)"))
+            ->orderBy('kd_skpd')
+            ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->status_upload != '1') {
                 $btn = '<a href="' . route("skpd.pelimpahan.edit_up", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
@@ -188,7 +196,15 @@ class PelimpahanController extends Controller
     public function loadDataGu()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_setorpelimpahan_bank_cms')->where(['kd_skpd_sumber' => $kd_skpd])->orderBy('tgl_kas')->orderBy(DB::raw("CAST(no_kas as INT)"))->orderBy('kd_skpd')->get();
+
+        $data = DB::table('tr_setorpelimpahan_bank_cms')
+            ->where(['kd_skpd_sumber' => $kd_skpd])
+            ->whereRaw("(kkpd is null or kkpd!=?)", ['1'])
+            ->orderBy('tgl_kas')
+            ->orderBy(DB::raw("CAST(no_kas as INT)"))
+            ->orderBy('kd_skpd')
+            ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             if ($row->status_upload != '1') {
                 $btn = '<a href="' . route("skpd.pelimpahan.edit_gu", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
