@@ -115,8 +115,8 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             status_input = 'tambah';
             $('#status_input').val(status_input);
-            $('#nomor').val("{{$no_lamp->nomor}}");
-            $('#no_simpan').val("{{$no_lamp->nomor}}");
+            // $('#nomor').val("{{$no_lamp->nomor}}");
+            // $('#no_simpan').val("{{$no_lamp->nomor}}");
             $('#rek3').val(null).change();
             $('#nm_rek3').val(null);
             $('#rek5').val(null).change();
@@ -173,7 +173,7 @@
             $('#kd_rek7').val(null);
             $('#nm_rek7').val(null);
             $('#jenis').val(null);
-
+            load_no_lamp()
             tampil_rek3("");
 
 
@@ -181,6 +181,19 @@
             $("#labelcetak_semester").html("Cetak Lampiran Neraca");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
+
+    function load_no_lamp(){
+        $.ajax({
+            url: "{{ route('input_kapitalisasi.no_lamp.load') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                // console.log(data[0])
+                $('#nomor').val(data[0].nomor);
+                $('#no_simpan').val(data[0].nomor);
+            }
+        })
+    }
 
     function cari_lokasi() {
         // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
@@ -2763,7 +2776,7 @@
         $('#no_polisi').val(no_polisi);
         $('#fungsi').val(fungsi);
         $('#hukum').val(hukum);
-        $('#lokasi').val(lokasi);
+        $('#lokasi').val(lokasi).change();
         $('#alamat').val(alamat);
         $('#sert').val(sert);
         $('#luas').val(luas);
@@ -3354,7 +3367,7 @@
         if (sal_awal==''){
             sal_awal=0;
         }else{
-            sal_awal=angka(sal_awal);
+            sal_awal=rupiah(sal_awal);
         }
         if (kurang==''){
             kurang=0;
