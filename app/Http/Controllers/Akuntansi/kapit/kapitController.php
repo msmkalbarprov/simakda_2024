@@ -97,7 +97,7 @@ class kapitController extends Controller
         $sub_kegiatan = DB::select("SELECT a.kd_sub_kegiatan,b.nm_sub_kegiatan,a.jns_kegiatan 
                         FROM trskpd a INNER JOIN ms_sub_kegiatan b ON a.kd_sub_kegiatan=b.kd_sub_kegiatan
                         where a.kd_skpd=? and a.jns_ang=?",[$kd_skpd,$jns_ang->jns_ang]);
-        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-'+REPLACE(kd_skpd,'.','') as nomor FROM
+        $no_lamp= collect(DB::select("SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
             (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
             SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
             SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
@@ -173,6 +173,21 @@ class kapitController extends Controller
             FROM trkapitalisasi 
             where kd_rek6='$kd_rek6' and kd_sub_kegiatan='$kd_sub_kegiatan' AND kd_skpd='$kd_skpd'
             )a");
+        // dd($norinci);
+        return response()->json($data);
+    }
+
+    public function load_no_lamp(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;  
+        $kd_sub_kegiatan   = $request->kd_sub_kegiatan;
+        $kd_rek6   = $request->kd_rek6;
+        $norinci  = $kd_skpd.'.'.$kd_sub_kegiatan.'.'.$kd_rek6;
+        $data = DB::select("SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
+            (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
+            SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
+            SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
+            WHERE kd_skpd='$kd_skpd' GROUP BY kd_skpd)y");
         // dd($norinci);
         return response()->json($data);
     }

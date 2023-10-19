@@ -49,13 +49,13 @@
                         </td>
                     </tr> 
 
-                    <tr style="border-bottom:hidden;border-spacing: 3px;border-right-style:hidden;">
+                    <tr style="border-bottom:hidden;border-spacing: 3px;border-right-style:hidden;" >
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Total Trans.</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <input  id="trans_tot" name="trans_tot" required
-                                class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">&nbsp;&nbsp;&nbsp; 
+                                class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" readonly>&nbsp;&nbsp;&nbsp; 
                         </td>
-                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Total Kapit.</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Nilai Kapitalisasi</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <input  id="kapit_tot" name="kapit_tot" required
                                 class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency">&nbsp;&nbsp;&nbsp; 
@@ -240,11 +240,11 @@
                                         <td id = "keterangan1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Keterangan</td>
                                         <td colspan ="3" id = "keterangan0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;"><textarea name="keterangan" id="keterangan" cols="30" rows="1" ></textarea></td>   
                                     </tr>
-                                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
+                                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden>
                                         <td id = "sat_kap0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" >Satuan+Kap.</td>
                                         <td id = "sat_kap1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" ><input type="text" id="sat_kap" class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" /></td>   
                                     </tr>
-                                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
+                                    <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden>
                                         <td id = "nil_kap0" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" >Nilai+Kap.</td>
                                         <td id = "nil_kap1" style="border-bottom:double 1px red;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" ><input type="text" id="nil_kap" class="form-control" style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" /></td>   
                                     </tr>

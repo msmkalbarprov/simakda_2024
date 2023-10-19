@@ -352,8 +352,8 @@
     $('#tambah_rinci').on('click', function() {
         status_input_rinci = 'tambah';
         $('#status_input_rinci').val(status_input_rinci);
-        $('#no_simpan').val("{{$no_lamp->nomor}}");
-        $('#nomor').val("{{$no_lamp->nomor}}");
+        // $('#no_simpan').val("{{$no_lamp->nomor}}");
+        // $('#nomor').val("{{$no_lamp->nomor}}");
         $("#rek3").val(null).change();
         $("#nm_rek3").val(null);
         $("#rek5x").val(null).change();
@@ -395,9 +395,17 @@
         $("#kapit_rincian1").val(null);
         $("#sat_kap").val(null);
         $("#nil_kap").val(null);
-        $("#trans_tot").val(null);
+        // $("#trans_tot").val(null);
         $("#kapit_tot").val(null);
+        var ztot_trans = angka(document.getElementById('tot_trans').value);
+        var ztot_rinci = angka(document.getElementById('tot_rinci').value);
+        // alert(ztot_rinci);
+        var ztahun_n= 0;
+        var z_sisa=(ztot_trans-ztot_rinci)+ztahun_n;
+        var z_sisa_a = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(z_sisa));
+        $("#trans_tot").val(z_sisa_a);
         tampil_rek3("");
+        load_no_lamp();
         // alert(1);
         $('#modal_input_rinci_kapit').modal('show');
     });
@@ -2069,6 +2077,19 @@
         })
     }
 
+    function load_no_lamp(){
+        $.ajax({
+            url: "{{ route('input_kapitalisasi.no_lamp.load') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(data) {
+                // console.log(data[0])
+                $('#nomor').val(data[0].nomor);
+                $('#no_simpan').val(data[0].nomor);
+            }
+        })
+    }
+
     function hitung_harga_satuan(){
         var transaksi = document.getElementById('trans_tot').value;
         var trans=angka(transaksi);
@@ -2413,16 +2434,19 @@
                                             alert('Gagal Simpan..!!');
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
                                             return;
                                         } else if(status=='1'){
                                             alert('Data Sudah Ada..!!');
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
                                             return;
                                         } else {
                                             alert('Data Tersimpan..!!');
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
                                             $("#no_simpan").attr("value",a);
                                             status_input = 'edit';
                                             return;
@@ -2468,6 +2492,7 @@
                                             alert('Nomor  Sudah Terpakai...!!!,  Ganti Nomor ...!!!');
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
                                             return;
                                         }
                                         
@@ -2477,6 +2502,7 @@
                                             $("#no_simpan").attr("value",nomor);
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
                                             return;
                                         }
                                         
@@ -2484,6 +2510,7 @@
                                             alert('Gagal Simpan...!!!');
                                             let list_table = $('#list_rinci_kapit').DataTable();
                                             list_table.ajax.reload();
+                                            load_tot_rinci(sub_kegiatan,jikd_rek6);
 
                                             return;
                                         }
