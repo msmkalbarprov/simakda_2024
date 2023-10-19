@@ -197,6 +197,7 @@
 
 
         @endphp
+            @if($lra!=0 && $lo!=0)
             <tr>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="center">{{$kd_rek6}}</td>                                     
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">{{$nm_rek6}}</td>
@@ -211,6 +212,8 @@
                 @else
                 @endif
             </tr>
+            @else
+            @endif
         @php
            $tlra =$tlra+$lra;
             $tlo = $tlo+$lo;
