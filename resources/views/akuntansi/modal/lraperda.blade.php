@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">PERDA I.4 URUSAN</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -88,7 +88,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">PERDA I.1</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -141,7 +141,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">PERDA I.1 RINGKASAN</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -210,7 +210,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">PERDA I.2</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -313,7 +313,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester"></label></h5>
+                <h5 class="modal-title"><label for="labelcetak_semester" id="labelcetak_semester">I.3 RINCIAN</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
