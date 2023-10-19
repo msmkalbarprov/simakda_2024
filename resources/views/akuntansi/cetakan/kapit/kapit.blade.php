@@ -36,21 +36,15 @@
 <body>
 {{-- <body> --}}
 
-    <table  style="border-collapse:collapse;font-family:Arial" width="100%" border="1" cellspacing="0" cellpadding="1" align="center">
-            <tr>
-                <td rowspan="4" align="center" style="border-right:hidden">
-                    <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
-                </td>
-                
-            </tr>
+    <TABLE style="border-collapse:collapse" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
             <tr>
                 <td align="center" style="border-left:hidden;border-bottom:hidden"><strong>PEMERINTAH {{ strtoupper($header->nm_pemda) }}</strong></td>
             </tr>
             <tr>
-                <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden" ><strong>KAPITALISASI</strong></td>
+                <td align="center" style="border-left:hidden;border-bottom:hidden;border-top:hidden" ><strong>KAPITALISASI TAHUN{{tahun_anggaran()}}</strong></td>
             </tr>
     </table>
-    
+    <br/>
     <TABLE width="100%">
         <TR>
             <TD align="left" width="20%" >SKPD</TD>
@@ -70,7 +64,6 @@
                     <TD colspan="2" width="90"  bgcolor="#CCCCCC" align="center" >Pegawai</TD>
                     <TD colspan="2" width="150"  bgcolor="#CCCCCC" align="center" >Barang dan Jasa</TD>
                     <TD colspan="2" width="150" bgcolor="#CCCCCC" align="center" >Belanja Modal</TD>
-                    <TD colspan="2" width="150" bgcolor="#CCCCCC" align="center" >Belanja Modal dan Administrasi Pengadaan</TD>
                     <TD colspan="3" width="150" bgcolor="#CCCCCC" align="center" >Kapitalisasi</TD>
                     <TD rowspan="2" width="150" bgcolor="#CCCCCC" align="center" >Qty</TD>
                     <TD rowspan="2" width="150" bgcolor="#CCCCCC" align="center" >Sat.</TD>
@@ -80,8 +73,6 @@
                     <TD width="90"  bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150"  bgcolor="#CCCCCC" align="center" >Realisasi</TD>                       
                     <TD width="150"  bgcolor="#CCCCCC" align="center" >Anggaran</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
@@ -107,8 +98,6 @@
                     <TD width="150" bgcolor="#CCCCCC" align="center" >15</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >16</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >17</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >18</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >19</TD>
                 </TR>
             </thead>
         @else
@@ -121,7 +110,6 @@
                     <TD colspan="2" width="90"  bgcolor="#CCCCCC" align="center" >Pegawai</TD>
                     <TD colspan="2" width="150"  bgcolor="#CCCCCC" align="center" >Barang dan Jasa</TD>
                     <TD colspan="2" width="150" bgcolor="#CCCCCC" align="center" >Belanja Modal</TD>
-                    <TD colspan="2" width="150" bgcolor="#CCCCCC" align="center" >Belanja Modal dan Administrasi Pengadaan</TD>
                     <TD colspan="3" width="150" bgcolor="#CCCCCC" align="center" >Kapitalisasi</TD>
                     <TD rowspan="2" width="150" bgcolor="#CCCCCC" align="center" >Qty</TD>
                     <TD rowspan="2" width="150" bgcolor="#CCCCCC" align="center" >Sat.</TD>
@@ -131,8 +119,6 @@
                     <TD width="90"  bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150"  bgcolor="#CCCCCC" align="center" >Realisasi</TD>                       
                     <TD width="150"  bgcolor="#CCCCCC" align="center" >Anggaran</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Anggaran</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >Realisasi</TD>
@@ -157,8 +143,6 @@
                     <TD width="150" bgcolor="#CCCCCC" align="center" >14</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >15</TD>
                     <TD width="150" bgcolor="#CCCCCC" align="center" >16</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >17</TD>
-                    <TD width="150" bgcolor="#CCCCCC" align="center" >18</TD>
                 </TR>
             </thead>
         @endif
@@ -214,7 +198,11 @@
                     $color_tot_kapr='';
                 }
 
-                $nilket=@($tot_kap/$qty);
+                if (($qty == 0) || ($qty == '')) {
+                    $nilket = 0;
+                }else {
+                    $nilket = $tot_kap / $qty;
+                }
                 
                 $panjang = strlen($kode);
                 $ang_peg1  = empty($ang_peg) || $ang_peg == 0 ? '' :number_format($ang_peg,"2",",",".");
@@ -261,7 +249,7 @@
             @endphp
             @if($jen=="Y")
                 <TR>
-                    <TD width="90"  >{{$kode}}</TD>
+                    <TD width="90"  >{{$kode}}{{$nilket}}</TD>
                     <TD width="150" >{{$uraian}}</TD>
                     @if($cetakan==2)
                     <TD width="90"  >{{$kd_barang}}</TD>
@@ -274,9 +262,7 @@
                     <TD width="150" align="right" >{{$ang_brg1}}</TD>
                     <TD width="150" align="right" >{{$real_brg1}}</TD>
                     <TD width="150" align="right" >{{$ang_mod1}}</TD>
-                    <TD width="150" align="right" >{{$real_mod1}}</TD>
-                    <TD width="90"  align="right" >{{$ang_peng1}}</TD>
-                    <TD width="150" align="right" >{{$real_peng1}}</TD>                     
+                    <TD width="150" align="right" >{{$real_mod1}}</TD>                    
                     <TD width="150" align="right" >{{$ang_kap1}}</TD>
                     <TD width="150" align="right" >{{$nil_kap1}}</TD>
                     <TD width="150" align="right" >{{$tot_kap1}}</TD>
@@ -286,7 +272,7 @@
                 </TR>
             @else
                 <TR>
-                    <TD width="90"  >{{$kode}}</TD>
+                    <TD width="90"  >{{$kode}}{{$nilket}}</TD>
                     <TD width="150" >{{$uraian}}</TD>
                     @if($cetakan==2)
                     <TD width="90"  >{{$kd_barang}}</TD>
@@ -299,9 +285,7 @@
                     <TD width="150" align="right" >{{$ang_brg1}}</TD>
                     <TD width="150" align="right" >{{$real_brg1}}</TD>
                     <TD width="150" align="right" >{{$ang_mod1}}</TD>
-                    <TD width="150" align="right" >{{$real_mod1}}</TD>
-                    <TD width="90"  align="right" >{{$ang_peng1}}</TD>
-                    <TD width="150" align="right" >{{$real_peng1}}</TD>                     
+                    <TD width="150" align="right" >{{$real_mod1}}</TD>                 
                     <TD width="150" align="right" ></TD>
                     <TD width="150" align="right" ></TD>
                     <TD width="150" align="right" ></TD>
@@ -422,9 +406,7 @@
             <TD width="150" bgcolor="{{$color_ang_brg}}" align="right" >{{rupiah($total_ang_brg)}}</TD>
             <TD width="150" bgcolor="{{$color_real_brg}}" align="right" >{{rupiah($total_real_brg)}}</TD>
             <TD width="150" bgcolor="{{$color_ang_mod}}" align="right" >{{rupiah($total_ang_mod)}}</TD>
-            <TD width="150" bgcolor="{{$color_real_mod}}" align="right" >{{rupiah($total_real_mod)}}</TD>
-            <TD width="90"  bgcolor="{{$color_ang_pengx}}" align="right" >{{rupiah($total_ang_pengx)}}</TD>
-            <TD width="150" bgcolor="{{$color_real_pengx}}" align="right" >{{rupiah($total_real_pengx)}}</TD>                        
+            <TD width="150" bgcolor="{{$color_real_mod}}" align="right" >{{rupiah($total_real_mod)}}</TD>                        
             <TD width="150" bgcolor="{{$color_ang_kap}}" align="right" >{{rupiah($total_ang_kap)}}</TD>
             <TD width="150" bgcolor="{{$color_nil_kap}}" align="right" >{{rupiah($total_nil_kap)}}</TD>
             <TD width="150" bgcolor="{{$color_tot_kap}}" align="right" >{{rupiah($total_tot_kap)}}</TD>
@@ -518,9 +500,7 @@
             <TD width="150" bgcolor="{{$color_realang_brg}}" align="right" >{{rupiah($total_realang_brg)}}</TD>
             <TD width="150" bgcolor="{{$color_realreal_brg}}" align="right" >{{rupiah($total_realreal_brg)}}</TD>
             <TD width="150" bgcolor="{{$color_realang_mod}}" align="right" >{{rupiah($total_realang_mod)}}</TD>
-            <TD width="150" bgcolor="{{$color_realreal_mod}}" align="right" >{{rupiah($total_realreal_mod)}}</TD>
-            <TD width="90"  bgcolor="{{$color_realang_pengx}}" align="right" >{{rupiah($total_realang_pengx)}}</TD>
-            <TD width="150" bgcolor="{{$color_realreal_pengx}}" align="right" >{{rupiah($total_realreal_pengx)}}</TD>                        
+            <TD width="150" bgcolor="{{$color_realreal_mod}}" align="right" >{{rupiah($total_realreal_mod)}}</TD>                       
             <TD width="150" bgcolor="{{$color_realang_kap}}" align="right" >{{rupiah($total_realang_kap)}}</TD>
             <TD width="150" bgcolor="{{$color_realnil_kap}}" align="right" >{{rupiah($total_realnil_kap)}}</TD>
             <TD width="150" bgcolor="{{$color_realtot_kap}}" align="right" >{{rupiah($total_realtot_kap)}}</TD>
