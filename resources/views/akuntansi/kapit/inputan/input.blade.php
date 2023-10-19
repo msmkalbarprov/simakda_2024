@@ -73,6 +73,7 @@
                 <div class="card-header">
                     List Rinci Kapitalisasi
                     <input type="text" id="kd_rek6" style="border:0;width: 200px;" readonly />
+                    <input type="text" id="kapit_input_rinci" style="border:0;width: 200px;" readonly />
                     <button align="center" id="tambah_rinci" class="btn btn-md btn-primary" style="float: right;" hidden>Tambah</button>
                 </div>
                 <div class="card-body">
@@ -100,7 +101,7 @@
             <div class="card">
                 <div class="card-header">
                     Nilai Total Rinci Kapitalisasi
-                    <button id="hitung_kspit_kegistan" class="btn btn-md btn-primary" onclick="javascript:hitung_rincian_kapit();">Hitung Rincian Kapitalisasi</button>
+                    <button id="hitung_kapit_kegiatan" class="btn btn-md btn-primary" onclick="javascript:hitung_rincian_kapit();">Hitung Rincian Kapitalisasi</button>
                 </div>
                 <div class="card-body">
                     <div class="table-rep-plugin">
@@ -340,11 +341,8 @@
         status_input = 'tambah';
         $('#status_input').val(status_input);
         $('#kd_rek6input').val(null).change();
-        $('#nm_rek6input').val(null);
-        $('anggaran_input').val(null);
-        $('kapit_input').val(null);
-        $('trans_input').val(null);
-        $('#status_aset').val(null).change();
+
+        cari_kd_rek6_input("");
         // tampil_nilai("");
         $('#modal_input_kapit').modal('show');
     });
@@ -1761,7 +1759,7 @@
         cari_rek7(rek6);
     });
 
-    function cari_kd_rek6_input(){
+    function cari_kd_rek6_input(kd_rek6){
         let kd_sub_kegiatan = document.getElementById('sub_kegiatan').value;
         $.ajax({
             url: "{{ route('kapitalisasi.input.kd_rek6') }}",
@@ -1934,9 +1932,12 @@
         document.getElementById('tambah_rinci').hidden = false; // Hide
         $('#kd_rek6').val(kd_rek6);
         $('#jikd_rek6').val(kd_rek6);
+        $('#kapit_input_rinci').val(kapitalisasi);
         // alert(kd_rek6);
+        // $('anggaran_input').val(nil_ang);
+        // $('trans_input').val(nilai_trans);
+        // alert(kapitalisasi);
         let list_table = $('#list_rinci_kapit').DataTable();
-        let list_table_tot = $('#list_tot_rincian').DataTable();
         list_table.ajax.reload();
         load_tot_rinci(kd_sub_kegiatan,kd_rek6);
     }
@@ -2253,9 +2254,11 @@
         var milik           = document.getElementById('milik').value;
         var rincian_bebas   = document.getElementById('rincian_bebas').value;
         var no_polis        = document.getElementById('no_polis').value;
-        var kapitalisasi    = document.getElementById('kapit_input').value;
+        var kapitalisasi    = document.getElementById('kapit_input_rinci').value;
         var trans_tot      = document.getElementById('trans_tot').value;
         var kapit_tot      = angka(document.getElementById('kapit_tot').value);
+
+        alert(kapitalisasi);
 
 
         if(angka(tahun_n)>angka(trans_tot)){

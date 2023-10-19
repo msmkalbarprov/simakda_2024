@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input class="form-control" type="text" id="jikd_rek6" style="border:0;width: 200px;" readonly="true;"  /></td>
+                <input class="form-control" type="text" id="jikd_rek6" style="border:0;width: 200px;" readonly="true;"  />
                 <table border='1' style="font-size:11px"  >
                     <tr>
                         <td style="border-bottom: double 1px red;border-right-style:hidden;border-top: double 1px red;"><i>No. Tersimpan<i></td>
