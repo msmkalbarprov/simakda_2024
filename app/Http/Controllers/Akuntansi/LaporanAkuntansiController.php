@@ -3532,6 +3532,7 @@ class LaporanAkuntansiController extends Controller
                 from ms_rek6 z
                 where left(kd_rek6,1)='5')a 
                 join ms_rek6 b on a.map_lo=b.kd_rek6
+                --where lra <> 0 and lo <> 0
                 group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6 
                 order by a.kd_rek6,a.map_lo");
 
