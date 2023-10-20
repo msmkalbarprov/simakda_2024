@@ -693,5 +693,54 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_i8_aset_tetap(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        
+        $cetak          = $request->cetak;
+        
+        $thn_ang = tahun_anggaran();
+        $thn_ang_1 = $thn_ang-1;
+        $map = DB::select("SELECT uraian, seq, bold,normal, ISNULL(kode_1,'XXX') as rek FROM map_perda_aset_tetap 
+                    where bold<=4
+                    ORDER BY seq");
+
+            
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+        // dd($kd_skpd);
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'map'               => $map,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'thn_ang'           => $thn_ang,
+            'thn_ang_1'         => $thn_ang_1
+        ];
+        $view =  view('akuntansi.cetakan.perda.perda_i8_aset_tetap')->with($data);
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I8 ASET TETAP.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I8 ASET TETAP.xls"');
+            return $view;
+        }
+    }
     
 }

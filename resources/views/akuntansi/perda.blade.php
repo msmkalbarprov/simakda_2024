@@ -195,6 +195,12 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_i6_piutang .modal-content'),
                 
+            }); 
+
+            $(".select_i8_aset_tetap").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_i8_aset_tetap .modal-content'),
+                
             });    
 
 
@@ -242,6 +248,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_i6_piutang').modal('show');
             $("#labelcetak_semester").html("Cetak I.6 Piutang");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#i8_aset_tetap').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_i8_aset_tetap').modal('show');
+            $("#labelcetak_semester").html("Cetak I.8 Aset Tetap");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     //onclick card end
@@ -483,6 +496,12 @@
             
             }else if (labelcetak_semester == 'Cetak I.6 Piutang') {
                 let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i6_piutang') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak I.8 Aset Tetap') {
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i8_aset_tetap') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
