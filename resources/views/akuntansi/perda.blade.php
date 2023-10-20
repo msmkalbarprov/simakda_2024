@@ -111,9 +111,9 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="c_1">
+            <div class="card card-info collapsed-card card-outline" id="d1">
                 <div class="card-body">
-                    {{ 'PERDA LAMP C 1 KESELARASAN' }}
+                    {{ 'PERDA LAMP D 1 KESELARASAN' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -203,6 +203,12 @@
                 
             });    
 
+            $(".select_d1").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_d1 .modal-content'),
+                
+            });    
+
 
             // hidden
             document.getElementById('baris_skpd_i2').hidden = true; // Hide 
@@ -255,6 +261,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_i8_aset_tetap').modal('show');
             $("#labelcetak_semester").html("Cetak I.8 Aset Tetap");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#d1').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_d1').modal('show');
+            $("#labelcetak_semester").html("Cetak D1 Keselarasan");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     //onclick card end
@@ -503,6 +516,33 @@
             }else if (labelcetak_semester == 'Cetak I.8 Aset Tetap') {
                 let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_i8_aset_tetap') }}");
                 let searchParams    = url.searchParams;
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak D1 Keselarasan') {
+                // GET DATA
+                let tgl_ttd                  = document.getElementById('tgl_ttd_d1').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_d1').value;
+                let bulan                    = document.getElementById('bulan_d1').value;
+                // alert(labelcetak_semester)
+                // PERINGATAN
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                if (!bulan) {
+                    alert('Bulan tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_d1_keselarasan') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("bulan", bulan);
+                searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
             

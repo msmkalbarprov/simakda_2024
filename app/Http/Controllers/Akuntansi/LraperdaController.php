@@ -742,5 +742,134 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_d1_keselarasan(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        
+        $tanggal_ttd    = $request->tgl_ttd;
+        $cetak          = $request->cetak;
+        $anggaran        = $request->jenis_anggaran;
+        $bulan          = $request->bulan;
+        
+        $lntahunang = tahun_anggaran();
+        $thn_ang_1 = $lntahunang-1;
+        $rincian = DB::select("SELECT a.kode, a.nama,SUM(ISNULL(a.operasi,0)) as a_operasi,SUM(ISNULL(a.modal,0)) as a_modal,SUM(ISNULL(a.btt,0)) as a_btt,SUM(ISNULL(a.bt,0)) as a_bt,SUM(ISNULL(b.operasi,0)) as r_operasi,SUM(ISNULL(b.modal,0)) as r_modal,SUM(ISNULL(b.btt,0)) as r_btt,SUM(ISNULL(b.bt,0)) as r_bt
+        FROM (
+            SELECT RTRIM(a.kd_fungsi)+'.'+a.kd_urusan  as kode, a.nm_fungsi as nama,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+              FROM ms_sub_fungsi a 
+              LEFT JOIN
+              (SELECT LEFT(kd_sub_kegiatan,4) kd_urusan ,
+                case when LEFT(a.kd_rek6,2) IN ('51') then SUM(nilai) else 0 end AS operasi,
+                case when LEFT(a.kd_rek6,2) IN ('52') then SUM(nilai) else 0 end AS modal,
+                case when LEFT(a.kd_rek6,2) IN ('53') then SUM(nilai) else 0 end AS btt,
+                case when LEFT(a.kd_rek6,2) IN ('54') then SUM(nilai) else 0 end AS bt
+                FROM trdrka a 
+                WHERE a.jns_ang='$anggaran' and  LEFT(a.kd_rek6,1) IN ('5')  GROUP BY LEFT(kd_sub_kegiatan,4) , LEFT(a.kd_rek6,2)
+              )b ON a.kd_urusan=b.kd_urusan
+              GROUP BY a.kd_fungsi,a.kd_urusan,a.nm_fungsi
+            )a
+        LEFT JOIN 
+          (
+            SELECT RTRIM(a.kd_fungsi)+'.'+a.kd_urusan as kode, a.nm_fungsi as nama,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+              FROM ms_sub_fungsi a 
+              LEFT JOIN
+              (SELECT LEFT(kd_sub_kegiatan,4) kd_urusan ,
+                case when LEFT(a.map_real,2) IN ('51') then SUM(debet-kredit) else 0 end AS operasi,
+                case when LEFT(a.map_real,2) IN ('52') then SUM(debet-kredit) else 0 end AS modal,
+                case when LEFT(a.map_real,2) IN ('53') then SUM(debet-kredit) else 0 end AS btt,
+                case when LEFT(a.map_real,2) IN ('54') then SUM(debet-kredit) else 0 end AS bt
+                FROM trdju a INNER JOIN trhju b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
+                WHERE LEFT(a.map_real,1) IN ('5')  AND MONTH(tgl_voucher)<='$bulan' AND YEAR(tgl_voucher)='$lntahunang'  GROUP BY LEFT(kd_sub_kegiatan,4) , LEFT(a.map_real,2)
+              )b ON a.kd_urusan=b.kd_urusan
+              GROUP BY a.kd_fungsi,a.kd_urusan,a.nm_fungsi
+          )b ON a.kode=b.kode  
+        group by a.kode,a.nama
+
+        union all
+
+        SELECT a.kode as kode, a.nama, SUM(ISNULL(a.operasi,0)) as a_operasi,SUM(ISNULL(a.modal,0)) as a_modal,SUM(ISNULL(a.btt,0)) as a_btt,SUM(ISNULL(a.bt,0)) as a_bt,
+        SUM(ISNULL(b.operasi,0)) as r_operasi,SUM(ISNULL(b.modal,0)) as r_modal,SUM(ISNULL(b.btt,0)) as r_btt,SUM(ISNULL(b.bt,0)) as r_bt
+        FROM (
+            SELECT a.kd_fungsi as kode, a.nm_fungsi as nama ,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+              FROM ms_fungsi a 
+              LEFT JOIN 
+              (SELECT RTRIM(a.kd_fungsi) as kode,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+                FROM ms_sub_fungsi a 
+                LEFT JOIN
+                (SELECT LEFT(kd_sub_kegiatan,4) kd_urusan ,
+                case when LEFT(a.kd_rek6,2) IN ('51') then SUM(nilai) else 0 end AS operasi,
+                case when LEFT(a.kd_rek6,2) IN ('52') then SUM(nilai) else 0 end AS modal,
+                case when LEFT(a.kd_rek6,2) IN ('53') then SUM(nilai) else 0 end AS btt,
+                case when LEFT(a.kd_rek6,2) IN ('54') then SUM(nilai) else 0 end AS bt
+                  FROM trdrka a 
+                  WHERE a.jns_ang='$anggaran' and  LEFT(a.kd_rek6,1) IN ('5')  GROUP BY LEFT(kd_sub_kegiatan,4) , LEFT(a.kd_rek6,2)
+                )b ON a.kd_urusan=b.kd_urusan
+                GROUP BY a.kd_fungsi
+              ) b on a.kd_fungsi=left(b.kode,1)
+              GROUP BY a.kd_fungsi,nm_fungsi
+          ) a
+          LEFT JOIN  
+          (
+            SELECT a.kd_fungsi as kode, a.nm_fungsi as nama,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+              FROM ms_fungsi a 
+              LEFT JOIN 
+              (SELECT RTRIM(a.kd_fungsi) as kode,SUM(ISNULL(operasi,0)) as operasi,SUM(ISNULL(modal,0)) as modal,SUM(ISNULL(btt,0)) as btt,SUM(ISNULL(bt,0)) as bt
+                FROM ms_sub_fungsi a 
+                LEFT JOIN
+                (SELECT LEFT(kd_sub_kegiatan,4) kd_urusan ,
+                case when LEFT(a.map_real,2) IN ('51') then SUM(debet-kredit) else 0 end AS operasi,
+                case when LEFT(a.map_real,2) IN ('52') then SUM(debet-kredit) else 0 end AS modal,
+                case when LEFT(a.map_real,2) IN ('53') then SUM(debet-kredit) else 0 end AS btt,
+                case when LEFT(a.map_real,2) IN ('54') then SUM(debet-kredit) else 0 end AS bt
+                  FROM trdju a INNER JOIN trhju b ON a.no_voucher=b.no_voucher AND a.kd_unit=b.kd_skpd
+                  WHERE LEFT(a.map_real,1) IN ('5')  AND MONTH(tgl_voucher)<='$bulan' AND YEAR(tgl_voucher)='$lntahunang' GROUP BY LEFT(kd_sub_kegiatan,4) , LEFT(a.map_real,2)
+                    
+                )b ON a.kd_urusan=b.kd_urusan
+                GROUP BY a.kd_fungsi
+              ) b on a.kd_fungsi=left(b.kode,1)
+              GROUP BY a.kd_fungsi,nm_fungsi
+          )b ON a.kode=b.kode
+        group by a.kode,a.nama
+        ORDER BY kode");
+
+            
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+        // dd($kd_skpd);
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'rincian'               => $rincian,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'lntahunang'           => $lntahunang,
+            'tanggal_ttd'           => $tanggal_ttd,
+            'bulan'           => $bulan,
+            'thn_ang_1'         => $thn_ang_1
+        ];
+        $view =  view('akuntansi.cetakan.perda.perda_d1_keselarasan')->with($data);
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I8 ASET TETAP.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I8 ASET TETAP.xls"');
+            return $view;
+        }
+    }
     
 }

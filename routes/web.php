@@ -1887,6 +1887,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::get('cetak_i3_rincian', [LraperdaController::class, 'cetak_i3_rincian'])->name('laporan_akuntansi.perda.cetak_i3_rincian');
             Route::get('cetak_i6_piutang', [LraperdaController::class, 'cetak_i6_piutang'])->name('laporan_akuntansi.perda.cetak_i6_piutang');
             Route::get('cetak_i8_aset_tetap', [LraperdaController::class, 'cetak_i8_aset_tetap'])->name('laporan_akuntansi.perda.cetak_i8_aset_tetap');
+            Route::get('cetak_d1_keselarasan', [LraperdaController::class, 'cetak_d1_keselarasan'])->name('laporan_akuntansi.perda.cetak_d1_keselarasan');
             // LRA
             Route::get('cetak_lra', [LraController::class, 'cetakLra'])->name('laporan_akuntansi.konsolidasi.cetak_lra');
             //perkada
