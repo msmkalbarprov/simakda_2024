@@ -1843,8 +1843,8 @@
             $("#harga_satuan0").attr('hidden',false);
             $("#rincian_bebas1").attr('hidden',true);
             $("#rincian_bebas0").attr('hidden',true);
-            $("#piutang_awal1").attr('hidden',false);
-            $("#piutang_awal0").attr('hidden',false);
+            $("#piutang_awal1").attr('hidden',true);
+            $("#piutang_awal0").attr('hidden',true);
             $("#piutang_koreksi1").attr('hidden',false);
             $("#piutang_koreksi0").attr('hidden',false);
             $("#piutang_sudah1").attr('hidden',false);
@@ -1948,8 +1948,8 @@
             $("#harga_satuan0").attr('hidden',false);
             $("#rincian_bebas1").attr('hidden',true);
             $("#rincian_bebas0").attr('hidden',true);
-            $("#piutang_awal1").attr('hidden',false);
-            $("#piutang_awal0").attr('hidden',false);
+            $("#piutang_awal1").attr('hidden',true);
+            $("#piutang_awal0").attr('hidden',true);
             $("#piutang_koreksi1").attr('hidden',true);
             $("#piutang_koreksi0").attr('hidden',true);
             $("#piutang_sudah1").attr('hidden',true);
