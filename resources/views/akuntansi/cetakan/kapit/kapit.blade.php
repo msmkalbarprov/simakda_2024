@@ -249,7 +249,7 @@
             @endphp
             @if($jen=="Y")
                 <TR>
-                    <TD width="90"  >{{$kode}}{{$nilket}}</TD>
+                    <TD width="90"  >{{$kode}}</TD>
                     <TD width="150" >{{$uraian}}</TD>
                     @if($cetakan==2)
                     <TD width="90"  >{{$kd_barang}}</TD>
@@ -272,7 +272,7 @@
                 </TR>
             @else
                 <TR>
-                    <TD width="90"  >{{$kode}}{{$nilket}}</TD>
+                    <TD width="90"  >{{$kode}}</TD>
                     <TD width="150" >{{$uraian}}</TD>
                     @if($cetakan==2)
                     <TD width="90"  >{{$kd_barang}}</TD>
