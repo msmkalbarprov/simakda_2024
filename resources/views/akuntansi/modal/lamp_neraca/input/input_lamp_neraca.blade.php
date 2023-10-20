@@ -51,7 +51,7 @@
                     </tr> 
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
-                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rek. Kelompok</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening Jenis</td>
                         <td  style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <select class="form-control select_lamp_neraca @error('rek3') is-invalid @enderror" style=" width: 150px;" id="rek3" name="rek3">
                                 <option value="" disabled selected>Silahkan Pilih</option>
@@ -63,7 +63,7 @@
                     </tr> 
      
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
-                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening Obyek</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <select class="form-control select_lamp_neraca @error('rek5') is-invalid @enderror" style=" width: 150px;" id="rek5" name="rek5">
                                 <option value="" disabled selected>Silahkan Pilih</option>
@@ -78,7 +78,7 @@
                     </tr>
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
-                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening Rinci</td>
+                        <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Rekening Sub Rincian Obyek</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <select class="form-control select_lamp_neraca @error('rek6') is-invalid @enderror" style=" width: 150px;" id="rek6" name="rek6">
                                 <option value="" disabled selected>Silahkan Pilih</option>
@@ -90,7 +90,7 @@
                     </tr>
 
                     <tr style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">
-                        <td id = "rek_subrinci1" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Rekening Sub Rinci</td>
+                        <td id = "rek_subrinci1" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;" hidden = "true">Rekening Sub-sub Rincian Obyek</td>
                         <td id = "rek_subrinci0" style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" hidden = "true" > 
                             <select class="form-control select_lamp_neraca @error('rek7') is-invalid @enderror" style=" width: 150px;" id="rek7" name="rek7">
                                 <option value="" disabled selected>Silahkan Pilih</option>
