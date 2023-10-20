@@ -2815,7 +2815,7 @@
         $('#sisa_umur').val(sisa_umur);
         $('#status_aset').val(status).change();
         $('#akum_penyub').val(akum_penyub);
-        $('#kondisi_x').val(tgl_akhir);
+        $('#kondisi_x').val(kondisi_x);
         $('#nil_kurang_excomp').val(nil_kurang_excomp);
         $('#status_extracomp').val(status_extracomp);
         $('#sekolah').val(sekolah);
@@ -3117,6 +3117,8 @@
 
         } */
 
+
+
         if(jns_beban_sewa=='sewa'){
             $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_n));        
             $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_k)); 
@@ -3225,11 +3227,13 @@
             var sal_awal = real_janji-danan;
         }
 
+        kurangi= rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai));
+        tahun_ni = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(dana));
+        sal_awali = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(sal_awal));
 
-
-        $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai));
-        $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(dana));
-        $("#sal_awal").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(sal_awal));
+        $("#kurang").val(kurangi);
+        $("#tahun_n").val(tahun_ni);
+        $("#sal_awal").val(sal_awali);
         // $("#keterangan").attr("Value",blnd);
     }
 
@@ -3367,12 +3371,12 @@
         if (sal_awal==''){
             sal_awal=0;
         }else{
-            sal_awal=rupiah(sal_awal);
+            sal_awal=angka(sal_awal);
         }
         if (kurang==''){
             kurang=0;
         }else{
-            kurang=rupiah(kurang);
+            kurang=angka(kurang);
         }
         
         if (bertambah==''){
@@ -3502,7 +3506,7 @@
             return;
         } 
         
-        alert(kurang);
+        alert(sal_awal);
 
         if(status_input == "tambah"){
             $(document).ready(function(){
