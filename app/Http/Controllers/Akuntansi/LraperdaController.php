@@ -1230,5 +1230,165 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_d4(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        
+        $tanggal_ttd    = $request->tgl_ttd;
+        $cetak          = $request->cetak;
+        $anggaran        = $request->jenis_anggaran;
+        
+        $thn_ang = tahun_anggaran();
+        $thn_ang_1 = $thn_ang-1;
+        $rincian = DB::select("SELECT kd_rek,
+              case when len(kd_rek)=1 then (select kelompok from ms_rek1 where kd_rek=kd_rek1)
+              when len(kd_rek)=2 then (select kelompok from ms_rek2 where kd_rek=kd_rek2)
+              when len(kd_rek)=4 then (select kelompok from ms_rek3 where kd_rek=kd_rek3)
+              when len(kd_rek)=6 then concat(SUBSTRING(kd_rek, 1, 1),'.',SUBSTRING(kd_rek, 2, 1),'.',SUBSTRING(kd_rek, 3, 2),'.',SUBSTRING(kd_rek, 5, 2))
+              when len(kd_rek)=8 then concat(SUBSTRING(kd_rek, 1, 1),'.',SUBSTRING(kd_rek, 2, 1),'.',SUBSTRING(kd_rek, 3, 2),'.',SUBSTRING(kd_rek, 5, 2),'.',SUBSTRING(kd_rek, 7, 2))
+              when len(kd_rek)=12 then (select kelompok from ms_rek6 where kd_rek=kd_rek6) else '' end kelompok,
+              case when len(kd_rek)=1 then (select nm_rek1 from ms_rek1 where kd_rek=kd_rek1)
+              when len(kd_rek)=2 then (select nm_rek2 from ms_rek2 where kd_rek=kd_rek2)
+              when len(kd_rek)=4 then (select nm_rek3 from ms_rek3 where kd_rek=kd_rek3)
+              when len(kd_rek)=6 then (select nm_rek4 from ms_rek4 where kd_rek=kd_rek4)
+              when len(kd_rek)=8 then (select nm_rek5 from ms_rek5 where kd_rek=kd_rek5)
+              when len(kd_rek)=12 then (select nm_rek6 from ms_rek6 where kd_rek=kd_rek6) else '' end nm_rek,
+              sum(anggaran)anggaran,sum(realisasi)realisasi
+              from(select left(kd_rek6,1)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,1)
+              union all
+              select left(kd_rek6,2)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,2)
+              union all
+              select left(kd_rek6,4)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,4)
+              union all
+              select left(kd_rek6,6)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,6)
+              union all
+              select left(kd_rek6,8)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by  left(kd_rek6,8)
+              union all
+              select left(kd_rek6,12)kd_rek ,sum(anggaran)anggaran,sum(realisasi)realisasi 
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,12)) a 
+              group by kd_rek
+              union all
+              select '552' kd_rek,'' kelompok,'Surplus / (Defisit)'nm_rek, sum(ang_pend-ang_bel)anggaran,sum(real_pend-real_bel)realisasi
+              from(
+              select 
+              case when left(kd_rek6,1)='4' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,1)='5' then sum(anggaran) else 0 end ang_bel,
+              case when left(kd_rek6,1)='4' then sum(realisasi) else 0 end real_pend,
+              case when left(kd_rek6,1)='5' then sum(realisasi) else 0 end real_bel
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,1))a
+              union all
+              select '632' kd_rek,'' kelompok,'Pembiayaan Neto'nm_rek, sum(ang_pend-ang_bel)anggaran,sum(real_pend-real_bel)realisasi
+              from(
+              select 
+              case when left(kd_rek6,2)='61' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,2)='62' then sum(anggaran) else 0 end ang_bel,
+              case when left(kd_rek6,2)='61' then sum(realisasi) else 0 end real_pend,
+              case when left(kd_rek6,2)='62' then sum(realisasi) else 0 end real_bel
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,2))a
+              union all
+              select '441' kd_rek,'' kelompok,'Jumlah Pendapatan'nm_rek, sum(ang_pend)anggaran,sum(real_pend)realisasi
+              from(
+              select 
+              case when left(kd_rek6,1)='4' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,1)='4' then sum(realisasi) else 0 end real_pend
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,1))a
+              union all
+              select '551' kd_rek,'' kelompok,'Jumlah Belanja'nm_rek, sum(ang_pend)anggaran,sum(real_pend)realisasi
+              from(
+              select 
+              case when left(kd_rek6,1)='5' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,1)='5' then sum(realisasi) else 0 end real_pend
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,1))a
+              union all
+              select '611' kd_rek,'' kelompok,'Jumlah Penerimaan Pembiayaan'nm_rek, sum(ang_pend)anggaran,sum(real_pend)realisasi
+              from(
+              select 
+              case when left(kd_rek6,2)='61' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,2)='61' then sum(realisasi) else 0 end real_pend
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,2))a
+              union all
+              select '621' kd_rek,'' kelompok,'Jumlah Penerimaan Pembiayaan'nm_rek, sum(ang_pend)anggaran,sum(real_pend)realisasi
+              from(
+              select 
+              case when left(kd_rek6,2)='62' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,2)='62' then sum(realisasi) else 0 end real_pend
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,2))a
+              union all
+              select '633' kd_rek,'' kelompok,'Sisa lebih pembiayaan anggaran tahun berkenaan (SILPA)'nm_rek, sum((ang_pend-ang_bel)+(ang_pene-ang_peng))anggaran,sum((real_pend-real_bel)+(real_pene-real_peng))realisasi
+              from(
+              select 
+              case when left(kd_rek6,1)='4' then sum(anggaran) else 0 end ang_pend,
+              case when left(kd_rek6,1)='5' then sum(anggaran) else 0 end ang_bel,
+              case when left(kd_rek6,1)='4' then sum(realisasi) else 0 end real_pend,
+              case when left(kd_rek6,1)='5' then sum(realisasi) else 0 end real_bel,
+              0 ang_pene,0 ang_peng,0 real_pene,0 real_peng
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,1)
+              union all
+              select 
+              0 ang_pend,0 ang_bel,0 real_pend,0 real_bel,
+              case when left(kd_rek6,2)='61' then sum(anggaran) else 0 end ang_pene,
+              case when left(kd_rek6,2)='62' then sum(anggaran) else 0 end ang_peng,
+              case when left(kd_rek6,2)='61' then sum(realisasi) else 0 end real_pene,
+              case when left(kd_rek6,2)='62' then sum(realisasi) else 0 end real_peng
+              from perda_d4(12,'$anggaran',$thn_ang)
+              group by left(kd_rek6,2))a
+              order by kd_rek");
+
+            
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+        // dd($kd_skpd);
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'rincian'           => $rincian,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'thn_ang'           => $thn_ang,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'thn_ang_1'         => $thn_ang_1
+        ];
+        $view =  view('akuntansi.cetakan.perda.perda_d4')->with($data);
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I8 ASET TETAP.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I8 ASET TETAP.xls"');
+            return $view;
+        }
+    }
     
 }

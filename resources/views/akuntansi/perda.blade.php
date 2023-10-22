@@ -137,9 +137,9 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="c_3">
+            <div class="card card-info collapsed-card card-outline" id="d4">
                 <div class="card-body">
-                    {{ 'PERDA LAMP C 3' }}
+                    {{ 'PERDA LAMP D 4' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -213,6 +213,12 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_d3 .modal-content'),
                 
+            });  
+
+            $(".select_d4").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_d4 .modal-content'),
+                
             });    
 
 
@@ -281,6 +287,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_d3').modal('show');
             $("#labelcetak_semester").html("Cetak D3");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#d4').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_d4').modal('show');
+            $("#labelcetak_semester").html("Cetak D4");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     //onclick card end
@@ -574,6 +587,27 @@
                     return;
                 }
                 let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_d3') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak D4') {
+                // GET DATA
+                let tgl_ttd                  = document.getElementById('tgl_ttd_d4').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_d4').value;
+                // alert(labelcetak_semester)
+                // PERINGATAN
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_d4') }}");
                 let searchParams    = url.searchParams;
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_anggaran", jns_anggaran);
