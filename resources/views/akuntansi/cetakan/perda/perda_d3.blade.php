@@ -434,7 +434,7 @@
             <tr>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="left"></td>  
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="left"></td> 
-                <td colspan="1" style="vertical-align:top;border-top: solid 1px black;border-bottom: none;font-weight:bold;" width="70%" align="right">Jumlah Perlindungan Sosial Korban Bencana Alam dan Sosial Provinsi</td>
+                <td colspan="1" style="vertical-align:top;border-top: solid 1px black;border-bottom: none;font-weight:bold;" width="70%" align="right">Jumlah SPM Bidang Sosial</td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"><b>{{rupiah($ang_10604101+$ang_10604102+$ang_10604103+$ang_10604104+$ang_10606101)}}</b></td>
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"><b>{{rupiah($real_10604101+$real_10604102+$real_10604103+$real_10604104+$real_10606101)}}</b></td>
             </tr>
