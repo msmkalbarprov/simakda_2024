@@ -871,5 +871,364 @@ class LraperdaController extends Controller
             return $view;
         }
     }
+
+    public function cetak_d3(Request $request){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        
+        $tanggal_ttd    = $request->tgl_ttd;
+        $cetak          = $request->cetak;
+        $anggaran        = $request->jenis_anggaran;
+        
+        $thn_ang = tahun_anggaran();
+        $thn_ang_1 = $thn_ang-1;
+        //pendidikan
+            $a_pendidikan = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,nilai,realisasi from(
+                    SELECT kd_kegiatan,b.nm_kegiatan,sum(a.nilai) nilai from trdrka a
+                    inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+                    where left(a.kd_sub_kegiatan,9)='1.01.02.1' and left(a.kd_rek6,1)='5' and a.jns_ang='$anggaran'
+                    group by kd_kegiatan,b.nm_kegiatan ) a 
+                    left join 
+                    (Select left(kd_sub_kegiatan,12) as kd_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
+                                      and b.kd_unit=a.kd_skpd where year(tgl_voucher)='$thn_ang' and
+                                        left(kd_rek6,1) in ('5')
+                        group by left(kd_sub_kegiatan,12)
+                        
+                    )b on a.kd_kegiatan=b.kd_kegiatan");
+            $ang_sma=0;
+            $real_sma=0;
+            $ang_smk=0;
+            $real_smk=0;
+            $ang_khusus=0;
+            $real_khusus=0;
+            foreach($a_pendidikan as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_kegiatan=="1.01.02.1.01") {
+                    $kd_kegiatan_sma = $kd_kegiatan;
+                    $ang_sma = $ang_sma+$nilai;
+                    $real_sma = $real_sma+$realisasi;
+                }
+                // dd($ang_sma);
+                if ($kd_kegiatan=="1.01.02.1.02") {
+                    $kd_kegiatan_smk = $kd_kegiatan;
+                    $ang_smk = $ang_smk+$nilai;
+                    $real_smk = $real_smk+$realisasi;
+                }
+                if ($kd_kegiatan=="1.01.02.1.03") {
+                    $kd_kegiatan_khusus = $kd_kegiatan;
+                    $ang_khusus = $ang_khusus+$nilai;
+                    $real_khusus = $real_khusus+$realisasi;
+                }
+            }
+        //
+
+        //kesehatan
+            $b_kesehatan = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,a.kd_sub_kegiatan,a.nm_sub_kegiatan,nilai,realisasi from(
+                SELECT kd_kegiatan,b.nm_kegiatan,kd_sub_kegiatan,nm_sub_kegiatan,sum(a.nilai) nilai from trdrka a
+                inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+                where left(a.kd_sub_kegiatan,12)='1.02.02.1.02' and left(a.kd_rek6,1)='5'  and a.jns_ang='$anggaran'and kd_sub_kegiatan in('1.02.02.1.02.01','1.02.02.1.02.02')
+                group by kd_kegiatan,b.nm_kegiatan,kd_sub_kegiatan,nm_sub_kegiatan ) a left join 
+                (
+                Select left(kd_sub_kegiatan,12) as kd_kegiatan,kd_sub_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
+                                  and b.kd_unit=a.kd_skpd where year(tgl_voucher)='$thn_ang' and
+                                    left(kd_rek6,1) in ('5') and  left(kd_sub_kegiatan,12)='1.02.02.1.02'
+                    group by left(kd_sub_kegiatan,12),kd_sub_kegiatan
+                    
+                )b on a.kd_kegiatan=b.kd_kegiatan and a.kd_sub_kegiatan=b.kd_sub_kegiatan");
+            $ang_bencana=0;
+            $real_bencana=0;
+            $ang_lb=0;
+            $real_lb=0;
+            foreach($b_kesehatan as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $kd_sub_kegiatan = $row->kd_sub_kegiatan;
+                $nm_sub_kegiatan = $row->nm_sub_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_sub_kegiatan=="1.02.02.1.02.01") {
+                    $kd_sub_kegiatan_bencana = $kd_sub_kegiatan;
+                    $ang_bencana = $ang_bencana+$nilai;
+                    $real_bencana = $real_bencana+$realisasi;
+                }
+                if ($kd_sub_kegiatan=="1.02.02.1.02.01") {
+                    $kd_sub_kegiatan_lb = $kd_sub_kegiatan;
+                    $ang_lb = $ang_lb+$nilai;
+                    $real_lb = $real_lb+$realisasi;
+                }
+            }
+        //
+
+        //C bidang pu dan pr
+            $c_pupr = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,nilai,realisasi from(
+                SELECT kd_kegiatan,b.nm_kegiatan,sum(a.nilai) nilai from trdrka a
+                inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+                where left(a.kd_rek6,1)='5' and a.kd_sub_kegiatan in ('1.03.03.1.01.01','1.03.05.1.01.01') and a.jns_ang='$anggaran'
+                group by kd_kegiatan,b.nm_kegiatan ) a left join 
+                (
+                Select left(kd_sub_kegiatan,12) as kd_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher 
+                                  and b.kd_unit=a.kd_skpd where year(tgl_voucher)='$thn_ang' and
+                                    left(kd_rek6,1) in ('5') and kd_sub_kegiatan in ('1.03.03.1.01.01','1.03.05.1.01.01')
+                    group by left(kd_sub_kegiatan,12)
+                    
+                )b on a.kd_kegiatan=b.kd_kegiatan");
+            $ang_spam=0;
+            $real_spam=0;
+            $ang_saldr=0;
+            $real_saldr=0;
+            foreach($c_pupr as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_kegiatan=="1.03.03.1.01") {
+                    $kd_kegiatan_spam = $kd_kegiatan;
+                    $ang_spam = $ang_spam+$nilai;
+                    $real_spam = $real_spam+$realisasi;
+                }
+                if ($kd_kegiatan=="1.03.05.1.01") {
+                    $kd_kegiatan_saldr = $kd_kegiatan;
+                    $ang_saldr = $ang_saldr+$nilai;
+                    $real_saldr = $real_saldr+$realisasi;
+                }
+            }
+        //
+
+        //D bidang pr dan kp
+            $d_prkp = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,nilai,realisasi from(
+                SELECT kd_kegiatan,b.nm_kegiatan,sum(a.nilai) nilai from trdrka a
+                inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+                where left(a.kd_rek6,1)='5' and 
+                a.kd_sub_kegiatan in ('1.04.02.1.01.01','1.04.02.1.03.01','1.04.02.1.03.02','1.04.02.1.03.03','1.04.02.1.03.04','1.04.02.1.03.05','1.04.02.1.03.06') and a.jns_ang='$anggaran'
+                group by kd_kegiatan,b.nm_kegiatan ) a left join 
+                (
+                Select left(kd_sub_kegiatan,12) as kd_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher  and b.kd_unit=a.kd_skpd 
+                where year(tgl_voucher)='$thn_ang' and
+                left(kd_rek6,1) in ('5') and kd_sub_kegiatan in ('1.04.02.1.01.01','1.04.02.1.03.01','1.04.02.1.03.02','1.04.02.1.03.03','1.04.02.1.03.04','1.04.02.1.03.05','1.04.02.1.03.06')
+                group by left(kd_sub_kegiatan,12)
+                    
+                )b on a.kd_kegiatan=b.kd_kegiatan");
+            $ang_penyediaan=0;
+            $real_penyediaan=0;
+            $ang_pembangunan=0;
+            $real_pembangunan=0;
+            foreach($d_prkp as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_kegiatan=="1.04.02.1.01") {
+                    $kd_kegiatan_penyediaan = $kd_kegiatan;
+                    $ang_penyediaan = $ang_penyediaan+$nilai;
+                    $real_penyediaan = $real_penyediaan+$realisasi;
+                }
+                if ($kd_kegiatan=="1.04.02.1.03") {
+                    $kd_kegiatan_pembangunan = $kd_kegiatan;
+                    $ang_pembangunan = $ang_pembangunan+$nilai;
+                    $real_pembangunan = $real_pembangunan+$realisasi;
+                }
+            }
+        //
+          
+
+        //E bidang Ketentraman dan ketertiban umum
+            $e_kku = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,nilai,realisasi from(
+                SELECT kd_kegiatan,b.nm_kegiatan,sum(a.nilai) nilai from trdrka a
+                inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+                where left(a.kd_rek6,1)='5' 
+                and a.kd_sub_kegiatan in('1.05.02.1.01.01','1.05.02.1.01.02','1.05.02.1.01.03','1.05.02.1.01.04','1.05.02.1.01.05','1.05.02.1.01.06','1.05.02.1.01.07','1.05.02.1.01.08','1.05.02.1.01.09',
+                '1.05.02.1.03.01','1.05.02.1.03.02') 
+                and a.jns_ang='$anggaran'
+                group by kd_kegiatan,b.nm_kegiatan ) a left join 
+                (
+                Select left(kd_sub_kegiatan,12) as kd_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                where year(tgl_voucher)='$thn_ang' and left(kd_rek6,1) in ('5')and 
+                kd_sub_kegiatan in('1.05.02.1.01.01','1.05.02.1.01.02','1.05.02.1.01.03','1.05.02.1.01.04','1.05.02.1.01.05','1.05.02.1.01.06','1.05.02.1.01.07','1.05.02.1.01.08','1.05.02.1.01.09',
+                '1.05.02.1.03.01','1.05.02.1.03.02')
+                    group by left(kd_sub_kegiatan,12)
+                    
+                )b on a.kd_kegiatan=b.kd_kegiatan");
+            $ang_gangguan=0;
+            $real_gangguan=0;
+            $ang_ppns=0;
+            $real_ppns=0;
+            foreach($e_kku as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_kegiatan=="1.05.02.1.01") {
+                    $kd_kegiatan_gangguan = $kd_kegiatan;
+                    $ang_gangguan = $ang_gangguan+$nilai;
+                    $real_gangguan = $real_gangguan+$realisasi;
+                }
+                if ($kd_kegiatan=="1.05.02.1.03") {
+                    $kd_kegiatan_ppns = $kd_kegiatan;
+                    $ang_ppns = $ang_ppns+$nilai;
+                    $real_ppns = $real_ppns+$realisasi;
+                }
+            }
+        //  
+
+        //F bidang Sosial
+            $f_bs = DB::select("SELECT a.kd_kegiatan,a.nm_kegiatan,nilai,realisasi from(
+            SELECT kd_kegiatan,b.nm_kegiatan,sum(a.nilai) nilai from trdrka a
+            inner join ms_kegiatan b on left(a.kd_sub_kegiatan,12)=b.kd_kegiatan 
+            where left(a.kd_sub_kegiatan,12)in('1.06.04.1.01','1.06.04.1.02','1.06.04.1.03','1.06.04.1.04','1.06.06.1.01') and left(a.kd_rek6,1)='5' 
+            and a.kd_sub_kegiatan in('1.06.04.1.01.06',
+            '1.06.04.1.02.02','1.06.04.1.02.03','1.06.04.1.02.06','1.06.04.1.02.07','1.06.04.1.02.09','1.06.04.1.02.10',
+            '1.06.04.1.03.01','1.06.04.1.03.02','1.06.04.1.03.05','1.06.04.1.03.06','1.06.04.1.03.12',
+            '1.06.04.1.04.01','1.06.04.1.04.02','1.06.04.1.04.04','1.06.04.1.04.05','1.06.04.1.04.07','1.06.04.1.04.08',
+            '1.06.06.1.01.01','1.06.06.1.01.02','1.06.06.1.01.04','1.06.06.1.01.05') and a.jns_ang='$anggaran'
+            group by kd_kegiatan,b.nm_kegiatan ) a left join 
+            (
+            Select left(kd_sub_kegiatan,12) as kd_kegiatan,SUM(b.debet-b.kredit) AS realisasi from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+            where year(tgl_voucher)='$thn_ang' and left(kd_rek6,1) in ('5') 
+            and left(kd_sub_kegiatan,12)in('1.06.04.1.01','1.06.04.1.02','1.06.04.1.03','1.06.04.1.04','1.06.06.1.01')
+            and kd_sub_kegiatan in ('1.06.04.1.01.06',
+                                '1.06.04.1.02.02','1.06.04.1.02.03','1.06.04.1.02.06','1.06.04.1.02.07','1.06.04.1.02.09','1.06.04.1.02.10',
+                                '1.06.04.1.03.01','1.06.04.1.03.02','1.06.04.1.03.05','1.06.04.1.03.06','1.06.04.1.03.12',
+                                '1.06.04.1.04.01','1.06.04.1.04.02','1.06.04.1.04.04','1.06.04.1.04.05','1.06.04.1.04.07','1.06.04.1.04.08',
+                                '1.06.06.1.01.01','1.06.06.1.01.02','1.06.06.1.01.04','1.06.06.1.01.05')
+                group by left(kd_sub_kegiatan,12)
+                
+            )b on a.kd_kegiatan=b.kd_kegiatan
+            order by a.kd_kegiatan");
+            $ang_10604101=0;
+            $real_10604101=0;
+            $ang_10604102=0;
+            $real_10604102=0;
+            $ang_10604103=0;
+            $real_10604103=0;
+            $ang_10604104=0;
+            $real_10604104=0;
+            $ang_10606101=0;
+            $real_10606101=0;
+            foreach($f_bs as $row){
+                $kd_kegiatan = $row->kd_kegiatan;
+                $nm_kegiatan = $row->nm_kegiatan;
+                $nilai = $row->nilai;
+                $realisasi = $row->realisasi;
+
+                if ($kd_kegiatan=="1.06.04.1.01") {
+                    $kd_kegiatan_10604101 = $kd_kegiatan;
+                    $ang_10604101 = $ang_10604101+$nilai;
+                    $real_10604101 = $real_10604101+$realisasi;
+                }
+                if ($kd_kegiatan=="1.06.04.1.02") {
+                    $kd_kegiatan_10604102 = $kd_kegiatan;
+                    $ang_10604102 = $ang_10604102+$nilai;
+                    $real_10604102 = $real_10604102+$realisasi;
+                }
+                if ($kd_kegiatan=="1.06.04.1.03") {
+                    $kd_kegiatan_10604103 = $kd_kegiatan;
+                    $ang_10604103 = $ang_10604103+$nilai;
+                    $real_10604103 = $real_10604103+$realisasi;
+                }
+                if ($kd_kegiatan=="1.06.04.1.04") {
+                    $kd_kegiatan_10604104 = $kd_kegiatan;
+                    $ang_10604104 = $ang_10604104+$nilai;
+                    $real_10604104 = $real_10604104+$realisasi;
+                }
+                if ($kd_kegiatan=="1.06.06.1.01") {
+                    $kd_kegiatan_10606101 = $kd_kegiatan;
+                    $ang_10606101 = $ang_10606101+$nilai;
+                    $real_10606101 = $real_10606101+$realisasi;
+                }
+            }
+        //  
+        
+        $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();
+
+        $nogub = collect(DB::select("SELECT ket_perda, ket_perda_no, ket_perda_tentang FROM config_nogub_akt"))->first();
+
+
+        // dd($kd_skpd);
+        
+
+
+        // $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+            
+        $data = [
+            'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'kd_kegiatan_sma'           => $kd_kegiatan_sma,
+            'ang_sma'                   => $ang_sma,
+            'real_sma'                  => $real_sma,
+            'kd_kegiatan_smk'           => $kd_kegiatan_smk,
+            'ang_smk'                   => $ang_smk,
+            'real_smk'                  => $real_smk,
+            'kd_kegiatan_khusus'           => $kd_kegiatan_khusus,
+            'ang_khusus'                   => $ang_khusus,
+            'real_khusus'                  => $real_khusus,
+            'kd_kegiatan_bencana'       => substr($kd_sub_kegiatan_bencana,0,12),
+            'kd_sub_kegiatan_bencana'   => $kd_sub_kegiatan_bencana,
+            'ang_bencana'               => $ang_bencana,
+            'real_bencana'              => $real_bencana,
+            'kd_kegiatan_lb'            => substr($kd_sub_kegiatan_lb,0,12),
+            'kd_sub_kegiatan_lb'        => $kd_sub_kegiatan_lb,
+            'ang_lb'                    => $ang_lb,
+            'real_lb'                   => $real_lb,
+            'kd_kegiatan_spam'          => $kd_kegiatan_spam,
+            'ang_spam'                  => $ang_spam,
+            'real_spam'                 => $real_spam,
+            'kd_kegiatan_saldr'         => $kd_kegiatan_saldr,
+            'ang_saldr'                 => $ang_saldr,
+            'real_saldr'                => $real_saldr,
+            'kd_kegiatan_penyediaan'    => $kd_kegiatan_penyediaan,
+            'ang_penyediaan'            => $ang_penyediaan,
+            'real_penyediaan'           => $real_penyediaan,
+            'kd_kegiatan_pembangunan'   => $kd_kegiatan_pembangunan,
+            'ang_pembangunan'           => $ang_pembangunan,
+            'real_pembangunan'          => $real_pembangunan,
+            'kd_kegiatan_gangguan'      => $kd_kegiatan_gangguan,
+            'ang_gangguan'              => $ang_gangguan,
+            'real_gangguan'             => $real_gangguan,
+            'kd_kegiatan_ppns'          => $kd_kegiatan_ppns,
+            'ang_ppns'                  => $ang_ppns,
+            'real_ppns'                 => $real_ppns,
+            'kd_kegiatan_10604101'      => $kd_kegiatan_10604101,
+            'ang_10604101'              => $ang_10604101,
+            'real_10604101'             => $real_10604101,
+            'kd_kegiatan_10604102'      => $kd_kegiatan_10604102,
+            'ang_10604102'              => $ang_10604102,
+            'real_10604102'             => $real_10604102,
+            'kd_kegiatan_10604103'      => $kd_kegiatan_10604103,
+            'ang_10604103'              => $ang_10604103,
+            'real_10604103'             => $real_10604103,
+            'kd_kegiatan_10604104'      => $kd_kegiatan_10604104,
+            'ang_10604104'              => $ang_10604104,
+            'real_10604104'             => $real_10604104,
+            'kd_kegiatan_10606101'      => $kd_kegiatan_10606101,
+            'ang_10606101'              => $ang_10606101,
+            'real_10606101'             => $real_10606101,
+            'daerah'            => $sc,
+            'nogub'             => $nogub,
+            'thn_ang'           => $thn_ang,
+            'tanggal_ttd'       => $tanggal_ttd,
+            'thn_ang_1'         => $thn_ang_1
+        ];
+        $view =  view('akuntansi.cetakan.perda.perda_d3')->with($data);
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('PERDA LAMP I8 ASET TETAP.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="PERDA I8 ASET TETAP.xls"');
+            return $view;
+        }
+    }
     
 }

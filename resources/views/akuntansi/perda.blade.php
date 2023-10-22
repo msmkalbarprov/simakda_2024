@@ -125,9 +125,9 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="c_2">
+            <div class="card card-info collapsed-card card-outline" id="d3">
                 <div class="card-body">
-                    {{ 'PERDA LAMP C 2' }}
+                    {{ 'PERDA LAMP D 3' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -207,6 +207,12 @@
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal_cetak_d1 .modal-content'),
                 
+            });   
+
+            $(".select_d3").select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal_cetak_d3 .modal-content'),
+                
             });    
 
 
@@ -268,6 +274,13 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             $('#modal_cetak_d1').modal('show');
             $("#labelcetak_semester").html("Cetak D1 Keselarasan");
+            // document.getElementById('row-hidden').hidden = true; // Hide
+        });
+
+        $('#d3').on('click', function() {
+            // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            $('#modal_cetak_d3').modal('show');
+            $("#labelcetak_semester").html("Cetak D3");
             // document.getElementById('row-hidden').hidden = true; // Hide
         });
     //onclick card end
@@ -542,6 +555,27 @@
                 let searchParams    = url.searchParams;
                 searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("bulan", bulan);
+                searchParams.append("jenis_anggaran", jns_anggaran);
+                searchParams.append("cetak", jns_cetak);
+                window.open(url.toString(), "_blank");
+            
+            }else if (labelcetak_semester == 'Cetak D3') {
+                // GET DATA
+                let tgl_ttd                  = document.getElementById('tgl_ttd_d3').value;
+                let jns_anggaran             = document.getElementById('jns_anggaran_d3').value;
+                // alert(labelcetak_semester)
+                // PERINGATAN
+                if (!tgl_ttd) {
+                    alert('Tanggal Tanda Tangan tidak boleh kosong!');
+                    return;
+                }
+                if (!jns_anggaran) {
+                    alert('Jenis Anggaran tidak boleh kosong!');
+                    return;
+                }
+                let url             = new URL("{{ route('laporan_akuntansi.perda.cetak_d3') }}");
+                let searchParams    = url.searchParams;
+                searchParams.append("tgl_ttd", tgl_ttd);
                 searchParams.append("jenis_anggaran", jns_anggaran);
                 searchParams.append("cetak", jns_cetak);
                 window.open(url.toString(), "_blank");
