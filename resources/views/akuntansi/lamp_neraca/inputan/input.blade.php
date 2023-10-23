@@ -115,8 +115,6 @@
             // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             status_input = 'tambah';
             $('#status_input').val(status_input);
-            // $('#nomor').val("{{$no_lamp->nomor}}");
-            // $('#no_simpan').val("{{$no_lamp->nomor}}");
             $('#rek3').val(null).change();
             $('#nm_rek3').val(null);
             $('#rek5').val(null).change();
@@ -173,7 +171,7 @@
             $('#kd_rek7').val(null);
             $('#nm_rek7').val(null);
             $('#jenis').val(null);
-            load_no_lamp()
+            load_no_lamp();
             tampil_rek3("");
 
 
@@ -3208,7 +3206,7 @@
         var dblna = perbulan*(13-bln_awal);
 
         var bln_sal= jblndana-11;
-
+        alert(perbulan);
         if (tahun_oleh0==thn_awal) {
             var nilai = blno*perbulan;
             var dana = real_janji-dblna;
@@ -3388,7 +3386,7 @@
         if (tahun_n==''){
             tahun_n=0;
         }else{
-            tahun_n=rupiah(tahun_n);
+            tahun_n=angka(tahun_n);
         }
         if (korplus==''){
             korplus=0;
