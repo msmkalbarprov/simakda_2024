@@ -1609,7 +1609,7 @@
                        }
                        
                        if ($skpd=="1.02.0.00.0.00.02.0000" and $rek3==1106) {
-                           $koreksi=0;
+                           $koreksi=$koreksi;
                            // $audited=$akhir;
                        }
                        $audited = $akhir+$koreksi;
@@ -2331,13 +2331,13 @@
                        if($tgl_awal==''){
                        $tgl_awal='';
                        } else{
-                       $tgl_awal=$this->tukd_model->tanggal_ind($tgl_awal);
+                       $tgl_awal=tanggal_indonesia($tgl_awal);
                        }
                        
                        if($tgl_akhir==''){
                        $tgl_akhir='';
                        } else{
-                       $tgl_akhir=$this->tukd_model->tanggal_ind($tgl_akhir);
+                       $tgl_akhir=tanggal_indonesia($tgl_akhir);
                        }
                                            
                        $sal_awal==0 ? $sal_awal = '' : $sal_awal=rupiah($sal_awal);
