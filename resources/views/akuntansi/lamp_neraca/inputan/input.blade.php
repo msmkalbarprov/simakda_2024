@@ -3203,7 +3203,9 @@
 
         var blno = 13-nawal;
 
-        var dblna = perbulan*(13-bln_awal);
+        // var dblna = perbulan*(13-bln_awal); ganti jika yg bawah salah
+        var dblna = perbulan*(13-nawal);
+
 
         var bln_sal= jblndana-11;
         alert(perbulan);

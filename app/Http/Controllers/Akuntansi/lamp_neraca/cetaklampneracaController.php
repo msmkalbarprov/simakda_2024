@@ -1625,7 +1625,7 @@ class cetaklampneracaController extends Controller
                         case when (kd_rek6='') then nm_rek6 else nm_rek6 end as nama, tahun,  lokasi , jenis_aset ,  
                         cast(tgl_awal as char(10)) tgl_awal, cast(tgl_akhir as char(10)) tgl_akhir,
                         sal_awal,  kurang,  tambah,
-                        tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi,
+                        case when status=1 then 0 else tahun_n end as tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi,
                          keterangan FROM lamp_aset where kd_rek3 = '$rek3' and kd_skpd = '$skpd'  
                     -- UNION ALL
                     --     SELECT 'x' no_lamp, LEFT(kd_rek6,6)+'99' AS kode1, '' AS kode,
@@ -1640,8 +1640,15 @@ class cetaklampneracaController extends Controller
                         ORDER BY kode1, tahun");
             $query_jum = collect(DB::select("SELECT   (SELECT UPPER(nm_rek3) from ms_rek3 where kd_rek3 = '$rek3') as nama,
                        SUM(sal_awal) as sal_awal,  sum(kurang) as kurang,  SUM(tambah) as tambah, sum(tahun_n) as tahun_n, 
-                       sum(isnull(korplus,0)-isnull(kormin,0)) koreksi FROM lamp_aset where kd_rek3 = '$rek3' 
-                           and kd_skpd = '$skpd'"))->first();
+                       sum(isnull(korplus,0)-isnull(kormin,0)) koreksi FROM (SELECT  no_lamp, 
+                        case when (kd_rek6='') then kd_rek6 else kd_rek6 end as kode1, 
+                        case when (kd_rek6='') then kd_rek6 else kd_rek6 end as kode, 
+                        case when (kd_rek6='') then nm_rek6 else nm_rek6 end as nama, tahun,  lokasi , jenis_aset ,kormin,korplus , 
+                        cast(tgl_awal as char(10)) tgl_awal, cast(tgl_akhir as char(10)) tgl_akhir,
+                        sal_awal,  kurang,  tambah,
+                        case when status=1 then 0 else tahun_n end as tahun_n, isnull(korplus,0)-isnull(kormin,0) koreksi,
+                         keterangan FROM lamp_aset where kd_rek3 = '$rek3' 
+                           and kd_skpd = '$skpd')a"))->first();
         }else if($rek3==2102 || $rek3==2103 || $rek3==2106 || $rek3==1108 || $rek3==2210 || $rek3==2202){
             if($cetakan=='1') {
                 $head="<table style=\"border-collapse:collapse;\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
