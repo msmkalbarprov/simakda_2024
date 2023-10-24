@@ -1255,12 +1255,20 @@ class SppLsController extends Controller
             ->get();
         $data1 = DB::select(DB::raw("SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd='$kd_skpd' and (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih"));
         $data2 = json_decode(json_encode($data1), true);
+
+        $sppls = DB::table('trhspp as a')->join('trdspp as b', function ($join) {
+            $join->on('a.no_spp', '=', 'b.no_spp');
+            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        })->where('a.no_spp', $no_spp)->select('a.*')->first();
+
         $data = [
             'daftar_rekanan' => $result,
-            'sppls' => DB::table('trhspp as a')->join('trdspp as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->where('a.no_spp', $no_spp)->select('a.*')->first(),
+            'sppls' => $sppls,
+            'tgl_spd' => DB::table('trhspd')
+                ->select('tgl_spd')
+                ->where(['no_spd' => $sppls->no_spd])
+                ->first()
+                ->tgl_spd,
             'daftar_penagihan' => DB::table('trhtagih as a')->select('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan', DB::raw('SUM(b.nilai) as total'))->join('trdtagih as b', 'a.no_bukti', '=', 'b.no_bukti')->where('a.kd_skpd', $kd_skpd)->where('a.jns_trs', '1')->whereNotIn('a.no_bukti', $data2)->groupBy('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan')->orderBy('a.no_bukti')->get(),
             'data_tgl' => DB::table('trhspp')->selectRaw('MAX(tgl_spp) as tgl_spp')->where('kd_skpd', $kd_skpd)->where(function ($query) {
                 $query->where('sp2d_batal', '=', '0')

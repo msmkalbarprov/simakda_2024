@@ -116,6 +116,7 @@ use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
 use App\Http\Controllers\KoreksiDataController;
 use App\Http\Controllers\ListRestitusiController;
+use App\Http\Controllers\Master\RekeningP90Controller;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\DaftarPembayaranTagihanController;
@@ -166,6 +167,57 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     // index, create, store, update, show, destroy
 
     Route::group(['prefix' => 'master'], function () {
+        //    REKENING PERMEN 90
+        Route::group(['prefix' => 'rekening_permen90'], function () {
+            // AKUN
+            Route::group(['prefix' => 'akun'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexAkun'])->name('akun.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadAkun'])->name('akun.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanAkun'])->name('akun.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusAkun'])->name('akun.hapus');
+            });
+
+            // KELOMPOK
+            Route::group(['prefix' => 'kelompok'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexKelompok'])->name('kelompok.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadKelompok'])->name('kelompok.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanKelompok'])->name('kelompok.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusKelompok'])->name('kelompok.hapus');
+            });
+
+            // JENIS
+            Route::group(['prefix' => 'jenis'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexJenis'])->name('jenis.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadJenis'])->name('jenis.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanJenis'])->name('jenis.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusJenis'])->name('jenis.hapus');
+            });
+
+            // OBJEK
+            Route::group(['prefix' => 'objek'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexObjek'])->name('objek.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadObjek'])->name('objek.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanObjek'])->name('objek.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusObjek'])->name('objek.hapus');
+            });
+
+            // RINCI OBJEK
+            Route::group(['prefix' => 'rinci_objek'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexRinciObjek'])->name('rinci_objek.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadRinciObjek'])->name('rinci_objek.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanRinciObjek'])->name('rinci_objek.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusRinciObjek'])->name('rinci_objek.hapus');
+            });
+
+            // SUB RINCI OBJEK
+            Route::group(['prefix' => 'sub_rinci_objek'], function () {
+                Route::get('', [RekeningP90Controller::class, 'indexSubRinciObjek'])->name('sub_rinci_objek.index');
+                Route::post('load', [RekeningP90Controller::class, 'loadSubRinciObjek'])->name('sub_rinci_objek.load');
+                Route::post('simpan', [RekeningP90Controller::class, 'simpanSubRinciObjek'])->name('sub_rinci_objek.simpan');
+                Route::post('hapus', [RekeningP90Controller::class, 'hapusSubRinciObjek'])->name('sub_rinci_objek.hapus');
+            });
+        });
+
         Route::get('/cek_ntpn', [HomeController::class, 'cekNtpn'])->name('cek_ntpn.index');
         Route::resource('penerima', PenerimaController::class);
         Route::get('penerima/show/{rekening?}/{kd_skpd?}', [PenerimaController::class, 'showPenerima'])->name('penerima.show_penerima');

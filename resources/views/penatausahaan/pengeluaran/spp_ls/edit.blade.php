@@ -257,7 +257,7 @@
                         <label for="tgl_spd" class="col-md-2 col-form-label">Tanggal SPD</label>
                         <div class="col-md-4">
                             <input class="form-control @error('tgl_spd') is-invalid @enderror" type="date"
-                                id="tgl_spd" name="tgl_spd" required readonly>
+                                id="tgl_spd" name="tgl_spd" required readonly value="{{$tgl_spd}}">
                             @error('tgl_spd')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

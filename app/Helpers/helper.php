@@ -4916,6 +4916,7 @@ function sisa_bank_kkpd1()
     SUM(case when jns=1 then jumlah else 0 end) AS terima,
     SUM(case when jns=2 then jumlah else 0 end) AS keluar
     FROM (
+        -- UP KKPD
         SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status='1' and kd_skpd=?
         UNION ALL
         -- DPR BELUM DPT
@@ -4928,9 +4929,18 @@ function sisa_bank_kkpd1()
         -- TRANSOUT KKPD BELUM VALIDASI
         SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and b.jns_spp='1' and (b.status_validasi<>'1' or b.status_validasi is null)
         UNION ALL
-        -- TRHTRANSOUT 1
-        SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where b.kd_skpd=? and b.kkpd='1'
-        )z", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
+        -- TRANSAKSI KKP SUDAH VALIDASI
+        SELECT SUM(a.nilai) as jumlah,'2' jns FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where b.kd_skpd=? and b.kkpd='1'
+        UNION ALL
+        -- SP2D GU CAIR
+        SELECT SUM(a.nilai) as jumlah, '1' as jns FROM trdspp a INNER JOIN trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd INNER JOIN trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd WHERE b.kd_skpd=? and a.kkpd='1' and c.status_bud='1'
+        UNION ALL
+        -- PELIMPAHAN GU KKPD
+        SELECT SUM(a.nilai) as jumlah, '2' as jns FROM tr_setorpelimpahan_bank_cms a WHERE a.kd_skpd_sumber=? and a.status_validasi='1' and a.kkpd='1'
+        UNION ALL
+        -- AMBIL SIMPANAN KKPD
+        SELECT SUM(a.nilai) as jumlah, '1' as jns FROM tr_setorsimpanan a WHERE a.kd_skpd=? and a.status_drop='1' and a.kd_link_drop<>''
+        )z", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
         ->first();
 
     return $data;

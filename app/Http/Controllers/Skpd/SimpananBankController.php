@@ -99,18 +99,25 @@ class SimpananBankController extends Controller
 
             // Ambil Simpanan Kasben
 
-            DB::table('tr_setorsimpanan')->insert([
-                'no_kas' => $no_urut,
-                'tgl_kas' => $data['tgl_kas'],
-                'no_bukti' => $no_urut,
-                'tgl_bukti' => $data['tgl_kas'],
-                'kd_skpd' => $data['kd_skpd'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'jenis' => '1',
-                'status_drop' => '1',
-                'kd_link_drop' => $data['no_kas_asli'],
-            ]);
+            $kkpd = DB::table('tr_setorpelimpahan_bank_cms')
+                ->where(['no_kas' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])
+                ->first()
+                ->kkpd;
+
+            DB::table('tr_setorsimpanan')
+                ->insert([
+                    'no_kas' => $no_urut,
+                    'tgl_kas' => $data['tgl_kas'],
+                    'no_bukti' => $no_urut,
+                    'tgl_bukti' => $data['tgl_kas'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'jenis' => '1',
+                    'status_drop' => '1',
+                    'kd_link_drop' => $data['no_kas_asli'],
+                    'kkpd' => $kkpd
+                ]);
 
             DB::table('tr_setorpelimpahan_bank')->where(['no_bukti' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])->update([
                 'status_ambil' => '1'
