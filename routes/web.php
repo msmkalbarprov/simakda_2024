@@ -2136,54 +2136,60 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('simpan', [KoreksiDataController::class, 'simpan'])->name('koreksi_data.simpan');
         Route::post('sp2d', [KoreksiDataController::class, 'sp2d'])->name('koreksi_data.sp2d');
     });
+
+    // Koreksi penerimaan Kas
+    Route::group(['prefix' => 'koreksi_penerimaan_kas'], function () {
+        Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksiKas'])->name('koreksi_penerimaan_kas.index');
+        Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksiKas'])->name('koreksi_penerimaan_kas.load_data');
+        Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksiKas'])->name('koreksi_penerimaan_kas.tambah');
+        Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksiKas'])->name('koreksi_penerimaan_kas.jenis');
+        Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksiKas'])->name('koreksi_penerimaan_kas.simpan');
+        Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksiKas'])->name('koreksi_penerimaan_kas.edit');
+        Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksiKas'])->name('koreksi_penerimaan_kas.simpan_edit');
+        Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksiKas'])->name('koreksi_penerimaan_kas.hapus');
+    });
+
+    // Koreksi pengeluaran
+    Route::group(['prefix' => 'koreksi_pengeluaran'], function () {
+        Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksi'])->name('koreksi_pengeluaran.index');
+        Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksi'])->name('koreksi_pengeluaran.load_data');
+        Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksi'])->name('koreksi_pengeluaran.tambah');
+        Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksi'])->name('koreksi_pengeluaran.jenis');
+        Route::post('nosp2d', [BendaharaUmumDaerahController::class, 'nomorSp2d'])->name('koreksi_pengeluaran.nosp2d');
+        Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksi'])->name('koreksi_pengeluaran.simpan');
+        Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksi'])->name('koreksi_pengeluaran.edit');
+        Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_pengeluaran.simpan_edit');
+        Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_pengeluaran.hapus');
+    });
+    // Pengeluaran Non Sp2D
+    Route::group(['prefix' => 'non_sp2d'], function () {
+        Route::get('', [BendaharaUmumDaerahController::class, 'indexPengeluaranNonSp2d'])->name('non_sp2d.index');
+        Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataPengeluaranNonSp2d'])->name('non_sp2d.load_data');
+        Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahPengeluaranNonSp2d'])->name('non_sp2d.tambah');
+        Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanPengeluaranNonSp2d'])->name('non_sp2d.simpan');
+        Route::get('edit/{nomor?}', [BendaharaUmumDaerahController::class, 'editPengeluaranNonSp2d'])->name('non_sp2d.edit');
+        Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditPengeluaranNonSp2d'])->name('non_sp2d.simpan_edit');
+        Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusPengeluaranNonSp2d'])->name('non_sp2d.hapus');
+    });
+
+    Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
+    Route::get('pengumuman/{id?}', [HomeController::class, 'pengumumanid'])->where('id', '(.*)')->name('pengumuman');
+    Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
+    Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
+    Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');
+    Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
+    Route::post('backup_database', [SettingController::class, 'BackupDatabase'])->name('backup_database');
 });
 
-// Koreksi penerimaan Kas
-Route::group(['prefix' => 'koreksi_penerimaan_kas'], function () {
-    Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksiKas'])->name('koreksi_penerimaan_kas.index');
-    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksiKas'])->name('koreksi_penerimaan_kas.load_data');
-    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksiKas'])->name('koreksi_penerimaan_kas.tambah');
-    Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksiKas'])->name('koreksi_penerimaan_kas.jenis');
-    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksiKas'])->name('koreksi_penerimaan_kas.simpan');
-    Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksiKas'])->name('koreksi_penerimaan_kas.edit');
-    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksiKas'])->name('koreksi_penerimaan_kas.simpan_edit');
-    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksiKas'])->name('koreksi_penerimaan_kas.hapus');
-});
 
-// Koreksi pengeluaran
-Route::group(['prefix' => 'koreksi_pengeluaran'], function () {
-    Route::get('', [BendaharaUmumDaerahController::class, 'indexKoreksi'])->name('koreksi_pengeluaran.index');
-    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataKoreksi'])->name('koreksi_pengeluaran.load_data');
-    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahKoreksi'])->name('koreksi_pengeluaran.tambah');
-    Route::post('jenis', [BendaharaUmumDaerahController::class, 'jenisKoreksi'])->name('koreksi_pengeluaran.jenis');
-    Route::post('nosp2d', [BendaharaUmumDaerahController::class, 'nomorSp2d'])->name('koreksi_pengeluaran.nosp2d');
-    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanKoreksi'])->name('koreksi_pengeluaran.simpan');
-    Route::get('edit/{no?}', [BendaharaUmumDaerahController::class, 'editKoreksi'])->name('koreksi_pengeluaran.edit');
-    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditKoreksi'])->name('koreksi_pengeluaran.simpan_edit');
-    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusKoreksi'])->name('koreksi_pengeluaran.hapus');
-});
-// Pengeluaran Non Sp2D
-Route::group(['prefix' => 'non_sp2d'], function () {
-    Route::get('', [BendaharaUmumDaerahController::class, 'indexPengeluaranNonSp2d'])->name('non_sp2d.index');
-    Route::post('load_data', [BendaharaUmumDaerahController::class, 'loadDataPengeluaranNonSp2d'])->name('non_sp2d.load_data');
-    Route::get('tambah', [BendaharaUmumDaerahController::class, 'tambahPengeluaranNonSp2d'])->name('non_sp2d.tambah');
-    Route::post('simpan', [BendaharaUmumDaerahController::class, 'simpanPengeluaranNonSp2d'])->name('non_sp2d.simpan');
-    Route::get('edit/{nomor?}', [BendaharaUmumDaerahController::class, 'editPengeluaranNonSp2d'])->name('non_sp2d.edit');
-    Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditPengeluaranNonSp2d'])->name('non_sp2d.simpan_edit');
-    Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusPengeluaranNonSp2d'])->name('non_sp2d.hapus');
-});
 
 
 
 Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middleware(['auth']);
-Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
-Route::get('pengumuman/{id?}', [HomeController::class, 'pengumumanid'])->where('id', '(.*)')->name('pengumuman');
-Route::get('ubah_skpd/{id?}', [HomeController::class, 'ubahSkpd'])->where('id', '(.*)')->name('ubah_skpd');
-Route::post('ubah_skpd/simpan', [HomeController::class, 'simpanUbahSkpd'])->name('ubah_skpd.simpan');
-Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');
-Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
+
+
 // Route::get('setting', [SettingController::class, 'index'])->name('setting');
-Route::post('backup_database', [SettingController::class, 'BackupDatabase'])->name('backup_database');
+
 // Route::get('coba', [HomeController::class, 'coba'])->name('coba');
 
 Route::post('login', [LoginController::class, 'authenticate'])->name('login.index')->middleware(['throttle:3,1']);
