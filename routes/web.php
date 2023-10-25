@@ -106,6 +106,7 @@ use App\Http\Controllers\Utility\KunciBelanjaController;
 use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 //akuntansi
+use App\Http\Controllers\Akuntansi\calk\calkController;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
@@ -2075,6 +2076,12 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('input_kapit_hitung_rincian_kapit', [kapitController::class, 'hitung_rincian_kapit'])->name('input_kapit.hitung_rincian_kapit');
             //
         });
+    });
+
+    // lampiran neraca
+    Route::group(['prefix' => 'calk'], function () {
+        Route::get('', [calkController::class, 'index'])->name('calk.index');
+        Route::post('cari_skpd_calk', [calkController::class, 'cariSkpd'])->name('calk.skpd');
     });
 
     Route::group(['prefix' => 'spb'], function () {
