@@ -5390,6 +5390,8 @@ class BendaharaUmumDaerahController extends Controller
         $ttd = $request->ttd;
         $jenis_print = $request->jenis_print;
 
+        // '4101', permintaan kak afli tanggal 25 10 2023 atas izin bu elvi
+
         if ($pilihan == '1') {
             $uyhd = DB::select("SELECT * from(
 					SELECT
@@ -5410,7 +5412,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
 
@@ -5432,7 +5434,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					UNION ALL
 					SELECT
@@ -5452,7 +5454,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					GROUP BY b.no_kas,f.nm_skpd
 					UNION ALL
@@ -5472,7 +5474,7 @@ class BendaharaUmumDaerahController extends Controller
 						trdkasin_ppkd a
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
-					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 
 					UNION ALL
@@ -5491,7 +5493,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
+							tanggal = ? AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -5509,7 +5511,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal = ?
-							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
+							AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001')
 					) a
 
 					order by cast(no_kas as int),urut", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
@@ -5533,7 +5535,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
 					UNION ALL
@@ -5554,7 +5556,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
-					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410416') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					UNION ALL
 					SELECT
@@ -5574,7 +5576,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 					GROUP BY b.no_kas,f.nm_skpd
 					UNION ALL
@@ -5594,7 +5596,7 @@ class BendaharaUmumDaerahController extends Controller
 						trdkasin_ppkd a
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
-					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+					WHERE b.tgl_kas BETWEEN ? AND ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 					and b.keterangan like '%(UYHD)%'
 
 					UNION ALL
@@ -5613,7 +5615,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal BETWEEN ? AND ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+							tanggal BETWEEN ? AND ? AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -5631,7 +5633,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal BETWEEN ? AND ?
-							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+							AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
 					) a
 
 					order by cast(no_kas as int),urut", [$periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2, $periode1, $periode2,]);
@@ -5778,7 +5780,7 @@ class BendaharaUmumDaerahController extends Controller
 			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 			LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
 			INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
+			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
 			and b.keterangan like '%(UYHD)%'
 			GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
 			UNION ALL
@@ -5799,7 +5801,7 @@ class BendaharaUmumDaerahController extends Controller
 			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 			LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
-			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
+			WHERE b.tgl_kas < ? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001')
 			and b.keterangan like '%(UYHD)%'
 			UNION ALL
 			SELECT
@@ -5819,7 +5821,7 @@ class BendaharaUmumDaerahController extends Controller
 			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 			INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 			and b.keterangan like '%(UYHD)%'
 			GROUP BY b.no_kas,f.nm_skpd
 			UNION ALL
@@ -5839,7 +5841,7 @@ class BendaharaUmumDaerahController extends Controller
 				trdkasin_ppkd a
 			INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
 			INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
-			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
+			WHERE b.tgl_kas < ? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001')
 			and b.keterangan like '%(UYHD)%'
 
 			UNION ALL
@@ -5858,7 +5860,7 @@ class BendaharaUmumDaerahController extends Controller
 				FROM
 					trkasout_ppkd
 				WHERE
-					tanggal < ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+					tanggal < ? AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
 				UNION ALL
 				SELECT
 						2 AS urut,
@@ -5876,7 +5878,7 @@ class BendaharaUmumDaerahController extends Controller
 					trkasout_ppkd
 					WHERE
 					tanggal < ?
-					AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
+					AND LEFT(kd_rek,4) IN ('4101','4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','410412010010')
 			) a", [$periode1, $periode1, $periode1, $periode1, $periode1, $periode1]))->first();
         }
 
