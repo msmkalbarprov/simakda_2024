@@ -1787,23 +1787,23 @@
         })
     }
     $('#kd_rek6input').on('change', function() {
-            let selected = $(this).find('option:selected');
-            let kd_rek6input = this.value;
-            
-            let nama = $(this).find(':selected').data('nama');
-            let anggaran = $(this).find(':selected').data('anggaran');
-            let kapit = $(this).find(':selected').data('kapit');
-            let trans = $(this).find(':selected').data('trans');
-            let jenis = $(this).find(':selected').data('jenis');
-            let nil_ang = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(anggaran));
-            let nil_kapit = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(kapit));
-            let nil_trans = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(trans));
-            $('#nm_rek6input').val(nama);
-            $("#anggaran_input").val(nil_ang);
-            $("#kapit_input").val(nil_kapit);
-            $("#trans_input").val(nil_trans);
-            $("#jenis_input").val(jenis).change();
-        });
+        let selected = $(this).find('option:selected');
+        let kd_rek6input = this.value;
+        
+        let nama = $(this).find(':selected').data('nama');
+        let anggaran = $(this).find(':selected').data('anggaran');
+        let kapit = $(this).find(':selected').data('kapit');
+        let trans = $(this).find(':selected').data('trans');
+        let jenis = $(this).find(':selected').data('jenis');
+        let nil_ang = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(anggaran));
+        let nil_kapit = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(kapit));
+        let nil_trans = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(trans));
+        $('#nm_rek6input').val(nama);
+        $("#anggaran_input").val(nil_ang);
+        $("#kapit_input").val(nil_kapit);
+        $("#trans_input").val(nil_trans);
+        $("#jenis_input").val(jenis).change();
+    });
 
 
     function cari_rek7(rek6,kd_rek7) {

@@ -2082,6 +2082,9 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     Route::group(['prefix' => 'calk'], function () {
         Route::get('', [calkController::class, 'index'])->name('calk.index');
         Route::post('cari_skpd_calk', [calkController::class, 'cariSkpd'])->name('calk.skpd');
+        Route::post('cari_ttd_pakpa_calk', [calkController::class, 'cariPaKpa'])->name('calk.ttd_pakpa');
+        Route::get('cetak_calk', [calkController::class, 'cetak_calk'])->name('calk.cetakan');
+        Route::get('cetak_calk4', [calkController::class, 'cetak_calk4'])->name('calk.cetakan4');
     });
 
     Route::group(['prefix' => 'spb'], function () {
