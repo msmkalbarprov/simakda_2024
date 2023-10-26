@@ -121,6 +121,7 @@
             let bawah = $("#bawah").val();
             let kiri = $("#kiri").val();
             let kanan = $("#kanan").val();
+            let spasi = $("#spasi").val();
 
             if (document.getElementById("tambahan").checked == true) {
                 tambahan = '1';
@@ -145,6 +146,7 @@
             searchParams.append('bawah', bawah);
             searchParams.append('kiri', kiri);
             searchParams.append('kanan', kanan);
+            searchParams.append('spasi', spasi);
             window.open(url.toString(), "_blank");
         })
     });

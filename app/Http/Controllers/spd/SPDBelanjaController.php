@@ -2868,6 +2868,7 @@ order by no_urut");
             'datalamp' => $datalamp,
             'data' => $jenis,
             'ttd' => $ttd,
+            'spasi' => $request->spasi
         ));
         if ($jsprint == 'pdf') {
             $pdf = PDF::loadHtml($view)

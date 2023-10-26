@@ -186,7 +186,7 @@
                         $total_spd_lalu += $item->spd_lalu;
                         $total_spd += $item->nilai;
                     }
-                    
+
                     if (strlen($item->no_urut) <= 32) {
                         $bold = 'bold';
                         $fontr = '16';
@@ -235,6 +235,9 @@
         </tbody>
     </table>
     <br /><br />
+    @for ($i = 0; $i < $spasi; $i++)
+        <br>
+    @endfor
     <table style="width: 100%;font-family:Arial, Helvetica, sans-serif;font-size:16px">
         <tr>
             <td>Jumlah Penyediaan Dana Rp{{ number_format($total_spd, 2, ',', '.') }}</td>

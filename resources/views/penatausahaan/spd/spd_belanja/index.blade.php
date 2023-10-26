@@ -110,6 +110,13 @@
                             <input type="number" class="form-control" id="bawah" name="bawah" value="15">
                         </div>
                     </div>
+                    {{-- SPASI --}}
+                    <div class="mb-2 row">
+                        <label for="spasi" class="col-md-12 col-form-label">Spasi</label>
+                        <div class="col-md-12">
+                            <input type="number" class="form-control" id="spasi" name="spasi" value="1">
+                        </div>
+                    </div>
                     <div class="mb-3 row">
                         <label for="jenis" class="col-md-12 col-form-label">Jenis Cetakkan</label>
                         <div class="col-md-12">
