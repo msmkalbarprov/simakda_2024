@@ -56,7 +56,7 @@
                         <div class="mb-3 row">
                             <label for="nm_kkpd" class="col-md-2 col-form-label">Nama Pemilik</label>
                             <div class="col-md-10">
-                                <input type="text" placeholder="Isi kkpd pemilik KKPD"
+                                <input type="text" placeholder="Isi nama pemilik KKPD"
                                     class="form-control @error('nm_kkpd') is-invalid @enderror"
                                     value="{{ old('nm_kkpd') }}" id="nm_kkpd" name="nm_kkpd">
                                 @error('nm_kkpd')

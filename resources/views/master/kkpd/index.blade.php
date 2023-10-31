@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{ '(Kartu Kredit pemerintah Daerah) KKPD' }}</h4>
+                        <h4 class="mb-0">{{ '(Kartu Kredit Pemerintah Daerah) KKPD' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
@@ -32,7 +32,7 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Nomor KKPD</th>
-                                        <th>Nama Pemilik</th>
+                                        <th>Nama Pemilik KKPD</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
