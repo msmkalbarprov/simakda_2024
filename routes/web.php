@@ -116,6 +116,7 @@ use App\Http\Controllers\Skpd\BOS\Sp2hController;
 use App\Http\Controllers\SPB\BosController;
 use App\Http\Controllers\SPB\HibahController;
 use App\Http\Controllers\Akuntansi\m_user\MuserController;
+use App\Http\Controllers\BUD\CekSpmController;
 use App\Http\Controllers\KoreksiDataController;
 use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\Master\RekeningP90Controller;
@@ -1457,7 +1458,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('hapus_tampungan', [DaftarPengeluaranRillController::class, 'hapusTampungan'])->name('dpr.hapus_tampungan');
             Route::post('simpan', [DaftarPengeluaranRillController::class, 'simpan'])->name('dpr.simpan');
             Route::get('edit/{no_dpr?}/{kd_skpd?}', [DaftarPengeluaranRillController::class, 'edit'])->name('dpr.edit');
+            Route::post('detail_edit', [DaftarPengeluaranRillController::class, 'detailEdit'])->name('dpr.detail_edit');
             Route::post('update', [DaftarPengeluaranRillController::class, 'update'])->name('dpr.update');
+            Route::post('simpan_detail', [DaftarPengeluaranRillController::class, 'simpanDetailEdit'])->name('dpr.simpan_detail');
+            Route::post('hapus_detail', [DaftarPengeluaranRillController::class, 'hapusDetailEdit'])->name('dpr.hapus_detail');
             Route::post('hapus', [DaftarPengeluaranRillController::class, 'hapus'])->name('dpr.hapus');
             Route::get('cetak_list', [DaftarPengeluaranRillController::class, 'cetakList'])->name('dpr.cetak_list');
 
@@ -2186,6 +2190,22 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('edit/{nomor?}', [BendaharaUmumDaerahController::class, 'editPengeluaranNonSp2d'])->name('non_sp2d.edit');
         Route::post('simpan_edit', [BendaharaUmumDaerahController::class, 'simpanEditPengeluaranNonSp2d'])->name('non_sp2d.simpan_edit');
         Route::post('hapus', [BendaharaUmumDaerahController::class, 'hapusPengeluaranNonSp2d'])->name('non_sp2d.hapus');
+    });
+
+    Route::group(['prefix' => 'cek_spm'], function () {
+        Route::get('', [CekSpmController::class, 'index'])->name('cek_spm.index');
+        Route::post('load', [CekSpmController::class, 'loadData'])->name('cek_spm.load');
+        Route::post('cari', [CekSpmController::class, 'cariData'])->name('cek_spm.cari');
+        // SIMPAN SPP UP
+        Route::post('simpan_up', [CekSpmController::class, 'simpanUp'])->name('cek_spm.simpan_up');
+        // SIMPAN SPP GU
+        Route::post('simpan_gu', [CekSpmController::class, 'simpanGu'])->name('cek_spm.simpan_gu');
+        // SIMPAN SPP TU
+        Route::post('simpan_tu', [CekSpmController::class, 'simpanTu'])->name('cek_spm.simpan_tu');
+        // LS GAJI
+        Route::post('simpan_gaji', [CekSpmController::class, 'simpanGaji'])->name('cek_spm.simpan_gaji');
+        // LS PIHAK KETIGA
+        Route::post('simpan_ketiga', [CekSpmController::class, 'simpanKetiga'])->name('cek_spm.simpan_ketiga');
     });
 
     Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
