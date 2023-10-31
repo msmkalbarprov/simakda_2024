@@ -65,6 +65,7 @@ use App\Http\Controllers\Skpd\Anggaran\RakController;
 use App\Http\Controllers\Skpd\Pendapatan\PenetapanController;
 use App\Http\Controllers\Skpd\TransaksiKKPDController;
 use App\Http\Controllers\PenandatanganController;
+use App\Http\Controllers\Skpd\KKPDController;
 use App\Http\Controllers\Skpd\Pendapatan\PenerimaanController;
 //spd belanaja
 use App\Http\Controllers\Spd\SPDBelanjaController;
@@ -237,6 +238,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::post('hapus_tandatangan', [PenandatanganController::class, 'hapus'])->name('tandatangan.hapus');
         Route::post('load_tandatangan', [PenandatanganController::class, 'loadData'])->name('tandatangan.load_data');
         Route::post('skpd_tandatangan', [PenandatanganController::class, 'cariSkpd'])->name('tandatangan.skpd');
+        // KKPD
+        Route::resource('kkpd', KKPDController::class);
+        Route::post('hapus_kkpd', [KKPDController::class, 'hapus'])->name('kkpd.hapus');
+        Route::post('load_kkpd', [KKPDController::class, 'loadData'])->name('kkpd.load_data');
+        Route::post('skpd_kkpd', [KKPDController::class, 'cariSkpd'])->name('kkpd.skpd');
         // setting
         Route::get('setting', [SettingController::class, 'edit'])->name('setting.edit');
         Route::patch('setting/update', [SettingController::class, 'update'])->name('setting.update');
