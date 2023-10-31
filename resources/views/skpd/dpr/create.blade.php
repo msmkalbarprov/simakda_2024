@@ -93,6 +93,7 @@
                         <thead>
                             <tr>
                                 <th>No DPR</th>
+                                <th>Tgl. Trans</th>
                                 <th>Kegiatan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Kode Rekening</th>
@@ -131,6 +132,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- Tanggal Transaksi --}}
+                    <div class="mb-3 row">
+                        <label for="tgl_transaksi" class="col-md-2 col-form-label">Tanggal Transaksi</label>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi">
+                        </div>
+                    </div>
                     <!-- SUB KEGIATAN -->
                     <div class="mb-3 row">
                         <label for="kd_sub_kegiatan" class="col-md-2 col-form-label">Sub Kegiatan</label>
@@ -329,6 +337,7 @@
                                 <thead>
                                     <tr>
                                         <th>No DPR</th>
+                                        <th>Tgl. Trans</th>
                                         <th>Kegiatan</th>
                                         <th>Nama Kegiatan</th>
                                         <th>Kode Rekening</th>

@@ -433,7 +433,8 @@ class DaftarPengeluaranRillController extends Controller
                     'pembayaran' => $rincian_data[$rincian]['pembayaran'],
                     'status' => '0',
                     'kode' => $rincian_data[$rincian]['kd_sub_kegiatan'] . '.' . $rincian_data[$rincian]['kd_rek6'] . '.' . $rincian_data[$rincian]['sumber'] . '.' . $no_urut,
-                    'urut' => $no_urut
+                    'urut' => $no_urut,
+                    'tgl_transaksi' => $rincian_data[$rincian]['tgl_transaksi']
                 ];
                 DB::table('trddpr')
                     ->insert($input_trh);
@@ -468,17 +469,140 @@ class DaftarPengeluaranRillController extends Controller
             'dpr' => DB::table('trhdpr')
                 ->where(['no_dpr' => $no_dpr, 'kd_skpd' => $kd_skpd])
                 ->first(),
-            'rincian_dpr' => DB::table('trddpr as a')
-                ->join('trhdpr as b', function ($join) {
-                    $join->on('a.no_dpr', '=', 'b.no_dpr');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->select('a.*')
-                ->where(['b.no_dpr' => $no_dpr, 'b.kd_skpd' => $kd_skpd])
-                ->get()
         ];
 
         return view('skpd.dpr.edit')->with($data);
+    }
+
+    public function detailEdit(Request $request)
+    {
+        $data = DB::table('trddpr as a')
+            ->join('trhdpr as b', function ($join) {
+                $join->on('a.no_dpr', '=', 'b.no_dpr');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->select('a.*', 'b.status_verifikasi', 'b.status')
+            ->selectRaw("(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=a.sumber) as nm_sumber")
+            ->where(['b.no_dpr' => $request->no_dpr, 'b.kd_skpd' => $request->kd_skpd])
+            ->get();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($row) {
+                if ($row->status_verifikasi != '1') {
+                    $btn = '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->no_dpr . '\',\'' . $row->kd_sub_kegiatan . '\',\'' . $row->kd_rek6 . '\',\'' . $row->sumber . '\',\'' . $row->nilai . '\',\'' . $row->id . '\');" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>';
+                } else {
+                    $btn = '';
+                }
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function simpanDetailEdit(Request $request)
+    {
+        $tgl_transaksi = $request->tgl_transaksi;
+        $no_dpr = $request->no_dpr;
+        $kd_skpd = $request->kd_skpd;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $nm_sub_kegiatan = $request->nm_sub_kegiatan;
+        $kd_rekening = $request->kd_rekening;
+        $nm_rekening = $request->nm_rekening;
+        $uraian = $request->uraian;
+        $bukti = $request->bukti;
+        $nilai = $request->nilai;
+        $sumber = $request->sumber;
+        $pembayaran = $request->pembayaran;
+
+        DB::beginTransaction();
+        try {
+            $no_urut = $this->no_urut_dpr();
+
+            $input_trh = [
+                'no_dpr' => $no_dpr,
+                'kd_skpd' => $kd_skpd,
+                'nm_skpd' => nama_skpd($kd_skpd),
+                'kd_sub_kegiatan' => $kd_sub_kegiatan,
+                'nm_sub_kegiatan' => $nm_sub_kegiatan,
+                'kd_rek6' => $kd_rekening,
+                'nm_rek6' => $nm_rekening,
+                'nilai' => $nilai,
+                'uraian' => $uraian,
+                'bukti' => $bukti,
+                'sumber' => $sumber,
+                'pembayaran' => $pembayaran,
+                'status' => '0',
+                'kode' => $kd_sub_kegiatan . '.' . $kd_rekening . '.' . $sumber . '.' . $no_urut,
+                'urut' => $no_urut,
+                'tgl_transaksi' => $tgl_transaksi
+            ];
+
+            DB::table('trddpr')
+                ->insert($input_trh);
+
+            $nilai = DB::table('trddpr')
+                ->selectRaw("sum(nilai) as nilai")
+                ->where(['no_dpr' => $no_dpr, 'kd_skpd' => $kd_skpd])
+                ->first()
+                ->nilai;
+
+            DB::table('trhdpr')
+                ->where(['no_dpr' => $no_dpr, 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'total' => $nilai
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
+    }
+
+    public function hapusDetailEdit(Request $request)
+    {
+        $no_bukti = $request->no_bukti;
+        $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $kd_rek = $request->kd_rek;
+        $sumber = $request->sumber;
+        $id = $request->id;
+
+        $kd_skpd = Auth::user()->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            DB::table('trddpr')
+                ->where(['no_dpr' => $no_bukti, 'kd_skpd' => $kd_skpd, 'kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_rek6' => $kd_rek, 'sumber' => $sumber, 'id' => $id])
+                ->delete();
+
+            $nilai = DB::table('trddpr')
+                ->selectRaw("sum(nilai) as nilai")
+                ->where(['no_dpr' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->first()
+                ->nilai;
+
+            DB::table('trhdpr')
+                ->where(['no_dpr' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'total' => $nilai
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1',
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 
     public function update(Request $request)
@@ -676,29 +800,48 @@ class DaftarPengeluaranRillController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('trhdpr')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
-                ->update([
-                    'status_verifikasi' => '1',
-                    'keterangan_tolak' => $data['keterangan'],
-                    'user_verif' => Auth::user()->nama,
-                    'tgl_verif' => $data['tgl_verifikasi'],
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
+            if ($data['tipe'] == 'Verif') {
+                DB::table('trhdpr')
+                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
+                    ->update([
+                        'status_verifikasi' => '1',
+                        'keterangan_tolak' => $data['keterangan'],
+                        'user_verif' => Auth::user()->nama,
+                        'tgl_verif' => $data['tgl_verifikasi'],
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
 
-            DB::table('trddpr')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
-                ->whereIn('kode', $kode)
-                ->update([
-                    'status' => '1'
-                ]);
+                DB::table('trddpr')
+                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
+                    ->whereIn('kode', $kode)
+                    ->update([
+                        'status' => '1'
+                    ]);
 
-            DB::table('trddpr')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
-                ->whereNotIn('kode', $kode)
-                ->update([
-                    'status' => '2'
-                ]);
+                DB::table('trddpr')
+                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
+                    ->whereNotIn('kode', $kode)
+                    ->update([
+                        'status' => '2'
+                    ]);
+            } else if ($data['tipe'] == 'Batal Verif') {
+                DB::table('trhdpr')
+                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
+                    ->update([
+                        'status_verifikasi' => '0',
+                        'keterangan_tolak' => $data['keterangan'],
+                        'user_verif' => Auth::user()->nama,
+                        'tgl_verif' => '',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                DB::table('trddpr')
+                    ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpr' => $data['no_dpr']])
+                    ->update([
+                        'status' => '0'
+                    ]);
+            }
+
 
             DB::commit();
             return response()->json([

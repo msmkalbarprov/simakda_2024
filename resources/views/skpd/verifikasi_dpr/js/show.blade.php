@@ -142,6 +142,8 @@
                 return data;
             });
 
+            let tipe = document.getElementById('simpan').innerText;
+
             let no_dpr = document.getElementById('no_dpr').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tgl_verifikasi = document.getElementById('tgl_verifikasi').value;
@@ -172,6 +174,7 @@
 
             let data = {
                 no_dpr,
+                tipe,
                 kd_skpd,
                 tgl_verifikasi,
                 keterangan,

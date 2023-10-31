@@ -75,8 +75,15 @@
                     </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
-                        <button id="simpan" class="btn btn-primary btn-md"
-                            {{ $dpr->status == '1' ? 'hidden' : '' }}>Simpan</button>
+                        <button id="simpan"
+                            class="btn btn-{{ $dpr->status_verifikasi == '1' ? 'danger' : 'primary' }} btn-md"
+                            {{ $dpr->status == '1' ? 'hidden' : '' }}>
+                            @if ($dpr->status_verifikasi == '1')
+                                Batal Verif
+                            @else
+                                Verif
+                            @endif
+                        </button>
                         <a href="{{ route('dpr.index_verifikasi') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>

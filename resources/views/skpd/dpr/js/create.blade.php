@@ -20,6 +20,10 @@
                     visible: false
                 },
                 {
+                    data: 'tgl_transaksi',
+                    name: 'tgl_transaksi',
+                },
+                {
                     data: 'kd_sub_kegiatan',
                     name: 'kd_sub_kegiatan',
                 },
@@ -97,6 +101,11 @@
             columns: [{
                     data: 'no_dpr',
                     name: 'no_dpr',
+                    visible: false
+                },
+                {
+                    data: 'tgl_transaksi',
+                    name: 'tgl_transaksi',
                     visible: false
                 },
                 {
@@ -339,6 +348,7 @@
         })
 
         $('#simpan_rekening').on('click', function() {
+            let tgl_transaksi = document.getElementById('tgl_transaksi').value;
             let no_dpr = document.getElementById('no_dpr').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
@@ -368,6 +378,9 @@
             let lalu = kd_rekening1.data('lalu');
             let sp2d = kd_rekening1.data('sp2d');
 
+            let tahun_input = tgl_transaksi.substr(0, 4);
+            let tahun_anggaran = "{{ tahun_anggaran() }}";
+
             let akumulasi = nilai + total_input_rekening;
 
             let cek_perjalanan_dinas = '';
@@ -391,6 +404,16 @@
                     cek_belanja_barang = data.cek_belanja_barang;
                 },
             });
+
+            if (!tgl_transaksi) {
+                alert('Silahkan pilih tanggal transaksi');
+                return;
+            }
+
+            if (tahun_anggaran != tahun_input) {
+                alert('Tahun tidak sama dengan tahun anggaran');
+                return;
+            }
 
             if (sumber == '221020101') {
                 alert(
@@ -602,6 +625,7 @@
                         alert('Data Detail Tersimpan');
                         tabel_rekening.row.add({
                             'no_dpr': no_dpr,
+                            'tgl_transaksi': tgl_transaksi,
                             'kd_sub_kegiatan': kd_sub_kegiatan,
                             'nm_sub_kegiatan': nm_sub_kegiatan,
                             'kd_rek6': kd_rekening,
@@ -622,6 +646,7 @@
 
                         tabel_rekening1.row.add({
                             'no_dpr': no_dpr,
+                            'tgl_transaksi': tgl_transaksi,
                             'kd_sub_kegiatan': kd_sub_kegiatan,
                             'nm_sub_kegiatan': nm_sub_kegiatan,
                             'kd_rek6': kd_rekening,
@@ -647,6 +672,7 @@
                             minimumFractionDigits: 2
                         }).format(total_input_rekening + nilai));
 
+                        $('#tgl_transaksi').val(null);
                         $('#kd_sub_kegiatan').val(null).change();
                         $('#nm_sub_kegiatan').val(null);
                         $('#kd_rekening').empty();
@@ -696,6 +722,7 @@
             let rincian_rekening1 = tabel_rekening1.rows().data().toArray().map((value) => {
                 let data = {
                     no_dpr: value.no_dpr,
+                    tgl_transaksi: value.tgl_transaksi,
                     kd_sub_kegiatan: value.kd_sub_kegiatan.trim(),
                     nm_sub_kegiatan: value.nm_sub_kegiatan,
                     kd_rek6: value.kd_rek6.trim(),
