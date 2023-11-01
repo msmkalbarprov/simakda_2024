@@ -447,9 +447,26 @@ class PenagihanController extends Controller
                 ->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))
                 ->unionAll($data5);
 
-            $angkas_lalu = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
+            $data7 = DB::table('trddpr as c')->join('trhdpr as d', function ($join) {
+                $join->on('c.no_dpr', '=', 'd.no_dpr');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
+                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+            })->where(function ($query) {
+                $query->where('c.status', '0')->orWhere('c.status', '1');
+            })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data6);
+
+            $data8 = DB::table('trddpt as c')->join('trhdpt as d', function ($join) {
+                $join->on('c.no_dpt', '=', 'd.no_dpt');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
+                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+            })
+                ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
+
+            $angkas_lalu = DB::table(DB::raw("({$data8->toSql()}) AS sub"))
                 ->select(DB::raw("SUM(nilai) as total"))
-                ->mergeBindings($data6)
+                ->mergeBindings($data8)
                 ->first();
         } else {
             $spp = DB::table('trhsp2d')->select('no_spp')->where(['no_sp2d' => $no_sp2d])->first();
@@ -491,9 +508,26 @@ class PenagihanController extends Controller
                 ->select(DB::raw("SUM(ISNULL(nilai,0)) as nilai"))
                 ->unionAll($data5);
 
-            $angkas_lalu = DB::table(DB::raw("({$data6->toSql()}) AS sub"))
+            $data7 = DB::table('trddpr as c')->join('trhdpr as d', function ($join) {
+                $join->on('c.no_dpr', '=', 'd.no_dpr');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
+                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+            })->where(function ($query) {
+                $query->where('c.status', '0')->orWhere('c.status', '1');
+            })->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data6);
+
+            $data8 = DB::table('trddpt as c')->join('trhdpt as d', function ($join) {
+                $join->on('c.no_dpt', '=', 'd.no_dpt');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
+                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+            })
+                ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
+
+            $angkas_lalu = DB::table(DB::raw("({$data8->toSql()}) AS sub"))
                 ->select(DB::raw("SUM(nilai) as total"))
-                ->mergeBindings($data6)
+                ->mergeBindings($data8)
                 ->first();
         }
 

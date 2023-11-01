@@ -4658,6 +4658,19 @@ function angkas_lalu_penagihan($kode, $giat, $rek)
                                     WHERE c.kd_sub_kegiatan =?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null) and (c.status='0' or c.status='1')
+
+                                    UNION ALL
+                                    -- TRANSAKSI DPT
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpt c
+                                    LEFT JOIN trhdpt d ON c.no_dpt = d.no_dpt
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null)
+                                    -- and d.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where d.kd_skpd=kd_skpd)
                                     -- and d.tgl_voucher<=?
                                     )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode, $giat, $kode, $rek]))->first();
 
@@ -4924,7 +4937,8 @@ function sisa_bank_kkpd1()
         UNION ALL
         -- DPT BELUM TRANSAKSI
         SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpt a INNER JOIN trhdpt b ON a.no_dpt=b.no_dpt AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=?
-        and b.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where b.kd_skpd=kd_skpd) and (b.status<>'1' or b.status is null)
+        -- and b.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where b.kd_skpd=kd_skpd)
+        and (b.status<>'1' or b.status is null)
         UNION ALL
         -- TRANSOUT KKPD BELUM VALIDASI
         SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trdtransout_kkpd a INNER JOIN trhtransout_kkpd b ON a.no_voucher=b.no_voucher AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and b.jns_spp='1' and (b.status_validasi<>'1' or b.status_validasi is null)
