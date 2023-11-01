@@ -450,7 +450,30 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
+
+                                    UNION ALL
+                                    -- transaksi DPR
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpr c
+                                    LEFT JOIN trhdpr d ON c.no_dpr = d.no_dpr
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null) and (c.status='0' or c.status='1')
+
+                                    UNION ALL
+                                    -- TRANSAKSI DPT
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpt c
+                                    LEFT JOIN trhdpt d ON c.no_dpt = d.no_dpt
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null)
+
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6]))->first();
         } else {
             $spp = DB::table('trhsp2d')
                 ->select('no_spp')
@@ -523,7 +546,30 @@ class TransaksiPanjarController extends Controller
                                     AND u.kd_skpd = ?
                                     AND u.no_bukti
                                     NOT IN (select no_tagih FROM trhspp WHERE kd_skpd=?)
-                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))
+
+                                    UNION ALL
+                                    -- transaksi DPR
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpr c
+                                    LEFT JOIN trhdpr d ON c.no_dpr = d.no_dpr
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null) and (c.status='0' or c.status='1')
+
+                                    UNION ALL
+                                    -- TRANSAKSI DPT
+                                    SELECT SUM (isnull(c.nilai,0)) as nilai
+                                    FROM trddpt c
+                                    LEFT JOIN trhdpt d ON c.no_dpt = d.no_dpt
+                                    AND c.kd_skpd = d.kd_skpd
+                                    WHERE c.kd_sub_kegiatan =?
+                                    AND d.kd_skpd = ?
+                                    AND c.kd_rek6=?
+                                    and (d.status<>'1' or d.status is null)
+
+                                    )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6]))
                 ->first();
         }
 
