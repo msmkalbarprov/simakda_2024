@@ -658,8 +658,8 @@
                 return;
             }
 
-            if (akumulasi > sisa_spd) {
-                alert('Total Transaksi melebihi Sisa SPD');
+            if (nilai > sisa_spd) {
+                alert('Nilai Transaksi melebihi Sisa SPD');
                 return;
             }
 
