@@ -537,8 +537,7 @@ class SppTuController extends Controller
 
         $nama_anggaran_selanjutnya = DB::table('tb_status_anggaran')
             ->where(['kode' => $status_anggaran_selanjutnya])
-            ->first()
-            ->nama;
+            ->first();
 
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
@@ -547,7 +546,7 @@ class SppTuController extends Controller
             'anggaran' => $anggaran,
             'sumber' => $data,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
-            'nama_anggaran_selanjutnya' => $nama_anggaran_selanjutnya,
+            'nama_anggaran_selanjutnya' => isset($nama_anggaran_selanjutnya) ? $nama_anggaran_selanjutnya->nama : '',
             'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
         ]);
     }
