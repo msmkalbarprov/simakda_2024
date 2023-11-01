@@ -167,6 +167,7 @@ class DaftarPembayaranTagihanController extends Controller
                             'bukti' => $value['bukti'],
                             'sumber' => $value['sumber'],
                             'pembayaran' => $value['pembayaran'],
+                            'status' => '0'
                         ];
                     }, $data['rincian_rekening']));
             }

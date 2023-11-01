@@ -6,32 +6,134 @@
             }
         });
 
+        // let tabel_rekening = $('#rincian_pengeluaran').DataTable({
+        //     responsive: true,
+        //     processing: true,
+        //     serverSide: true,
+        //     ordering: false,
+        //     ajax: {
+        //         "url": "{{ route('trans_kkpd.load_dpt') }}",
+        //         "type": "POST",
+        //         "data": function(d) {
+        //             d.no_dpt = document.getElementById('no_dpt').value;
+        //             d.kd_skpd = document.getElementById('kd_skpd').value;
+        //             d.jenis = "create";
+        //         },
+        //         "dataSrc": function(data) {
+        //             recordsTotal = data.data;
+        //             return recordsTotal;
+        //         },
+        //     },
+        //     lengthMenu: [
+        //         [-1],
+        //         ["All"]
+        //     ],
+        //     columns: [{
+        //             data: 'DT_RowIndex',
+        //             name: 'DT_RowIndex',
+        //             className: "text-center",
+        //         }, {
+        //             data: 'kd_sub_kegiatan',
+        //             name: 'kd_sub_kegiatan',
+        //         },
+        //         {
+        //             data: 'nm_sub_kegiatan',
+        //             name: 'nm_sub_kegiatan',
+        //             visible: false
+        //         },
+        //         {
+        //             data: 'kd_rek6',
+        //             name: 'kd_rek6',
+        //         },
+        //         {
+        //             data: 'nm_rek6',
+        //             name: 'nm_rek6',
+        //         },
+        //         {
+        //             data: null,
+        //             name: 'nilai',
+        //             className: 'text-right',
+        //             render: function(data, type, row, meta) {
+        //                 return new Intl.NumberFormat('id-ID', {
+        //                     minimumFractionDigits: 2
+        //                 }).format(data.nilai)
+        //             }
+        //         },
+        //         {
+        //             data: 'sumber',
+        //             name: 'sumber',
+        //             visible: false
+        //         },
+        //         {
+        //             data: 'nm_sumber',
+        //             name: 'nm_sumber',
+        //         },
+        //         {
+        //             data: 'bukti',
+        //             name: 'bukti',
+        //             visible: false
+        //         },
+        //         {
+        //             data: null,
+        //             name: 'nm_bukti',
+        //             render: function(data, type, row, meta) {
+        //                 return data.bukti == '1' ? 'YA' : 'TIDAK'
+        //             }
+        //         },
+        //         {
+        //             data: 'uraian',
+        //             name: 'uraian',
+        //         },
+        //         {
+        //             data: 'pembayaran',
+        //             name: 'pembayaran',
+        //             visible: false
+        //         },
+        //         {
+        //             data: null,
+        //             name: 'nm_pembayaran',
+        //             render: function(data, type, row, meta) {
+        //                 switch (data.pembayaran) {
+        //                     case '1':
+        //                         return 'KATALOG';
+        //                         break;
+        //                     case '2':
+        //                         return 'TOKO DARING';
+        //                         break;
+        //                     case '3':
+        //                         return 'LPSE';
+        //                         break;
+        //                     case '4':
+        //                         return 'LAIN-LAIN';
+        //                         break;
+        //                     default:
+        //                         return '';
+        //                         break;
+        //                 }
+        //             }
+        //         },
+        //     ],
+        //     drawCallback: function(select) {
+        //         let total = recordsTotal.reduce((previousValue,
+        //             currentValue) => (previousValue += parseFloat(currentValue.nilai)), 0);
+        //         $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+        //             minimumFractionDigits: 2
+        //         }).format(total));
+        //     }
+        // });
+
         let tabel_rekening = $('#rincian_pengeluaran').DataTable({
             responsive: true,
             processing: true,
-            serverSide: true,
             ordering: false,
-            ajax: {
-                "url": "{{ route('trans_kkpd.load_dpt') }}",
-                "type": "POST",
-                "data": function(d) {
-                    d.no_dpt = document.getElementById('no_dpt').value;
-                    d.kd_skpd = document.getElementById('kd_skpd').value;
-                    d.jenis = "create";
-                },
-                "dataSrc": function(data) {
-                    recordsTotal = data.data;
-                    return recordsTotal;
-                },
-            },
             lengthMenu: [
                 [-1],
                 ["All"]
             ],
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    className: "text-center",
+                    data: 'id',
+                    name: 'id',
+                    // visible: false
                 }, {
                     data: 'kd_sub_kegiatan',
                     name: 'kd_sub_kegiatan',
@@ -50,14 +152,10 @@
                     name: 'nm_rek6',
                 },
                 {
-                    data: null,
+                    data: 'nilai',
                     name: 'nilai',
                     className: 'text-right',
-                    render: function(data, type, row, meta) {
-                        return new Intl.NumberFormat('id-ID', {
-                            minimumFractionDigits: 2
-                        }).format(data.nilai)
-                    }
+
                 },
                 {
                     data: 'sumber',
@@ -74,11 +172,8 @@
                     visible: false
                 },
                 {
-                    data: null,
+                    data: 'nm_bukti',
                     name: 'nm_bukti',
-                    render: function(data, type, row, meta) {
-                        return data.bukti == '1' ? 'YA' : 'TIDAK'
-                    }
                 },
                 {
                     data: 'uraian',
@@ -90,36 +185,14 @@
                     visible: false
                 },
                 {
-                    data: null,
+                    data: 'nm_pembayaran',
                     name: 'nm_pembayaran',
-                    render: function(data, type, row, meta) {
-                        switch (data.pembayaran) {
-                            case '1':
-                                return 'KATALOG';
-                                break;
-                            case '2':
-                                return 'TOKO DARING';
-                                break;
-                            case '3':
-                                return 'LPSE';
-                                break;
-                            case '4':
-                                return 'LAIN-LAIN';
-                                break;
-                            default:
-                                return '';
-                                break;
-                        }
-                    }
                 },
-            ],
-            drawCallback: function(select) {
-                let total = recordsTotal.reduce((previousValue,
-                    currentValue) => (previousValue += parseFloat(currentValue.nilai)), 0);
-                $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
-                    minimumFractionDigits: 2
-                }).format(total));
-            }
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                },
+            ]
         });
 
         $('.select2-multiple').select2({
@@ -127,8 +200,121 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select-modal').select2({
+            dropdownParent: $('#modal_tambah .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+
+        // $('#no_dpt').on('select2:select', function() {
+        //     tabel_rekening.ajax.reload();
+        // });
+
+        $('#tambah_rincian').on('click', function() {
+            let no_dpt = document.getElementById('no_dpt').value;
+
+            if (!no_dpt) {
+                alert('Silahkan pilih NO. DPT terlebih dahulu!');
+                return;
+            }
+
+            load_rincian();
+            $('#modal_tambah').modal('show');
+        });
+
         $('#no_dpt').on('select2:select', function() {
-            tabel_rekening.ajax.reload();
+            $('#no_dpt').prop('disabled', true);
+        });
+
+        $('#pilih').on('click', function() {
+            let id = $('#pilih_rincian_dpt').val();
+            let kd_sub_kegiatan = $('#pilih_rincian_dpt').find(':selected').data('kd_sub_kegiatan');
+            let nm_sub_kegiatan = $('#pilih_rincian_dpt').find(':selected').data('nm_sub_kegiatan');
+            let kd_rek6 = $('#pilih_rincian_dpt').find(':selected').data('kd_rek6');
+            let nm_rek6 = $('#pilih_rincian_dpt').find(':selected').data('nm_rek6');
+            let uraian = $('#pilih_rincian_dpt').find(':selected').data('uraian');
+            let bukti = $('#pilih_rincian_dpt').find(':selected').data('bukti');
+            let nilai = $('#pilih_rincian_dpt').find(':selected').data('nilai');
+            let sumber = $('#pilih_rincian_dpt').find(':selected').data('sumber');
+            let nm_sumber = $('#pilih_rincian_dpt').find(':selected').data('nm_sumber');
+            let pembayaran = $('#pilih_rincian_dpt').find(':selected').data('pembayaran');
+            let nm_pembayaran = '';
+
+            if (pembayaran == '1') {
+                nm_pembayaran = 'KATALOG';
+            } else if (pembayaran == '2') {
+                nm_pembayaran = 'TOKO DARING';
+            } else if (pembayaran == '3') {
+                nm_pembayaran = 'LPSE';
+            } else if (pembayaran == '4') {
+                nm_pembayaran = 'LAIN-LAIN';
+            }
+
+            let tampungan = tabel_rekening.rows().data().toArray().map((value) => {
+                let result = {
+                    id: value.id,
+                    kd_sub_kegiatan: value.kd_sub_kegiatan,
+                    kd_rek6: value.kd_rek6,
+                    sumber: value.sumber,
+                };
+                return result;
+            });
+
+            let kondisi = tampungan.map(function(data) {
+                if (data.kd_rek6 != kd_rek6 && data.kd_sub_kegiatan ==
+                    kd_sub_kegiatan) {
+                    return '2';
+                } else if (data.id == id) {
+                    return '3';
+                } else if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
+                    return '4';
+                } else {
+                    return '1';
+                }
+            });
+
+            if (kondisi.includes("2")) {
+                alert('Tdk boleh memilih rekening yang berbeda dalam 1 kegiatan');
+                return;
+            }
+
+            if (kondisi.includes("4")) {
+                alert('Tdk boleh memilih kegiatan yang berbeda dalam 1 kegiatan');
+                return;
+            }
+
+            if (kondisi.includes("3")) {
+                alert('Rincian telah ada di bawah!');
+                return;
+            }
+
+            tabel_rekening.row.add({
+                'id': id,
+                'kd_sub_kegiatan': kd_sub_kegiatan,
+                'nm_sub_kegiatan': nm_sub_kegiatan,
+                'kd_rek6': kd_rek6,
+                'nm_rek6': nm_rek6,
+                'nilai': new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(nilai),
+                'sumber': sumber,
+                'nm_sumber': nm_sumber,
+                'bukti': bukti,
+                'nm_bukti': bukti == '1' ? 'YA' : 'TIDAK',
+                'uraian': uraian,
+                'pembayaran': pembayaran,
+                'nm_pembayaran': nm_pembayaran,
+                'aksi': `<a href="javascript:void(0);" onclick="hapus('${id}','${kd_sub_kegiatan}','${kd_rek6}','${sumber}','${nilai}')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>`,
+            }).draw();
+
+            let total = rupiah(document.getElementById('total_belanja').value);
+
+            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total + parseFloat(nilai)));
+
+            $('#modal_tambah').modal('hide');
+            load_rincian()
         });
 
         $('#simpan').on('click', function() {
@@ -144,11 +330,12 @@
 
             let rincian_rekening1 = tabel_rekening.rows().data().toArray().map((value) => {
                 let data = {
+                    id: value.id,
                     kd_sub_kegiatan: value.kd_sub_kegiatan,
                     nm_sub_kegiatan: value.nm_sub_kegiatan,
                     kd_rek6: value.kd_rek6,
                     nm_rek6: value.nm_rek6,
-                    nilai: parseFloat(value.nilai),
+                    nilai: rupiah(value.nilai),
                     sumber: value.sumber,
                     bukti: value.bukti,
                     uraian: value.uraian,
@@ -245,11 +432,62 @@
                 }
             })
         });
+
+        function load_rincian() {
+            let detail_rincian = tabel_rekening.rows().data().toArray().map((value) => {
+                let data = {
+                    id: value.id,
+                };
+                return data;
+            });
+
+            $.ajax({
+                url: "{{ route('trans_kkpd.load_rincian') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_dpt: document.getElementById('no_dpt').value,
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    id: detail_rincian.length == 0 ? '0' : detail_rincian
+                },
+                success: function(data) {
+                    $('#pilih_rincian_dpt').empty();
+                    $('#pilih_rincian_dpt').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`);
+                    $.each(data, function(index, data) {
+                        $('#pilih_rincian_dpt').append(
+                            `<option value="${data.id}" data-kd_sub_kegiatan="${data.kd_sub_kegiatan}" data-nm_sub_kegiatan="${data.nm_sub_kegiatan}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-uraian="${data.uraian}" data-bukti="${data.bukti}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-nm_sumber="${data.nm_sumber}" data-pembayaran="${data.pembayaran}">${data.id} | ${data.nm_sub_kegiatan} | ${data.nm_rek6} | ${data.sumber} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.nilai)}</option>`
+                        );
+                    })
+                }
+            })
+        }
     });
+
+    function nilai(n) {
+        let nilai = n.split(',').join('');
+        return parseFloat(nilai) || 0;
+    }
 
     function rupiah(n) {
         let n1 = n.split('.').join('');
         let rupiah = n1.split(',').join('.');
         return parseFloat(rupiah) || 0;
+    }
+
+    function hapus(id, kd_sub_kegiatan, kd_rek6, sumber, nilai) {
+        let hapus = confirm('Yakin Ingin Menghapus Data, ID : ' + id + ' ?');
+        let total = rupiah(document.getElementById('total_belanja').value);
+        let tabel = $('#rincian_pengeluaran').DataTable();
+
+        if (hapus == true) {
+            tabel.rows(function(idx, data, node) {
+                return data.id == id && data.kd_sub_kegiatan == kd_sub_kegiatan && data.kd_rek6 == kd_rek6 &&
+                    data.sumber == sumber && rupiah(data.nilai) == parseFloat(nilai)
+            }).remove().draw();
+            $('#total_belanja').val(new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 2
+            }).format(total - parseFloat(nilai)));
+        }
     }
 </script>

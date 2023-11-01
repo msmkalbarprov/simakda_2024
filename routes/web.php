@@ -1520,6 +1520,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('load_data', [TransKKPDController::class, 'loadData'])->name('trans_kkpd.load_data');
             Route::post('load_dpt', [TransKKPDController::class, 'loadDpt'])->name('trans_kkpd.load_dpt');
             Route::get('tambah', [TransKKPDController::class, 'create'])->name('trans_kkpd.create');
+            Route::post('load_rincian', [TransKKPDController::class, 'rincianDpt'])->name('trans_kkpd.load_rincian');
             Route::post('simpan', [TransKKPDController::class, 'simpan'])->name('trans_kkpd.simpan');
             Route::get('edit/{no_voucher?}/{kd_skpd?}', [TransKKPDController::class, 'edit'])->name('trans_kkpd.edit');
             Route::post('update', [TransKKPDController::class, 'update'])->name('trans_kkpd.update');

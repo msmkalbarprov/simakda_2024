@@ -57,6 +57,36 @@ class TransKKPDController extends Controller
         return view('skpd.trans_kkpd.create')->with($data);
     }
 
+    public function rincianDpt(Request $request)
+    {
+        $no_dpt = $request->no_dpt;
+        $kd_skpd = $request->kd_skpd;
+
+        $id = $request->id;
+
+        $daftar_id = array();
+        if (!empty($id)) {
+            foreach ($id as $daftar) {
+                $daftar_id[] = $daftar['id'];
+            }
+        } else {
+            $daftar_id[] = '';
+        }
+
+        $data = DB::table('trddpt as a')
+            ->join('trhdpt as b', function ($join) {
+                $join->on('a.no_dpt', '=', 'b.no_dpt');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->select('a.*')
+            ->selectRaw("(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=a.sumber) as nm_sumber")
+            ->where(['b.no_dpt' => $no_dpt, 'b.kd_skpd' => $kd_skpd, 'b.status' => '0', 'b.status_verifikasi' => '1', 'a.status' => '0'])
+            ->whereNotIn('id', $daftar_id)
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function loadDpt(Request $request)
     {
         $no_dpt = $request->no_dpt;
@@ -103,49 +133,76 @@ class TransKKPDController extends Controller
 
         DB::beginTransaction();
         try {
-            $cek = DB::table('trhtransout_kkpd')
-                ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd']])
-                ->count();
-
-            if ($cek > 0) {
-                return response()->json([
-                    'message' => '2'
-                ]);
-            }
-
             $data['rincian_rekening'] = json_decode($data['rincian_rekening'], true);
-
-            DB::table('trhtransout_kkpd')
-                ->where(['kd_skpd' => $data['kd_skpd'], 'no_dpt' => $data['no_dpt']])
-                ->delete();
 
             $rincian_data = $data['rincian_rekening'];
 
+            // foreach ($rincian_data as $rincian => $value) {
+            //     $no_urut = $this->no_urut();
+
+            //     $input_trh = [
+            //         'no_voucher' => $no_urut,
+            //         'tgl_voucher' => $data['tgl_voucher'],
+            //         'no_bukti' => $no_urut,
+            //         'tgl_bukti' => $data['tgl_voucher'],
+            //         'ket' => $data['keterangan'],
+            //         'username' => Auth::user()->nama,
+            //         'tgl_update' => date('Y-m-d H:i:s'),
+            //         'kd_skpd' => $data['kd_skpd'],
+            //         'nm_skpd' => nama_skpd($data['kd_skpd']),
+            //         'total' => $rincian_data[$rincian]['nilai'],
+            //         'rekening_awal' => cari_rekening_awal($data['kd_skpd']),
+            //         'jns_spp' => '1',
+            //         'pay' => 'BANK',
+            //         'status_validasi' => '0',
+            //         'status_upload' => '0',
+            //         'status_verifikasi' => '0',
+            //         'no_dpt' => $data['no_dpt']
+            //     ];
+            //     DB::table('trhtransout_kkpd')
+            //         ->insert($input_trh);
+
+            //     $input_trd = [
+            //         'no_voucher' => $no_urut,
+            //         'kd_sub_kegiatan' => $rincian_data[$rincian]['kd_sub_kegiatan'],
+            //         'nm_sub_kegiatan' => $rincian_data[$rincian]['nm_sub_kegiatan'],
+            //         'kd_rek6' => $rincian_data[$rincian]['kd_rek6'],
+            //         'nm_rek6' => $rincian_data[$rincian]['nm_rek6'],
+            //         'nilai' => $rincian_data[$rincian]['nilai'],
+            //         'kd_skpd' => $data['kd_skpd'],
+            //         'sumber' => $rincian_data[$rincian]['sumber'],
+            //     ];
+            //     DB::table('trdtransout_kkpd')
+            //         ->insert($input_trd);
+            // }
+
+            $no_urut = $this->no_urut();
+
+            $input_trh = [
+                'no_voucher' => $no_urut,
+                'tgl_voucher' => $data['tgl_voucher'],
+                'no_bukti' => $no_urut,
+                'tgl_bukti' => $data['tgl_voucher'],
+                'ket' => $data['keterangan'],
+                'username' => Auth::user()->nama,
+                'tgl_update' => date('Y-m-d H:i:s'),
+                'kd_skpd' => $data['kd_skpd'],
+                'nm_skpd' => nama_skpd($data['kd_skpd']),
+                'total' => $data['total_belanja'],
+                'rekening_awal' => cari_rekening_awal($data['kd_skpd']),
+                'jns_spp' => '1',
+                'pay' => 'BANK',
+                'status_validasi' => '0',
+                'status_upload' => '0',
+                'status_verifikasi' => '0',
+                'no_dpt' => $data['no_dpt']
+            ];
+            DB::table('trhtransout_kkpd')
+                ->insert($input_trh);
+
+            $daftar_id = [];
+
             foreach ($rincian_data as $rincian => $value) {
-                $no_urut = $this->no_urut();
-
-                $input_trh = [
-                    'no_voucher' => $no_urut,
-                    'tgl_voucher' => $data['tgl_voucher'],
-                    'no_bukti' => $no_urut,
-                    'tgl_bukti' => $data['tgl_voucher'],
-                    'ket' => $data['keterangan'],
-                    'username' => Auth::user()->nama,
-                    'tgl_update' => date('Y-m-d H:i:s'),
-                    'kd_skpd' => $data['kd_skpd'],
-                    'nm_skpd' => nama_skpd($data['kd_skpd']),
-                    'total' => $rincian_data[$rincian]['nilai'],
-                    'rekening_awal' => cari_rekening_awal($data['kd_skpd']),
-                    'jns_spp' => '1',
-                    'pay' => 'BANK',
-                    'status_validasi' => '0',
-                    'status_upload' => '0',
-                    'status_verifikasi' => '0',
-                    'no_dpt' => $data['no_dpt']
-                ];
-                DB::table('trhtransout_kkpd')
-                    ->insert($input_trh);
-
                 $input_trd = [
                     'no_voucher' => $no_urut,
                     'kd_sub_kegiatan' => $rincian_data[$rincian]['kd_sub_kegiatan'],
@@ -155,16 +212,33 @@ class TransKKPDController extends Controller
                     'nilai' => $rincian_data[$rincian]['nilai'],
                     'kd_skpd' => $data['kd_skpd'],
                     'sumber' => $rincian_data[$rincian]['sumber'],
+                    'id' => $rincian_data[$rincian]['id'],
                 ];
+
+                $daftar_id[] = $rincian_data[$rincian]['id'];
+
                 DB::table('trdtransout_kkpd')
                     ->insert($input_trd);
             }
 
-            DB::table('trhdpt')
+            DB::table('trddpt')
                 ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd']])
+                ->whereIn('id', $daftar_id)
                 ->update([
                     'status' => '1'
                 ]);
+
+            $cek_rincian = DB::table('trddpt')
+                ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd'], 'status' => '0'])
+                ->count();
+
+            if ($cek_rincian == 0) {
+                DB::table('trhdpt')
+                    ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'status' => '1'
+                    ]);
+            }
 
             DB::commit();
             return response()->json([

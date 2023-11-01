@@ -53,7 +53,7 @@
                     <div style="float: right;">
                         <button id="simpan" class="btn btn-primary btn-md"
                             {{ $kkpd->status_upload == '1' ? 'hidden' : '' }}>Simpan</button>
-                        <a href="{{ route('dpt.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                        <a href="{{ route('trans_kkpd.index') }}" class="btn btn-warning btn-md">Kembali</a>
                     </div>
                 </div>
             </div>

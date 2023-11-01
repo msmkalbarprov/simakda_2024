@@ -69,12 +69,14 @@
             <div class="card">
                 <div class="card-header">
                     RINCIAN TRANSAKSI KKPD
+                    <button type="button" style="float: right" id="tambah_rincian" class="btn btn-success btn-md">Tambah
+                        Rincian</button>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="rincian_pengeluaran" class="table" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>No.</th>
+                                <th>ID</th>
                                 <th>Kegiatan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Kode Rekening</th>
@@ -87,6 +89,7 @@
                                 <th>Uraian</th>
                                 <th>Kode Pembayaran</th>
                                 <th>Pembayaran</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -102,6 +105,35 @@
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
                                 class="form-control" id="sisa_kas" name="sisa_kas"
                                 value="{{ rupiah($sisa_kas->terima - $sisa_kas->keluar) }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_tambah" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Input Rincian DPT</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- No. LPJ --}}
+                    <div class="mb-3 row">
+                        <label for="pilih_rincian_dpt" class="col-md-2 col-form-label">Rincian DPT</label>
+                        <div class="col-md-10">
+                            <select name="pilih_rincian_dpt" class="form-control select-modal" id="pilih_rincian_dpt">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" id="pilih" class="btn btn-md btn-success">Pilih</button>
+                            <button type="button" class="btn btn-md btn-warning"
+                                data-bs-dismiss="modal">Kembali</button>
                         </div>
                     </div>
                 </div>
