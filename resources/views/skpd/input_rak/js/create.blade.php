@@ -43,7 +43,9 @@
         if (role == '1006' || role == '1012' || role == '1016' || role == '1017') {
             alert('Selamat Datang ' + user);
         } else {
-            proteksi();
+            alert('Selamat Datang ' + user);
+            // proteksi();
+            // sementara di nonaktifkan karena permintaan perben input angkas perubahan
         }
 
         $('.select2-multiple').select2({

@@ -89,7 +89,8 @@ class RakController extends Controller
         $data = DB::table('trdrka as a')
             ->select('a.kd_rek6', 'a.nm_rek6', DB::raw("SUM(a.nilai) as nilai"))
             ->selectRaw("(SELECT sum($jenis_rak) FROM trdskpd_ro WHERE kd_sub_kegiatan=a.kd_sub_kegiatan AND kd_rek6=a.kd_rek6 AND kd_skpd=a.kd_skpd) as nilai_rak")
-            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran, 'status_aktif' => '1'])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')
+            // ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran, 'status_aktif' => '1'])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')
+            ->where(['a.kd_sub_kegiatan' => $kd_sub_kegiatan, 'a.kd_skpd' => $kd_skpd, 'a.jns_ang' => $jenis_anggaran])->groupBy('a.kd_skpd', 'a.kd_sub_kegiatan', 'a.kd_rek6', 'a.nm_rek6')
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
