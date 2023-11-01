@@ -100,13 +100,13 @@
                     <td>4.</td>
                     <td>Jumlah Penyediaan Dana</td>
                     <td>:</td>
-                    <td>Rp{{ number_format($data->total, 2, ',', '.') }}</td>
+                    <td>Rp{{ number_format($total, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><i>({{ terbilang($data->total) }})</i></td>
+                    <td><i>({{ terbilang($total) }})</i></td>
                 </tr>
                 <tr>
                     <td>5.</td>
@@ -149,25 +149,25 @@
                     <td></td>
                     <td>c. Jumlah dana yang di-SPD-kan saat ini</td>
                     <td>:</td>
-                    <td>Rp{{ number_format($data->total, 2, ',', '.') }}</td>
+                    <td>Rp{{ number_format($total, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><i>({{ terbilang($data->total) }})</i></td>
+                    <td><i>({{ terbilang($total) }})</i></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>d. Sisa jumlah dana DPA-SKPD yang belum di-SPD-kan</td>
                     <td>:</td>
-                    <td>Rp{{ number_format($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.') }}</td>
+                    <td>Rp{{ number_format($total_anggaran - $total_spd_lalu - $total, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><i>({{ terbilang($total_anggaran - $total_spd_lalu - $data->total, 2, ',', '.') }})</i>
+                    <td><i>({{ terbilang($total_anggaran - $total_spd_lalu - $total, 2, ',', '.') }})</i>
                     </td>
                 </tr>
                 <tr>

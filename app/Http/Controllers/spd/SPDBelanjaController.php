@@ -1172,6 +1172,14 @@ class SPDBelanjaController extends Controller
             'konfig' => $konfig,
             'no_dpa' => $no_dpa,
             'data' => $jenis,
+            'total' => DB::table('trdspd as a')
+                ->join('trhspd as b', function ($join) {
+                    $join->on('a.no_spd', '=', 'b.no_spd');
+                })
+                ->selectRaw("sum(nilai) as nilai")
+                ->where(['a.no_spd' => $nospd])
+                ->first()
+                ->nilai,
             'ttd' => $ttd,
             'total_spd_lalu' => $total_spd_lalu,
             'tambahanbln' => $tambahanbln,
