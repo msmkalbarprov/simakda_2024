@@ -326,7 +326,7 @@ class TransaksiCmsController extends Controller
                 $join->on('c.no_dpt', '=', 'd.no_dpt');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
             })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6])->where(function ($query) {
-                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+                $query->where('c.status', '!=', '1')->orWhereNull('c.status');
             })
                 ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
 
@@ -387,7 +387,7 @@ class TransaksiCmsController extends Controller
                 $join->on('c.no_dpt', '=', 'd.no_dpt');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
             })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rek6])->where(function ($query) {
-                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+                $query->where('c.status', '!=', '1')->orWhereNull('c.status');
             })
                 ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
 

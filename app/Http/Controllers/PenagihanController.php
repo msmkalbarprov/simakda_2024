@@ -459,7 +459,7 @@ class PenagihanController extends Controller
                 $join->on('c.no_dpt', '=', 'd.no_dpt');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
             })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
-                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+                $query->where('c.status', '!=', '1')->orWhereNull('c.status');
             })
                 ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
 
@@ -520,7 +520,7 @@ class PenagihanController extends Controller
                 $join->on('c.no_dpt', '=', 'd.no_dpt');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
             })->where(['c.kd_sub_kegiatan' => $giat, 'd.kd_skpd' => $kode, 'c.kd_rek6' => $rek])->where(function ($query) {
-                $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+                $query->where('c.status', '!=', '1')->orWhereNull('c.status');
             })
                 ->select(DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data7);
 

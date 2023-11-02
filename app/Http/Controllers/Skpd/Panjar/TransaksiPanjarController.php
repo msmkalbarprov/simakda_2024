@@ -471,7 +471,7 @@ class TransaksiPanjarController extends Controller
                                     WHERE c.kd_sub_kegiatan =?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6=?
-                                    and (d.status<>'1' or d.status is null)
+                                    and (c.status<>'1' or c.status is null)
 
                                     )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6]))->first();
         } else {
@@ -567,7 +567,7 @@ class TransaksiPanjarController extends Controller
                                     WHERE c.kd_sub_kegiatan =?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6=?
-                                    and (d.status<>'1' or d.status is null)
+                                    and (c.status<>'1' or c.status is null)
 
                                     )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6]))
                 ->first();
