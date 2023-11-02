@@ -1107,8 +1107,8 @@ class SPDBelanjaController extends Controller
                     left(a.kd_unit,17) = left(?,17)
                     AND b.jns_beban=?
                     AND b.status = ?
-                    and bulan_awal = ?
-                    and bulan_akhir<=?
+
+                    and bulan_akhir=?
                     and revisi_ke=?
                     and tgl_spd<=?
                     and a.no_spd<>?
@@ -1122,8 +1122,8 @@ class SPDBelanjaController extends Controller
                     left(a.kd_unit,17) = left(?,17)
                     AND b.jns_beban=?
                     AND b.status = ?
-                    and bulan_awal = ?
-                    and bulan_akhir<=?
+
+                    and bulan_akhir=?
                     and revisi_ke=?
                     and tgl_spd<=?
                     and a.no_spd<>?
@@ -1137,8 +1137,8 @@ class SPDBelanjaController extends Controller
                     left(a.kd_unit,17) = left(?,17)
                     AND b.jns_beban=?
                     AND b.status = ?
-                    and bulan_awal = ?
-                    and bulan_akhir<=?
+
+                    and bulan_akhir=?
                     and revisi_ke=?
                     and tgl_spd<=?
                     and a.no_spd<>?
@@ -1152,15 +1152,14 @@ class SPDBelanjaController extends Controller
                     left(a.kd_unit,17) = left(?,17)
                     AND b.jns_beban=?
                     AND b.status = ?
-                    and bulan_awal = ?
-                    and bulan_akhir<=?
+
+                    and bulan_akhir=?
                     and revisi_ke=?
                     and tgl_spd<=?
                     and a.no_spd<>?
                     )zz", [$kd_skpd, $jns_beban, '1', '3', $revisi1->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '6', $revisi2->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '9', $revisi3->revisi, $tgl_spd, $nospd, $kd_skpd, $jns_beban, '1', '12', $revisi4->revisi, $tgl_spd, $nospd]))->first()->jm_spd_l;
                 break;
         }
-
 
         $ttd = DB::table('ms_ttd')->where(['nip' => $nip])->first();
 
