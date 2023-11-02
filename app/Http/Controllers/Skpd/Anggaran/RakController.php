@@ -3996,7 +3996,7 @@ class RakController extends Controller
             'kd_sub_kegiatan' => $kd_sub_kegiatan,
             'jenis_anggaran' => $jenis_anggaran,
             'kd_skpd' => $kd_skpd,
-            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'ttd1' => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1, 'kd_skpd' => $kd_skpd])->first(),
             'tanggal' => $tanggal_ttd,
             'sub_header' => DB::table('ms_skpd as a')->select(DB::raw("left(kd_skpd,1) as urusan"), DB::raw("(SELECT nm_urusan FROM ms_urusan WHERE kd_urusan=left(a.kd_skpd,1)) as nmurusan"), DB::raw("left(kd_skpd,4) as bidang"), DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=left(a.kd_skpd,4)) as nmbidang"), DB::raw("left(kd_skpd,17) as org"), DB::raw("(SELECT nm_skpd FROM ms_skpd WHERE left(kd_skpd,17)=left(a.kd_skpd,17) AND right(kd_skpd,4)='0000') as nmorg"), 'kd_skpd as unit', 'nm_skpd as nmunit')->where(['kd_skpd' => $kd_skpd])->first(),
 
@@ -4101,7 +4101,7 @@ class RakController extends Controller
             'anggaran'          => $anggaran,
             'jenis_anggaran'    => $jenis_anggaran,
             'kd_skpd'           => $kd_skpd,
-            'ttd1'              => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'ttd1'              => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1, 'kd_skpd' => $kd_skpd])->first(),
             'tanggal'           => $tanggal_ttd,
             'sub_header'        => DB::table('ms_skpd as a')->select(DB::raw("left(kd_skpd,1) as urusan"), DB::raw("(SELECT nm_urusan FROM ms_urusan WHERE kd_urusan=left(a.kd_skpd,1)) as nmurusan"), DB::raw("left(kd_skpd,4) as bidang"), DB::raw("(SELECT nm_bidang_urusan FROM ms_bidang_urusan WHERE kd_bidang_urusan=left(a.kd_skpd,4)) as nmbidang"), DB::raw("left(kd_skpd,17) as org"), DB::raw("(SELECT nm_skpd FROM ms_skpd WHERE left(kd_skpd,17)=left(a.kd_skpd,17) AND right(kd_skpd,4)='0000') as nmorg"), 'kd_skpd as unit', 'nm_skpd as nmunit')->where(['kd_skpd' => $kd_skpd])->first(),
             'hidden'            => $hidden
