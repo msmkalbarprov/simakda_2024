@@ -3907,7 +3907,7 @@ class RakController extends Controller
             'nama_angkas'   => DB::table('tb_status_angkas')->select('nama')->where(['kode' => $jenis_rak])->first(),
             'nama_skpd'     => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'data_giat'     => $angkas,
-            'ttd1'          => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1])->first(),
+            'ttd1'          => DB::table('ms_ttd')->select('nip', 'nama', 'jabatan', 'pangkat')->where(['nip' => $ttd1, 'kd_skpd' => $kd_skpd])->first(),
             'tanggal'       => $tanggal_ttd,
             'hidden'        => $hidden,
         ];
