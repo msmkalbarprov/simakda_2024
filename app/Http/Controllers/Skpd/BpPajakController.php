@@ -206,7 +206,14 @@ class BpPajakController extends Controller
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -247,7 +254,7 @@ class BpPajakController extends Controller
 	isnull( SUM ( terima_ini ), 0 ) AS terima_ini,
 	isnull( SUM ( setor_lalu ), 0 ) AS setor_lalu,
 	isnull( SUM ( setor_ini ), 0 ) AS setor_ini
-FROM
+    FROM
 	(
 	SELECT
 		RTRIM( map_pot ) AS kd_rek6,
@@ -415,7 +422,14 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -608,7 +622,14 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
@@ -978,7 +999,14 @@ ORDER BY
         if ($cetak == '1') {
             return $view;
         } else if ($cetak == '2') {
-            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('BP PAJAK.pdf');
         } else {
 
