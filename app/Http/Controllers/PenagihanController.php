@@ -574,12 +574,13 @@ class PenagihanController extends Controller
         $kode               = $request->skpd;
         $giat               = $request->kdgiat;
         $rek                = $request->kdrek;
-        $no_spp                = $request->no_spp;
-        $tgl_spp                = $request->tgl_spp;
-        $nomor_spd                = $request->nomor_spd;
-        $status_angkas    = $request->status_angkas;
-        $beban    = $request->beban;
-        $bulan = date('m', strtotime($tgl_spp));
+        $no_spp             = $request->no_spp;
+        $tgl_spp            = $request->tgl_spp;
+        $nomor_spd          = $request->nomor_spd;
+        $status_angkas      = $request->status_angkas;
+        $beban              = $request->beban;
+        $bulan              = date('m', strtotime($tgl_spp));
+        $id_skrg            = '';
 
         $status             = DB::table('trhrka')->where(['kd_skpd' => $kode, 'status' => '1'])->orderByDesc('tgl_dpa')->first();
         $status_anggaran    = $status->jns_ang;
@@ -589,6 +590,7 @@ class PenagihanController extends Controller
 
         // SUMBER DANA
         $data = sumber_dana($no_trdrka, $status_anggaran);
+        
 
 
         // ANGGARAN PENYUSUNAN
@@ -795,11 +797,10 @@ class PenagihanController extends Controller
 
         // REALISASI
         $realisasi = angkas_lalu_penagihan($kode, $giat, $rek);
-
+        
         $id_skrg = DB::table('tb_status_anggaran')
-            ->where(['kode' => $status_anggaran])
-            ->first();
-
+            ->where(['kode' => $status_anggaran->jns_ang])
+            ->first();  
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
@@ -816,6 +817,8 @@ class PenagihanController extends Controller
         $nama_anggaran_selanjutnya = DB::table('tb_status_anggaran')
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
+
+            
 
         return response()->json([
             'sumber' => $data,
