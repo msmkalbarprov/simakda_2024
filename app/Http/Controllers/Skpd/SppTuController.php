@@ -522,10 +522,14 @@ class SppTuController extends Controller
         // TOTAL TRANSAKSI SPD LALU
         $total_transaksi = angkas_lalu_penagihan($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
 
+        $id_skrg = DB::table('tb_status_anggaran')
+            ->where(['kode' => $status_anggaran])
+            ->first();
+
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
-            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kd_skpd, '1', '1'])
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=? and a.id>?", [$kd_skpd, '1', '1', $id_skrg->id])
             ->first();
 
         $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;

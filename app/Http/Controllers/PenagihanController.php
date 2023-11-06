@@ -344,10 +344,14 @@ class PenagihanController extends Controller
 
         $spd = spd_penagihan($kode, $giat, $rek, $revisi1, $revisi2, $revisi3, $revisi4);
 
+        $id_skrg = DB::table('tb_status_anggaran')
+            ->where(['kode' => $status_anggaran])
+            ->first();
+
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
-            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=? and a.id>?", [$kode, '1', '1', $id_skrg->id])
             ->first();
 
         $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
@@ -533,10 +537,14 @@ class PenagihanController extends Controller
         // SPD
         $spd = load_spd($giat, $kode, $rek);
 
+        $id_skrg = DB::table('tb_status_anggaran')
+            ->where(['kode' => $jenis_ang])
+            ->first();
+
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
-            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=? and a.id > ?", [$kode, '1', '1', $id_skrg->id])
             ->first();
 
         $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
@@ -788,10 +796,14 @@ class PenagihanController extends Controller
         // REALISASI
         $realisasi = angkas_lalu_penagihan($kode, $giat, $rek);
 
+        $id_skrg = DB::table('tb_status_anggaran')
+            ->where(['kode' => $status_anggaran])
+            ->first();
+
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
-            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=?", [$kode, '1', '1'])
+            ->whereRaw("b.kd_skpd=? and b.status!=? and a.status_aktif=? and a.id>?", [$kode, '1', '1', $id_skrg->id])
             ->first();
 
         $status_anggaran_selanjutnya = empty($status_anggaran_selanjutnya) ? '' : $status_anggaran_selanjutnya->kode;
@@ -891,8 +903,6 @@ class PenagihanController extends Controller
             ->first();
 
         $realisasi = $tagih_lalu->nilai + $tampungan->nilai + $spplalu->nilai + $upgulalucms->nilai + $upgulalu->nilai + $upgulalukkpd->nilai;
-        return response()->json($realisasi);
-
         return response()->json($realisasi);
     }
 
