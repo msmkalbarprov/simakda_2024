@@ -23,7 +23,7 @@ class JurnalKoreksiController extends Controller
 
         $data = [
             'data_ppk' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PPK','PA')", [$kd_skpd]),
-            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
+            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA','KPA')", [$kd_skpd]),
         ];
 
 
@@ -754,7 +754,7 @@ class JurnalKoreksiController extends Controller
 
         $data = [
             'data_ppk' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PPK','PA')", [$kd_skpd]),
-            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA')", [$kd_skpd]),
+            'data_pa' => DB::select("SELECT * FROM ms_ttd WHERE kd_skpd=? and kode in ('PA','KPA')", [$kd_skpd]),
         ];
 
         // $kunci = kunci()->kunci_jurnal;
