@@ -109,7 +109,7 @@
                         minimumFractionDigits: 2
                     }).format(data.keluarspp));
 
-                    if (data.spd < total + data.keluarspp) {
+                    if (parseFloat(data.spd) < total + parseFloat(data.keluarspp)) {
                         alert('Total SPD tidak mencukupi');
                         return;
                     }
