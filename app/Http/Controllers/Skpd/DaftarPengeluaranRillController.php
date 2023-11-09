@@ -133,9 +133,11 @@ class DaftarPengeluaranRillController extends Controller
         $kd_skpd = $request->kd_skpd;
         $jenis_ang = status_anggaran();
 
-        if ($jenis_belanja == '1') $filter = "and left(a.kd_rek6,6)='510204'";
-        if ($jenis_belanja == '2') $filter = "and left(a.kd_rek6,2)='52'";
-        if ($jenis_belanja == '3') $filter = "and left(a.kd_rek6,4)='5102'";
+        // if ($jenis_belanja == '1') $filter = "and left(a.kd_rek6,6)='510204'";
+        // if ($jenis_belanja == '2') $filter = "and left(a.kd_rek6,2)='52'";
+        // if ($jenis_belanja == '3') $filter = "and left(a.kd_rek6,4)='5102'";
+
+        $filter = '';
 
         $rekening = DB::select("SELECT a.kd_rek6,a.nm_rek6,e.map_lo,
                       (SELECT SUM(nilai) FROM
@@ -191,7 +193,9 @@ class DaftarPengeluaranRillController extends Controller
                         )r) AS lalu,
                         0 AS sp2d,a.nilai AS anggaran
                       FROM trdrka a LEFT JOIN ms_rek6 e ON a.kd_rek6=e.kd_rek6
-                      WHERE a.kd_sub_kegiatan= ? AND jns_ang=? AND a.kd_skpd = ? and a.status_aktif='1' $filter", [$kd_skpd, $kd_sub_kegiatan, $jenis_ang, $kd_skpd]);
+                      WHERE a.kd_sub_kegiatan= ? AND jns_ang=? AND a.kd_skpd = ? and a.status_aktif='1'
+                    --   $filter
+                      ", [$kd_skpd, $kd_sub_kegiatan, $jenis_ang, $kd_skpd]);
 
         $sisa_kkpd = sisa_bank_kkpd1();
 
