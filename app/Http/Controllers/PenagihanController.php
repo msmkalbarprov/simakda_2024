@@ -590,7 +590,7 @@ class PenagihanController extends Controller
 
         // SUMBER DANA
         $data = sumber_dana($no_trdrka, $status_anggaran);
-        
+
 
 
         // ANGGARAN PENYUSUNAN
@@ -797,10 +797,10 @@ class PenagihanController extends Controller
 
         // REALISASI
         $realisasi = angkas_lalu_penagihan($kode, $giat, $rek);
-        
+
         $id_skrg = DB::table('tb_status_anggaran')
             ->where(['kode' => $status_anggaran->jns_ang])
-            ->first();  
+            ->first();
         $status_anggaran_selanjutnya = DB::table('tb_status_anggaran as a')
             ->select('a.kode')
             ->join('trhrka as b', 'a.kode', '=', 'b.jns_ang')
@@ -818,7 +818,7 @@ class PenagihanController extends Controller
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
 
-            
+
 
         return response()->json([
             'sumber' => $data,
@@ -1086,7 +1086,8 @@ class PenagihanController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+                'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }
