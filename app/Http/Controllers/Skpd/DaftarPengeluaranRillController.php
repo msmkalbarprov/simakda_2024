@@ -115,11 +115,11 @@ class DaftarPengeluaranRillController extends Controller
             ->join('ms_sub_kegiatan as c', 'b.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan')
             ->select('b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'b.kd_program', DB::raw("(SELECT nm_program FROM ms_program WHERE kd_program=b.kd_program) as nm_program"), 'b.total')
             ->where(['b.kd_skpd' => $kd_skpd, 'b.status_sub_kegiatan' => '1', 'b.jns_ang' => $anggaran, 'c.jns_sub_kegiatan' => '5'])
-            ->where(function ($query) use ($jenis_belanja) {
-                if ($jenis_belanja == '1') $query->whereRaw("left(a.kd_rek6,6)=?", ['510204']);
-                if ($jenis_belanja == '2') $query->whereRaw("left(a.kd_rek6,2)=?", ['52']);
-                if ($jenis_belanja == '3') $query->whereRaw("left(a.kd_rek6,4)=?", ['5102']);
-            })
+            // ->where(function ($query) use ($jenis_belanja) {
+            //     if ($jenis_belanja == '1') $query->whereRaw("left(a.kd_rek6,6)=?", ['510204']);
+            //     if ($jenis_belanja == '2') $query->whereRaw("left(a.kd_rek6,2)=?", ['52']);
+            //     if ($jenis_belanja == '3') $query->whereRaw("left(a.kd_rek6,4)=?", ['5102']);
+            // })
             ->groupBy('b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'b.kd_program', 'b.total')
             ->get();
 
