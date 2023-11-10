@@ -156,6 +156,11 @@
                 }
             });
 
+            if (tampungan.length > 10) {
+                alert('Detail Penguji tidak boleh lebih dari 10 SP2D');
+                return;
+            }
+
             if (kondisi.includes("1")) {
                 alert('Nomor SP2D ini sudah ada di LIST!');
                 $("#no_sp2d").val(null).change();
@@ -214,6 +219,12 @@
                 alert('Detail Daftar Penguji tidak boleh kosong!');
                 return;
             }
+
+            if (rincian.length > 10) {
+                alert('Detail Daftar Penguji tidak boleh lebih dari 10 SP2D');
+                return;
+            }
+
             let detail_penguji = rincian_penguji.rows().data().toArray().map((value) => {
                 let data = {
                     no_sp2d: value.no_sp2d,
