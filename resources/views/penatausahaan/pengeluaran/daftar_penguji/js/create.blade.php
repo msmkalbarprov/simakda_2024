@@ -132,6 +132,11 @@
                 return;
             }
 
+            if (tampungan.length > 10) {
+                alert('Rincian penguji tidak boleh lebih dari 10 SP2D');
+                return;
+            }
+
             rincian_penguji.row.add({
                 'no_sp2d': no_sp2d,
                 'tgl_sp2d': tgl_sp2d,
@@ -163,6 +168,11 @@
             let rincian = rincian_penguji.rows().data().toArray();
             if (rincian.length == 0) {
                 alert('Detail Daftar Penguji tidak boleh kosong!');
+                return;
+            }
+
+            if (rincian.length > 10) {
+                alert('Detail Daftar Penguji tidak boleh lebih dari 10 SP2D');
                 return;
             }
 
