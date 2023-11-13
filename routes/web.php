@@ -137,6 +137,7 @@ use App\Http\Controllers\Skpd\ValKKPDController;
 use App\Http\Controllers\Skpd\VerifikasiKKPDController;
 use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\TukarSp2dController;
+use App\Http\Controllers\Utility\BankController;
 use Illuminate\Support\Facades\Http;
 
 Route::get('/coba_coba', function () {
@@ -2216,6 +2217,13 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
     Route::get('ubah_password/{id?}', [HomeController::class, 'ubahPassword'])->where('id', '(.*)')->name('ubah_password');
     Route::post('ubah_password/simpan', [HomeController::class, 'simpanUbahPassword'])->name('ubah_password.simpan');
     Route::post('backup_database', [SettingController::class, 'BackupDatabase'])->name('backup_database');
+
+    Route::group(['prefix' => 'bank'], function () {
+        Route::get('', [BankController::class, 'index'])->name('bank.index');
+        Route::post('load', [BankController::class, 'load'])->name('bank.load');
+        Route::post('nomor', [BankController::class, 'nomor'])->name('bank.nomor');
+        Route::post('simpan', [BankController::class, 'simpan'])->name('bank.simpan');
+    });
 });
 
 
