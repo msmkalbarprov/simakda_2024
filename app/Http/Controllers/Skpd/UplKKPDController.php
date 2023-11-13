@@ -358,13 +358,16 @@ class UplKKPDController extends Controller
             ->groupByRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,ket_tujuan,no_upload_tgl")
             ->get();
 
+        $rekening_tujuan = "0109990000";
+        $nm_rekening_tujuan = "R/P SETORAN KKPD PROV";
+
         foreach ($query as $data) {
             $tgl_upload = $data->tgl_upload;
             $no_upload_tgl = $data->no_upload_tgl;
             $nilai = strval($data->nilai);
             $nilai = str_replace('.00', '', $nilai);
 
-            $result = $data->nm_skpd . ";" . str_replace(" ", "", rtrim($data->rekening_awal)) . ";" . rtrim($data->nm_rekening_tujuan) . ";" . str_replace(" ", "", rtrim($data->rekening_tujuan)) . ";" . $nilai . ";" . $data->ket_tujuan . "\n";
+            $result = $data->nm_skpd . ";" . str_replace(" ", "", rtrim($data->rekening_awal)) . ";" . rtrim($nm_rekening_tujuan) . ";" . str_replace(" ", "", rtrim($rekening_tujuan)) . ";" . $nilai . ";" . $data->ket_tujuan . "\n";
 
             $init_tgl = explode("-", $tgl_upload);
             $tglupl = $init_tgl[2] . $init_tgl[1] . $init_tgl[0];
