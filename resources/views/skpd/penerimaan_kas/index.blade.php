@@ -9,6 +9,17 @@
                     <a href="{{ route('penerimaan_kas.tambah') }}" class="btn btn-primary" style="float: right;">Tambah</a>
                 </div>
                 <div class="card-body">
+                    <select class="form-control select2-multiple" style="width: 100%" id="kd_skpd" name="kd_skpd">
+                        <option value="" disabled selected>Silahkan Pilih</option>
+                        @foreach ($daftar_skpd as $skpd)
+                            <option value="{{ $skpd->kd_skpd }}" data-nama="{{ $skpd->nm_skpd }}">
+                                {{ $skpd->kd_skpd }} | {{ $skpd->nm_skpd }}
+                            </option>
+                        @endforeach
+                        </option>
+                    </select>
+                </div>
+                <div class="card-body">
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="penerimaan_kas" class="table" style="width: 100%">

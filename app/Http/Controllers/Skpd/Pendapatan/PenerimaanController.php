@@ -966,17 +966,26 @@ class PenerimaanController extends Controller
     // Penerimaan Lain PPKD
     public function indexPenerimaanKas()
     {
-        return view('skpd.penerimaan_kas.index');
+        $data = [
+            'daftar_skpd' => DB::table('ms_skpd')
+                ->select('kd_skpd', 'nm_skpd', 'jns')
+                ->orderBy('kd_skpd')
+                ->get(),
+        ];
+
+        return view('skpd.penerimaan_kas.index')->with($data);
     }
 
-    public function loadDataPenerimaanKas()
+    public function loadDataPenerimaanKas(Request $request)
     {
-        $kd_skpd = Auth::user()->kd_skpd;
+
         $data = DB::table('trhkasin_ppkd as a')
             ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+            ->where(['kd_skpd' => $request->kd_skpd])
             ->orderBy('a.tgl_kas')
             ->orderBy('a.no_kas')
             ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             $btn = '<a href="' . route("penerimaan_kas.edit", [Crypt::encrypt($row->no_kas), Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_kas . '\',\'' . $row->no_sts . '\',\'' . $row->kd_skpd . '\',\'' . $row->tgl_kas . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';

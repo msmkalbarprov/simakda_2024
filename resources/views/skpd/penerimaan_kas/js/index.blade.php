@@ -6,7 +6,14 @@
             }
         });
 
-        $('#penerimaan_kas').DataTable({
+        $('.select2-multiple').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+
+        $('#kd_skpd').val('5.02.0.00.0.00.02.0000').change();
+
+        let tabel = $('#penerimaan_kas').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
@@ -15,6 +22,9 @@
             ajax: {
                 "url": "{{ route('penerimaan_kas.load_data') }}",
                 "type": "POST",
+                "data": function(d) {
+                    d.kd_skpd = document.getElementById('kd_skpd').value;
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -65,6 +75,10 @@
                     className: "text-center",
                 },
             ],
+        });
+
+        $('#kd_skpd').on('select2:select', function() {
+            tabel.ajax.reload()
         });
     });
 
