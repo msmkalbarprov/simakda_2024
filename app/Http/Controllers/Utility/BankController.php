@@ -12,7 +12,14 @@ class BankController extends Controller
 {
     public function index()
     {
-        return view('fungsi.bank.index');
+        $data = [
+            'daftar_bic' => DB::table('ms_bank_online')
+                ->select('bic')
+                ->groupBy('bic')
+                ->get()
+        ];
+
+        return view('fungsi.bank.index')->with($data);
     }
 
     public function load()

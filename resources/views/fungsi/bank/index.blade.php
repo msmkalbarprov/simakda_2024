@@ -53,7 +53,13 @@
                     <div class="mb-3 row">
                         <label for="bic" class="col-md-2 col-form-label">BIC</label>
                         <div class="col-md-12">
-                            <input type="text" class="form-control" id="bic" name="bic">
+                            <select class="form-control select2-modal" style="width: 100%" id="bic" name="bic"
+                                data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>...Pilih... </option>
+                                @foreach ($daftar_bic as $bic)
+                                    <option value="{{ $bic->bic }}">{{ $bic->bic }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3 row">
