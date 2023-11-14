@@ -21,11 +21,10 @@
     @if (Auth::user()->is_admin == '2')
         <div class="row">
             <div class="col-md-6">
-                <div class="card card-info collapsed-card card-outline" id="lkonsol">
+                <div class="card card-info collapsed-card card-outline" id="neraca_saldo">
                     <div class="card-body">
-                        {{ 'Laporan Konsolidasi' }}
-                        <a class="card-block stretched-link"
-                            href="{{ route('laporan_akuntansi.konsolidasi.konsolidasi') }}">
+                        {{ 'Neraca Saldo' }}
+                        <a class="card-block stretched-link" href="#">
 
                         </a>
                         <i class="fa fa-chevron-right float-end mt-2"></i>
@@ -63,20 +62,6 @@
                 <div class="card card-info collapsed-card card-outline" id="jumum">
                     <div class="card-body">
                         {{ 'Cetak Jurnal Umum' }}
-                        <a class="card-block stretched-link" href="#">
-
-                        </a>
-                        <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card card-info collapsed-card card-outline" id="neraca_saldo">
-                    <div class="card-body">
-                        {{ 'Neraca Saldo' }}
                         <a class="card-block stretched-link" href="#">
 
                         </a>
