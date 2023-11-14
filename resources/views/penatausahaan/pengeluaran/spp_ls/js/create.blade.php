@@ -918,6 +918,7 @@
             let sisa_sumber = rupiah(document.getElementById('sisa_sumber').value);
             let status_anggaran = document.getElementById('status_anggaran').value;
             let beban = document.getElementById('beban').value;
+            let jenis = document.getElementById('jenis').value;
             let total = rupiah(document.getElementById('total').value);
             let akumulasi = nilai_rincian + total;
             let volume_output = document.getElementById('volume_output').value;
@@ -1028,10 +1029,15 @@
                 alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
                 return;
             }
-            if (Number.isInteger(nilai_rincian) == false) {
-                alert('Nilai Rincian tidak boleh ada koma');
-                return;
-            };
+            if (beban == '5' && jenis == '5') {
+
+            } else {
+                if (Number.isInteger(nilai_rincian) == false) {
+                    alert('Nilai Rincian tidak boleh ada koma');
+                    return;
+                };
+            }
+
             // cek data di detail spp dan inputan
             let tampungan = tabel.rows().data().toArray().map((value) => {
                 let result = {
