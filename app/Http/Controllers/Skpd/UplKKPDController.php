@@ -343,12 +343,13 @@ class UplKKPDController extends Controller
                 b.rekening_awal,
                 '' as nm_rekening_tujuan,
                 '' as rekening_tujuan,
-                SUM(e.nilai) as nilai,
-                SUM(f.potongan) as potongan,
+                ISNULL(SUM(e.nilai),0) as nilai,
+                ISNULL(SUM(f.potongan),0) as potongan,
                 a.no_upload+'/' + (select CAST(DATEPART(MONTH, CAST(a.tgl_upload AS DATETIME)) AS VARCHAR(4))) + '/$tahun/KKPD' as ket_tujuan,
                 b.no_upload_tgl"
             )
             ->groupBy('a.no_upload', 'a.tgl_upload', 'a.kd_skpd', 'b.kd_skpd', 'b.rekening_awal', 'b.ket_tujuan', 'e.kd_sub_kegiatan', 'b.no_upload_tgl');
+
 
         // (REPLACE(b.ket_tujuan, '2023.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan,
 
