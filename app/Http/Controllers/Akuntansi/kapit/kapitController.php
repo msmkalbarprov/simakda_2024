@@ -183,11 +183,15 @@ class kapitController extends Controller
         $kd_sub_kegiatan   = $request->kd_sub_kegiatan;
         $kd_rek6   = $request->kd_rek6;
         $norinci  = $kd_skpd.'.'.$kd_sub_kegiatan.'.'.$kd_rek6;
-        $data = DB::select("SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
+        $data = DB::select("SELECT 
+            case when nomor = (select no_lamp as nomor FROM lamp_aset WHERE kd_skpd = '$kd_skpd' and no_lamp = nomor
+            UNION ALL 
+            SELECT no_lamp as nomor FROM trdkapitalisasi WHERE kd_skpd = '$kd_skpd' and no_lamp = nomor ) then CONCAT('9',nomor) else nomor end nomor
+            FROM(SELECT CONVERT(varchar(10),jumlah)+'-2023-'+REPLACE(kd_skpd,'.','') as nomor FROM
             (SELECT COUNT(*)+1 as jumlah, kd_skpd FROM(
             SELECT no_lamp,kd_skpd FROM lamp_aset UNION ALL
             SELECT no_lamp,kd_skpd FROM trdkapitalisasi) z
-            WHERE kd_skpd='$kd_skpd' GROUP BY kd_skpd)y");
+            WHERE kd_skpd='$kd_skpd' GROUP BY kd_skpd)y)a");
         // dd($norinci);
         return response()->json($data);
     }

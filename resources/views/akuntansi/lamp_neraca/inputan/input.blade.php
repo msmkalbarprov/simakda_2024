@@ -3514,7 +3514,7 @@
                 $.ajax({
                     type: "POST",   
                     dataType : 'json',                 
-                    data: ({no:nomor,tabel:"lamp_aset",field:"no_lamp"}),
+                    data: ({no:nomor,tabel:"lamp_aset",field:"no_lamp",tabel2:"trdkapitalisasi",field2:"no_lamp"}),
                     url: "{{ route('input_lamp_neraca.cari_cek_simpan') }}",
                     success:function(data){                        
                         status_cek = data.pesan;
