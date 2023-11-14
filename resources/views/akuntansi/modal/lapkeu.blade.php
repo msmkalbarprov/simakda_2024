@@ -607,12 +607,18 @@
                     <div class="col-md-6">
                         <label for="jenis_data" class="form-label">Jenis Data</label>
                         <select name="jenis_data" class="form-control select_semester" id="jenis_data_semester">
-                            <option value="">Silahkan Pilih</option>
-                            <option value="1">SP2D terbit & SPJ Pendapatan</option>
-                            <option value="2">SP2D Advice & SPJ Pendapatan</option>
-                            <option value="3">SP2D Lunas & SPJ Pendapatan</option>
-                            <option value="4">SPJ Fungsional & Pendapatan</option>
-                            <option value="5">Jurnal</option>
+                            @if (Auth::user()->is_admin == '1')
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">SP2D terbit & SPJ Pendapatan</option>
+                                <option value="2">SP2D Advice & SPJ Pendapatan</option>
+                                <option value="3">SP2D Lunas & SPJ Pendapatan</option>
+                                <option value="4">SPJ Fungsional & Pendapatan</option>
+                                <option value="5">Jurnal</option>
+                            @else
+                                <option value="">Silahkan Pilih</option>
+                                <option value="4">SPJ Fungsional & Pendapatan</option>
+                                <option value="5">Jurnal</option>
+                            @endif
                         </select>
                     </div>
                 </div>
@@ -766,12 +772,18 @@
                     <div class="col-md-6">
                         <label for="jenis_data" class="form-label">Jenis Data</label>
                         <select name="jenis_data" class="form-control select_semesterrinci" id="jenis_data_semesterrinci">
-                            <option value="">Silahkan Pilih</option>
-                            <option value="1">SP2D terbit & SPJ Pendapatan</option>
-                            <option value="2">SP2D Advice & SPJ Pendapatan</option>
-                            <option value="3">SP2D Lunas & SPJ Pendapatan</option>
-                            <option value="4">SPJ Fungsional & Pendapatan</option>
-                            <option value="5">Jurnal</option>
+                            @if (Auth::user()->is_admin == '1')
+                                <option value="">Silahkan Pilih</option>
+                                <option value="1">SP2D terbit & SPJ Pendapatan</option>
+                                <option value="2">SP2D Advice & SPJ Pendapatan</option>
+                                <option value="3">SP2D Lunas & SPJ Pendapatan</option>
+                                <option value="4">SPJ Fungsional & Pendapatan</option>
+                                <option value="5">Jurnal</option>
+                            @else
+                                <option value="">Silahkan Pilih</option>
+                                <option value="4">SPJ Fungsional & Pendapatan</option>
+                                <option value="5">Jurnal</option>
+                            @endif
                         </select>
                     </div>
 
