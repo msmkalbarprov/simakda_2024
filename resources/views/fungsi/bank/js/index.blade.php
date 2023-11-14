@@ -6,6 +6,12 @@
             }
         });
 
+        $('.select2-modal').select2({
+            dropdownParent: $('#modal_bank .modal-content'),
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+
         let tabel = $('#bank').DataTable({
             responsive: true,
             ordering: false,
