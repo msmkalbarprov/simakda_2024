@@ -71,6 +71,20 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lralo">
+                    <div class="card-body">
+                        {{ 'Selisih LRA dan LO' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     @else
         @if (Auth::user()->role == '1025')
         @else
