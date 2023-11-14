@@ -1029,14 +1029,10 @@
                 alert('Nilai Melebihi Sisa Sumber Dana...!!!, Cek Lagi...!!!');
                 return;
             }
-            if (beban == '5' && jenis == '5') {
-
-            } else {
-                if (Number.isInteger(nilai_rincian) == false) {
-                    alert('Nilai Rincian tidak boleh ada koma');
-                    return;
-                };
-            }
+            if (Number.isInteger(nilai_rincian) == false) {
+                alert('Nilai Rincian tidak boleh ada koma');
+                return;
+            };
 
             // cek data di detail spp dan inputan
             let tampungan = tabel.rows().data().toArray().map((value) => {
