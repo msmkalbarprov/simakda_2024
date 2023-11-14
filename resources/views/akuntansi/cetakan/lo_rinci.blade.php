@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LO</title>
+    <title>LO Rinci</title>
     <style>
         table {
             border-collapse: collapse
@@ -40,7 +40,7 @@
             <tr>
                 <td align="center"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></td>                         
             </tr>
-            @if($kd_skpd=='')
+            @if($skpdunit=="keseluruhan")
 
             @elseif(strlen($kd_skpd)==17)
 
@@ -100,45 +100,56 @@
         @php
             $nama      = $loquery->uraian; 
             $bold       = $loquery->bold;
-            $n1         = $loquery->kode_1ja;
+            $n1         = $loquery->kode_1;
             $n1        = ($n1=="-"?"'-'":$n1);
-            $n2         = $loquery->kode;
+            $n2         = $loquery->kode_2;
             $n2         = ($n2=="-"?"'-'":$n2);
-            $n3         = $loquery->kode_1;
+            $n3         = $loquery->kode_3;
             $n3         = ($n3=="-"?"'-'":$n3);
-            $n4        = $loquery->kode_2;
+            $n4        = $loquery->kode_4;
             $n4        = ($n4=="-"?"'-'":$n4);
-            $n5        = $loquery->kode_3;
+            $n5        = $loquery->kode_5;
             $n5        = ($n5=="-"?"'-'":$n5);
+            $n6        = $loquery->kode_6;
+            $n6        = ($n6=="-"?"'-'":$n6);
             $cetak_a    = $loquery->cetak;
             $k1        = $loquery->kurangi_1;
             $k1        = ($k1=="-"?"'-'":$k1);
-            $k2        = $loquery->kurangi;
+            $k2        = $loquery->kurangi_2;
             $k2        = ($k2=="-"?"'-'":$k2);
+            $k3        = $loquery->kurangi_3;
+            $k3        = ($k3=="-"?"'-'":$k3);
+            $k4        = $loquery->kurangi_4;
+            $k4        = ($k4=="-"?"'-'":$k4);
+            $k5        = $loquery->kurangi_5;
+            $k5        = ($k5=="-"?"'-'":$k5);
+            $k6        = $loquery->kurangi_6;
+            $k6        = ($k6=="-"?"'-'":$k6);
             $cetak_k    = $loquery->c_kurangi;
+            $kelompok    = $loquery->kelompok;
 
             $nilainya = collect(DB::select("select sum(nilai_a-nilai_b) nilai
                     from(SELECT SUM($cetak_a) as nilai_a,0 nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE (left(kd_rek6,1) in ($n1) or left(kd_rek6,2) in ($n2) or left(kd_rek6,4) in ($n3) or left(kd_rek6,6) in ($n4) or left(kd_rek6,8) in ($n5)) 
+                    WHERE (left(kd_rek6,1) in ($n1) or left(kd_rek6,2) in ($n2) or left(kd_rek6,4) in ($n3) or left(kd_rek6,6) in ($n4) or left(kd_rek6,8) in ($n5) or left(kd_rek6,12) in ($n6)) 
                     and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan $skpd_clauses
 
                     union all
 
                     SELECT 0  nilai_a,SUM($cetak_k) nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE (left(kd_rek6,1) in ($k1) or left(kd_rek6,2) in ($k2)) 
+                    WHERE (left(kd_rek6,1) in ($k1) or left(kd_rek6,2) in ($k2) or left(kd_rek6,4) in ($k3) or left(kd_rek6,6) in ($k4) or left(kd_rek6,8) in ($k5) or left(kd_rek6,12) in ($k6)) 
                     and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan $skpd_clauses) a "))->first();
 
             $nilai=$nilainya->nilai;
 
             $nilainya_lalu = collect(DB::select("select sum(nilai_a-nilai_b) nilai
                     from(SELECT SUM(kredit-debet) as nilai_a,0 nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE (left(kd_rek6,1) in ($n1) or left(kd_rek6,2) in ($n2) or left(kd_rek6,4) in ($n3) or left(kd_rek6,6) in ($n4) or left(kd_rek6,8) in ($n5)) 
+                    WHERE (left(kd_rek6,1) in ($n1) or left(kd_rek6,2) in ($n2) or left(kd_rek6,4) in ($n3) or left(kd_rek6,6) in ($n4) or left(kd_rek6,8) in ($n5) or left(kd_rek6,12) in ($n6)) 
                     and year(tgl_voucher)=$thn_ang_1 $skpd_clauses
 
                     union all
 
                     SELECT 0  nilai_a,SUM($cetak_k) nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE (left(kd_rek6,1) in ($k1) or left(kd_rek6,2) in ($k2)) 
+                    WHERE (left(kd_rek6,1) in ($k1) or left(kd_rek6,2) in ($k2) or left(kd_rek6,4) in ($k3) or left(kd_rek6,6) in ($k4) or left(kd_rek6,8) in ($k5) or left(kd_rek6,12) in ($k6)) 
                     and year(tgl_voucher)=$thn_ang_1 $skpd_clauses) a "))->first();   
             
             $nilai_lalu=$nilainya_lalu->nilai;
@@ -166,26 +177,21 @@
 
             @if ($bold == 0)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="center">{{$no}}</td>                                     
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">{{$nama}}</td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="right"></td>
+                    <td style="font-size:14px;font-family:Open Sans" colspan="6">&nbsp;</td>
                 </tr>
 
             @elseif ($bold == 1 || $bold== 2)
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="center">{{$no}}</td>                                     
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">{{$nama}}</td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right"></td>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="right"></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="left"><b>{{$kelompok}}</b></td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%"><b>{{$nama}}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"><b>{{rupiah($nilai)}}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right"><b>{{rupiah($nilai_lalu)}}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%" align="right"><b>{{$lo0}}{{rupiah($real_nilai1)}}{{$lo00}}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="5%" align="right"><b>{{rupiah($persen1)}}</b></td>
                 </tr>
             @else
                 <tr>
-                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="center">{{$no}}</td>                                     
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="10%" align="left">{{$kelompok}}</td>                                     
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="40%">{{$nama}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{rupiah($nilai)}}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%" align="right">{{rupiah($nilai_lalu)}}</td>

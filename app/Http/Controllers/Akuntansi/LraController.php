@@ -1040,7 +1040,7 @@ class LraController extends Controller
         $cetak          = $request->cetak;
         $kd_skpd        = $request->kd_skpd;
         $skpdunit    = $request->skpdunit;
-        if ($request->kd_skpd == '') {
+        if ($skpdunit == "keseluruhan") {
             $kd_skpd        = "";
             $skpd_clause    = "";
             $skpd_clauses    = "";
@@ -1070,14 +1070,22 @@ class LraController extends Controller
 
 
 
-        if ($format == '1') {
+        if ($format == "1") {
             $map_lo = DB::select("SELECT seq,bold, nor, uraian, isnull(kode_1ja,'-') as kode_1ja, isnull(kode,'-') as kode, isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(cetak,'debet-debet') as cetak
                 , isnull(kurangi_1,'-') kurangi_1, isnull(kurangi,'-') kurangi, isnull(c_kurangi,0) as c_kurangi
                 FROM map_lo_prov_permen_77
                 GROUP BY seq,bold, nor, uraian, isnull(kode_1ja,'-'), isnull(kode,'-'), isnull(kode_1,'-'), isnull(kode_2,'-'), isnull(kode_3,'-'), isnull(cetak,'debet-debet') ,
                 isnull(kurangi_1,'-') , isnull(kurangi,'-') , isnull(c_kurangi,0)
                 ORDER BY nor");
-        } else if ($format == '2') {
+        } else if ($format == "2") {
+
+            $map_lo = DB::select("SELECT seq,bold, nor, uraian, 
+                isnull(kode_1,'-') as kode_1, isnull(kode_2,'-') as kode_2, isnull(kode_3,'-') as kode_3, isnull(kode_4,'-') as kode_4, isnull(kode_5,'-') as kode_5, isnull(kode_6,'-') as kode_6, 
+                isnull(cetak,'debet-debet') as cetak,
+                isnull(kurangi_1,'-') as kurangi_1, isnull(kurangi_2,'-') as kurangi_2, isnull(kurangi_3,'-') as kurangi_3, isnull(kurangi_4,'-') as kurangi_4, isnull(kurangi_5,'-') as kurangi_5, isnull(kurangi_6,'-') as kurangi_6, 
+                isnull(c_kurangi,'debet-debet') as c_kurangi,kelompok
+                FROM map_lo_prov_rinci
+                ORDER BY nor");
         }
 
 
@@ -1085,22 +1093,27 @@ class LraController extends Controller
 
 
         $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
-        // dd($sus);
+        // dd($map_lo);
 
         $data = [
             'header'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'map_lo'        => $map_lo,
+            'map_lo'            => $map_lo,
             'enter'             => $enter,
             'daerah'            => $daerah,
             'bulan'             => $bulan,
             'skpd_clauses'      => $skpd_clauses,
+            'skpdunit'      => $skpdunit,
             'kd_skpd'           => $kd_skpd,
             'nm_bln'            => $nm_bln,
             'thn_ang'           => $thn_ang,
             'thn_ang_1'         => $thn_ang1
         ];
 
-        $view =  view('akuntansi.cetakan.lo')->with($data);
+        if ($format=="1") {
+            $view =  view('akuntansi.cetakan.lo')->with($data);
+        }else{
+            $view =  view('akuntansi.cetakan.lo_rinci')->with($data);
+        }
 
 
         if ($cetak == '1') {

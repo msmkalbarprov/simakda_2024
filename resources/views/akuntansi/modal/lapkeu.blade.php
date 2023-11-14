@@ -228,7 +228,10 @@
                                 <option value="">Silahkan Pilih</option>
                                 <option value="1">Cetak Biasa</option>
                                 <option value="2">Cetak Per Obyek</option>
-                                <option value="3">Cetak Per Obyek Aset Tetap</option>
+                                @if (Auth::user()->is_admin == '1')
+                                    <option value="3">Cetak Per Obyek Aset Tetap</option>
+                                @else
+                                @endif
                             </select>
                         </div>
                 </div>
