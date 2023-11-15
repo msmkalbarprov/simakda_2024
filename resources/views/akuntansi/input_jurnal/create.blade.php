@@ -91,8 +91,8 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="lain_lain"
                                 name="lain_lain">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="99">Saldo Awal Neraca</option>
-                                <option value="89">Saldo Awal LO</option>
+                                <!-- <option value="99">Saldo Awal Neraca</option> -->
+                                <!-- <option value="89">Saldo Awal LO</option> -->
                                 <option value="1">Penyisihan Piutang</option>
                                 <option value="2">Koreksi Penyusutan</option>
                                 <!-- <option value="3">Hibah Keluar</option> -->
@@ -105,8 +105,7 @@
                                 <option value="10">Reklass Antar Akun</option>
                                 <option value="11">Tagihan Penjualan Angsuran</option>
                                 <option value="12">Penyertaan Modal</option>
-                                <option value="13">Persediaan APBN yang belum Tercatat TA {{ tahun_anggaran() - 1 }}
-                                </option>
+                                <!-- <option value="13">Persediaan APBN yang belum Tercatat TA {{ tahun_anggaran() - 1 }}</option> -->
                                 <option value="15">Koreksi Dana Transfer Pemerintah Pusat</option>
                                 <option value="16">Koreksi Gedung dan Bangunan</option>
                                 <!-- <option value="17">Koreksi Persediaan</option> -->
@@ -119,7 +118,7 @@
                                 <option value="28">Koreksi Aset Lain Lain</option>
                                 <option value="30">Pelimpahan Masuk</option>
                                 <option value="31">Pelimpahan Keluar</option>
-                                <option value="32">Penghapusan Utang</option>
+                                <!-- <option value="32">Penghapusan Utang</option> -->
                             </select>
                         </div>
                     </div>
