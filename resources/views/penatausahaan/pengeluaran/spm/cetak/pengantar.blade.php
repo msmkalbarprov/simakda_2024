@@ -139,7 +139,7 @@
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td><i>Terbilang ({{ terbilang($data_beban->spd - $data_beban->spp) }})</i></td>
+                <td><i>Terbilang ({{ terbilang1($data_beban->spd - $data_beban->spp) }})</i></td>
             </tr>
             <tr>
                 <td>6.</td>
@@ -149,7 +149,7 @@
             </tr>
             <tr>
                 <td colspan="3"></td>
-                <td><i>Terbilang ({{ terbilang($data_beban->nilai) }})</i></td>
+                <td><i>Terbilang ({{ terbilang1($data_beban->nilai) }})</i></td>
             </tr>
             <tr>
                 @if (in_array($beban, ['1', '2', '3', '4', '6']))

@@ -105,7 +105,7 @@
     <br>
     <table style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
         <tr>
-            <td>Terbilang : <i>{{ ucwords(terbilang($total)) }}</i></td>
+            <td>Terbilang : <i>{{ ucwords(terbilang1($total)) }}</i></td>
         </tr>
     </table>
     <br>
