@@ -594,21 +594,21 @@ function belakang1($number)
         } else if ($cek == '11') {
             $belakangs = "sebelas";
         } else if ($cek == '12') {
-            $belakangs = "duabelas";
+            $belakangs = "dua belas";
         } else if ($cek == '13') {
-            $belakangs = "tigabelas";
+            $belakangs = "tiga belas";
         } else if ($cek == '14') {
-            $belakangs = "empatbelas";
+            $belakangs = "empat belas";
         } else if ($cek == '15') {
-            $belakangs = "limabelas";
+            $belakangs = "lima belas";
         } else if ($cek == '16') {
-            $belakangs = "enambelas";
+            $belakangs = "enam belas";
         } else if ($cek == '17') {
-            $belakangs = "tujuhbelas";
+            $belakangs = "tujuh belas";
         } else if ($cek == '18') {
-            $belakangs = "delapanbelas";
+            $belakangs = "delapan belas";
         } else if ($cek == '19') {
-            $belakangs = "sembilanbelas";
+            $belakangs = "sembilan belas";
         }
     } else {
         for ($x = 1; $x < $length; $x++) {
