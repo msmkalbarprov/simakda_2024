@@ -543,6 +543,48 @@ function terbilang($number)
     return $hasil;
 }
 
+function terbilang1($number)
+{
+    if (!is_numeric($number)) {
+        return false;
+    }
+
+    if ($number < 0) {
+        $hasil = "Minus " . trim(depan($number));
+        $poin = trim(belakang1($number));
+    } elseif ($number == 0) {
+        $hasil = "Nol";
+        $poin = trim(belakang1($number));
+    } else {
+        $poin = trim(belakang1($number));
+        $hasil = trim(depan($number));
+    }
+
+    if ($poin) {
+        $hasil = $hasil . " rupiah " . $poin . " sen";
+    } else {
+        $hasil = $hasil . " rupiah ";
+    }
+    return $hasil;
+}
+
+function belakang1($number)
+{
+    $number = abs($number);
+    $number = stristr($number, ".");
+    $nomor_belakang = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan");
+
+    $belakangs = "";
+    $length = strlen($number);
+    $i = 1;
+    while ($i < $length) {
+        $get = substr($number, $i, 1);
+        $i++;
+        $belakangs .= " " . $nomor_belakang[$get];
+    }
+    return $belakangs;
+}
+
 function depan($number)
 {
     $number = abs($number);

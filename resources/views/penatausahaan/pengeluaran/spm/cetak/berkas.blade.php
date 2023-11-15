@@ -225,7 +225,7 @@
                             </tr>
                             <tr>
                                 <td style="vertical-align: text-top">(terbilang)</td>
-                                <td colspan="3"><i>{{ terbilang($beban1->nilai) }}</i></td>
+                                <td colspan="3"><i>{{ terbilang1($beban1->nilai) }}</i></td>
                             </tr>
                             <tr style="border-top: 1px solid black">
                                 <td style="height:20px">Nomor dan Tanggal SPP :</td>
@@ -305,7 +305,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4" style="height:20px;text-align:left">Uang Sejumlah :
-                                    <i>{{ terbilang($beban1->nilai - $total_potongan - $total_potongan1) }}</i>
+                                    <i>{{ terbilang1($beban1->nilai - $total_potongan - $total_potongan1) }}</i>
                                 </td>
                             </tr>
                         </tbody>
