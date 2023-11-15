@@ -3388,7 +3388,7 @@
         if (tahun_n==''){
             tahun_n=0;
         }else{
-            tahun_n=angka(tahun_n);
+            tahun_n=rupiah(tahun_n);
         }
         if (korplus==''){
             korplus=0;
@@ -3506,7 +3506,7 @@
             return;
         } 
         
-        alert(sal_awal);
+        // alert(tahun_n);
 
         if(status_input == "tambah"){
             $(document).ready(function(){
