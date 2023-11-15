@@ -76,7 +76,7 @@
                 {{ $no_spp }} Tanggal
                 {{ \Carbon\Carbon::parse($data->tgl_spp)->locale('id')->isoFormat('DD MMMM Y') }} yang kami ajukan
                 sebesar
-                {{ rupiah($data->nilai) }} ({{ ucwords(terbilang($data->nilai)) }})
+                {{ rupiah($data->nilai) }} ({{ ucwords(terbilang1($data->nilai)) }})
             </td>
         </tr>
         <tr>

@@ -543,6 +543,91 @@ function terbilang($number)
     return $hasil;
 }
 
+function terbilang1($number)
+{
+    if (!is_numeric($number)) {
+        return false;
+    }
+
+    if ($number < 0) {
+        $hasil = "Minus " . trim(depan($number));
+        $poin = trim(belakang1($number));
+    } elseif ($number == 0) {
+        $hasil = "Nol";
+        $poin = trim(belakang1($number));
+    } else {
+        $poin = trim(belakang1($number));
+        $hasil = trim(depan($number));
+    }
+
+    if ($poin) {
+        $hasil = $hasil . " rupiah " . $poin . " sen";
+    } else {
+        $hasil = $hasil . " rupiah ";
+    }
+    return $hasil;
+}
+
+function belakang1($number)
+{
+    $number = abs($number);
+    // return $number;
+    $number = stristr($number, ".");
+    // return $number;
+    $cek = str_replace('.', '', $number);
+    // return $cek;
+    $nomor_belakang = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan");
+
+    $belakangs = "";
+    $length = strlen($number);
+
+    if ($cek === "01" || $cek === "02" || $cek === "03" || $cek === "04" || $cek === "05" || $cek === "06" || $cek === "07" || $cek === "08" || $cek === "09") {
+        $i = 1;
+        while ($i < $length) {
+            $get = substr($number, $i, 1);
+            $i++;
+            $belakangs .= " " . $nomor_belakang[$get];
+        }
+    } else if ($cek === "10" || $cek === "11" || $cek === "12" || $cek === "13" || $cek === "14" || $cek === "15" || $cek === "16" || $cek === "17" || $cek === "18" || $cek === "19") {
+        if ($cek == '10') {
+            $belakangs = "sepuluh";
+        } else if ($cek == '11') {
+            $belakangs = "sebelas";
+        } else if ($cek == '12') {
+            $belakangs = "dua belas";
+        } else if ($cek == '13') {
+            $belakangs = "tiga belas";
+        } else if ($cek == '14') {
+            $belakangs = "empat belas";
+        } else if ($cek == '15') {
+            $belakangs = "lima belas";
+        } else if ($cek == '16') {
+            $belakangs = "enam belas";
+        } else if ($cek == '17') {
+            $belakangs = "tujuh belas";
+        } else if ($cek == '18') {
+            $belakangs = "delapan belas";
+        } else if ($cek == '19') {
+            $belakangs = "sembilan belas";
+        }
+    } else {
+        for ($x = 1; $x < $length; $x++) {
+            $get[] = substr($number, $x, 1);
+        }
+        if (empty($get)) {
+            $belakangs = "";
+        } else {
+            if (empty($get[1])) {
+                $belakangs = $nomor_belakang[$get[0]] . " puluh ";
+            } else {
+                $belakangs = $nomor_belakang[$get[0]] . " puluh " . $nomor_belakang[$get[1]];
+            }
+        }
+    }
+
+    return $belakangs;
+}
+
 function depan($number)
 {
     $number = abs($number);

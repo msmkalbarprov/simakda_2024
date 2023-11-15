@@ -170,7 +170,7 @@
         <tr>
             <td style="text-align: center">(terbilang)</td>
             <td></td>
-            <td style="font-style: italic">({{ ucwords(terbilang($cari_data->spd - $cari_data->spp)) }})</td>
+            <td style="font-style: italic">({{ ucwords(terbilang1($cari_data->spd - $cari_data->spp)) }})</td>
         </tr>
         {{-- Untuk Keperluan Bulan --}}
         <tr>
@@ -187,7 +187,7 @@
         <tr>
             <td style="text-align: center">(terbilang)</td>
             <td></td>
-            <td style="font-style: italic">({{ ucwords(terbilang($cari_data->nilai)) }})</td>
+            <td style="font-style: italic">({{ ucwords(terbilang1($cari_data->nilai)) }})</td>
         </tr>
         {{-- Nama Bendahara Pengeluaran --}}
         @if ($beban == '4')

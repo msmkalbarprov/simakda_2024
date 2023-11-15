@@ -162,7 +162,7 @@
         <tr>
             <td style="width:400px;text-align:center">(terbilang)</td>
             <td>:</td>
-            <td style="font-style: italic">{{ ucwords(terbilang($data_spp->nilai)) }}</td>
+            <td style="font-style: italic">{{ ucwords(terbilang1($data_spp->nilai)) }}</td>
         </tr>
         {{-- Untuk Keperluan --}}
         <tr>

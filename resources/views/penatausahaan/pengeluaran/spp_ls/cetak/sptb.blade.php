@@ -167,7 +167,7 @@
                         {{ strtoupper($lcbeban) }} Nomor
                         {{ $no_spp }} Tanggal {{ tanggal($data->tgl_spp) }} yang kami ajukan sebesar
                         {{ rupiah($data->nilai) }}
-                        ({{ terbilang($data->nilai) }})</td>
+                        ({{ terbilang1($data->nilai) }})</td>
                 </tr>
                 <tr>
                     <td>Untuk Keperluan OPD : {{ $data->nm_skpd }} Tahun Anggaran
