@@ -173,7 +173,7 @@
                 <tr>
                     <td colspan="2" class="border">Uang sebesar Rp</td>
                     <td colspan="4" class="bottom1">: Rp. {{ rupiah($nilai_sp2d->nilai) }}
-                        ({{ terbilang($nilai_sp2d->nilai) }})</td>
+                        ({{ terbilang1($nilai_sp2d->nilai) }})</td>
                 </tr>
                 <tr>
                     <td class="kiri">Kepada</td>
@@ -420,7 +420,7 @@
                 </tr>
                 <tr>
                     <td colspan="4" class="border kanan"><strong>Uang Sejumlah :
-                            ({{ terbilang($total->nilai - ($total_potongan1->nilai + $total_potongan2->nilai)) }})</strong>
+                            ({{ terbilang1($total->nilai - ($total_potongan1->nilai + $total_potongan2->nilai)) }})</strong>
                     </td>
                 </tr>
             </table>
