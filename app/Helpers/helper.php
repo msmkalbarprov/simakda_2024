@@ -573,7 +573,7 @@ function belakang1($number)
     $number = abs($number);
     // return $number;
     $number = stristr($number, ".");
-
+    // return $number;
     $cek = str_replace('.', '', $number);
     // return $cek;
     $nomor_belakang = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan");
@@ -581,19 +581,48 @@ function belakang1($number)
     $belakangs = "";
     $length = strlen($number);
 
-    $angka_khusus = array("01", "02", "03", "04", "05", "06", "07", "08", "09");
-    if (in_array($cek, $angka_khusus)) {
+    if ($cek === "01" || $cek === "02" || $cek === "03" || $cek === "04" || $cek === "05" || $cek === "06" || $cek === "07" || $cek === "08" || $cek === "09") {
         $i = 1;
         while ($i < $length) {
             $get = substr($number, $i, 1);
             $i++;
             $belakangs .= " " . $nomor_belakang[$get];
         }
+    } else if ($cek === "10" || $cek === "11" || $cek === "12" || $cek === "13" || $cek === "14" || $cek === "15" || $cek === "16" || $cek === "17" || $cek === "18" || $cek === "19") {
+        if ($cek == '10') {
+            $belakangs = "sepuluh";
+        } else if ($cek == '11') {
+            $belakangs = "sebelas";
+        } else if ($cek == '12') {
+            $belakangs = "duabelas";
+        } else if ($cek == '13') {
+            $belakangs = "tigabelas";
+        } else if ($cek == '14') {
+            $belakangs = "empatbelas";
+        } else if ($cek == '15') {
+            $belakangs = "limabelas";
+        } else if ($cek == '16') {
+            $belakangs = "enambelas";
+        } else if ($cek == '17') {
+            $belakangs = "tujuhbelas";
+        } else if ($cek == '18') {
+            $belakangs = "delapanbelas";
+        } else if ($cek == '19') {
+            $belakangs = "sembilanbelas";
+        }
     } else {
         for ($x = 1; $x < $length; $x++) {
             $get[] = substr($number, $x, 1);
         }
-        $belakangs = $nomor_belakang[$get[0]] . " puluh " . $nomor_belakang[$get[1]];
+        if (empty($get)) {
+            $belakangs = "";
+        } else {
+            if (empty($get[1])) {
+                $belakangs = $nomor_belakang[$get[0]] . " puluh ";
+            } else {
+                $belakangs = $nomor_belakang[$get[0]] . " puluh " . $nomor_belakang[$get[1]];
+            }
+        }
     }
 
     return $belakangs;
