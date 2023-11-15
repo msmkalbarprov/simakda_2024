@@ -57,7 +57,7 @@
                                 data-placeholder="Silahkan Pilih">
                                 <option value="" disabled selected>...Pilih... </option>
                                 @foreach ($daftar_bic as $bic)
-                                    <option value="{{ $bic->bic }}">{{ $bic->bic }}</option>
+                                    <option value="{{ $bic->bic }}">{{ $bic->bic }} | {{ $bic->nama_bank }}</option>
                                 @endforeach
                             </select>
                         </div>
