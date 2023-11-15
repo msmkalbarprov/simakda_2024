@@ -571,17 +571,31 @@ function terbilang1($number)
 function belakang1($number)
 {
     $number = abs($number);
+    // return $number;
     $number = stristr($number, ".");
+
+    $cek = str_replace('.', '', $number);
+    // return $cek;
     $nomor_belakang = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan");
 
     $belakangs = "";
     $length = strlen($number);
-    $i = 1;
-    while ($i < $length) {
-        $get = substr($number, $i, 1);
-        $i++;
-        $belakangs .= " " . $nomor_belakang[$get];
+
+    $angka_khusus = array("01", "02", "03", "04", "05", "06", "07", "08", "09");
+    if (in_array($cek, $angka_khusus)) {
+        $i = 1;
+        while ($i < $length) {
+            $get = substr($number, $i, 1);
+            $i++;
+            $belakangs .= " " . $nomor_belakang[$get];
+        }
+    } else {
+        for ($x = 1; $x < $length; $x++) {
+            $get[] = substr($number, $x, 1);
+        }
+        $belakangs = $nomor_belakang[$get[0]] . " puluh " . $nomor_belakang[$get[1]];
     }
+
     return $belakangs;
 }
 
