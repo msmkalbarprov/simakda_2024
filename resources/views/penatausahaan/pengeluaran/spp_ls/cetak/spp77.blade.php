@@ -107,7 +107,7 @@
         <tr style="border:1px solid black">
             <td colspan="3"></td>
             <td>Sebesar: Rp {{ rupiah($nilaispd->nilai) }} <span
-                    style="font-style: italic">({{ terbilang($nilaispd->nilai) }})</span></td>
+                    style="font-style: italic">({{ terbilang1($nilaispd->nilai) }})</span></td>
         </tr>
     </table>
     <br>

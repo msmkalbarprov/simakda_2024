@@ -74,7 +74,8 @@
     <br>
     <table class="rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif">
         <tr>
-            <td>Terbilang: ## <span style="font-style:italic">({{ ucwords(terbilang($data_spp->nilaisub)) }})</span> ##
+            <td>Terbilang: ## <span style="font-style:italic">({{ ucwords(terbilang1($data_spp->nilaisub)) }})</span>
+                ##
             </td>
         </tr>
     </table>

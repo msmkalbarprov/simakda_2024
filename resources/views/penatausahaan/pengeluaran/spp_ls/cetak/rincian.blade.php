@@ -173,7 +173,7 @@
             <td style="height: 5px"></td>
         </tr>
         <tr>
-            <td>Terbilang : {{ ucwords(terbilang($total)) }}</td>
+            <td>Terbilang : {{ ucwords(terbilang1($total)) }}</td>
         </tr>
     </table>
 
