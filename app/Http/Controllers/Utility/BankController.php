@@ -14,8 +14,7 @@ class BankController extends Controller
     {
         $data = [
             'daftar_bic' => DB::table('ms_bank_online')
-                ->select('bic')
-                ->groupBy('bic')
+                ->select('bic', 'nama_bank')
                 ->get()
         ];
 
