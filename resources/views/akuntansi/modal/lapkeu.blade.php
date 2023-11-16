@@ -13,11 +13,14 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">Pilih</label><br>
-                        <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="pilihan0"
-                                value="keseluruhan">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
+                        @if (Auth::user()->is_admin == '1')
+                            <div class=" form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="pilihan0"
+                                    value="keseluruhan">
+                                <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                            </div>
+                        @else
+                        @endif
                         <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="pilihan1"
                                 value="skpd">
@@ -522,11 +525,14 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">Pilih</label><br>
-                        <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihan_semester" id="pilihan0_semester"
-                                value="keseluruhan">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
+                        @if (Auth::user()->is_admin == '1')
+                            <div class=" form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pilihan_semester" id="pilihan0_semester"
+                                    value="keseluruhan">
+                                <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                            </div>
+                        @else
+                        @endif
                         <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihan_semester" id="pilihan1_semester"
                                 value="skpd">
@@ -686,11 +692,14 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">Pilih</label><br>
-                        <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihan_semesterrinci" id="pilihan0_semesterrinci"
-                                value="keseluruhan">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
+                        @if (Auth::user()->is_admin == '1')
+                            <div class=" form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pilihan_semesterrinci" id="pilihan0_semesterrinci"
+                                    value="keseluruhan">
+                                <label class="form-check-label" for="pilihan">Keseluruhan</label>
+                            </div>
+                        @else
+                        @endif
                         <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihan_semesterrinci" id="pilihan1_semesterrinci"
                                 value="skpd">
