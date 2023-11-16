@@ -313,120 +313,120 @@ class calkController extends Controller
         $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran from trhrka where $skpd_clause status=1 order by tgl_dpa DESC"))->first();
         $jns_ang = $sql_ang->anggaran;
         
-            //lra
-                $jum_pend = collect(DB::select("SELECT SUM(anggaran) as anggaran,SUM(real_spj)as nilai FROM data_realisasi_n_at($bulan,'$jns_ang',$thn_ang) WHERE $skpd_clause left(kd_rek6,1)='4' "))->first();
-                $jum_bel = collect(DB::select("SELECT SUM(anggaran) as anggaran,SUM(real_spj)as nilai FROM data_realisasi_n_at($bulan,'$jns_ang',$thn_ang) WHERE $skpd_clause left(kd_rek6,1)='5' "))->first();
-            //lo
-                $jum_pend_lo = collect(DB::select("SELECT SUM(kredit-debet) as nilai 
-                    FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE $skpd_clause
-                    ( left(kd_rek6,4) in ('7101','7102','7103','7104','7202','7301','7302','7303') or
-                      left(kd_rek6,6) in ('720102','720103','720104','720105') or
-                      left(kd_rek6,8) in ('72010101','72010102','72010103','72010104')
-                    ) 
-                    and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
-                $jum_beban_lo = collect(DB::select("SELECT SUM(debet-kredit) as nilai 
-                    FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                    WHERE $skpd_clause 
-                    ( left(kd_rek6,1) in ('8')) 
-                    and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
-                $jum_surdef_lo = collect(DB::select("SELECT SUM(kredit-debet) as nilai 
-                    FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
-                    WHERE $skpd_clause 
-                    ( left(kd_rek6,4) in ('7101','7102','7103','7104','7301','7302','7303','8101','8102','8103','8104','8105','8106','8201','8202','8203','8204','8205','8206','8301','8302','8401') OR
-                      left(kd_rek6,5) in ('720102','720102','720104','720105','720202')
-                    ) 
-                    and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
-            //neraca
-                $aset = collect(DB::select("SELECT isnull(sum(debet-kredit),0) nilai 
-                    from trhju a inner join trdju b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-                    where $skpd_clause  left(kd_rek6,1)=1 and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan'   AND kd_skpd<>'4.02.02.02'"))->first();
-                $aset_lancar = collect(DB::select("SELECT SUM(b.debet-b.kredit) AS nilai 
-                    from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
-                    where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
-                                    (kd_rek6 like '1101%' or kd_rek6 like '1102%'  or 
-                                    kd_rek6 like '1103%' or kd_rek6 like '1104%'  or 
-                                    kd_rek6 like '1105%' or kd_rek6 like '1106%'  or 
-                                    kd_rek6 like '1107%' or kd_rek6 like '1108%' or 
-                                    kd_rek6 like '1109%' or kd_rek6 like '1110%'or 
-                                    kd_rek6 like '1111%' or kd_rek6 like '1112%') "))->first();
-                $aset_lancar = collect(DB::select("SELECT SUM(b.debet-kredit) AS nilai 
-                    from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
-                    where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
-                                    (kd_rek6 like '13%') "))->first();
-                $aset_tetap = collect(DB::select("SELECT SUM(b.debet-kredit) AS nilai 
-                    from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
-                    where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
-                                    (kd_rek6 like '150101%' or kd_rek6 like '150102%' or 
-                                    kd_rek6 like '1502%' or kd_rek6 like '1503%' or 
-                                    kd_rek6 like '1504%' or kd_rek6 like '1505%' or 
-                                    kd_rek6 like '1506%') "))->first();
-                $kewajiban = collect(DB::select("SELECT SUM(b.kredit-debet) AS nilai 
-                    from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
-                    where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
-                                    (kd_rek6 like '2%' ) "))->first();
-                $ekuitas_rkppkd = collect(DB::select("SELECT SUM(nilai) as nilai 
-                    FROM data_ekuitas_dgn_rkppkd($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
-                    WHERE $unit_clause "))->first();
-                $eku_tang = collect(DB::select("SELECT SUM(nilai) as nilai 
-                    FROM data_eku_tang($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
-                    WHERE $unit_clause "))->first();
-                $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
-                        from(
-                        --1 ekuitas_awal
-                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) WHERE $unit_clause
+        //lra
+            $jum_pend = collect(DB::select("SELECT SUM(anggaran) as anggaran,SUM(real_spj)as nilai FROM data_realisasi_n_at($bulan,'$jns_ang',$thn_ang) WHERE $skpd_clause left(kd_rek6,1)='4' "))->first();
+            $jum_bel = collect(DB::select("SELECT SUM(anggaran) as anggaran,SUM(real_spj)as nilai FROM data_realisasi_n_at($bulan,'$jns_ang',$thn_ang) WHERE $skpd_clause left(kd_rek6,1)='5' "))->first();
+        //lo
+            $jum_pend_lo = collect(DB::select("SELECT SUM(kredit-debet) as nilai 
+                FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                WHERE $skpd_clause
+                ( left(kd_rek6,4) in ('7101','7102','7103','7104','7202','7301','7302','7303') or
+                  left(kd_rek6,6) in ('720102','720103','720104','720105') or
+                  left(kd_rek6,8) in ('72010101','72010102','72010103','72010104')
+                ) 
+                and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
+            $jum_beban_lo = collect(DB::select("SELECT SUM(debet-kredit) as nilai 
+                FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                WHERE $skpd_clause 
+                ( left(kd_rek6,1) in ('8')) 
+                and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
+            $jum_surdef_lo = collect(DB::select("SELECT SUM(kredit-debet) as nilai 
+                FROM trdju_calk a inner join trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                WHERE $skpd_clause 
+                ( left(kd_rek6,4) in ('7101','7102','7103','7104','7301','7302','7303','8101','8102','8103','8104','8105','8106','8201','8202','8203','8204','8205','8206','8301','8302','8401') OR
+                  left(kd_rek6,5) in ('720102','720102','720104','720105','720202')
+                ) 
+                and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan "))->first();
+        //neraca
+            $aset = collect(DB::select("SELECT isnull(sum(debet-kredit),0) nilai 
+                from trhju a inner join trdju b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+                where $skpd_clause  left(kd_rek6,1)=1 and left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan'   AND kd_skpd<>'4.02.02.02'"))->first();
+            $aset_lancar = collect(DB::select("SELECT SUM(b.debet-b.kredit) AS nilai 
+                from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                (kd_rek6 like '1101%' or kd_rek6 like '1102%'  or 
+                                kd_rek6 like '1103%' or kd_rek6 like '1104%'  or 
+                                kd_rek6 like '1105%' or kd_rek6 like '1106%'  or 
+                                kd_rek6 like '1107%' or kd_rek6 like '1108%' or 
+                                kd_rek6 like '1109%' or kd_rek6 like '1110%'or 
+                                kd_rek6 like '1111%' or kd_rek6 like '1112%') "))->first();
+            $aset_tetap = collect(DB::select("SELECT SUM(b.debet-kredit) AS nilai 
+                from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                (kd_rek6 like '13%') "))->first();
+            $aset_lainnya = collect(DB::select("SELECT SUM(b.debet-kredit) AS nilai 
+                from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                (kd_rek6 like '150101%' or kd_rek6 like '150102%' or 
+                                kd_rek6 like '1502%' or kd_rek6 like '1503%' or 
+                                kd_rek6 like '1504%' or kd_rek6 like '1505%' or 
+                                kd_rek6 like '1506%') "))->first();
+            $kewajiban = collect(DB::select("SELECT SUM(b.kredit-debet) AS nilai 
+                from trhju_calk a inner join trdju_calk b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd 
+                where $skpd_clause left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                (kd_rek6 like '2%' ) "))->first();
+            $ekuitas_rkppkd = collect(DB::select("SELECT SUM(nilai) as nilai 
+                FROM data_ekuitas_dgn_rkppkd($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
+                WHERE $unit_clause "))->first();
+            $eku_tang = collect(DB::select("SELECT SUM(nilai) as nilai 
+                FROM data_eku_tang($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
+                WHERE $unit_clause "))->first();
+            $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
+                    from(
+                    --1 ekuitas_awal
+                    select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) WHERE $unit_clause
+                    union all
+                    --1 ekuitas lalu
+                    select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) WHERE $unit_clause
+                    )a"))->first();
+            $surplus_lo3 = collect(DB::select("SELECT SUM(nilai) as nilai FROM data_surplus_lo3($bulan,$thn_ang) WHERE  $unit_clause"))->first();
+            $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                    from(
+                        --7 nilai lpe2
+                        select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
+                        from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                        where $skpd_clause reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan 
                         union all
-                        --1 ekuitas lalu
-                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) WHERE $unit_clause
-                        )a"))->first();
-                $surplus_lo3 = collect(DB::select("SELECT SUM(nilai) as nilai FROM data_surplus_lo3($bulan,$thn_ang) WHERE  $unit_clause"))->first();
-                $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
-                        from(
-                            --7 nilai lpe2
-                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
-                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where $skpd_clause reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan 
-                            union all
-                            --7 nilai lpe2 lalu
-                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
-                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
-                            where $skpd_clause reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang_1 
-                        )a"))->first();
-                $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT SUM(nilai) as nilai 
-                    FROM data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
-                    WHERE $unit_clause "))->first();
-            $data = [
-            'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
-            'ttd_nih'       => $ttd_nih,
-            'kd_skpd'       => $kd_skpd,
-            'nm_skpd'       => $nm_skpd,
-            'lampiran'      => $lampiran,
-            'judul'         => $judul,
-            'jenis'         => $jenis,
-            'tempat_tanggal'=> $tempat_tanggal,
-            'tanggal'       => $tanggal,
-            'jum_pend'      => $jum_pend,
-            'jum_bel'       => $jum_bel,
-            'jum_pend_lo'   => $jum_pend_lo,
-            'jum_beban_lo'  => $jum_beban_lo,
-            'jum_surdef_lo' => $jum_surdef_lo,
-            'aset'          => $aset,
-            'aset_lancar'   => $aset_lancar,
-            'aset_tetap'    => $aset_tetap,
-            'aset_lainnya'  => $aset_lainnya,
-            'kewajiban'     => $kewajiban,
-            'ekuitas_rkppkd'=> $ekuitas_rkppkd,
-            'eku_tang'      => $eku_tang,
-            'ekuitas_awal'  => $ekuitas_awal,
-            'surplus_lo3'   => $surplus_lo3,
-            'lain'          => $lain,
-            'ekuitas_tanpa_rkppkd' => $ekuitas_tanpa_rkppkd,
-            'spasi'         => $spasi,
-            'cetak'         => $cetak,
-            'thn_ang'       => $thn_ang  
-            ];
-        
-            $view =  view('akuntansi.cetakan.calk.ringkasan_lk')->with($data);
+                        --7 nilai lpe2 lalu
+                        select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
+                        from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                        where $skpd_clause reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang_1 
+                    )a"))->first();
+            $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT SUM(nilai) as nilai 
+                FROM data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') 
+                WHERE $unit_clause "))->first();
+        $data = [
+        'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+        'ttd_nih'       => $ttd_nih,
+        'kd_skpd'       => $kd_skpd,
+        'nm_skpd'       => $nm_skpd,
+        'lampiran'      => $lampiran,
+        'judul'         => $judul,
+        'jenis'         => $jenis,
+        'tempat_tanggal'=> $tempat_tanggal,
+        'tanggal'       => $tanggal,
+        'jum_pend'      => $jum_pend,
+        'jum_bel'       => $jum_bel,
+        'jum_pend_lo'   => $jum_pend_lo,
+        'jum_beban_lo'  => $jum_beban_lo,
+        'jum_surdef_lo' => $jum_surdef_lo,
+        'aset'          => $aset,
+        'aset_lancar'   => $aset_lancar,
+        'aset_tetap'    => $aset_tetap,
+        'aset_lainnya'  => $aset_lainnya,
+        'kewajiban'     => $kewajiban,
+        'ekuitas_rkppkd'=> $ekuitas_rkppkd,
+        'eku_tang'      => $eku_tang,
+        'ekuitas_awal'  => $ekuitas_awal,
+        'surplus_lo3'   => $surplus_lo3,
+        'lain'          => $lain,
+        'ekuitas_tanpa_rkppkd' => $ekuitas_tanpa_rkppkd,
+        'spasi'         => $spasi,
+        'cetak'         => $cetak,
+        'thn_ang'       => $thn_ang  
+        ];
+    
+        $view =  view('akuntansi.cetakan.calk.ringkasan_lk')->with($data);
         
         
         

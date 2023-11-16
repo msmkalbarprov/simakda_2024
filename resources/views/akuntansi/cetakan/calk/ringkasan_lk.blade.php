@@ -65,16 +65,16 @@
         </TR>
         <TR>
             @php
-                ang_pend=$jum_pend->anggaran;
-                real_pend=$jum_pend->nilai;
+                $ang_pend=$jum_pend->anggaran;
+                $real_pend=$jum_pend->nilai;
                 if ($ang_pend==0 || $ang_pend==""){
                     $persen_pend=0;
                 }else{
                     $persen_pend=$real_pend/$ang_pend *100;
                 }
                 
-                ang_bel=$jum_bel->anggaran;
-                real_bel=$jum_bel->nilai;
+                $ang_bel=$jum_bel->anggaran;
+                $real_bel=$jum_bel->nilai;
                 if ($ang_bel==0 || $ang_bel==""){
                     $persen_bel=0;
                 }else{
