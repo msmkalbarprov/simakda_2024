@@ -68,8 +68,8 @@
                 <td rowspan="2"  width="5%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Bulan<br>Penetapan</td>
                 <td rowspan="2"  width="8%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Saldo<br>Awal</td>
                 <td colspan="2"  width="10%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Mutasi Tahun {{$lntahunang}}</td>
+                <td rowspan="2"  width="8%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Koreksi BPK<br>{{$lntahunang}}</td>
                 <td rowspan="2"  width="8%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Saldo Akhir Piutang<br>{{$lntahunang}}</td>
-                <td rowspan="2"  width="8%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Koreksi BPK<br>{{$lntahunang}}}}</td>
                 <td rowspan="2"  width="5%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Kualitas<br>Piutang</td>
                 <td rowspan="2" width="15%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Umur Piutang<br>s/d<br> Tahun {{$lntahunang}}</td>
                 <td colspan="2" rowspan="2"  width="10%" bgcolor="#CCCCCC" align="center" style="font-size:12px">Penyisihan Piutang Tak<br>Tertagih {{$lntahunang}}</td>
@@ -90,8 +90,8 @@
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">4</td> 
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">5</td> 
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">6</td> 
-               <td align="center" bgcolor="#CCCCCC" style="font-size:12px">7=(4+5-6)</td> 
-               <td align="center" bgcolor="#CCCCCC" style="font-size:12px">8</td> 
+               <td align="center" bgcolor="#CCCCCC" style="font-size:12px">7</td> 
+               <td align="center" bgcolor="#CCCCCC" style="font-size:12px">8=(4+5-6-7)</td> 
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">9</td> 
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">10</td>
                <td align="center" bgcolor="#CCCCCC" style="font-size:12px">11</td> 
@@ -128,8 +128,8 @@
                        $kurang = $row->kurang;
                        $tambah = $row->tambah;
                        $tahun_n = $row->tahun_n;
-                       $akhir = $sal_awal-$kurang+$tambah+$tahun_n;
                        $koreksi = $row->koreksi;
+                       $akhir = $sal_awal-$kurang+$tambah+$tahun_n+$koreksi;
                        $audited = $akhir+$koreksi;
                        $penyi_piu = $row->penyi_piu;
                        $piu_tahun_lalu = $row->piu_tahun_lalu;
@@ -141,11 +141,11 @@
                        $kualitas_lalu = $row->kualitas_lalu;
                        if($kualitas=='Lancar'){
                             $taksiran="0,5%";
-                            $persenan = 0.0005;
+                            $persenan = 0.005;
                         }
                        elseif($kualitas=='Kurang Lancar'){
                             $taksiran="10%";
-                            $persenan = 0.01;}
+                            $persenan = 0.1;}
                        elseif($kualitas=='Diragukan'){
                                $taksiran="50%";
                                $persenan = 0.5;}
@@ -163,7 +163,7 @@
                                 $penyi_piu=$akhir*$persenan;
                                 $piu_lalu=$piu_lalu-$koreksi;
                        }else if ($skpd=="1.02.0.00.0.00.02.0000" && $lntahunang==2022) {
-                                $koreksi=0;
+                                $koreksi=$koreksi;
                                 $penyi_piu=$akhir*$persenan;
                                 if ($kode=='110616010001' && $tahun<=2020 && $bln<12 ) {
                                     if($kode=='110616010001' && $tahun==2020 && $no_lamp=='4432-1020201'){
@@ -250,8 +250,8 @@
             <td align="center" style="font-size:12px">{{$sal_awal}}</td> 
             <td align="center" style="font-size:12px">{{$tambah}}</td> 
             <td align="center" style="font-size:12px">{{$kurang}}</td> 
-            <td align="center" style="font-size:12px">{{$akhir}}</td> 
             <td align="center" style="font-size:12px">{{$koreksi}}</td> 
+            <td align="center" style="font-size:12px">{{$akhir}}</td> 
             <td align="center" style="font-size:12px">{{$kualitas}}</td> 
             <td align="center" style="font-size:12px">{{$umur_piu}}</td> 
             <td align="center" style="font-size:12px">{{$taksiran}}</td> 
@@ -279,8 +279,8 @@
         <td align="center" style="font-size:12px">{{$tot_sal_awal}}</td> 
         <td align="center" style="font-size:12px">{{$tot_tambah}}</td> 
         <td align="center" style="font-size:12px">{{$tot_kurang}}</td> 
-        <td align="center" style="font-size:12px">{{$tot_akhir}}</td> 
         <td align="center" style="font-size:12px">{{$tot_koreksi}}</td> 
+        <td align="center" style="font-size:12px">{{$tot_akhir}}</td> 
         <td align="center" style="font-size:12px"></td> 
         <td align="center" style="font-size:12px"></td> 
         <td align="center" style="font-size:12px"></td> 
