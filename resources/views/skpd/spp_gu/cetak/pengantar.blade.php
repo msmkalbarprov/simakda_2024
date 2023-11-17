@@ -130,7 +130,7 @@
         <tr>
             <td style="text-align: center">(terbilang)</td>
             <td></td>
-            <td style="font-style: italic">({{ ucwords(terbilang($spp->spd - $spp->spp)) }})</td>
+            <td style="font-style: italic">({{ ucwords(terbilang($totalspd - $spp->spp)) }})</td>
         </tr>
         <tr>
             <td>f. &nbsp;Untuk Keperluan Bulan</td>
