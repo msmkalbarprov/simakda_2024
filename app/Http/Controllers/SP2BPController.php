@@ -167,25 +167,58 @@ class SP2BPController extends Controller
         $tgl_sp2bp = collect(DB::select("SELECT tgl_sp2bp,no_sp2bp,no_sp3b,tgl_sp3b from trhsp3b_blud a inner join trsp2bp b on a.no_sp3b=b.no_sp3bp and a.kd_skpd=b.kd_skpd where no_sp2bp=?", [$no_sp2bp]))
             ->first()
             ->tgl_sp2bp;
-
+        // dd($sp2bp);
         $nomor = explode("/", $sp2bp->no_sp3b)[0];
         if ($nomor == '1') {
-            $nilai = collect(DB::select("SELECT (SELECT sal_awal FROM ms_saldo_awal_blud f WHERE f.kd_skpd=kd_skpd) as sal_awal,SUM(pendapatan) as pendapatan, SUM(belanja) as belanja FROM (
-                SELECT kd_skpd,
-                                    case when left(kd_rek6,1)='4' then isnull(sum(rupiah),0) else 0 end as pendapatan,
-                                    case when left(kd_rek6,1)='5' then isnull(sum(rupiah),0) else 0 end as belanja
-                            from (
-                            SELECT a.kd_skpd,a.nm_skpd,kd_rek6,isnull(c.sal_awal,0)as sal_awal, ISNULL(SUM(b.nilai),0) as rupiah
-                                                        from trhtransout_blud a inner join
-                                                        trdtransout_blud b on a.no_sp2d=b.no_sp2d
-                                                        and a.kd_skpd=b.kd_skpd
-                                                        Left JOIN ms_saldo_awal_blud c on a.kd_skpd=c.kd_skpd
-                                                        Left JOIN trsp2bp d on a.kd_skpd=d.kd_skpd and a.no_sp2d=d.no_sp3bp
-                                                        where a.kd_skpd=?
-                                                             and d.no_sp2bp=?
-                                                        group by a.kd_skpd,a.nm_skpd,kd_rek6,c.sal_awal
-                            ) x group by kd_skpd,left(kd_rek6,1)
-            )Z", [$kd_skpd, $no_sp2bp]))
+            $nilai = collect(DB::select("SELECT
+            kd_skpd,
+                sal_awal,
+                SUM ( pendapatan ) AS pendapatan,
+                SUM ( belanja ) AS belanja
+            FROM
+                (
+                SELECT
+                    kd_skpd,
+                    sal_awal,
+                CASE
+
+                        WHEN LEFT ( kd_rek6, 1 ) = '4' THEN
+                        isnull( SUM ( rupiah ), 0 ) ELSE 0
+                    END AS pendapatan,
+                CASE
+
+                        WHEN LEFT ( kd_rek6, 1 ) = '5' THEN
+                        isnull( SUM ( rupiah ), 0 ) ELSE 0
+                    END AS belanja
+                FROM
+                    (
+                    SELECT
+                        a.kd_skpd,
+                        a.nm_skpd,
+                        kd_rek6,
+                        isnull( c.sal_awal, 0 ) AS sal_awal,
+                        ISNULL( SUM ( b.nilai ), 0 ) AS rupiah
+                    FROM
+                        trhtransout_blud a
+                        INNER JOIN trdtransout_blud b ON a.no_sp2d= b.no_sp2d
+                        AND a.kd_skpd= b.kd_skpd
+                        LEFT JOIN ms_saldo_awal_blud c ON a.kd_skpd= c.kd_skpd
+                        LEFT JOIN trsp2bp d ON a.kd_skpd= d.kd_skpd
+                        AND a.no_sp2d= d.no_sp3bp
+                    WHERE
+                        a.kd_skpd= ?
+                        AND d.no_sp2bp= ?
+                    GROUP BY
+                        a.kd_skpd,
+                        a.nm_skpd,
+                        kd_rek6,
+                        c.sal_awal
+                    ) x
+                GROUP BY
+                    kd_skpd,
+                    x.sal_awal,
+                LEFT ( kd_rek6, 1 )
+                ) Z GROUP BY kd_skpd,sal_awal", [$kd_skpd, $no_sp2bp]))
                 ->first();
 
             $saldo = isset($nilai) ? $nilai->sal_awal : 0;
