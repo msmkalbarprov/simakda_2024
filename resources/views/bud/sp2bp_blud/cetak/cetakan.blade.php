@@ -82,7 +82,7 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 20%;vertical-align:top">
+            <td style="width: 15%;vertical-align:top">
                 Nomor
             </td>
             <td style="vertical-align: top;border-left:hidden">
@@ -96,7 +96,7 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 20%;vertical-align:top;border-top:hidden">
+            <td style="width: 15%;vertical-align:top;border-top:hidden">
                 Tanggal
             </td>
             <td style="vertical-align: top;border-left:hidden;border-top:hidden">
@@ -108,7 +108,7 @@
             <td style="border-left:hidden;border-top:hidden;vertical-align:top">: {{ tahun_anggaran() }}</td>
         </tr>
         <tr>
-            <td style="width: 20%;vertical-align:top;border-top:hidden">
+            <td style="width: 15%;vertical-align:top;border-top:hidden">
                 Kode SKPD
             </td>
             <td style="vertical-align: top;border-left:hidden;border-top:hidden">
@@ -117,7 +117,7 @@
             <td style="border-top:hidden" colspan="2"></td>
         </tr>
         <tr>
-            <td style="width: 20%;vertical-align:top;border-top:hidden">
+            <td style="width: 15%;vertical-align:top;border-top:hidden">
                 Nama SKPD
             </td>
             <td style="vertical-align: top;border-left:hidden;border-top:hidden">
