@@ -622,7 +622,33 @@
                                 name="spasi">
                         </div>
                     </div>
-
+                    {{-- Margin --}}
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kiri_rincian_objek"
+                                name="margin_kiri_rincian_objek" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kanan_rincian_objek"
+                                name="margin_kanan_rincian_objek" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_atas_rincian_objek"
+                                name="margin_atas_rincian_objek" value="15">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_bawah_rincian_objek"
+                                name="margin_bawah_rincian_objek" value="15">
+                        </div>
+                    </div>
 
                     <div class="mb-3 row">
                         <div class="col-md-12 text-center">
@@ -1304,6 +1330,11 @@
             let margin_kiri = document.getElementById('margin_kiri').value;
             let margin_kanan = document.getElementById('margin_kanan').value;
 
+            let margin_atas_rincian_objek = document.getElementById('margin_atas_rincian_objek').value;
+            let margin_bawah_rincian_objek = document.getElementById('margin_bawah_rincian_objek').value;
+            let margin_kiri_rincian_objek = document.getElementById('margin_kiri_rincian_objek').value;
+            let margin_kanan_rincian_objek = document.getElementById('margin_kanan_rincian_objek').value;
+
             let pil_akumulasi = document.getElementById('pil_akumulasi').value;
 
 
@@ -1674,6 +1705,10 @@
                     searchParams.append("tgl_ttd", tgl_ttd2);
                     searchParams.append("jenis_print", jenis_print);
                     searchParams.append("cetak", jns_cetak);
+                    searchParams.append("margin_atas", margin_atas_rincian_objek);
+                    searchParams.append("margin_bawah", margin_bawah_rincian_objek);
+                    searchParams.append("margin_kiri", margin_kiri_rincian_objek);
+                    searchParams.append("margin_kanan", margin_kanan_rincian_objek);
                     window.open(url.toString(), "_blank");
                 } else if (jenis_cetak2 == 'Cetak Kartu Kendali Sub Kegiatan') {
                     let url;

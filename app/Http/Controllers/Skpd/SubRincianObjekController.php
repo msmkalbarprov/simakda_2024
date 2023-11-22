@@ -641,7 +641,11 @@ class SubRincianObjekController extends Controller
         } else if ($cetak == '2') {
             $pdf = PDF::loadHtml($view)
                 ->setOrientation('landscape')
-                ->setPaper('legal');
+                ->setPaper('legal')
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('Sub Rincian Objek.pdf');
         } else {
 
