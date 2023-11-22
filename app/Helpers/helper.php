@@ -1668,6 +1668,7 @@ function sp2dbelanja_up($kd_skpd, $beban, $no_spp, $tgl_spp, $kd_sub_kegiatan)
 
 function sp2dbelanja_gu($kd_skpd, $no_spp, $tgl_spp, $beban, $kd_sub_kegiatan)
 {
+    // return $kd_sub_kegiatan;
     if ($beban == '2') {
         if (substr($kd_skpd, 18, 4) == '0000') {
             $nilai = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
@@ -1687,13 +1688,22 @@ function sp2dbelanja_gu($kd_skpd, $no_spp, $tgl_spp, $beban, $kd_sub_kegiatan)
             })->where(['a.jns_spp' => '2', 'b.kd_bidang' => $kd_skpd])->where('a.no_spp', '!=', $no_spp)->where('c.tgl_sp2d', '<=', $tgl_spp)->select(DB::raw("SUM(b.nilai) as nilai"))->first();
         }
     } else if (in_array($beban, ['3', '4'])) {
-        $nilai = DB::table('trdspp as b')->join('trhspp as a', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->join('trhsp2d as c', function ($join) {
-            $join->on('a.no_spp', '=', 'c.no_spp');
-            $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-        })->where(['a.jns_spp' => '2', 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan])->where('a.no_spp', '!=', $no_spp)->where('c.tgl_sp2d', '<=', $tgl_spp)->select(DB::raw("SUM(b.nilai) as nilai"))->first();
+        $nilai = DB::table('trdspp as b')
+            ->join('trhspp as a', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })->join('trhsp2d as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->where(['a.jns_spp' => '2', 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan])
+            ->where('a.no_spp', '!=', $no_spp)
+            ->where('c.tgl_sp2d', '<=', $tgl_spp)
+            ->where(function ($query) {
+                $query->where('a.sp2d_batal', '')->orWhereNull('a.sp2d_batal');
+            })
+            ->select(DB::raw("SUM(b.nilai) as nilai"))
+            ->first();
     } elseif ($beban == '6') {
         if (substr($kd_skpd, 18, 4) == '0000') {
             $skpd = "LEFT(a.kd_skpd,17)=LEFT('$kd_skpd',17)";
