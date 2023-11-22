@@ -263,6 +263,8 @@
 
                 if (lampiran == 1 || lampiran == 2 || lampiran == 3 ) {
                     url             = new URL("{{ route('calk.cetakan') }}");
+                }else if(lampiran == 5){
+                    url             = new URL("{{ route('calk.cetakan5') }}");
                 }else{
                     url             = new URL("{{ route('calk.cetakan4') }}");
                 }

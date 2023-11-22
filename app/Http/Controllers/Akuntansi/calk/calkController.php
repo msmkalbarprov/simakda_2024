@@ -444,5 +444,75 @@ class calkController extends Controller
         }
     }
 
+    function cetak_calk5(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $kd_skpd        = $request->kd_skpd;  
+        $lampiran       = $request->lampiran;
+        $judul          = $request->judul;
+        $ttd            = $request->ttd;
+        $jenis          = $request->jenis;
+        $skpdunit       = $request->skpdunit;
+        $cetak          = $request->cetak;
+        $tanggal = "29 Desember 2023";
+        $tempat_tanggal = "Pontianak, 29 Desember 2023";
+        $bulan          = 12;
+        $thn_ang        = tahun_anggaran();
+        $thn_ang_1        = $thn_ang-1;
+        $thn_bln        = "$thn_ang$bulan";
+
+        $spasi = "line-height: 1.5em;";
+        if ($skpdunit=="skpd") {
+            $nm_skpd = nama_org($kd_skpd);
+        }else{
+            $nm_skpd = nama_skpd($kd_skpd);
+        }
+        $skpd_clause= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+        $unit_clause= "left(kd_unit,len('$kd_skpd'))='$kd_skpd' ";
+
+        $ttd_nih = collect(DB::select("SELECT nama,nip,jabatan,pangkat FROM ms_ttd where $skpd_clause kode IN ('PA','KPA') and nip='$ttd'"))->first();
+
+        $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran from trhrka where $skpd_clause status=1 order by tgl_dpa DESC"))->first();
+        $jns_ang = $sql_ang->anggaran;
+        
+        $map_lra = DB::select("SELECT * from map_lra_calk order by no");
+        $data = [
+        'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+        'ttd_nih'       => $ttd_nih,
+        'skpd_clause'   => $skpd_clause,
+        'kd_skpd'       => $kd_skpd,
+        'nm_skpd'       => $nm_skpd,
+        'lampiran'      => $lampiran,
+        'judul'         => $judul,
+        'jenis'         => $jenis,
+        'tempat_tanggal'=> $tempat_tanggal,
+        'tanggal'       => $tanggal,
+        'thn_ang_1'       => $thn_ang_1,
+        'map_lra'      => $map_lra,
+        'spasi'         => $spasi,
+        'cetak'         => $cetak,
+        'thn_ang'       => $thn_ang,
+        'jns_ang'       => $jns_ang    
+        ];
+    
+        $view =  view('akuntansi.cetakan.calk.i_lra')->with($data);
+        
+        
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('calk.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="calk.xls"');
+            return $view;
+        }
+    }
+
 
 }
