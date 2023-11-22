@@ -1467,40 +1467,73 @@ function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan)
                                 left(kd_skpd,17)=left(?,17)
                                 and bulan_akhir='12' and tgl_spd<=?", [$kd_skpd, $tgl_spd]))->first();
 
-        if (substr($kd_skpd, 18, 4) == '0000') {
-            $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
-                                AND a.kd_sub_kegiatan=?
-                                and left(a.kd_unit,17)=left(?,17)
-                                and b.tgl_spd <=?
-                                and bulan_akhir='3'
-                                and revisi_ke=?
-                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
-                    UNION ALL
-                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
-                                AND a.kd_sub_kegiatan=?
-                                and left(a.kd_unit,17)=left(?,17)
-                                and b.tgl_spd <=?
-                                and bulan_akhir='6'
-                                and revisi_ke=?
-                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
-                                UNION ALL
-                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
-                                AND a.kd_sub_kegiatan=?
-                                and left(a.kd_unit,17)=left(?,17)
-                                and b.tgl_spd <=?
-                                and bulan_akhir='9'
-                                and revisi_ke=?
-                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
-                                UNION ALL
-                    SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
-                                AND a.kd_sub_kegiatan=?
-                                and left(a.kd_unit,17)=left(?,17)
-                                and b.tgl_spd <=?
-                                and bulan_akhir='12'
-                                and revisi_ke=?
-                                GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
-        } else {
-            $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        // if (substr($kd_skpd, 18, 4) == '0000') {
+        //     $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and left(a.kd_unit,17)=left(?,17)
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='3'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //             UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and left(a.kd_unit,17)=left(?,17)
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='6'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //                         UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and left(a.kd_unit,17)=left(?,17)
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='9'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //                         UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and left(a.kd_unit,17)=left(?,17)
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='12'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
+        // } else {
+        //     $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and a.kd_unit=?
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='3'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //             UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and a.kd_unit=?
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='6'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //                         UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and a.kd_unit=?
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='9'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd
+        //                         UNION ALL
+        //             SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
+        //                         AND a.kd_sub_kegiatan=?
+        //                         and a.kd_unit=?
+        //                         and b.tgl_spd <=?
+        //                         and bulan_akhir='12'
+        //                         and revisi_ke=?
+        //                         GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
+        // }
+
+        $data_beban = DB::select("SELECT a.no_spd, a.kd_sub_kegiatan, b.tgl_spd, SUM(a.nilai) as nilai FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = '5'
                                 AND a.kd_sub_kegiatan=?
                                 and a.kd_unit=?
                                 and b.tgl_spd <=?
@@ -1531,7 +1564,6 @@ function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan)
                                 and bulan_akhir='12'
                                 and revisi_ke=?
                                 GROUP BY a.no_spd, a.kd_sub_kegiatan, b.tgl_spd", [$kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi1->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi2->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi3->revisi, $kd_sub_kegiatan, $kd_skpd, $tgl_spd, $revisi4->revisi]);
-        }
 
         // $beban1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi1->revisi1, 'bulan_akhir' => '3', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan');
         // $beban2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->where(['b.jns_beban' => '5', 'revisi_ke' => $revisi2->revisi2, 'bulan_akhir' => '6', 'a.kd_unit' => $kd_skpd, 'a.kd_sub_kegiatan' => $kd_sub_kegiatan])->where(DB::raw("LEFT(a.kd_unit,17)"), DB::raw("LEFT('$kd_skpd', 17)"))->where('b.tgl_spd', '<=', $tgl_spd)->groupBy('a.no_spd', 'b.tgl_spd', 'a.kd_sub_kegiatan')->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"), 'a.kd_sub_kegiatan')->unionAll($beban1);
