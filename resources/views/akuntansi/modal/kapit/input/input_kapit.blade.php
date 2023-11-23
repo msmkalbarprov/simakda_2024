@@ -26,7 +26,7 @@
                     <input class="form-control" type="text" id="kapit_input"  style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                 </div>
                 <div class="col-md-6">
-                    <label for="trans_input" class="form-label">Anggaran</label>
+                    <label for="trans_input" class="form-label">Nilai Trans</label>
                     <input class="form-control" type="text" id="trans_input"  style="width: 200px;text-align: right;" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" />
                 </div>
                 <div class="col-md-12">
