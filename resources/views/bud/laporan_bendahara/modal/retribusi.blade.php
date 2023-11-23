@@ -6,6 +6,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                {{-- SKPD --}}
+                <div class="mb-3 row">
+                    <label for="kd_skpd" class="form-label">SKPD</label>
+                    <div class="col-md-12">
+                        <select class="form-control select2-retribusi" style=" width: 100%;" id="kd_skpd_retribusi">
+                            <option value="" disabled selected>Silahkan Pilih</option>
+                            <option value="-">Semua SKPD</option>
+                            @foreach ($daftar_skpd as $skpd)
+                                <option value="{{ $skpd->kd_skpd }}" data-nama="{{ $skpd->nm_skpd }}">
+                                    {{ $skpd->kd_skpd }} | {{ $skpd->nm_skpd }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 {{-- Tanggal --}}
                 <div class="mb-3 row">
                     <div class="col-md-6">

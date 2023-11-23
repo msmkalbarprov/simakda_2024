@@ -1049,12 +1049,17 @@
         });
 
         $('.cetak_retribusi').on('click', function() {
+            let kd_skpd = document.getElementById('kd_skpd_retribusi').value;
             let tgl = document.getElementById('tgl_retribusi').value;
             let halaman = document.getElementById('halaman_retribusi').value;
             let spasi = document.getElementById('spasi_retribusi').value;
             let ttd = document.getElementById('ttd_retribusi').value;
             let jenis_print = $(this).data("jenis");
 
+            if (!kd_skpd) {
+                alert('Silahkan pilih SKPD');
+                return;
+            }
             if (!tgl) {
                 alert("Silahkan Pilih Tanggal!");
                 return;
@@ -1062,6 +1067,7 @@
 
             let url = new URL("{{ route('laporan_bendahara_umum.retribusi') }}");
             let searchParams = url.searchParams;
+            searchParams.append("kd_skpd", kd_skpd);
             searchParams.append("tgl", tgl);
             searchParams.append("halaman", halaman);
             searchParams.append("spasi", spasi);

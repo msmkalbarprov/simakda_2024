@@ -2842,11 +2842,20 @@ class BendaharaUmumDaerahController extends Controller
 
     public function retribusi(Request $request)
     {
+        $kd_skpd = $request->kd_skpd;
         $tgl = $request->tgl;
         $halaman = $request->halaman;
         $spasi = $request->spasi;
         $ttd = $request->ttd;
         $jenis_print = $request->jenis_print;
+
+        if ($kd_skpd == '-') {
+            $and = '';
+            $and1 = '';
+        } else {
+            $and = "and a.kd_skpd='$kd_skpd'";
+            $and1 = "and kd_skpd='$kd_skpd'";
+        }
 
         $retribusi = DB::select("SELECT * from(
 					SELECT
@@ -2867,7 +2876,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' $and  AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
 					and a.sumber<>'y'
 					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
 					UNION ALL
@@ -2888,7 +2897,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					WHERE b.tgl_kas=? AND a.kd_skpd !='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND LEFT(a.kd_rek6,6) NOT IN ('410412','410416') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
 					and a.sumber<>'y'
 					UNION ALL
 					SELECT
@@ -2908,7 +2917,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
 					and a.sumber<>'y'
 					GROUP BY b.no_kas,f.nm_skpd
 					UNION ALL
@@ -2928,7 +2937,7 @@ class BendaharaUmumDaerahController extends Controller
 						trdkasin_ppkd a
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
-					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
+					WHERE b.tgl_kas=? AND a.kd_skpd ='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102','4103','4104','4201','4202') AND LEFT(a.kd_rek6,5) NOT IN ('41407') AND a.kd_rek6 NOT IN ('420101040001','420101040002','420101040003')
 					and a.sumber<>'y'
 
 					UNION ALL
@@ -2947,7 +2956,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003')
+							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -2965,7 +2974,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal = ?
-							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003')
+							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1
 					) a
 
 					order by cast(no_kas as int),urut", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
@@ -2989,7 +2998,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas <=? AND a.kd_skpd !='1.20.15.17'  AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
+					WHERE b.tgl_kas <=? AND a.kd_skpd !='1.20.15.17' $and  AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
 					GROUP BY b.no_kas,nm_pengirim, f.nm_skpd
 					UNION ALL
 					SELECT
@@ -3009,7 +3018,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					LEFT JOIN ms_pengirim e ON b.sumber = e.kd_pengirim and e.kd_skpd=b.kd_skpd
-					WHERE b.tgl_kas<=? AND a.kd_skpd !='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
+					WHERE b.tgl_kas<=? AND a.kd_skpd !='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102')  and a.sumber<>'y'
 
 					UNION ALL
 					SELECT
@@ -3029,7 +3038,7 @@ class BendaharaUmumDaerahController extends Controller
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
 					INNER JOIN ms_skpd f ON a.kd_skpd = f.kd_skpd
-					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
 					GROUP BY b.no_kas,f.nm_skpd
 					UNION ALL
 					SELECT
@@ -3048,7 +3057,7 @@ class BendaharaUmumDaerahController extends Controller
 						trdkasin_ppkd a
 					INNER JOIN trhkasin_ppkd b ON a.no_kas = b.no_kas  AND a.kd_skpd=b.kd_skpd
 					INNER JOIN ms_rek6 c ON a.kd_rek6 = c.kd_rek6
-					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
+					WHERE b.tgl_kas<=? AND a.kd_skpd ='1.20.15.17' $and AND LEFT(a.kd_rek6,4) IN ('4102') and a.sumber<>'y'
 
 					UNION ALL
 					SELECT
@@ -3066,7 +3075,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102')
+							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102') $and1
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -3084,7 +3093,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal <= ?
-							AND LEFT(kd_rek,4) IN ('4102')
+							AND LEFT(kd_rek,4) IN ('4102') $and1
 					) a", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
 
         $data = [
