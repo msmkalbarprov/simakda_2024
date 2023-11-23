@@ -1728,7 +1728,7 @@ function sp2dbelanja_gu($kd_skpd, $no_spp, $tgl_spp, $beban, $kd_sub_kegiatan)
                 $join->on('b.no_spp', '=', 'c.no_spp');
                 $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })
-            ->where(['a.jns_spp' => '2', 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan])
+            ->where(['a.jns_spp' => '2', 'a.kd_skpd' => $kd_skpd, 'b.kd_sub_kegiatan' => $kd_sub_kegiatan, 'b.kd_bidang' => $kd_skpd])
             ->where('a.no_spp', '!=', $no_spp)
             ->where('c.tgl_sp2d', '<=', $tgl_spp)
             ->where(function ($query) {
@@ -1736,6 +1736,7 @@ function sp2dbelanja_gu($kd_skpd, $no_spp, $tgl_spp, $beban, $kd_sub_kegiatan)
             })
             ->select(DB::raw("SUM(b.nilai) as nilai"))
             ->first();
+        // return $nilai->nilai;
     } elseif ($beban == '6') {
         if (substr($kd_skpd, 18, 4) == '0000') {
             $skpd = "LEFT(a.kd_skpd,17)=LEFT('$kd_skpd',17)";
