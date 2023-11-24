@@ -297,6 +297,10 @@
         return parseFloat(rupiah) || 0;
     }
 
+    function numfot(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
     function cari_rek3() {
         // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
         $.ajax({
@@ -3115,15 +3119,18 @@
 
         } */
 
-
+        beban_sewa_ni=numfot(beban_sewa_n);
+        beban_sewa_ki = numfot(beban_sewa_k);
+        nilai_bersih_ni = numfot(nilai_bersih_n);
+        nilai_bersih_ki = numfot(nilai_bersih_k);
 
         if(jns_beban_sewa=='sewa'){
-            $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_n));        
-            $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(beban_sewa_k)); 
+            $("#tahun_n").val(beban_sewa_ni);        
+            $("#kurang").val(beban_sewa_ki); 
         }else{
 
-            $("#tahun_n").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_n));        
-            $("#kurang").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai_bersih_k)); 
+            $("#tahun_n").val(nilai_bersih_ni);        
+            $("#kurang").val(nilai_bersih_ki); 
 
         }        
         // alert(nilai_bersih_n);
@@ -3208,7 +3215,7 @@
 
 
         var bln_sal= jblndana-11;
-        alert(perbulan);
+        // alert(perbulan);
         if (tahun_oleh0==thn_awal) {
             var nilai = blno*perbulan;
             var dana = real_janji-dblna;
@@ -3227,9 +3234,9 @@
             var sal_awal = real_janji-danan;
         }
 
-        kurangi= rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(nilai));
-        tahun_ni = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(dana));
-        sal_awali = rupiah(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(sal_awal));
+        kurangi= numfot(nilai);
+        tahun_ni = numfot(dana);
+        sal_awali = numfot(sal_awal);
 
         $("#kurang").val(kurangi);
         $("#tahun_n").val(tahun_ni);
