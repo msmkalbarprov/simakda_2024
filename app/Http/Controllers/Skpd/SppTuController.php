@@ -610,11 +610,18 @@ class SppTuController extends Controller
 
         DB::beginTransaction();
         try {
+            DB::raw('LOCK TABLES trhspp WRITE');
+            DB::raw('LOCK TABLES trdspp WRITE');
+
             $cek = DB::table('trhspp')
                 ->where(['no_spp' => $data['no_spp']])
                 ->count();
 
-            if ($cek > 0) {
+            $cek2 = DB::table('trhspp')
+                ->where(['urut' => $data['no_urut'], 'kd_skpd' => $data['kd_skpd']])
+                ->count();
+
+            if ($cek > 0 || $cek2 > 0) {
                 return response()->json([
                     'message' => '2'
                 ]);
@@ -678,6 +685,8 @@ class SppTuController extends Controller
             DB::table('tb_transaksi')
                 ->where(['kd_skpd' => $kd_skpd, 'no_transaksi' => $data['no_spp'], 'username' => Auth::user()->nama])
                 ->delete();
+
+            DB::raw("UNLOCK TABLES");
 
             DB::commit();
             return response()->json([
