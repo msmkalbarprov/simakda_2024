@@ -590,5 +590,87 @@ class calkController extends Controller
         }
     }
 
+    function cetak_calk7(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $kd_skpd        = $request->kd_skpd;  
+        $lampiran       = $request->lampiran;
+        $judul          = $request->judul;
+        $ttd            = $request->ttd;
+        $jenis          = $request->jenis;
+        $skpdunit       = $request->skpdunit;
+        $cetak          = $request->cetak;
+        $tanggal = "29 Desember 2023";
+        $tempat_tanggal = "Pontianak, 29 Desember 2023";
+        $bulan          = 12;
+        $thn_ang        = tahun_anggaran();
+        $thn_ang_1        = $thn_ang-1;
+        $thn_bln        = "$thn_ang$bulan";
+
+        $spasi = "line-height: 1.5em;";
+        if ($skpdunit=="skpd") {
+            $nm_skpd = nama_org($kd_skpd);
+        }else{
+            $nm_skpd = nama_skpd($kd_skpd);
+        }
+        $skpd_clause= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+        $unit_clause= "left(kd_unit,len('$kd_skpd'))='$kd_skpd' ";
+        $skpd_clausesun    = "where left(kd_unit,len('$kd_skpd'))='$kd_skpd'";
+
+        $ttd_nih = collect(DB::select("SELECT nama,nip,jabatan,pangkat FROM ms_ttd where $skpd_clause kode IN ('PA','KPA') and nip='$ttd'"))->first();
+
+        $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran from trhrka where $skpd_clause status=1 order by tgl_dpa DESC"))->first();
+        $jns_ang = $sql_ang->anggaran;
+        
+        $ekuitas = collect(DB::select("SELECT sum(nilai)ekuitas from data_ekuitas($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') $skpd_clausesun"))->first();
+        $ekuitas_tanpa_rkppkd = collect(DB::select("SELECT sum(nilai)ekuitas_tanpa_rkppkd from data_ekuitas_tanpa_rkppkd($bulan,$thn_ang,$thn_ang_1,'$thn_ang$bulan') $skpd_clausesun"))->first();
+        $ekuitas_lalu = collect(DB::select("SELECT sum(nilai)ekuitas_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) $skpd_clausesun"))->first();
+        $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
+            isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
+                isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
+                isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali
+            FROM map_neraca_permen_77 ORDER BY seq");
+        $data = [
+        'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+        'ttd_nih'       => $ttd_nih,
+        'skpd_clause'   => $skpd_clause,
+        'kd_skpd'       => $kd_skpd,
+        'nm_skpd'       => $nm_skpd,
+        'lampiran'      => $lampiran,
+        'judul'         => $judul,
+        'jenis'         => $jenis,
+        'tempat_tanggal'=> $tempat_tanggal,
+        'tanggal'       => $tanggal,
+        'thn_ang_1'       => $thn_ang_1,
+        'ekuitas'       => $ekuitas,
+        'ekuitas_tanpa_rkppkd'       => $ekuitas_tanpa_rkppkd,
+        'ekuitas_lalu'       => $ekuitas_lalu,
+        'map_neraca'      => $map_neraca,
+        'spasi'         => $spasi,
+        'cetak'         => $cetak,
+        'thn_ang'       => $thn_ang,
+        'bulan'       => $bulan,
+        'jns_ang'       => $jns_ang    
+        ];
+    
+        $view =  view('akuntansi.cetakan.calk.iii_neraca')->with($data);
+        
+        
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('calk.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="calk.xls"');
+            return $view;
+        }
+    }
+
 
 }

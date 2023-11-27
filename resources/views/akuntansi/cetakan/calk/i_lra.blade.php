@@ -55,7 +55,7 @@
             <td align="center"><strong>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH</strong></td>
         </tr>                    
         <tr>
-            <td align="center"><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN {{$tanggal}} {{$thn_ang}} DAN {{$thn_ang_1}}</strong></td>
+            <td align="center"><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN 31 DESEMBER {{$thn_ang}} DAN {{$thn_ang_1}}</strong></td>
         </tr>
         <tr>
             <td align="center">&nbsp;</td>

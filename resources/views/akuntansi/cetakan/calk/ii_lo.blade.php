@@ -38,7 +38,7 @@
     {{-- isi --}}
     <TABLE style="border-collapse:collapse" width="100%" border="0" cellspacing="1" cellpadding="1" align=center>
         <TR>
-            <TD align="center" ><b>I. LAPORAN REALISASI ANGGARAN (LRA)</b></TD>
+            <TD align="center" ><b>II. LAPORAN OPERASIONAL (LO)</b></TD>
         </TR>
     </TABLE><br/>
     <TABLE style="border-collapse:collapse" width="100%" border="0" cellspacing="0" cellpadding="1" align=center>
@@ -52,10 +52,10 @@
             <td align="center"><strong>{{$nm_skpd}}</strong></td>                         
         </tr>                   
         <tr>
-            <td align="center"><strong>LAPORAN REALISASI ANGGARAN PENDAPATAN DAN BELANJA DAERAH</strong></td>
+            <td align="center"><strong>LAPORAN OPERASIONAL</strong></td>
         </tr>                    
         <tr>
-            <td align="center"><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN {{$tanggal}} {{$thn_ang}} DAN {{$thn_ang_1}}</strong></td>
+            <td align="center"><strong>UNTUK TAHUN YANG BERAKHIR SAMPAI DENGAN 31 DESEMBER {{$thn_ang}} DAN {{$thn_ang_1}}</strong></td>
         </tr>
         <tr>
             <td align="center">&nbsp;</td>
