@@ -23,11 +23,12 @@
                             @if ($sp2d->status == '1')
                             @elseif ($sp2d->status_terima == '1')
                                 <button class="btn btn-md btn-primary" id="batal_terima" style="border: 1px solid black"
-                                    {{ $cek->status != '2' ? 'disabled' : '' }}>BATAL
+                                    {{ $cek->status == '1' || $cek->status == '3' || $cek->status == '4' ? 'disabled' : '' }}>BATAL
                                     TERIMA</button>
                             @else
                                 <button class="btn btn-md btn-primary" id="terima_sp2d" style="border: 1px solid black"
-                                    {{ $cek->status != '2' ? 'disabled' : '' }}>TERIMA SP2D</button>
+                                    {{ $cek->status == '1' || $cek->status == '3' || $cek->status == '4' ? 'disabled' : '' }}>TERIMA
+                                    SP2D</button>
                             @endif
                         </div>
                     </div>
