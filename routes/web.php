@@ -2101,6 +2101,7 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_calk6', [calkController::class, 'cetak_calk6'])->name('calk.cetakan6');
         Route::get('cetak_calk7', [calkController::class, 'cetak_calk7'])->name('calk.cetakan7');
         Route::get('cetak_calk8', [calkController::class, 'cetak_calk8'])->name('calk.cetakan8');
+        Route::get('cetak_calk9', [calkController::class, 'cetak_calk9'])->name('calk.cetakan9');
     });
 
     Route::group(['prefix' => 'spb'], function () {

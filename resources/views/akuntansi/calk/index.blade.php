@@ -66,16 +66,16 @@
                                     <option value="6">II. LO</option>
                                     <option value="7">III. NERACA</option>
                                     <option value="8">IV. LPE</option>
-                                    <option value="11">BAB I PENDAHULUAN</option>
-                                    <option value="16">BAB II IKHTISAR PENCAPAIAN KINERJA KEUANGAN</option>
-                                    <option value="9">BAB III LRA (PENDAPATAN)</option>
-                                    <option value="13">BAB III LRA (BELANJA)</option>
-                                    <option value="14">BAB III LO (PENDAPATAN)</option>
-                                    <option value="15">BAB III LO (BEBAN)</option>
-                                    <option value="17">BAB III NERACA</option>
-                                    <option value="18">BAB III LPE</option>
-                                    <option value="12">BAB IV. PENJELASAN ATAS INFORMASI-INFORMASI NON KEUANGAN</option>
-                                    <option value="10">BAB V PENUTUP</option>
+                                    <option value="9">BAB I PENDAHULUAN</option>
+                                    <option value="10">BAB II IKHTISAR PENCAPAIAN KINERJA KEUANGAN</option>
+                                    <option value="11">BAB III LRA (PENDAPATAN)</option>
+                                    <option value="12">BAB III LRA (BELANJA)</option>
+                                    <option value="13">BAB III LO (PENDAPATAN)</option>
+                                    <option value="14">BAB III LO (BEBAN)</option>
+                                    <option value="15">BAB III NERACA</option>
+                                    <option value="16">BAB III LPE</option>
+                                    <option value="17">BAB IV. PENJELASAN ATAS INFORMASI-INFORMASI NON KEUANGAN</option>
+                                    <option value="18">BAB V PENUTUP</option>
                                     <option value="19">LAMP.I ANALISIS</option>
                                     <option value="20">LAMP.II PENJELASAN PENYAJIAN DATA</option>
                                 </select>
@@ -273,6 +273,8 @@
                     url             = new URL("{{ route('calk.cetakan7') }}");
                 }else if(lampiran == 8){
                     url             = new URL("{{ route('calk.cetakan8') }}");
+                }else if(lampiran == 9){
+                    url             = new URL("{{ route('calk.cetakan9') }}");
                 }else{
                     alert('Cetakan Tidak Tersedia');
                     return;
