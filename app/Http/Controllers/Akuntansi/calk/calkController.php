@@ -672,5 +672,158 @@ class calkController extends Controller
         }
     }
 
+    function cetak_calk8(Request $request)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+        $kd_skpd        = $request->kd_skpd;  
+        $lampiran       = $request->lampiran;
+        $judul          = $request->judul;
+        $ttd            = $request->ttd;
+        $jenis          = $request->jenis;
+        $skpdunit       = $request->skpdunit;
+        $cetak          = $request->cetak;
+        $tanggal = "29 Desember 2023";
+        $tempat_tanggal = "Pontianak, 29 Desember 2023";
+        $bulan          = 12;
+        $thn_ang        = tahun_anggaran();
+        $thn_ang_1        = $thn_ang-1;
+        $thn_bln        = "$thn_ang$bulan";
+
+        $spasi = "line-height: 1.5em;";
+        if ($skpdunit=="skpd") {
+            $nm_skpd = nama_org($kd_skpd);
+        }else{
+            $nm_skpd = nama_skpd($kd_skpd);
+        }
+        $skpd_clause    = "where left(kd_unit,len('$kd_skpd'))='$kd_skpd'";
+        $skpd_clauses    = "and left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+
+        $skpd_clausis= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+
+        $ttd_nih = collect(DB::select("SELECT nama,nip,jabatan,pangkat FROM ms_ttd where $skpd_clausis kode IN ('PA','KPA') and nip='$ttd'"))->first();
+
+        $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran from trhrka where $skpd_clausis status=1 order by tgl_dpa DESC"))->first();
+        $jns_ang = $sql_ang->anggaran;
+        
+        $ekuitas_awal = collect(DB::select("SELECT sum(nilai) nilai,sum(nilai_lalu) nilai_lalu
+                        from(
+                        --1 ekuitas_awal
+                        select isnull(sum(nilai),0)nilai,0 nilai_lalu from data_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) $skpd_clause
+                        union all
+                        --1 ekuitas lalu
+                        select 0 nilai, isnull(sum(nilai),0)nilai_lalu from data_real_ekuitas_lalu($bulan,$thn_ang,$thn_ang_1) $skpd_clause
+                        )a"))->first();
+        // dd($ekuitas_awal);
+        $surdef = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                        --2 surplus lo
+                        select sum(nilai_pen-nilai_bel) nilai,0 nilai_lalu
+                        from(
+                            select sum(kredit-debet) as nilai_pen,0 nilai_bel from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('7') $skpd_clauses
+                            union all
+                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            where year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan and left(kd_rek6,1) in ('8') $skpd_clauses
+                            )a
+                            union all
+                            -- 2 surplus lo lalu
+                            select 0 nilai,isnull(sum(nilai_pen-nilai_bel),0) nilai_lalu
+                            from(
+                            select sum(kredit-debet) as nilai_pen,0 nilai_bel
+                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            where year(tgl_voucher)=$thn_ang_1 and left(kd_rek6,1) in ('7') $skpd_clauses
+                            union all
+                            select 0 nilai_pen,sum(debet-kredit) as nilai_bel
+                            from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd
+                            where year(tgl_voucher)=$thn_ang_1 and left(kd_rek6,1) in ('8') $skpd_clauses
+                            )a
+                        )a"))->first();
+
+        $koreksi = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --5 nilai lpe 1
+                            select isnull(sum(kredit-debet),0) nilai , 0 nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang and month(b.tgl_voucher)<=$bulan $skpd_clauses
+                            union all
+                            --5 nilai lpe 1 lalu
+                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                            where  reev='2' and kd_rek6='310101010001' and year(b.tgl_voucher)=$thn_ang_1 $skpd_clauses
+                        )a"))->first();
+
+        $selisih = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --6 nilai dr
+                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                            where  reev='1' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan
+                            union all
+                            --6 nilai dr lalu
+                            select 0 nilai, isnull(sum(kredit-debet),0) nilai_lalu
+                            from trhju a inner join trdju b on a.no_voucher=b.no_voucher and a.kd_skpd=b.kd_unit
+                            where  reev='1' and kd_rek6='310101010001' and year(a.tgl_voucher)=$thn_ang_1
+                        )a"))->first();
+
+        $lain = collect(DB::select("SELECT sum(nilai)nilai,sum(nilai_lalu)nilai_lalu
+                        from(
+                            --7 nilai lpe2
+                            select isnull(sum(kredit-debet),0) nilai, 0 nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang and month(tgl_voucher)<=$bulan $skpd_clauses
+                            union all
+                            --7 nilai lpe2 lalu
+                            select 0 nilai,isnull(sum(kredit-debet),0) nilai_lalu
+                            from trdju a inner join trhju b on a.no_voucher=b.no_voucher and b.kd_skpd=a.kd_unit
+                            where  reev='3' and kd_rek6='310101010001' and year(tgl_voucher)=$thn_ang_1 $skpd_clauses
+                        )a"))->first();
+        $data = [
+        'header'        => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+        'ttd_nih'       => $ttd_nih,
+        'skpd_clause'   => $skpd_clause,
+        'kd_skpd'       => $kd_skpd,
+        'nm_skpd'       => $nm_skpd,
+        'lampiran'      => $lampiran,
+        'judul'         => $judul,
+        'jenis'         => $jenis,
+        'tempat_tanggal'=> $tempat_tanggal,
+        'tanggal'       => $tanggal,
+        'thn_ang_1'       => $thn_ang_1,
+        'ekuitas_awal'      => $ekuitas_awal->nilai,
+        'ekuitas_awal_lalu'      => $ekuitas_awal->nilai_lalu,
+        'surdef'            => $surdef->nilai,
+        'surdef_lalu'            => $surdef->nilai_lalu,
+        'koreksi'           => $koreksi->nilai,
+        'koreksi_lalu'           => $koreksi->nilai_lalu,
+        'selisih'           => $selisih->nilai,
+        'selisih_lalu'           => $selisih->nilai_lalu,
+        'lain'              => $lain->nilai,
+        'lain_lalu'              => $lain->nilai_lalu,
+        'spasi'         => $spasi,
+        'cetak'         => $cetak,
+        'thn_ang'       => $thn_ang,
+        'bulan'       => $bulan,
+        'jns_ang'       => $jns_ang    
+        ];
+    
+        $view =  view('akuntansi.cetakan.calk.iv_lpe')->with($data);
+        
+        
+        
+        if ($cetak == '1') {
+            return $view;
+        } else if ($cetak == '2') {
+            $pdf = PDF::loadHtml($view)->setPaper('legal');
+            return $pdf->stream('calk.pdf');
+        } else {
+
+            header("Cache-Control: no-cache, no-store, must_revalidate");
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachement; filename="calk.xls"');
+            return $view;
+        }
+    }
+
 
 }
