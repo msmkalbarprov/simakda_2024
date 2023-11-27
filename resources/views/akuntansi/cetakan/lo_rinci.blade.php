@@ -142,7 +142,7 @@
             $nilai=$nilainya->nilai;
 
             $nilainya_lalu = collect(DB::select("select sum(nilai_a-nilai_b) nilai
-                    from(SELECT SUM(kredit-debet) as nilai_a,0 nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                    from(SELECT SUM($cetak_a) as nilai_a,0 nilai_b FROM trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
                     WHERE (left(kd_rek6,1) in ($n1) or left(kd_rek6,2) in ($n2) or left(kd_rek6,4) in ($n3) or left(kd_rek6,6) in ($n4) or left(kd_rek6,8) in ($n5) or left(kd_rek6,12) in ($n6)) 
                     and year(tgl_voucher)=$thn_ang_1 $skpd_clauses
 

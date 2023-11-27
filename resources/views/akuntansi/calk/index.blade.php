@@ -63,8 +63,8 @@
                                     <option value="3">PERNYATAAN TANGGUNG JAWAB</option>
                                     <option value="4">RINGKASAN LAPORAN KEUANGAN</option>
                                     <option value="5">I. LRA</option>
-                                    <option value="6">II. NERACA</option>
-                                    <option value="7">III. LO</option>
+                                    <option value="6">II. LO</option>
+                                    <option value="7">III. NERACA</option>
                                     <option value="8">IV. LPE</option>
                                     <option value="11">BAB I PENDAHULUAN</option>
                                     <option value="16">BAB II IKHTISAR PENCAPAIAN KINERJA KEUANGAN</option>
@@ -263,10 +263,15 @@
 
                 if (lampiran == 1 || lampiran == 2 || lampiran == 3 ) {
                     url             = new URL("{{ route('calk.cetakan') }}");
+                }else if(lampiran == 4){
+                    url             = new URL("{{ route('calk.cetakan5') }}");
                 }else if(lampiran == 5){
                     url             = new URL("{{ route('calk.cetakan5') }}");
+                }else if(lampiran == 6){
+                    url             = new URL("{{ route('calk.cetakan6') }}");
                 }else{
-                    url             = new URL("{{ route('calk.cetakan4') }}");
+                    alert('Cetakan Tidak Tersedia');
+                    return;
                 }
                 let searchParams    = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
