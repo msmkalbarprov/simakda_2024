@@ -778,7 +778,13 @@ function data_beban($data_spm, $kd_skpd, $status_angkas)
 
     $beban5 = DB::table('trdspp as a')->join('ms_rek4 as b', DB::raw("LEFT(a.kd_rek6,5)"), '=', 'b.kd_rek4')->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->select(DB::raw("' ' as urut"), DB::raw("a.kd_sub_kegiatan + '.' + LEFT(a.kd_rek6,5) as kode"), 'b.nm_rek4 as nama', DB::raw("SUM(a.nilai) as nilai"))->groupBy('kd_sub_kegiatan', DB::raw("LEFT(a.kd_rek6,5)"), 'b.nm_rek4')->unionAll($beban4);
 
-    $beban6 = DB::table('trdspp')->select(DB::raw("' ' as urut"), DB::raw("kd_sub_kegiatan + '.' + kd_rek6 as kode"), 'nm_rek6 as nama', 'nilai')->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])->unionAll($beban5);
+    $beban6 = DB::table('trdspp')
+        ->select(DB::raw("' ' as urut"), DB::raw("kd_sub_kegiatan + '.' + kd_rek6 as kode"), 'nm_rek6 as nama')
+        ->selectRaw("sum(nilai) as nilai")
+        ->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $kd_skpd])
+        ->groupBy('kd_sub_kegiatan', 'kd_rek6', 'nm_rek6')
+        ->unionAll($beban5);
+
     $total_beban = DB::table(DB::raw("({$beban6->toSql()}) AS sub"))
         ->select('urut', 'kode', 'nama', 'nilai')
         ->mergeBindings($beban6)
