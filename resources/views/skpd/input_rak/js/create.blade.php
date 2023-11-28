@@ -44,7 +44,7 @@
             alert('Selamat Datang ' + user);
         } else {
             alert('Selamat Datang ' + user);
-            // proteksi();
+            proteksi();
             // sementara di nonaktifkan karena permintaan perben input angkas perubahan
         }
 
