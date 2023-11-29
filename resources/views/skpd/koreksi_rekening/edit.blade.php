@@ -84,7 +84,7 @@
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">
-                            <button id="simpan_koreksi" class="btn btn-primary btn-md">Simpan</button>
+                            {{-- <button id="simpan_koreksi" class="btn btn-primary btn-md">Simpan</button> --}}
                             <a href="{{ route('koreksi_rekening.index') }}" class="btn btn-warning btn-md">Kembali</a>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
             <div class="card">
                 <div class="card-header">
                     Rincian
-                    <button id="tambah_rekening" class="btn btn-success btn-md" style="float: right;">Tambah</button>
+                    {{-- <button id="tambah_rekening" class="btn btn-success btn-md" style="float: right;">Tambah</button> --}}
                 </div>
                 <div class="card-body table-responsive">
                     <table id="rincian" class="table" style="width: 100%">
@@ -132,9 +132,9 @@
                                     <td>{{ rupiah(0) }}</td>
                                     <td>{{ rupiah(0) }}</td>
                                     <td>
-                                        <a href="javascript:void(0);"
+                                        {{-- <a href="javascript:void(0);"
                                             onclick="deleteData('{{ $detail->no_bukti }}','{{ $detail->kd_sub_kegiatan }}','{{ $detail->kd_rek6 }}','{{ $detail->sumber }}','{{ $detail->nilai }}','{{ $detail->no_sp2d }}')"
-                                            class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>
+                                            class="btn btn-danger btn-sm"><i class="uil-trash"></i></a> --}}
                                     </td>
                                 </tr>
                             @endforeach

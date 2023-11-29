@@ -63,10 +63,10 @@ class JurnalKoreksiController extends Controller
             ->orderBy('a.kd_skpd')
             ->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use ($kunci) {
+            $btn = '<a href="' . route("koreksi_rekening.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
             if ($kunci == 1) {
-                $btn = '';
+                $btn .= '';
             } else {
-                $btn = '<a href="' . route("koreksi_rekening.edit", Crypt::encryptString($row->no_bukti)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
                 $btn .= '<a href="javascript:void(0);" onclick="hapusRekening(' . $row->no_bukti . ', \'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             }
 
