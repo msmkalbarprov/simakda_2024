@@ -103,6 +103,11 @@
             let pa_kpa = document.getElementById('pa_kpa').value;
             let jenis_print = $(this).data("jenis");
 
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+
             if (!tgl_ttd) {
                 alert("Tanggal TTD tidak boleh kosong!");
                 return;
@@ -127,6 +132,10 @@
             searchParams.append("bendahara", bendahara);
             searchParams.append("pa_kpa", pa_kpa);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
 
@@ -138,6 +147,11 @@
             let bendahara = document.getElementById('bendahara').value;
             let pa_kpa = document.getElementById('pa_kpa').value;
             let jenis_print = $(this).data("jenis");
+
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
 
             if (!tgl_ttd) {
                 alert("Tanggal TTD tidak boleh kosong!");
@@ -163,6 +177,10 @@
             searchParams.append("bendahara", bendahara);
             searchParams.append("pa_kpa", pa_kpa);
             searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
     });

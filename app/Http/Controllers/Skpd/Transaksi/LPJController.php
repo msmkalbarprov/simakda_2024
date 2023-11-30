@@ -2383,8 +2383,10 @@ class LPJController extends Controller
                 ->setPaper('legal')
                 ->setOption('page-width', 215)
                 ->setOption('page-height', 330)
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
@@ -2488,8 +2490,10 @@ class LPJController extends Controller
                 ->setPaper('legal')
                 ->setOption('page-width', 215)
                 ->setOption('page-height', 330)
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('laporan.pdf');
         } else {
             return $view;
