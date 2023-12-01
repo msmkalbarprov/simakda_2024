@@ -854,11 +854,15 @@ function pengantar_spm($no_spm, $kd_skpd, $beban, $data_spp, $no_spp, $tgl_spd, 
         })->where(['c.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.bank', 'c.*', 'a.no_spd', 'a.nilai', DB::raw("(SELECT rekening FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as no_rek"), DB::raw("(SELECT npwp FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as npwp"), DB::raw("(SELECT SUM
 		( x.nilai ) FROM trdspd x INNER JOIN trhspd w ON x.no_spd = w.no_spd WHERE w.jns_beban= '5' AND w.kd_skpd= a.kd_skpd AND w.status= '1' AND w.tgl_spd<= '$tgl_spd->tgl_spd') as spd"), DB::raw("(SELECT SUM( b.nilai ) FROM trdspp b INNER JOIN trhspp a ON b.no_spp= a.no_spp AND b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE a.kd_skpd= '$kd_skpd' AND a.jns_spp IN ( '1', '2', '3', '6' ) AND a.no_spp != '$no_spp->no_spp' AND c.tgl_sp2d <= '$data_spp->tgl_spp') as spp"))->first();
     } elseif ($beban == '3') {
-        $data_beban = DB::table('trhspp as a')->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->join('trhspm as c', function ($join) {
-            $join->on('a.no_spp', '=', 'c.no_spp');
-            $join->on('a.kd_skpd', '=', 'c.kd_skpd');
-        })->where(['c.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.bank', 'c.*', 'a.no_spd', 'a.nilai', DB::raw("(SELECT rekening FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as no_rek"), DB::raw("(SELECT npwp FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as npwp"), DB::raw("(SELECT SUM
-		( x.nilai ) FROM trdspd x INNER JOIN trhspd w ON x.no_spd = w.no_spd WHERE w.jns_beban= '5' AND w.status= '1' AND w.tgl_spd<= '$tgl_spd->tgl_spd' AND x.kd_sub_kegiatan= '$giatspp' AND x.kd_unit= a.kd_skpd) as spd"), DB::raw("(SELECT SUM( b.nilai ) FROM trdspp b INNER JOIN trhspp a ON b.no_spp= a.no_spp AND b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE a.kd_skpd= '$kd_skpd' AND a.jns_spp IN ( '1', '2', '3', '6' ) AND a.no_spp != '$no_spp->no_spp' AND c.tgl_sp2d <= '$data_spp->tgl_spp' AND b.kd_sub_kegiatan= '$giatspp') as spp"))->first();
+        $data_beban = DB::table('trhspp as a')
+            ->join('ms_bidang_urusan as b', DB::raw("SUBSTRING(a.kd_skpd,1,4)"), '=', 'b.kd_bidang_urusan')->join('trhspm as c', function ($join) {
+                $join->on('a.no_spp', '=', 'c.no_spp');
+                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->where(['c.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])
+            ->select('a.no_spp', 'a.tgl_spp', 'a.kd_skpd', 'a.nm_skpd', 'a.bulan', 'a.nmrekan', 'b.kd_bidang_urusan', 'b.nm_bidang_urusan', 'a.bank', 'c.*', 'a.no_spd', 'a.nilai', DB::raw("(SELECT rekening FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as no_rek"), DB::raw("(SELECT npwp FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as npwp"), DB::raw("(SELECT SUM
+		    ( x.nilai ) FROM trdspd x INNER JOIN trhspd w ON x.no_spd = w.no_spd WHERE w.jns_beban= '5' AND w.status= '1' AND w.tgl_spd<= '$tgl_spd->tgl_spd' AND x.kd_sub_kegiatan= '$giatspp' AND x.kd_unit= a.kd_skpd) as spd"), DB::raw("(SELECT SUM( b.nilai ) FROM trdspp b INNER JOIN trhspp a ON b.no_spp= a.no_spp AND b.kd_skpd = a.kd_skpd INNER JOIN trhsp2d c ON a.no_spp = c.no_spp and a.kd_skpd=c.kd_skpd WHERE a.kd_skpd= '$kd_skpd' and b.kd_bidang='$kd_skpd' AND a.jns_spp IN ( '1', '2', '3', '6' ) AND a.no_spp != '$no_spp->no_spp' AND c.tgl_sp2d <= '$data_spp->tgl_spp' AND b.kd_sub_kegiatan= '$giatspp') as spp"))
+            ->first();
     } elseif ($beban == '4') {
         $rek6 = substr($cari_rek->kd_rek6, 0, 6);
         if ($rek6 == '510101') {
