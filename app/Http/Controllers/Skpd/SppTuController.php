@@ -238,7 +238,7 @@ class SppTuController extends Controller
                         )
 
                     UNION ALL
-
+                            -- SPP UDAH TRANSAKSI BELUM LPJ TU
                     SELECT b.kd_sub_kegiatan FROM trhspp a
                     INNER JOIN trdspp b ON a.no_spp=b.no_spp AND a.kd_skpd = b.kd_skpd
                     INNER JOIN trhsp2d c on a.no_spp=b.no_spp and a.kd_skpd=c.kd_skpd
@@ -909,8 +909,8 @@ class SppTuController extends Controller
                     ) AS spd,
                     (SELECT SUM(b.nilai) FROM trdspp b INNER JOIN trhspp a ON b.no_spp=a.no_spp and b.kd_skpd = a.kd_skpd
                     INNER JOIN trhsp2d c ON a.no_spp = c.no_spp WHERE a.kd_skpd=?
-                    AND b.kd_sub_kegiatan=?
-                    AND a.jns_spp IN ('1','2','3','6') AND a.no_spp != ? AND c.tgl_sp2d <=?) AS spp
+                    AND b.kd_sub_kegiatan=? and b.kd_bidang='$kd_skpd'
+                    AND a.jns_spp IN ('1','2','3','6') AND a.no_spp != ? AND c.tgl_sp2d <=? AND (a.sp2d_batal<>'1' or a.sp2d_batal is null)) AS spp
                 FROM trhspp a INNER JOIN ms_skpd b ON a.kd_skpd=b.kd_skpd  where a.no_spp=? AND a.kd_skpd=?", [$kd_skpd, $kd_sub_kegiatan, $tgl_spd, $revisi1->revisi, $kd_skpd, $kd_sub_kegiatan, $tgl_spd, $revisi2->revisi, $kd_skpd, $kd_sub_kegiatan, $tgl_spd, $revisi3->revisi, $kd_skpd, $kd_sub_kegiatan, $tgl_spd, $revisi4->revisi, $kd_skpd, $kd_sub_kegiatan, $no_spp, $tgl_spp, $no_spp, $kd_skpd]))->first();
 
         $bank = DB::table('ms_skpd')
