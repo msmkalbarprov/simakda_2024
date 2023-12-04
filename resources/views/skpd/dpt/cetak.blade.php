@@ -54,7 +54,7 @@
             <td>
                 <b>
                     DAFTAR PEMBAYARAN TAGIHAN KKPD <br>
-                    BANK ....
+                    PT. BANK PEMBANGUNAN DAERAH KALIMANTAN BARAT
                 </b>
             </td>
         </tr>
