@@ -118,6 +118,11 @@
                 $kode_14=trim($res->kode_14);
                 $kode_15=trim($res->kode_15);
                 $kecuali=trim($res->kecuali);
+                $c_kurangi=$res->c_kurangi;
+                if($c_kurangi=="" || $c_kurangi=="xxx"){
+                    $c_kurangi="debet-debet";
+                }
+                $kurangi_1=trim($res->kurangi_1);
 
                 $nilainya = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
                                     and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
@@ -129,12 +134,21 @@
                                         kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
                                         kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
                                         kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");
+
+                $kurangi = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses");
         @endphp
 
             @foreach($nilainya as $row)
                 @php
                     $debet=$row->debet;
                     $kredit=$row->kredit;
+                @endphp
+            @endforeach
+            @foreach($kurangi as $rer)
+                @php
+                    $kurangi=$rer->realisasi;
                 @endphp
             @endforeach
 
@@ -161,23 +175,32 @@
                                         kd_rek6 like '$kode_9%' or kd_rek6 like '$kode_10%' or 
                                         kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
                                         kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
-                                        kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");        
+                                        kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");  
+
+            $kurangi_lalu = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang1 and
+                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses");      
             @endphp                
+
             @foreach($nilainya_lalu as $rew)
                 @php
                     $debet_lalu=$rew->debet;
                     $kredit_lalu=$rew->kredit;
                 @endphp
             @endforeach        
-
+            @foreach($kurangi_lalu as $riw)
+                @php
+                    $kurangi_lalu=$riw->realisasi;
+                @endphp
+            @endforeach
             @php
                     if ($debet_lalu=='') $debet_lalu=0;
                     if ($kredit_lalu=='') $kredit_lalu=0;
 
                     if ($normal==1){
-                        $nl_lalu=$debet_lalu-$kredit_lalu;
+                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
                     }else{
-                        $nl_lalu=$kredit_lalu-$debet_lalu;             
+                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
                     }
                     if ($nl_lalu=='') $nl_lalu=0;
 
