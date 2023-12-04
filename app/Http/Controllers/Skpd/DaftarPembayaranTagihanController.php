@@ -328,6 +328,7 @@ class DaftarPembayaranTagihanController extends Controller
         if ($request->jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
+                ->setOrientation('landscape')
                 ->setOption('page-width', 215)
                 ->setOption('page-width', 330)
                 ->setOption('margin-top', $request->margin_atas)
