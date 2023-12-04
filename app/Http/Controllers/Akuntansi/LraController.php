@@ -963,7 +963,7 @@ class LraController extends Controller
             $map_neraca = DB::select("SELECT kode, uraian, seq,bold, isnull(normal,'') as normal, isnull(kode_1,'xxx') as kode_1, isnull(kode_2,'xxx')  as kode_2, isnull(kode_3,'xxx') as kode_3,
                 isnull(kode_4,'xxx') as kode_4, isnull(kode_5,'xxx') as kode_5, isnull(kode_6,'xxx') as kode_6, isnull(kode_7,'xxx') as kode_7,
                     isnull(kode_8,'xxx') as kode_8, isnull(kode_9,'xxx') as kode_9, isnull(kode_10,'xxx') as kode_10, isnull(kode_11,'xxx') as kode_11,
-                    isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali, isnull(c_kurangi,'xxx') as c_kurangi, isnull(kurangi_1,'xxx') as kurangi_1
+                    isnull(kode_12,'xxx') as kode_12, isnull(kode_13,'xxx') as kode_13, isnull(kode_14,'xxx') as kode_14, isnull(kode_15,'xxx') as kode_15, isnull(kecuali,'xxx') as kecuali, isnull(c_kurangi,'xxx') as c_kurangi, isnull(kurangi_1,'xxx') as kurangi_1, isnull(c_tambah,'xxx') as c_tambah, isnull(tambah_1,'xxx') as tambah_1
                 FROM map_neraca_permen_77_obyek ORDER BY seq");
         } else if ($format == '3') {
         }

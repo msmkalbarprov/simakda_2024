@@ -119,10 +119,16 @@
                 $kode_15=trim($res->kode_15);
                 $kecuali=trim($res->kecuali);
                 $c_kurangi=$res->c_kurangi;
+                $c_tambah=$res->c_tambah;
                 if($c_kurangi=="" || $c_kurangi=="xxx"){
                     $c_kurangi="debet-debet";
                 }
                 $kurangi_1=trim($res->kurangi_1);
+                
+                if($c_tambah=="" || $c_tambah=="xxx"){
+                    $c_tambah="debet-debet";
+                }
+                $tambah_1=trim($res->tambah_1);
 
                 $nilainya = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
                                     and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
@@ -138,6 +144,9 @@
                 $kurangi = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
                                     and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
                                         (kd_rek6 like '$kurangi_1%' ) $skpd_clauses");
+                $tambah = DB::select("SELECT isnull(SUM($c_tambah),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                        (kd_rek6 like '$tambah_1%' ) $skpd_clauses");
         @endphp
 
             @foreach($nilainya as $row)
@@ -151,15 +160,20 @@
                     $kurangi=$rer->realisasi;
                 @endphp
             @endforeach
+            @foreach($tambah as $rir)
+                @php
+                    $tambah=$rir->realisasi;
+                @endphp
+            @endforeach
 
             @php
                     if ($debet=='') $debet=0;
                     if ($kredit=='') $kredit=0;
 
                     if ($normal==1){
-                        $nl=$debet-$kredit-$kurangi;
+                        $nl=$debet-$kredit-$kurangi+$tambah;
                     }else{
-                        $nl=$kredit-$debet-$kurangi;             
+                        $nl=$kredit-$debet-$kurangi+$tambah;             
                     }
                     if ($nl=='') $nl=0;
 
@@ -179,7 +193,11 @@
 
             $kurangi_lalu = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
                                     and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang1 and
-                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses");      
+                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses"); 
+
+            $tambah_lalu = DB::select("SELECT isnull(SUM($c_tambah),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang1 and
+                                        (kd_rek6 like '$tambah_1%' ) $skpd_clauses");      
             @endphp                
 
             @foreach($nilainya_lalu as $rew)
@@ -192,15 +210,20 @@
                 @php
                     $kurangi_lalu=$riw->realisasi;
                 @endphp
+            @endforeach    
+            @foreach($tambah_lalu as $raw)
+                @php
+                    $tambah_lalu=$raw->realisasi;
+                @endphp
             @endforeach
             @php
                     if ($debet_lalu=='') $debet_lalu=0;
                     if ($kredit_lalu=='') $kredit_lalu=0;
 
                     if ($normal==1){
-                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
+                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu+$tambah_lalu;
                     }else{
-                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
+                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu+$tambah_lalu;             
                     }
                     if ($nl_lalu=='') $nl_lalu=0;
 
