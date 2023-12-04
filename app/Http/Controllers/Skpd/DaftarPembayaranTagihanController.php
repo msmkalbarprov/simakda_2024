@@ -14,7 +14,14 @@ class DaftarPembayaranTagihanController extends Controller
 {
     public function index()
     {
-        return view('skpd.dpt.index');
+        $data = [
+            'daftar_ttd' => DB::table('ms_ttd')
+                ->where('kd_skpd', Auth::user()->kd_skpd)
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->get()
+        ];
+
+        return view('skpd.dpt.index')->with($data);
     }
 
     public function loadData()
@@ -36,6 +43,8 @@ class DaftarPembayaranTagihanController extends Controller
                 } else {
                     $btn .= '';
                 }
+                $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_dpt . '\', \'' . $row->no_dpr . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
+
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -280,6 +289,52 @@ class DaftarPembayaranTagihanController extends Controller
             return response()->json([
                 'message' => '0'
             ]);
+        }
+    }
+
+    public function cetak(Request $request)
+    {
+        $data = [
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $request->kd_skpd,
+            'detail_dpt' => DB::table('trddpt as a')
+                ->join('trhdpt as b', function ($join) {
+                    $join->on('a.no_dpt', '=', 'b.no_dpt');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('trhdpr as c', function ($join) {
+                    $join->on('b.no_dpr', '=', 'c.no_dpr');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->select('a.*', 'c.no_kkpd', 'c.nm_kkpd', 'c.jenis_belanja')
+                ->where(['b.no_dpt' => $request->no_dpt, 'b.kd_skpd' => $request->kd_skpd])
+                ->get(),
+            'dpt' => DB::table('trhdpt')
+                ->select('tgl_dpt')
+                ->where(['no_dpt' => $request->no_dpt, 'kd_skpd' => $request->kd_skpd])
+                ->first(),
+            'ttd' => DB::table('ms_ttd')
+                ->where(['kd_skpd' => Auth::user()->kd_skpd, 'nip' => $request->ttd])
+                ->whereIn('kode', ['PA', 'KPA'])
+                ->first()
+        ];
+
+        $view = view('skpd.dpt.cetak')->with($data);
+
+        if ($request->jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
+            return $pdf->stream('CETAK_' . $request->no_dpr . 'pdf');
+        } else {
+            return $view;
         }
     }
 

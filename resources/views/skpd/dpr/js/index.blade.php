@@ -6,6 +6,11 @@
             }
         });
 
+        $('.select2-modal').select2({
+            dropdownParent: $('#modal_cetak .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         $('#dpr').DataTable({
             responsive: true,
             ordering: false,
@@ -34,10 +39,10 @@
                     name: 'tgl_dpr',
                     className: "text-center",
                 },
-                {
-                    data: 'kd_skpd',
-                    name: 'kd_skpd',
-                },
+                // {
+                //     data: 'kd_skpd',
+                //     name: 'kd_skpd',
+                // },
                 {
                     data: null,
                     name: 'total',
@@ -66,6 +71,36 @@
                     className: "text-center",
                 },
             ],
+        });
+
+        $('.cetak').on('click', function() {
+            let no_dpr = document.getElementById('no_dpr').value;
+            let jenis_belanja = document.getElementById('jenis_belanja').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let pptk = document.getElementById('pptk').value;
+            let margin_kiri = document.getElementById('margin_kiri').value;
+            let margin_kanan = document.getElementById('margin_kanan').value;
+            let margin_atas = document.getElementById('margin_atas').value;
+            let margin_bawah = document.getElementById('margin_bawah').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (!pptk) {
+                alert("PPTK tidak boleh kosong!");
+                return;
+            }
+
+            let url = new URL("{{ route('dpr.cetak_list') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("no_dpr", no_dpr);
+            searchParams.append("jenis_belanja", jenis_belanja);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("pptk", pptk);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            window.open(url.toString(), "_blank");
         });
     });
 
@@ -96,5 +131,12 @@
         } else {
             return false;
         }
+    }
+
+    function cetak(no_dpr, jenis_belanja, kd_skpd) {
+        $('#no_dpr').val(no_dpr);
+        $('#jenis_belanja').val(jenis_belanja);
+        $('#kd_skpd').val(kd_skpd);
+        $('#modal_cetak').modal('show');
     }
 </script>
