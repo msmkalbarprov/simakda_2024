@@ -157,9 +157,9 @@
                     if ($kredit=='') $kredit=0;
 
                     if ($normal==1){
-                        $nl=$debet-$kredit;
+                        $nl=$debet-$kredit-$kurangi;
                     }else{
-                        $nl=$kredit-$debet;             
+                        $nl=$kredit-$debet-$kurangi;             
                     }
                     if ($nl=='') $nl=0;
 
