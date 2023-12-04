@@ -101,6 +101,34 @@ class DaftarPengujiController extends Controller
 
         DB::beginTransaction();
         try {
+            $cek_pending = DB::table('trhuji as a')
+                ->join('trduji as b', function ($join) {
+                    $join->on('a.no_uji', '=', 'b.no_uji');
+                })
+                ->where(['a.no_uji' => $no_advice, 'b.status' => '4'])
+                ->count();
+
+            $cek_sukses = DB::table('trhuji as a')
+                ->join('trduji as b', function ($join) {
+                    $join->on('a.no_uji', '=', 'b.no_uji');
+                })
+                ->where(['a.no_uji' => $no_advice, 'b.status' => '2'])
+                ->count();
+
+            if ($cek_pending > 0) {
+                DB::table('trhuji')
+                    ->where(['no_uji' => $no_advice])
+                    ->update([
+                        'status_bank' => '5'
+                    ]);
+            } else if ($cek_pending == 0 && $cek_sukses > 0) {
+                DB::table('trhuji')
+                    ->where(['no_uji' => $no_advice])
+                    ->update([
+                        'status_bank' => '4'
+                    ]);
+            }
+
             DB::table('trduji')
                 ->where(['no_uji' => $no_advice, 'no_sp2d' => $no_sp2d])
                 ->delete();
