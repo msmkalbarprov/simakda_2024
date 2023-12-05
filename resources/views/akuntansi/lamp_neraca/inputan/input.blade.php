@@ -2972,7 +2972,7 @@
         var h_jam           = jam.substring(0,2);
         var m_jam           = jam.substring(3,5);
         
-        var jam_std         = ((hjam_std-h_jam)*3600)+((mjam_std-m_jam)*60)
+        var jam_std         = ((h_jam)*3600)+((mjam_std-m_jam)*60)
         // alert(jam_std);
         var tahun_tgl_awal         = tgl_awal.substring(0,4);
         var tahun_tgl_akhir        = tgl_akhir.substring(0,4);
@@ -3048,15 +3048,23 @@
         var sisa_hari       = jml_hari-sisa_ta;
         var nilai_hari      = rj/jml_hari;
         var nilai_stg_hari  = nilai_hari/2;
+        if(jam_std<=0){
+            var kur_jam = 1;
+        }else if(jam_std>0){
+            var kur_jam =0.5;
+        }else{
+            var kur_jam = 0;
+        }
  
         var nilai_pertahun  = nilai_hari*sisa_pertahun;
-        var nilai_total_n   = nilai_hari*(sisa_hari-1);
+        var nilai_total_n   = nilai_hari*(sisa_hari-kur_jam);
         var nilai_total_k   = nilai_hari*sisa_akhir;
+        // alert(sisa_hari);
         
   
         // alert(rj);
         if(jam_std<=0 && ta==tahun_tgl_awal && tahun_tgl_akhir>ta){
-            nilai_bersih_n=nilai_total_n-nilai_stg_hari;
+            nilai_bersih_n=nilai_total_n;
         } else if (jam_std>0 && ta==tahun_tgl_awal && tahun_tgl_akhir>ta){
             nilai_bersih_n=nilai_total_n;
         } else {
@@ -3395,7 +3403,7 @@
         if (tahun_n==''){
             tahun_n=0;
         }else{
-            tahun_n=rupiah(tahun_n);
+            tahun_n=angka(tahun_n);
         }
         if (korplus==''){
             korplus=0;
