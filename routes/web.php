@@ -108,6 +108,7 @@ use App\Http\Controllers\Utility\KunciKasdaController;
 use App\Http\Controllers\Utility\KunciPengeluaranController;
 //akuntansi
 use App\Http\Controllers\Akuntansi\calk\calkController;
+use App\Http\Controllers\Akuntansi\calk\calk_bab2Controller;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
@@ -2104,6 +2105,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('cetak_calk7', [calkController::class, 'cetak_calk7'])->name('calk.cetakan7');
         Route::get('cetak_calk8', [calkController::class, 'cetak_calk8'])->name('calk.cetakan8');
         Route::get('cetak_calk9', [calkController::class, 'cetak_calk9'])->name('calk.cetakan9');
+        Route::get('cetak_calk10', [calk_bab2Controller::class, 'cetak_calk10'])->name('calk.cetakan10');
+        Route::get('calkbab2_hambatan', [calk_bab2Controller::class, 'calkbab2_hambatan'])->name('calk.calkbab2_hambatan');
+        Route::post('load_calkbab2_hambatan', [calk_bab2Controller::class, 'load_calkbab2'])->name('calk.load_calkbab2_hambatan');
+
+        Route::post('simpan_calkbab2_hambatan', [calk_bab2Controller::class, 'simpan_calkbab2_hambatan'])->name('calk.simpan_calkbab2_hambatan');
     });
 
     Route::group(['prefix' => 'spb'], function () {
