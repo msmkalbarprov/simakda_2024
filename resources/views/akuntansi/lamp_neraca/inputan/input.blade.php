@@ -3119,10 +3119,10 @@
 
         } */
 
-        beban_sewa_ni=numfot(beban_sewa_n);
-        beban_sewa_ki = numfot(beban_sewa_k);
-        nilai_bersih_ni = numfot(nilai_bersih_n);
-        nilai_bersih_ki = numfot(nilai_bersih_k);
+        beban_sewa_ni=numfot(beban_sewa_n.toFixed(2));
+        beban_sewa_ki = numfot(beban_sewa_k.toFixed(2));
+        nilai_bersih_ni = numfot(nilai_bersih_n.toFixed(2));
+        nilai_bersih_ki = numfot(nilai_bersih_k.toFixed(2));
 
         if(jns_beban_sewa=='sewa'){
             $("#tahun_n").val(beban_sewa_ni);        
@@ -3234,9 +3234,9 @@
             var sal_awal = real_janji-danan;
         }
 
-        kurangi= numfot(nilai);
-        tahun_ni = numfot(dana);
-        sal_awali = numfot(sal_awal);
+        kurangi= numfot(nilai.toFixed(2));
+        tahun_ni = numfot(dana.toFixed(2));
+        sal_awali = numfot(sal_awal.toFixed(2));
 
         $("#kurang").val(kurangi);
         $("#tahun_n").val(tahun_ni);
