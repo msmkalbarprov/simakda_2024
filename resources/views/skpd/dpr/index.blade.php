@@ -17,13 +17,74 @@
                                         <th style="width: 25px;text-align:center">No.</th>
                                         <th style="width: 100px;text-align:center">Nomor DPR</th>
                                         <th style="width: 100px;text-align:center">Tanggal</th>
-                                        <th style="width: 100px;text-align:center">SKPD</th>
+                                        {{-- <th style="width: 100px;text-align:center">SKPD</th> --}}
                                         <th style="width: 100px;text-align:center">Total</th>
                                         <th style="width: 50px;text-align:center">VER</th>
-                                        <th style="width: 200px;text-align:center">Aksi</th>
+                                        <th style="width: 100px;text-align:center">Aksi</th>
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cetak DPR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 row">
+                        <label for="no_dpr" class="col-md-2 col-form-label">No. DPR</label>
+                        <div class="col-md-10">
+                            <input type="text" readonly class="form-control" id="no_dpr" name="no_dpr">
+                            <input type="text" hidden class="form-control" id="jenis_belanja" name="jenis_belanja">
+                            <input type="text" hidden class="form-control" id="kd_skpd" name="kd_skpd">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="pptk" class="col-md-2 col-form-label">PPTK</label>
+                        <div class="col-md-10">
+                            <select name="pptk" class="form-control select2-modal" id="pptk">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($daftar_pptk as $pptk)
+                                    <option value="{{ $pptk->nip }}">
+                                        {{ $pptk->nip }} | {{ $pptk->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="sptb" class="col-md-12 col-form-label">
+                            Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                        </label>
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <label for="" class="col-md-1 col-form-label">Kiri</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kiri" name="margin_kiri" value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Kanan</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_kanan" name="margin_kanan" value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Atas</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_atas" name="margin_atas" value="10">
+                        </div>
+                        <label for="" class="col-md-1 col-form-label">Bawah</label>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="margin_bawah" name="margin_bawah" value="10">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-danger btn-md cetak" data-jenis="pdf">PDF</button>
+                            <button type="button" class="btn btn-dark btn-md cetak" data-jenis="layar">Layar</button>
                         </div>
                     </div>
                 </div>

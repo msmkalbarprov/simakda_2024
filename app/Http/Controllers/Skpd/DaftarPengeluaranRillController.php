@@ -9,12 +9,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
+use Knp\Snappy\Pdf as SnappyPdf;
 
 class DaftarPengeluaranRillController extends Controller
 {
     public function index()
     {
-        return view('skpd.dpr.index');
+        $data = [
+            'daftar_pptk' => DB::table('ms_ttd')
+                ->where('kd_skpd', Auth::user()->kd_skpd)
+                ->whereIn('kode', ['PPTK', 'KPA'])
+                ->get()
+        ];
+
+        return view('skpd.dpr.index')->with($data);
     }
 
     public function loadData()
@@ -30,12 +39,13 @@ class DaftarPengeluaranRillController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('aksi', function ($row) {
-                $btn = '<a href="' . route("dpr.edit", ['no_dpr' => Crypt::encrypt($row->no_dpr), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
+                $btn = '<a href="' . route("dpr.edit", ['no_dpr' => Crypt::encrypt($row->no_dpr), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
                 if ($row->status_verifikasi != '1') {
-                    $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_dpr . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+                    $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="hapus(\'' . $row->no_dpr . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm"><i class="uil-trash"></i></a>';
                 } else {
                     $btn .= '';
                 }
+                $btn .= '<a href="javascript:void(0);" style="margin-right:4px" onclick="cetak(\'' . $row->no_dpr . '\', \'' . $row->jenis_belanja . '\', \'' . $row->kd_skpd . '\');" class="btn btn-success btn-sm"><i class="uil-print"></i></a>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -667,76 +677,45 @@ class DaftarPengeluaranRillController extends Controller
 
     public function cetakList(Request $request)
     {
-        $tgl_voucher = $request->tgl_voucher;
-        $kd_skpd = Auth::user()->kd_skpd;
-        $tahun_anggaran = tahun_anggaran();
-
-        $data1 = DB::table('trhtransout_cmsbank as a')->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'1' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'a.no_sp2d as kegiatan', DB::raw("'' as rekening"), 'a.ket', DB::raw("'0' as terima"), DB::raw("'0' as keluar"), 'a.jns_spp', 'a.status_upload');
-
-        $data2 = DB::table('trhtransout_cmsbank as a')->leftJoin('trdtransout_cmsbank as b', function ($join) {
-            $join->on('a.no_voucher', '=', 'b.no_voucher');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'2' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'b.kd_sub_kegiatan as kegiatan', 'b.kd_rek6 as rekening', DB::raw("b.nm_sub_kegiatan + ', ' + b.nm_rek6 as ket"), DB::raw("'0' as terima"), 'b.nilai as keluar', 'a.jns_spp', DB::raw("'' as status_upload"))->union($data1);
-
-        $data3 = DB::table('trdtransout_transfercms as a')->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'3' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', DB::raw("'Rek. Tujuan :' as kegiatan"), DB::raw("'' as rekening"), DB::raw("RTRIM(a.rekening_tujuan) + ' , AN : ' + RTRIM(a.nm_rekening_tujuan) as ket"), DB::raw("'0' as terima"), 'a.nilai as keluar', DB::raw("'' as jns_spp"), DB::raw("'' as status_upload"))->union($data2);
-
-        $data4 = DB::table('trhtransout_cmsbank as a')->join('trhtrmpot_cmsbank as b', function ($join) {
-            $join->on('a.no_voucher', '=', 'b.no_voucher');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->join('trdtrmpot_cmsbank as c', function ($join) {
-            $join->on('b.no_bukti', '=', 'c.no_bukti');
-            $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-        })->where(DB::raw("YEAR(a.tgl_voucher)"), $tahun_anggaran)->where(['a.tgl_voucher' => $tgl_voucher, 'a.kd_skpd' => $kd_skpd])->select(DB::raw("'4' as urut"), 'a.kd_skpd', 'a.tgl_voucher', 'a.no_voucher', 'b.kd_sub_kegiatan as kegiatan', 'c.kd_rek6 as rekening', DB::raw("'Terima ' + c.nm_rek6 as ket"), 'c.nilai as terima', DB::raw("'0' as keluar"), DB::raw("'' as jns_spp"), DB::raw("'' as status_upload"))->union($data3);
-
-        $bank1 = DB::table('tr_setorsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode');
-
-        $bank2 = DB::table('TRHINLAIN')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where('pay', 'BANK')->unionAll($bank1);
-
-        $bank3 = DB::table('tr_jpanjar as c')->join('tr_panjar as d', function ($join) {
-            $join->on('c.no_panjar_lalu', '=', 'd.no_panjar');
-            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-        })->select('c.tgl_kas as tgl', 'c.no_kas as bku', 'c.keterangan as ket', 'c.nilai as jumlah', DB::raw("'1' as jns"), 'c.kd_skpd as kode')->where(['c.jns' => '1', 'c.kd_skpd' => $kd_skpd, 'd.pay' => 'BANK'])->unionAll($bank2);
-
-        $bank4 = DB::table('trhtrmpot')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'1' as jns"), 'kd_skpd as kode')->where(['pay' => 'BANK', 'kd_skpd' => $kd_skpd])->unionAll($bank3);
-
-        $bank5 = DB::table('tr_ambilsimpanan')->select('tgl_kas as tgl', 'no_kas as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->unionAll($bank4);
-
-        $bank6 = DB::table('trhoutlain')->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where('pay', 'BANK')->unionAll($bank5);
-
-        $bank7 = DB::table('tr_panjar')->select('tgl_panjar as tgl', 'no_panjar as bku', 'keterangan as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->where(['jns' => '1', 'kd_skpd' => $kd_skpd, 'pay' => 'BANK'])->unionAll($bank6);
-
-        $leftjoin1 = DB::table('trspmpot')->select('no_spm', DB::raw("SUM(nilai) as pot"))->groupBy('no_spm');
-
-        $bank8 = DB::table('trhtransout as a')->join('trhsp2d as b', 'a.no_sp2d', '=', 'b.no_sp2d')->leftJoinSub($leftjoin1, 'c', function ($join) {
-            $join->on('b.no_spm', '=', 'c.no_spm');
-        })->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', DB::raw("total - ISNULL(pot,0) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->where(['pay' => 'BANK'])->unionAll($bank7);
-
-        $bank9 = DB::table('trhkasin_pkd as a')->join('trdkasin_pkd as b', function ($join) {
-            $join->on('a.no_sts', '=', 'b.no_sts');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->where(['pot_khusus' => '0', 'bank' => 'BANK', 'a.kd_skpd' => $kd_skpd])->whereNotIn('jns_trans', ['4', '2'])->groupBy('a.tgl_sts', 'a.no_sts', 'a.keterangan', 'a.kd_skpd')->select('a.tgl_sts as tgl', 'a.no_sts as bku', 'a.keterangan as ket', DB::raw("SUM(b.rupiah) as jumlah"), DB::raw("'2' as jns"), 'a.kd_skpd as kode')->unionAll($bank8);
-
-        $bank10 = DB::table('trhstrpot')->where(['kd_skpd' => $kd_skpd, 'pay' => 'BANK'])->select('tgl_bukti as tgl', 'no_bukti as bku', 'ket as ket', 'nilai as jumlah', DB::raw("'2' as jns"), 'kd_skpd as kode')->unionAll($bank9);
-
         $data = [
-            'daerah' => DB::table('sclient')->select('daerah', 'kab_kota')->where(['kd_skpd' => $kd_skpd])->first(),
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
-            'tgl_voucher' => $tgl_voucher,
-            'data_cms' => DB::table(DB::raw("({$data4->toSql()}) AS sub"))
-                ->mergeBindings($data4)
-                ->orderBy('kd_skpd')
-                ->orderBy('tgl_voucher')
-                ->orderBy(DB::raw("CAST(no_voucher as INT)"))
-                ->orderBy('urut')
+            'header' => DB::table('config_app')
+                ->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')
+                ->first(),
+            'kd_skpd' => $request->kd_skpd,
+            'jenis' => $request->jenis_belanja,
+            'detail_dpr' => DB::table('trddpr as a')
+                ->join('trhdpr as b', function ($join) {
+                    $join->on('a.no_dpr', '=', 'b.no_dpr');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.*', 'b.jenis_belanja')
+                ->where(['b.no_dpr' => $request->no_dpr, 'b.kd_skpd' => $request->kd_skpd])
                 ->get(),
-            'bank' => DB::table(DB::raw("({$bank10->toSql()}) AS sub"))
-                ->select(DB::raw("SUM(CASE WHEN jns=1 THEN jumlah ELSE 0 END) as terima"), DB::raw("SUM(CASE WHEN jns=2 THEN jumlah ELSE 0 END) as keluar"))
-                ->mergeBindings($bank10)
-                ->whereRaw("tgl<='$tgl_voucher' AND kode='$kd_skpd'")
+            'dpr' => DB::table('trhdpr')
+                ->select('jenis_belanja', 'tgl_dpr', 'no_kkpd', 'kd_skpd')
+                ->where(['no_dpr' => $request->no_dpr, 'kd_skpd' => $request->kd_skpd])
+                ->first(),
+            'pptk' => DB::table('ms_ttd')
+                ->where(['kd_skpd' => Auth::user()->kd_skpd, 'nip' => $request->pptk])
+                ->whereIn('kode', ['PPTK', 'KPA'])
                 ->first()
         ];
-
-        return view('skpd.transaksi_cms.cetak')->with($data);
+        // dd($data['pptk']);
+        $view = view('skpd.dpr.cetak')->with($data);
+        if ($request->jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')                
+                ->setOrientation('landscape')
+                ->setOption('page-width', 215)
+                ->setOption('page-width', 330)
+                ->setOption('margin-top', $request->margin_atas)
+                ->setOption('margin-bottom', $request->margin_bawah)
+                ->setOption('margin-right', $request->margin_kanan)
+                ->setOption('margin-left', $request->margin_kiri);
+            return $pdf->stream('CETAK_' . $request->no_dpr . 'pdf');
+        } else {
+            return $view;
+        }
     }
 
     // VERIFIKASI DPR

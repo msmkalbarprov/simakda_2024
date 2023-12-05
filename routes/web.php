@@ -1489,6 +1489,8 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
             Route::post('update', [DaftarPembayaranTagihanController::class, 'update'])->name('dpt.update');
             Route::post('hapus', [DaftarPembayaranTagihanController::class, 'hapus'])->name('dpt.hapus');
 
+            Route::get('cetak', [DaftarPembayaranTagihanController::class, 'cetak'])->name('dpt.cetak');
+
             // VERIFIKASI DPT
             Route::group(['prefix' => 'verifikasi'], function () {
                 // Verifikasi DPT
