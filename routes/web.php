@@ -110,6 +110,7 @@ use App\Http\Controllers\Utility\KunciPengeluaranController;
 use App\Http\Controllers\Akuntansi\calk\calkController;
 use App\Http\Controllers\Akuntansi\calk\calk_bab2Controller;
 use App\Http\Controllers\Akuntansi\calk\calk_bab3lra_pendController;
+use App\Http\Controllers\Akuntansi\calk\calk_bab3lra_belController;
 use App\Http\Controllers\Akuntansi\LraperdaController;
 use App\Http\Controllers\Akuntansi\LraperkadaController;
 use App\Http\Controllers\Akuntansi\pengesahan_spj\PengesahanSPJController;
@@ -2116,6 +2117,11 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
         Route::get('calkbab3_lra_pend', [calk_bab3lra_pendController::class, 'calkbab3_lra_pend'])->name('calk.calkbab3_lra_pend');
         Route::post('load_calkbab3_lra_pend', [calk_bab3lra_pendController::class, 'load_calkbab3_lra_pend'])->name('calk.load_calkbab3_lra_pend');
         Route::post('simpan_calkbab3_lra_pend', [calk_bab3lra_pendController::class, 'simpan_calkbab3_lra_pend'])->name('calk.simpan_calkbab3_lra_pend');
+        //bab3 lra belanja
+        Route::get('cetak_calk12', [calk_bab3lra_belController::class, 'cetak_calk12'])->name('calk.cetakan12');
+        Route::get('calkbab3_lra_bel', [calk_bab3lra_belController::class, 'calkbab3_lra_bel'])->name('calk.calkbab3_lra_bel');
+        Route::post('load_calkbab3_lra_bel', [calk_bab3lra_belController::class, 'load_calkbab3_lra_bel'])->name('calk.load_calkbab3_lra_bel');
+        Route::post('simpan_calkbab3_lra_bel', [calk_bab3lra_belController::class, 'simpan_calkbab3_lra_bel'])->name('calk.simpan_calkbab3_lra_bel');
 
     });
 
