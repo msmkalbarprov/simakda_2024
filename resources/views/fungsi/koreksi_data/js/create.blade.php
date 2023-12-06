@@ -65,7 +65,6 @@
         });
 
         $('#no_sp2d').on('change', function() {
-            alert($(this).find(':selected').data('tgl_mulai'));
             let keperluan = $(this).find(':selected').data('keperluan');
             let tgl_mulai = $(this).find(':selected').data('tgl_mulai');
             let tgl_akhir = $(this).find(':selected').data('tgl_akhir');
