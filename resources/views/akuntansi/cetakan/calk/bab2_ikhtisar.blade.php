@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Calk - BAB I IKHTISAR PENCAPAIAN KINERJA KEUANGAN</title>
+    <title>Calk - BAB II IKHTISAR PENCAPAIAN KINERJA KEUANGAN</title>
     <style>
         table {
             border-collapse: collapse
@@ -181,8 +181,11 @@
             @endif
         @endforeach
     </table><br>
-    <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd}}','{{$jns_ang}}','{{$bulan}}')">Edit</button>
-    <button type="button" value="Refresh" onClick="window.location.reload()">Reload</button>
+    @if($jenis==1)
+        <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd}}','{{$jns_ang}}','{{$bulan}}')">Edit</button>
+        <button type="button" value="Refresh" onClick="window.location.reload()">Reload</button>
+    @else
+    @endif
 </body>
 </html>
 <script type="text/javascript">

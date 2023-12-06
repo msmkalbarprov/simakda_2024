@@ -277,6 +277,8 @@
                     url             = new URL("{{ route('calk.cetakan9') }}");
                 }else if(lampiran == 10){
                     url             = new URL("{{ route('calk.cetakan10') }}");
+                }else if(lampiran == 11){
+                    url             = new URL("{{ route('calk.cetakan11') }}");
                 }else{
                     alert('Cetakan Tidak Tersedia');
                     return;

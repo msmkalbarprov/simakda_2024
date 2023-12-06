@@ -1109,39 +1109,5 @@ class calkController extends Controller
         }
     }
 
-    public function load_calkbab2(Request $request)
-    {
-        $kd_skpd = $request->kd_skpd;  
-        $bulan   = $request->bulan;
-        $thn_ang = tahun_anggaran();
-        $skpd_clause= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' ";
-        $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran,(select nama from tb_status_anggaran where a.jns_ang=kode)nama from trhrka a where $skpd_clause and status=1 order by tgl_dpa DESC"))->first();
-        $jns_ang = $sql_ang->anggaran;
-        $data = DB::select("SELECT kode,kode2,bidang,angg_ubah anggaran, real realisasi,selisih,persen,hambatan
-                from(select nomor,concat(keg.kd_skpd,'.',kode)kode,kode kode2,bidang,angg_ubah,real,selisih=[real]-angg_ubah,case when angg_ubah=0  then 0 else ([real]/angg_ubah)*100 end [persen],isnull(e.hambatan,'') [hambatan] 
-                from(SELECT 10 [nomor],a.kd_skpd,a.kd_sub_kegiatan as kode,(select nm_sub_kegiatan from ms_sub_kegiatan where kd_sub_kegiatan=a.kd_sub_kegiatan) bidang, isnull (sum(nilai),0) angg_ubah,isnull (sum(real_bel),0) [real]
-                        from(SELECT a.kd_skpd,kd_sub_kegiatan,a.kd_rek6,sum(a.nilai) as nilai, 0 as real_bel
-                                FROM trdrka a INNER JOIN ms_rek6 b ON a.kd_rek6=b.kd_rek6 
-                                where LEFT(a.kd_rek6,1) ='5'and jns_ang='$jns_ang'
-                                GROUP BY a.kd_skpd,kd_sub_kegiatan,a.kd_rek6
-                                union all
-                                select b.kd_skpd,a.kd_sub_kegiatan,a.kd_rek6, 0 as belanja ,sum(a.debet-a.kredit) as real_bel
-                                from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                                where MONTH(tgl_voucher)<=12 and year(b.tgl_voucher)='$thn_ang' and LEFT(kd_rek6,1)='5'
-                                group by b.kd_skpd,a.kd_sub_kegiatan,a.kd_rek6
-                            )a
-                        where  kd_skpd='$kd_skpd'
-                        group by a.kd_skpd,a.kd_sub_kegiatan
-                    ) as keg left join calk_babII e on keg.kode=e.kd_program and keg.kd_skpd=e.kd_skpd  
-                where angg_ubah>0  )a
-                where persen<75 
-                order by kode,kode2");
-        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            
-            $btn = '<a href="javascript:void(0);" onclick="edit(\'' . $row->kode . '\',\'' . $row->kode2 . '\',\'' . $row->bidang . '\',\'' . $row->anggaran . '\',\'' . $row->realisasi . '\',\'' . $row->selisih . '\',\'' . $row->persen . '\',\'' . $row->hambatan . '\');" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
-            return $btn;
-        })->rawColumns(['aksi'])->make(true);
-    }
-
 
 }
