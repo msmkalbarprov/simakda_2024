@@ -54,7 +54,7 @@ class KoreksiDataController extends Controller
                     ->where(['no_sp2d' => $data['no_sp2d'], 'kd_skpd' => $data['kd_skpd']])
                     ->update([
                         'keperluan' => $data['keterangan'],
-                        'username' => Auth::user()->nama,
+                        // 'username' => Auth::user()->nama,
                         'last_update' => date('Y-m-d H:i:s')
                     ]);
 
@@ -66,7 +66,7 @@ class KoreksiDataController extends Controller
                     ->where(['no_spm' => $data_sp2d->no_spm, 'kd_skpd' => $data['kd_skpd']])
                     ->update([
                         'keperluan' => $data['keterangan'],
-                        'username' => Auth::user()->nama,
+                        // 'username' => Auth::user()->nama,
                         'last_update' => date('Y-m-d H:i:s')
                     ]);
 
@@ -74,7 +74,7 @@ class KoreksiDataController extends Controller
                     ->where(['no_spp' => $data_sp2d->no_spp, 'kd_skpd' => $data['kd_skpd']])
                     ->update([
                         'keperluan' => $data['keterangan'],
-                        'username' => Auth::user()->nama,
+                        // 'username' => Auth::user()->nama,
                         'last_update' => date('Y-m-d H:i:s'),
                         'tgl_mulai' => $data['tgl_mulai'],
                         'tgl_akhir' => $data['tgl_akhir'],
@@ -89,7 +89,7 @@ class KoreksiDataController extends Controller
                         ->where(['no_bukti' => $data_spp->no_tagih, 'kd_skpd' => $data['kd_skpd']])
                         ->update([
                             'ket' => $data['keterangan'],
-                            'username' => Auth::user()->nama,
+                            // 'username' => Auth::user()->nama,
                             'tgl_update' => date('Y-m-d H:i:s'),
                             'jenis' => $data['jenis'],
                         ]);
@@ -99,7 +99,7 @@ class KoreksiDataController extends Controller
                     ->where(['no_spm' => $data['no_spm'], 'kd_skpd' => $data['kd_skpd']])
                     ->update([
                         'keperluan' => $data['keterangan'],
-                        'username' => Auth::user()->nama,
+                        // 'username' => Auth::user()->nama,
                         'last_update' => date('Y-m-d H:i:s')
                     ]);
 
@@ -111,7 +111,7 @@ class KoreksiDataController extends Controller
                     ->where(['no_spp' => $data_spm->no_spp, 'kd_skpd' => $data['kd_skpd']])
                     ->update([
                         'keperluan' => $data['keterangan'],
-                        'username' => Auth::user()->nama,
+                        // 'username' => Auth::user()->nama,
                         'last_update' => date('Y-m-d H:i:s'),
                         'tgl_mulai' => $data['tgl_mulai'],
                         'tgl_akhir' => $data['tgl_akhir'],
@@ -126,7 +126,7 @@ class KoreksiDataController extends Controller
                         ->where(['no_bukti' => $data_spp->no_tagih, 'kd_skpd' => $data['kd_skpd']])
                         ->update([
                             'ket' => $data['keterangan'],
-                            'username' => Auth::user()->nama,
+                            // 'username' => Auth::user()->nama,
                             'tgl_update' => date('Y-m-d H:i:s'),
                             'jenis' => isset($data['jenis']) ? $data['jenis'] : '',
                         ]);
