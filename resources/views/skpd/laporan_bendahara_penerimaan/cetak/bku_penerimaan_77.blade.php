@@ -61,7 +61,7 @@
         </tr>
     </table>
     {{-- isi --}}
-    <table style='border-collapse:collapse;font-family: Open Sans;' width='100%' align='center' border='1' cellspacing='1' cellpadding='$spasi'>
+    <table style='border-collapse:collapse;font-family: Open Sans;' width='100%' align='center' border='1' cellspacing='2' cellpadding='$spasi'>
 		<thead>		   
             <tr>
                 <td bgcolor='#CCCCCC' align='center' wfth="5%"><b>No</b></td>
@@ -100,15 +100,15 @@
                             $hasil          = $hasil + ($row->terima-$row->keluar);
                             
                         @endphp
-                                <tr><td style="font-size:14px" align='center' >{{$nomor}}</td>
-                                    <td style="font-size:14px" align='center' >{{$tgl}}</td>
-                                    <td style="font-size:14px" align='left' >{{$nobukti}}</td>
-                                    <td style="font-size:14px" align='center' >{{$rek}}</td>
-                                    <td style="font-size:14px" align='left' >{{$nmrek}}</td>
-                                    <td style="font-size:14px" align='left' >{{$ket}}</td>
-                                    <td style="font-size:14px" align='right' >{{$terima}}</td>
-                                    <td style="font-size:14px" align='right' >{{$keluar}}</td>
-                                    <td style="font-size:14px" align='right' >{{rupiah($hasil)}}</td>
+                                <tr><td style="font-size:13px" align='center' >{{$nomor}}</td>
+                                    <td style="font-size:13px" align='center' >{{$tgl}}</td>
+                                    <td style="font-size:13px" align='left' >{{$nobukti}}</td>
+                                    <td style="font-size:13px" align='center' >{{$rek}}</td>
+                                    <td style="font-size:13px" align='left' >{{$nmrek}}</td>
+                                    <td style="font-size:13px" align='left' >{{$ket}}</td>
+                                    <td style="font-size:13px" align='right' >{{$terima}}</td>
+                                    <td style="font-size:13px" align='right' >{{$keluar}}</td>
+                                    <td style="font-size:13px" align='right' >{{rupiah($hasil)}}</td>
                                  </tr>    
                     @endforeach
         </tbody>
