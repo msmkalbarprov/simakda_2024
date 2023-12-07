@@ -65,10 +65,10 @@
 		<thead>		   
             <tr>
                 <td bgcolor='#CCCCCC' align='center' width="5%"><b>No</b></td>
-                <td bgcolor='#CCCCCC' align='center' width="10%"><b>Tanggal</b></td>
+                <td bgcolor='#CCCCCC' align='center' width="5%"><b>Tanggal</b></td>
                 <td bgcolor='#CCCCCC' align='center' width="20%"><b>No. Bukti</b></td>
                 <td bgcolor='#CCCCCC' align='center' width="5%"><b>Kode Rekening</b></td>
-                <td bgcolor='#CCCCCC' align='center' width="10%"><b>Nama Rekening</b></td>
+                <td bgcolor='#CCCCCC' align='center' width="15%"><b>Nama Rekening</b></td>
                 <td bgcolor='#CCCCCC' align='center' width="20%"><b>Uraian</b></td>
                 <td bgcolor='#CCCCCC' align='center' width="10%"><b>Penerimaan</b></td>
                 <td bgcolor='#CCCCCC' align='center' width="10%"><b>Pengeluaran</b></td>
