@@ -157,7 +157,7 @@ class BKUPenerimaanController extends Controller
             'daerah'            => $daerah,
             'tanggal_ttd'       => $tanggal_ttd,
             'cari_pa_kpa'       => $cari_pakpa,
-            'role'       => $role,
+            'role'              => $role,
             'cari_bendahara'    => $cari_bendahara
         ];
 
