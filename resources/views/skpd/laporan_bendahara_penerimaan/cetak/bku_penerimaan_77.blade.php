@@ -61,15 +61,15 @@
         </tr>
     </table>
     {{-- isi --}}
-    <table style='border-collapse:collapse;font-family: Open Sans;' width='100%' align='center' border='1' cellspacing='0' cellpadding='$spasi'>
+    <table style='border-collapse:collapse;font-family: Open Sans;' width='100%' align='center' border='1' cellspacing='1' cellpadding='$spasi'>
 		<thead>		   
             <tr>
                 <td bgcolor='#CCCCCC' align='center' wfth="5%"><b>No</b></td>
-                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Tanggal</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="15%"><b>Tanggal</b></td>
                 <td bgcolor='#CCCCCC' align='center' wfth="20%"><b>No. Bukti</b></td>
                 <td bgcolor='#CCCCCC' align='center' wfth="5%"><b>Kode Rekening</b></td>
-                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Uraian</b></td>
-                <td bgcolor='#CCCCCC' align='center' wfth="20%"><b>Uraian</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Nama Rekening</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="15%"><b>Uraian</b></td>
                 <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Penerimaan</b></td>
                 <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Pengeluaran</b></td>
                 <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Saldo</b></td>
