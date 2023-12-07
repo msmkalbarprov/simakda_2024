@@ -45,7 +45,7 @@
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data.sp2d, function(index, sp2d) {
                         $('#no_sp2d').append(
-                            `<option value="${sp2d.no_sp2d}" data-keperluan="${sp2d.keperluan}" data-tgl_mulai="${sp2d.tgl_mulai}" data-tgl_akhir="${sp2d.tgl_akhir}" data-jenis="${sp2d.jenis}">${sp2d.no_sp2d}</option>`
+                            `<option value="${sp2d.no_sp2d}" data-keperluan="${sp2d.keperluan}" data-tgl_mulai="${sp2d.tgl_mulai}" data-tgl_akhir="${sp2d.tgl_akhir}" data-jenis="${sp2d.jenis}">${sp2d.no_sp2d} | ${sp2d.no_spm} | ${sp2d.no_spp}</option>`
                         );
                     });
 
