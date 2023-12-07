@@ -61,24 +61,24 @@
         </tr>
     </table>
     {{-- isi --}}
-    <table style='border-collapse:collapse;' width='100%' align='center' border='1' cellspacing='1' cellpadding='$spasi'>
+    <table style='border-collapse:collapse;font-family: Open Sans;' width='100%' align='center' border='1' cellspacing='0' cellpadding='$spasi'>
 		<thead>		   
             <tr>
-                <td bgcolor='#CCCCCC' align='center'>No</td>
-                <td bgcolor='#CCCCCC' align='center'>Tanggal</td>
-                <td bgcolor='#CCCCCC' align='center'>No. Bukti</td>
-                <td bgcolor='#CCCCCC' align='center'>Kode Rekening</td>
-                <td bgcolor='#CCCCCC' align='center'>Uraian</td>
-                <td bgcolor='#CCCCCC' align='center'>Uraian</td>
-                <td bgcolor='#CCCCCC' align='center'>Penerimaan</td>
-                <td bgcolor='#CCCCCC' align='center'>Pengeluaran</td>
-                <td bgcolor='#CCCCCC' align='center'>Saldo</td>
+                <td bgcolor='#CCCCCC' align='center' wfth="5%"><b>No</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Tanggal</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="20%"><b>No. Bukti</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="5%"><b>Kode Rekening</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Uraian</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="20%"><b>Uraian</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Penerimaan</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Pengeluaran</b></td>
+                <td bgcolor='#CCCCCC' align='center' wfth="10%"><b>Saldo</b></td>
             </tr>
             
 		</thead>
         <tbody>
-            <tr><td align='right' colspan="8">Saldo Lalu</td>
-                <td align='right' >{{rupiah($saldo_lalu->lalu)}}</td>
+            <tr><td style="font-size:14px" align='right' colspan="8">Saldo Lalu</td>
+                <td style="font-size:14px" align='right' >{{rupiah($saldo_lalu->lalu)}}</td>
              </tr> 
         
                 @php
@@ -100,15 +100,15 @@
                             $hasil          = $hasil + ($row->terima-$row->keluar);
                             
                         @endphp
-                                <tr><td align='center' >{{$nomor}}</td>
-                                    <td align='center' >{{$tgl}}</td>
-                                    <td align='left' >{{$nobukti}}</td>
-                                    <td align='center' >{{$rek}}</td>
-                                    <td align='left' >{{$nmrek}}</td>
-                                    <td align='left' >{{$ket}}</td>
-                                    <td align='right' >{{$terima}}</td>
-                                    <td align='right' >{{$keluar}}</td>
-                                    <td align='right' >{{rupiah($hasil)}}</td>
+                                <tr><td style="font-size:14px" align='center' >{{$nomor}}</td>
+                                    <td style="font-size:14px" align='center' >{{$tgl}}</td>
+                                    <td style="font-size:14px" align='left' >{{$nobukti}}</td>
+                                    <td style="font-size:14px" align='center' >{{$rek}}</td>
+                                    <td style="font-size:14px" align='left' >{{$nmrek}}</td>
+                                    <td style="font-size:14px" align='left' >{{$ket}}</td>
+                                    <td style="font-size:14px" align='right' >{{$terima}}</td>
+                                    <td style="font-size:14px" align='right' >{{$keluar}}</td>
+                                    <td style="font-size:14px" align='right' >{{rupiah($hasil)}}</td>
                                  </tr>    
                     @endforeach
         </tbody>
