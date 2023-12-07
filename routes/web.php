@@ -125,6 +125,7 @@ use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\Master\RekeningP90Controller;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
+use App\Http\Controllers\Skpd\BKUPenerimaanController;
 use App\Http\Controllers\Skpd\DaftarPembayaranTagihanController;
 use App\Http\Controllers\Skpd\DaftarPembayaranTagihanGabunganController;
 use App\Http\Controllers\Skpd\DaftarPengeluaranRillController;
@@ -1169,6 +1170,10 @@ Route::group(['middleware' => 'auth', 'auth.session'], function () {
 
             // buku terima setor
             Route::get('cetak_buku_penerimaan_penyetoran', [BukuPenerimaanPenyetoranController::class, 'cetakBukuPenerimaanPenyetoran'])->name('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran');
+
+            // BKU penerimaan
+            Route::get('cetak_bku_penerimaan', [BKUPenerimaanController::class, 'cetakBKUPenerimaan'])->name('skpd.laporan_bendahara_penerimaan.cetak_bku_penerimaan');
+            
             // buku SPJ Pendapatan
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
             // Cek Buku Setoran

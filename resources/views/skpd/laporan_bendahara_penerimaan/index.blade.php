@@ -20,7 +20,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbku">
+            <div class="card card-info collapsed-card card-outline" id="laporan_terima_setor">
                 <div class="card-body">
                     {{ 'Buku Penerimaan dan Penyetoran' }}
                     <a class="card-block stretched-link" href="#">
@@ -77,6 +77,18 @@
             <div class="card card-info collapsed-card card-outline" id="register_kasda">
                 <div class="card-body">
                     {{ 'Register Kasda' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="bku_penerimaan">
+                <div class="card-body">
+                    {{ 'BKU Penerimaan' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -209,6 +221,7 @@
                 dropdownParent: $('#modal_register_kasda .modal-content'),
                 theme: 'bootstrap-5'
             });
+            
 
 
         });
@@ -222,7 +235,7 @@
 
         let modal
 
-        $('#lapbku').on('click', function() {
+        $('#laporan_terima_setor').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
             let role = "{{ Auth::user()->role }}";
             $('#modal_cetak').modal('show');
@@ -316,6 +329,34 @@
             // document.getElementById('pa_kpa1').hidden = false; // Hide
             // cari_skpd(kd_skpd, jenis);
             // modal = 1;
+        });
+
+        // BKU Penerimaan
+        $('#bku_penerimaan').on('click', function() {
+            let kd_skpd = "{{ $data_skpd->kd_skpd }}";
+            let role    = "{{ Auth::user()->role }}";
+            $('#modal_cetak').modal('show');
+            $('#modal_cetak2').modal('hide');
+            $('#modal_register_kasda').modal('hide');
+            $("#labelcetak").html("BKU Penerimaan");
+            if (role == '1022') {
+                document.getElementById('jenisanggaran').hidden = true; // Hide
+                document.getElementById('jenis1').hidden = false; // Hide
+                document.getElementById('spasi1').hidden = false; // Hide
+                document.getElementById('tgl_ttd1').hidden = false; // Hide
+                document.getElementById('bendahara1').hidden = true; // Hide
+                document.getElementById('pa_kpa1').hidden = true; // Hide
+            } else {
+
+                document.getElementById('jenisanggaran').hidden = true; // Hide
+                document.getElementById('jenis1').hidden = false; // Hide
+                document.getElementById('spasi1').hidden = false; // Hide
+                document.getElementById('tgl_ttd1').hidden = false; // Hide
+                document.getElementById('bendahara1').hidden = false; // Hide
+                document.getElementById('pa_kpa1').hidden = false; // Hide
+            }
+            cari_skpd(kd_skpd, jenis);
+            modal = 1;
         });
 
         $('#pilihan_keseluruhan_register').on('click', function() {
@@ -651,6 +692,28 @@
 
             if (jenis_cetak == 'Buku Penerimaan dan Pengeluaran') {
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_buku_penerimaan_penyetoran') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("spasi", spasi);
+                searchParams.append("bendahara", bendahara);
+                searchParams.append("pa_kpa", pa_kpa);
+                searchParams.append("tanggal1", tanggal1);
+                searchParams.append("tanggal2", tanggal2);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("jenis_print", jenis_print);
+                searchParams.append("jenis_cetakan", jenis_cetakan);
+                searchParams.append("cetak", jns_cetak);
+                searchParams.append("format", format);
+                searchParams.append("atas", atas);
+                searchParams.append("bawah", bawah);
+                searchParams.append("kiri", kiri);
+                searchParams.append("kanan", kanan);
+
+
+                window.open(url.toString(), "_blank");
+
+            }else if (jenis_cetak == 'BKU Penerimaan') {
+                let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_bku_penerimaan') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("spasi", spasi);
                 searchParams.append("bendahara", bendahara);
