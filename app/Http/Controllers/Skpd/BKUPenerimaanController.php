@@ -106,7 +106,7 @@ class BKUPenerimaanController extends Controller
             )zz", [$tanggal1, $kd_org, $kd_org, $tanggal1, $kd_org, $kd_org]))->first();
 
             $rincian = DB::select("SELECT 
-                                    '1-'+cast(a.tgl_terima as VARCHAR)+'-'+a.no_terima as urut,
+                                    cast(a.tgl_terima as VARCHAR)+'-1-'+a.no_terima as urut,
                                     a.tgl_terima as tglbukti, 
                                     a.no_terima as nobukti,
                                     a.kd_rek6,
@@ -122,7 +122,7 @@ class BKUPenerimaanController extends Controller
 
                                     UNION ALL
                                     SELECT 
-                                    '2-'+CAST(x.tgl_sts as varchar)+'-'+y.no_terima as urut,
+                                    CAST(x.tgl_sts as varchar)+'-2-'+y.no_terima as urut,
                                     x.tgl_sts,
                                     x.no_sts,
                                     y.kd_rek6,
