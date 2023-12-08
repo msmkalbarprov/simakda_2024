@@ -35,7 +35,7 @@
 
 <!-- <body onload="window.print()"> -->
 <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:18px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
             <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
