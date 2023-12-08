@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Skpd;
+namespace App\Http\Controllers\Skpd\Pendapatan;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,12 +11,12 @@ use phpDocumentor\Reflection\Types\Static_;
 use PDF;
 use Knp\Snappy\Pdf as SnappyPdf;
 
-class BKUPenerimaanController extends Controller
+class BpBankPenerimaanController extends Controller
 {
 
 
     // Cetak List
-    public function cetakBKUPenerimaan(Request $request)
+    public function cetakBPBankPenerimaan(Request $request)
     {
         $role           = Auth::user()->role;
         $tanggal_ttd    = $request->tgl_ttd;
@@ -87,8 +87,7 @@ class BKUPenerimaanController extends Controller
                 SELECT 
                     a.nilai as terima,
                     0 as keluar
-                    FROM tr_terima a INNER JOIN ms_rek6 b
-                    ON a.kd_rek6=b.kd_rek6 
+                    FROM tr_terima a
                     where a.tgl_terima < ? 
                     and left(a.kd_skpd,len(?)) = ?
 
@@ -98,25 +97,21 @@ class BKUPenerimaanController extends Controller
                     sum(y.rupiah) as keluar
                     FROM trhkasin_pkd x 
                     INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
-                    INNER JOIN ms_rek6 z ON y.kd_rek6=z.kd_rek6
                     where x.tgl_sts < ?
                     and left(x.kd_skpd,len(?)) = ?
                     and (jns_cp ='' OR jns_cp is null) and jns_trans in ('4','2','3')
-                    GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.kd_rek6,z.nm_rek6,y.no_terima
+                    GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.no_terima
             )zz", [$tanggal1, $kd_org, $kd_org, $tanggal1, $kd_org, $kd_org]))->first();
 
             $rincian = DB::select("SELECT 
                                     cast(a.tgl_terima as VARCHAR)+'-1-'+a.no_terima as urut,
                                     a.tgl_terima as tglbukti, 
                                     a.no_terima as nobukti,
-                                    a.kd_rek6,
-                                    b.nm_rek6,
                                     a.keterangan,
                                     a.nilai as terima,
                                     0 as keluar,
                                     '1' as kode
-                                    FROM tr_terima a INNER JOIN ms_rek6 b
-                                    ON a.kd_rek6=b.kd_rek6 
+                                    FROM tr_terima a
                                     where (a.tgl_terima BETWEEN ? and ? ) 
                                     and left(a.kd_skpd,len(?)) = ?
 
@@ -125,19 +120,16 @@ class BKUPenerimaanController extends Controller
                                     CAST(x.tgl_sts as varchar)+'-2-'+y.no_terima as urut,
                                     x.tgl_sts,
                                     x.no_sts,
-                                    y.kd_rek6,
-                                    z.nm_rek6,
                                     x.keterangan,
                                     0 as terima,
                                     sum(y.rupiah) as keluar,
                                     '2' as kode
                                     FROM trhkasin_pkd x 
                                     INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
-                                    INNER JOIN ms_rek6 z ON y.kd_rek6=z.kd_rek6
                                     where (x.tgl_sts BETWEEN ? and ?) 
                                     and left(x.kd_skpd,len(?)) = ?
                                     and (jns_cp ='' OR jns_cp is null) and jns_trans in ('4','2','3')
-                                    GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.kd_rek6,z.nm_rek6,y.no_terima
+                                    GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.no_terima
 
                                     ORDER BY urut", [$tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         }
@@ -164,7 +156,7 @@ class BKUPenerimaanController extends Controller
         // if ($format == '13') {
         //     $view = view('skpd.laporan_bendahara_penerimaan.cetak.buku_penerimaan_penyetoran')->with($data);
         // } else {
-            $view = view('skpd.laporan_bendahara_penerimaan.cetak.bku_penerimaan_77')->with($data);
+            $view = view('skpd.laporan_bendahara_penerimaan.cetak.bp_bank')->with($data);
         // }
 
 
