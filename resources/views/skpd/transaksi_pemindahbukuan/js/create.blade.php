@@ -759,7 +759,7 @@
             $('#total_input_rekening').val(null);
 
             let beban = this.value;
-            if (beban == 1) {
+            if (beban == 1 || beban == 3) {
                 $('#input_mbiz').show();
             } else {
                 $('#input_mbiz').hide();
