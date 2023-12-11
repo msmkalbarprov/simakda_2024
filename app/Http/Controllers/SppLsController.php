@@ -85,6 +85,14 @@ class SppLsController extends Controller
             ->get();
         $data1 = DB::select(DB::raw("SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd='$skpd' and (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih"));
         $data2 = json_decode(json_encode($data1), true);
+        $datapenagihan = DB::select("SELECT a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan, sum(b.nilai) as total 
+                                    from trhtagih as a  INNER JOIN trdtagih as b ON  a.no_bukti=b.no_bukti 
+                                    where a.kd_skpd = ? and a.jns_trs = ? and a.no_bukti not in 
+                                    (SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd= ? and 
+                                    (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih)
+                                    group By a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan
+                                    order By a.no_bukti"
+                                    , [$skpd, 1, $skpd]);
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
@@ -94,7 +102,8 @@ class SppLsController extends Controller
                 ->orderBy('rekening')
                 ->get(),
             'daftar_bank' => DB::table('ms_bank')->select('kode', 'nama')->orderBy('kode')->get(),
-            'daftar_penagihan' => DB::table('trhtagih as a')->select('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan', DB::raw('SUM(b.nilai) as total'))->join('trdtagih as b', 'a.no_bukti', '=', 'b.no_bukti')->where('a.kd_skpd', $skpd)->where('a.jns_trs', '1')->whereNotIn('a.no_bukti', $data2)->groupBy('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan')->orderBy('a.no_bukti')->get(),
+            'daftar_penagihan' => $datapenagihan,
+            // DB::table('trhtagih as a')->select('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan', DB::raw('SUM(b.nilai) as total'))->join('trdtagih as b', 'a.no_bukti', '=', 'b.no_bukti')->where('a.kd_skpd', $skpd)->where('a.jns_trs', '1')->whereNotIn('a.no_bukti', $data2)->groupBy('a.kd_skpd', 'a.no_bukti', 'tgl_bukti', 'a.ket', 'a.kontrak', 'kd_sub_kegiatan')->orderBy('a.no_bukti')->get(),
             'data_tgl' => DB::table('trhspp')->selectRaw('MAX(tgl_spp) as tgl_spp')->where('kd_skpd', $skpd)->where(function ($query) {
                 $query->where('sp2d_batal', '=', '0')
                     ->orWhereNull('sp2d_batal');
