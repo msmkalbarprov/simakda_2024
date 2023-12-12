@@ -2240,6 +2240,40 @@ class RakController extends Controller
                                 'username' => Auth::user()->nama,
                                 'updated_at' => date("Y-m-d H:i:s")
                             ]);
+                            break;
+                        case 'nilai_ubah2':
+                            DB::table('trdskpd_ro')->where(['kd_gabungan' => $kd_gabungan, 'kd_rek6' => $data['kode_rekening'], 'bulan' => $i])->update([
+                                'nilai_ubah2' => $data[$bulan],
+                                'nilai_ubah21' => $data[$bulan],
+                                'nilai_ubah22' => $data[$bulan],
+                                'nilai_ubah23' => $data[$bulan],
+                                'nilai_ubah24' => $data[$bulan],
+                                'nilai_ubah25' => $data[$bulan],
+
+                                'nilai_ubah3' => $data[$bulan],
+                                'nilai_ubah31' => $data[$bulan],
+                                'nilai_ubah32' => $data[$bulan],
+                                'nilai_ubah33' => $data[$bulan],
+                                'nilai_ubah34' => $data[$bulan],
+                                'nilai_ubah35' => $data[$bulan],
+
+                                'nilai_ubah4' => $data[$bulan],
+                                'nilai_ubah41' => $data[$bulan],
+                                'nilai_ubah42' => $data[$bulan],
+                                'nilai_ubah43' => $data[$bulan],
+                                'nilai_ubah44' => $data[$bulan],
+                                'nilai_ubah45' => $data[$bulan],
+
+                                'nilai_ubah5' => $data[$bulan],
+                                'nilai_ubah51' => $data[$bulan],
+                                'nilai_ubah52' => $data[$bulan],
+                                'nilai_ubah53' => $data[$bulan],
+                                'nilai_ubah54' => $data[$bulan],
+                                'nilai_ubah55' => $data[$bulan],
+
+                                'username' => Auth::user()->nama,
+                                'updated_at' => date("Y-m-d H:i:s")
+                            ]);
                     }
                 }
             } else {
