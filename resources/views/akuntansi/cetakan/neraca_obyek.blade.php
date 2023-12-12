@@ -171,13 +171,13 @@
                     if ($kredit=='') $kredit=0;
 
                     if ($normal==1){
-                        $nl=$debet-$kredit-$kurangi+$tambah;
+                        $nl_1=($debet-$kredit);
                     }else{
-                        $nl=$kredit-$debet-$kurangi+$tambah;             
+                        $nl_1=($kredit-$debet);             
                     }
-                    if ($nl=='') $nl=0;
-
-                    $eka=$nl+$ekuitas;
+                    if ($nl_1=='') $nl_1=0;
+                    $nl = ($nl_1-$kurangi);
+                    $eka=$ekuitas-$nl+$tambah;
             
 
             $nilainya_lalu = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
@@ -221,14 +221,14 @@
                     if ($kredit_lalu=='') $kredit_lalu=0;
 
                     if ($normal==1){
-                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu+$tambah_lalu;
+                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
                     }else{
-                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu+$tambah_lalu;             
+                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
                     }
                     if ($nl_lalu=='') $nl_lalu=0;
 
-                    $eka_lalu=$nl_lalu+$ekuitas_lalu;
-                    $jeku_lalu = $nl_lalu+$ekuitas_lalu;
+                    $eka_lalu=$ekuitas_lalu-$nl_lalu+$tambah_lalu;
+                    $jeku_lalu = $ekuitas_lalu-$nl_lalu;
 
                 if ($nl < 0){
                     $a="("; $nl=$nl*-1; $b=")";
