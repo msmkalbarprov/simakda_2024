@@ -272,7 +272,7 @@ class SppLsController extends Controller
                 ],
                 [
                     "id"   => 4,
-                    "text" => " Honor Non PNS / Tenaga Kontrak"
+                    "text" => " Honorarium Non PNS / Tenaga Kontrak"
                 ],
                 [
                     "id"   => 5,
@@ -1640,7 +1640,7 @@ class SppLsController extends Controller
                     $lcbeban = " Operasional DPRD";
                     break;
                 case '4': //TU
-                    $lcbeban = " Honor Non PNS / Tenaga Kontrak";
+                    $lcbeban = " Honorarium Non PNS / Tenaga Kontrak";
                     break;
                 case '5': //TU
                     $lcbeban = " Jasa Pelayanan Kesehatan";
@@ -1939,7 +1939,7 @@ class SppLsController extends Controller
                     $lcbeban = " Operasional DPRD";
                     break;
                 case '4': //TU
-                    $lcbeban = "  Honor Non PNS / Tenaga Kontrak";
+                    $lcbeban = "  Honorarium Non PNS / Tenaga Kontrak";
                     break;
                 case '5': //TU
                     $lcbeban = " Jasa Pelayanan Kesehatan";
@@ -2130,7 +2130,7 @@ class SppLsController extends Controller
                     $lcbeban = " Operasional DPRD";
                     break;
                 case '4': //TU
-                    $lcbeban = "  Honor Non PNS / Tenaga Kontrak";
+                    $lcbeban = "  Honorarium Non PNS / Tenaga Kontrak";
                     break;
                 case '5': //TU
                     $lcbeban = " Jasa Pelayanan Kesehatan";
@@ -2468,7 +2468,7 @@ class SppLsController extends Controller
                     $lcbeban = " Operasional DPRD";
                     break;
                 case '4': //TU
-                    $lcbeban = " Honor Non PNS / Tenaga Kontrak";
+                    $lcbeban = " Honorarium Non PNS / Tenaga Kontrak";
                     break;
                 case '5': //TU
                     $lcbeban = " Jasa Pelayanan Kesehatan";
@@ -2658,7 +2658,7 @@ class SppLsController extends Controller
                     $lcbeban = " Operasional DPRD";
                     break;
                 case '4': //TU
-                    $lcbeban = "  Honor Non PNS / Tenaga Kontrak";
+                    $lcbeban = "  Honorarium Non PNS / Tenaga Kontrak";
                     break;
                 case '5': //TU
                     $lcbeban = " Jasa Pelayanan Kesehatan";
