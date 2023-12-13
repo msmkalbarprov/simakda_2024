@@ -78,6 +78,8 @@
                                     <option value="18">BAB V PENUTUP</option>
                                     <option value="19">LAMP.I ANALISIS</option>
                                     <option value="20">LAMP.II PENJELASAN PENYAJIAN DATA</option>
+                                    <option value="21">LAMP.III JAMINAN PEMELIHARAAN</option>
+                                    <option value="22">LAMP.IV REKAP PEKERJAAN PERENCANAAN TEKNIS</option>
                                 </select>
                             </div>
                         </div>
@@ -281,6 +283,8 @@
                     url             = new URL("{{ route('calk.cetakan11') }}");
                 }else if(lampiran == 12){
                     url             = new URL("{{ route('calk.cetakan12') }}");
+                }else if(lampiran == 13){
+                    url             = new URL("{{ route('calk.cetakan13') }}");
                 }else{
                     alert('Cetakan Tidak Tersedia');
                     return;
