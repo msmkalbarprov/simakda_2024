@@ -62,14 +62,14 @@
                     </div>
                     {{-- NO lpj --}}
                     <div class="mb-3 row">
-                        <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
+                        <label for="no_dpt" class="col-md-2 col-form-label">No. DPT</label>
                         <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%;" id="no_lpj"
-                                name="no_lpj">
+                            <select class="form-control select2-multiple" style="width: 100%;" id="no_dpt"
+                                name="no_dpt">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                @foreach ($daftar_lpj as $lpj)
-                                    <option value="{{ $lpj->no_lpj }}">
-                                        {{ $lpj->no_lpj }} | {{ $lpj->tgl_lpj }}</option>
+                                @foreach ($daftar_dpt as $dpt)
+                                    <option value="{{ $dpt->no_dpt }}">
+                                        {{ $dpt->no_dpt }} | {{ $dpt->tgl_dpt }}</option>
                                 @endforeach
                             </select>
                         </div>

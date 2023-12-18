@@ -73,6 +73,25 @@ class SppGuKkpdController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $total_skpd = total_skpd();
+
+        if ($total_skpd == 1) {
+            $dpt = DB::table('trhdpt')
+                ->selectRaw("no_dpt,tgl_dpt")
+                ->where(['status' => '0', 'kd_skpd' => $kd_skpd])
+                ->whereRaw("no_dpt NOT IN(select ISNULL(no_lpj,'') FROM trhspp WHERE kd_skpd=? AND jns_spp=? and (sp2d_batal<>? or sp2d_batal is null))", [$kd_skpd, '2', '1'])
+                ->get();
+            $gabungan = 0;
+        } else {
+            $dpt = DB::table('trhdpt_gabungan')
+                ->selectRaw("no_dpt,tgl_dpt")
+                ->where(['status' => '0', 'kd_skpd' => $kd_skpd])
+                ->whereRaw("no_dpt NOT IN(select ISNULL(no_lpj,'') FROM trhspp WHERE kd_skpd=? AND jns_spp=? and (sp2d_batal<>? or sp2d_batal is null))", [$kd_skpd, '2', '1'])
+                ->get();
+            $gabungan = 1;
+        }
+        // dd($dpt);
+
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
@@ -91,16 +110,13 @@ class SppGuKkpdController extends Controller
                 ->selectRaw("no_spd,tgl_spd,'5' as jenis")
                 ->whereRaw("left(kd_skpd,17)=left(?,17) and status=? and jns_beban=?", [$kd_skpd, '1', '5'])
                 ->get(),
-            'daftar_lpj' => DB::table('trhlpj_kkpd')
-                ->selectRaw("no_lpj,tgl_lpj")
-                ->where(['status' => '1', 'jenis' => '1', 'kd_skpd' => $kd_skpd])
-                ->whereRaw("no_lpj NOT IN(select ISNULL(no_lpj,'') FROM trhspp WHERE kd_skpd=? AND jns_spp=? and (sp2d_batal<>? or sp2d_batal is null))", [$kd_skpd, '2', '1'])
-                ->get(),
+            'daftar_dpt' => $dpt,
             'tanggal_lalu' => DB::table('trhspp')
                 ->selectRaw("max(tgl_spp) as tgl_spp")
                 ->where(['kd_skpd' => $kd_skpd])
                 ->whereRaw("(sp2d_batal is null or sp2d_batal= '0')")
                 ->first(),
+            'gabungan' => $gabungan
         ];
 
         $kunci = kunci()->kunci_spp_gu;
@@ -117,23 +133,38 @@ class SppGuKkpdController extends Controller
 
     public function detail(Request $request)
     {
-        $no_lpj = $request->no_lpj;
+        $no_dpt = $request->no_dpt;
         $no_spp = $request->no_spp;
         $tipe = $request->tipe;
+        $gabungan = $request->gabungan;
         $kd_skpd = Auth::user()->kd_skpd;
 
         if ($tipe == 'create') {
-            $data = DB::table('trlpj_kkpd as a')
-                ->join('trhlpj_kkpd as b', function ($join) {
-                    $join->on('a.no_lpj', '=', 'b.no_lpj');
-                })
-                ->selectRaw("a.kd_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai ,a.no_bukti,a.no_lpj, a.kd_skpd as kd_unit,a.kd_bp_skpd as kd_skpd,
-                (select DISTINCT sumber from trdtransout where trdtransout.no_bukti=a.no_bukti and trdtransout.kd_skpd=a.kd_skpd and trdtransout.kd_sub_kegiatan=a.kd_sub_kegiatan and trdtransout.kd_rek6=a.kd_rek6)as sumber")
-                ->where(['a.kd_bp_skpd' => $kd_skpd, 'a.no_lpj' => $no_lpj])
-                ->orderBy('a.no_bukti')
-                ->orderBy('a.kd_sub_kegiatan')
-                ->orderBy('a.kd_rek6')
-                ->get();
+            if ($gabungan == 0) {
+                $data = DB::table('trddpt as a')
+                    ->join('trhdpt as b', function ($join) {
+                        $join->on('a.no_dpt', '=', 'b.no_dpt');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->selectRaw("a.kd_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai,a.id as no_bukti, a.kd_skpd as kd_unit,a.sumber")
+                    ->where(['a.kd_skpd' => $kd_skpd, 'a.no_dpt' => $no_dpt])
+                    ->orderBy('a.id')
+                    ->orderBy('a.kd_sub_kegiatan')
+                    ->orderBy('a.kd_rek6')
+                    ->get();
+            } else {
+                $data = DB::table('trddpt as a')
+                    ->join('trddpt_gabungan as b', function ($join) {
+                        $join->on('a.no_dpt', '=', 'b.no_dpt_unit');
+                        $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                    })
+                    ->selectRaw("a.kd_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai ,a.id as no_bukti, a.kd_skpd as kd_unit,a.sumber")
+                    ->where(['b.kd_skpd' => $kd_skpd, 'b.no_dpt' => $no_dpt])
+                    ->orderBy('a.id')
+                    ->orderBy('a.kd_sub_kegiatan')
+                    ->orderBy('a.kd_rek6')
+                    ->get();
+            }
         } else if ($tipe == 'edit') {
             $data = DB::table('trhspp as a')
                 ->join('trdspp as b', function ($join) {

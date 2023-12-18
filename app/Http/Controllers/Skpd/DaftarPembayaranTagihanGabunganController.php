@@ -45,6 +45,16 @@ class DaftarPembayaranTagihanGabunganController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
 
+        $total_skpd = total_skpd();
+
+        if ($total_skpd == 1) {
+            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+        }
+
+        if (substr($kd_skpd, 18, 4) != '0000') {
+            return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh membuat DPT Gabungan!', 'alert' => 'alert-danger']);
+        }
+
         $data = [
             'kd_skpd' => $kd_skpd,
             'sisa_kas' => sisa_bank_kkpd1()
@@ -157,6 +167,16 @@ class DaftarPembayaranTagihanGabunganController extends Controller
     {
         $no_dpt = Crypt::decrypt($no_dpt);
         $kd_skpd = Crypt::decrypt($kd_skpd);
+
+        $total_skpd = total_skpd();
+
+        if ($total_skpd == 1) {
+            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+        }
+
+        if (substr($kd_skpd, 18, 4) != '0000') {
+            return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh membuat DPT Gabungan!', 'alert' => 'alert-danger']);
+        }
 
         $data = [
             'kd_skpd' => $kd_skpd,

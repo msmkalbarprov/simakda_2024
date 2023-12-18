@@ -25,8 +25,9 @@
                 "url": "{{ route('spp_gu_kkpd.detail') }}",
                 "type": "POST",
                 "data": function(d) {
-                    d.no_lpj = document.getElementById('no_lpj').value;
+                    d.no_dpt = document.getElementById('no_dpt').value;
                     d.tipe = "create";
+                    d.gabungan = "{{ $gabungan }}"
                 },
                 "dataSrc": function(data) {
                     recordsTotal = data.data;
@@ -93,7 +94,7 @@
             $("#npwp").val(npwp);
         });
 
-        $('#no_lpj').on('select2:select', function() {
+        $('#no_dpt').on('select2:select', function() {
             detail.clear().draw();
             detail.ajax.reload();
         });
