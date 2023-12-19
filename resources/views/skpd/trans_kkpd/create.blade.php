@@ -55,13 +55,14 @@
                             <select name="no_sp2d" id="no_sp2d" class="form-control select2-multiple">
                                 <option value="" selected disabled>Silahkan Pilih</option>
                                 @foreach ($daftar_sp2d as $daftar)
-                                    <option value="{{ $daftar->no_sp2d }}">
+                                    <option value="{{ $daftar->no_sp2d }}" data-no_spp="{{ $daftar->no_spp }}">
                                         {{ $daftar->no_sp2d }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+                    <input type="text" class="form-control" id="no_spp" readonly hidden>
                     {{-- Keterangan --}}
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>
