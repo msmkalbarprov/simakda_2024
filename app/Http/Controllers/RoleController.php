@@ -21,8 +21,8 @@ class RoleController extends Controller
     {
         $data = DB::table('peran')->get();
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            $btn = '<a href="' . route("peran.show", Crypt::encryptString($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
-            $btn .= '<a href="' . route("peran.edit", Crypt::encryptString($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn = '<a href="' . route("peran.show", Crypt::encrypt($row->id)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>';
+            $btn .= '<a href="' . route("peran.edit", Crypt::encrypt($row->id)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="uil-edit"></i></a>';
             $btn .= '<a href="javascript:void(0);" onclick="deleteData(\'' . $row->id . '\',\'' . Auth::user()->role . '\');" data-id="\'' . $row->id . '\'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -73,7 +73,7 @@ class RoleController extends Controller
 
     public function show($id)
     {
-        $id = Crypt::decryptString($id);
+        $id = Crypt::decrypt($id);
         $peran = DB::table('peran')->where('id', $id)->first();
         $data = [
             'daftar_hak_akses' => DB::table('akses_peran')
@@ -87,7 +87,7 @@ class RoleController extends Controller
 
     public function edit($id)
     {
-        $id = Crypt::decryptString($id);
+        $id = Crypt::decrypt($id);
         $peran = DB::table('peran')->where('id', $id)->first();
         $daftar_hak_akses = DB::table('akses_peran')
             ->select('akses_peran.id_permission')
