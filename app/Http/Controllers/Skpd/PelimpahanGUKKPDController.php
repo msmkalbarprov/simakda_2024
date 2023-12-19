@@ -199,7 +199,7 @@ class PelimpahanGUKKPDController extends Controller
                     'ket_tujuan' => $data['ketcms'],
                     'status_validasi' => '0',
                     'status_upload' => '0',
-                    'lpj_unit' => $data['no_lpj'],
+                    'lpj_unit' => $data['no_dpt'],
                     'kkpd' => '1',
                 ]);
 

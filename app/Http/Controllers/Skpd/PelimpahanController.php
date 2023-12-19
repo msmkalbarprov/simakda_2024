@@ -474,7 +474,11 @@ class PelimpahanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'daftar_pelimpahan' => DB::table('tr_setorpelimpahan_bank_cms as a')->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '0'])->orderBy(DB::raw("CAST(a.no_bukti as int)"))->orderBy('a.kd_skpd')->get()
+            'daftar_pelimpahan' => DB::table('tr_setorpelimpahan_bank_cms as a')
+                ->where(['a.kd_skpd_sumber' => $kd_skpd, 'a.status_upload' => '0'])
+                ->orderBy(DB::raw("CAST(a.no_bukti as int)"))
+                ->orderBy('a.kd_skpd')
+                ->get()
         ];
 
         return view('skpd.upload_pelimpahan.create')->with($data);
@@ -560,50 +564,62 @@ class PelimpahanController extends Controller
                 $no_upload5 = $no_upload->nomor;
             }
 
-            DB::table('trhupload_cmsbank_bidang')->where(['no_upload' => $nomor->nomor, 'kd_skpd' => $kd_skpd, 'username' => $username])->delete();
-            DB::table('trdupload_cmsbank_bidang')->where(['no_upload' => $nomor->nomor, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('trhupload_cmsbank_bidang')
+                ->where(['no_upload' => $nomor->nomor, 'kd_skpd' => $kd_skpd, 'username' => $username])
+                ->delete();
+
+            DB::table('trdupload_cmsbank_bidang')
+                ->where(['no_upload' => $nomor->nomor, 'kd_skpd' => $kd_skpd])
+                ->delete();
 
             if (isset($rincian_data)) {
-                DB::table('trdupload_cmsbank_bidang')->insert(array_map(function ($value) use ($nomor, $no_upload5, $kd_skpd) {
-                    return [
-                        'no_bukti' => $value['no_bukti'],
-                        'tgl_bukti' => $value['tgl_bukti'],
-                        'no_upload' => $nomor->nomor,
-                        'rekening_awal' => $value['rekening_awal'],
-                        'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
-                        'rekening_tujuan' => $value['rekening_tujuan'],
-                        'bank_tujuan' => $value['bank_tujuan'],
-                        'ket_tujuan' => $value['ket_tujuan'],
-                        'nilai' => $value['total'],
-                        'kd_skpd' => $value['kd_skpd'],
-                        'kd_bp' => $kd_skpd,
-                        'status_upload' => '1',
-                        'no_upload_tgl' => $no_upload5,
-                    ];
-                }, $rincian_data));
+                DB::table('trdupload_cmsbank_bidang')
+                    ->insert(array_map(function ($value) use ($nomor, $no_upload5, $kd_skpd) {
+                        return [
+                            'no_bukti' => $value['no_bukti'],
+                            'tgl_bukti' => $value['tgl_bukti'],
+                            'no_upload' => $nomor->nomor,
+                            'rekening_awal' => $value['rekening_awal'],
+                            'nm_rekening_tujuan' => $value['nm_rekening_tujuan'],
+                            'rekening_tujuan' => $value['rekening_tujuan'],
+                            'bank_tujuan' => $value['bank_tujuan'],
+                            'ket_tujuan' => $value['ket_tujuan'],
+                            'nilai' => $value['total'],
+                            'kd_skpd' => $value['kd_skpd'],
+                            'kd_bp' => $kd_skpd,
+                            'status_upload' => '1',
+                            'no_upload_tgl' => $no_upload5,
+                        ];
+                    }, $rincian_data));
             }
 
-            DB::table('trhupload_cmsbank_bidang')->insert([
-                'no_upload' => $nomor->nomor,
-                'tgl_upload' => date('Y-m-d'),
-                'kd_skpd' => $kd_skpd,
-                'total' => $total_pelimpahan,
-                'no_upload_tgl' => $no_upload5,
-                'username' => $username,
-            ]);
+            DB::table('trhupload_cmsbank_bidang')
+                ->insert([
+                    'no_upload' => $nomor->nomor,
+                    'tgl_upload' => date('Y-m-d'),
+                    'kd_skpd' => $kd_skpd,
+                    'total' => $total_pelimpahan,
+                    'no_upload_tgl' => $no_upload5,
+                    'username' => $username,
+                ]);
 
-            $data1 = DB::table('trhupload_cmsbank_bidang as a')->leftJoin('trdupload_cmsbank_bidang as b', function ($join) {
-                $join->on('a.kd_skpd', '=', 'b.kd_bp');
-                $join->on('a.no_upload', '=', 'b.no_upload');
-            })->where(['b.kd_bp' => $kd_skpd, 'a.no_upload' => $nomor->nomor])->select('a.no_upload', 'b.kd_skpd', 'a.tgl_upload', 'b.status_upload', 'b.no_bukti', 'b.kd_bp');
+            $data1 = DB::table('trhupload_cmsbank_bidang as a')
+                ->leftJoin('trdupload_cmsbank_bidang as b', function ($join) {
+                    $join->on('a.kd_skpd', '=', 'b.kd_bp');
+                    $join->on('a.no_upload', '=', 'b.no_upload');
+                })->where(['b.kd_bp' => $kd_skpd, 'a.no_upload' => $nomor->nomor])
+                ->select('a.no_upload', 'b.kd_skpd', 'a.tgl_upload', 'b.status_upload', 'b.no_bukti', 'b.kd_bp');
 
-            DB::table('tr_setorpelimpahan_bank_cms as c')->joinSub($data1, 'd', function ($join) {
-                $join->on('c.no_bukti', '=', 'd.no_bukti');
-                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->whereRaw('left(c.kd_skpd,17) = left(?,17)', $kd_skpd)->update([
-                'c.status_upload' => DB::raw("d.status_upload"),
-                'c.tgl_upload' => date('Y-m-d')
-            ]);
+            DB::table('tr_setorpelimpahan_bank_cms as c')
+                ->joinSub($data1, 'd', function ($join) {
+                    $join->on('c.no_bukti', '=', 'd.no_bukti');
+                    $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+                })
+                ->whereRaw('left(c.kd_skpd,17) = left(?,17)', $kd_skpd)
+                ->update([
+                    'c.status_upload' => DB::raw("d.status_upload"),
+                    'c.tgl_upload' => date('Y-m-d')
+                ]);
 
             DB::commit();
             return response()->json([

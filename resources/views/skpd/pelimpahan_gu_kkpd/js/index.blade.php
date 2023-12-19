@@ -74,6 +74,7 @@
     }
 
     function hapusPelimpahan(no_kas, kd_skpd) {
+        let tabel = $('#pelimpahan_gu').DataTable();
         let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Kas : ' + no_kas);
         if (tanya == true) {
             $.ajax({
@@ -84,13 +85,19 @@
                     no_kas: no_kas,
                     kd_skpd: kd_skpd,
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Hapus Berhasil');
-                        window.location.reload();
+                        tabel.ajax.reload();
                     } else {
                         alert('Proses Hapus Gagal...!!!');
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         } else {
