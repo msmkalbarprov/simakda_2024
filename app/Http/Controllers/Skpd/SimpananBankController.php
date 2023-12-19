@@ -119,13 +119,17 @@ class SimpananBankController extends Controller
                     'kkpd' => $kkpd
                 ]);
 
-            DB::table('tr_setorpelimpahan_bank')->where(['no_bukti' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])->update([
-                'status_ambil' => '1'
-            ]);
+            DB::table('tr_setorpelimpahan_bank')
+                ->where(['no_bukti' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'status_ambil' => '1'
+                ]);
 
-            DB::table('tr_setorpelimpahan_tunai')->where(['no_bukti' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])->update([
-                'status_ambil' => '1'
-            ]);
+            DB::table('tr_setorpelimpahan_tunai')
+                ->where(['no_bukti' => $data['no_kas_asli'], 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'status_ambil' => '1'
+                ]);
 
             DB::commit();
             return response()->json([
@@ -202,11 +206,15 @@ class SimpananBankController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('tr_setorsimpanan')->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])->delete();
+            DB::table('tr_setorsimpanan')
+                ->where(['no_kas' => $no_kas, 'kd_skpd' => $kd_skpd])
+                ->delete();
 
-            DB::table('tr_setorpelimpahan_bank')->where(['no_bukti' => $no_kas_asli, 'kd_skpd' => $kd_skpd])->update([
-                'status_ambil' => null
-            ]);
+            DB::table('tr_setorpelimpahan_bank')
+                ->where(['no_bukti' => $no_kas_asli, 'kd_skpd' => $kd_skpd])
+                ->update([
+                    'status_ambil' => null
+                ]);
 
             DB::commit();
             return response()->json([
