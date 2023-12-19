@@ -29,23 +29,23 @@
                     kd_skpd: kd_skpd,
                 },
                 success: function(data) {
-                    $('#no_lpj').empty();
-                    $('#no_lpj').append(
+                    $('#no_dpt').empty();
+                    $('#no_dpt').append(
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
-                        $('#no_lpj').append(
-                            `<option value="${data.no_lpj}" data-nilai_lpj="${data.nilai}">${data.no_lpj}</option>`
+                        $('#no_dpt').append(
+                            `<option value="${data.no_dpt_unit}" data-nilai="${data.nilai}">${data.no_dpt_unit}</option>`
                         );
                     })
                 }
             })
         });
 
-        $('#no_lpj').on('select2:select', function() {
-            let nilai_lpj = $(this).find(':selected').data('nilai_lpj');
+        $('#no_dpt').on('select2:select', function() {
+            let nilai = $(this).find(':selected').data('nilai');
             $('#nilai').val(new Intl.NumberFormat('id-ID', {
                 minimumFractionDigits: 2
-            }).format(nilai_lpj));
+            }).format(nilai));
         });
 
         $('#beban').on('select2:select', function() {
@@ -78,7 +78,7 @@
         $('#simpan_pelimpahan').on('click', function() {
             let no_kas = document.getElementById('no_kas').value;
             let tgl_kas = document.getElementById('tgl_kas').value;
-            let no_lpj = document.getElementById('no_lpj').value;
+            let no_dpt = document.getElementById('no_dpt').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let skpd_sumber = document.getElementById('skpd_sumber').value;
             let skpd_ringkas = document.getElementById('skpd_ringkas').value;
@@ -109,8 +109,8 @@
                 return;
             }
 
-            if (!no_lpj) {
-                alert('Nomor LPJ Tidak Boleh Kosong');
+            if (!no_dpt) {
+                alert('Nomor DPT Tidak Boleh Kosong');
                 return;
             }
 
@@ -143,7 +143,7 @@
                 no_kas,
                 tgl_kas,
                 kd_skpd,
-                no_lpj,
+                no_dpt,
                 skpd_sumber,
                 skpd_ringkas,
                 keterangan,
@@ -158,12 +158,16 @@
             };
 
             $('#simpan_pelimpahan').prop('disabled', true);
+
             $.ajax({
                 url: "{{ route('pelimpahan_gu_kkpd.simpan') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
                     data: data
+                },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -176,6 +180,9 @@
                         $('#simpan_pelimpahan').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });

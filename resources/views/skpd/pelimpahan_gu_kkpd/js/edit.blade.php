@@ -42,7 +42,7 @@
             let no_kas = document.getElementById('no_kas').value;
             let tgl_kas = document.getElementById('tgl_kas').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
-            let no_lpj = document.getElementById('no_lpj').value;
+            let no_dpt = document.getElementById('no_dpt').value;
             let skpd_sumber = document.getElementById('skpd_sumber').value;
             let skpd_ringkas = document.getElementById('skpd_ringkas').value;
             let keterangan = document.getElementById('keterangan').value;
@@ -101,7 +101,7 @@
                 no_kas,
                 tgl_kas,
                 kd_skpd,
-                no_lpj,
+                no_dpt,
                 skpd_sumber,
                 skpd_ringkas,
                 keterangan,

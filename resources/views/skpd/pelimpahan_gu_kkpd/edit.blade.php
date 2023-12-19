@@ -1,5 +1,5 @@
 @extends('template.app')
-@section('title', 'Input Pelimpahan GU KKPD | SIMAKDA')
+@section('title', 'Edit Pelimpahan GU KKPD | SIMAKDA')
 @section('content')
     <div class="row">
         {{-- Input form --}}
@@ -29,11 +29,11 @@
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>
                     </div>
-                    {{-- LPJ --}}
+                    {{-- DPT --}}
                     <div class="mb-3 row">
-                        <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
+                        <label for="no_dpt" class="col-md-2 col-form-label">No. DPT</label>
                         <div class="col-md-10">
-                            <input class="form-control" type="text" id="no_lpj" name="no_lpj" readonly
+                            <input class="form-control" type="text" id="no_dpt" name="no_dpt" readonly
                                 value="{{ $data_up->lpj_unit }}">
                         </div>
                     </div>

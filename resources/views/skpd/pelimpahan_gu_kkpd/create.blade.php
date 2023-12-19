@@ -33,11 +33,11 @@
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>
                     </div>
-                    {{-- LPJ --}}
+                    {{-- DPT --}}
                     <div class="mb-3 row">
-                        <label for="no_lpj" class="col-md-2 col-form-label">No. LPJ</label>
+                        <label for="no_dpt" class="col-md-2 col-form-label">No. DPT</label>
                         <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%" id="no_lpj" name="no_lpj">
+                            <select class="form-control select2-multiple" style="width: 100%" id="no_dpt" name="no_dpt">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                             </select>
                         </div>
@@ -109,7 +109,7 @@
                         <label for="nilai" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="nilai" id="nilai" readonly
-                                pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right">
+                                style="text-align: right">
                         </div>
                     </div>
                     {{-- Sisa Kas Bank --}}

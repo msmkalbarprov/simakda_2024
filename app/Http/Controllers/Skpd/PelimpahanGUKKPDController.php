@@ -45,10 +45,23 @@ class PelimpahanGUKKPDController extends Controller
         $skpd = substr($kd_skpd, 0, 17);
 
         $data = [
-            'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
+            'tujuan_skpd' => DB::table('ms_skpd')
+                ->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))
+                ->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)
+                ->whereNotIn('kd_skpd', [$kd_skpd])
+                ->orderBy('kd_skpd')
+                ->get(),
             'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'rekening_bendahara' => DB::table('ms_skpd')
+                ->select('rekening')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->orderBy('kd_skpd')
+                ->first(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')
+                ->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))
+                ->where(['a.kd_skpd' => $kd_skpd])
+                ->orderBy('a.nm_rekening')
+                ->get(),
             'sisa_bank' => sisa_bank()
         ];
 
@@ -59,11 +72,22 @@ class PelimpahanGUKKPDController extends Controller
     {
         $kd_skpd = $request->kd_skpd;
 
-        $data = DB::table('trhlpj_unit_kkpd')
-            ->select('no_lpj', 'kd_skpd')
-            ->selectRaw("(SELECT sum(nilai) from trlpj_kkpd where no_lpj_unit=trhlpj_unit_kkpd.no_lpj and kd_skpd=?) as nilai", [$kd_skpd])
-            ->where(['kd_skpd' => $kd_skpd])
-            ->whereRaw("no_lpj not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")
+        // $data = DB::table('trhlpj_unit_kkpd')
+        //     ->select('no_lpj', 'kd_skpd')
+        //     ->selectRaw("(SELECT sum(nilai) from trlpj_kkpd where no_lpj_unit=trhlpj_unit_kkpd.no_lpj and kd_skpd=?) as nilai", [$kd_skpd])
+        //     ->where(['kd_skpd' => $kd_skpd])
+        //     ->whereRaw("no_lpj not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")
+        //     ->get();
+
+        $data = DB::table('trddpt_gabungan as a')
+            ->join('trhdpt_gabungan as b', function ($join) {
+                $join->on('a.no_dpt', '=', 'b.no_dpt');
+                $join->on('a.kd_bp_skpd', '=', 'b.kd_skpd');
+            })
+            ->select('a.no_dpt_unit', 'a.kd_skpd')
+            ->selectRaw("(SELECT sum(nilai) from trddpt where no_dpt=a.no_dpt_unit and kd_skpd=a.kd_skpd) as nilai")
+            ->where(['a.kd_skpd' => $kd_skpd])
+            ->whereRaw("a.no_dpt_unit not in (select ISNULL(lpj_unit,'') from tr_setorpelimpahan_bank_cms)")
             ->get();
 
         return response()->json($data);
@@ -98,7 +122,7 @@ class PelimpahanGUKKPDController extends Controller
                     'ket_tujuan' => $data['ketcms'],
                     'status_validasi' => '0',
                     'status_upload' => '0',
-                    'lpj_unit' => $data['no_lpj'],
+                    'lpj_unit' => $data['no_dpt'],
                     'kkpd' => '1'
                 ]);
 
@@ -111,7 +135,6 @@ class PelimpahanGUKKPDController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => '0',
-                'error' => $e->getMessage()
             ]);
         }
     }
@@ -126,10 +149,20 @@ class PelimpahanGUKKPDController extends Controller
 
         $data = [
             'data_up' => $data_up,
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))->where(['kd_skpd' => $data_up->kd_skpd])->first(),
+            'skpd' => DB::table('ms_skpd')
+                ->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))
+                ->where(['kd_skpd' => $data_up->kd_skpd])
+                ->first(),
             'tahun_anggaran' => tahun_anggaran(),
-            'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
-            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
+            'rekening_bendahara' => DB::table('ms_skpd')
+                ->select('rekening')
+                ->where(['kd_skpd' => $kd_skpd])
+                ->orderBy('kd_skpd')
+                ->first(),
+            'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')
+                ->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])
+                ->orderBy('a.nm_rekening')
+                ->get(),
             'sisa_bank' => sisa_bank()
         ];
 
@@ -148,26 +181,27 @@ class PelimpahanGUKKPDController extends Controller
                 ->where(['kd_skpd' => $data['kd_skpd'], 'no_kas' => $data['no_kas'], 'kkpd' => '1'])
                 ->delete();
             // SETOR PELIMPAHAN GU
-            DB::table('tr_setorpelimpahan_bank_cms')->insert([
-                'no_kas' => $data['no_kas'],
-                'tgl_kas' => $data['tgl_kas'],
-                'no_bukti' => $data['no_kas'],
-                'tgl_bukti' => $data['tgl_kas'],
-                'kd_skpd' => $data['kd_skpd'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'kd_skpd_sumber' => $data['skpd_sumber'],
-                'jenis_spp' => $data['beban'],
-                'rekening_awal' => $data['rekening_bendahara'],
-                'nm_rekening_tujuan' => $data['nama_tujuan'],
-                'rekening_tujuan' => $data['rekening_tujuan'],
-                'bank_tujuan' => $data['bank_tujuan'],
-                'ket_tujuan' => $data['ketcms'],
-                'status_validasi' => '0',
-                'status_upload' => '0',
-                'lpj_unit' => $data['no_lpj'],
-                'kkpd' => '1',
-            ]);
+            DB::table('tr_setorpelimpahan_bank_cms')
+                ->insert([
+                    'no_kas' => $data['no_kas'],
+                    'tgl_kas' => $data['tgl_kas'],
+                    'no_bukti' => $data['no_kas'],
+                    'tgl_bukti' => $data['tgl_kas'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'kd_skpd_sumber' => $data['skpd_sumber'],
+                    'jenis_spp' => $data['beban'],
+                    'rekening_awal' => $data['rekening_bendahara'],
+                    'nm_rekening_tujuan' => $data['nama_tujuan'],
+                    'rekening_tujuan' => $data['rekening_tujuan'],
+                    'bank_tujuan' => $data['bank_tujuan'],
+                    'ket_tujuan' => $data['ketcms'],
+                    'status_validasi' => '0',
+                    'status_upload' => '0',
+                    'lpj_unit' => $data['no_lpj'],
+                    'kkpd' => '1',
+                ]);
 
             DB::commit();
             return response()->json([

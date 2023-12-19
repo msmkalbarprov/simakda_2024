@@ -159,7 +159,7 @@ class SppGuKkpdController extends Controller
                         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                     })
                     ->selectRaw("a.kd_sub_kegiatan,a.kd_rek6, a.nm_rek6, a.nilai ,a.id as no_bukti, a.kd_skpd as kd_unit,a.sumber")
-                    ->where(['b.kd_skpd' => $kd_skpd, 'b.no_dpt' => $no_dpt])
+                    ->where(['b.kd_bp_skpd' => $kd_skpd, 'b.no_dpt' => $no_dpt])
                     ->orderBy('a.id')
                     ->orderBy('a.kd_sub_kegiatan')
                     ->orderBy('a.kd_rek6')
@@ -229,7 +229,7 @@ class SppGuKkpdController extends Controller
                     'username' => Auth::user()->nama,
                     'last_update' => date('Y-m-d H:i:s'),
                     'nilai' => $data['total'],
-                    'no_lpj' => $data['no_lpj'],
+                    'no_lpj' => $data['no_dpt'],
                     'urut' => $data['no_urut'],
                     'kkpd' => '1'
                 ]);
@@ -238,35 +238,53 @@ class SppGuKkpdController extends Controller
                 ->where(['no_spp' => $data['no_spp'], 'kd_skpd' => $data['kd_skpd']])
                 ->delete();
 
-            $cek = collect(DB::select("SELECT count(*)jml FROM [dbo].[trlpj] where no_lpj=?", [$data['no_lpj']]))->first();
+            $data['detail_spp'] = json_decode($data['detail_spp'], true);
+            $rincian_data = $data['detail_spp'];
 
-            $no_spp = $data['no_spp'];
-            $spd = $data['no_spd'];
-
-            DB::insert("INSERT INTO trdspp (no_spp,kd_rek6,nm_rek6,nilai,kd_skpd,nm_skpd,kd_sub_kegiatan,nm_sub_kegiatan,no_spd,no_bukti,kd_bidang,sumber,kd,kkpd)
-                        SELECT
-                        '$no_spp' no_spp,
-                        kd_rek6,
-                        nm_rek6,
-                        nilai,
-                        kd_bp_skpd,
-                        (select nm_skpd from ms_skpd where ms_skpd.kd_skpd=trlpj_kkpd.kd_bp_skpd)as nm_skpd,
-                        kd_sub_kegiatan,
-                        (select nm_sub_kegiatan from ms_sub_kegiatan where ms_sub_kegiatan.kd_sub_kegiatan=trlpj_kkpd.kd_sub_kegiatan)as nm_sub_kegiatan,'$spd' as no_spd,no_bukti,kd_skpd, (select sumber from trdtransout where trdtransout.kd_skpd=trlpj_kkpd.kd_skpd and trdtransout.kd_sub_kegiatan=trlpj_kkpd.kd_sub_kegiatan and trdtransout.kd_rek6=trlpj_kkpd.kd_rek6 and trdtransout.no_bukti=trlpj_kkpd.no_bukti and trdtransout.nilai=trlpj_kkpd.nilai)as sumber,(select max(isnull(kd,0))+1 from trdspp where no_spp=?) as rows, kkpd
-                         from trlpj_kkpd where no_lpj=?", [$no_spp, $data['no_lpj']]);
+            if (isset($rincian_data)) {
+                DB::table('trdspp')
+                    ->insert(array_map(function ($value) use ($data) {
+                        return [
+                            'no_spp' => $data['no_spp'],
+                            'kd_rek6' => $value['kd_rek6'],
+                            'nm_rek6' => $value['nm_rek6'],
+                            'nilai' => $value['nilai'],
+                            'kd_skpd' => $data['kd_skpd'],
+                            'nm_skpd' => $data['nm_skpd'],
+                            'kd_sub_kegiatan' => $value['kd_sub_kegiatan'],
+                            'no_spd' => $data['no_spd'],
+                            'no_bukti' => $value['no_bukti'],
+                            'kd_bidang' => $value['kd_unit'],
+                            'sumber' => $value['sumber'],
+                            'kkpd' => '1',
+                        ];
+                    }, $rincian_data));
+            }
 
             DB::update("UPDATE a
                                 SET a.nm_sub_kegiatan=b.nm_sub_kegiatan
                                 FROM trdspp  a
                                 INNER JOIN trskpd b
                                 ON a.kd_sub_kegiatan=b.kd_sub_kegiatan AND a.kd_skpd=b.kd_skpd
-                                WHERE no_spp=?", [$no_spp]);
+                                WHERE no_spp=?", [$data['no_spp']]);
 
-            DB::table('trhlpj_kkpd')
-                ->where(['no_lpj' => $data['no_lpj'], 'kd_skpd' => $data['kd_skpd']])
-                ->update([
-                    'status' => '2'
-                ]);
+
+            $total_skpd = total_skpd();
+
+            if ($total_skpd == 1) {
+                DB::table('trhdpt')
+                    ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'status' => '1'
+                    ]);
+            } else {
+                DB::table('trhdpt_gabungan')
+                    ->where(['no_dpt' => $data['no_dpt'], 'kd_skpd' => $data['kd_skpd']])
+                    ->update([
+                        'status' => '1'
+                    ]);
+            }
+
 
             DB::commit();
             return response()->json([
@@ -275,7 +293,8 @@ class SppGuKkpdController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+                'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }

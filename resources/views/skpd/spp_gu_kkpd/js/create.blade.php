@@ -142,7 +142,7 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
             let no_spd = document.getElementById('no_spd').value;
-            let no_lpj = document.getElementById('no_lpj').value;
+            let no_dpt = document.getElementById('no_dpt').value;
             let bank = document.getElementById('bank').value;
             let nm_bank = document.getElementById('nm_bank').value;
             let rekening = document.getElementById('rekening').value;
@@ -161,7 +161,7 @@
                     kd_sub_kegiatan: value.kd_sub_kegiatan,
                     kd_rek6: value.kd_rek6,
                     nm_rek6: value.nm_rek6,
-                    nilai: rupiah(value.nilai),
+                    nilai: angka(value.nilai),
                     sumber: value.sumber,
                 };
                 return data;
@@ -194,8 +194,8 @@
                 return;
             }
 
-            if (!no_lpj) {
-                alert('No. LPJ tidak boleh kosong!');
+            if (!no_dpt) {
+                alert('No. DPT tidak boleh kosong!');
                 return;
             }
 
@@ -241,7 +241,7 @@
                 kd_skpd,
                 nm_skpd,
                 no_spd,
-                no_lpj,
+                no_dpt,
                 bank,
                 nm_bank,
                 rekening,
