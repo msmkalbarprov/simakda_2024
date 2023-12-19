@@ -211,10 +211,10 @@
         // });
 
         $('#tambah_rincian').on('click', function() {
-            let no_dpt = document.getElementById('no_dpt').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
 
-            if (!no_dpt) {
-                alert('Silahkan pilih NO. DPT terlebih dahulu!');
+            if (!no_sp2d) {
+                alert('Silahkan pilih NO. SP2D terlebih dahulu!');
                 return;
             }
 
@@ -222,8 +222,8 @@
             $('#modal_tambah').modal('show');
         });
 
-        $('#no_dpt').on('select2:select', function() {
-            $('#no_dpt').prop('disabled', true);
+        $('#no_sp2d').on('select2:select', function() {
+            $('#no_sp2d').prop('disabled', true);
         });
 
         $('#pilih').on('click', function() {
@@ -446,7 +446,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_dpt: document.getElementById('no_dpt').value,
+                    // no_dpt: document.getElementById('no_dpt').value,
+                    no_sp2d: document.getElementById('no_sp2d').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                     id: detail_rincian.length == 0 ? '0' : detail_rincian
                 },

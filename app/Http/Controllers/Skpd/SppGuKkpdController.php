@@ -90,7 +90,6 @@ class SppGuKkpdController extends Controller
                 ->get();
             $gabungan = 1;
         }
-        // dd($dpt);
 
         $data = [
             'skpd' => DB::table('ms_skpd')

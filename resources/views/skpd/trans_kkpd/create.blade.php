@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     {{-- NOMOR DPT --}}
-                    <div class="mb-3 row">
+                    {{-- <div class="mb-3 row">
                         <label for="no_dpt" class="col-md-2 col-form-label">Nomor DPT</label>
                         <div class="col-md-10">
                             <select name="no_dpt" id="no_dpt" class="form-control select2-multiple">
@@ -43,6 +43,20 @@
                                 @foreach ($daftar_dpt as $daftar)
                                     <option value="{{ $daftar->no_dpt }}" data-nilai="{{ $daftar->nilai }}">
                                         {{ $daftar->no_dpt }} | {{ $daftar->kd_skpd }} | {{ rupiah($daftar->nilai) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div> --}}
+                    {{-- NO SP2D  --}}
+                    <div class="mb-3 row">
+                        <label for="no_sp2d" class="col-md-2 col-form-label">No. SP2D</label>
+                        <div class="col-md-10">
+                            <select name="no_sp2d" id="no_sp2d" class="form-control select2-multiple">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                @foreach ($daftar_sp2d as $daftar)
+                                    <option value="{{ $daftar->no_sp2d }}">
+                                        {{ $daftar->no_sp2d }}
                                     </option>
                                 @endforeach
                             </select>

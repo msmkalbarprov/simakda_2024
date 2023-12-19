@@ -51,7 +51,16 @@ class TransKKPDController extends Controller
                 ->selectRaw("(SELECT SUM(nilai) from trddpt a inner join trhdpt b on a.no_dpt=b.no_dpt and a.kd_skpd=b.kd_skpd where a.no_dpt=c.no_dpt and a.kd_skpd=c.kd_skpd) as nilai")
                 ->where(['kd_skpd' => Auth::user()->kd_skpd, 'status_verifikasi' => '1', 'status' => '0'])
                 ->get(),
-            'sisa_kas' => sisa_bank_kkpd1()
+            'sisa_kas' => sisa_bank_kkpd1(),
+            'daftar_sp2d' => DB::table('trhsp2d as a')
+                ->join('trhspp as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.no_sp2d')
+                ->whereRaw("left(a.kd_skpd,17)=left(?,17)", [$kd_skpd])
+                ->where(['a.status' => '1', 'a.jns_spp' => '2', 'b.kkpd' => '1'])
+                ->get()
         ];
 
         return view('skpd.trans_kkpd.create')->with($data);
@@ -59,7 +68,8 @@ class TransKKPDController extends Controller
 
     public function rincianDpt(Request $request)
     {
-        $no_dpt = $request->no_dpt;
+        // $no_dpt = $request->no_dpt;
+        $no_sp2d = $request->no_sp2d;
         $kd_skpd = $request->kd_skpd;
 
         $id = $request->id;
@@ -73,15 +83,30 @@ class TransKKPDController extends Controller
             $daftar_id[] = '';
         }
 
-        $data = DB::table('trddpt as a')
-            ->join('trhdpt as b', function ($join) {
-                $join->on('a.no_dpt', '=', 'b.no_dpt');
+        // $data = DB::table('trddpt as a')
+        //     ->join('trhdpt as b', function ($join) {
+        //         $join->on('a.no_dpt', '=', 'b.no_dpt');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->select('a.*')
+        //     ->selectRaw("(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=a.sumber) as nm_sumber")
+        //     ->where(['b.no_dpt' => $no_dpt, 'b.kd_skpd' => $kd_skpd, 'b.status' => '0', 'b.status_verifikasi' => '1', 'a.status' => '0'])
+        //     ->whereNotIn('id', $daftar_id)
+        //     ->get();
+
+        $data = DB::table('trdspp as a')
+            ->join('trhspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhsp2d as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })
             ->select('a.*')
             ->selectRaw("(select nm_sumber_dana1 from sumber_dana where kd_sumber_dana1=a.sumber) as nm_sumber")
-            ->where(['b.no_dpt' => $no_dpt, 'b.kd_skpd' => $kd_skpd, 'b.status' => '0', 'b.status_verifikasi' => '1', 'a.status' => '0'])
-            ->whereNotIn('id', $daftar_id)
+            ->where(['c.no_sp2d' => $no_sp2d, 'a.kd_bidang' => $kd_skpd, 'a.kkpd' => '1'])
+            ->whereNotIn('no_bukti', $daftar_id)
             ->get();
 
         return response()->json($data);

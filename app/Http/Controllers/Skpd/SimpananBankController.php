@@ -21,7 +21,12 @@ class SimpananBankController extends Controller
     public function loadKasben()
     {
         $kd_skpd = Auth::user()->kd_skpd;
-        $data = DB::table('tr_setorsimpanan')->where(['kd_skpd' => $kd_skpd, 'status_drop' => '1'])->orderBy(DB::raw("CAST(no_kas as INT)"))->orderBy('kd_skpd')->get();
+        $data = DB::table('tr_setorsimpanan')
+            ->where(['kd_skpd' => $kd_skpd, 'status_drop' => '1'])
+            ->orderBy(DB::raw("CAST(no_kas as INT)"))
+            ->orderBy('kd_skpd')
+            ->get();
+
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
             // if ($row->status_upload != '1') {
             $btn = '<a href="' . route("skpd.simpanan_bank.edit_kasben", Crypt::encryptString($row->no_kas)) . '" class="btn btn-warning btn-sm" style="margin-right:4px"><i class="fa fa-edit"></i></a>';
