@@ -174,10 +174,12 @@
                 {
                     data: 'nm_bukti',
                     name: 'nm_bukti',
+                    visible: false
                 },
                 {
                     data: 'uraian',
                     name: 'uraian',
+                    visible: false
                 },
                 {
                     data: 'pembayaran',
@@ -187,6 +189,7 @@
                 {
                     data: 'nm_pembayaran',
                     name: 'nm_pembayaran',
+                    visible: false
                 },
                 {
                     data: 'aksi',
@@ -211,10 +214,10 @@
         // });
 
         $('#tambah_rincian').on('click', function() {
-            let no_dpt = document.getElementById('no_dpt').value;
-
-            if (!no_dpt) {
-                alert('Silahkan pilih NO. DPT terlebih dahulu!');
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            $('#no_spp').val($('#no_sp2d').find(':selected').data('no_spp'));
+            if (!no_sp2d) {
+                alert('Silahkan pilih NO. SP2D terlebih dahulu!');
                 return;
             }
 
@@ -222,8 +225,8 @@
             $('#modal_tambah').modal('show');
         });
 
-        $('#no_dpt').on('select2:select', function() {
-            $('#no_dpt').prop('disabled', true);
+        $('#no_sp2d').on('select2:select', function() {
+            $('#no_sp2d').prop('disabled', true);
         });
 
         $('#pilih').on('click', function() {
@@ -319,7 +322,8 @@
 
         $('#simpan').on('click', function() {
             let tgl_voucher = document.getElementById('tgl_voucher').value;
-            let no_dpt = document.getElementById('no_dpt').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
+            let no_spp = document.getElementById('no_spp').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
             let keterangan = document.getElementById('keterangan').value;
@@ -363,13 +367,13 @@
                 return;
             }
 
-            if (!no_dpt) {
-                alert('Nomor DPT Tidak Boleh Kosong');
+            if (!no_sp2d) {
+                alert('Nomor SP2D Tidak Boleh Kosong');
                 return;
             }
 
             if (!tgl_voucher) {
-                alert('Tanggal DPT Tidak Boleh Kosong');
+                alert('Tanggal Voucher Tidak Boleh Kosong');
                 return;
             }
 
@@ -394,7 +398,8 @@
             }
 
             let response = {
-                no_dpt,
+                no_sp2d,
+                no_spp,
                 tgl_voucher,
                 kd_skpd,
                 nm_skpd,
@@ -446,7 +451,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_dpt: document.getElementById('no_dpt').value,
+                    // no_dpt: document.getElementById('no_dpt').value,
+                    no_sp2d: document.getElementById('no_sp2d').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                     id: detail_rincian.length == 0 ? '0' : detail_rincian
                 },
@@ -456,7 +462,7 @@
                         `<option value="" disabled selected>Silahkan Pilih</option>`);
                     $.each(data, function(index, data) {
                         $('#pilih_rincian_dpt').append(
-                            `<option value="${data.id}" data-kd_sub_kegiatan="${data.kd_sub_kegiatan}" data-nm_sub_kegiatan="${data.nm_sub_kegiatan}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-uraian="${data.uraian}" data-bukti="${data.bukti}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-nm_sumber="${data.nm_sumber}" data-pembayaran="${data.pembayaran}">${data.id} | ${data.nm_sub_kegiatan} | ${data.nm_rek6} | ${data.sumber} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.nilai)}</option>`
+                            `<option value="${data.no_bukti}" data-kd_sub_kegiatan="${data.kd_sub_kegiatan}" data-nm_sub_kegiatan="${data.nm_sub_kegiatan}" data-kd_rek6="${data.kd_rek6}" data-nm_rek6="${data.nm_rek6}" data-uraian="${data.uraian}" data-bukti="${data.bukti}" data-nilai="${data.nilai}" data-sumber="${data.sumber}" data-nm_sumber="${data.nm_sumber}" data-pembayaran="${data.pembayaran}">${data.no_bukti} | ${data.nm_sub_kegiatan} | ${data.nm_rek6} | ${data.sumber} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data.nilai)}</option>`
                         );
                     })
                 }

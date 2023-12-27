@@ -58,7 +58,7 @@
             let tgl_voucher = document.getElementById('tgl_voucher').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
-            let no_dpt = document.getElementById('no_dpt').value;
+            let no_sp2d = document.getElementById('no_sp2d').value;
             let keterangan = document.getElementById('keterangan').value;
             let tahun_anggaran = "{{ tahun_anggaran() }}";
 
@@ -113,7 +113,7 @@
             let response = {
                 no_voucher,
                 tgl_voucher,
-                no_dpt,
+                no_sp2d,
                 kd_skpd,
                 nm_skpd,
                 total_belanja,

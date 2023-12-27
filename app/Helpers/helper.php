@@ -5103,7 +5103,7 @@ function sisa_bank_kkpd1()
         SELECT SUM(a.nilai) as jumlah, '2' as jns FROM tr_setorpelimpahan_bank_cms a WHERE a.kd_skpd_sumber=? and a.status_validasi='1' and a.kkpd='1'
         UNION ALL
         -- AMBIL SIMPANAN KKPD
-        SELECT SUM(a.nilai) as jumlah, '1' as jns FROM tr_setorsimpanan a WHERE a.kd_skpd=? and a.status_drop='1' and a.kd_link_drop<>''
+        SELECT SUM(a.nilai) as jumlah, '1' as jns FROM tr_setorsimpanan a WHERE a.kd_skpd=? and a.status_drop='1' and a.kd_link_drop<>'' and a.kkpd='1'
         )z", [$kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd, $kd_skpd]))
         ->first();
 

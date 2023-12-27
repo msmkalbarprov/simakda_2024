@@ -80,6 +80,9 @@
                 data: {
                     data: data
                 },
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
                 success: function(response) {
                     if (response.message == '1') {
                         alert('Data berhasil ditambahkan, dengan Nomor Kas : ' + response
@@ -91,6 +94,9 @@
                         $('#simpan_kasben').prop('disabled', false);
                         return;
                     }
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
                 }
             })
         });

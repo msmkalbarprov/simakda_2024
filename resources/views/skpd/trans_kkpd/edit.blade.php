@@ -37,9 +37,9 @@
                     </div>
                     {{-- NOMOR DPT --}}
                     <div class="mb-3 row">
-                        <label for="no_dpt" class="col-md-2 col-form-label">Nomor DPT</label>
+                        <label for="no_sp2d" class="col-md-2 col-form-label">No. SP2D</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" id="no_dpt" readonly value="{{ $kkpd->no_dpt }}">
+                            <input type="text" class="form-control" id="no_sp2d" readonly value="{{ $kkpd->no_dpt }}">
                         </div>
                     </div>
                     {{-- Keterangan --}}
