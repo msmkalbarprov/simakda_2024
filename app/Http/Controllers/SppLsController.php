@@ -27,7 +27,7 @@ class SppLsController extends Controller
         $status_angkas = $cek1['status_angkas'];
 
         $cek = DB::table('tb_status_angkas')
-            ->whereRaw("left(jns_angkas,2)=? and kode=? and status=?", [$status_ang, $status_angkas, '1'])
+            ->whereRaw("left(jns_angkas,2)=? and status_kunci=? and status=?", [$status_ang, $status_angkas, '1'])
             ->count();
 
         $data = [
@@ -85,14 +85,16 @@ class SppLsController extends Controller
             ->get();
         $data1 = DB::select(DB::raw("SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd='$skpd' and (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih"));
         $data2 = json_decode(json_encode($data1), true);
-        $datapenagihan = DB::select("SELECT a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan, sum(b.nilai) as total 
-                                    from trhtagih as a  INNER JOIN trdtagih as b ON  a.no_bukti=b.no_bukti 
-                                    where a.kd_skpd = ? and a.jns_trs = ? and a.no_bukti not in 
-                                    (SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd= ? and 
+        $datapenagihan = DB::select(
+            "SELECT a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan, sum(b.nilai) as total
+                                    from trhtagih as a  INNER JOIN trdtagih as b ON  a.no_bukti=b.no_bukti
+                                    where a.kd_skpd = ? and a.jns_trs = ? and a.no_bukti not in
+                                    (SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd= ? and
                                     (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih)
                                     group By a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan
-                                    order By a.no_bukti"
-                                    , [$skpd, 1, $skpd]);
+                                    order By a.no_bukti",
+            [$skpd, 1, $skpd]
+        );
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
