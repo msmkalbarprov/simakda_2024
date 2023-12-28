@@ -44,8 +44,8 @@
             alert('Selamat Datang ' + user);
         } else {
             alert('Selamat Datang ' + user);
-            proteksi();
-            // sementara di nonaktifkan karena permintaan perben input angkas perubahan
+            // proteksi();
+            // sementara di nonaktifkan karena input gaji januari di desember
         }
 
         $('.select2-multiple').select2({
