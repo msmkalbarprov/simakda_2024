@@ -136,9 +136,14 @@ class BankKalbarController extends Controller
         ));
         $response = curl_exec($curl);
         curl_close($curl);
-        DB::table('noref_MPN')->update([
-            'noRef' => $noReff
-        ]);
+        // DB::table('noref_MPN')->update([
+        //     'noRef' => $noReff
+        // ]);
+        DB::connection('simakda_2023')
+            ->table('noref_MPN')
+            ->update([
+                'noRef' => $noReff
+            ]);
         return response()->json($response);
     }
 
