@@ -968,7 +968,8 @@ class PenagihanController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => '0'
+                'message' => '0',
+                'ERROR' => $e->getMessage()
             ]);
         }
     }
