@@ -112,6 +112,7 @@
             let nilai = rupiah(document.getElementById('nilai').value);
             let no_sp2d = document.getElementById('no_sp2d').value;
             let no_advice = document.getElementById('no_advice').value;
+            let opd = document.getElementById('opd').value;
             let tahun_anggaran = "{{ tahun_anggaran() }}";
 
             let tahun_input = tgl_cair.substring(0, 4);
@@ -127,7 +128,7 @@
             if (cek == 1) {
                 alert(
                     "MAAF PROSES PENCAIRAN SP2D ONLINE HANYA BISA DILAKUKAN FITUR CALLBACK SP2D ONLINE OLEH BANK KALBAR"
-                    );
+                );
                 return;
             }
 
@@ -138,7 +139,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_kas: no_kas
+                    no_kas: no_kas,
+                    opd: opd,
                 },
                 success: function(data) {
                     if (data > 0) {
@@ -156,6 +158,7 @@
                                 nilai: nilai,
                                 no_sp2d: no_sp2d,
                                 no_advice: no_advice,
+                                opd: opd,
                             },
                             success: function(data) {
                                 if (data.message == '1') {
