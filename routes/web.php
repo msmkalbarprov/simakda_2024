@@ -162,7 +162,7 @@ Route::get('', [LoginController::class, 'index'])->name('login');
 // Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
 // Auth::routes();
-Route::group(['middleware' => 'auth', 'auth.session'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'kelola-akses'], function () {
         Route::resource('hak-akses', PermissionController::class);
         Route::post('data_hak_akses', [PermissionController::class, 'loadData'])->name('hak_akses.load_data');
