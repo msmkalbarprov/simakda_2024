@@ -345,18 +345,27 @@
                 },
                 success: function(data) {
                     if (kd_skpd && jns_ang) {
-                        if (data.message == '0') {
-                            alert('SKPD Belum Lengkap Di Anggaran ' + data.nama);
-                            return;
+                        // if (data.message == '0') {
+                        //     alert('SKPD Belum Lengkap Di Anggaran ' + data.nama);
+                        //     return;
+                        // } else {
+                        //     var jenis_anggaran = $(this).select2('data')[0];
+                        //     $('#status_angkas').val(null).trigger('change').trigger(
+                        //         'select2:select');
+                        //     if (jenis_anggaran) {
+                        //         $('#status_angkas').prop('disabled', false)
+                        //     } else {
+                        //         $('#status_angkas').prop('disabled', true)
+                        //     }
+                        // }
+
+                        var jenis_anggaran = $(this).select2('data')[0];
+                        $('#status_angkas').val(null).trigger('change').trigger(
+                            'select2:select');
+                        if (jenis_anggaran) {
+                            $('#status_angkas').prop('disabled', false)
                         } else {
-                            var jenis_anggaran = $(this).select2('data')[0];
-                            $('#status_angkas').val(null).trigger('change').trigger(
-                                'select2:select');
-                            if (jenis_anggaran) {
-                                $('#status_angkas').prop('disabled', false)
-                            } else {
-                                $('#status_angkas').prop('disabled', true)
-                            }
+                            $('#status_angkas').prop('disabled', true)
                         }
                     }
                 }
