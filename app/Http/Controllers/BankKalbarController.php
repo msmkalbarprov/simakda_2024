@@ -100,7 +100,16 @@ class BankKalbarController extends Controller
 
     public function isiListPot(Request $request)
     {
-        $reff = DB::table('noref_MPN')->select(DB::raw("noRef + 1 as noReff"))->first();
+        // $reff = DB::table('noref_MPN')
+        // ->select(DB::raw("noRef + 1 as noReff"))
+        // ->first();
+
+        $reff = DB::connection('simakda_2023')
+            ->table('noref_MPN')
+            ->select(DB::raw("noRef + 1 as noReff"))
+            ->first();
+
+
         $noReff = $reff->noReff;
         $data['idBilling'] = $request->id_billing;
         $data['referenceNo'] = $noReff;
