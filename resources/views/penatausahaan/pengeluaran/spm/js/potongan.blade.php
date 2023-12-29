@@ -703,7 +703,7 @@
                 $('#simpan_potongan').prop('disabled', true);
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('spm.isi_list_pot') }}",
+                    url: "{{ route('skpd.setor_potongan.cek_billing') }}",
                     dataType: 'json',
                     data: {
                         id_billing: id_billing
