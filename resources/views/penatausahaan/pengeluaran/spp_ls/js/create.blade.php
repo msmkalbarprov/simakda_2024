@@ -1313,7 +1313,7 @@
                 alert("Isi Kode Kegiatan Terlebih Dahulu...!!!");
                 return;
             }
-            if (kd_sub_kegiatan.length != '17') {
+            if (kd_sub_kegiatan.trim().length != '17') {
                 alert("Kode Kegiatan Salah!");
                 return;
             }
