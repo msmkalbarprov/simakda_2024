@@ -6648,7 +6648,7 @@ class BendaharaUmumDaerahController extends Controller
         $blud_soedarso = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("left(kd_rek6,1)='5' and right(kd_rek6,7) in ('9999999') and jns_ang=? and kd_skpd=?", [$req['anggaran'], ['1.02.0.00.0.00.02.0000']])
+            ->whereRaw("left(kd_rek6,1)='5' and right(kd_rek6,7) in ('9999999') and jns_ang=? and kd_skpd=?", [$req['anggaran'], ['1.02.0.00.0.00.01.0005']])
             // ->where(function ($query) use ($req) {
             //     if ($req['dengan'] == 'true') {
             //         $query->whereRaw("LEFT(kd_rek6,1) in ('5')");
@@ -6732,7 +6732,6 @@ class BendaharaUmumDaerahController extends Controller
                     and no_sp2d in (select no_sp2d from trhuji a inner join trduji b on a.no_uji=b.no_uji)")
             ->where(['a.jns_spp' => '5', 'a.jenis_beban' => '8'])
             ->first();
-        // dd($realisasi_pembiayaan);
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
@@ -6748,14 +6747,14 @@ class BendaharaUmumDaerahController extends Controller
             'dengan' => $req['dengan'],
             'tanpa' => $req['tanpa'],
             'dengan_skpkd' => $req['dengan_skpkd'],
-            'blud_soedarso' => $blud_soedarso->anggaran,
-            'blud_rsj' => $blud_rsj->anggaran,
-            'bos_dikbud' => $bos_dikbud->anggaran,
-            'bantuan_keuangan' => $bantuan_keuangan->anggaran,
-            'btt' => $btt->anggaran,
-            'bagi_hasil' => $bagi_hasil->anggaran,
-            'pembiayaan' => $pembiayaan->anggaran,
-            'realisasi_pembiayaan' => $realisasi_pembiayaan->nilai,
+            'blud_soedarso' => isset($blud_soedarso) ? $blud_soedarso->anggaran : 0,
+            'blud_rsj' => isset($blud_rsj) ? $blud_rsj->anggaran : 0,
+            'bos_dikbud' => isset($bos_dikbud) ? $bos_dikbud->anggaran : 0,
+            'bantuan_keuangan' => isset($bantuan_keuangan) ? $bantuan_keuangan->anggaran : 0,
+            'btt' => isset($btt) ? $btt->anggaran : 0,
+            'bagi_hasil' => isset($bagi_hasil) ? $bagi_hasil->anggaran : 0,
+            'pembiayaan' => isset($pembiayaan) ? $pembiayaan->anggaran : 0,
+            'realisasi_pembiayaan' => isset($realisasi_pembiayaan->nilai) ? $realisasi_pembiayaan->nilai : 0,
             'nama_anggaran' => DB::table('tb_status_anggaran')
                 ->select('nama')
                 ->where(['kode' => $req['anggaran']])
