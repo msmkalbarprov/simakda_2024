@@ -19,7 +19,7 @@ class TransaksiPemindahbukuanController extends Controller
         $status_angkas = $cek1['status_angkas'];
 
         $cek = DB::table('tb_status_angkas')
-            ->whereRaw("left(jns_angkas,2)=? and kode=? and status=?", [$status_ang, $status_angkas, '1'])
+            ->whereRaw("left(jns_angkas,2)=? and status_kunci=? and status=?", [$status_ang, $status_angkas, '1'])
             ->count();
 
         $data = [
