@@ -5120,3 +5120,14 @@ function cari_rekening_awal($kd_skpd)
 
     return $data->rekening;
 }
+
+function Billing($billing){
+    if($billing!=''){
+        // 0283 3997 6302 004
+        // 0283 3997 3020 004
+        $idbilling = substr($billing,0,4).' '.substr($billing,4,4).' '.substr($billing,8,4).' '.substr($billing,12,3);
+    }else{
+        $idbilling = '-';
+    }
+    return $idbilling;
+}
