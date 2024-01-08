@@ -141,6 +141,7 @@ use App\Http\Controllers\Skpd\UploadKKPDController;
 use App\Http\Controllers\Skpd\ValidasiKKPDController;
 use App\Http\Controllers\Skpd\ValKKPDController;
 use App\Http\Controllers\Skpd\VerifikasiKKPDController;
+use App\Http\Controllers\Skpd\VerifSp2dController;
 use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\TukarSp2dController;
 use App\Http\Controllers\Utility\BankController;
@@ -430,6 +431,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('cek_simpan', [PencairanSp2dController::class, 'cekSimpan'])->name('pencairan_sp2d.cek_simpan');
             Route::post('simpan_cair', [PencairanSp2dController::class, 'simpanCair'])->name('pencairan_sp2d.simpan_cair');
             Route::post('batal_cair', [PencairanSp2dController::class, 'batalCair'])->name('pencairan_sp2d.batal_cair');
+        });
+
+        Route::group(['prefix' => 'verif_sp2d'], function () {
+            Route::get('', [VerifSp2dController::class, 'index'])->name('verif_sp2d.index');
+            Route::post('load_data', [VerifSp2dController::class, 'loadData'])->name('verif_sp2d.load_data');
+            Route::post('load_data_verif', [VerifSp2dController::class, 'loadDataVerif'])->name('verif_sp2d.load_data_verif');
+            Route::post('load_data_salur', [VerifSp2dController::class, 'loadDataSalur'])->name('verif_sp2d.load_data_salur');
+            Route::get('tampil_sp2d/{no_sp2d?}', [VerifSp2dController::class, 'tampilSp2d'])->where('no_sp2d', '(.*)')->name('verif_sp2d.tampil_sp2d');
+            Route::post('verif_sp2d', [VerifSp2dController::class, 'verifSp2d'])->name('verif_sp2d.verif_sp2d');
+            Route::post('batal_verif', [VerifSp2dController::class, 'batalVerif'])->name('verif_sp2d.batal_verif');
         });
         // SPP UP
         Route::group(['prefix' => 'spp_up'], function () {
