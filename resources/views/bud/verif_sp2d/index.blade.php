@@ -66,5 +66,5 @@
 
 @endsection
 @section('js')
-    @include('skpd.verif_sp2d.js.index')
+    @include('bud.verif_sp2d.js.index')
 @endsection

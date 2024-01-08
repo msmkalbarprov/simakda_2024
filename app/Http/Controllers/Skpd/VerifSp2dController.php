@@ -14,7 +14,7 @@ class VerifSp2dController extends Controller
 {
     public function index()
     {
-        return view('skpd.verif_sp2d.index');
+        return view('bud.verif_sp2d.index');
     }
 
     public function loadData( Request $request)
@@ -280,7 +280,7 @@ class VerifSp2dController extends Controller
             // 'cek' => $cek_callback
         ];
 
-        return view('skpd.verif_sp2d.show')->with($data);
+        return view('bud.verif_sp2d.show')->with($data);
     }
 
     public function verifSp2d(Request $request)
