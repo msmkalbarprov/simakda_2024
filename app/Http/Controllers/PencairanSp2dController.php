@@ -114,7 +114,8 @@ class PencairanSp2dController extends Controller
     public function cekSimpan(Request $request)
     {
         $no_kas = $request->no_kas;
-        $kd_skpd = Auth::user()->kd_skpd;
+        // $kd_skpd = Auth::user()->kd_skpd;
+        $kd_skpd = $request->opd;
 
         $data = DB::table('trhsp2d')->where(['no_kas_bud' => $no_kas, 'kd_skpd' => $kd_skpd])->count();
         return response()->json($data);
@@ -127,7 +128,8 @@ class PencairanSp2dController extends Controller
         $nilai = $request->nilai;
         $no_sp2d = $request->no_sp2d;
         $no_advice = $request->no_advice;
-        $kd_skpd = Auth::user()->kd_skpd;
+        // $kd_skpd = Auth::user()->kd_skpd;
+        $kd_skpd = $request->opd;
 
         DB::beginTransaction();
         try {
