@@ -412,7 +412,7 @@ class UploadCmsController extends Controller
         //     ->get();
 
         $query = DB::select("SELECT * FROM (SELECT a.tgl_upload,a.kd_skpd,(SELECT obskpd from ms_skpd where kd_skpd=b.kd_skpd) as nm_skpd,
-        b.rekening_awal,c.nm_rekening_tujuan,c.rekening_tujuan,c.nilai,replace(b.ket_tujuan,'2023.',RIGHT(e.kd_sub_kegiatan,5)+'/') ket_tujuan,b.no_upload_tgl FROM trhupload_cmsbank a
+        b.rekening_awal,c.nm_rekening_tujuan,c.rekening_tujuan,c.nilai,replace(b.ket_tujuan,'2024.',RIGHT(e.kd_sub_kegiatan,5)+'/') ket_tujuan,b.no_upload_tgl FROM trhupload_cmsbank a
         left join trdupload_cmsbank b on b.kd_bp=a.kd_skpd and a.no_upload=b.no_upload
         left join trdtransout_transfercms c on b.kd_skpd=c.kd_skpd and c.no_voucher=b.no_voucher and c.tgl_voucher=b.tgl_voucher
         left join ms_rekening_bank_online d on RTRIM(d.rekening)=RTRIM(c.rekening_tujuan) and d.kd_skpd=b.kd_bp

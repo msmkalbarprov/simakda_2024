@@ -908,7 +908,7 @@ class BendaharaUmumDaerahController extends Controller
             ->first();
 
         $total_saldo_awal = DB::table('buku_kas')->select('nilai')->where(['nomor' => '0'])->first();
-        if ($tgl == "2023-01-01") {
+        if ($tgl == "2024-01-01") {
             $saldo_awal = 0;
         } else {
             $saldo_awal = $total_saldo_awal->nilai;
