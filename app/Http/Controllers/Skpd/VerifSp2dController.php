@@ -17,143 +17,141 @@ class VerifSp2dController extends Controller
         return view('bud.verif_sp2d.index');
     }
 
-    public function loadData( Request $request)
-    {   
+    public function loadData(Request $request)
+    {
         $query = DB::table('trhsp2d')
-        ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
-        ->whereRaw('(is_verified is null OR is_verified <> 1) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
+            ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
+            ->whereRaw('(is_verified is null OR is_verified <> 1) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
 
-        $column_seacrh = ['no_sp2d','tgl_sp2d','keperluan','nilai'];
+        $column_seacrh = ['no_sp2d', 'tgl_sp2d', 'keperluan', 'nilai'];
         $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
-                                        foreach ($column_seacrh as $eachElement) {
-                                            $query->orWhere($eachElement, 'LIKE', '%'.$request->search['value'].'%');
-                                        }
-                                    });
+            foreach ($column_seacrh as $eachElement) {
+                $query->orWhere($eachElement, 'LIKE', '%' . $request->search['value'] . '%');
+            }
+        });
 
-        if(!$request->search['value']){
+        if (!$request->search['value']) {
             $record_total   = $query->get()->count();
             $data = $query->skip($request->start)
-                    ->take($request->length)
-                    ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
-                    ->get(); 
-        }else{
+                ->take($request->length)
+                ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
+                ->get();
+        } else {
             $record_total   = $filtered->get()->count();
             $data           = $filtered->get();
         }
 
         return Datatables::of($data)
-                        ->with([
-                        "recordsTotal" =>$record_total,
-                        "recordsFiltered" => $record_total,
-                        ])
-                        ->rawColumns(['action'])
-                        ->addIndexColumn()
-                        ->setTransformer(function($item){
-                                return [
-                                    'nomor'         => $item->no_sp2d,
-                                    'tanggal'       => $item->tgl_sp2d,
-                                    'keterangan'    => $item->kd_skpd.'<br />'.$item->nm_skpd.'<br />'.$item->keperluan,
-                                    'nilai'         => rupiah($item->nilai),
-                                    'user'          => $item->user_verif,
-                                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
-                                ];
-                            })
+            ->with([
+                "recordsTotal" => $record_total,
+                "recordsFiltered" => $record_total,
+            ])
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->setTransformer(function ($item) {
+                return [
+                    'nomor'         => $item->no_sp2d,
+                    'tanggal'       => $item->tgl_sp2d,
+                    'keterangan'    => $item->kd_skpd . '<br />' . $item->nm_skpd . '<br />' . $item->keperluan,
+                    'nilai'         => rupiah($item->nilai),
+                    'user'          => $item->user_verif,
+                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
+                ];
+            })
 
-                        ->skipPaging()
-                        ->make(true);
-
+            ->skipPaging()
+            ->make(true);
     }
 
-    public function loadDataVerif( Request $request)
-    {   
+    public function loadDataVerif(Request $request)
+    {
         $query = DB::table('trhsp2d')
-        ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
-        ->whereRaw('(is_verified = 1) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
+            ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
+            ->whereRaw('(is_verified = 1) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
 
-        $column_seacrh = ['no_sp2d','tgl_sp2d','keperluan','nilai'];
+        $column_seacrh = ['no_sp2d', 'tgl_sp2d', 'keperluan', 'nilai'];
         $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
-                                        foreach ($column_seacrh as $eachElement) {
-                                            $query->orWhere($eachElement, 'LIKE', '%'.$request->search['value'].'%');
-                                        }
-                                    });
+            foreach ($column_seacrh as $eachElement) {
+                $query->orWhere($eachElement, 'LIKE', '%' . $request->search['value'] . '%');
+            }
+        });
 
-        if(!$request->search['value']){
+        if (!$request->search['value']) {
             $record_total   = $query->get()->count();
             $data = $query->skip($request->start)
-                    ->take($request->length)
-                    ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
-                    ->get(); 
-        }else{
+                ->take($request->length)
+                ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
+                ->get();
+        } else {
             $record_total   = $filtered->get()->count();
             $data           = $filtered->get();
         }
 
         return Datatables::of($data)
-                        ->with([
-                        "recordsTotal" =>$record_total,
-                        "recordsFiltered" => $record_total,
-                        ])
-                        ->rawColumns(['action'])
-                        ->addIndexColumn()
-                        ->setTransformer(function($item){
-                                return [
-                                    'nomor'         => $item->no_sp2d,
-                                    'tanggal'       => $item->tgl_sp2d,
-                                    'keterangan'    => $item->kd_skpd.'<br />'.$item->nm_skpd.'<br />'.$item->keperluan,
-                                    'nilai'         => rupiah($item->nilai),
-                                    'user'          => $item->user_verif,
-                                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
-                                ];
-                            })
+            ->with([
+                "recordsTotal" => $record_total,
+                "recordsFiltered" => $record_total,
+            ])
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->setTransformer(function ($item) {
+                return [
+                    'nomor'         => $item->no_sp2d,
+                    'tanggal'       => $item->tgl_sp2d,
+                    'keterangan'    => $item->kd_skpd . '<br />' . $item->nm_skpd . '<br />' . $item->keperluan,
+                    'nilai'         => rupiah($item->nilai),
+                    'user'          => $item->user_verif,
+                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
+                ];
+            })
 
-                        ->skipPaging()
-                        ->make(true);
-
+            ->skipPaging()
+            ->make(true);
     }
 
-    public function loadDataSalur( Request $request)
-    {   
+    public function loadDataSalur(Request $request)
+    {
         $query = DB::table('trhsp2d')
-                ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
-                ->whereRaw('status_bud = 1 ');
+            ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
+            ->whereRaw('status_bud = 1 ');
 
-        $column_seacrh = ['no_sp2d','tgl_sp2d','keperluan','nilai'];
+        $column_seacrh = ['no_sp2d', 'tgl_sp2d', 'keperluan', 'nilai'];
         $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
-                                        foreach ($column_seacrh as $eachElement) {
-                                            $query->orWhere($eachElement, 'LIKE', '%'.$request->search['value'].'%');
-                                        }
-                                    });
+            foreach ($column_seacrh as $eachElement) {
+                $query->orWhere($eachElement, 'LIKE', '%' . $request->search['value'] . '%');
+            }
+        });
 
-        if(!$request->search['value']){
+        if (!$request->search['value']) {
             $record_total   = $query->get()->count();
             $data = $query->skip($request->start)
-                      ->take($request->length)
-                      ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
-                      ->get(); 
-        }else{
+                ->take($request->length)
+                ->orderByRaw('CAST(left(no_sp2d, LEN(no_sp2d)-8) as int)')
+                ->get();
+        } else {
             $record_total   = $filtered->get()->count();
             $data           = $filtered->get();
         }
 
         return Datatables::of($data)
-                        ->with([
-                        "recordsTotal" =>$record_total,
-                        "recordsFiltered" => $record_total,
-                        ])
-                        ->rawColumns(['action'])
-                        ->addIndexColumn()
-                        ->setTransformer(function($item){
-                                return [
-                                    'nomor'         => $item->no_sp2d,
-                                    'tanggal'       => $item->tgl_sp2d,
-                                    'keterangan'    => $item->kd_skpd.'<br />'.$item->nm_skpd.'<br />'.$item->keperluan,
-                                    'nilai'         => rupiah($item->nilai),
-                                    'user'          => $item->user_verif,
-                                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
-                                ];
-                            })
-                        ->skipPaging()
-                        ->make(true);
+            ->with([
+                "recordsTotal" => $record_total,
+                "recordsFiltered" => $record_total,
+            ])
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->setTransformer(function ($item) {
+                return [
+                    'nomor'         => $item->no_sp2d,
+                    'tanggal'       => $item->tgl_sp2d,
+                    'keterangan'    => $item->kd_skpd . '<br />' . $item->nm_skpd . '<br />' . $item->keperluan,
+                    'nilai'         => rupiah($item->nilai),
+                    'user'          => $item->user_verif,
+                    'aksi'          => '<a href="' . route("verif_sp2d.tampil_sp2d", Crypt::encryptString($item->no_sp2d)) . '" class="btn btn-info btn-sm" style="margin-right:4px"><i class="uil-eye"></i></a>',
+                ];
+            })
+            ->skipPaging()
+            ->make(true);
     }
 
     public function tampilSp2d($no_sp2d)
@@ -213,28 +211,32 @@ class VerifSp2dController extends Controller
         }
 
         if ($data_sp2d->jns_spp == '2') {
-            $sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->where(['a.no_spp' => $data_sp2d->no_spp])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
-            $sub = json_decode(json_encode($sub_kegiatan), true);
-            $pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $sub)->first();
+            // $sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            //     $join->on('a.no_spp', '=', 'b.no_spp');
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            // })->where(['a.no_spp' => $data_sp2d->no_spp])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
+            // $sub = json_decode(json_encode($sub_kegiatan), true);
+            // $pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $sub)->first();
+
+            $pagu = collect(DB::select("SELECT sum(nilai)nilai FROM trdrka where jns_ang=? and  kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND left(a.kd_skpd,17)=left(?,17) AND left(b.kd_skpd,17)=left(?,17) and b.jns_spp not in ('1','2')) AND kd_skpd=?", [$status_anggaran->jns_ang, $data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd]))->first();
         } else {
-            $sub_kegiatan = DB::table('trdspp as a')
-                ->join('trhspp as b', function ($join) {
-                    $join->on('a.no_spp', '=', 'b.no_spp');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd, 'b.kd_skpd' => $data_sp2d->kd_skpd])
-                ->whereNotIn('b.jns_spp', ['1', '2'])
-                ->select('a.kd_sub_kegiatan')
-                ->get();
-            $sub = json_decode(json_encode($sub_kegiatan), true);
-            $pagu = DB::table('trdrka')
-                ->select(DB::raw("SUM(nilai) as nilai"))
-                ->where(['jns_ang' => $status_anggaran->jns_ang])
-                ->whereIn('kd_sub_kegiatan', $sub)
-                ->first();
+            // $sub_kegiatan = DB::table('trdspp as a')
+            //     ->join('trhspp as b', function ($join) {
+            //         $join->on('a.no_spp', '=', 'b.no_spp');
+            //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //     })
+            //     ->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd, 'b.kd_skpd' => $data_sp2d->kd_skpd])
+            //     ->whereNotIn('b.jns_spp', ['1', '2'])
+            //     ->select('a.kd_sub_kegiatan')
+            //     ->get();
+            // $sub = json_decode(json_encode($sub_kegiatan), true);
+            // $pagu = DB::table('trdrka')
+            //     ->select(DB::raw("SUM(nilai) as nilai"))
+            //     ->where(['jns_ang' => $status_anggaran->jns_ang])
+            //     ->whereIn('kd_sub_kegiatan', $sub)
+            //     ->first();
+
+            $pagu = collect(DB::select("SELECT sum(nilai)nilai FROM trdrka where jns_ang=? and  kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND a.kd_skpd=? and b.jns_spp not in ('1','2')) AND kd_skpd=?", [$status_anggaran->jns_ang, $data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd]))->first();
         }
 
         // $sp2d = cair_sp2d($data_sp2d);
@@ -279,7 +281,7 @@ class VerifSp2dController extends Controller
             'kd_skpd' => $kd_skpd,
             // 'cek' => $cek_callback
         ];
-
+        // dd($data['bank']);
         return view('bud.verif_sp2d.show')->with($data);
     }
 
@@ -288,7 +290,7 @@ class VerifSp2dController extends Controller
         $no_sp2d = $request->no_sp2d;
         DB::beginTransaction();
         try {
-            
+
             DB::table('trhsp2d')
                 ->where(['no_sp2d' => $no_sp2d])
                 ->update([
@@ -322,7 +324,7 @@ class VerifSp2dController extends Controller
                     'tgl_verif'         => date("Y-m-d H:i:s"),
                 ]);
 
-        
+
             DB::commit();
             return response()->json([
                 'message' => '1'
