@@ -85,28 +85,32 @@ class TerimaSp2dController extends Controller
         }
 
         if ($data_sp2d->jns_spp == '2') {
-            $sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->where(['a.no_spp' => $data_sp2d->no_spp])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
-            $sub = json_decode(json_encode($sub_kegiatan), true);
-            $pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $sub)->first();
+            // $sub_kegiatan = DB::table('trdspp as a')->join('trhspp as b', function ($join) {
+            //     $join->on('a.no_spp', '=', 'b.no_spp');
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            // })->where(['a.no_spp' => $data_sp2d->no_spp])->where(DB::raw("LEFT(a.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->whereNotIn('b.jns_spp', ['1', '2'])->where(DB::raw("LEFT(b.kd_skpd,17)"), DB::raw("LEFT('$data_sp2d->kd_skpd',17)"))->select('a.kd_sub_kegiatan')->get();
+            // $sub = json_decode(json_encode($sub_kegiatan), true);
+            // $pagu = DB::table('trdrka')->select(DB::raw("SUM(nilai) as nilai"))->where(['jns_ang' => $status_anggaran->jns_ang])->whereIn('kd_sub_kegiatan', $sub)->first();
+
+            $pagu = collect(DB::select("SELECT sum(nilai)nilai FROM trdrka where jns_ang=? and  kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND left(a.kd_skpd,17)=left(?,17) AND left(b.kd_skpd,17)=left(?,17) and b.jns_spp not in ('1','2')) AND kd_skpd=?", [$status_anggaran->jns_ang, $data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd]))->first();
         } else {
-            $sub_kegiatan = DB::table('trdspp as a')
-                ->join('trhspp as b', function ($join) {
-                    $join->on('a.no_spp', '=', 'b.no_spp');
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                })
-                ->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd, 'b.kd_skpd' => $data_sp2d->kd_skpd])
-                ->whereNotIn('b.jns_spp', ['1', '2'])
-                ->select('a.kd_sub_kegiatan')
-                ->get();
-            $sub = json_decode(json_encode($sub_kegiatan), true);
-            $pagu = DB::table('trdrka')
-                ->select(DB::raw("SUM(nilai) as nilai"))
-                ->where(['jns_ang' => $status_anggaran->jns_ang])
-                ->whereIn('kd_sub_kegiatan', $sub)
-                ->first();
+            // $sub_kegiatan = DB::table('trdspp as a')
+            //     ->join('trhspp as b', function ($join) {
+            //         $join->on('a.no_spp', '=', 'b.no_spp');
+            //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            //     })
+            //     ->where(['a.no_spp' => $data_sp2d->no_spp, 'a.kd_skpd' => $data_sp2d->kd_skpd, 'b.kd_skpd' => $data_sp2d->kd_skpd])
+            //     ->whereNotIn('b.jns_spp', ['1', '2'])
+            //     ->select('a.kd_sub_kegiatan')
+            //     ->get();
+            // $sub = json_decode(json_encode($sub_kegiatan), true);
+            // $pagu = DB::table('trdrka')
+            //     ->select(DB::raw("SUM(nilai) as nilai"))
+            //     ->where(['jns_ang' => $status_anggaran->jns_ang])
+            //     ->whereIn('kd_sub_kegiatan', $sub)
+            //     ->first();
+
+            $pagu = collect(DB::select("SELECT sum(nilai)nilai FROM trdrka where jns_ang=? and  kd_sub_kegiatan in (select a.kd_sub_kegiatan from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd where a.no_spp=? AND a.kd_skpd=? and b.jns_spp not in ('1','2')) AND kd_skpd=?", [$status_anggaran->jns_ang, $data_sp2d->no_spp, $data_sp2d->kd_skpd, $data_sp2d->kd_skpd]))->first();
         }
 
         // $sp2d = cair_sp2d($data_sp2d);
