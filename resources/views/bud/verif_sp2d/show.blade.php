@@ -29,7 +29,7 @@
                             </b>
                         </div>
                     @endif
-                    
+
                     {{-- No SP2D --}}
                     <div class="mb-3 row">
                         <label for="no_sp2d" class="col-md-2 col-form-label">No SP2D</label>
@@ -47,13 +47,16 @@
                         <div class="col-md-12 text-center">
                             <a href="{{ route('verif_sp2d.index') }}" class="btn btn-warning btn-md">Kembali</a>
                             @if ($sp2d->status_bud == '1')
-                                
-                            @elseif ($sp2d->is_verified == '1') {{-- sudah verif --}}
-                                <button class="btn btn-md btn-primary" id="batal_verif" style="border: 1px solid black" >BATAL VERIF</button>
+                            @elseif ($sp2d->is_verified == '1')
+                                {{-- sudah verif --}}
+                                <button class="btn btn-md btn-primary" id="batal_verif"
+                                    style="border: 1px solid black">BATAL VERIF</button>
                                 {{-- <button class="btn btn-md btn-primary" id="verif_sp2d" style="border: 1px solid black" hidden="true">VERIF SP2D</button> --}}
-                            @else {{-- belum verif --}}
+                            @else
+                                {{-- belum verif --}}
                                 {{-- <button class="btn btn-md btn-primary" id="batal_verif" style="border: 1px solid black" hidden="true" >BATAL VERIF</button> --}}
-                                <button class="btn btn-md btn-primary" id="verif_sp2d" style="border: 1px solid black">VERIF SP2D</button>
+                                <button class="btn btn-md btn-primary" id="verif_sp2d" style="border: 1px solid black">VERIF
+                                    SP2D</button>
                             @endif
                         </div>
                     </div>
@@ -64,8 +67,7 @@
         <div class="col-12">
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item waves-effect waves-light">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#navpills-home"
-                        role="tab">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#navpills-home" role="tab">
                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                         <span class="d-none d-sm-block">BERKAS</span>
                     </a>
@@ -121,7 +123,8 @@
                                         <td colspan="4" class="kanan">PT. Bank Kalbar Cabang Utama Pontianak</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="kiri kanan">Hendaklah mencairkan / memindahbukukan dari baki
+                                        <td colspan="6" class="kiri kanan">Hendaklah mencairkan / memindahbukukan dari
+                                            baki
                                             Rekening
                                             Nomor
                                             1001002201</td>
@@ -129,7 +132,8 @@
                                     <tr>
                                         <td class="kiri bawah">Uang sebesar</td>
                                         <td class="bawah">:</td>
-                                        <td class="kanan bawah" colspan="4">Rp {{ rupiah($nilai) }} ({{ terbilang($nilai) }})
+                                        <td class="kanan bawah" colspan="4">Rp {{ rupiah($nilai) }}
+                                            ({{ terbilang($nilai) }})
                                         </td>
                                     </tr>
                                     <tr>
@@ -325,7 +329,8 @@
                                     <tr>
                                         <td colspan="2" class="kiri bawah">Jumlah yang Diminta</td>
                                         <td class="bawah">Rp</td>
-                                        <td style="text-align: right" class="kanan bawah">{{ rupiah($total_kegiatan->nilai) }}
+                                        <td style="text-align: right" class="kanan bawah">
+                                            {{ rupiah($total_kegiatan->nilai) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -344,7 +349,8 @@
                                     </tr>
                                     <tr>
                                         <td colspan="4" class="kanan kiri bawah"><b>Uang Sejumlah :
-                                                ({{ terbilang($total_kegiatan->nilai - ($jumlah_pot1 + $jumlah_pot2)) }})</b></td>
+                                                ({{ terbilang($total_kegiatan->nilai - ($jumlah_pot1 + $jumlah_pot2)) }})</b>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -366,14 +372,14 @@
                                     <td>:</td>
                                     <td>Pengguna Anggaran/Kuasa Pengguna Anggaran</td>
                                     <td></td>
-                                    <td style="text-align: center" class="kanan"><b>Kuasa Bendahara Umum Daerah</b></td>
+                                    <td style="text-align: center" class="kanan"><b>{{ $bud->jabatan }}</b></td>
                                 </tr>
                                 <tr>
                                     <td class="kiri">Lembar 3</td>
                                     <td>:</td>
                                     <td>Arsip Kuasa BUD</td>
                                     <td></td>
-                                    <td style="text-align: center" class="kanan"><b>{{ $bud->jabatan }}</b></td>
+                                    <td style="text-align: center" class="kanan"><b>{{ $bud->jabatan2 }}</b></td>
                                 </tr>
                                 <tr>
                                     <td class="kiri">Lembar 4</td>
@@ -397,7 +403,8 @@
                                     <td class="bawah"></td>
                                     <td class="bawah"></td>
                                     <td class="bawah"></td>
-                                    <td style="text-align: center" class="kanan bawah"><b>NIP. {{ $bud->nip }}</b></td>
+                                    <td style="text-align: center" class="kanan bawah"><b>NIP. {{ $bud->nip }}</b>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -426,10 +433,10 @@
                                             <td>{{ dotrek($potongan->kd_rek6) }} {{ $potongan->nm_rek6 }}</td>
                                             <td style="text-align: right">{{ Billing($potongan->idBilling) }}</td>
                                             <td style="text-align: right">{{ rupiah($potongan->nilai) }}</td>
-                                            
+
                                         </tr>
                                     @endforeach
-                                   
+
                                     <tr>
                                         <td colspan="3" style="text-align: right"><b>JUMLAH</b></td>
                                         <td style="text-align: right"><b>{{ rupiah($jumlah_pot1) }}</b></td>
@@ -457,14 +464,14 @@
                                             <td style="text-align: right">{{ rupiah($potongan->nilai) }}</td>
                                         </tr>
                                     @endforeach
-                                    
+
                                     <tr>
                                         <td colspan="3" style="text-align: right"><b>JUMLAH</b></td>
                                         <td style="text-align: right"><b>{{ rupiah($jumlah_pot2) }}</b></td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" style="text-align: right"><b>TOTAL POTONGAN</b></td>
-                                        <td style="text-align: right"><b>{{ rupiah($jumlah_pot2+$jumlah_pot1) }}</b></td>
+                                        <td style="text-align: right"><b>{{ rupiah($jumlah_pot2 + $jumlah_pot1) }}</b></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -474,7 +481,7 @@
             </div>
             {{-- TAB --}}
 
-            
+
         </div>
     </div>
 @endsection
@@ -512,17 +519,17 @@
 
             $('#verif_sp2d').on('click', function() {
                 let no_sp2d = document.getElementById('no_sp2d').value;
-               
+
                 $('#verif_sp2d').prop('disabled', true);
                 swal.fire({
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        title: 'Proses validasi',
-                        text: 'Silahkan tunggu !!!',
-                        onOpen: function() {
-                            swal.showLoading()
-                        }
-                    })
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    title: 'Proses validasi',
+                    text: 'Silahkan tunggu !!!',
+                    onOpen: function() {
+                        swal.showLoading()
+                    }
+                })
                 $.ajax({
                     url: "{{ route('verif_sp2d.verif_sp2d') }}",
                     type: "POST",
@@ -533,22 +540,22 @@
                     success: function(response) {
                         if (response.message == '1') {
                             Swal.fire({
-                                    title: 'SUKSES!',
-                                    text: 'SP2D berhasil diverifikasi',
-                                    icon: 'success',
-                                    confirmButtonColor: '#5b73e8',
-                                })
+                                title: 'SUKSES!',
+                                text: 'SP2D berhasil diverifikasi',
+                                icon: 'success',
+                                confirmButtonColor: '#5b73e8',
+                            })
 
                             // alert('SP2D berhasil diverifikasi');
                             window.location.reload();
                         } else {
                             Swal.fire({
-                                    type: "error",
-                                    icon: "error",
-                                    title: "Oops...",
-                                    text: 'Sp2D Gagal diverifikasi!',
-                                    confirmButtonClass: "btn btn-confirm mt-2",
-                                })
+                                type: "error",
+                                icon: "error",
+                                title: "Oops...",
+                                text: 'Sp2D Gagal diverifikasi!',
+                                confirmButtonClass: "btn btn-confirm mt-2",
+                            })
                             // alert('Sp2D Gagal diverifikasi!');
                             $('#verif_sp2d').prop('disabled', false);
                         }
@@ -559,17 +566,17 @@
 
             $('#batal_verif').on('click', function() {
                 let no_sp2d = document.getElementById('no_sp2d').value;
-                
+
                 $('#batal_verif').prop('disabled', true);
                 swal.fire({
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        title: 'Proses validas',
-                        text: 'Silahkan tunggu !!!',
-                        onOpen: function() {
-                            swal.showLoading()
-                        }
-                    })
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    title: 'Proses validas',
+                    text: 'Silahkan tunggu !!!',
+                    onOpen: function() {
+                        swal.showLoading()
+                    }
+                })
                 $.ajax({
                     url: "{{ route('verif_sp2d.batal_verif') }}",
                     type: "POST",
@@ -580,20 +587,20 @@
                     success: function(response) {
                         if (response.message == '1') {
                             Swal.fire({
-                                    title: 'SUKSES!',
-                                    text: 'SP2D berhasil Dibatal verifikasi',
-                                    icon: 'success',
-                                    confirmButtonColor: '#5b73e8',
-                                })
+                                title: 'SUKSES!',
+                                text: 'SP2D berhasil Dibatal verifikasi',
+                                icon: 'success',
+                                confirmButtonColor: '#5b73e8',
+                            })
                             window.location.reload();
                         } else {
                             Swal.fire({
-                                    type: "error",
-                                    icon: "error",
-                                    title: "Oops...",
-                                    text: 'SP2D Gagal batal verifikasi!',
-                                    confirmButtonClass: "btn btn-confirm mt-2",
-                                })
+                                type: "error",
+                                icon: "error",
+                                title: "Oops...",
+                                text: 'SP2D Gagal batal verifikasi!',
+                                confirmButtonClass: "btn btn-confirm mt-2",
+                            })
                             $('#batal_verif').prop('disabled', false);
                         }
                     }
