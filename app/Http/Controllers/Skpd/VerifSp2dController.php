@@ -270,7 +270,7 @@ class VerifSp2dController extends Controller
             'kd_prog' => $kd_prog,
             'nm_prog' => $nm_prog,
             'pagu' => $pagu->nilai,
-            'bud' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kode' => 'BUD'])->first(),
+            'bud' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kode' => 'BUD', 'nip' => '19720908 199803 2 010'])->first(),
             'bk' => DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['kd_skpd' => $data_sp2d->kd_skpd])
                 ->whereIn('kode', ['BK', 'BPP'])
                 ->first(),
