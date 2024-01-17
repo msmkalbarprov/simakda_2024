@@ -65,11 +65,14 @@ class UserController extends Controller
                 'is_admin' => $input['tipe'],
                 'status' => $input['status'],
                 'role' => $input['peran'],
+                'jabatan' => $input['jabatan']
             ]);
+
             DB::table('pengguna_peran')->insert([
                 'id_user' => $id,
                 'id_role' => $input['peran'],
             ]);
+
             DB::commit();
             return redirect()->route('user.index');
         } catch (Exception $e) {
@@ -114,21 +117,39 @@ class UserController extends Controller
     {
         $input = array_map('htmlentities', $request->validated());
 
-       
+
         if ($input['password'] != $input['confirmation_password']) {
             return redirect()->back()->withInput();
         }
         DB::beginTransaction();
         try {
-            DB::table('pengguna')->where('id', $id)->update([
-                'username' => $input['username'],
-                'password' => Hash::make($input['password']),
-                'nama' => $input['nama'],
-                'kd_skpd' => $input['kd_skpd'],
-                'is_admin' => $input['tipe'],
-                'status' => $input['status'],
-                'role' => $input['peran'],
-            ]);
+            if ($input['password'] == '') {
+                DB::table('pengguna')
+                    ->where('id', $id)
+                    ->update([
+                        'username' => $input['username'],
+                        'nama' => $input['nama'],
+                        'kd_skpd' => $input['kd_skpd'],
+                        'is_admin' => $input['tipe'],
+                        'status' => $input['status'],
+                        'role' => $input['peran'],
+                        'jabatan' => $input['jabatan'],
+                    ]);
+            } else {
+                DB::table('pengguna')
+                    ->where('id', $id)
+                    ->update([
+                        'username' => $input['username'],
+                        'password' => Hash::make($input['password']),
+                        'nama' => $input['nama'],
+                        'kd_skpd' => $input['kd_skpd'],
+                        'is_admin' => $input['tipe'],
+                        'status' => $input['status'],
+                        'role' => $input['peran'],
+                        'jabatan' => $input['jabatan'],
+                    ]);
+            }
+
             DB::table('pengguna_peran')->where(['id_user' => $id])->update([
                 'id_role' => $input['peran'],
             ]);

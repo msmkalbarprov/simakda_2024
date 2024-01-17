@@ -95,10 +95,17 @@
                             </div>
                             <label for="peran" class="col-md-2 col-form-label">Konfirmasi Password</label>
                             <div class="col-md-4">
-                                <input type="password" name="confirmation_password"  class="form-control">
+                                <input type="password" name="confirmation_password" class="form-control">
                             </div>
                         </div>
-  
+                        <!-- Jabatan -->
+                        <div class="mb-3 row">
+                            <label for="jabatan" class="col-md-2 col-form-label">Jabatan</label>
+                            <div class="col-md-10">
+                                <input class="form-control" value="{{ $user->jabatan }}" type="text"
+                                    placeholder="Silahkan isi dengan jabatan" id="jabatan" name="jabatan" required>
+                            </div>
+                        </div>
                         <div style="float: right;">
                             <button type="submit" class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('user.index') }}" class="btn btn-warning btn-md">Kembali</a>
