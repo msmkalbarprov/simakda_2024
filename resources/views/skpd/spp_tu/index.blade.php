@@ -190,12 +190,15 @@
                             <button type="button" class="btn btn-dark btn-md permintaan_layar" data-jenis="layar"
                                 name="permintaan_layar">Layar</button>
                         </div>
-                        <label for="sptb" class="col-md-2 col-form-label">SPTB</label>
+                        {{-- <label for="sptb" class="col-md-2 col-form-label">SPTB</label>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-danger btn-md sptb_layar" data-jenis="pdf"
                                 name="sptb_pdf">PDF</button>
                             <button type="button" class="btn btn-dark btn-md sptb_layar" data-jenis="layar"
                                 name="sptb_layar">Layar</button>
+                        </div> --}}
+                        <label for="sptb" class="col-md-2 col-form-label"></label>
+                        <div class="col-md-2">
                         </div>
                         <label for="rincian77" class="col-md-2 col-form-label">Rincian</label>
                         <div class="col-md-2">
