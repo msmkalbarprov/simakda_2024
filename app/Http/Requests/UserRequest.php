@@ -31,6 +31,7 @@ class UserRequest extends FormRequest
             'tipe' => ['required'],
             'status' => ['required'],
             'peran' => ['required'],
+            'jabatan' => ['required'],
         ];
     }
 
@@ -47,6 +48,7 @@ class UserRequest extends FormRequest
             'tipe.required'    => 'Tipe harus dipilih!',
             'status.required'    => 'Status harus dipilih!',
             'peran.required'    => 'Peran harus dipilih!',
+            'jabatan.required'    => 'Jabatan harus diisi!',
         ];
     }
 }

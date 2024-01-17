@@ -115,62 +115,69 @@
                 <div class="card-body">
                     <div class="text-center">
                         <div class="dropdown float-end">
-                            <a class="text-body dropdown-toggle font-size-18" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                              <i class="uil uil-ellipsis-v"></i>
+                            <a class="text-body dropdown-toggle font-size-18" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-haspopup="true">
+                                <i class="uil uil-ellipsis-v"></i>
                             </a>
-                          
+
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="#">Edit Profile</a>
-                                <a class="dropdown-item" href="{{ route('ubah_password', Crypt::encryptString(Auth::user()->id)) }}">Ubah Pasword</a>
+                                <a class="dropdown-item"
+                                    href="{{ route('ubah_password', Crypt::encryptString(Auth::user()->id)) }}">Ubah
+                                    Pasword</a>
                             </div>
                         </div>
                         <div class="clearfix"></div>
                         <div>
-                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="80">
+                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt=""
+                                height="80">
                         </div>
                         <h5 class="mt-3 mb-1">{{ Auth::user()->nama }}</h5>
-                        <p class="text-muted">{{ cari_nama(Auth::user()->role,'peran','id','nama_role') }}</p>
+                        {{-- <p class="text-muted">{{ cari_nama(Auth::user()->role, 'peran', 'id', 'nama_role') }}</p> --}}
+                        <p class="text-muted">{{ Auth::user()->jabatan }}</p>
                         <p class="text-muted">
-                            @if((Auth::user()->is_admin==2 && Auth::user()->role==1016) || (Auth::user()->is_admin==1))
+                            @if ((Auth::user()->is_admin == 2 && Auth::user()->role == 1016) || Auth::user()->is_admin == 1)
                                 <a class="dropdown-item"
                                     href="{{ route('ubah_skpd', Crypt::encryptString(Auth::user()->id)) }}"><i
                                         class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span
                                         class="align-middle">Ganti SKPD</span></a>
-                                @endif
+                            @endif
                         </p>
                         <p class="text-muted">
-                            <a  class="dropdown-item bg-danger text-white"
+                            <a class="dropdown-item bg-danger text-white"
                                 href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
                                     class="uil
                                 uil-sign-out-alt font-size-18 align-middle me-1 text-white"></i>
                                 <span class="align-middle">Logout</span></a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
                         </p>
 
-                        
+
                     </div>
 
                     <hr class="my-4">
 
                     {{-- <div class="text-muted"> --}}
-                        
-                        <div class="table-responsive mt-4">
-                            <div class="mt-4">
-                                <p class="mb-1">Kode SKPD :</p>
-                                <h5 class="font-size-16">{{ Auth::user()->kd_skpd }}</h5>
-                            </div>
-                            <div class="mt-4">
-                                <p class="mb-1">Nama SKPD :</p>
-                                <h5 class="font-size-16">{{ cari_nama(Auth::user()->kd_skpd,'ms_skpd','kd_skpd','nm_skpd') }}</h5>
-                            </div>
-                            <div class="mt-4">
-                                <p class="mb-1">Jenis Anggaran :</p>
-                                <h5 class="font-size-16">{{cari_nama(status_anggaran_dashboard(), 'tb_status_anggaran', 'kode', 'nama')}}</h5>
-                            </div>
-                            
+
+                    <div class="table-responsive mt-4">
+                        <div class="mt-4">
+                            <p class="mb-1">Kode SKPD :</p>
+                            <h5 class="font-size-16">{{ Auth::user()->kd_skpd }}</h5>
                         </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Nama SKPD :</p>
+                            <h5 class="font-size-16">
+                                {{ cari_nama(Auth::user()->kd_skpd, 'ms_skpd', 'kd_skpd', 'nm_skpd') }}</h5>
+                        </div>
+                        <div class="mt-4">
+                            <p class="mb-1">Jenis Anggaran :</p>
+                            <h5 class="font-size-16">
+                                {{ cari_nama(status_anggaran_dashboard(), 'tb_status_anggaran', 'kode', 'nama') }}</h5>
+                        </div>
+
+                    </div>
                     {{-- </div> --}}
                 </div>
             </div>
