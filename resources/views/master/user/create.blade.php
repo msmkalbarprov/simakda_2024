@@ -134,6 +134,18 @@
                                 @enderror
                             </div>
                         </div>
+                        <!-- Jabatan -->
+                        <div class="mb-3 row">
+                            <label for="jabatan" class="col-md-2 col-form-label">Jabatan</label>
+                            <div class="col-md-10">
+                                <input class="form-control @error('jabatan') is-invalid @enderror" type="text"
+                                    placeholder="Silahkan isi dengan jabatan" id="jabatan" name="jabatan"
+                                    value="{{ old('jabatan') }}">
+                                @error('jabatan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <div style="float: right;">
                             <button type="submit" class="btn btn-primary btn-md">Simpan</button>
                             <a href="{{ route('user.index') }}" class="btn btn-warning btn-md">Kembali</a>
