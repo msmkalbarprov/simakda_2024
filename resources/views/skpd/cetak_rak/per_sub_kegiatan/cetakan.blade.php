@@ -86,7 +86,7 @@
             @endphp
             @foreach ($data_giat as $giat)
                 @php
-                    if (strlen($giat->giat) == 15) {
+                    if (strlen($giat->giat) == 17) {
                         $total_ang += $giat->ang;
                         $total_jan += $giat->jan;
                         $total_feb += $giat->feb;
