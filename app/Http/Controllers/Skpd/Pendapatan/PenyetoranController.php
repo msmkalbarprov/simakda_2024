@@ -54,7 +54,7 @@ class PenyetoranController extends Controller
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
-                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
+                ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get()
         ];
 
@@ -280,7 +280,7 @@ class PenyetoranController extends Controller
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
-                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
+                ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get(),
             'setor' => DB::table('trhkasin_pkd as a')
                 ->join('trdkasin_pkd as b', function ($join) {
@@ -665,7 +665,7 @@ class PenyetoranController extends Controller
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
-                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
+                ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get()
         ];
 
@@ -911,7 +911,7 @@ class PenyetoranController extends Controller
             'daftar_kegiatan' => DB::table('trskpd as a')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
-                ->whereRaw("right(a.kd_sub_kegiatan,5)=?", ['00.04'])
+                ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get(),
             'sts' => DB::table('trhkasin_pkd as a')
                 ->leftJoin('trhkasin_ppkd as b', function ($join) {
