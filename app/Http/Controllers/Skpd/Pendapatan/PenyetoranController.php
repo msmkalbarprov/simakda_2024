@@ -52,8 +52,9 @@ class PenyetoranController extends Controller
                 ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_kegiatan' => DB::table('trskpd as a')
+                ->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran, 'jns_sub_kegiatan' => '4'])
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get()
         ];
@@ -278,8 +279,9 @@ class PenyetoranController extends Controller
                 ->orderByRaw("kd_pengirim")
                 ->get(),
             'daftar_kegiatan' => DB::table('trskpd as a')
+                ->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran, 'jns_sub_kegiatan' => '4'])
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get(),
             'setor' => DB::table('trhkasin_pkd as a')
@@ -663,8 +665,9 @@ class PenyetoranController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::table('trskpd as a')
+                ->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran, 'jns_sub_kegiatan' => '4'])
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get()
         ];
@@ -909,8 +912,9 @@ class PenyetoranController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_kegiatan' => DB::table('trskpd as a')
+                ->join('ms_sub_kegiatan as b', 'a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan')
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
-                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran])
+                ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran, 'jns_sub_kegiatan' => '4'])
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get(),
             'sts' => DB::table('trhkasin_pkd as a')
