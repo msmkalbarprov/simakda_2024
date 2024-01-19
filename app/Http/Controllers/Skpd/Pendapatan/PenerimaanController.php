@@ -466,7 +466,9 @@ class PenerimaanController extends Controller
                 'keterangan' => $data['keterangan'],
                 'jenis' => '1',
                 'sumber' => $data['kode_pengirim'],
-                'kanal' => ''
+                'kanal' => '',
+                'user_name' => Auth::user()->nama,
+                'updated_at' => date('Y-m-d H:i:s')
             ]);
 
             DB::commit();
