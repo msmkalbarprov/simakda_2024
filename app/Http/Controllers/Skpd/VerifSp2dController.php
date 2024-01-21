@@ -21,7 +21,7 @@ class VerifSp2dController extends Controller
     {
         $query = DB::table('trhsp2d')
             ->selectRaw('*, (SELECT TOP 1 nm_rekening from ms_rekening_bank_online where trhsp2d.no_rek=rekening)as penerima')
-            ->whereRaw('(is_verified is null OR is_verified <> 1) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
+            ->whereRaw('(is_verified is null OR is_verified not in (1,3)) and (status_bud <> 1 OR status_bud is null) and (sp2d_batal <> 1 OR sp2d_batal is null)');
 
         $column_seacrh = ['no_sp2d', 'tgl_sp2d', 'keperluan', 'nilai'];
         $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
