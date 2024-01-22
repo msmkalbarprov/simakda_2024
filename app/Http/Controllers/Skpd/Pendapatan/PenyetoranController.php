@@ -83,24 +83,6 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek2 = DB::table($cek1, 'a')
-            //     ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            // $cek3 = DB::table('trhspj_terima_ppkd')
-            //     ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek4 = DB::table($cek3, 'a')
-            //     ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            // $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-            //     ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-            //     ->mergeBindings($cek4)
-            //     ->first();
 
             $tanggal = $data['tgl_sts'];
 
@@ -160,6 +142,7 @@ class PenyetoranController extends Controller
                     'jns_trans' => '2',
                     'rek_bank' => '',
                     'sumber' => $data['pengirim'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
                     'pot_khusus' => '0',
                     'no_sp2d' => '',
                     'jns_cp' => '',
@@ -314,25 +297,6 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek2 = DB::table($cek1, 'a')
-            //     ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            // $cek3 = DB::table('trhspj_terima_ppkd')
-            //     ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek4 = DB::table($cek3, 'a')
-            //     ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            // $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-            //     ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-            //     ->mergeBindings($cek4)
-            //     ->first();
-
             $tanggal = $data['tgl_sts'];
 
             $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
@@ -389,6 +353,7 @@ class PenyetoranController extends Controller
                     'jns_trans' => '2',
                     'rek_bank' => '',
                     'sumber' => $data['pengirim'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
                     'pot_khusus' => '0',
                     'no_sp2d' => '',
                     'jns_cp' => '',

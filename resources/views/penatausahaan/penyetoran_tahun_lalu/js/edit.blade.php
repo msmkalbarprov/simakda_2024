@@ -145,6 +145,7 @@
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
+            let jenis_pembayaran = document.getElementById('jenis_pembayaran').value;
             let total = rupiah(document.getElementById('total').value);
             let tahun_input = tgl_sts.substr(0, 4);
 
@@ -173,6 +174,11 @@
                 return;
             }
 
+            if (!jenis_pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             let detail_sts = detail.rows().data().toArray().map((value) => {
                 let data = {
                     no_sts: value.no_sts,
@@ -198,7 +204,8 @@
                 kd_sub_kegiatan,
                 keterangan,
                 total,
-                detail_sts
+                detail_sts,
+                jenis_pembayaran
             };
 
             $('#simpan').prop('disabled', true);
