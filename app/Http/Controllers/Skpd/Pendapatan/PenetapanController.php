@@ -69,23 +69,28 @@ class PenetapanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         DB::beginTransaction();
         try {
-            $total = DB::table('tr_tetap')->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])->count();
+            $total = DB::table('tr_tetap')
+                ->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])
+                ->count();
+
             if ($total > 0) {
                 return response()->json([
                     'message' => '2'
                 ]);
             }
-            DB::table('tr_tetap')->insert([
-                'no_tetap' => $data['no_tetap'],
-                'tgl_tetap' => $data['tgl_tetap'],
-                'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['kode_akun'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'kanal' => ''
-            ]);
+            DB::table('tr_tetap')
+                ->insert([
+                    'no_tetap' => $data['no_tetap'],
+                    'tgl_tetap' => $data['tgl_tetap'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_rek6' => $data['kode_akun'],
+                    'kd_rek_lo' => $data['kode_rek'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'kanal' => '',
+                    'jns_pembayaran' => $data['jenis_pembayaran']
+                ]);
 
             DB::commit();
             return response()->json([
@@ -132,26 +137,33 @@ class PenetapanController extends Controller
 
         DB::beginTransaction();
         try {
-            $total = DB::table('tr_tetap')->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])->count();
+            $total = DB::table('tr_tetap')
+                ->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])
+                ->count();
+
             if ($total > 0 && $data['no_tetap'] != $data['no_simpan']) {
                 return response()->json([
                     'message' => '2'
                 ]);
             }
 
-            DB::table('tr_tetap')->where(['kd_skpd' => $kd_skpd, 'no_tetap' => $data['no_simpan']])->delete();
+            DB::table('tr_tetap')
+                ->where(['kd_skpd' => $kd_skpd, 'no_tetap' => $data['no_simpan']])
+                ->delete();
 
-            DB::table('tr_tetap')->insert([
-                'no_tetap' => $data['no_tetap'],
-                'tgl_tetap' => $data['tgl_tetap'],
-                'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['kode_akun'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'kanal' => ''
-            ]);
+            DB::table('tr_tetap')
+                ->insert([
+                    'no_tetap' => $data['no_tetap'],
+                    'tgl_tetap' => $data['tgl_tetap'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_rek6' => $data['kode_akun'],
+                    'kd_rek_lo' => $data['kode_rek'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
+                    'kanal' => ''
+                ]);
 
             DB::commit();
             return response()->json([
