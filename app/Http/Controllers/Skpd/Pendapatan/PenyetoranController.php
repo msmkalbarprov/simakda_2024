@@ -680,21 +680,6 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
-            //     ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
-            //     ->mergeBindings($cek1)
-            //     ->first();
-
-            // if ($cek->status == '1') {
-            //     return response()->json([
-            //         'message' => '2'
-            //     ]);
-            // }
-
             $tanggal = $data['tgl_sts'];
 
             $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
@@ -758,6 +743,7 @@ class PenyetoranController extends Controller
                     'no_sp2d' => '',
                     'jns_cp' => '',
                     'no_terima' => '',
+                    'jns_pembayaran' => $data['jenis_pembayaran']
                 ]);
 
             DB::table('trdkasin_pkd')
@@ -905,21 +891,6 @@ class PenyetoranController extends Controller
 
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl1,? as tgl2", [$data['tgl_sts']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek = DB::table(DB::raw("({$cek1->toSql()}) AS sub"))
-            //     ->selectRaw("CASE WHEN tgl2<=tgl1 THEN '1' ELSE '0' END as status,*")
-            //     ->mergeBindings($cek1)
-            //     ->first();
-
-            // if ($cek->status == '1') {
-            //     return response()->json([
-            //         'message' => '2'
-            //     ]);
-            // }
-
             $tanggal = $data['tgl_sts'];
 
             $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
@@ -987,6 +958,7 @@ class PenyetoranController extends Controller
                     'no_sp2d' => '',
                     'jns_cp' => '',
                     'no_terima' => '',
+                    'jns_pembayaran' => $data['jenis_pembayaran']
                 ]);
 
             $jumlah = DB::table('ms_skpd')
