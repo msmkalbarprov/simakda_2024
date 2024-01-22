@@ -69,25 +69,6 @@ class PenerimaanController extends Controller
 
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek2 = DB::table($cek1, 'a')
-            //     ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            // $cek3 = DB::table('trhspj_terima_ppkd')
-            //     ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek4 = DB::table($cek3, 'a')
-            //     ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            // $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-            //     ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-            //     ->mergeBindings($cek4)
-            //     ->first();
-
             $tanggal = $data['tgl_terima'];
 
             $cek = collect(DB::select("SELECT sum(status_kasda) status_kasda, sum(status_spj) status_spj from (
@@ -122,7 +103,10 @@ class PenerimaanController extends Controller
                     'message' => '3'
                 ]);
             } else {
-                $cek_terima = DB::table('tr_terima')->where(['no_terima' => $data['no_terima'], 'kd_skpd' => $kd_skpd])->count();
+                $cek_terima = DB::table('tr_terima')
+                    ->where(['no_terima' => $data['no_terima'], 'kd_skpd' => $kd_skpd])
+                    ->count();
+
                 if ($cek_terima > 0) {
                     return response()->json([
                         'message' => '2'
@@ -130,21 +114,23 @@ class PenerimaanController extends Controller
                 }
             }
 
-            DB::table('tr_terima')->insert([
-                'no_terima' => $data['no_terima'],
-                'tgl_terima' => $data['tgl_terima'],
-                'no_tetap' => '',
-                'tgl_tetap' => '',
-                'sts_tetap' => '',
-                'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['rekening'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'jenis' => '2',
-                'kanal' => ''
-            ]);
+            DB::table('tr_terima')
+                ->insert([
+                    'no_terima' => $data['no_terima'],
+                    'tgl_terima' => $data['tgl_terima'],
+                    'no_tetap' => '',
+                    'tgl_tetap' => '',
+                    'sts_tetap' => '',
+                    'kd_skpd' => $data['kd_skpd'],
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_rek6' => $data['rekening'],
+                    'kd_rek_lo' => $data['kode_rek'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
+                    'jenis' => '2',
+                    'kanal' => ''
+                ]);
 
             DB::commit();
             return response()->json([
@@ -224,7 +210,9 @@ class PenerimaanController extends Controller
                     'message' => '3'
                 ]);
             } else {
-                $cek_terima = DB::table('tr_terima')->where(['no_terima' => $data['no_terima'], 'kd_skpd' => $kd_skpd])->count();
+                $cek_terima = DB::table('tr_terima')
+                    ->where(['no_terima' => $data['no_terima'], 'kd_skpd' => $kd_skpd])
+                    ->count();
                 if ($cek_terima > 0 && $data['no_terima'] != $data['no_simpan']) {
                     return response()->json([
                         'message' => '2'
@@ -233,23 +221,27 @@ class PenerimaanController extends Controller
             }
 
 
-            DB::table('tr_terima')->where(['kd_skpd' => $kd_skpd, 'no_terima' => $data['no_simpan']])->delete();
+            DB::table('tr_terima')
+                ->where(['kd_skpd' => $kd_skpd, 'no_terima' => $data['no_simpan']])
+                ->delete();
 
-            DB::table('tr_terima')->insert([
-                'no_terima' => $data['no_terima'],
-                'tgl_terima' => $data['tgl_terima'],
-                'no_tetap' => '',
-                'tgl_tetap' => '',
-                'sts_tetap' => '',
-                'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['rekening'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'jenis' => '2',
-                'kanal' => ''
-            ]);
+            DB::table('tr_terima')
+                ->insert([
+                    'no_terima' => $data['no_terima'],
+                    'tgl_terima' => $data['tgl_terima'],
+                    'no_tetap' => '',
+                    'tgl_tetap' => '',
+                    'sts_tetap' => '',
+                    'kd_skpd' => $data['kd_skpd'],
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_rek6' => $data['rekening'],
+                    'kd_rek_lo' => $data['kode_rek'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
+                    'jenis' => '2',
+                    'kanal' => ''
+                ]);
 
             DB::commit();
             return response()->json([
@@ -835,6 +827,7 @@ class PenerimaanController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }
@@ -1296,6 +1289,7 @@ class PenerimaanController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => '0',
+                'error' => $e->getMessage()
             ]);
         }
     }
