@@ -474,14 +474,14 @@
                 return;
             }
 
-            if (beban == '1' && kd_sub_kegiatan.substr(0, 15) == '5.06.01.1.09.02' && kd_rekening
+            if (beban == '1' && kd_sub_kegiatan.substr(0, 17) == '5.06.01.1.09.0002' && kd_rekening
                 .substr(0, 12) == '510203020035' && nilai > 50000000) {
                 alert('Akun Belanja ini tidak boleh melebihi 50 juta');
                 return;
             }
 
             if (kd_rekening.substr(0, 6) == '510203' && nilai > 15000000 && kd_sub_kegiatan.substr(0,
-                    15) == '5.06.01.1.09.02') {
+                    17) == '5.06.01.1.09.0002') {
                 alert('Akun Belanja ini tidak boleh melebihi 15 juta');
                 return;
             }
