@@ -266,7 +266,10 @@ class PenetapanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         DB::beginTransaction();
         try {
-            $total = DB::table('tr_tetap')->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])->count();
+            $total = DB::table('tr_tetap')
+                ->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])
+                ->count();
+
             if ($total > 0) {
                 return response()->json([
                     'message' => '2'
@@ -274,51 +277,57 @@ class PenetapanController extends Controller
             }
 
             if ($data['tanpa_penetapan'] == '1') {
-                DB::table('tr_terima')->insert([
-                    'no_terima' => $data['no_tetap'] . '/TRM',
-                    'tgl_terima' => $data['tgl_tetap'],
-                    'no_tetap' => '',
-                    'tgl_tetap' => '',
-                    'sts_tetap' => '0',
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'kd_rek_lo' => $data['kode_rek'],
-                    'nilai' => $data['nilai'],
-                    'keterangan' => $data['keterangan'],
-                    'jenis' => '1',
-                    'sumber' => $data['kode_pengirim'],
-                    'kanal' => ''
-                ]);
+                DB::table('tr_terima')
+                    ->insert([
+                        'no_terima' => $data['no_tetap'] . '/TRM',
+                        'tgl_terima' => $data['tgl_tetap'],
+                        'no_tetap' => '',
+                        'tgl_tetap' => '',
+                        'sts_tetap' => '0',
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'kd_rek_lo' => $data['kode_rek'],
+                        'nilai' => $data['nilai'],
+                        'keterangan' => $data['keterangan'],
+                        'jns_pembayaran' => $data['jenis_pembayaran'],
+                        'jenis' => '1',
+                        'sumber' => $data['kode_pengirim'],
+                        'kanal' => ''
+                    ]);
             } else {
-                DB::table('tr_tetap')->insert([
-                    'no_tetap' => $data['no_tetap'],
-                    'tgl_tetap' => $data['tgl_tetap'],
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'kd_rek_lo' => $data['kode_rek'],
-                    'nilai' => $data['nilai'],
-                    'keterangan' => $data['keterangan'],
-                    'kanal' => ''
-                ]);
+                DB::table('tr_tetap')
+                    ->insert([
+                        'no_tetap' => $data['no_tetap'],
+                        'tgl_tetap' => $data['tgl_tetap'],
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'kd_rek_lo' => $data['kode_rek'],
+                        'nilai' => $data['nilai'],
+                        'keterangan' => $data['keterangan'],
+                        'jns_pembayaran' => $data['jenis_pembayaran'],
+                        'kanal' => ''
+                    ]);
 
-                DB::table('tr_terima')->insert([
-                    'no_terima' => $data['no_tetap'] . '/TRM',
-                    'tgl_terima' => $data['tgl_tetap'],
-                    'no_tetap' => $data['no_tetap'],
-                    'tgl_tetap' => $data['tgl_tetap'],
-                    'sts_tetap' => '1',
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'kd_rek_lo' => $data['kode_rek'],
-                    'nilai' => $data['nilai'],
-                    'keterangan' => $data['keterangan'],
-                    'jenis' => '1',
-                    'sumber' => $data['kode_pengirim'],
-                    'kanal' => ''
-                ]);
+                DB::table('tr_terima')
+                    ->insert([
+                        'no_terima' => $data['no_tetap'] . '/TRM',
+                        'tgl_terima' => $data['tgl_tetap'],
+                        'no_tetap' => $data['no_tetap'],
+                        'tgl_tetap' => $data['tgl_tetap'],
+                        'sts_tetap' => '1',
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'kd_rek_lo' => $data['kode_rek'],
+                        'nilai' => $data['nilai'],
+                        'keterangan' => $data['keterangan'],
+                        'jns_pembayaran' => $data['jenis_pembayaran'],
+                        'jenis' => '1',
+                        'sumber' => $data['kode_pengirim'],
+                        'kanal' => ''
+                    ]);
             }
 
             DB::commit();
@@ -385,13 +394,19 @@ class PenetapanController extends Controller
 
         DB::beginTransaction();
         try {
-            $total = DB::table('tr_tetap')->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])->count();
+            $total = DB::table('tr_tetap')
+                ->where(['no_tetap' => $data['no_tetap'], 'kd_skpd' => $kd_skpd])
+                ->count();
+
             if ($total > 0 && $data['no_tetap'] != $data['nomor']) {
                 return response()->json([
                     'message' => '2'
                 ]);
             }
-            $kunci = DB::table('tr_terima')->where(['no_terima' => $data['no_tetap'] . '/TRM', 'kd_skpd' => $kd_skpd, 'kunci' => '1'])->count();
+            $kunci = DB::table('tr_terima')
+                ->where(['no_terima' => $data['no_tetap'] . '/TRM', 'kd_skpd' => $kd_skpd, 'kunci' => '1'])
+                ->count();
+
             if ($total >= '1') {
                 return response()->json([
                     'message' => '3'
@@ -399,21 +414,27 @@ class PenetapanController extends Controller
             }
 
             if ($data['tanpa_penetapan'] != '1') {
-                DB::table('tr_tetap')->where(['no_tetap' => $data['nomor'], 'kd_skpd' => $data['kd_skpd']])->delete();
+                DB::table('tr_tetap')
+                    ->where(['no_tetap' => $data['nomor'], 'kd_skpd' => $data['kd_skpd']])
+                    ->delete();
 
-                DB::table('tr_tetap')->insert([
-                    'no_tetap' => $data['no_tetap'],
-                    'tgl_tetap' => $data['tgl_tetap'],
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'kd_rek_lo' => $data['kode_rek'],
-                    'nilai' => $data['nilai'],
-                    'keterangan' => $data['keterangan'],
-                    'kanal' => ''
-                ]);
+                DB::table('tr_tetap')
+                    ->insert([
+                        'no_tetap' => $data['no_tetap'],
+                        'tgl_tetap' => $data['tgl_tetap'],
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'kd_rek_lo' => $data['kode_rek'],
+                        'nilai' => $data['nilai'],
+                        'keterangan' => $data['keterangan'],
+                        'jns_pembayaran' => $data['jenis_pembayaran'],
+                        'kanal' => ''
+                    ]);
 
-                DB::table('trhkasin_pkd')->where(['no_sts' => $data['nomor'] . '/STS', 'kd_skpd' => $data['kd_skpd']])->delete();
+                DB::table('trhkasin_pkd')
+                    ->where(['no_sts' => $data['nomor'] . '/STS', 'kd_skpd' => $data['kd_skpd']])
+                    ->delete();
 
                 DB::table('trhkasin_pkd')->insert([
                     'no_sts' => $data['no_tetap'] . '/STS',
@@ -434,35 +455,43 @@ class PenetapanController extends Controller
                     'pot_khusus' => '0',
                     'no_sp2d' => '0',
                     'no_terima' => $data['no_tetap'] . '/TRM',
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
                 ]);
 
-                DB::table('trdkasin_pkd')->where(['no_sts' => $data['nomor'] . '/STS', 'kd_skpd' => $data['kd_skpd']])->delete();
+                DB::table('trdkasin_pkd')
+                    ->where(['no_sts' => $data['nomor'] . '/STS', 'kd_skpd' => $data['kd_skpd']])
+                    ->delete();
 
-                DB::table('trdkasin_pkd')->insert([
-                    'no_sts' => $data['no_tetap'] . '/STS',
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'rupiah' => $data['nilai'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                ]);
+                DB::table('trdkasin_pkd')
+                    ->insert([
+                        'no_sts' => $data['no_tetap'] . '/STS',
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'rupiah' => $data['nilai'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    ]);
 
-                DB::table('tr_terima')->where(['no_terima' => $data['nomor'] . '/TRM', 'kd_skpd' => $data['kd_skpd']])->delete();
+                DB::table('tr_terima')
+                    ->where(['no_terima' => $data['nomor'] . '/TRM', 'kd_skpd' => $data['kd_skpd']])
+                    ->delete();
 
-                DB::table('tr_terima')->insert([
-                    'no_terima' => $data['no_tetap'] . '/TRM',
-                    'tgl_terima' => $data['tgl_tetap'],
-                    'no_tetap' => $data['no_tetap'],
-                    'tgl_tetap' => $data['tgl_tetap'],
-                    'sts_tetap' => '1',
-                    'kd_skpd' => $data['kd_skpd'],
-                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                    'kd_rek6' => $data['kode_akun'],
-                    'kd_rek_lo' => $data['kode_rek'],
-                    'nilai' => $data['nilai'],
-                    'keterangan' => $data['keterangan'],
-                    'jenis' => '1',
-                    'kanal' => ''
-                ]);
+                DB::table('tr_terima')
+                    ->insert([
+                        'no_terima' => $data['no_tetap'] . '/TRM',
+                        'tgl_terima' => $data['tgl_tetap'],
+                        'no_tetap' => $data['no_tetap'],
+                        'tgl_tetap' => $data['tgl_tetap'],
+                        'sts_tetap' => '1',
+                        'kd_skpd' => $data['kd_skpd'],
+                        'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                        'kd_rek6' => $data['kode_akun'],
+                        'kd_rek_lo' => $data['kode_rek'],
+                        'nilai' => $data['nilai'],
+                        'keterangan' => $data['keterangan'],
+                        'jenis' => '1',
+                        'kanal' => '',
+                        'jns_pembayaran' => $data['jenis_pembayaran'],
+                    ]);
             }
             DB::commit();
             return response()->json([

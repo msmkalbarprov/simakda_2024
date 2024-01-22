@@ -38,6 +38,7 @@
             let kode_rek = document.getElementById('kode_rek').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
+            let jenis_pembayaran = document.getElementById('jenis_pembayaran').value;
             let keterangan = document.getElementById('keterangan').value;
             let nilai = angka(document.getElementById('nilai').value);
             let tahun_input = tgl_tetap.substr(0, 4);
@@ -84,6 +85,11 @@
                 return;
             }
 
+            if (!jenis_pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             if (nilai == '0') {
                 alert('Nilai 0!Cek Lagi!!!');
                 return;
@@ -103,6 +109,7 @@
                 kd_sub_kegiatan,
                 keterangan,
                 nilai,
+                jenis_pembayaran
             };
 
             $('#simpan').prop('disabled', true);
