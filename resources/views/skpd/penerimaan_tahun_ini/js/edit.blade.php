@@ -82,6 +82,7 @@
             let nilai_tetap = rupiah(document.getElementById('nilai_tetap').value);
             let no_tetap = document.getElementById('no_tetap').value;
             let tgl_tetap = document.getElementById('tgl_tetap').value;
+            let jenis_pembayaran = document.getElementById('jenis_pembayaran').value;
             let tahun_input = tgl_terima.substr(0, 4);
             let pilihan = document.getElementById('pilihan').checked;
             let dengan_penetapan;
@@ -126,6 +127,11 @@
                 return;
             }
 
+            if (!jenis_pembayaran) {
+                alert('Jenis Pembayaran Tidak Boleh Kosong');
+                return;
+            }
+
             if (nilai == '0') {
                 alert('Nilai 0!Cek Lagi!!!');
                 return;
@@ -147,6 +153,7 @@
                 kd_sub_kegiatan,
                 keterangan,
                 nilai,
+                jenis_pembayaran
             };
 
             $('#simpan').prop('disabled', true);

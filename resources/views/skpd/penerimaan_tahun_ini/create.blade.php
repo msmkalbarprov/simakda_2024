@@ -135,6 +135,18 @@
                                 pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" style="text-align: right">
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <label for="jenis_pembayaran" class="col-md-2 col-form-label">Jenis Pembayaran</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style="width: 100%" id="jenis_pembayaran"
+                                name="jenis_pembayaran">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="BANK">BANK</option>
+                                <option value="TUNAI">TUNAI</option>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- Keterangan --}}
                     <div class="mb-3 row">
                         <label for="keterangan" class="col-md-2 col-form-label">Keterangan</label>

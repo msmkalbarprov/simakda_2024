@@ -380,24 +380,6 @@ class PenerimaanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek2 = DB::table($cek1, 'a')
-            //     ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            // $cek3 = DB::table('trhspj_terima_ppkd')
-            //     ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek4 = DB::table($cek3, 'a')
-            //     ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            // $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-            //     ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-            //     ->mergeBindings($cek4)
-            //     ->first();
 
             $tanggal = $data['tgl_terima'];
 
@@ -444,24 +426,26 @@ class PenerimaanController extends Controller
                 }
             }
 
-            DB::table('tr_terima')->insert([
-                'no_terima' => $data['no_terima'],
-                'tgl_terima' => $data['tgl_terima'],
-                'no_tetap' => $data['no_tetap'],
-                'tgl_tetap' => $data['tgl_tetap'],
-                'sts_tetap' => $data['dengan_penetapan'],
-                'kd_skpd' => $data['kd_skpd'],
-                'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
-                'kd_rek6' => $data['kode_akun'],
-                'kd_rek_lo' => $data['kode_rek'],
-                'nilai' => $data['nilai'],
-                'keterangan' => $data['keterangan'],
-                'jenis' => '1',
-                'sumber' => $data['kode_pengirim'],
-                'kanal' => '',
-                'user_name' => Auth::user()->nama,
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
+            DB::table('tr_terima')
+                ->insert([
+                    'no_terima' => $data['no_terima'],
+                    'tgl_terima' => $data['tgl_terima'],
+                    'no_tetap' => $data['no_tetap'],
+                    'tgl_tetap' => $data['tgl_tetap'],
+                    'sts_tetap' => $data['dengan_penetapan'],
+                    'kd_skpd' => $data['kd_skpd'],
+                    'kd_sub_kegiatan' => $data['kd_sub_kegiatan'],
+                    'kd_rek6' => $data['kode_akun'],
+                    'kd_rek_lo' => $data['kode_rek'],
+                    'nilai' => $data['nilai'],
+                    'keterangan' => $data['keterangan'],
+                    'jenis' => '1',
+                    'sumber' => $data['kode_pengirim'],
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
+                    'kanal' => '',
+                    'user_name' => Auth::user()->nama,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
 
             DB::commit();
             return response()->json([
@@ -550,24 +534,6 @@ class PenerimaanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         DB::beginTransaction();
         try {
-            // $cek1 = DB::table('tr_kunci')
-            //     ->selectRaw("max(tgl_kunci) as tgl_kasda,''tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek2 = DB::table($cek1, 'a')
-            //     ->selectRaw("CASE WHEN tgl2<=tgl_kasda THEN '1' ELSE '0' END as status_kasda,0 status_spj,*");
-
-            // $cek3 = DB::table('trhspj_terima_ppkd')
-            //     ->selectRaw("''tgl_kasda,max(tgl_terima) as tgl_spj,? as tgl2", [$data['tgl_terima']])
-            //     ->where(['kd_skpd' => $kd_skpd]);
-
-            // $cek4 = DB::table($cek3, 'a')
-            //     ->selectRaw("0 status_kasda,CASE WHEN tgl2<=tgl_spj THEN '1' ELSE '0' END as status_spj,*")->unionAll($cek2);
-
-            // $cek = DB::table(DB::raw("({$cek4->toSql()}) AS sub"))
-            //     ->selectRaw("sum(status_kasda) status_kasda, sum(status_spj) status_spj,max(tgl_kasda) tgl_kasda,max(tgl_spj) tgl_spj,max(tgl2) tgl2")
-            //     ->mergeBindings($cek4)
-            //     ->first();
 
             $tanggal = $data['tgl_terima'];
 
@@ -625,6 +591,7 @@ class PenerimaanController extends Controller
                 'kd_rek_lo' => $data['kode_rek'],
                 'nilai' => $data['nilai'],
                 'keterangan' => $data['keterangan'],
+                'jns_pembayaran' => $data['jenis_pembayaran'],
                 'jenis' => '1',
                 'sumber' => $data['kode_pengirim'],
                 'kanal' => ''
