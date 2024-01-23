@@ -68,7 +68,7 @@
                     </div>
                     {{-- GERAI --}}
                     <div class="mb-3 row">
-                        <label for="gerai" class="col-md-2 col-form-label">Gerai</label>
+                        <label for="gerai" class="col-md-2 col-form-label">Lokasi</label>
                         <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="gerai" name="gerai">
                                 <option value="all" selected>SEMUA</option>
