@@ -636,7 +636,8 @@ class PenyetoranController extends Controller
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                // ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                ->where('kd_skpd', $kd_skpd)
                 ->orderByRaw("kd_pengirim")
                 ->get(),
         ];
