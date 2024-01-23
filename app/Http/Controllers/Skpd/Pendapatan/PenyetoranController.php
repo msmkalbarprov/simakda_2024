@@ -634,7 +634,11 @@ class PenyetoranController extends Controller
                 ->selectRaw("a.kd_sub_kegiatan,a.nm_sub_kegiatan,a.kd_program,a.nm_program,a.total")
                 ->where(['kd_skpd' => $kd_skpd, 'jns_ang' => $status_anggaran, 'jns_sub_kegiatan' => '4'])
                 ->whereRaw("right(a.kd_sub_kegiatan,7)=?", ['00.0004'])
-                ->get()
+                ->get(),
+            'daftar_pengirim' => DB::table('ms_pengirim as a')
+                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                ->orderByRaw("kd_pengirim")
+                ->get(),
         ];
 
         return view('penatausahaan.penyetoran_tahun_ini.create')->with($data);
@@ -644,6 +648,7 @@ class PenyetoranController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $tgl_terima = $request->tgl_terima;
+        $gerai = $request->gerai;
 
         $no_sts1 = $request->no_sts;
 
@@ -663,6 +668,11 @@ class PenyetoranController extends Controller
             })
             ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,b.nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
             ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=?", [$kd_skpd, $kd_skpd, $tgl_terima])
+            ->where(function ($query) use ($gerai) {
+                if ($gerai != 'all') {
+                    $query->where('a.sumber', $gerai);
+                }
+            })
             ->whereNotIn('a.no_terima', $no_sts)
             ->orderBy('b.nm_pengirim')
             ->orderBy('a.tgl_terima')

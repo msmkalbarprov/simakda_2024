@@ -26,6 +26,21 @@
             load_terima(tgl_terima);
         });
 
+        $('#gerai').on('change', function() {
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+
+            if (!kd_sub_kegiatan) {
+                alert('Kegiatan harus dipilih!');
+                $('#tgl_terima').val(null);
+                return;
+            }
+
+            let tgl_terima = $('#tgl_terima').val();
+            $('#no_terima').empty();
+
+            load_terima(tgl_terima);
+        });
+
         $('#no_terima').on('select2:select', function() {
             let tgl_terima = $(this).find(':selected').data('tgl_terima');
             let kd_rek6 = $(this).find(':selected').data('kd_rek6');
@@ -263,6 +278,7 @@
             dataType: 'json',
             data: {
                 tgl_terima: tgl_terima,
+                gerai: $('#gerai').val(),
                 no_sts: detail_terima.length == 0 ? '0' : detail_terima
             },
             success: function(data) {

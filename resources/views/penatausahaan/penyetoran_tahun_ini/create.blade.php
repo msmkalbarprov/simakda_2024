@@ -66,6 +66,19 @@
                             <input class="form-control" type="date" id="tgl_terima" name="tgl_terima" required>
                         </div>
                     </div>
+                    {{-- GERAI --}}
+                    <div class="mb-3 row">
+                        <label for="gerai" class="col-md-2 col-form-label">Gerai</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style="width: 100%" id="gerai" name="gerai">
+                                <option value="all" selected>SEMUA</option>
+                                @foreach ($daftar_pengirim as $pengirim)
+                                    <option value="{{ $pengirim->kd_pengirim }}">{{ $pengirim->nm_pengirim }}</option>
+                                @endforeach
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- No Terima --}}
                     <div class="mb-3 row">
                         <label for="no_terima" class="col-md-2 col-form-label">No Terima</label>
