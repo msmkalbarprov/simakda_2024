@@ -41,6 +41,14 @@
             $('#kd_sub_kegiatan').val(kd_sub_kegiatan);
             $('#nama_akun').val(nm_rek);
             $('#kode_rek').val(kd_rek);
+
+            if (this.value.substr(0, 4) == '4101') {
+                $('#jenis_pembayaran').val('BANK').change();
+                $('#jenis_pembayaran').prop('disabled', true)
+            } else {
+                $('#jenis_pembayaran').val(null).change();
+                $('#jenis_pembayaran').prop('disabled', false)
+            }
         });
 
         $('#no_tetap').on('select2:select', function() {
