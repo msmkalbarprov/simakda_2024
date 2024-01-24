@@ -49,7 +49,13 @@ class PelimpahanController extends Controller
         $skpd = substr($kd_skpd, 0, 17);
 
         $data = [
-            'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
+            'tujuan_skpd' => DB::table('ms_skpd as a')
+                ->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))
+                ->selectRaw("(select ISNULL(tunai,0) from ms_up where kd_skpd=a.kd_skpd) as nilai")
+                ->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)
+                ->whereNotIn('kd_skpd', [$kd_skpd])
+                ->orderBy('kd_skpd')
+                ->get(),
             'tahun_anggaran' => tahun_anggaran(),
             'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),
             'rekening_tujuan' => DB::table('ms_rekening_bank_online as a')->select('a.rekening', 'a.nm_rekening', 'a.bank', 'a.keterangan', 'a.kd_skpd', 'a.jenis', DB::raw("(SELECT nama FROM ms_bank WHERE kode=a.bank) as nm_bank"))->where(['a.kd_skpd' => $kd_skpd])->orderBy('a.nm_rekening')->get(),
