@@ -1,12 +1,12 @@
 @extends('template.app')
-@section('title', 'Input Data Penyetoran Atas Penerimaan Tahun Ini | SIMAKDA')
+@section('title', 'Edit Data Penyetoran Atas Penerimaan Tahun Ini | SIMAKDA')
 @section('content')
     <div class="row">
-        {{-- Input form --}}
+        {{-- Edit form --}}
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input Data Penyetoran Atas Penerimaan Tahun Ini
+                    Edit Data Penyetoran Atas Penerimaan Tahun Ini
                 </div>
                 <div class="card-body">
                     @csrf
@@ -150,7 +150,7 @@
                                     $total += $detail->rupiah;
                                 @endphp
                                 <tr>
-                                    <td>{{ $detail->no_sts }}</td>
+                                    <td>{{ $detail->no_terima }}</td>
                                     <td>{{ $detail->kd_rek6 }}</td>
                                     <td>{{ $detail->nm_rek }}</td>
                                     <td>{{ rupiah($detail->rupiah) }}</td>
