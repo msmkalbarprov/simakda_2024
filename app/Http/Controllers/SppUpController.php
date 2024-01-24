@@ -57,7 +57,7 @@ class SppUpController extends Controller
             'data_spd' => DB::table('trhspd')->select('no_spd', 'tgl_spd')->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where(['status' => '1', 'jns_beban' => '5'])->get(),
             'data_bank' => DB::table('ms_bank')->select('kode', 'nama')->orderBy('kode')->get(),
             'data_rek' => DB::table('ms_rekening_bank_online')->select('rekening', 'nm_rekening', 'npwp')->where(['kd_skpd' => $kd_skpd])->orderBy('rekening')->get(),
-            'nilai_up' => DB::table('ms_up')->select('tunai as nilai')->where(['kd_skpd' => $kd_skpd])->first(),
+            'nilai_up' => DB::table('ms_up')->select('tunai_org as nilai')->where(['kd_skpd' => $kd_skpd])->first(),
             'no_up' => DB::table('trhspp')->select(DB::raw("ISNULL(MAX(urut),0)+1 as nilai"))->where(['kd_skpd' => $kd_skpd])->first(),
             'kd_skpd' => $kd_skpd,
             'data_tgl' => DB::table('trhspp')->select(DB::raw("MAX(tgl_spp) as tgl_spp"))->where(['kd_skpd' => $kd_skpd])->where(function ($query) {
