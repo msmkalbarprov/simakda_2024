@@ -12,8 +12,14 @@
         });
 
         $('#tgl_terima').on('change', function() {
+            let jenis_pembayaran = document.getElementById('jenis_pembayaran').value;
             let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
 
+            if (!jenis_pembayaran) {
+                alert('Jenis pembayaran harus dipilih!');
+                $('#tgl_terima').val(null);
+                return;
+            }
             if (!kd_sub_kegiatan) {
                 alert('Kegiatan harus dipilih!');
                 $('#tgl_terima').val(null);
@@ -24,6 +30,10 @@
             $('#no_terima').empty();
 
             load_terima(tgl_terima);
+        });
+
+        $('#jenis_pembayaran').on('change', function() {
+            $('#jenis_pembayaran').prop('disabled', true)
         });
 
         $('#gerai').on('change', function() {
@@ -279,6 +289,7 @@
             data: {
                 tgl_terima: tgl_terima,
                 gerai: $('#gerai').val(),
+                jenis_pembayaran: $('#jenis_pembayaran').val(),
                 no_sts: detail_terima.length == 0 ? '0' : detail_terima
             },
             success: function(data) {

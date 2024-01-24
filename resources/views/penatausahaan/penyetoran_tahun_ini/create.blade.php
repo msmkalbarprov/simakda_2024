@@ -59,6 +59,18 @@
                                 readonly>
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <label for="jenis_pembayaran" class="col-md-2 col-form-label">Jenis Pembayaran</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style="width: 100%" id="jenis_pembayaran"
+                                name="jenis_pembayaran">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="BANK">BANK</option>
+                                <option value="TUNAI">TUNAI</option>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     {{-- Tanggal Terima --}}
                     <div class="mb-3 row">
                         <label for="tgl_terima" class="col-md-2 col-form-label">Tanggal Terima</label>
@@ -86,18 +98,6 @@
                             <select class="form-control select2-multiple" style="width: 100%" id="no_terima"
                                 name="no_terima">
                                 <option value="" disabled selected>Silahkan Pilih</option>
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="jenis_pembayaran" class="col-md-2 col-form-label">Jenis Pembayaran</label>
-                        <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%" id="jenis_pembayaran"
-                                name="jenis_pembayaran">
-                                <option value="" disabled selected>Silahkan Pilih</option>
-                                <option value="BANK">BANK</option>
-                                <option value="TUNAI">TUNAI</option>
                                 </option>
                             </select>
                         </div>

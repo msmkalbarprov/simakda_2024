@@ -6,6 +6,8 @@
             }
         });
 
+        $('#jenis_pembayaran').prop('disabled', true);
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -57,6 +59,21 @@
         });
 
         $('#tgl_terima').on('change', function() {
+            let jenis_pembayaran = document.getElementById('jenis_pembayaran').value;
+
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+
+            if (!jenis_pembayaran) {
+                alert('Jenis pembayaran harus dipilih!');
+                $('#tgl_terima').val(null);
+                return;
+            }
+            if (!kd_sub_kegiatan) {
+                alert('Kegiatan harus dipilih!');
+                $('#tgl_terima').val(null);
+                return;
+            }
+
             let tgl_terima = this.value;
             $('#no_terima').empty();
 
@@ -65,7 +82,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    tgl_terima: tgl_terima
+                    tgl_terima: tgl_terima,
+                    jenis_pembayaran: jenis_pembayaran
                 },
                 success: function(data) {
                     $('#no_terima').empty();
