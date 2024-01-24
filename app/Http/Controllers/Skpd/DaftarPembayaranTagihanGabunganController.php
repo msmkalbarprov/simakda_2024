@@ -57,7 +57,12 @@ class DaftarPembayaranTagihanGabunganController extends Controller
 
         $data = [
             'kd_skpd' => $kd_skpd,
-            'sisa_kas' => sisa_bank_kkpd1()
+            'sisa_kas' => sisa_bank_kkpd1(),
+            'kkpd_gabungan' => DB::table('ms_up')
+                ->selectRaw("ISNULL(kkpd_org,0) as nilai")
+                ->where(['kd_skpd' => $kd_skpd])
+                ->first()
+                ->nilai
         ];
 
         return view('skpd.dpt_gabungan.create')->with($data);

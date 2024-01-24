@@ -110,6 +110,7 @@
 
         $('#simpan').on('click', function() {
             let total = rupiah(document.getElementById('total').value);
+            let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
 
             let kd_skpd = document.getElementById('kd_skpd').value;
 
@@ -172,6 +173,11 @@
             if (keterangan.length > 1000) {
                 alert('Keterangan hanya boleh diisi hingga 1000 karakter');
                 return;
+            }
+
+            if (total > sisa_kas) {
+                alert('Total DPT melebihi Sisa Kas!');
+                return
             }
 
             if (detail_dpt.length == 0) {
