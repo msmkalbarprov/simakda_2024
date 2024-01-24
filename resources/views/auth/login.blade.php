@@ -21,115 +21,109 @@
     <link href="{{ asset('template/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('template/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-<style>
-
-/* .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/bg.png')}}');
+    <style>
+        /* .authentication-bgs {
+    background-image: url('{{ asset('template/assets/images/bg.png') }}');
     background-size: 100% auto;
   } */
-/* For Desktop View */
-/* 1920 × 1080 */
+        /* For Desktop View */
+        /* 1920 × 1080 */
 
-@media screen and (min-width: 1500px) {
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/bg.png')}}');
-    background-size: 100% auto;
-  }
-}
+        @media screen and (min-width: 1500px) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/bg.png') }}');
+                background-size: 100% auto;
+            }
+        }
 
-@media screen and (min-width: 1422px) and (max-device-width: 1500px){
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/lebaran-bg14.png')}}');
-    background-size: 100% auto;
-  }
-}
+        @media screen and (min-width: 1422px) and (max-device-width: 1500px) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/lebaran-bg14.png') }}');
+                background-size: 100% auto;
+            }
+        }
 
-@media screen and (min-width: 1366px) and (max-device-width: 1422px){
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
-    background-size: 100% auto;
-  }
-}
+        @media screen and (min-width: 1366px) and (max-device-width: 1422px) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/lebaran-bg11.png') }}');
+                background-size: 100% auto;
+            }
+        }
 
-@media screen and (min-width: 1024px) and (max-device-width: 1366px) {
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For Tablet View */
-@media screen and (min-device-width: 768px)
-and (max-device-width: 1024px) {
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/lebaran-bg11.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For Mobile Portrait View */
-@media screen and (max-device-width: 480px)
-and (orientation: portrait) {
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For Mobile Landscape View */
-@media screen and (max-device-width: 640px)
-and (orientation: landscape) {
-  .authentication-bgs {
-    background-image: url('{{ asset('template/assets/images/bg.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For Mobile Phones Portrait or Landscape View */
-@media screen and (max-device-width: 640px) {
-  .authentication-bgs {
- 
-    background-image: url('{{ asset('template/assets/images/bg.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For iPhone 4 Portrait or Landscape View */
-@media screen and (min-device-width: 320px)
-and (-webkit-min-device-pixel-ratio: 2) {
-  .authentication-bgs {
-   
-    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For iPhone 5 Portrait or Landscape View */
-@media (device-height: 568px) and (device-width: 320px)
-and (-webkit-min-device-pixel-ratio: 2) {
-  .authentication-bgs {
-   
-    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
-    background-size: 100% auto;
-  }
-}
- 
-/* For iPhone 6 and 6 plus Portrait or Landscape View */
-@media (min-device-height: 667px) and (min-device-width: 375px)
-and (-webkit-min-device-pixel-ratio: 3) {
-  .authentication-bgs {
-   
-    background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png')}}');
-    background-size: 100% auto;
-  }
-}
+        @media screen and (min-width: 1024px) and (max-device-width: 1366px) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/lebaran-bg11.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For Tablet View */
+        @media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/lebaran-bg11.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For Mobile Portrait View */
+        @media screen and (max-device-width: 480px) and (orientation: portrait) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For Mobile Landscape View */
+        @media screen and (max-device-width: 640px) and (orientation: landscape) {
+            .authentication-bgs {
+                background-image: url('{{ asset('template/assets/images/bg.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For Mobile Phones Portrait or Landscape View */
+        @media screen and (max-device-width: 640px) {
+            .authentication-bgs {
+
+                background-image: url('{{ asset('template/assets/images/bg.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For iPhone 4 Portrait or Landscape View */
+        @media screen and (min-device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+            .authentication-bgs {
+
+                background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For iPhone 5 Portrait or Landscape View */
+        @media (device-height: 568px) and (device-width: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+            .authentication-bgs {
+
+                background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png') }}');
+                background-size: 100% auto;
+            }
+        }
+
+        /* For iPhone 6 and 6 plus Portrait or Landscape View */
+        @media (min-device-height: 667px) and (min-device-width: 375px) and (-webkit-min-device-pixel-ratio: 3) {
+            .authentication-bgs {
+
+                background-image: url('{{ asset('template/assets/images/lebaran-bgphone.png') }}');
+                background-size: 100% auto;
+            }
+        }
 
 
 
-    
-.authentication-bgs .auth-logo .logo {
-    margin: 0px auto; }
-</style>
+
+        .authentication-bgs .auth-logo .logo {
+            margin: 0px auto;
+        }
+    </style>
 </head>
 
 <body class="authentication-bgs">
@@ -139,8 +133,8 @@ and (-webkit-min-device-pixel-ratio: 3) {
                 <div class="col-lg-12">
                     <div class="text-center">
                         <a href="index.html" class="mb-5 d-block auth-logo">
-                            <img src="{{ asset('template/assets/images/logo-dark.png') }}" alt="" height="50"
-                                class="logo logo-dark">
+                            <img src="{{ asset('template/assets/images/logo-dark.png') }}" alt=""
+                                height="50" class="logo logo-dark">
                             <img src="{{ asset('template/assets/images/logo-light.png') }}" alt=""
                                 height="50" class="logo logo-light">
                         </a>
@@ -155,8 +149,8 @@ and (-webkit-min-device-pixel-ratio: 3) {
                                 <table width="100%" border="0">
                                     <tr>
                                         <td width="25%" align="center">
-                                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}" alt="" height="70"
-                                class="logo logo-dark">
+                                            <img src="{{ asset('template/assets/images/logo_pemda.png') }}"
+                                                alt="" height="70" class="logo logo-dark">
                                         </td>
                                         <td width="75%" align="left">
                                             <br>
@@ -165,11 +159,16 @@ and (-webkit-min-device-pixel-ratio: 3) {
                                         </td>
                                     </tr>
                                 </table>
-                                
+
                             </div>
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger" role="alert">
                                     {{ $errors->first() }}
+                                </div>
+                            @endif --}}
+                            @if (session('message'))
+                                <div class="alert alert-danger" role="alert">
+                                    {{ session('message') }}
                                 </div>
                             @endif
                             <div class="p-2 mt-4">
@@ -216,7 +215,9 @@ and (-webkit-min-device-pixel-ratio: 3) {
                                             class="btn btn-success w-sm waves-effect waves-light  -,k">
                                             {{ __('Login') }}
                                         </button>
-                                        <a href="https://simakda.kalbarprov.go.id/sp2d" class="btn btn-dark w-sm waves-effect waves-light  -,k" target="_blank">CEK SP2D</a>
+                                        <a href="https://simakda.kalbarprov.go.id/sp2d"
+                                            class="btn btn-dark w-sm waves-effect waves-light  -,k" target="_blank">CEK
+                                            SP2D</a>
 
                                         @if (Route::has('password.request'))
                                             <a class="btn btn-link" href="{{ route('password.request') }}">
@@ -260,7 +261,7 @@ and (-webkit-min-device-pixel-ratio: 3) {
 
                         </div>
                     </div>
-                    
+
                     {{-- <div class="mt-5 text-center">
                             <p>© <script>document.write(new Date().getFullYear())</script> SIMAKDA V.5 by PT. MSM Cabang Kalbar</p>
                         </div> --}}

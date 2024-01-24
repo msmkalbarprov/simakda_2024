@@ -59,10 +59,14 @@ class LoginController extends Controller
                 Auth::logout();
                 request()->session()->invalidate();
                 request()->session()->regenerateToken();
-                return back()->withErrors(['msg' => 'Akun Anda Tidak Aktif, Hubungi Perben!']);
+                // return back()->withErrors(['msg' => 'Akun Anda Tidak Aktif, Hubungi Perben!']);
+                return redirect()->route('login')
+                    ->with('message', 'Akun Anda Tidak Aktif, Hubungi Perben!');
             }
         } else {
-            return back()->withErrors(['msg' => 'Username atau Password Anda Salah!']);
+            // return back()->withErrors(['msg' => 'Username atau Password Anda Salah!']);
+            return redirect()->route('login')
+                ->with('message', 'Username atau Password Anda Salah!');
         }
     }
 
