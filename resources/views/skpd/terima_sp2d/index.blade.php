@@ -3,8 +3,13 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            @if (session()->has('message'))
+            {{-- @if (session()->has('message'))
                 <div class="alert {{ session('alert') ?? 'alert-info' }}">
+                    {{ session('message') }}
+                </div>
+            @endif --}}
+            @if (session('message'))
+                <div class="alert alert-danger" role="alert">
                     {{ session('message') }}
                 </div>
             @endif
