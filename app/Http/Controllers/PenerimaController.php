@@ -82,8 +82,11 @@ class PenerimaController extends Controller
                 ->count();
 
             if ($cek > 0) {
-                return redirect()->back()->withInput()
-                    ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                // return redirect()->back()->withInput()
+                //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                return redirect()->route('penerima.create')
+                    ->withInput()
+                    ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
             }
         } else {
             $cek = DB::table('ms_rekening_bank_online')
@@ -94,8 +97,11 @@ class PenerimaController extends Controller
                 ->count();
 
             if ($cek > 0) {
-                return redirect()->back()->withInput()
-                    ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                // return redirect()->back()->withInput()
+                //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                return redirect()->route('penerima.create')
+                    ->withInput()
+                    ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
             }
         }
 
@@ -209,8 +215,11 @@ class PenerimaController extends Controller
         $input = $request->validated();
 
         if ($input['no_rekening_validasi'] != $input['rekening_lama']) {
-            return redirect()->back()->withInput()
-                ->with(['message' => 'Rekening tidak boleh beda dengan yang tersimpan', 'alert' => 'alert-danger']);
+            // return redirect()->back()->withInput()
+            //     ->with(['message' => 'Rekening tidak boleh beda dengan yang tersimpan', 'alert' => 'alert-danger']);
+            return redirect()->route('penerima.edit_penerima')
+                ->withInput()
+                ->with(['message', 'Rekening tidak boleh beda dengan yang tersimpan', 'alert' => 'alert-danger']);
         }
         // dd($input);
         DB::table('ms_rekening_bank_online')

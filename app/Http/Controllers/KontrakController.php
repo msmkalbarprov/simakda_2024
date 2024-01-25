@@ -64,8 +64,11 @@ class KontrakController extends Controller
             ->count();
 
         if ($cek > 0) {
-            return redirect()->back()->withInput()
-                ->with(['message' => 'No Kontrak telah ada!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->withInput()
+            //     ->with(['message' => 'No Kontrak telah ada!', 'alert' => 'alert-danger']);
+            return redirect()->route('kontrak.create')
+                ->withInput()
+                ->with(['message', 'No Kontrak telah ada!', 'alert' => 'alert-danger']);
         }
 
         DB::table('ms_kontrak')

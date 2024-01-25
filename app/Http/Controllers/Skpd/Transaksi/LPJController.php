@@ -62,7 +62,9 @@ class LPJController extends Controller
         $total_skpd = total_skpd();
 
         if ($total_skpd > 1) {
-            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+            return redirect()->route('lpj.skpd_tanpa_unit.index')
+                ->with(['message', 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
         }
 
         if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
@@ -814,7 +816,9 @@ class LPJController extends Controller
         $total_skpd = total_skpd();
 
         if ($total_skpd == 1) {
-            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+            return redirect()->route('lpj.skpd_dan_unit.index')
+                ->with(['message', 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
         }
 
         $data = [
@@ -1328,7 +1332,9 @@ class LPJController extends Controller
         $total_skpd = total_skpd();
 
         if ($total_skpd == 1) {
-            return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
+            return redirect()->route('lpj.skpd_atau_unit.index')
+                ->with(['message', 'Menu Hanya Untuk SKPD/Unit!', 'alert' => 'alert-danger']);
         }
 
         $data = [
@@ -1944,7 +1950,9 @@ class LPJController extends Controller
 
         $skpd = Auth::user()->kd_skpd;
         if (substr($skpd, 18, 4) != '0000') {
-            return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh melakukan validasi LPJ!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'Hanya SKPD yang boleh melakukan validasi LPJ!', 'alert' => 'alert-danger']);
+            return redirect()->route('lpj.validasi.index')
+                ->with(['message', 'Hanya SKPD yang boleh melakukan validasi LPJ!', 'alert' => 'alert-danger']);
         }
 
         $data = [

@@ -67,7 +67,9 @@ class RoleController extends Controller
             return redirect()->route('peran.index');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withInput();
+            // return redirect()->back()->withInput();
+            return redirect()->route('peran.create')
+                ->withInput();
         }
     }
 
@@ -144,7 +146,9 @@ class RoleController extends Controller
             return redirect()->route('peran.index');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withInput();
+            // return redirect()->back()->withInput();
+            return redirect()->route('peran.edit')
+                ->withInput();
         }
     }
 

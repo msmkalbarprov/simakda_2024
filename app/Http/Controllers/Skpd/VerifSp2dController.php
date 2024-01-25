@@ -207,7 +207,9 @@ class VerifSp2dController extends Controller
             ->first();
 
         if (empty($status_anggaran)) {
-            return redirect()->back()->with(['message' => 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
+            return redirect()->route('verif_sp2d.index')
+                ->with(['message', 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
         }
 
         if ($data_sp2d->jns_spp == '2') {

@@ -58,7 +58,9 @@ class TransaksiPemindahbukuanController extends Controller
         $jns_ang = status_anggaran();
 
         if ($jns_ang == '0') {
-            return redirect()->back()->with(['message' => 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
+            // return redirect()->back()->with(['message' => 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
+            return redirect()->route('transaksi_pemindahbukuan.index')
+                ->with(['message', 'DPA Belum Disahkan!', 'alert' => 'alert-danger']);
         }
 
         $data = [
