@@ -210,7 +210,7 @@
             <td style="height: 20px"></td>
         </tr>
         <tr>
-            <td colspan="2">* Posisi Pagu {{ $nama_anggaran->nama }} hanya GAJI</td>
+            <td colspan="2">* Posisi Pagu {{ $nama_anggaran->nama }}</td>
         </tr>
         <tr>
             <td colspan="2">
