@@ -119,7 +119,7 @@ class PelimpahanController extends Controller
 
         $data = [
             'data_up' => $data_up,
-            'skpd' => DB::table('ms_skpd')->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))->where(['kd_skpd' => $data_up->kd_skpd])->first(),
+            'skpd_asli' => DB::table('ms_skpd')->select('nm_skpd', DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"))->where(['kd_skpd' => $data_up->kd_skpd])->first(),
             'tujuan_skpd' => DB::table('ms_skpd')->select(DB::raw("SUBSTRING(kd_skpd,1,4)+SUBSTRING(kd_skpd,15,8) as kd_ringkas"), 'kd_skpd', 'nm_skpd', DB::raw("'$kd_skpd' as skpd"))->whereRaw("LEFT(kd_skpd,17) = ?", $skpd)->whereNotIn('kd_skpd', [$kd_skpd])->orderBy('kd_skpd')->get(),
             'tahun_anggaran' => tahun_anggaran(),
             'rekening_bendahara' => DB::table('ms_skpd')->select('rekening')->where(['kd_skpd' => $kd_skpd])->orderBy('kd_skpd')->first(),

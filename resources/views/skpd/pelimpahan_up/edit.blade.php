@@ -26,12 +26,12 @@
                             <input class="form-control" type="text" id="skpd_sumber" name="skpd_sumber" hidden readonly
                                 value="{{ $data_up->kd_skpd_sumber }}">
                             <input class="form-control" type="text" id="skpd_ringkas" name="skpd_ringkas" hidden readonly
-                                value="{{ $skpd->kd_ringkas }}">
+                                value="{{ $skpd_asli->kd_ringkas }}">
                         </div>
                         <label for="nm_skpd" class="col-md-2 col-form-label">Nama SKPD</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nm_skpd" name="nm_skpd" required readonly
-                                value="{{ $skpd->nm_skpd }}">
+                                value="{{ $skpd_asli->nm_skpd }}">
                             <input class="form-control" type="text" id="tahun_anggaran" name="tahun_anggaran" required
                                 readonly hidden value="{{ tahun_anggaran() }}">
                         </div>
