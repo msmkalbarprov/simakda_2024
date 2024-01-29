@@ -1532,7 +1532,7 @@
                     $('#rekening_tampungan').empty();
                     $.each(data, function(index, data) {
                         $('#rekening_tampungan').append(
-                            `<option value="${data.kd_rek6}">${data.kd_rek6}</option>`
+                            `<option value="${data.kd_rek6}">${data.kd_rek6} - ${data.nm_rek6}</option>`
                         );
                     })
                 }
