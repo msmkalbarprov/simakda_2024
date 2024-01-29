@@ -293,7 +293,8 @@ class PenetapanController extends Controller
                         'jns_pembayaran' => $data['jenis_pembayaran'],
                         'jenis' => '1',
                         'sumber' => $data['kode_pengirim'],
-                        'kanal' => ''
+                        'kanal' => '',
+                        'user_name' => Auth::user()->nama
                     ]);
             } else {
                 DB::table('tr_tetap')
@@ -307,7 +308,8 @@ class PenetapanController extends Controller
                         'nilai' => $data['nilai'],
                         'keterangan' => $data['keterangan'],
                         'jns_pembayaran' => $data['jenis_pembayaran'],
-                        'kanal' => ''
+                        'kanal' => '',
+                        'user_name' => Auth::user()->nama
                     ]);
 
                 DB::table('tr_terima')
@@ -326,7 +328,8 @@ class PenetapanController extends Controller
                         'jns_pembayaran' => $data['jenis_pembayaran'],
                         'jenis' => '1',
                         'sumber' => $data['kode_pengirim'],
-                        'kanal' => ''
+                        'kanal' => '',
+                        'user_name' => Auth::user()->nama
                     ]);
             }
 
