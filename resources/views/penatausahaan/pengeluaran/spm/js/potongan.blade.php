@@ -1254,13 +1254,12 @@
             let id_billing = document.getElementById('id_billing').value;
             let rekening_tampungan = $("#rekening_tampungan").select2("val")
 
-            return
             if (!id_billing) {
                 alert('ID Billing wajib diisi!');
                 return;
             }
 
-            if (!rekening_tampungan) {
+            if (rekening_tampungan.length == 0) {
                 alert('Rekening tampungan wajib diisi!');
                 return;
             }
