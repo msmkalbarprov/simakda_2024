@@ -92,6 +92,68 @@
                 }
             ]
         });
+
+        let tabel_pot_tampungan = $('#tabel_pot_tampungan').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            ajax: {
+                "url": "{{ route('spm.load_rincian_tampungan') }}",
+                "type": "POST",
+                "data": {
+                    "no_spm": document.getElementById('no_spm_pajak').value
+                },
+                "dataSrc": function(data) {
+                    recordsTotal = data.data;
+                    return recordsTotal;
+                },
+            },
+            columns: [{
+                    data: 'kd_trans',
+                    name: 'kd_trans'
+                },
+                {
+                    data: 'kd_rek6',
+                    name: 'kd_rek6'
+                },
+                {
+                    data: 'map_pot',
+                    name: 'map_pot',
+                    visible: false
+                },
+                {
+                    data: 'nm_rek6',
+                    name: 'nm_rek6'
+                },
+                {
+                    data: 'idBilling',
+                    name: 'idBilling'
+                },
+                {
+                    data: null,
+                    name: 'nilai',
+                    className: 'text-right',
+                    render: function(data, type, row, meta) {
+                        return new Intl.NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(data.nilai)
+                    }
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                }
+            ],
+            drawCallback: function(select) {
+                let total = recordsTotal.reduce((previousValue,
+                    currentValue) => (previousValue += parseFloat(currentValue.nilai)), 0);
+                $('#total_pot_tampungan').val(new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2
+                }).format(total));
+            }
+        });
+
         let tabel_pajak = $('#tabel_pajak').DataTable({
             responsive: true,
             serverSide: true,
@@ -140,6 +202,7 @@
                 }
             ]
         });
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -622,14 +685,15 @@
         $('#rekening_potongan').on('select2:select', function() {
             let rekening_potongan = this.value;
 
-            if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
-                rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
-                rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
-                $('#id_billing').prop('disabled', false);
-            } else {
-                $('#id_billing').prop('disabled', true);
-                $('#id_billing').val(null);
-            }
+            // if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
+            //     rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
+            //     rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
+            //     $('#id_billing').prop('disabled', false);
+            // } else {
+            //     $('#id_billing').prop('disabled', true);
+            //     $('#id_billing').val(null);
+            // }
+
             let nama = $(this).find(':selected').data('nama');
             let map_pot = $(this).find(':selected').data('map_pot');
             let kd_map = $(this).find(':selected').data('kd_map');
@@ -647,102 +711,178 @@
             let rekening_transaksi = document.getElementById('rekening_transaksi').value;
             let rekening_potongan = document.getElementById('rekening_potongan').value;
             let nm_rek_pot = document.getElementById('nm_rek_pot').value.trim();
-            let id_billing = document.getElementById('id_billing').value;
+            // let id_billing = document.getElementById('id_billing').value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             let map_pot = document.getElementById('map_pot').value;
             let kd_map = document.getElementById('kd_map').value;
             let nilai_pot = angka(document.getElementById('nilai_pot').value);
             let total_pot = rupiah(document.getElementById('total_pot').value);
+
             if (!no_spm) {
                 alert("Isi No SPM Terlebih Dahulu...!!!");
                 return;
             }
+
             if (!rekening_transaksi) {
                 alert("Isi Rekening Transaksi Terlebih Dahulu...!!!");
                 return;
             }
+
             if (!rekening_potongan) {
                 alert("Isi Rekening Pajak Terlebih Dahulu...!!!");
                 return;
             }
+
             if (nilai_pot == 0) {
                 alert("Isi Nilai Terlebih Dahulu...!!!");
                 return;
             }
 
-            if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
-                rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
-                rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
-                if (!id_billing) {
-                    alert('ID Billing wajib diisi!');
-                    return;
-                }
-            }
+            // if (rekening_potongan == '210105010001' || rekening_potongan == '210105020001' ||
+            //     rekening_potongan == '210105030001' || rekening_potongan == '210109010001' ||
+            //     rekening_potongan == '210105040001' || rekening_potongan == '210106010001') {
+            //     if (!id_billing) {
+            //         alert('ID Billing wajib diisi!');
+            //         return;
+            //     }
+            // }
+
             let tampungan = tabel_pot.rows().data().toArray().map((value) => {
                 let result = {
                     map_pot: value.map_pot,
                 };
                 return result;
             });
+
             let kondisi = tampungan.map(function(data) {
-                if (data.map_pot == map_pot) {
+                if (data.map_pot.trim() == map_pot.trim()) {
                     return '2';
                 } else {
                     return '1';
                 }
             });
+
             if (kondisi.includes("2")) {
                 alert('Rekening: ' + rekening_potongan + ' Nama Rekening: ' + nm_rek_pot +
                     ' telah ada di list potongan' + '!');
                 return;
             }
-            if (!id_billing) {
-                tambah_list_potongan(rekening_transaksi, rekening_potongan, map_pot, nm_rek_pot,
-                    id_billing, nilai_pot, no_spm, kd_skpd, total_pot);
-            } else {
-                $('#simpan_potongan').prop('disabled', true);
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('spm.isi_list_pot') }}",
-                    dataType: 'json',
-                    data: {
-                        id_billing: id_billing
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        let data1 = $.parseJSON(data);
-                        if (data1.status == 'true' || data1.status == true) {
-                            if (data1.data[0].response_code == '00') {
-                                alert(data1.data[0].message);
-                                if (nilai_pot != data1.data[0].data.jumlahBayar) {
-                                    alert(
-                                        'Nilai inputan tidak sesuai dengan nominal di Billing'
-                                    );
-                                    return;
-                                }
 
-                                if (kd_map != data1.data[0].data.kodeMap) {
-                                    alert(
-                                        'Rekening Potongan tidak sesuai dengan kode Rekening di Billing!'
-                                    );
-                                    return;
-                                }
+            let tampungan1 = tabel_pot_tampungan.rows().data().toArray().map((value) => {
+                let result = {
+                    map_pot: value.map_pot,
+                };
+                return result;
+            });
 
-                                tambah_list_potongan(rekening_transaksi, rekening_potongan,
-                                    map_pot, nm_rek_pot, data1.data[0].data.idBilling,
-                                    nilai_pot, no_spm,
-                                    kd_skpd, total_pot);
-                            } else {
-                                alert(data1.data[0].message);
-                                $('#simpan_potongan').prop('disabled', false);
-                            }
-                        } else {
-                            alert(data1.message);
-                            $('#simpan_potongan').prop('disabled', false);
-                        }
-                    }
-                })
+            let kondisi1 = tampungan1.map(function(data) {
+                if (data.map_pot.trim() == map_pot.trim()) {
+                    return '2';
+                } else {
+                    return '1';
+                }
+            });
+
+            if (kondisi1.includes("2")) {
+                alert('Rekening: ' + rekening_potongan + ' Nama Rekening: ' + nm_rek_pot +
+                    ' telah ada di draft potongan' + '!');
+                return;
             }
+
+            // if (!id_billing) {
+            //     tambah_list_potongan(rekening_transaksi, rekening_potongan, map_pot, nm_rek_pot,
+            //         id_billing, nilai_pot, no_spm, kd_skpd, total_pot);
+            // } else {
+            //     $('#simpan_potongan').prop('disabled', true);
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "{{ route('spm.isi_list_pot') }}",
+            //         dataType: 'json',
+            //         data: {
+            //             id_billing: id_billing
+            //         },
+            //         dataType: "json",
+            //         success: function(data) {
+            //             let data1 = $.parseJSON(data);
+            //             if (data1.status == 'true' || data1.status == true) {
+            //                 if (data1.data[0].response_code == '00') {
+            //                     alert(data1.data[0].message);
+            //                     console.log(data1.data[0].data)
+            //                     console.log(data1.data[0].data.kodeMap);
+            //                     console.log(kd_map);
+            //                     return;
+            //                     if (nilai_pot != data1.data[0].data.jumlahBayar) {
+            //                         alert(
+            //                             'Nilai inputan tidak sesuai dengan nominal di Billing'
+            //                         );
+            //                         return;
+            //                     }
+
+            //                     if (kd_map != data1.data[0].data.kodeMap) {
+            //                         alert(
+            //                             'Rekening Potongan tidak sesuai dengan kode Rekening di Billing!'
+            //                         );
+            //                         return;
+            //                     }
+
+            //                     tambah_list_potongan(rekening_transaksi, rekening_potongan,
+            //                         map_pot, nm_rek_pot, data1.data[0].data.idBilling,
+            //                         nilai_pot, no_spm,
+            //                         kd_skpd, total_pot);
+            //                 } else {
+            //                     alert(data1.data[0].message);
+            //                     $('#simpan_potongan').prop('disabled', false);
+            //                 }
+            //             } else {
+            //                 alert(data1.message);
+            //                 $('#simpan_potongan').prop('disabled', false);
+            //             }
+            //         }
+            //     })
+            // }
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.isi_tampungan') }}",
+                dataType: 'json',
+                data: {
+                    rekening_transaksi: rekening_transaksi,
+                    rekening_potongan: rekening_potongan,
+                    map_pot: map_pot,
+                    nm_rek_pot: nm_rek_pot,
+                    nilai_pot: nilai_pot,
+                    no_spm: no_spm,
+                    kd_skpd: kd_skpd,
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $('#simpan_potongan').prop('disabled', true);
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(data) {
+                    if (data.success) {
+                        Swal.fire(
+                            'Saved!',
+                            data.message,
+                            data.icon
+                        )
+                    } else {
+                        Swal.fire(
+                            data.icon.toUpperCase(),
+                            data.message,
+                            data.icon
+                        )
+                    }
+
+                    tabel_pot.ajax.reload();
+                    tabel_pot_tampungan.ajax.reload();
+                    tabel_pajak.ajax.reload();
+                },
+                complete: function(data) {
+                    $('#simpan_potongan').prop('disabled', false);
+                    $("#overlay").fadeOut(100);
+                }
+            })
         });
 
         $('#create_billing').on('click', function() {
@@ -1099,6 +1239,109 @@
             })
         });
 
+        $('#input_billing').on('click', function() {
+            load_rekening()
+            $('#modal_billing').modal('show');
+        });
+
+        $('#simpan_billing').on('click', function() {
+            let no_spm = document.getElementById('no_spm_potongan').value;
+            let id_billing = document.getElementById('id_billing').value;
+            let rekening_tampungan = $("#rekening_tampungan").select2("val")
+
+            return
+            if (!id_billing) {
+                alert('ID Billing wajib diisi!');
+                return;
+            }
+
+            if (!rekening_tampungan) {
+                alert('Rekening tampungan wajib diisi!');
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.simpan_billing') }}",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                    id_billing: id_billing,
+                    rekening_tampungan: rekening_tampungan,
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(data) {
+                    if (data.success) {
+                        Swal.fire(
+                            'Saved!',
+                            data.message,
+                            data.icon
+                        )
+                    } else {
+                        Swal.fire(
+                            data.icon.toUpperCase(),
+                            data.message,
+                            data.icon
+                        )
+                    }
+
+                    tabel_pot.ajax.reload();
+                    tabel_pot_tampungan.ajax.reload();
+                    tabel_pajak.ajax.reload();
+                    $('#modal_billing').modal('hide');
+                    $('#id_billing').val(null);
+                    $('#rekening_tampungan').val(null).change()
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            })
+        });
+
+        $('#simpan_tampungan').on('click', function() {
+            let no_spm = document.getElementById('no_spm_potongan').value;
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.simpan_tampungan') }}",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $('#simpan_tampungan').prop('disabled', true)
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(data) {
+                    if (data.success) {
+                        Swal.fire(
+                            'Saved!',
+                            data.message,
+                            data.icon
+                        )
+                    } else {
+                        Swal.fire(
+                            data.icon.toUpperCase(),
+                            data.message,
+                            data.icon
+                        )
+                    }
+
+                    tabel_pot.ajax.reload();
+                    tabel_pot_tampungan.ajax.reload();
+                    tabel_pajak.ajax.reload();
+                },
+                complete: function(data) {
+                    $('#simpan_tampungan').prop('disabled', false)
+                    $("#overlay").fadeOut(100);
+                }
+            })
+        });
+
         function rupiah(n) {
             let n1 = n.split('.').join('');
             let rupiah = n1.split(',').join('.');
@@ -1267,6 +1510,25 @@
             })
         }
 
+        function load_rekening() {
+            $.ajax({
+                url: "{{ route('spm.rekening_tampungan') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    no_spm: document.getElementById('no_spm_pajak').value
+                },
+                success: function(data) {
+                    $('#rekening_tampungan').empty();
+                    $.each(data, function(index, data) {
+                        $('#rekening_tampungan').append(
+                            `<option value="${data.kd_rek6}">${data.kd_rek6}</option>`
+                        );
+                    })
+                }
+            })
+        }
+
         // function load_rincian(no_spm) {
         //     $.ajax({
         //         type: "POST",
@@ -1378,6 +1640,7 @@
                 data: {
                     no_spm: no_spm,
                     kd_rek6: kd_rek6,
+                    idBilling: idBilling,
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1408,6 +1671,60 @@
             // $('#total_pot').val(new Intl.NumberFormat('id-ID', {
             //     minimumFractionDigits: 2
             // }).format(total - nilai));
+        } else {
+            return;
+        }
+    }
+
+    function hapusTampungan(no_spm, kd_rek6, nm_rek6, idBilling, nilai, status_setor) {
+        if (status_setor == '1') {
+            alert(nm_rek6 + ' Telah Disetor!');
+            return;
+        }
+
+        let hapus = confirm('Yakin Ingin Menghapus Data, Rekening : ' + kd_rek6 + '  Nilai : Rp. ' + nilai +
+            ' ?');
+
+        let tabel_pot_tampungan = $('#tabel_pot_tampungan').DataTable();
+        let tabel_pot = $('#tabel_pot').DataTable();
+        let tabel_pajak = $('#tabel_pajak').DataTable();
+
+        if (hapus == true) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('spm.hapus_tampungan') }}",
+                dataType: 'json',
+                data: {
+                    no_spm: no_spm,
+                    kd_rek6: kd_rek6,
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $("#overlay").fadeIn(100);
+                },
+                success: function(data) {
+                    if (data.success) {
+                        Swal.fire(
+                            'Saved!',
+                            data.message,
+                            data.icon
+                        )
+                    } else {
+                        Swal.fire(
+                            data.icon.toUpperCase(),
+                            data.message,
+                            data.icon
+                        )
+                    }
+
+                    tabel_pot.ajax.reload();
+                    tabel_pot_tampungan.ajax.reload();
+                    tabel_pajak.ajax.reload();
+                },
+                complete: function(data) {
+                    $("#overlay").fadeOut(100);
+                }
+            })
         } else {
             return;
         }

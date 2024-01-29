@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     {{-- ID BILLING --}}
-                    <div class="mb-3 row">
+                    {{-- <div class="mb-3 row">
                         <label for="id_billing" class="col-md-2 col-form-label">ID Billing</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control @error('id_billing') is-invalid @enderror"
@@ -107,20 +107,22 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
+                    </div> --}}
                     {{-- Nilai --}}
                     <div class="mb-3 row">
                         <label for="nilai_pot" class="col-md-2 col-form-label">Nilai</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control @error('nilai_pot') is-invalid @enderror"
-                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"
-                                data-type="currency" style="text-align: right">
+                                id="nilai_pot" name="nilai_pot" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"
+                                style="text-align: right">
                             @error('nilai')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div style="text-align:center">
+                        <button id="simpan_tampungan" {{ $spm->is_verified > 0 ? 'hidden' : '' }}
+                            class="btn btn-success btn-md">Simpan Draft</button>
                         <button id="simpan_potongan" {{ $spm->is_verified > 0 ? 'hidden' : '' }}
                             class="btn btn-primary btn-md">Tambah Potongan</button>
                         <a href="{{ route('spm.index') }}" class="btn btn-warning btn-md">Kembali</a>
@@ -464,49 +466,85 @@
 
         {{-- List Potongan --}}
         <div class="col-12">
-            <div class="card" id="list_potongan">
-                <div class="card-header">
-                    List Potongan
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <table class="table" id="tabel_pot" style="width: 100%">
-                        <thead>
-                            <tr>
-                                <th>Rek. Trans</th>
-                                <th>Rekening</th>
-                                <th>Map Pot</th>
-                                <th>Nama Rekening</th>
-                                <th>ID Billing</th>
-                                <th style="text-align: center">Nilai</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- @foreach ($rincian_spm as $spm)
-                                <tr>
-                                    <td>{{ $spm->kd_trans }}</td>
-                                    <td>{{ $spm->kd_rek6 }}</td>
-                                    <td>{{ $spm->map_pot }}</td>
-                                    <td>{{ $spm->nm_rek6 }}</td>
-                                    <td>{{ $spm->idBilling }}</td>
-                                    <td>{{ rupiah($spm->nilai) }}</td>
-                                    <td>
-                                        <a href="javascript:void(0);"
-                                            onclick="hapusPot('{{ $spm->kd_trans }}','{{ $spm->kd_rek6 }}','{{ $spm->map_pot }}','{{ $spm->nm_rek6 }}','{{ $spm->idBilling }}','{{ $spm->nilai }}','{{ $spm->no_spm }}')"
-                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                        <button type="button" onclick="cetakPot('{{ $spm->idBilling }}')"
-                                            class="btn btn-success btn-sm"><i class="uil-print"></i></button>
-                                    </td>
-                                </tr>
-                            @endforeach --}}
-                        </tbody>
-                    </table>
-                    <div class="mb-2 mt-2 row">
-                        <label for="total" class="col-md-8 col-form-label" style="text-align: right">Total</label>
-                        <div class="col-md-4">
-                            <input type="text" style="text-align: right" readonly
-                                class="form-control @error('total_pot') is-invalid @enderror"
-                                value="{{ rupiah($total_pajak->nilai) }}" id="total_pot" name="total_pot">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                type="button" role="tab" aria-controls="home" aria-selected="true">List
+                                Potongan</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                                type="button" role="tab" aria-controls="profile" aria-selected="false">Draft
+                                Potongan
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                            aria-labelledby="home-tab">
+                            <div class="card">
+                                <div class="card-header">
+
+                                </div>
+                                <div class="card-body">
+                                    <table class="table" id="tabel_pot" style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Rek. Trans</th>
+                                                <th>Rekening</th>
+                                                <th>Map Pot</th>
+                                                <th>Nama Rekening</th>
+                                                <th>ID Billing</th>
+                                                <th style="text-align: center">Nilai</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div class="mb-2 mt-2 row">
+                                        <label for="total" class="col-md-8 col-form-label"
+                                            style="text-align: right">Total</label>
+                                        <div class="col-md-4">
+                                            <input type="text" style="text-align: right" readonly
+                                                class="form-control @error('total_pot') is-invalid @enderror"
+                                                value="{{ rupiah($total_pajak->nilai) }}" id="total_pot"
+                                                name="total_pot">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button id="input_billing" class="btn btn-primary btn-md">Input Billing</button>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table" id="tabel_pot_tampungan" style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Rek. Trans</th>
+                                                <th>Rekening</th>
+                                                <th>Map Pot</th>
+                                                <th>Nama Rekening</th>
+                                                <th>ID Billing</th>
+                                                <th style="text-align: center">Nilai</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div class="mb-2 mt-2 row">
+                                        <label for="total" class="col-md-8 col-form-label"
+                                            style="text-align: right">Total</label>
+                                        <div class="col-md-4">
+                                            <input type="text" style="text-align: right" readonly
+                                                class="form-control @error('total_pot_tampungan') is-invalid @enderror"
+                                                id="total_pot_tampungan" name="total_pot_tampungan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -532,23 +570,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($rincian_spm as $spm)
-                                <tr>
-                                    <td>{{ $spm->no_spm }}</td>
-                                    <td>{{ $spm->kd_rek6 }}</td>
-                                    <td>{{ $spm->nm_rek6 }}</td>
-                                    <td>{{ $spm->idBilling }}</td>
-                                    <td>{{ rupiah($spm->nilai) }}</td>
-                                    <td>
-                                        <a href="javascript:void(0);"
-                                            onclick="hapusPajak('{{ $spm->no_spm }}','{{ $spm->kd_rek6 }}','{{ $spm->nm_rek6 }}','{{ $spm->idBilling }}','{{ $spm->nilai }}')"
-                                            class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                        <button type="button"
-                                            onclick="cetakPajak('{{ $spm->no_spm }}', '{{ $spm->kd_rek6 }}', '{{ $spm->nm_rek6 }}','{{ $spm->nilai }}')"
-                                            class="btn btn-success btn-sm"><i class="uil-print"></i></button>
-                                    </td>
-                                </tr>
-                            @endforeach --}}
                         </tbody>
                     </table>
                     <div class="mb-2 mt-2 row">
@@ -685,6 +706,42 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-md btn-warning" data-bs-dismiss="modal"
                                 style="float: right">Kembali</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_billing" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Input Billing</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- ID Billing -->
+                    <div class="mb-3 row">
+                        <label for="no_spm_cek" class="col-md-2 col-form-label">Id Billing</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="id_billing" name="id_billing">
+                        </div>
+                    </div>
+                    {{-- Rekening --}}
+                    <div class="mb-3 row">
+                        <label for="rekening_tampungan" class="col-md-2 col-form-label">Rekening</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple" style="width: 100%;" id="rekening_tampungan"
+                                name="rekening_tampungan[]" data-placeholder="Silahkan Pilih" multiple="multiple">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-12 text-center">
+                            <button id="simpan_billing" class="btn btn-md btn-primary">Simpan</button>
+                            <button type="button" class="btn btn-md btn-secondary"
+                                data-bs-dismiss="modal">Kembali</button>
                         </div>
                     </div>
                 </div>

@@ -362,19 +362,178 @@ class SpmController extends Controller
             } else {
                 $btn = '<a href="javascript:void(0);" onclick="hapusPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\',\'' . $row->status_setor . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
             }
-            $btn .= '<button type="button" onclick="cetakPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nilai . '\',\'' . $row->idBilling . '\')" class="btn btn-success btn-sm" style="margin-left:4px"><i class="uil-print"></i></button>';
+            // $btn .= '<button type="button" onclick="cetakPajak(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->nilai . '\',\'' . $row->idBilling . '\')" class="btn btn-success btn-sm" style="margin-left:4px"><i class="uil-print"></i></button>';
             return $btn;
         })->rawColumns(['aksi'])->make(true);
     }
 
-    public function hapusRincianPajak(Request $request)
+    public function loadRincianTampungan(Request $request)
+    {
+        $kd_skpd = Auth::user()->kd_skpd;
+        $no_spm = $request->no_spm;
+
+        $data = DB::table('trspmpot_tampungan')
+            ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+            ->orderBy('kd_rek6')
+            ->get();
+
+        $spm = DB::table('trhspm as a')
+            ->selectRaw("(SELECT isnull(is_verified, '0') FROM trhsp2d c WHERE a.no_spm=c.no_spm and a.kd_skpd=c.kd_skpd) as is_verified")
+            ->where(['a.no_spm' => $no_spm, 'a.kd_skpd' => $kd_skpd])
+            ->first();
+
+        return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) use ($spm) {
+            if ($spm->is_verified > '0' || $row->idBilling != '') {
+                $btn = '';
+            } else {
+                $btn = '<a href="javascript:void(0);" onclick="hapusTampungan(\'' . $row->no_spm . '\',\'' . $row->kd_rek6 . '\',\'' . $row->nm_rek6 . '\',\'' . $row->idBilling . '\',\'' . $row->nilai . '\',\'' . $row->status_setor . '\')" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>';
+            }
+            return $btn;
+        })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function isiTampungan(Request $request)
+    {
+        $rekening_transaksi =  $request->rekening_transaksi;
+        $rekening_potongan =  $request->rekening_potongan;
+        $map_pot =  $request->map_pot;
+        $nm_rek_pot =  $request->nm_rek_pot;
+        $nilai_pot =  $request->nilai_pot;
+        $no_spm =  $request->no_spm;
+        $kd_skpd =  $request->kd_skpd;
+
+        DB::beginTransaction();
+        try {
+            $cek = DB::table('trspmpot_tampungan')
+                ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $rekening_potongan, 'kd_trans' => $rekening_transaksi])
+                ->count();
+
+            if ($cek > 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Rekening Potongan telah ada di list tampungan!',
+                    'icon' => 'info'
+                ]);
+            }
+
+            DB::table('trspmpot_tampungan')
+                ->insert([
+                    'no_spm' => $no_spm,
+                    'kd_rek6' => $rekening_potongan,
+                    'nm_rek6' => $nm_rek_pot,
+                    'nilai' => $nilai_pot,
+                    'kd_skpd' => $kd_skpd,
+                    'pot' => '',
+                    'kd_trans' => $rekening_transaksi,
+                    'map_pot' => $map_pot,
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil ditambahkan!',
+                'icon' => 'success'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Data gagal ditambahkan!',
+                'icon' => 'warning'
+            ]);
+        }
+    }
+
+    public function hapusTampungan(Request $request)
     {
         $no_spm = $request->no_spm;
         $kd_rek6 = $request->kd_rek6;
 
         DB::beginTransaction();
         try {
-            DB::table('trspmpot')->where(['no_spm' => $no_spm, 'kd_rek6' => $kd_rek6])->delete();
+            DB::table('trspmpot_tampungan')
+                ->where(['no_spm' => $no_spm, 'kd_rek6' => $kd_rek6])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus!',
+                'icon' => 'success'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data gagal dihapus!',
+                'icon' => 'success'
+            ]);
+        }
+    }
+
+    public function rekeningTampungan(Request $request)
+    {
+        $data = DB::table('trspmpot_tampungan')
+            ->select('kd_rek6')
+            ->where(['no_spm' => $request->no_spm])
+            ->whereIn('kd_rek6', ['210105010001', '210105020001', '210105030001', '210109010001', '210105040001', '210106010001'])
+            ->groupBy('kd_rek6')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function simpanTampungan(Request $request)
+    {
+        $no_spm = $request->no_spm;
+
+        DB::beginTransaction();
+        try {
+            $data_spm = DB::table('trspmpot_tampungan')
+                ->where(['no_spm' => $no_spm])
+                ->select('no_spm', 'kd_skpd', 'kd_rek6', 'nm_rek6', 'nilai', 'pot', 'kd_trans', 'map_pot', 'nm_pot', 'noreff', 'nomorPokokWajibPajak', 'namaWajibPajak', 'alamatWajibPajak', 'kota', 'nik', 'kodeMap', 'keteranganKodeMap', 'kodeSetor', 'keteranganKodeSetor', 'masaPajak', 'tahunPajak', 'jumlahBayar', 'nomorObjekPajak', 'nomorSK', 'nomorPokokWajibPajakPenyetor', 'nomorPokokWajibPajakRekanan', 'nikRekanan', 'nomorFakturPajak', 'idBilling', 'tanggalExpiredBilling', 'tgl_setor', 'status_setor', 'ntpn', 'keterangan', 'jenis', 'username', 'last_update');
+
+
+            DB::table('trspmpot')
+                ->where(['no_spm' => $no_spm])
+                ->insertUsing(['no_spm', 'kd_skpd', 'kd_rek6', 'nm_rek6', 'nilai', 'pot', 'kd_trans', 'map_pot', 'nm_pot', 'noreff', 'nomorPokokWajibPajak', 'namaWajibPajak', 'alamatWajibPajak', 'kota', 'nik', 'kodeMap', 'keteranganKodeMap', 'kodeSetor', 'keteranganKodeSetor', 'masaPajak', 'tahunPajak', 'jumlahBayar', 'nomorObjekPajak', 'nomorSK', 'nomorPokokWajibPajakPenyetor', 'nomorPokokWajibPajakRekanan', 'nikRekanan', 'nomorFakturPajak', 'idBilling', 'tanggalExpiredBilling', 'tgl_setor', 'status_setor', 'ntpn', 'keterangan', 'jenis', 'username', 'last_update'], $data_spm);
+
+            DB::table('trspmpot_tampungan')
+                ->where(['no_spm' => $no_spm])
+                ->delete();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil disimpan!',
+                'icon' => 'success'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data gagal disimpan!',
+                'apa' => $e->getMessage(),
+                'icon' => 'warning'
+            ]);
+        }
+    }
+
+    public function hapusRincianPajak(Request $request)
+    {
+        $no_spm = $request->no_spm;
+        $kd_rek6 = $request->kd_rek6;
+        $idBilling = $request->idBilling;
+
+        DB::beginTransaction();
+        try {
+            // DB::table('trspmpot')
+            //     ->where(['no_spm' => $no_spm, 'kd_rek6' => $kd_rek6])
+            //     ->delete();
+
+            DB::table('trspmpot')
+                ->where(['no_spm' => $no_spm, 'idBilling' => $idBilling])
+                ->delete();
+
             DB::commit();
             return response()->json([
                 'message' => '1'

@@ -15,6 +15,7 @@ class BankKalbarController extends Controller
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => "http://192.168.9.2:10090/api/sppd/hh/auth",
+            // CURLOPT_URL => "http://222.124.219.178:10090/api/sppd/hh/auth",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -124,6 +125,8 @@ class BankKalbarController extends Controller
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "http://192.168.9.2:10090/api/sppd/ntp/validasi",
+            // CURLOPT_URL => "http://222.124.219.178:10090/api/sppd/ntp/validasi",
+
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -145,6 +148,82 @@ class BankKalbarController extends Controller
         //         'noRef' => $noReff
         //     ]);
         return response()->json($response);
+    }
+
+    public function simpanBilling(Request $request)
+    {
+        $rekening_tampungan = $request->rekening_tampungan;
+        $no_spm = $request->no_spm;
+
+        DB::beginTransaction();
+        try {
+            $data_bank = json_decode($this->isiListPot($request)->getData());
+            // dd($data_bank);
+
+            // $data_bank = json_decode('{"status":true,"message":null,"maxPage":null,"perPage":null,"columns":null,"data":[{"response_code":"00","message":"Sukses","data":{"statusTransaksi":"Inquiry","idBilling":"128440743834022","ntpn":"","ntb":null,"jenisPajak":"DJP","tanggalDanWaktuTransaksi":"2024-01-29 08:40:43","tanggalBuku":"2024-01-29","jumlahBayar":"279722","nomorPokokWajibPajak":"963459292707000","namaWajibPajak":"BADAN PENGELOLA PERBATASAN DAE","alamatWajibPajak":"Jl Ahmad Yani - KOTA PONTIANAK","kodeMap":"","kodeSetor":"","masaPajak":"","tahunPajak":"","nomorSk":"","nomorObjekPajak":"","kementrianLembaga":"","unitEselonI":"","kodeSatker":"","idWajibBayar":null,"jenisDokumen":null,"nomorDokumen":null,"tanggalDokumen":null,"kantorPengawasandanPelayananBeadanCukai":null,"nomorSP2D":"","referenceNo":"101000028099","waktuBuku":"08:40:43","msgSTAN":"888476","jumlahAkunPajak":"1"}}]}');
+
+            if ($data_bank->status) {
+                $total_potongan = DB::table('trspmpot_tampungan')
+                    ->selectRaw("SUM(ISNULL(nilai,0)) as nilai")
+                    ->where(['no_spm' => $no_spm])
+                    ->whereIn('kd_rek6', $rekening_tampungan)
+                    ->first()
+                    ->nilai;
+
+                if ($total_potongan != $data_bank->data[0]->data->jumlahBayar) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Total Potongan tidak sesuai dengan Total yang dibayar!',
+                        'icon' => 'info'
+                    ]);
+                }
+
+                // if ($data_bank->data[0]->data->jumlahAkunPajak != count($rekening_tampungan)) {
+                //     return response()->json([
+                //         'status' => false,
+                //         'message' => 'Jumlah akun pajak tidak sesuai dengan jumlah rekening yang dipilih!',
+                //         'icon' => 'info'
+                //     ]);
+                // }
+
+                DB::table('trspmpot_tampungan')
+                    ->where(['no_spm' => $no_spm])
+                    ->whereIn('kd_rek6', $rekening_tampungan)
+                    ->update([
+                        'idBilling' => $data_bank->data[0]->data->idBilling
+                    ]);
+
+                DB::table('log_billing')
+                    ->where(['id_billing' => $data_bank->data[0]->data->idBilling])
+                    ->delete();
+
+                DB::table('log_billing')
+                    ->insert([
+                        'id_billing' => $data_bank->data[0]->data->idBilling,
+                        'data_billing' => json_encode($data_bank)
+                    ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data ID Billing tidak ditemukan',
+                    'icon' => 'info'
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diperbaharui!',
+                'icon' => 'success'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Data gagal diperbaharui!',
+                'icon' => 'warning'
+            ]);
+        }
     }
 
     public function createBilling(Request $request)
@@ -309,6 +388,7 @@ class BankKalbarController extends Controller
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => "http://192.168.9.2:10090/api/sppd/idbilling/validasi",
+            // CURLOPT_URL => "http://222.124.219.178:10090/api/sppd/idbilling/validasi",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,

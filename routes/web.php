@@ -355,9 +355,15 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('cari_rek_pot', [SpmController::class, 'cariRekPot'])->name('spm.cari_rek_pot');
             Route::post('tambah_list_potongan', [SpmController::class, 'tambahListPotongan'])->name('spm.tambah_list_potongan');
             Route::post('isi_list_pot', [BankKalbarController::class, 'isiListPot'])->name('spm.isi_list_pot');
+            Route::post('isi_tampungan', [SpmController::class, 'isiTampungan'])->name('spm.isi_tampungan');
+            Route::post('hapus_tampungan', [SpmController::class, 'hapusTampungan'])->name('spm.hapus_tampungan');
+            Route::post('rekening_tampungan', [SpmController::class, 'rekeningTampungan'])->name('spm.rekening_tampungan');
+            Route::post('simpan_billing', [BankKalbarController::class, 'simpanBilling'])->name('spm.simpan_billing');
             Route::post('create_id_billing', [BankKalbarController::class, 'createBilling'])->name('spm.create_id_billing');
             Route::post('create_report', [BankKalbarController::class, 'createReport'])->name('spm.create_report');
             Route::post('load_rincian', [SpmController::class, 'loadRincian'])->name('spm.load_rincian');
+            Route::post('load_rincian_tampungan', [SpmController::class, 'loadRincianTampungan'])->name('spm.load_rincian_tampungan');
+            Route::post('simpan_tampungan', [SpmController::class, 'simpanTampungan'])->name('spm.simpan_tampungan');
             Route::post('load_rincian_show', [SpmController::class, 'loadRincianShow'])->name('spm.load_rincian_show');
             Route::post('hapus_rincian_pajak', [SpmController::class, 'hapusRincianPajak'])->name('spm.hapus_rincian_pajak');
             Route::post('total_show', [SpmController::class, 'totalShow'])->name('spm.total_show');
@@ -1186,10 +1192,10 @@ Route::group(['middleware' => 'auth'], function () {
 
             // BKU penerimaan
             Route::get('cetak_bku_penerimaan', [BKUPenerimaanController::class, 'cetakBKUPenerimaan'])->name('skpd.laporan_bendahara_penerimaan.cetak_bku_penerimaan');
-            
+
             // BP Bank penerimaan
             Route::get('cetak_bpbank_penerimaan', [BpBankPenerimaanController::class, 'cetakBPBankPenerimaan'])->name('skpd.laporan_bendahara_penerimaan.cetak_bpbank_penerimaan');
-            
+
             // buku SPJ Pendapatan
             Route::get('cetak_spj_pendapatan', [SpjPendapatanController::class, 'cetakSpjPendapatan'])->name('skpd.laporan_bendahara_penerimaan.cetak_spj_pendapatan');
             // Cek Buku Setoran
@@ -2148,7 +2154,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('calkbab3_lo_pend', [calk_bab3lo_pendController::class, 'calkbab3_lo_pend'])->name('calk.calkbab3_lo_pend');
         Route::post('load_calkbab3_lo_pend', [calk_bab3lo_pendController::class, 'load_calkbab3_lo_pend'])->name('calk.load_calkbab3_lo_pend');
         Route::post('simpan_calkbab3_lo_pend', [calk_bab3lo_pendController::class, 'simpan_calkbab3_lo_pend'])->name('calk.simpan_calkbab3_lo_pend');
-
     });
 
     Route::group(['prefix' => 'spb'], function () {
