@@ -1216,6 +1216,11 @@
             let id_billing = document.getElementById('id_billing_cetak').value;
             let jnsreport = $(this).data("cetak");
 
+            if (!id_billing) {
+                alert('Pilih ID Billing!');
+                return;
+            }
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('spm.create_report') }}",
@@ -1731,12 +1736,28 @@
     }
 
     function cetakPajak(no_spm, kd_rek6, nm_rek6, nilai, idBilling) {
-        $("#id_billing_cetak").val(idBilling);
+        $.ajax({
+            url: "{{ route('spm.billing_cetak') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                no_spm: document.getElementById('no_spm_potongan').value
+            },
+            success: function(data) {
+                $('#id_billing_cetak').empty();
+                $.each(data, function(index, data) {
+                    $('#id_billing_cetak').append(
+                        `<option value="${data.idBilling}">${data.idBilling}</option>`
+                    );
+                })
+            }
+        })
+        // $("#id_billing_cetak").val(idBilling);
         $('#modal_cetak').modal('show');
     }
 
     function cetakPot(idBilling) {
-        $("#id_billing_cetak").val(idBilling);
+        // $("#id_billing_cetak").val(idBilling);
         $('#modal_cetak').modal('show');
     }
 

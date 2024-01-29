@@ -486,7 +486,8 @@
                             aria-labelledby="home-tab">
                             <div class="card">
                                 <div class="card-header">
-
+                                    <button type="button" onclick="cetakPajak()" class="btn btn-success btn-sm"
+                                        style="margin-left:4px"><i class="uil-print"></i></button>
                                 </div>
                                 <div class="card-body">
                                     <table class="table" id="tabel_pot" style="width: 100%">
@@ -685,13 +686,20 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-3 row">
+                        <label for="id_billing_cetak" class="col-md-6 col-form-label">ID Billing</label>
+                        <div class="col-md-6">
+                            <select class="form-control select2-multiple" style="width: 100%;" id="id_billing_cetak"
+                                name="id_billing_cetak" data-placeholder="Silahkan Pilih">
+                            </select>
+                        </div>
+                    </div>
                     <!--  -->
                     <div class="mb-3 row">
                         <label for="cetak_billing" class="col-md-6 col-form-label">Cetak Bukti Create Id Billing</label>
                         <div class="col-md-6">
                             <button type="button" data-cetak="ReportCreateBilling"
                                 class="btn btn-md btn-success cetak_billing" style="float:center">Download</button>
-                            <input type="text" hidden id="id_billing_cetak">
                         </div>
                     </div>
                     <div class="mb-3 row">

@@ -366,6 +366,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('simpan_tampungan', [SpmController::class, 'simpanTampungan'])->name('spm.simpan_tampungan');
             Route::post('load_rincian_show', [SpmController::class, 'loadRincianShow'])->name('spm.load_rincian_show');
             Route::post('hapus_rincian_pajak', [SpmController::class, 'hapusRincianPajak'])->name('spm.hapus_rincian_pajak');
+            Route::post('billing_cetak', [SpmController::class, 'billingCetak'])->name('spm.billing_cetak');
             Route::post('total_show', [SpmController::class, 'totalShow'])->name('spm.total_show');
             Route::get('tambah_potongan/{no_spm?}', [SpmController::class, 'tambahPotongan'])->where('no_spm', '(.*)')->name('spm.tambah_potongan');
             Route::get('tampil/{no_spm?}', [SpmController::class, 'tampilSpm'])->where('no_spm', '(.*)')->name('spm.tampil');

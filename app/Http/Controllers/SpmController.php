@@ -483,6 +483,17 @@ class SpmController extends Controller
         return response()->json($data);
     }
 
+    public function billingCetak(Request $request)
+    {
+        $data = DB::table('trspmpot')
+            ->select('idBilling')
+            ->where(['no_spm' => $request->no_spm])
+            ->groupBy('idBilling')
+            ->get();
+
+        return response()->json($data);
+    }
+
     public function simpanTampungan(Request $request)
     {
         $no_spm = $request->no_spm;
