@@ -405,7 +405,7 @@ class SpmController extends Controller
         DB::beginTransaction();
         try {
             $cek = DB::table('trspmpot_tampungan')
-                ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $rekening_potongan, 'kd_trans' => $rekening_transaksi])
+                ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $rekening_potongan, 'kd_trans' => $rekening_transaksi, 'map_pot' => $map_pot])
                 ->count();
 
             if ($cek > 0) {
