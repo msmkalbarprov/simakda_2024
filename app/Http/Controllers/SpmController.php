@@ -537,13 +537,15 @@ class SpmController extends Controller
 
         DB::beginTransaction();
         try {
-            // DB::table('trspmpot')
-            //     ->where(['no_spm' => $no_spm, 'kd_rek6' => $kd_rek6])
-            //     ->delete();
-
-            DB::table('trspmpot')
-                ->where(['no_spm' => $no_spm, 'idBilling' => $idBilling])
-                ->delete();
+            if ($idBilling == '') {
+                DB::table('trspmpot')
+                    ->where(['no_spm' => $no_spm, 'kd_rek6' => $kd_rek6])
+                    ->delete();
+            } else {
+                DB::table('trspmpot')
+                    ->where(['no_spm' => $no_spm, 'idBilling' => $idBilling])
+                    ->delete();
+            }
 
             DB::commit();
             return response()->json([
