@@ -1279,11 +1279,18 @@
                 },
                 success: function(data) {
                     if (data.success) {
+
+                        $('#modal_billing').modal('hide');
+                        $('#id_billing').val(null);
+                        $('#rekening_tampungan').val(null).change()
+
                         Swal.fire(
                             'Saved!',
                             data.message,
                             data.icon
                         )
+
+
                     } else {
                         Swal.fire(
                             data.icon.toUpperCase(),
@@ -1295,9 +1302,8 @@
                     tabel_pot.ajax.reload();
                     tabel_pot_tampungan.ajax.reload();
                     tabel_pajak.ajax.reload();
-                    $('#modal_billing').modal('hide');
-                    $('#id_billing').val(null);
-                    $('#rekening_tampungan').val(null).change()
+
+
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
