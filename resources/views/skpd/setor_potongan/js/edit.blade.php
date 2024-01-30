@@ -73,6 +73,12 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-modal1').select2({
+            dropdownParent: $('#modal_rekanan .modal-content'),
+            theme: 'bootstrap-5',
+            tags: true
+        });
+
         $('#no_terima').on('select2:select', function() {
             let no_terima = this.value;
             let ket = $(this).find(':selected').data('ket');
