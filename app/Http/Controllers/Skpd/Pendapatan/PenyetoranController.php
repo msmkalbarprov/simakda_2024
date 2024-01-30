@@ -47,7 +47,8 @@ class PenyetoranController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                // ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                ->where(['kd_skpd' => $kd_skpd])
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
@@ -257,7 +258,8 @@ class PenyetoranController extends Controller
         $data = [
             'skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->where(['kd_skpd' => $kd_skpd])->first(),
             'daftar_pengirim' => DB::table('ms_pengirim as a')
-                ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                // ->whereRaw("LEFT(kd_skpd,5)=LEFT(?,5)", [$kd_skpd])
+                ->where(['kd_skpd' => $kd_skpd])
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),

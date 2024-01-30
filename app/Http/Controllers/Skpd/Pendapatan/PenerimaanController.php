@@ -358,13 +358,14 @@ class PenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim')
                 ->select('kd_pengirim', 'nm_pengirim', 'kd_skpd')
-                ->where(function ($query) use ($kd_skpd) {
-                    if (substr($kd_skpd, 0, 17) == '5-02.0-00.0-00.02') {
-                        $query->where('kd_skpd', $kd_skpd);
-                    } else {
-                        $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
-                    }
-                })
+                // ->where(function ($query) use ($kd_skpd) {
+                //     if (substr($kd_skpd, 0, 17) == '5-02.0-00.0-00.02') {
+                //         $query->where('kd_skpd', $kd_skpd);
+                //     } else {
+                //         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
+                //     }
+                // })
+                ->where(['kd_skpd' => $kd_skpd])
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
@@ -512,13 +513,14 @@ class PenerimaanController extends Controller
                 ->get(),
             'daftar_pengirim' => DB::table('ms_pengirim')
                 ->select('kd_pengirim', 'nm_pengirim', 'kd_skpd')
-                ->where(function ($query) use ($kd_skpd) {
-                    if (substr($kd_skpd, 0, 17) == '5-02.0-00.0-00.02') {
-                        $query->where('kd_skpd', $kd_skpd);
-                    } else {
-                        $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
-                    }
-                })
+                // ->where(function ($query) use ($kd_skpd) {
+                //     if (substr($kd_skpd, 0, 17) == '5-02.0-00.0-00.02') {
+                //         $query->where('kd_skpd', $kd_skpd);
+                //     } else {
+                //         $query->whereRaw("left(kd_skpd,15)=left(?,15)", [$kd_skpd]);
+                //     }
+                // })
+                ->where(['kd_skpd' => $kd_skpd])
                 // ->orderByRaw("cast(kd_pengirim as int)")
                 ->orderByRaw("kd_pengirim")
                 ->get(),
