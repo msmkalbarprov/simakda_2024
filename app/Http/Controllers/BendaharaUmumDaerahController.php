@@ -2517,7 +2517,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.no_spm', '=', 'b.no_spm');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })
-                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG,SUM(CASE WHEN b.map_pot='210102010001c' THEN b.nilai ELSE 0 END) AS PPNPN1,SUM(CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END) AS PPNPN4,SUM(CASE WHEN b.map_pot='210102010001a' THEN b.nilai ELSE 0 END) AS DPRD1,SUM(CASE WHEN b.map_pot='210102010001b' THEN b.nilai ELSE 0 END) AS DPRD4")
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='21010801000102' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='21010801000103' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='21010801000104' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG,SUM(CASE WHEN b.map_pot='21010201000104' THEN b.nilai ELSE 0 END) AS PPNPN1,SUM(CASE WHEN b.map_pot='21010201000105' THEN b.nilai ELSE 0 END) AS PPNPN4,SUM(CASE WHEN b.map_pot='21010201000102' THEN b.nilai ELSE 0 END) AS DPRD1,SUM(CASE WHEN b.map_pot='21010201000103' THEN b.nilai ELSE 0 END) AS DPRD4")
                 ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
                 ->where(function ($query) use ($req) {
                     if ($req['kd_skpd']) {
@@ -2580,7 +2580,7 @@ class BendaharaUmumDaerahController extends Controller
                     $join->on('a.no_spm', '=', 'b.no_spm');
                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                 })
-                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='210108010001a' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='210108010001b' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='210108010001c' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
+                ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_sp2d nomor,0 nilai_sp2d,SUM(CASE WHEN b.map_pot='21010801000102' THEN b.nilai ELSE 0 END) AS IWP1,SUM(CASE WHEN b.map_pot='21010801000103' THEN b.nilai ELSE 0 END) AS IWP8,SUM(CASE WHEN b.map_pot='21010801000104' THEN b.nilai ELSE 0 END) AS IWP325,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS JKK,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS JKM,SUM(CASE WHEN b.kd_rek6='210102010001' THEN b.nilai ELSE 0 END) AS BPJS,SUM(CASE WHEN b.kd_rek6='210105010001' THEN b.nilai ELSE 0 END) AS PPH21,SUM(CASE WHEN b.kd_rek6='' THEN 0 ELSE 0 END) AS TAPERUM,SUM(CASE WHEN b.kd_rek6 in ('210601010007','210601010003','210601010011','210601010009') THEN b.nilai ELSE 0 END) AS HKPG")
                 ->whereRaw("(a.sp2d_batal IS NULL OR a.sp2d_batal !=?)", ['1'])
                 ->where(function ($query) use ($req) {
                     if ($req['kd_skpd']) {
@@ -4004,7 +4004,7 @@ class BendaharaUmumDaerahController extends Controller
 					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
 					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
 					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
-					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN map_pot ='21010201000105' THEN c.nilai ELSE 0 END) AS iwppnpn
 					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
 					FROM trhsp2d a
 					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
@@ -4037,7 +4037,7 @@ class BendaharaUmumDaerahController extends Controller
 					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
 					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
 					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
-					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN map_pot ='21010201000105' THEN c.nilai ELSE 0 END) AS iwppnpn
 					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
 					FROM trhsp2d a
 					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
@@ -4071,7 +4071,7 @@ class BendaharaUmumDaerahController extends Controller
 					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
 					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
 					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
-					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN map_pot ='21010201000105' THEN c.nilai ELSE 0 END) AS iwppnpn
 					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
 					FROM trhsp2d a
 					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
@@ -4105,7 +4105,7 @@ class BendaharaUmumDaerahController extends Controller
 					,SUM(CASE WHEN kd_rek6 ='210105020001' THEN c.nilai ELSE 0 END) AS pph22
 					,SUM(CASE WHEN kd_rek6 ='210105030001' THEN c.nilai ELSE 0 END) AS pph23
 					,SUM(CASE WHEN kd_rek6 ='2130501' THEN c.nilai ELSE 0 END) AS psl4_a2
-					,SUM(CASE WHEN map_pot ='210102010001d' THEN c.nilai ELSE 0 END) AS iwppnpn
+					,SUM(CASE WHEN map_pot ='21010201000105' THEN c.nilai ELSE 0 END) AS iwppnpn
 					,SUM(CASE WHEN kd_rek6 not in ('2130301','210105010001','210105020001','210105030001','2130501','210102010001d') THEN c.nilai ELSE 0 END) AS pot_lain
 					FROM trhsp2d a
 					INNER JOIN trhspm b ON a.no_spm = b.no_spm AND a.kd_skpd = b.kd_skpd
