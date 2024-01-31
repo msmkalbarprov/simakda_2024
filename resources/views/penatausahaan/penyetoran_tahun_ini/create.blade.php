@@ -83,6 +83,10 @@
                         <label for="gerai" class="col-md-2 col-form-label">Lokasi</label>
                         <div class="col-md-10">
                             <select class="form-control select2-multiple" style="width: 100%" id="gerai" name="gerai">
+                                @if (Str::substr(auth()->user()->kd_skpd, 0, 17) == '5.02.0.00.0.00.01' &&
+                                        Str::substr(auth()->user()->kd_skpd, -1) != '0')
+                                    <option value="all" selected>Semua</option>
+                                @endif
                                 @foreach ($daftar_pengirim as $pengirim)
                                     <option value="{{ $pengirim->kd_pengirim }}">{{ $pengirim->nm_pengirim }}</option>
                                 @endforeach
