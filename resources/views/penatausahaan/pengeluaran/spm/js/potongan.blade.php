@@ -1318,6 +1318,31 @@
         $('#simpan_tampungan').on('click', function() {
             let no_spm = document.getElementById('no_spm_potongan').value;
 
+            let rekening_mpn = ["210105010001", "210105020001", "210105030001", "210109010001",
+                "210105040001", "210106010001"
+            ];
+
+            let tampungan = tabel_pot_tampungan.rows().data().toArray().map((value) => {
+                let result = {
+                    idBilling: value.idBilling,
+                    kd_rek6: value.kd_rek6,
+                };
+                return result;
+            });
+
+            let kondisi = tampungan.map(function(data) {
+                if (rekening_mpn.includes(data.kd_rek6.trim()) && !data.idBilling) {
+                    return '2';
+                } else {
+                    return '1';
+                }
+            });
+
+            if (kondisi.includes("2")) {
+                alert('Potongan MPN wajib memiliki id billing!');
+                return;
+            }
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('spm.simpan_tampungan') }}",
