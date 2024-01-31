@@ -341,7 +341,7 @@ class SpmController extends Controller
     {
         $kode_akun = $request->kode_akun;
         $kode_setor = $request->kode_setor;
-        $data = DB::table('ms_pot as a')->join('ms_map_billing as b', 'a.kd_rek6', '=', 'b.kd_rek6')->where(['b.kd_map' => $kode_akun, 'kd_setor' => $kode_setor])->select('a.kd_rek6', 'a.nm_rek6')->groupBy('a.kd_rek6', 'a.nm_rek6')->get();
+        $data = DB::table('ms_pot as a')->join('ms_map_billing as b', 'a.kd_rek6', '=', 'b.kd_rek6')->where(['b.kd_map' => $kode_akun, 'kd_setor' => $kode_setor])->select('a.kd_rek6', 'a.nm_rek6', 'a.map_pot')->groupBy('a.kd_rek6', 'a.nm_rek6', 'a.map_pot')->get();
         return response()->json($data);
     }
 

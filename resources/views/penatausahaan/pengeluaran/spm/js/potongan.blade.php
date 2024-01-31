@@ -655,7 +655,7 @@
                         `<option value="0">Pilih Kode Setor</option>`);
                     $.each(data, function(index, data) {
                         $('#kode_akun_potongan').append(
-                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}">${data.kd_rek6} | ${data.nm_rek6}</option>`
+                            `<option value="${data.kd_rek6}" data-nama="${data.nm_rek6}" data-map_pot=${data.map_pot}>${data.kd_rek6} | ${data.nm_rek6}</option>`
                         );
                     })
                 }
@@ -665,7 +665,9 @@
 
         $('#kode_akun_potongan').on('change', function() {
             let nama = $(this).find(':selected').data('nama');
+            let map_pot = $(this).find(':selected').data('map_pot');
             $('#nama_akun_potongan').val(nama);
+            $('#map_pot').val(map_pot);
         });
 
         $("input[data-type='currency']").on({
@@ -910,6 +912,7 @@
             let nama_akun_potongan = document.getElementById('nama_akun_potongan').value;
             let kode_akun_potongan = document.getElementById('kode_akun_potongan').value;
             let kode_akun_transaksi = document.getElementById('kode_akun_transaksi').value;
+            let map_pot = document.getElementById('map_pot').value;
             let total_pajak = rupiah(document.getElementById('total_pajak').value);
             let total_pot = rupiah(document.getElementById('total_pot').value);
 
@@ -1168,7 +1171,8 @@
                     no_spm: no_spm,
                     nama_akun_potongan: nama_akun_potongan,
                     kode_akun_potongan: kode_akun_potongan,
-                    kode_akun_transaksi: kode_akun_transaksi
+                    kode_akun_transaksi: kode_akun_transaksi,
+                    map_pot: map_pot
                 },
                 dataType: "json",
                 success: function(data) {

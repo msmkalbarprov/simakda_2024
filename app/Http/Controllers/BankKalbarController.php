@@ -251,6 +251,7 @@ class BankKalbarController extends Controller
         $nama_akun_potongan     = $request->nama_akun_potongan;
         $kode_akun_potongan     = $request->kode_akun_potongan;
         $kode_akun_transaksi    = $request->kode_akun_transaksi;
+        $map_pot    = $request->map_pot;
 
         $data['nomorPokokWajibPajak']           = isset($npwp) ? $npwp : '';
         $data['kodeMap']                        = isset($kode_map) ? $kode_map : '';
@@ -302,7 +303,7 @@ class BankKalbarController extends Controller
                 'no_spm' => $no_spm,
                 'kd_skpd' => $kd_skpd,
                 'kd_rek6' => $kode_akun_potongan,
-                'map_pot' => $kode_akun_potongan,
+                'map_pot' => $map_pot,
                 'nm_rek6' => $nama_akun_potongan,
                 'nilai' => $jumlah_bayar,
                 'kd_trans' => $kode_akun_transaksi,
