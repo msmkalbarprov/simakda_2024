@@ -217,6 +217,7 @@
                                 <option value="16">Hibah Konstruksi pada Pihak Ketiga</option>
                                 <option value="98">Belanja Operasional KDH/WKDH dan Pimpinan DPRD</option>
                                 <option value="99">Pembiayaan pada Pihak Ketiga Lainnya</option>
+                                <option value="100">Belanja Tidak Terduga</option>
                             </select>
                         </div>
                     </div>
