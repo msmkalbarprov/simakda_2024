@@ -192,6 +192,34 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="mb-3 row">
+                        <label for="jenis_kelengkapan" class="col-md-2 col-form-label">Jenis Kelengkapan</label>
+                        <div class="col-md-10">
+                            <select name="jenis_kelengkapan" class="form-control select2-multiple"
+                                id="jenis_kelengkapan">
+                                <option value="" selected disabled>Silahkan Pilih</option>
+                                <option value="1">Gaji Induk, Gaji Terusan, Kekurangan Gaji</option>
+                                <option value="2">Gaji Susulan</option>
+                                <option value="3">Tambahan Penghasilan</option>
+                                <option value="4">Honorarium PNS</option>
+                                <option value="5">Honorarium Tenaga Kontrak</option>
+                                <option value="6">Pengadaan Barang dan Jasa/Konstruksi/Konsultansi</option>
+                                <option value="7">Pengadaan Konsumsi</option>
+                                <option value="8">Sewa Rumah Jabatan/Gedung untuk Kantor/Gedung Pertemuan/Tempat
+                                    Pertemuan/Tempat Penginapan/Kendaraan</option>
+                                <option value="9">Pengadaan Sertifikat Tanah</option>
+                                <option value="10">Pengadaan Tanah</option>
+                                <option value="11">Hibah Barang dan Jasa pada Pihak Ketiga</option>
+                                <option value="12">LS Bantuan Sosial pada Pihak Ketiga</option>
+                                <option value="13">Hibah Uang Pada Pihak Ketiga</option>
+                                <option value="14">Bantuan Keuangan Pada Kabupaten/Kota</option>
+                                <option value="15">Bagi Hasil Pajak dan Bukan Pajak</option>
+                                <option value="16">Hibah Konstruksi pada Pihak Ketiga</option>
+                                <option value="98">Belanja Operasional KDH/WKDH dan Pimpinan DPRD</option>
+                                <option value="99">Pembiayaan pada Pihak Ketiga Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_spm" class="btn btn-primary btn-md">Simpan</button>

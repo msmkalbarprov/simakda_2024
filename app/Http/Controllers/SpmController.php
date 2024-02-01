@@ -238,6 +238,7 @@ class SpmController extends Controller
         $jenis = $request->jenis;
         $skpd = Auth::user()->kd_skpd;
         $nama = Auth::user()->nama;
+        $jenis_kelengkapan = $request->jenis_kelengkapan;
 
         try {
             DB::beginTransaction();
@@ -292,7 +293,8 @@ class SpmController extends Controller
                     'urut' => $urut,
                     'status' => '0',
                     'username' => $nama,
-                    'last_update' => date('Y-m-d H:i:s')
+                    'last_update' => date('Y-m-d H:i:s'),
+                    'jenis_kelengkapan' => $jenis_kelengkapan,
                 ]);
 
             DB::table('trhspp')
