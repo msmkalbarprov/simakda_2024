@@ -192,7 +192,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="mb-3 row">
+                    {{-- <div class="mb-3 row">
                         <label for="jenis_kelengkapan" class="col-md-2 col-form-label">Jenis Kelengkapan</label>
                         <div class="col-md-10">
                             <select name="jenis_kelengkapan" class="form-control select2-multiple"
@@ -220,7 +220,7 @@
                                 <option value="100">Belanja Tidak Terduga</option>
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- SIMPAN -->
                     <div style="float: right;">
                         <button id="simpan_spm" class="btn btn-primary btn-md">Simpan</button>

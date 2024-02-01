@@ -149,7 +149,7 @@
             let total = rupiah(document.getElementById("total").value);
             let tahun_anggaran = "{{ tahun_anggaran() }}";
             let tahun_input = tgl_spm.substring(0, 4);
-            let jenis_kelengkapan = document.getElementById("jenis_kelengkapan").value;
+            // let jenis_kelengkapan = document.getElementById("jenis_kelengkapan").value;
 
             if (!tgl_spm) {
                 alert('Silahkan pilih tanggal SPM!');
@@ -183,10 +183,10 @@
                 alert('Total Rincian tidak boleh kosong!Silahkan refresh!');
                 return;
             }
-            if (!jenis_kelengkapan) {
-                alert("Jenis Kelengkapan Tidak Boleh Kosong");
-                return;
-            }
+            // if (!jenis_kelengkapan) {
+            //     alert("Jenis Kelengkapan Tidak Boleh Kosong");
+            //     return;
+            // }
             $('#simpan_spm').prop('disabled', true);
             $.ajax({
                 url: "{{ route('spm.simpan_spm') }}",
@@ -211,7 +211,7 @@
                     urut: urut,
                     no_spp: no_spp,
                     jenis: jenis,
-                    jenis_kelengkapan: jenis_kelengkapan,
+                    // jenis_kelengkapan: jenis_kelengkapan,
                 },
                 success: function(data) {
                     if (data.message == '0') {
