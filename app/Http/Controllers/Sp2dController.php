@@ -565,8 +565,14 @@ class Sp2dController extends Controller
             'sp2d' => DB::table('trhsp2d')->where(['no_sp2d' => $no_sp2d])->first(),
             'ttd1' => DB::table('ms_ttd')->where(['nip' => $ttd1])->first(),
             'ttd2' => DB::table('ms_ttd')->where(['nip' => $ttd2])->first(),
+            'ttd2' => DB::table('ms_ttd')->where(['nip' => $ttd2])->first(),
+            'jenis' => DB::table('trhsp2d')
+                ->where(['no_sp2d' => $no_sp2d])
+                ->first()
+                ->jenis_beban,
             'beban' => $beban
         ];
+
         $view = view('penatausahaan.pengeluaran.sp2d.cetak.kelengkapan')->with($data);
 
         $pdf = PDF::loadHtml($view);
