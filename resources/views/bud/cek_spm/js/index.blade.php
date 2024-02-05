@@ -68,6 +68,7 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let tgl_verifikasi = document.getElementById('tgl_verifikasi').value;
             let keterangan_verifikasi = document.getElementById('keterangan_verifikasi').value;
+            let status_verifikasi = document.getElementById('status_verifikasi').value;
             let beban = document.getElementById('beban').value;
             let jenis_beban = document.getElementById('jenis_beban').value;
             let jenis_kelengkapan = document.getElementById('jenis_kelengkapan').value;
@@ -100,6 +101,11 @@
                 return;
             }
 
+            if (!status_verifikasi) {
+                alert('Silahkan pilih status!');
+                return;
+            }
+
             // UP
             if (beban == '1') {
                 let pengantar_spp_up = document.getElementById('pengantar_spp_up').checked;
@@ -112,6 +118,13 @@
                 let salinan_spd_up = document.getElementById('salinan_spd_up').checked;
                 let rekening_koran_up = document.getElementById('rekening_koran_up').checked;
                 let keputusan_gubernur_up = document.getElementById('keputusan_gubernur_up').checked;
+
+                if ((!pengantar_spp_up && !spp_up && !ringkasan_spp_up && !rincian_spp_up && !
+                        pernyataan_pengajuan_up && !lampiran_spp_up && !salinan_spd_up && !
+                        rekening_koran_up && !keputusan_gubernur_up) && status_verifikasi == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return
+                }
 
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
@@ -134,6 +147,7 @@
                             salinan_spd_up: salinan_spd_up,
                             rekening_koran_up: rekening_koran_up,
                             keputusan_gubernur_up: keputusan_gubernur_up,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -143,7 +157,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -173,6 +187,13 @@
                 let sptb_gu = document.getElementById('sptb_gu').checked;
                 let sse_gu = document.getElementById('sse_gu').checked;
 
+                if ((!pengantar_spp_gu && !spp_gu && !ringkasan_spp_gu && !rincian_spp_gu && !
+                        pernyataan_pengajuan_gu && !lampiran_spp_gu && !salinan_spd_gu && !
+                        lpj_gu && !sptb_gu && !sse_gu) && status_verifikasi == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return
+                }
+
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
                     $('#simpan').prop("disabled", true);
@@ -195,6 +216,7 @@
                             lpj_gu: lpj_gu,
                             sptb_gu: sptb_gu,
                             sse_gu: sse_gu,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -204,7 +226,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -239,6 +261,15 @@
                 let bukti_setor_tu = document.getElementById('bukti_setor_tu').checked;
                 let dokumen_lain_tu = document.getElementById('dokumen_lain_tu').checked;
 
+                if ((!pengantar_spp_tu && !spp_tu && !ringkasan_spp_tu && !rencana_penggunaan_tu && !
+                        pernyataan_pengajuan_tu && !lampiran_spp_tu && !salinan_spd_tu && !
+                        jadwal_pelaksanaan_kegiatan_tu && !rekening_koran_tu && !lpj_untuk_tu && !
+                        sptb_tu &&
+                        !sse_tu && !bukti_setor_tu && !dokumen_lain_tu) && status_verifikasi == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return
+                }
+
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
                     $('#simpan').prop("disabled", true);
@@ -265,6 +296,7 @@
                             sse_tu: sse_tu,
                             bukti_setor_tu: bukti_setor_tu,
                             dokumen_lain_tu: dokumen_lain_tu,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -274,7 +306,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -287,7 +319,7 @@
                 } else {
                     alert('Silahkan Cek lagi, Pastikan Data Sudah Benar...');
                     $('#detail_spm').modal('hide');
-                    document.getElementById("form_detail").reset();
+                    // document.getElementById("form_detail").reset();
                     daftar_spm.ajax.reload();
                     $('#simpan').prop("disabled", false);
                 }
@@ -320,6 +352,18 @@
                 let sptjm_gaji = document.getElementById('sptjm_gaji').checked;
                 let sk_mutasi_gaji = document.getElementById('sk_mutasi_gaji').checked;
                 let skpp_gaji = document.getElementById('skpp_gaji').checked;
+
+                if ((!pengantar_spp_gaji && !spp_gaji && !ringkasan_spp_gaji && !rincian_spp_gaji &&
+                        !
+                        pernyataan_pengajuan_gaji && !lampiran_spp_gaji && !salinan_spd_gaji && !
+                        daftar_gaji && !rekap_gaji_induk && !rekap_gaji_golongan && !sse_gaji &&
+                        !sk_perubahan_gaji && !sk_kenaikan_gaji && !sk_struktural_gaji && !
+                        keputusan_kenaikan_gaji && !keputusan_pindah_gaji && !daftar_keluarga_gaji && !
+                        pernyataan_tugas_gaji && !cerai_gaji && !sk_pengangkatan_gaji && !
+                        sptjm_gaji && !sk_mutasi_gaji && !skpp_gaji) && status_verifikasi == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
 
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
@@ -358,6 +402,7 @@
                             sptjm_gaji: sptjm_gaji,
                             sk_mutasi_gaji: sk_mutasi_gaji,
                             skpp_gaji: skpp_gaji,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -367,7 +412,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -380,7 +425,7 @@
                 } else {
                     alert('Silahkan Cek lagi, Pastikan Data Sudah Benar...');
                     $('#detail_spm').modal('hide');
-                    document.getElementById("form_detail").reset();
+                    // document.getElementById("form_detail").reset();
                     daftar_spm.ajax.reload();
                     $('#simpan').prop("disabled", false);
                 }
@@ -414,6 +459,19 @@
                 let sptjm_btt_ketiga = document.getElementById('sptjm_btt_ketiga')
                     .checked;
                 let syarat_lain_ketiga = document.getElementById('syarat_lain_ketiga').checked;
+
+                if ((!pengantar_spp_ketiga && !spp_ketiga && !ringkasan_spp_ketiga && !
+                        rincian_spp_ketiga &&
+                        !pernyataan_ketiga && !lampiran_spp_ketiga && !proposal_bansos_ketiga && !
+                        kepgub_bansos_ketiga && !nphd_ketiga && !kab_ketiga && !
+                        penerima_bansos_ketiga &&
+                        !penerima_hibah_ketiga && !sptjm_hibah_ketiga && !sptjm_bansos_ketiga && !
+                        kepgub_bankeu_ketiga && !kepgub_bagihasil_ketiga && !fc_bagihasil_ketiga && !
+                        sptjm_pembiayaan_ketiga && !kepgub_btt_ketiga && !sptjm_btt_ketiga && !
+                        syarat_lain_ketiga) && status_verifikasi == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
 
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
@@ -450,6 +508,7 @@
                             sptjm_btt_ketiga: sptjm_btt_ketiga,
                             kepgub_btt_ketiga: kepgub_btt_ketiga,
                             syarat_lain_ketiga: syarat_lain_ketiga,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -459,7 +518,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -472,7 +531,7 @@
                 } else {
                     alert('Silahkan Cek lagi, Pastikan Data Sudah Benar...');
                     $('#detail_spm').modal('hide');
-                    document.getElementById("form_detail").reset();
+                    // document.getElementById("form_detail").reset();
                     daftar_spm.ajax.reload();
                     $('#simpan').prop("disabled", false);
                 }
@@ -487,6 +546,13 @@
                 let pernyataan_barjas = document.getElementById('pernyataan_barjas').checked;
                 let lampiran_spp_barjas = document.getElementById('lampiran_spp_barjas').checked;
 
+                if (!pengantar_spp_barjas && !spp_barjas && !ringkasan_spp_barjas && !
+                    rincian_spp_barjas &&
+                    !pernyataan_barjas && !lampiran_spp_barjas) {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
+
                 // LS BARJAS TAMBAHAN PENGHASILAN
                 let salinan_barjas1 = document.getElementById('salinan_barjas1').checked;
                 let penerima_barjas1 = document.getElementById('penerima_barjas1').checked;
@@ -495,12 +561,27 @@
                 let ka_barjas1 = document.getElementById('ka_barjas1').checked;
                 let sse_barjas1 = document.getElementById('sse_barjas1').checked;
                 let sts_barjas1 = document.getElementById('sts_barjas1').checked;
+
+                if ((!salinan_barjas1 && !penerima_barjas1 && !absensi_barjas1 && !
+                        rekap_absensi_barjas1 &&
+                        !ka_barjas1 && !sse_barjas1 && !sts_barjas1) && status_verifikasi == '1' &&
+                    jenis_beban == '1') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
                 // LS BARJAS HONOR PNS
                 let salinan_barjas2 = document.getElementById('salinan_barjas2').checked;
                 let sk_barjas2 = document.getElementById('sk_barjas2').checked;
                 let terima_barjas2 = document.getElementById('terima_barjas2').checked;
                 let ka_barjas2 = document.getElementById('ka_barjas2').checked;
                 let sse_barjas2 = document.getElementById('sse_barjas2').checked;
+
+                if ((!salinan_barjas2 && !sk_barjas2 && !terima_barjas2 && !
+                        ka_barjas2 &&
+                        !sse_barjas2) && status_verifikasi == '1' && jenis_beban == '7') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
                 // LS BARJAS HONOR KONTRAK
                 let salinan_barjas3 = document.getElementById('salinan_barjas3').checked;
                 let sk_barjas3 = document.getElementById('sk_barjas3').checked;
@@ -509,6 +590,14 @@
                 let ka_barjas3 = document.getElementById('ka_barjas3').checked;
                 let sse_barjas3 = document.getElementById('sse_barjas3').checked;
                 let sse_pnbp_barjas3 = document.getElementById('sse_pnbp_barjas3').checked;
+
+                if ((!salinan_barjas3 && !sk_barjas3 && !spk_barjas3 && !
+                        terima_barjas3 &&
+                        !ka_barjas3 && !sse_barjas3 && !sse_pnbp_barjas3) && status_verifikasi == '1' &&
+                    jenis_beban == '4') {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
                 // LS BARJAS PIHAK KETIGA
                 let salinan_barjas4 = document.getElementById('salinan_barjas4').checked;
                 let nota_barjas4 = document.getElementById('nota_barjas4').checked;
@@ -528,12 +617,32 @@
                 let ffp_barjas4 = document.getElementById('ffp_barjas4').checked;
                 let sse_barjas4 = document.getElementById('sse_barjas4').checked;
                 let dokumen_barjas4 = document.getElementById('dokumen_barjas4').checked;
+
+                if ((!salinan_barjas4 && !nota_barjas4 && !kontrak_barjas4 && !
+                        kwintansi_barjas4 &&
+                        !referensi_barjas4 && !npwp_barjas4 && !jum_barjas4 && !jp_barjas4 && !
+                        ringkasan_barjas4 && !lkp_barjas4 && !bap1_barjas4 && !bap2_barjas4 && !
+                        bas_barjas4 && !bap3_barjas4 && !jppa_barjas4 && !ffp_barjas4 && !sse_barjas4 &&
+                        !
+                        dokumen_barjas4) && status_verifikasi == '1' && (jenis_beban == '5' ||
+                        jenis_beban == '6')) {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
                 // LS BARJAS KDH/WKDH
                 let salinan_barjas5 = document.getElementById('salinan_barjas5').checked;
                 let ka_barjas5 = document.getElementById('ka_barjas5').checked;
                 let penerima_barjas5 = document.getElementById('penerima_barjas5').checked;
                 let fakta_barjas5 = document.getElementById('fakta_barjas5').checked;
                 let syarat_barjas5 = document.getElementById('syarat_barjas5').checked;
+
+                if ((!salinan_barjas5 && !ka_barjas5 && !penerima_barjas5 && !
+                        fakta_barjas5 &&
+                        !syarat_barjas5) && status_verifikasi == '1' && (jenis_beban == '2' ||
+                        jenis_beban == '3')) {
+                    alert('Silahkan centang, jika ingin diterima');
+                    return;
+                }
 
                 let tanya = confirm("Apakah data yang diverifikasi sudah benar ?");
                 if (tanya == true) {
@@ -596,6 +705,7 @@
                             penerima_barjas5: penerima_barjas5,
                             fakta_barjas5: fakta_barjas5,
                             syarat_barjas5: syarat_barjas5,
+                            status_verifikasi: status_verifikasi,
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -605,7 +715,7 @@
                             if (data.message == '1') {
                                 alert('Data berhasil diverifikasi');
                                 $('#detail_spm').modal('hide');
-                                document.getElementById("form_detail").reset();
+                                // document.getElementById("form_detail").reset();
                                 daftar_spm.ajax.reload();
                             } else {
                                 alert('Data tidak berhasil diverifikasi!');
@@ -618,7 +728,7 @@
                 } else {
                     alert('Silahkan Cek lagi, Pastikan Data Sudah Benar...');
                     $('#detail_spm').modal('hide');
-                    document.getElementById("form_detail").reset();
+                    // document.getElementById("form_detail").reset();
                     daftar_spm.ajax.reload();
                     $('#simpan').prop("disabled", false);
                 }
@@ -627,7 +737,7 @@
     });
 
     function detail(no_spm, no_spp, jns_spp, kd_skpd, nm_skpd, jenis_beban, jenis_kelengkapan) {
-        document.getElementById("form_detail").reset();
+        // document.getElementById("form_detail").reset();
 
         $('#no_spm').val(no_spm);
         $('#no_spp').val(no_spp);
@@ -654,6 +764,7 @@
 
         $('#tgl_verifikasi').val(response.tgl_verifikasi);
         $('#keterangan_verifikasi').val(response.keterangan_verifikasi);
+        $('#status_verifikasi').val(response.status).change();
 
         if (jns_spp == '1') {
             $('#khusus_up').show();
@@ -937,6 +1048,126 @@
             $('#khusus_tu').hide();
             $('#khusus_ls_gaji').hide();
             $('#khusus_ls_ketiga').hide();
+
+            response.pengantar == 1 ? $('#pengantar_spp_barjas').prop('checked', true) : $('#pengantar_spp_barjas')
+                .prop('checked', false);
+            response.spp == 1 ? $('#spp_barjas').prop('checked', true) : $('#spp_barjas')
+                .prop('checked', false);
+            response.ringkasan == 1 ? $('#ringkasan_spp_barjas').prop('checked', true) : $('#ringkasan_spp_barjas')
+                .prop('checked', false);
+            response.spp == 1 ? $('#rincian_spp_barjas').prop('checked', true) : $('#rincian_spp_barjas')
+                .prop('checked', false);
+            response.pernyataan == 1 ? $('#pernyataan_barjas').prop('checked', true) : $('#pernyataan_barjas')
+                .prop('checked', false);
+            response.lampiran == 1 ? $('#lampiran_spp_barjas').prop('checked', true) : $('#lampiran_spp_barjas')
+                .prop('checked', false);
+
+            if (jenis_beban == '1') {
+                response.salinan == 1 ? $('#salinan_barjas1').prop('checked', true) : $('#salinan_barjas1')
+                    .prop('checked', false);
+            } else if (jenis_beban == '2' || jenis_beban == '3') {
+                response.salinan == 1 ? $('#salinan_barjas5').prop('checked', true) : $('#salinan_barjas5')
+                    .prop('checked', false);
+            } else if (jenis_beban == '4') {
+                response.salinan == 1 ? $('#salinan_barjas3').prop('checked', true) : $('#salinan_barjas3')
+                    .prop('checked', false);
+            } else if (jenis_beban == '5' || jenis_beban == '6') {
+                response.salinan == 1 ? $('#salinan_barjas4').prop('checked', true) : $('#salinan_barjas4')
+                    .prop('checked', false);
+            } else if (jenis_beban == '7') {
+                response.salinan == 1 ? $('#salinan_barjas2').prop('checked', true) : $('#salinan_barjas2')
+                    .prop('checked', false);
+            }
+
+            response.penerima_tpp_barjas == 1 ? $('#penerima_barjas1').prop('checked', true) : $('#penerima_barjas1')
+                .prop('checked', false);
+            response.absensi_tpp_barjas == 1 ? $('#absensi_barjas1').prop('checked', true) : $('#absensi_barjas1')
+                .prop('checked', false);
+            response.rekap_absensi_tpp_barjas == 1 ? $('#rekap_absensi_barjas1').prop('checked', true) : $(
+                    '#rekap_absensi_barjas1')
+                .prop('checked', false);
+            response.ka_tpp_barjas == 1 ? $('#ka_barjas1').prop('checked', true) : $('#ka_barjas1')
+                .prop('checked', false);
+            response.sse_tpp_barjas == 1 ? $('#sse_barjas1').prop('checked', true) : $('#sse_barjas1')
+                .prop('checked', false);
+            response.sts_tpp_barjas == 1 ? $('#sts_barjas1').prop('checked', true) : $('#sts_barjas1')
+                .prop('checked', false);
+
+            response.sk_pns_barjas == 1 ? $('#sk_barjas2').prop('checked', true) : $('#sk_barjas2')
+                .prop('checked', false);
+            response.terima_pns_barjas == 1 ? $('#terima_barjas2').prop('checked', true) : $('#terima_barjas2')
+                .prop('checked', false);
+            response.ka_pns_barjas == 1 ? $('#ka_barjas2').prop('checked', true) : $(
+                    '#ka_barjas2')
+                .prop('checked', false);
+            response.sse_pns_barjas == 1 ? $('#sse_barjas2').prop('checked', true) : $('#sse_barjas2')
+                .prop('checked', false);
+
+            response.sk_kontrak_barjas == 1 ? $('#sk_barjas3').prop('checked', true) : $('#sk_barjas3')
+                .prop('checked', false);
+            response.spk_kontrak_barjas == 1 ? $('#spk_barjas3').prop('checked', true) : $('#spk_barjas3')
+                .prop('checked', false);
+            response.terima_kontrak_barjas == 1 ? $('#terima_barjas3').prop('checked', true) : $(
+                    '#terima_barjas3')
+                .prop('checked', false);
+            response.ka_kontrak_barjas == 1 ? $('#ka_barjas3').prop('checked', true) : $('#ka_barjas3')
+                .prop('checked', false);
+            response.sse_kontrak_barjas == 1 ? $('#sse_barjas3').prop('checked', true) : $('#sse_barjas3')
+                .prop('checked', false);
+            response.ssepnbp_kontrak_barjas == 1 ? $('#sse_pnbp_barjas3').prop('checked', true) : $('#sse_pnbp_barjas3')
+                .prop('checked', false);
+
+            response.nota_jasa_barjas == 1 ? $('#nota_barjas4').prop('checked', true) : $('#nota_barjas4')
+                .prop('checked', false);
+            response.kontrak_jasa_barjas == 1 ? $('#kontrak_barjas4').prop('checked', true) : $('#kontrak_barjas4')
+                .prop('checked', false);
+            response.kwintansi_jasa_barjas == 1 ? $('#kwintansi_barjas4').prop('checked', true) : $(
+                    '#kwintansi_barjas4')
+                .prop('checked', false);
+            response.referensi_jasa_barjas == 1 ? $('#referensi_barjas4').prop('checked', true) : $(
+                    '#referensi_barjas4')
+                .prop('checked', false);
+            response.npwp_jasa_barjas == 1 ? $('#npwp_barjas4').prop('checked', true) : $('#npwp_barjas4')
+                .prop('checked', false);
+            response.jum_jasa_barjas == 1 ? $('#jum_barjas4').prop('checked', true) : $('#jum_barjas4')
+                .prop('checked', false);
+
+            response.jp_jasa_barjas == 1 ? $('#jp_barjas4').prop('checked', true) : $('#jp_barjas4')
+                .prop('checked', false);
+            response.ringkasan_jasa_barjas == 1 ? $('#ringkasan_barjas4').prop('checked', true) : $(
+                    '#ringkasan_barjas4')
+                .prop('checked', false);
+            response.lkp_jasa_barjas == 1 ? $('#lkp_barjas4').prop('checked', true) : $(
+                    '#lkp_barjas4')
+                .prop('checked', false);
+            response.bap1_jasa_barjas == 1 ? $('#bap1_barjas4').prop('checked', true) : $('#bap1_barjas4')
+                .prop('checked', false);
+            response.bap2_jasa_barjas == 1 ? $('#bap2_barjas4').prop('checked', true) : $('#bap2_barjas4')
+                .prop('checked', false);
+            response.bas_jasa_barjas == 1 ? $('#bas_barjas4').prop('checked', true) : $('#bas_barjas4')
+                .prop('checked', false);
+
+            response.bap3_jasa_barjas == 1 ? $('#bap3_barjas4').prop('checked', true) : $('#bap3_barjas4')
+                .prop('checked', false);
+            response.jppa_jasa_barjas == 1 ? $('#jppa_barjas4').prop('checked', true) : $('#jppa_barjas4')
+                .prop('checked', false);
+            response.ffp_jasa_barjas == 1 ? $('#ffp_barjas4').prop('checked', true) : $(
+                    '#ffp_barjas4')
+                .prop('checked', false);
+            response.sse_jasa_barjas == 1 ? $('#sse_barjas4').prop('checked', true) : $('#sse_barjas4')
+                .prop('checked', false);
+            response.dokumen_jasa_barjas == 1 ? $('#dokumen_barjas4').prop('checked', true) : $('#dokumen_barjas4')
+                .prop('checked', false);
+
+            response.ka_kdh_barjas == 1 ? $('#ka_barjas5').prop('checked', true) : $('#ka_barjas5')
+                .prop('checked', false);
+            response.penerima_kdh_barjas == 1 ? $('#penerima_barjas5').prop('checked', true) : $('#penerima_barjas5')
+                .prop('checked', false);
+            response.fakta_kdh_barjas == 1 ? $('#fakta_barjas5').prop('checked', true) : $(
+                    '#fakta_barjas5')
+                .prop('checked', false);
+            response.syarat_barjas == 1 ? $('#syarat_barjas5').prop('checked', true) : $('#syarat_barjas5')
+                .prop('checked', false);
 
             $('#khusus_ls_barjas').show();
 

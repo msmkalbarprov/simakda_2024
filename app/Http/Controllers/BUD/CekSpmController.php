@@ -69,6 +69,8 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
+
         $pengantar_spp_up = $this->cekData($request->pengantar_spp_up);
         $spp_up = $this->cekData($request->spp_up);
         $ringkasan_spp_up = $this->cekData($request->ringkasan_spp_up);
@@ -94,6 +96,7 @@ class CekSpmController extends Controller
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
                         'updated_at' => date('Y-m-d H:i:s'),
+                        'status' => $status_verifikasi,
                         'pengantar' => $pengantar_spp_up,
                         'spp' => $spp_up,
                         'ringkasan' => $ringkasan_spp_up,
@@ -114,6 +117,7 @@ class CekSpmController extends Controller
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
                         'updated_at' => date('Y-m-d H:i:s'),
+                        'status' => $status_verifikasi,
                         'pengantar' => $pengantar_spp_up,
                         'spp' => $spp_up,
                         'ringkasan' => $ringkasan_spp_up,
@@ -147,6 +151,8 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
+
         $pengantar_spp_gu = $this->cekData($request->pengantar_spp_gu);
         $spp_gu = $this->cekData($request->spp_gu);
         $ringkasan_spp_gu = $this->cekData($request->ringkasan_spp_gu);
@@ -173,6 +179,7 @@ class CekSpmController extends Controller
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
                         'updated_at' => date('Y-m-d H:i:s'),
+                        'status' => $status_verifikasi,
                         'pengantar' => $pengantar_spp_gu,
                         'spp' => $spp_gu,
                         'ringkasan' => $ringkasan_spp_gu,
@@ -194,6 +201,7 @@ class CekSpmController extends Controller
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
                         'updated_at' => date('Y-m-d H:i:s'),
+                        'status' => $status_verifikasi,
                         'pengantar' => $pengantar_spp_gu,
                         'spp' => $spp_gu,
                         'ringkasan' => $ringkasan_spp_gu,
@@ -228,6 +236,8 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
+
         $pengantar_spp_tu = $this->cekData($request->pengantar_spp_tu);
         $spp_tu = $this->cekData($request->spp_tu);
         $ringkasan_spp_tu = $this->cekData($request->ringkasan_spp_tu);
@@ -258,6 +268,7 @@ class CekSpmController extends Controller
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
                         'updated_at' => date('Y-m-d H:i:s'),
+                        'status' => $status_verifikasi,
                         'pengantar' => $pengantar_spp_tu,
                         'spp' => $spp_tu,
                         'ringkasan' => $ringkasan_spp_tu,
@@ -281,6 +292,7 @@ class CekSpmController extends Controller
                         'tgl_verifikasi' => $tgl_verifikasi,
                         'keterangan_verifikasi' => $keterangan_verifikasi,
                         'user_verifikasi' => Auth::user()->nama,
+                        'status' => $status_verifikasi,
                         'updated_at' => date('Y-m-d H:i:s'),
                         'pengantar' => $pengantar_spp_tu,
                         'spp' => $spp_tu,
@@ -321,6 +333,8 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
+
         $pengantar_spp_gaji = $this->cekData($request->pengantar_spp_gaji);
         $spp_gaji = $this->cekData($request->spp_gaji);
         $ringkasan_spp_gaji = $this->cekData($request->ringkasan_spp_gaji);
@@ -361,6 +375,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_gaji,
                             'spp' => $spp_gaji,
                             'ringkasan' => $ringkasan_spp_gaji,
@@ -391,6 +406,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_gaji,
                             'spp' => $spp_gaji,
                             'ringkasan' => $ringkasan_spp_gaji,
@@ -419,6 +435,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_gaji,
                             'spp' => $spp_gaji,
@@ -451,6 +468,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_gaji,
                             'spp' => $spp_gaji,
                             'ringkasan' => $ringkasan_spp_gaji,
@@ -493,6 +511,7 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
 
         $pengantar_spp_ketiga = $this->cekData($request->pengantar_spp_ketiga);
         $spp_ketiga = $this->cekData($request->spp_ketiga);
@@ -529,6 +548,7 @@ class CekSpmController extends Controller
                         ->update([
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'status' => $status_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
@@ -551,6 +571,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -572,6 +593,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -590,6 +612,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -608,6 +631,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -628,6 +652,7 @@ class CekSpmController extends Controller
                             'kd_skpd' => $kd_skpd,
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'status' => $status_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
@@ -651,6 +676,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -673,6 +699,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -692,6 +719,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -711,6 +739,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_ketiga,
                             'spp' => $spp_ketiga,
@@ -746,6 +775,7 @@ class CekSpmController extends Controller
         $kd_skpd = $request->kd_skpd;
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
+        $status_verifikasi = $request->status_verifikasi;
 
         $pengantar_spp_barjas = $this->cekData($request->pengantar_spp_barjas);
         $spp_barjas = $this->cekData($request->spp_barjas);
@@ -816,6 +846,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
@@ -839,6 +870,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -859,6 +891,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -881,6 +914,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -914,6 +948,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -936,6 +971,7 @@ class CekSpmController extends Controller
                             'tgl_verifikasi' => $tgl_verifikasi,
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
+                            'status' => $status_verifikasi,
                             'updated_at' => date('Y-m-d H:i:s'),
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
@@ -960,6 +996,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -981,6 +1018,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -1004,6 +1042,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
@@ -1038,6 +1077,7 @@ class CekSpmController extends Controller
                             'keterangan_verifikasi' => $keterangan_verifikasi,
                             'user_verifikasi' => Auth::user()->nama,
                             'updated_at' => date('Y-m-d H:i:s'),
+                            'status' => $status_verifikasi,
                             'pengantar' => $pengantar_spp_barjas,
                             'spp' => $spp_barjas,
                             'ringkasan' => $ringkasan_spp_barjas,
