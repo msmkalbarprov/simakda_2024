@@ -671,9 +671,11 @@
                 return;
             }
 
-            if (nilai > sisa_angkas) {
-                alert('Nilai Transaksi melebihi Sisa Anggaran Kas');
-                return;
+            if (beban == '1') {
+                if (nilai > sisa_angkas) {
+                    alert('Nilai Transaksi melebihi Sisa Anggaran Kas');
+                    return;
+                }
             }
 
             if (nilai > sisa_anggaran) {
