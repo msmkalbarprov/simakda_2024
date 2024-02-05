@@ -494,6 +494,259 @@ class CekSpmController extends Controller
         $tgl_verifikasi = $request->tgl_verifikasi;
         $keterangan_verifikasi = $request->keterangan_verifikasi;
 
+        $pengantar_spp_ketiga = $this->cekData($request->pengantar_spp_ketiga);
+        $spp_ketiga = $this->cekData($request->spp_ketiga);
+        $ringkasan_spp_ketiga = $this->cekData($request->ringkasan_spp_ketiga);
+        $rincian_spp_ketiga = $this->cekData($request->rincian_spp_ketiga);
+        $pernyataan_ketiga = $this->cekData($request->pernyataan_ketiga);
+        $lampiran_spp_ketiga = $this->cekData($request->lampiran_spp_ketiga);
+        $proposal_bansos_ketiga = $this->cekData($request->proposal_bansos_ketiga);
+        $kepgub_bansos_ketiga = $this->cekData($request->kepgub_bansos_ketiga);
+        $nphd_ketiga = $this->cekData($request->nphd_ketiga);
+        $kab_ketiga = $this->cekData($request->kab_ketiga);
+        $penerima_bansos_ketiga = $this->cekData($request->penerima_bansos_ketiga);
+        $penerima_hibah_ketiga = $this->cekData($request->penerima_hibah_ketiga);
+        $sptjm_hibah_ketiga = $this->cekData($request->sptjm_hibah_ketiga);
+        $sptjm_bansos_ketiga = $this->cekData($request->sptjm_bansos_ketiga);
+        $kepgub_bankeu_ketiga = $this->cekData($request->kepgub_bankeu_ketiga);
+        $sk_kud_ketiga = $this->cekData($request->sk_kud_ketiga);
+        $kepgub_bagihasil_ketiga = $this->cekData($request->kepgub_bagihasil_ketiga);
+        $fc_bagihasil_ketiga = $this->cekData($request->fc_bagihasil_ketiga);
+        $sptjm_pembiayaan_ketiga = $this->cekData($request->sptjm_pembiayaan_ketiga);
+        $syarat_lain_ketiga = $this->cekData($request->syarat_lain_ketiga);
+
+        DB::beginTransaction();
+
+        try {
+            $cek = DB::table('validasi_spm')
+                ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                ->count();
+
+            if ($cek > 0) {
+                if ($jenis_beban == '1') {
+                    DB::table('validasi_spm')
+                        ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'proposal_bansos_ketiga' => $proposal_bansos_ketiga,
+                            'nphd_ketiga' => $nphd_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'penerima_hibah_ketiga' => $penerima_hibah_ketiga,
+                            'sptjm_hibah_ketiga' => $sptjm_hibah_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '2') {
+                    DB::table('validasi_spm')
+                        ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'proposal_bansos_ketiga' => $proposal_bansos_ketiga,
+                            'kepgub_bansos_ketiga' => $kepgub_bansos_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'penerima_bansos_ketiga' => $penerima_bansos_ketiga,
+                            'sptjm_bansos_ketiga' => $sptjm_bansos_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '3') {
+                    DB::table('validasi_spm')
+                        ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kepgub_bankeu_ketiga' => $kepgub_bankeu_ketiga,
+                            'sk_kud_ketiga' => $sk_kud_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '5') {
+                    DB::table('validasi_spm')
+                        ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kepgub_bagihasil_ketiga' => $kepgub_bagihasil_ketiga,
+                            'fc_bagihasil_ketiga' => $fc_bagihasil_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '8') {
+                    DB::table('validasi_spm')
+                        ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+                        ->update([
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'sptjm_pembiayaan_ketiga' => $sptjm_pembiayaan_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                }
+            } else {
+                if ($jenis_beban == '1') {
+                    DB::table('validasi_spm')
+                        ->insert([
+                            'no_spm' => $no_spm,
+                            'kd_skpd' => $kd_skpd,
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'proposal_bansos_ketiga' => $proposal_bansos_ketiga,
+                            'nphd_ketiga' => $nphd_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'penerima_hibah_ketiga' => $penerima_hibah_ketiga,
+                            'sptjm_hibah_ketiga' => $sptjm_hibah_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '2') {
+                    DB::table('validasi_spm')
+                        ->insert([
+                            'no_spm' => $no_spm,
+                            'kd_skpd' => $kd_skpd,
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'proposal_bansos_ketiga' => $proposal_bansos_ketiga,
+                            'kepgub_bansos_ketiga' => $kepgub_bansos_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'penerima_bansos_ketiga' => $penerima_bansos_ketiga,
+                            'sptjm_bansos_ketiga' => $sptjm_bansos_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '3') {
+                    DB::table('validasi_spm')
+                        ->insert([
+                            'no_spm' => $no_spm,
+                            'kd_skpd' => $kd_skpd,
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kepgub_bankeu_ketiga' => $kepgub_bankeu_ketiga,
+                            'sk_kud_ketiga' => $sk_kud_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '5') {
+                    DB::table('validasi_spm')
+                        ->insert([
+                            'no_spm' => $no_spm,
+                            'kd_skpd' => $kd_skpd,
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kepgub_bagihasil_ketiga' => $kepgub_bagihasil_ketiga,
+                            'fc_bagihasil_ketiga' => $fc_bagihasil_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                } elseif ($jenis_beban == '8') {
+                    DB::table('validasi_spm')
+                        ->insert([
+                            'no_spm' => $no_spm,
+                            'kd_skpd' => $kd_skpd,
+                            'tgl_verifikasi' => $tgl_verifikasi,
+                            'keterangan_verifikasi' => $keterangan_verifikasi,
+                            'user_verifikasi' => Auth::user()->nama,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'pengantar' => $pengantar_spp_ketiga,
+                            'spp' => $spp_ketiga,
+                            'ringkasan' => $ringkasan_spp_ketiga,
+                            'rincian' => $rincian_spp_ketiga,
+                            'pernyataan' => $pernyataan_ketiga,
+                            'lampiran' => $lampiran_spp_ketiga,
+                            'kab_ketiga' => $kab_ketiga,
+                            'sptjm_pembiayaan_ketiga' => $sptjm_pembiayaan_ketiga,
+                            'syarat_lain_ketiga' => $syarat_lain_ketiga,
+                        ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    // CLEAR
+    public function simpanBarjas(Request $request)
+    {
+        $jenis_beban = $request->jenis_beban;
+        $no_spm = $request->no_spm;
+        $kd_skpd = $request->kd_skpd;
+        $tgl_verifikasi = $request->tgl_verifikasi;
+        $keterangan_verifikasi = $request->keterangan_verifikasi;
+
         $pengantar_spp_barjas = $this->cekData($request->pengantar_spp_barjas);
         $spp_barjas = $this->cekData($request->spp_barjas);
         $ringkasan_spp_barjas = $this->cekData($request->ringkasan_spp_barjas);
