@@ -2266,6 +2266,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('simpan_gaji', [CekSpmController::class, 'simpanGaji'])->name('cek_spm.simpan_gaji');
         // LS PIHAK KETIGA
         Route::post('simpan_ketiga', [CekSpmController::class, 'simpanKetiga'])->name('cek_spm.simpan_ketiga');
+        // LS BARANG JASA
+        Route::post('simpan_barjas', [CekSpmController::class, 'simpanBarjas'])->name('cek_spm.simpan_barjas');
     });
 
     Route::get('pengumuman_list', [HomeController::class, 'pengumuman'])->name('notification');
