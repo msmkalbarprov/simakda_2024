@@ -143,7 +143,7 @@ use App\Http\Controllers\Skpd\ValKKPDController;
 use App\Http\Controllers\Skpd\VerifikasiKKPDController;
 use App\Http\Controllers\Skpd\VerifSp2dController;
 use App\Http\Controllers\SP2BPController;
-use App\Http\Controllers\TukarSp2dController;
+// use App\Http\Controllers\TukarSp2dController;
 use App\Http\Controllers\Utility\BankController;
 use Illuminate\Support\Facades\Http;
 
@@ -159,7 +159,7 @@ Route::get('/coba_coba', function () {
 // Route::get('/simakda_2023', function () {
 //     return view('auth.login');
 // });
-Route::get('', [LoginController::class, 'index'])->name('login');
+Route::get('', [LoginController::class, 'index'])->name('login')->middleware('guest');
 // Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
 // Auth::routes();
@@ -2194,21 +2194,21 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::group(['prefix' => 'tukar_sp2d'], function () {
-        Route::get('', [TukarSp2dController::class, 'index'])->name('tukar_sp2d.index');
-        Route::post('load_data', [TukarSp2dController::class, 'load'])->name('tukar_sp2d.load_data');
-        Route::get('tambah', [TukarSp2dController::class, 'create'])->name('tukar_sp2d.create');
-        Route::post('cari_spm', [TukarSp2dController::class, 'cariSpm'])->name('tukar_sp2d.cari_spm');
-        Route::post('cari_jenis', [TukarSp2dController::class, 'cariJenis'])->name('tukar_sp2d.cari_jenis');
-        Route::post('cari_bulan', [TukarSp2dController::class, 'cariBulan'])->name('tukar_sp2d.cari_bulan');
-        Route::post('load_rincian_spm', [TukarSp2dController::class, 'loadRincianSpm'])->name('tukar_sp2d.load_rincian_spm');
-        Route::post('load_rincian_potongan', [TukarSp2dController::class, 'loadRincianPotongan'])->name('tukar_sp2d.load_rincian_potongan');
-        Route::post('cari_total', [TukarSp2dController::class, 'cariTotal'])->name('tukar_sp2d.cari_total');
-        Route::post('cari_nomor', [TukarSp2dController::class, 'cariNomor'])->name('tukar_sp2d.cari_nomor');
-        Route::post('simpan_sp2d', [TukarSp2dController::class, 'simpanSp2d'])->name('tukar_sp2d.simpan_sp2d');
-        Route::post('batal_sp2d', [TukarSp2dController::class, 'batalSp2d'])->name('tukar_sp2d.batal_sp2d');
-        Route::get('tampil/{no_sp2d?}', [TukarSp2dController::class, 'tampilSp2d'])->name('tukar_sp2d.tampil');
-    });
+    // Route::group(['prefix' => 'tukar_sp2d'], function () {
+    //     Route::get('', [TukarSp2dController::class, 'index'])->name('tukar_sp2d.index');
+    //     Route::post('load_data', [TukarSp2dController::class, 'load'])->name('tukar_sp2d.load_data');
+    //     Route::get('tambah', [TukarSp2dController::class, 'create'])->name('tukar_sp2d.create');
+    //     Route::post('cari_spm', [TukarSp2dController::class, 'cariSpm'])->name('tukar_sp2d.cari_spm');
+    //     Route::post('cari_jenis', [TukarSp2dController::class, 'cariJenis'])->name('tukar_sp2d.cari_jenis');
+    //     Route::post('cari_bulan', [TukarSp2dController::class, 'cariBulan'])->name('tukar_sp2d.cari_bulan');
+    //     Route::post('load_rincian_spm', [TukarSp2dController::class, 'loadRincianSpm'])->name('tukar_sp2d.load_rincian_spm');
+    //     Route::post('load_rincian_potongan', [TukarSp2dController::class, 'loadRincianPotongan'])->name('tukar_sp2d.load_rincian_potongan');
+    //     Route::post('cari_total', [TukarSp2dController::class, 'cariTotal'])->name('tukar_sp2d.cari_total');
+    //     Route::post('cari_nomor', [TukarSp2dController::class, 'cariNomor'])->name('tukar_sp2d.cari_nomor');
+    //     Route::post('simpan_sp2d', [TukarSp2dController::class, 'simpanSp2d'])->name('tukar_sp2d.simpan_sp2d');
+    //     Route::post('batal_sp2d', [TukarSp2dController::class, 'batalSp2d'])->name('tukar_sp2d.batal_sp2d');
+    //     Route::get('tampil/{no_sp2d?}', [TukarSp2dController::class, 'tampilSp2d'])->name('tukar_sp2d.tampil');
+    // });
 
     // Koreksi SP2D/SPM/SPP/PENAGIHAN
     Route::group(['prefix' => 'koreksi_data'], function () {
@@ -2297,8 +2297,8 @@ Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middlew
 
 // Route::get('coba', [HomeController::class, 'coba'])->name('coba');
 
-Route::post('login', [LoginController::class, 'authenticate'])->name('login.index')->middleware(['throttle:3,1']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('login', [LoginController::class, 'authenticate'])->name('login.index')->middleware(['throttle:3,1', 'guest']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::get('403', function () {
     return abort(401);

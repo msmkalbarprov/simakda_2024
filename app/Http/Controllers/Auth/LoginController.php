@@ -25,7 +25,8 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers, ThrottlesLogins;
+    // use AuthenticatesUsers, ThrottlesLogins;
+    use ThrottlesLogins;
 
     // protected $redirectTo = RouteServiceProvider::HOME;
 
