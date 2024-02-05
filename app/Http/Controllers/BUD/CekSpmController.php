@@ -106,7 +106,6 @@ class CekSpmController extends Controller
                         'salinan_spd' => $salinan_spd_up,
                         'rekening_koran_up' => $rekening_koran_up,
                         'kepgub_up' => $keputusan_gubernur_up,
-                        'status' => '0'
                     ]);
             } else {
                 DB::table('validasi_spm')
@@ -127,7 +126,6 @@ class CekSpmController extends Controller
                         'salinan_spd' => $salinan_spd_up,
                         'rekening_koran_up' => $rekening_koran_up,
                         'kepgub_up' => $keputusan_gubernur_up,
-                        'status' => '0'
                     ]);
             }
 
@@ -190,7 +188,6 @@ class CekSpmController extends Controller
                         'lpj_gu' => $lpj_gu,
                         'sptb_gu' => $sptb_gu,
                         'sse_gu' => $sse_gu,
-                        'status' => '0'
                     ]);
             } else {
                 DB::table('validasi_spm')
@@ -212,7 +209,6 @@ class CekSpmController extends Controller
                         'lpj_gu' => $lpj_gu,
                         'sptb_gu' => $sptb_gu,
                         'sse_gu' => $sse_gu,
-                        'status' => '0'
                     ]);
             }
 
