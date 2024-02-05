@@ -170,17 +170,17 @@ class LaporanRegPajakController extends Controller
                                 SELECT
                                 SUM(CASE WHEN b.kd_rek6 in ('210108010001') THEN b.nilai ELSE 0 END) AS iwp
                                 ,SUM(CASE WHEN b.kd_rek6='210107010001' THEN b.nilai ELSE 0 END) AS taperum
-                                ,SUM(CASE WHEN b.map_pot='210102010001c' THEN b.nilai ELSE 0 END) AS ppnpn1persen
-                                ,SUM(CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END) AS ppnpn4persen
+                                ,SUM(CASE WHEN b.map_pot='21010201000104' THEN b.nilai ELSE 0 END) AS ppnpn1persen
+                                ,SUM(CASE WHEN b.map_pot='21010201000105' THEN b.nilai ELSE 0 END) AS ppnpn4persen
                                 ,SUM(CASE WHEN b.kd_rek6='210103010001' THEN b.nilai ELSE 0 END) AS jkk
                                 ,SUM(CASE WHEN b.kd_rek6='210104010001' THEN b.nilai ELSE 0 END) AS jkm
-                                ,SUM(CASE WHEN b.map_pot IN ('210102010001','210102010001a','210102010001b') THEN b.nilai ELSE 0 END) AS bpjs
+                                ,SUM(CASE WHEN b.map_pot IN ('21010201000101','21010201000102','21010201000103') THEN b.nilai ELSE 0 END) AS bpjs
                                 ,SUM(b.nilai) as terima,
                                 0 as setor
                                 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
                                 AND MONTH(a.tgl_bukti)< ?
                                 -- AND b.kd_rek6 IN ('210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
-                                AND b.map_pot IN ('210108010001c','210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                AND b.map_pot IN ('21010801000104','21010801000103','21010801000102','21010701000101','21010201000102','21010201000103','21010201000104','21010201000105','21010301000101','21010401000101','21010201000101')
                                 UNION ALL
                                 SELECT
                                     0 AS iwp
@@ -200,16 +200,16 @@ class LaporanRegPajakController extends Controller
                                     SELECT
                                     a.no_bukti,tgl_bukti, ket
                                     ,CASE WHEN b.kd_rek6='210108010001' THEN b.nilai ELSE 0 END AS iwp
-                                    ,CASE WHEN b.map_pot='210107010001' THEN b.nilai ELSE 0 END AS taperum
-                                    ,CASE WHEN b.map_pot='210102010001c' THEN b.nilai ELSE 0 END AS ppnpn1persen
-                                    ,CASE WHEN b.map_pot='210102010001d' THEN b.nilai ELSE 0 END AS ppnpn4persen
-                                    ,CASE WHEN b.map_pot='210103010001' THEN b.nilai ELSE 0 END AS jkk
-                                    ,CASE WHEN b.map_pot='210104010001' THEN b.nilai ELSE 0 END AS jkm
-                                    ,CASE WHEN b.map_pot in ('210102010001','210102010001a','210102010001b') THEN b.nilai ELSE 0 END AS bpjs,
+                                    ,CASE WHEN b.map_pot='21010701000101' THEN b.nilai ELSE 0 END AS taperum
+                                    ,CASE WHEN b.map_pot='21010201000104' THEN b.nilai ELSE 0 END AS ppnpn1persen
+                                    ,CASE WHEN b.map_pot='21010201000105' THEN b.nilai ELSE 0 END AS ppnpn4persen
+                                    ,CASE WHEN b.map_pot='21010301000101' THEN b.nilai ELSE 0 END AS jkk
+                                    ,CASE WHEN b.map_pot='21010401000101' THEN b.nilai ELSE 0 END AS jkm
+                                    ,CASE WHEN b.map_pot in ('21010201000101','21010201000102','21010201000103') THEN b.nilai ELSE 0 END AS bpjs,
                                     b.nilai as terima,
                                     0 as setor
                                     FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('210108010001c','210108010001b','210108010001a','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')
+                                    AND MONTH(a.tgl_bukti)= ?  AND b.map_pot IN ('21010801000104','21010801000103','21010801000102','21010701000101','21010201000102','21010201000103','21010201000104','21010201000105','21010301000101','21010401000101','21010201000101')
                                     UNION ALL
                                     SELECT
                                     a.no_bukti,tgl_bukti, ket
@@ -223,7 +223,7 @@ class LaporanRegPajakController extends Controller
                                     ,0 as terima,
                                     b.nilai as setor
                                     FROM trhstrpot a INNER JOIN trdstrpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?
-                                    AND MONTH(a.tgl_bukti)= ? AND b.map_pot IN ('210108010001c','210108010001b','210108010001a','210108010001','210107010001','210102010001a','210102010001b','210102010001c','210102010001d','210103010001','210104010001','210102010001')) a
+                                    AND MONTH(a.tgl_bukti)= ? AND b.map_pot IN ('21010801000104','21010801000103','21010801000102','21010801000101','21010701000101','21010201000102','21010201000103','21010201000104','21010201000105','21010301000101','21010401000101','21010201000101')) a
                                     ORDER BY CAST(a.no_bukti as int)", [$kd_skpd, $bulan, $kd_skpd, $bulan]);
 
         // KIRIM KE VIEW
@@ -372,17 +372,17 @@ class LaporanRegPajakController extends Controller
                                 ,0 AS pph22_ls
                                 ,0 AS pph23_ls
                                 ,0 AS pph4_ls
-                                ,SUM(CASE WHEN b.map_pot in ('210102010001c','210102010001a') THEN b.nilai ELSE 0 END) AS ppnpn1
-                                ,SUM(CASE WHEN b.map_pot in ('210102010001d','210102010001b') THEN b.nilai ELSE 0 END) AS ppnpn4
-                                ,SUM(CASE WHEN b.map_pot in ('210108010001c','210108010001b','210108010001a') THEN b.nilai ELSE 0 END) AS iwp
-                                ,SUM(CASE WHEN b.map_pot='210107010001' THEN b.nilai ELSE 0 END) AS taperum
-                                ,SUM(CASE WHEN b.map_pot='210103010001' THEN b.nilai ELSE 0 END) AS jkk
-                                ,SUM(CASE WHEN b.map_pot='210104010001' THEN b.nilai ELSE 0 END) AS jkm
-                                ,SUM(CASE WHEN b.map_pot='210102010001' THEN b.nilai ELSE 0 END) AS bpjs
+                                ,SUM(CASE WHEN b.map_pot in ('21010201000104','21010201000102') THEN b.nilai ELSE 0 END) AS ppnpn1
+                                ,SUM(CASE WHEN b.map_pot in ('21010201000105','21010201000103') THEN b.nilai ELSE 0 END) AS ppnpn4
+                                ,SUM(CASE WHEN b.map_pot in ('21010801000104','21010801000103','21010801000102') THEN b.nilai ELSE 0 END) AS iwp
+                                ,SUM(CASE WHEN b.map_pot='21010701000101' THEN b.nilai ELSE 0 END) AS taperum
+                                ,SUM(CASE WHEN b.map_pot='21010301000101' THEN b.nilai ELSE 0 END) AS jkk
+                                ,SUM(CASE WHEN b.map_pot='21010401000101' THEN b.nilai ELSE 0 END) AS jkm
+                                ,SUM(CASE WHEN b.map_pot='21010201000101' THEN b.nilai ELSE 0 END) AS bpjs
                                 ,SUM(b.nilai) as terima
                                 ,0 as setor
                                 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd= ?  and month(a.tgl_bukti)<= ?
-                                AND b.map_pot IN ('210102010001c','210102010001a','210102010001b','210102010001d','210108010001b','210108010001c','210108010001a','210107010001','210103010001','210104010001','210102010001')
+                                AND b.map_pot IN ('21010201000104','21010201000102','21010201000103','21010201000105','21010801000103','21010801000104','21010801000102','21010701000101','21010301000101','21010401000101','21010201000101')
                                 GROUP BY  MONTH(a.tgl_bukti)
 
                                 UNION ALL
