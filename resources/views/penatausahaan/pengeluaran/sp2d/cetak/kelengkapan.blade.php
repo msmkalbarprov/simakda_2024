@@ -368,9 +368,9 @@
 
     <table class="table" style="width: 100%">
         <tr>
-            <td style="text-align: center">Diperiksa dan diteruskan oleh</td>
+            <td style="text-align: center">Diperiksa dan diteruskan oleh:</td>
             <td style="margin: 2px 0px;text-align: center">
-                Diteliti dan dikerjakan oleh
+                Diverifikasi / dikerjakan oleh:
             </td>
         </tr>
         <tr>
@@ -378,7 +378,7 @@
                 {{ $ttd1->jabatan }}
             </td>
             <td style="padding-bottom: 50px;text-align: center">
-                {{ $ttd2->jabatan }}
+                {{-- {{ $ttd2->jabatan }} --}} Petugas Pelaksana
             </td>
         </tr>
         <tr>
