@@ -124,7 +124,7 @@
                         @elseif ($jenis == '5')
                             (Untuk Honorarium Tenaga Kontrak)
                         @elseif ($jenis == '6')
-                            (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
+                            Barang dan Jasa termasuk Hibah / Bantuan Sosial Dalam Bentuk Barang Dan Jasa
                         @elseif ($jenis == '7')
                             (Untuk Pengadaan Konsumsi)
                         @elseif ($jenis == '8')
@@ -184,8 +184,46 @@
                         SPM-TU
                     @elseif ($beban == '4')
                         SPM-LS Gaji dan Tunjangan
-                    @elseif (in_array($beban, ['5', '6']))
+                    @elseif ($beban == '5')
                         SPM-LS
+                    @elseif ($beban == '6')
+                        @if ($jenis == '1')
+                            SPM-LS Gaji Induk, Gaji Terusan, Kekurangan Gaji
+                        @elseif ($jenis == '3')
+                            SPM-LS Tambahan Penghasilan
+                        @elseif ($jenis == '4')
+                            SPM-LS Honorarium PNS
+                        @elseif ($jenis == '5')
+                            SPM-LS Honorarium Tenaga Kontrak
+                        @elseif ($jenis == '6')
+                            SPM-LS Barang dan Jasa termasuk Hibah / Bantuan Sosial Dalam Bentuk Barang Dan Jasa
+                        @elseif ($jenis == '7')
+                            SPM-LS Pengadaan Konsumsi
+                        @elseif ($jenis == '8')
+                            SPM-LS Sewa Rumah Jabatan/Gedung untuk Kantor/
+                            Pertemuan/Tempat
+                            Pertemuan/Tempat Penginapan/Kendaraan)</h3>
+                        @elseif ($jenis == '9')
+                            SPM-LS Pengadaan Sertifikat Tanah
+                        @elseif ($jenis == '10')
+                            SPM-LS Pengadaan Tanah
+                        @elseif ($jenis == '11')
+                            SPM-LS Hibah Barang dan Jasa pada Pihak Ketiga
+                        @elseif ($jenis == '12')
+                            SPM-LS LS Bantuan Sosial pada Pihak Ketiga
+                        @elseif ($jenis == '13')
+                            SPM-LS Hibah Uang Pada Pihak Ketiga
+                        @elseif ($jenis == '14')
+                            SPM-LS Bantuan Keuangan Pada Kabupaten/Kota
+                        @elseif ($jenis == '15')
+                            SPM-LS Bagi Hasil Pajak dan Bukan Pajak
+                        @elseif ($jenis == '16')
+                            SPM-LS Hibah Konstruksi Pada Pihak Ketiga
+                        @elseif ($jenis == '98')
+                            (Belanja Operasional KDH/WKDH dan Pimpinan DPRD)
+                        @elseif ($jenis == '99')
+                            SPM-LS Honorarium PNS
+                        @endif
                     @endif
                 </td>
             </tr>
@@ -280,7 +318,7 @@
                         @elseif ($jenis == '5')
                             Honorarium Tenaga Kontrak
                         @elseif ($jenis == '6')
-                            Pengadaan Barang dan Jasa/Konstruksi/Konsultansi
+                            Barang dan Jasa termasuk Hibah / Bantuan Sosial Dalam Bentuk Barang Dan Jasa
                         @elseif ($jenis == '7')
                             Pengadaan Konsumsi
                         @elseif ($jenis == '8')

@@ -77,47 +77,121 @@
         <td style="border: 1px solid black;width:10%"></td>
     </tr>
 @elseif (in_array($beban, ['5', '6']))
-    <tr>
-        <td class="a1">a. SPM-LS</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a1">b. Ringkasan SPM-LS</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a1">c. Lampiran SPM Gaji LS</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a2">- Laporan Penelitian Kelengkapan Dokumen Penerbitan</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a2">- Daftar tanda terima pembayaran Honor yang sudah ditandatangan (Tanda Tangan pembuat daftar,
-            mengetahui PPTK dan setuju dibayar PA/KPA)</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a2">- Surat Setoran Elektronik (SSE BPJS 2 % dan 3 %</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a2">- Surat Pernyataan Tanggungjawab Mutlak</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
-    <tr>
-        <td class="a2">- Syarat-syarat lainnya sesuai ketentuan yang berlaku</td>
-        <td style="border: 1px solid black;width:10%"></td>
-        <td style="border: 1px solid black;width:10%"></td>
-    </tr>
+    @if ($beban == '6' && ($jenis == '5' || $jenis == '6'))
+        <tr>
+            <td class="a1">a. SPM-LS Barang dan Jasa</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggungjawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD dan lembar <i>checklist</i> kelengkapan dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Ringkasan Kontrak
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. Referensi/Fotocopy Rekening Bank
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Foto Copy NPWP
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Jaminan Uang Muka
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">h. Jaminan Pemeliharaan
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">i. Berita Acara Pembiayaan
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">j. Faktur Pajak
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">k. <i>e</i>-Billing (PPn dan PPh)
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">l. Dokumen lain yang diperlukan
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @else
+        <tr>
+            <td class="a1">a. SPM-LS</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Ringkasan SPM-LS</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Lampiran SPM Gaji LS</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a2">- Laporan Penelitian Kelengkapan Dokumen Penerbitan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a2">- Daftar tanda terima pembayaran Honor yang sudah ditandatangan (Tanda Tangan pembuat
+                daftar,
+                mengetahui PPTK dan setuju dibayar PA/KPA)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a2">- Surat Setoran Elektronik (SSE BPJS 2 % dan 3 %</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a2">- Surat Pernyataan Tanggungjawab Mutlak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a2">- Syarat-syarat lainnya sesuai ketentuan yang berlaku</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @endif
 @elseif ($beban == '4')
     <tr>
         <td class="a1">a. SPM-LS Gaji dan Tunjangan</td>
