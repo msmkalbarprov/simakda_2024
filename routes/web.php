@@ -147,18 +147,6 @@ use App\Http\Controllers\SP2BPController;
 use App\Http\Controllers\Utility\BankController;
 use Illuminate\Support\Facades\Http;
 
-Route::get('/coba_coba', function () {
-    $data = Http::withHeaders([
-        'Content-Type' => 'application/json',
-    ])->post('https://mr-keuda.kalbarprov.go.id/api/get_token', [
-        'key' => 'AENao6JDrf9+xCSwJks18IghphTdQuvcOBcVc7abvCo0WeZSDxm/9IPy+2EaqnVG',
-    ]);
-
-    dd($data->json());
-});
-// Route::get('/simakda_2023', function () {
-//     return view('auth.login');
-// });
 Route::get('', [LoginController::class, 'index'])->name('login')->middleware('guest');
 // Route::get('coba', [PenerimaController::class, 'coba'])->name('penerima.coba');
 
