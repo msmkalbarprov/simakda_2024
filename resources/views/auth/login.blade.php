@@ -184,6 +184,8 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
+                                        <input type="hidden" name="cek"
+                                            value="{{ Auth::check() ? auth()->user->id : '' }}">
                                     </div>
                                     <div class="mb-3">
                                         <div class="float-end">
