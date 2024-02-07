@@ -29,7 +29,7 @@
                 "url": "{{ route('sp2d.load_data') }}",
                 "type": "POST",
                 "data": function(d) {
-                    "_token": "{{ csrf_token() }}";
+                    "_token" = "{{ csrf_token() }}";
                     d.tipe = document.getElementById('tipe').value;
                 },
             },
