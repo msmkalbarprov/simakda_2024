@@ -25,6 +25,9 @@
             ajax: {
                 "url": "{{ route('skpd.transaksi_cms.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_upload == 1 && data.status_validasi == 1) {
@@ -99,6 +102,7 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
+                    "_token": "{{ csrf_token() }}",
                     no_voucher: no_voucher
                 },
                 success: function(data) {
