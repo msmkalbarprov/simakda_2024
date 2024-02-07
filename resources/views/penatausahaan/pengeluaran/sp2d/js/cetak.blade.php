@@ -28,8 +28,10 @@
             ajax: {
                 "url": "{{ route('sp2d.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
-                    "_token" = "{{ csrf_token() }}";
                     d.tipe = document.getElementById('tipe').value;
                 },
             },
