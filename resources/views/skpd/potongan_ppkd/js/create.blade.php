@@ -97,7 +97,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $('#simpan').prop('disabled', true);
@@ -144,6 +145,9 @@
             url: "{{ route('potongan_ppkd.no_bukti') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             beforeSend: function() {
                 $("#overlay").fadeIn(100);
             },

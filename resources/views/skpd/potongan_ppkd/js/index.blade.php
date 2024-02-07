@@ -81,6 +81,7 @@
                     no_kas: no_kas,
                     no_sts: no_sts,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

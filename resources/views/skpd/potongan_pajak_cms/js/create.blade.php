@@ -139,6 +139,7 @@
                 data: {
                     no_sp2d: no_sp2d,
                     no_transaksi: no_transaksi,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -285,6 +286,7 @@
                     data: {
                         rincian_data: rincian_data,
                         tanggal_validasi: tanggal_validasi,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {
@@ -501,6 +503,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

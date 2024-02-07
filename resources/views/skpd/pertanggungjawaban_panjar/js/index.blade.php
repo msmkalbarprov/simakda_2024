@@ -75,6 +75,7 @@
                     no_kas: no_kas,
                     no_panjar: no_panjar,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

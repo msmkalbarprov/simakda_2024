@@ -68,6 +68,7 @@
                 data: {
                     no_sts: no_sts,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

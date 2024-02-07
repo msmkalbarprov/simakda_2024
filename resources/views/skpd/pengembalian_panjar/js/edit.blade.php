@@ -75,7 +75,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -118,6 +119,7 @@
                 data: {
                     no_panjar: no_panjar,
                     no_panjar_lalu: no_panjar_lalu,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#panjar_awal').val(data.load_detail.no_panjar);

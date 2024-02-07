@@ -105,6 +105,7 @@
                 data: {
                     no_sp2h: no_sp2h,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

@@ -68,6 +68,7 @@
                     no_bukti: no_bukti,
                     no_terima: no_terima,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

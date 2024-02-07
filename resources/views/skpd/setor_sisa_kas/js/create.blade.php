@@ -89,6 +89,7 @@
                     no_sp2d: no_sp2d,
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_rek6').empty();
@@ -125,6 +126,7 @@
                 dataType: 'json',
                 data: {
                     jenis_transaksi: jenis_transaksi,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -162,6 +164,7 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -400,7 +403,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

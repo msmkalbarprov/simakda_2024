@@ -123,6 +123,7 @@
                 dataType: 'json',
                 data: {
                     no_terima: no_terima,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_potongan').val(new Intl.NumberFormat('id-ID', {
@@ -151,6 +152,7 @@
                     dataType: 'json',
                     data: {
                         id_billing: id_billing,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         let data1 = $.parseJSON(data);
@@ -207,6 +209,7 @@
                     ntpn_validasi: ntpn_validasi,
                     kd_skpd: kd_skpd,
                     id_billing_validasi: id_billing_validasi,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -309,6 +312,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

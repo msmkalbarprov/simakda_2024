@@ -133,6 +133,7 @@
             data: {
                 no_sp2d: document.getElementById('no_sp2d').value,
                 no_transaksi: document.getElementById('no_transaksi').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#kd_sub_kegiatan').empty();
@@ -159,6 +160,7 @@
             data: {
                 kd_sub_kegiatan: document.getElementById('kd_giat').value,
                 no_sp2d: document.getElementById('no_sp2d').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#kd_rekening').empty();
@@ -191,6 +193,7 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -237,6 +240,7 @@
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_rekening').empty();
@@ -450,6 +454,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

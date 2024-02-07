@@ -15,6 +15,9 @@
             url: "{{ route('skpd.setor_tunai.bank') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#bank_tujuan').empty();
                 $('#bank_tujuan').append(
@@ -68,6 +71,9 @@
                 url: "{{ route('skpd.setor_tunai.bank') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#bank_tujuan').empty();
                     $('#bank_tujuan').append(
@@ -166,7 +172,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

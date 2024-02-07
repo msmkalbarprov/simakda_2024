@@ -83,6 +83,7 @@
                     kd_skpd: kd_skpd,
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     satdik: satdik,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let total = rupiah(document.getElementById('total').value);
@@ -199,7 +200,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

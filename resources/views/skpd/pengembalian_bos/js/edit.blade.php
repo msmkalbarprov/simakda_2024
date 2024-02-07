@@ -57,6 +57,7 @@
                     data: {
                         kd_skpd: document.getElementById('kd_skpd').value,
                         satdik: document.getElementById('satdik').value,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#sisa_bos').val(new Intl.NumberFormat('id-ID', {
@@ -81,6 +82,7 @@
                 dataType: 'json',
                 data: {
                     tanggal: tanggal,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -108,6 +110,7 @@
                 dataType: 'json',
                 data: {
                     tanggal: tanggal,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -238,7 +241,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

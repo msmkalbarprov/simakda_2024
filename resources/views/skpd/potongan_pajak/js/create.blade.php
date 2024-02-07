@@ -136,6 +136,7 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -197,6 +198,7 @@
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_rekening').empty();
@@ -448,6 +450,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
