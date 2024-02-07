@@ -83,6 +83,7 @@
                 dataType: 'json',
                 data: {
                     tgl_terima: tgl_terima,
+                    "_token": "{{ csrf_token() }}",
                     jenis_pembayaran: jenis_pembayaran
                 },
                 success: function(data) {
@@ -234,7 +235,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

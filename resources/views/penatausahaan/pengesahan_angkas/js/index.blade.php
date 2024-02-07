@@ -170,6 +170,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -300,6 +301,7 @@
                 data: {
                     no_tetap: no_tetap,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

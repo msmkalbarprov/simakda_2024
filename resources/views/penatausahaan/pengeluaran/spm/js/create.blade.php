@@ -27,6 +27,9 @@
             url: "{{ route('spm.tgl_spm_lalu') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#tgl_spm_lalu').val(data.tanggal);
             }
@@ -82,7 +85,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let total = 0;
@@ -109,7 +113,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spd: no_spd
+                    no_spd: no_spd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#tgl_spd').val(data.tgl_spd);
@@ -212,6 +217,7 @@
                     no_spp: no_spp,
                     jenis: jenis,
                     jenis_kelengkapan: jenis_kelengkapan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -314,6 +320,7 @@
                 data: {
                     beban: beban,
                     jenis: jenis,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_jenis').val(data.nama);
@@ -328,6 +335,7 @@
                 dataType: 'json',
                 data: {
                     bank: bank,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_bank').val(data.nama);
@@ -369,7 +377,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spm: no_spm
+                    no_spm: no_spm,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (str[0] != data.nilai) {

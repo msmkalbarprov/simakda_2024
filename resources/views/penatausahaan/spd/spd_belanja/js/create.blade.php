@@ -342,6 +342,7 @@
                 data: {
                     kd_skpd: kd_skpd,
                     jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (kd_skpd && jns_ang) {
@@ -473,7 +474,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
 
                 success: function(data) {
@@ -529,7 +531,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -580,7 +583,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -628,7 +632,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -774,7 +779,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     // Show image container

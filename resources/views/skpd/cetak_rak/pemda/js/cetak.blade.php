@@ -29,7 +29,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();

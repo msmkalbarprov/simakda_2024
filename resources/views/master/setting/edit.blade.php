@@ -67,7 +67,7 @@
                                     id="logo_pemda_warna_old" name="logo_pemda_warna_old">
                             </div>
                         </div>
-                        
+
                         <!-- Logo hitam Putih -->
                         <div class="mb-3 row">
                             <label for="logo_pemda_hp" class="col-md-2 col-form-label">Logo Pemda <small>(Hitam
@@ -81,7 +81,7 @@
                                     id="logo_pemda_hp_old" name="logo_pemda_hp_old">
                             </div>
                         </div>
-                        
+
                         {{-- Persen Tunai dan Persen KKPD --}}
                         <div class="mb-3 row">
                             <label for="persen_tunai" class="col-md-2 col-form-label">Persen Tunai</label>
@@ -99,20 +99,24 @@
                         </div>
                         <!-- backup -->
                         <div class="mb-3 row">
-                            
+
                             <div class="input-group">
                                 <label for="last_backup" class="col-md-2 col-form-label">Backup database terakhir</label>
-                                <input type="text" class="form-control" placeholder="Backup terakhir" aria-label="Backup terakhir" value="{{ $data_setting->last_db_backup }}" aria-describedby="basic-addon2" readonly>
+                                <input type="text" class="form-control" placeholder="Backup terakhir"
+                                    aria-label="Backup terakhir" value="{{ $data_setting->last_db_backup }}"
+                                    aria-describedby="basic-addon2" readonly>
                                 <div class="input-group-append">
-                                  <button  class="btn btn-success btn-md btn_backup" name="btn_backup" type="button">Backup</button>
+                                    <button class="btn btn-success btn-md btn_backup" name="btn_backup"
+                                        type="button">Backup</button>
                                 </div>
-                              </div>
+                            </div>
                         </div>
                         <div class="mb-3 row">
                             <label for="last_backup" class="col-md-2 col-form-label">Rekal terakhir</label>
                             <div class="col-md-10">
                                 <input class="form-control" placeholder="Isi dengan nama pemerintah" type="text"
-                                    id="last_backup" name="last_backup" value="{{ $data_setting->last_rekal }}" readonly>
+                                    id="last_backup" name="last_backup" value="{{ $data_setting->last_rekal }}"
+                                    readonly>
                             </div>
                         </div>
                         <!-- SIMPAN -->
@@ -131,54 +135,55 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5',
             });
-           
+
             $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         });
-        });
-        
+
 
         $('.btn_backup').on("click", function() {
-                    Swal.fire({
-                        title: 'Sabar Ya Guys!',
-                        html: 'Backup database dalam Waktu : <strong></strong> detik.',
-                        timer: 5000,
-                        willOpen: function() {
-                            Swal.showLoading()
-                            timerInterval = setInterval(function() {
-                                Swal.getContent().querySelector('strong')
-                                    .textContent = Swal.getTimerLeft()
-                            }, 100)
-                        },
-                        willClose: function() {
-                            clearInterval(timerInterval)
-                        }
-                    }).then(function(result) {
-                        if (
-                            // Read more about handling dismissals
-                            result.dismiss === Swal.DismissReason.timer
-                        ) {
-                            console.log('Loading');
-                        }
-                    })
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('backup_database') }}",
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.message == '1') {
-                                alert('Backup Selesai Guys -_-');
-                                location.reload();
-                            } else {
-                                alert('Gagal Backup Guys');
-                            }
-                        }
-                    })
+            Swal.fire({
+                title: 'Sabar Ya Guys!',
+                html: 'Backup database dalam Waktu : <strong></strong> detik.',
+                timer: 5000,
+                willOpen: function() {
+                    Swal.showLoading()
+                    timerInterval = setInterval(function() {
+                        Swal.getContent().querySelector('strong')
+                            .textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: function() {
+                    clearInterval(timerInterval)
+                }
+            }).then(function(result) {
+                if (
+                    // Read more about handling dismissals
+                    result.dismiss === Swal.DismissReason.timer
+                ) {
+                    console.log('Loading');
+                }
+            })
+            $.ajax({
+                type: "POST",
+                url: "{{ route('backup_database') }}",
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(data) {
+                    if (data.message == '1') {
+                        alert('Backup Selesai Guys -_-');
+                        location.reload();
+                    } else {
+                        alert('Gagal Backup Guys');
+                    }
+                }
+            })
 
-            });
-
-
+        });
     </script>
 @endsection

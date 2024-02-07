@@ -141,6 +141,7 @@
                 data: {
                     no_kas: no_kas,
                     opd: opd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data > 0) {
@@ -159,6 +160,7 @@
                                 no_sp2d: no_sp2d,
                                 no_advice: no_advice,
                                 opd: opd,
+                                "_token": "{{ csrf_token() }}",
                             },
                             success: function(data) {
                                 if (data.message == '1') {
@@ -186,6 +188,7 @@
                 data: {
                     no_kas: no_kas,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

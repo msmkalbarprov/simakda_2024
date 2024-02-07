@@ -75,7 +75,8 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value,
-                    kd_sub_kegiatan: this.value
+                    kd_sub_kegiatan: this.value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#rekening').empty();
@@ -210,7 +211,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

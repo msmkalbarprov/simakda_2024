@@ -90,6 +90,7 @@
                     type: 'DELETE',
                     data: {
                         id: id,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

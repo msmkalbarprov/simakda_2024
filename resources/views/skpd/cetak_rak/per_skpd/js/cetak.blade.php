@@ -32,6 +32,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                     jenis: jenis
                 },
                 success: function(data) {
@@ -56,6 +57,9 @@
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
                     $('#jenis_anggaran').append(
@@ -82,7 +86,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();
@@ -103,7 +108,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#ttd1').empty();
@@ -127,11 +133,11 @@
         });
 
         $('#jenis_rak').on('select2:select', function() {
-            let jenis_rak       = this.value;
-            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
-            let kd_skpd         = document.getElementById('kd_skpd').value;
-            let hidden          = 'hidden';
-            let jenis_cetakan   = pilihancetak;
+            let jenis_rak = this.value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let hidden = 'hidden';
+            let jenis_cetakan = pilihancetak;
 
             alert(jenis_cetakan)
 
@@ -153,14 +159,14 @@
         });
 
         $('.cetak_rak').on('click', function() {
-            let kd_skpd         = document.getElementById('kd_skpd').value;
-            let jenis_anggaran  = document.getElementById('jenis_anggaran').value;
-            let jenis_rak       = document.getElementById('jenis_rak').value;
-            let ttd1            = document.getElementById('ttd1').value;
-            let ttd2            = document.getElementById('ttd2').value;
-            let tanggal_ttd     = document.getElementById('tanggal_ttd').value;
-            let jenis_print     = $(this).data("jenis");
-            let jenis_cetakan   = pilihancetak;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            let jenis_rak = document.getElementById('jenis_rak').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let tanggal_ttd = document.getElementById('tanggal_ttd').value;
+            let jenis_print = $(this).data("jenis");
+            let jenis_cetakan = pilihancetak;
 
             if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd) {
                 alert("Harap Lengkapi Inputan.");

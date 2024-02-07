@@ -90,6 +90,7 @@
                     nilai_up: nilai_up,
                     no_urut: no_urut,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -122,6 +123,7 @@
                     nama_akun: nama_akun,
                     nilai_up: nilai_up,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

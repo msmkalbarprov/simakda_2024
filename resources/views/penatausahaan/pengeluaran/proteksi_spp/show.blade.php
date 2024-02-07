@@ -261,7 +261,8 @@
                     data: {
                         no_spp: document.getElementById('no_spp').value,
                         kd_skpd: document.getElementById('kd_skpd').value,
-                        setuju: setuju
+                        setuju: setuju,
+                        "_token": "{{ csrf_token() }}",
                     },
                     beforeSend: function() {
                         $("#overlay").fadeIn(100);

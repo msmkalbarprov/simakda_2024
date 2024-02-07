@@ -517,6 +517,7 @@
                         no_spp: no_spp,
                         keterangan: keterangan,
                         beban: beban,
+                        "_token": "{{ csrf_token() }}",
                         // batal_spm: batal_spm,
                     },
                     success: function(data) {
@@ -556,7 +557,8 @@
                 type: "DELETE",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

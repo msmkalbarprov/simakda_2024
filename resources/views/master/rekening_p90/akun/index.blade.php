@@ -128,6 +128,7 @@
                         kode_rekening: kode_rekening,
                         nama_rekening: nama_rekening,
                         tipe: tipe,
+                        "_token": "{{ csrf_token() }}",
                     },
                     beforeSend: function() {
                         $("#overlay").fadeIn(100);
@@ -172,6 +173,7 @@
                     dataType: 'json',
                     data: {
                         kode_rekening: id,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

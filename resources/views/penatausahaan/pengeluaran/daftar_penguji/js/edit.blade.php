@@ -99,6 +99,7 @@
                 data: {
                     no_rek: no_rek,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     jenis = data;
@@ -186,6 +187,7 @@
                     no_advice: no_advice,
                     no_sp2d: no_sp2d,
                     tanggal: tanggal,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -245,7 +247,8 @@
                     no_advice: no_advice,
                     tanggal: tanggal,
                     sp2d_online: sp2d_online,
-                    detail_penguji: detail_penguji
+                    detail_penguji: detail_penguji,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -273,6 +276,9 @@
             url: "{{ route('daftar_penguji.load_sp2d') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#no_sp2d').empty();
                 $('#no_sp2d').append(
@@ -297,6 +303,7 @@
                 data: {
                     no_sp2d: no_sp2d,
                     no_advice: document.getElementById('no_advice').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

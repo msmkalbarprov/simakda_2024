@@ -47,10 +47,10 @@
                     className: "text-center",
                 },
             ],
-            drawCallback: function (settings) {
+            drawCallback: function(settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+            }
 
         });
 
@@ -86,6 +86,7 @@
                 dataType: 'json',
                 data: {
                     no_uji: no_uji,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -110,6 +111,7 @@
             data: {
                 no_uji: no_uji,
                 status: status,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 if (data.message == '1') {

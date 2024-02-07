@@ -347,7 +347,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

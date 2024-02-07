@@ -274,7 +274,8 @@
                     data: {
                         kode_akun: kd_map,
                         kode_setor: kd_setor,
-                        npwp: npwp
+                        npwp: npwp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         let data1 = $.parseJSON(data);
@@ -400,7 +401,8 @@
                 url: "{{ route('penerima.kodeSetor') }}",
                 dataType: 'json',
                 data: {
-                    kd_map: kd_map
+                    kd_map: kd_map,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -513,7 +515,8 @@
                 url: "{{ route('penerima.kodeSetor') }}",
                 dataType: 'json',
                 data: {
-                    kd_map: kd_map
+                    kd_map: kd_map,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -646,7 +649,8 @@
                 dataType: 'json',
                 data: {
                     kode_akun: kode_akun,
-                    kode_setor: kode_setor
+                    kode_setor: kode_setor,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -855,6 +859,7 @@
                     nilai_pot: nilai_pot,
                     no_spm: no_spm,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -1172,7 +1177,8 @@
                     nama_akun_potongan: nama_akun_potongan,
                     kode_akun_potongan: kode_akun_potongan,
                     kode_akun_transaksi: kode_akun_transaksi,
-                    map_pot: map_pot
+                    map_pot: map_pot,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1232,6 +1238,7 @@
                 data: {
                     id_billing: id_billing,
                     jnsreport: jnsreport,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1276,6 +1283,7 @@
                     no_spm: no_spm,
                     id_billing: id_billing,
                     rekening_tampungan: rekening_tampungan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -1349,6 +1357,7 @@
                 dataType: 'json',
                 data: {
                     no_spm: no_spm,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -1481,6 +1490,7 @@
                     nilai_pot: nilai_pot,
                     no_spm: no_spm,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1555,7 +1565,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_spm: document.getElementById('no_spm_pajak').value
+                    no_spm: document.getElementById('no_spm_pajak').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#rekening_tampungan').empty();
@@ -1626,6 +1637,7 @@
                 data: {
                     no_spm: no_spm,
                     kd_rek6: rekening_potongan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1680,6 +1692,7 @@
                     no_spm: no_spm,
                     kd_rek6: kd_rek6,
                     idBilling: idBilling,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1736,6 +1749,7 @@
                 data: {
                     no_spm: no_spm,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -1775,7 +1789,8 @@
             type: "POST",
             dataType: 'json',
             data: {
-                no_spm: document.getElementById('no_spm_potongan').value
+                no_spm: document.getElementById('no_spm_potongan').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#id_billing_cetak').empty();

@@ -116,6 +116,9 @@
                 url: "{{ route('sp2d.cari_nomor') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
@@ -138,6 +141,7 @@
                 dataType: 'json',
                 data: {
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_spm').empty();
@@ -183,6 +187,9 @@
                 url: "{{ route('sp2d.cari_nomor') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#nomor_urut').val(data.nomor);
                     if (beban == '1') {
@@ -205,6 +212,7 @@
                 dataType: 'json',
                 data: {
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_spm').empty();
@@ -243,6 +251,7 @@
                 data: {
                     beban: document.getElementById('beban').value,
                     jenis: document.getElementById('jenis').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nama_jenis').val(data);
@@ -255,6 +264,7 @@
                 dataType: 'json',
                 data: {
                     bank: $(this).find(':selected').data('bank'),
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nama_bank').val(data.nama);
@@ -267,6 +277,7 @@
                 dataType: 'json',
                 data: {
                     bulan: $(this).find(':selected').data('bulan'),
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nama_bulan').val(data);
@@ -285,6 +296,7 @@
                 data: {
                     no_spp: $(this).find(':selected').data('no_spp'),
                     no_spm: this.value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_spm').val(new Intl.NumberFormat('id-ID', {
@@ -342,6 +354,7 @@
                     tgl_sp2d: tgl_sp2d,
                     no_spm: no_spm,
                     no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

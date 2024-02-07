@@ -184,7 +184,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -290,6 +291,7 @@
                 tgl_terima: tgl_terima,
                 gerai: $('#gerai').val(),
                 jenis_pembayaran: $('#jenis_pembayaran').val(),
+                "_token": "{{ csrf_token() }}",
                 no_sts: detail_terima.length == 0 ? '0' : detail_terima
             },
             success: function(data) {

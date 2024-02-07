@@ -111,7 +111,9 @@
                     url: "{{ route('penagihan.hapus_semua_tampungan') }}",
                     type: "POST",
                     dataType: 'json',
-                    data: {},
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    },
                     success: function(data) {}
                 })
             })
@@ -126,6 +128,7 @@
                     dataType: 'json',
                     data: {
                         no_bukti: no_bukti,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

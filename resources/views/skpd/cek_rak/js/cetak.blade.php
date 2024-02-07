@@ -21,6 +21,9 @@
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
                     $('#jenis_anggaran').append(
@@ -47,7 +50,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();

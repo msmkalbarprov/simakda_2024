@@ -114,6 +114,7 @@
                 data: {
                     id_billing: id_billing,
                     jnsreport: jnsreport,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {

@@ -145,6 +145,7 @@
                 dataType: 'json',
                 data: {
                     tgl_bukti: tgl_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#status_anggaran').val(data.nama);
@@ -156,6 +157,7 @@
                 dataType: 'json',
                 data: {
                     tgl_bukti: tgl_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#status_angkas').val(data.status);
@@ -198,6 +200,7 @@
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -266,6 +269,7 @@
                     status_ang: status_ang,
                     status_angkas: status_angkas,
                     tgl_bukti: tgl_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -376,6 +380,7 @@
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -437,6 +442,7 @@
                 data: {
                     no_kontrak: no_kontrak,
                     skpd: skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let total_kontrak = parseFloat(data.total_kontrak) || 0;
@@ -618,6 +624,7 @@
                     kdrek: kdrek,
                     nilai_tagih: nilai_tagih,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -831,7 +838,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -861,6 +869,7 @@
                 data: {
                     no_kontrak: no_kontrak,
                     tgl_bukti: tgl_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let nilai = parseFloat(data.total) || 0;
@@ -885,6 +894,7 @@
                 data: {
                     no_kontrak: no_kontrak,
                     tgl_bukti: tgl_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (cek > data.nilai) {
@@ -907,6 +917,7 @@
                             dataType: 'json',
                             data: {
                                 no_bukti: no_bukti,
+                                "_token": "{{ csrf_token() }}",
                             },
                             success: function(data) {
                                 if (data.jumlah == '1') {
@@ -953,6 +964,7 @@
                     jns_trs: jns_trs,
                     ket_bast: ket_bast,
                     rekanan: rekanan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -985,6 +997,7 @@
                     status_bayar: status_bayar,
                     rincian_penagihan: rincian_penagihan,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '5') {
@@ -1100,6 +1113,7 @@
                 kd_rek: kd_rek,
                 sumber: sumber,
                 nilai: nilai,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 if (data.message == '1') {

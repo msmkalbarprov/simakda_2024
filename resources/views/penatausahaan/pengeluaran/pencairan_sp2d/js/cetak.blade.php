@@ -323,6 +323,7 @@
                         no_spp: no_spp,
                         keterangan: keterangan,
                         beban: beban,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {
@@ -391,7 +392,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     alert(data.message);
@@ -433,6 +435,7 @@
             dataType: 'json',
             data: {
                 no_sp2d: no_sp2d,
+                "_token": "{{ csrf_token() }}",
             },
             beforeSend: function() {
                 $("#overlay").fadeIn(100);
@@ -498,7 +501,8 @@
                 type: "DELETE",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

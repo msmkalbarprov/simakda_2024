@@ -202,7 +202,8 @@
                     data: {
                         kode_akun: kd_map,
                         kode_setor: kd_setor,
-                        npwp: npwp
+                        npwp: npwp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         let data1 = $.parseJSON(data);
@@ -239,7 +240,8 @@
                 url: "{{ route('penerima.kodeSetor') }}",
                 dataType: 'json',
                 data: {
-                    kd_map: kd_map
+                    kd_map: kd_map,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -350,7 +352,8 @@
                 url: "{{ route('penerima.kodeSetor') }}",
                 dataType: 'json',
                 data: {
-                    kd_map: kd_map
+                    kd_map: kd_map,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -389,7 +392,8 @@
                 dataType: 'json',
                 data: {
                     kode_akun: kode_akun,
-                    kode_setor: kode_setor
+                    kode_setor: kode_setor,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -486,7 +490,8 @@
                     url: "{{ route('spm.isi_list_pot') }}",
                     dataType: 'json',
                     data: {
-                        id_billing: id_billing
+                        id_billing: id_billing,
+                        "_token": "{{ csrf_token() }}",
                     },
                     dataType: "json",
                     success: function(data) {
@@ -785,7 +790,8 @@
                     no_spm: no_spm,
                     nama_akun_potongan: nama_akun_potongan,
                     kode_akun_potongan: kode_akun_potongan,
-                    kode_akun_transaksi: kode_akun_transaksi
+                    kode_akun_transaksi: kode_akun_transaksi,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -835,6 +841,7 @@
                 data: {
                     id_billing: id_billing,
                     jnsreport: jnsreport,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -951,6 +958,7 @@
                     nilai_pot: nilai_pot,
                     no_spm: no_spm,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1037,6 +1045,7 @@
                 data: {
                     no_spm: no_spm,
                     kd_rek6: rekening_potongan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -1074,6 +1083,7 @@
                 data: {
                     no_spm: no_spm,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {

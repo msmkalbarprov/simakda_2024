@@ -37,10 +37,10 @@
                     className: "text-center",
                 },
             ],
-            drawCallback: function (settings) {
+            drawCallback: function(settings) {
                 console.log('drawCallback');
                 $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+            }
         });
     });
 
@@ -52,6 +52,7 @@
             data: {
                 no_spd: no_spd,
                 status: status,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 if (data.message == '1') {

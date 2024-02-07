@@ -144,6 +144,7 @@
                 dataType: 'json',
                 data: {
                     jenis_beban2: jenis_beban2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let no_spp = data.nilai + "/SPP/" + jenis_beban + "/" + kd_skpd + "/" +
@@ -159,6 +160,7 @@
                 dataType: 'json',
                 data: {
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis').empty();
@@ -178,6 +180,7 @@
                 data: {
                     beban: beban,
                     tgl_spp: tgl_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nomor_spd').empty();
@@ -358,6 +361,7 @@
                 dataType: 'json',
                 data: {
                     spd: spd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -419,6 +423,7 @@
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -466,6 +471,7 @@
                     status_angkas: status_angkas,
                     beban: beban,
                     nomor_spd: nomor_spd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -709,6 +715,7 @@
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -777,7 +784,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_bukti: no_kontrak
+                    no_bukti: no_kontrak,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $.each(data, function(index, data) {
@@ -847,6 +855,7 @@
                     dataType: 'json',
                     data: {
                         tgl_bukti: tgl_spp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#status_anggaran').val(data.nama);
@@ -859,6 +868,7 @@
                     dataType: 'json',
                     data: {
                         tgl_bukti: tgl_spp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#status_angkas').val(data.status);
@@ -1075,6 +1085,7 @@
                     kdrek: kode_rekening,
                     nilai_tagih: nilai_rincian,
                     sumber: sumber_dana,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1149,6 +1160,7 @@
                 dataType: 'json',
                 data: {
                     jenis_beban2: jenis_beban2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let no_spp = data.nilai + "/SPP/" + jenis_beban + "/" + kd_skpd + "/" +
@@ -1408,6 +1420,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1437,6 +1450,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '0') {
@@ -1460,6 +1474,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -1640,6 +1655,7 @@
                     beban: document.getElementById('beban').value,
                     status_ang: document.getElementById('status_anggaran').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1666,6 +1682,7 @@
                     skpd: document.getElementById('opd_unit').value,
                     kdgiat: document.getElementById('kd_sub_kegiatan').value,
                     kdrek: document.getElementById('kode_rekening').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1715,6 +1732,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rek: kode_rekening,
                     sumber: sumber_dana,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

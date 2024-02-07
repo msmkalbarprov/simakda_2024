@@ -15,7 +15,8 @@
             type: "POST",
             dataType: 'json',
             data: {
-                no_spp: document.getElementById('no_spp').value
+                no_spp: document.getElementById('no_spp').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#total').val(new Intl.NumberFormat('id-ID', {

@@ -196,6 +196,7 @@
                     no_advice: no_advice,
                     tanggal: tanggal,
                     sp2d_online: sp2d_online,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let nomor_baru = data.no_uji;
@@ -209,7 +210,8 @@
                             data: {
                                 nomor_baru: nomor_baru,
                                 tanggal: tanggal,
-                                detail_penguji: detail_penguji
+                                detail_penguji: detail_penguji,
+                                "_token": "{{ csrf_token() }}",
                             },
                             success: function(data) {
                                 if (data.message == '1') {
