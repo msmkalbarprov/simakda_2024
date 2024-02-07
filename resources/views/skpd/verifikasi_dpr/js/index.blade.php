@@ -76,7 +76,8 @@
             dataType: 'json',
             data: {
                 no_dpr: no_dpr,
-                kd_skpd: kd_skpd
+                kd_skpd: kd_skpd,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 console.log(data);

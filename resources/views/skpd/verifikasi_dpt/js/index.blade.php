@@ -228,7 +228,8 @@
                     no_dpr: no_dpr,
                     kd_skpd: kd_skpd,
                     tgl_verifikasi: tgl_verifikasi,
-                    jenis: jenis
+                    jenis: jenis,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

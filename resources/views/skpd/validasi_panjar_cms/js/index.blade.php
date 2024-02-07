@@ -620,6 +620,7 @@
                     no_bukti: no_bukti,
                     kd_skpd: kd_skpd,
                     tgl_kas: tgl_kas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

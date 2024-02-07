@@ -507,6 +507,7 @@
                     tgl_upload: tgl_upload,
                     no_upload_tgl: no_upload_tgl,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

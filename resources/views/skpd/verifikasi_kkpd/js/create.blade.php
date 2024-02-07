@@ -170,6 +170,7 @@
                     data: {
                         rincian_data: rincian_data,
                         tanggal_validasi: tanggal_validasi,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

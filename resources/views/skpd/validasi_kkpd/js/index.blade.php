@@ -244,6 +244,7 @@
                     no_voucher: no_voucher,
                     kd_skpd: kd_skpd,
                     no_bukti: no_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
