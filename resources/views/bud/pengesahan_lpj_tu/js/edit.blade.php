@@ -13,6 +13,9 @@
             ajax: {
                 "url": "{{ route('pengesahan_lpj_tu.detail') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_lpj = document.getElementById('no_lpj').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

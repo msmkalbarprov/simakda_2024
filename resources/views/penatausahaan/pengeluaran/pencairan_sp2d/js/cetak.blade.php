@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('pencairan_sp2d.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.tipe = document.getElementById('tipe').value;
                 },

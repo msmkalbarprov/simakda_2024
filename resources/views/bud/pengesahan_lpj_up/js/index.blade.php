@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('pengesahan_lpj_upgu.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.jenis = document.getElementById('jenis').value;
                 },

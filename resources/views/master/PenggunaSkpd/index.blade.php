@@ -49,6 +49,9 @@
                 ajax: {
                     "url": "{{ route('skpd_pengguna.load_data') }}",
                     "type": "POST",
+                    "headers": {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                 },
                 columns: [{
                     data: 'DT_RowIndex',

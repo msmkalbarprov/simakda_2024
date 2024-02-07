@@ -14,6 +14,9 @@
             ajax: {
                 "url": "{{ route('dpt.detail_dpr') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_dpr = document.getElementById('no_dpr').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

@@ -16,6 +16,9 @@
             ajax: {
                 "url": "{{ route('dpr.detail_edit') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_dpr = document.getElementById('no_dpr').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -146,6 +149,9 @@
             ajax: {
                 "url": "{{ route('dpr.detail_edit') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_dpr = document.getElementById('no_dpr').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

@@ -13,6 +13,9 @@
             ajax: {
                 "url": "{{ route('sp2d.load_rincian_spm') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_spp = document.getElementById('no_spp').value
                 }
@@ -60,6 +63,9 @@
             ajax: {
                 "url": "{{ route('sp2d.load_rincian_potongan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_spm = document.getElementById('no_spm').value
                 }

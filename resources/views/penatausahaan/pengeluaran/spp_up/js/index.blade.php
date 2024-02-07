@@ -14,6 +14,9 @@
             ajax: {
                 "url": "{{ route('sppup.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.sp2d_batal == "1") {

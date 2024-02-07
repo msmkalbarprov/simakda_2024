@@ -29,6 +29,9 @@
             ajax: {
                 "url": "{{ route('pengesahan_spm_tu.detail') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_spp = "{{ $spm->no_spp }}";
                     d.kd_skpd = document.getElementById('kd_skpd').value;

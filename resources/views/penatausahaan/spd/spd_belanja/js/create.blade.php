@@ -18,6 +18,9 @@
             ajax: {
                 url: "{{ route('spd.spd_belanja.load_spd_belanja') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 data: function(data) {
                     data.kd_skpd = document.getElementById('kd_skpd').value;
                     data.jns_ang = document.getElementById('jenis_anggaran').value;
@@ -102,6 +105,9 @@
             ajax: {
                 "url": "{{ route('spd.spd_belanja.load_spd_belanja_temp') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.kd_skpd = document.getElementById('kd_skpd').value;
                     d.jns_ang = document.getElementById('jenis_anggaran').value;

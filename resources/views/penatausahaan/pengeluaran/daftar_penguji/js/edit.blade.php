@@ -13,6 +13,9 @@
             ajax: {
                 "url": "{{ route('daftar_penguji.load_detail') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_advice = document.getElementById('no_advice').value
                 }

@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('spd.spd_belanja.show_load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_spd = document.getElementById('nomor').value;
                 },

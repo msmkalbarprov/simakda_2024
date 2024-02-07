@@ -48,6 +48,9 @@
             ajax: {
                 "url": "{{ route('spm.load_rincian') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": {
                     "no_spm": document.getElementById('no_spm_pajak').value
                 }
@@ -101,6 +104,9 @@
             ajax: {
                 "url": "{{ route('spm.load_rincian') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": {
                     "no_spm": document.getElementById('no_spm_pajak').value
                 }

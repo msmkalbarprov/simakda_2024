@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('spd.pembatalan_spd.load_data') }}",
                 "type": "get",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',

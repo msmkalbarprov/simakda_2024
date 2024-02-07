@@ -14,7 +14,10 @@
             lengthMenu: [5, 10],
             ajax: {
                 "url": "{{ route('verif_sp2d.load_data') }}",
-                "type": "POST"
+                "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',

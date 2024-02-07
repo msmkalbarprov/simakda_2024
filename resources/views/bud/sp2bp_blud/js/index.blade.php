@@ -20,6 +20,9 @@
             ajax: {
                 "url": "{{ route('sp2bp_blud.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.no_sp2bps != 0) {

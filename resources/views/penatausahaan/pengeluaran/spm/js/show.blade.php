@@ -32,6 +32,9 @@
             ajax: {
                 "url": "{{ route('spm.load_rincian_show') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": {
                     "no_spp": document.getElementById('no_spp').value
                 }

@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('non_sp2d.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
