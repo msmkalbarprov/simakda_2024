@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('dpt.load_verifikasi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_verifikasi == "1") {
@@ -80,6 +83,9 @@
             ajax: {
                 "url": "{{ route('dpt.detail_verifikasi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_dpt = document.getElementById('no_dpt').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

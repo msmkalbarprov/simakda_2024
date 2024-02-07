@@ -29,6 +29,9 @@
             ajax: {
                 "url": "{{ route('skpd.pelimpahan.load_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_upload == "1" && data.status_validasi == "1") {
@@ -136,6 +139,9 @@
             ajax: {
                 "url": "{{ route('skpd.pelimpahan.draft_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_upload == "1" && data.status_validasi == "1") {
@@ -234,6 +240,9 @@
             ajax: {
                 "url": "{{ route('skpd.pelimpahan.data_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
                 },
@@ -315,6 +324,9 @@
             ajax: {
                 "url": "{{ route('skpd.upload_cms.rekening_transaksi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -353,6 +365,9 @@
             ajax: {
                 "url": "{{ route('skpd.upload_cms.rekening_potongan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -387,6 +402,9 @@
             ajax: {
                 "url": "{{ route('skpd.upload_cms.rekening_tujuan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('transaksi_bos.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.ketlpj == 1 || data.ketspj == 1 || data.total_sp2h == 1) {

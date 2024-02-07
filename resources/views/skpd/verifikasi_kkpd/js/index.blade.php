@@ -14,6 +14,9 @@
             lengthMenu: [5, 10],
             ajax: {
                 "url": "{{ route('skpd.verifikasi_kkpd.load_data_validasi') }}",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "type": "POST",
             },
             columns: [{
@@ -100,6 +103,9 @@
             lengthMenu: [5, 10],
             ajax: {
                 "url": "{{ route('skpd.verifikasi_kkpd.draft_validasi') }}",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "type": "POST",
             },
             columns: [{

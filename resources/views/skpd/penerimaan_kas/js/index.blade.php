@@ -22,6 +22,9 @@
             ajax: {
                 "url": "{{ route('penerimaan_kas.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.kd_skpd = document.getElementById('kd_skpd').value;
                 },

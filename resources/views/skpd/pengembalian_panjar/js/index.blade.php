@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('kembalipanjar.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',

@@ -20,6 +20,9 @@
             ajax: {
                 "url": "{{ route('penerimaan_kas.detail_sts') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_bukti = document.getElementById('no_bukti').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

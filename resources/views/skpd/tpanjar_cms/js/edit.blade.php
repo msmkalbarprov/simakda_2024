@@ -14,6 +14,9 @@
             ajax: {
                 "url": "{{ route('tpanjar_cms.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',

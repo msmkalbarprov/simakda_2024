@@ -20,6 +20,9 @@
             ajax: {
                 "url": "{{ route('sp2h.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status == 1 || data.status == 2) {

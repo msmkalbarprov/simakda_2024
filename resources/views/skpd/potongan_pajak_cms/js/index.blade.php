@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('skpd.potongan_pajak_cms.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -89,6 +92,9 @@
             ajax: {
                 "url": "{{ route('skpd.validasi_cms.draft_validasi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -198,6 +204,9 @@
             ajax: {
                 "url": "{{ route('skpd.upload_cms.data_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
                 }

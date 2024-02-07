@@ -13,6 +13,9 @@
             ajax: {
                 "url": "{{ route('skpd.setor_potongan.list_potongan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_terima = document.getElementById('no_terima').value;
                 }

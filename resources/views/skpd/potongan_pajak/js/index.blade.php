@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('skpd.potongan_pajak.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status == "1") {
@@ -63,6 +66,9 @@
             ajax: {
                 "url": "{{ route('skpd.upload_cms.data_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
                 }

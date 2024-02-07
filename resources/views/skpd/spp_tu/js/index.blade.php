@@ -20,6 +20,9 @@
             ajax: {
                 "url": "{{ route('spp_tu.load') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status == 1 && data.sp2d_batal != '1') {

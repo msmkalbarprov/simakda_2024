@@ -29,6 +29,9 @@
             ajax: {
                 "url": "{{ route('validasi_panjarcms.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_validasi == 1) {
@@ -149,6 +152,9 @@
             ajax: {
                 "url": "{{ route('validasi_panjarcms.draft_validasi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -219,6 +225,9 @@
             ajax: {
                 "url": "{{ route('upload_panjarcms.data_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
                 }
@@ -320,6 +329,9 @@
             ajax: {
                 "url": "{{ route('upload_panjarcms.rekening_transaksi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -358,6 +370,9 @@
             ajax: {
                 "url": "{{ route('upload_panjarcms.rekening_potongan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -392,6 +407,9 @@
             ajax: {
                 "url": "{{ route('upload_panjarcms.rekening_tujuan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;

@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('skpd.simpanan_bank.load_tunai') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_upload == "1" && data.status_validasi == "1") {

@@ -15,6 +15,9 @@
             ajax: {
                 "url": "{{ route('dpr.load_verifikasi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             createdRow: function(row, data, index) {
                 if (data.status_verifikasi == "1") {

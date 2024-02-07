@@ -23,6 +23,9 @@
             ajax: {
                 "url": "{{ route('spp_gu_kkpd.detail') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_spp = document.getElementById('no_spp').value;
                     d.tipe = "edit";

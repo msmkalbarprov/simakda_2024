@@ -29,6 +29,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.load_data') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -121,6 +124,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.draft_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -175,6 +181,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.data_upload') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.no_upload = document.getElementById('no_upload').value;
                 }
@@ -276,6 +285,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.rekening_transaksi') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -314,6 +326,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.rekening_potongan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
@@ -348,6 +363,9 @@
             ajax: {
                 "url": "{{ route('upl_kkpd.rekening_tujuan') }}",
                 "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 "data": function(d) {
                     d.nomor = document.getElementById('nomor').value;
                     d.kd_skpd = document.getElementById('kd_skpd').value;
