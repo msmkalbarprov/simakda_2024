@@ -18,6 +18,7 @@
             data: {
                 tgl_awal: document.getElementById('tgl_awal').value,
                 tgl_akhir: document.getElementById('tgl_akhir').value,
+                "_token": "{{ csrf_token() }}",
                 kd_skpd: document.getElementById('kd_skpd').value
             },
             success: function(data) {
@@ -85,6 +86,7 @@
                 data: {
                     tgl_awal: tgl_awal,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -117,6 +119,7 @@
                 data: {
                     tgl_awal: tgl_awal,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -217,7 +220,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

@@ -78,7 +78,8 @@
                     url: "{{ route('lpj.skpd_tanpa_unit.sub_kegiatan') }}",
                     dataType: 'json',
                     data: {
-                        no_lpj: document.getElementById('no_lpj').value
+                        no_lpj: document.getElementById('no_lpj').value,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#kd_sub_kegiatan').empty();
@@ -214,6 +215,7 @@
                 data: {
                     no_lpj: no_lpj,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

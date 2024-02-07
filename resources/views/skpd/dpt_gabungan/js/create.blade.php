@@ -200,7 +200,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -240,7 +241,8 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value,
-                    no_dpt_unit: detail_lpj.length == 0 ? '0' : detail_lpj
+                    no_dpt_unit: detail_lpj.length == 0 ? '0' : detail_lpj,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pilih_no_dpt').empty();

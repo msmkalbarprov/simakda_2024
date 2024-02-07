@@ -117,6 +117,7 @@
                 data: {
                     no_dpt: no_dpt,
                     no_dpr: no_dpr,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {

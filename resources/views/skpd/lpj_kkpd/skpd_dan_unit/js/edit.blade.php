@@ -50,6 +50,9 @@
             url: "{{ route('lpj_kkpd_tanpa_unit.total_spd') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
@@ -195,7 +198,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -238,6 +242,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                     no_lpj_unit: detail_lpj.length == 0 ? '0' : detail_lpj
                 },
                 success: function(data) {

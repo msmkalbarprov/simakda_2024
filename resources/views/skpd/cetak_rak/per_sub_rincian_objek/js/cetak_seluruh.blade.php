@@ -23,6 +23,9 @@
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
                     $('#jenis_anggaran').append(
@@ -50,7 +53,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#ttd1').empty();
@@ -79,7 +83,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();
@@ -111,6 +116,7 @@
                 dataType: 'json',
                 data: {
                     jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -163,23 +169,23 @@
         });
 
         $('.cetak_rak').on('click', function() {
-            let kd_skpd             = document.getElementById('kd_skpd').value;
-            let jenis_anggaran      = document.getElementById('jenis_anggaran').value;
-            let jenis_rak           = document.getElementById('jenis_rak').value;
-            let ttd1                = document.getElementById('ttd1').value;
-            let ttd2                = document.getElementById('ttd2').value;
-            let tanggal_ttd         = document.getElementById('tanggal_ttd').value;
-            let kd_sub_kegiatan     = document.getElementById('kd_sub_kegiatan').value;
-            let margin              = document.getElementById('margin').value;
-            let jenis_print         = $(this).data("jenis");
-            let skpdunit            = $('input:radio[name="inlineRadioOptions"]:checked').val();
-            
-            if(skpdunit=='keseluruhan'){
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let jenis_anggaran = document.getElementById('jenis_anggaran').value;
+            let jenis_rak = document.getElementById('jenis_rak').value;
+            let ttd1 = document.getElementById('ttd1').value;
+            let ttd2 = document.getElementById('ttd2').value;
+            let tanggal_ttd = document.getElementById('tanggal_ttd').value;
+            let kd_sub_kegiatan = document.getElementById('kd_sub_kegiatan').value;
+            let margin = document.getElementById('margin').value;
+            let jenis_print = $(this).data("jenis");
+            let skpdunit = $('input:radio[name="inlineRadioOptions"]:checked').val();
+
+            if (skpdunit == 'keseluruhan') {
                 if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd || !skpdunit) {
                     alert("Harap Lengkapi Inputan.");
                     return;
                 }
-                
+
                 let url = new URL("{{ route('skpd.cetak_rak.cetak_objek_seluruh') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
@@ -191,12 +197,12 @@
                 searchParams.append("jenis_print", jenis_print);
                 searchParams.append("margin", margin);
                 window.open(url.toString(), "_blank");
-            }else{
+            } else {
                 if (!kd_skpd || !ttd1 || !ttd2 || !tanggal_ttd || !skpdunit || !kd_sub_kegiatan) {
                     alert("Harap Lengkapi Inputan.");
                     return;
                 }
-                
+
                 let url = new URL("{{ route('skpd.cetak_rak.cetak_objek') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("kd_skpd", kd_skpd);
@@ -210,7 +216,7 @@
                 searchParams.append("margin", margin);
                 window.open(url.toString(), "_blank");
             }
-            
+
         });
     });
 </script>

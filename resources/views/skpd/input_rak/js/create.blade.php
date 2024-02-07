@@ -126,6 +126,9 @@
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
                     $('#jenis_anggaran').append(
@@ -158,7 +161,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();
@@ -194,7 +198,8 @@
                 dataType: 'json',
                 data: {
                     jns_ang: jns_ang,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -725,6 +730,7 @@
                     dataType: 'json',
                     data: {
                         data: data,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         if (response.message == '1') {
@@ -942,7 +948,8 @@
             dataType: 'json',
             data: {
                 jenis_rak: document.getElementById('jenis_rak').value,
-                kd_skpd: document.getElementById('kd_skpd').value
+                kd_skpd: document.getElementById('kd_skpd').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 if (data.status == '1') {
@@ -983,6 +990,7 @@
                 jenis_rak: jenis_rak,
                 kd_rek6: kd_rek6,
                 kd_sub_kegiatan: kd_sub_kegiatan,
+                "_token": "{{ csrf_token() }}",
             },
             beforeSend: function() {
                 $("#overlay").fadeIn(100);

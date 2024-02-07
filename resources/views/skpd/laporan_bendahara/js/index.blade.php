@@ -108,6 +108,7 @@
                 dataType: 'json',
                 data: {
                     jenis_beban2: jenis_beban2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let no_spp = data.nilai + "/SPP/" + jenis_beban + "/" + kd_skpd + "/" +
@@ -123,6 +124,7 @@
                 dataType: 'json',
                 data: {
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis').empty();
@@ -142,6 +144,7 @@
                 data: {
                     beban: beban,
                     tgl_spp: tgl_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nomor_spd').empty();
@@ -289,6 +292,7 @@
                 dataType: 'json',
                 data: {
                     spd: spd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -343,6 +347,7 @@
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -383,7 +388,8 @@
                     skpd: skpd,
                     kdgiat: kd_sub_kegiatan,
                     kdrek: kode_rekening,
-                    status_ang: status_ang
+                    status_ang: status_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#sumber_dana').empty();
@@ -427,7 +433,8 @@
                     skpd: skpd,
                     kdgiat: kd_sub_kegiatan,
                     kdrek: kode_rekening,
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let rektotal = parseFloat(data.rektotal) || 0;
@@ -457,7 +464,8 @@
                     no_spp: no_spp,
                     tgl_spd: tgl_spd,
                     tgl_spp: tgl_spp,
-                    beban: beban
+                    beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let total_spd = parseFloat(data.total_spd) || 0;
@@ -483,6 +491,7 @@
                     beban: beban,
                     status_ang: status_ang,
                     status_angkas: status_angkas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let total_angkas = parseFloat(data.nilai) || 0;
@@ -501,6 +510,7 @@
                     skpd: skpd,
                     kdgiat: kd_sub_kegiatan,
                     kdrek: kode_rekening,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let realisasi_spd = parseFloat(data.total) || 0;
@@ -534,6 +544,7 @@
                 dataType: 'json',
                 data: {
                     sumber_dana: sumber_dana,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_sumber').val(data.nm_sumber_dana1);
@@ -571,7 +582,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_bukti: no_kontrak
+                    no_bukti: no_kontrak,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $.each(data, function(index, data) {
@@ -641,6 +653,7 @@
                     dataType: 'json',
                     data: {
                         tgl_bukti: tgl_spp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#status_anggaran').val(data.nama);
@@ -653,6 +666,7 @@
                     dataType: 'json',
                     data: {
                         tgl_bukti: tgl_spp,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#status_angkas').val(data.status);
@@ -875,6 +889,7 @@
                 dataType: 'json',
                 data: {
                     jenis_beban2: jenis_beban2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let no_spp = data.nilai + "/SPP/" + jenis_beban + "/" + kd_skpd + "/" +
@@ -1073,6 +1088,7 @@
                 dataType: 'json',
                 data: {
                     no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response == 1) {
@@ -1093,6 +1109,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '0') {
@@ -1116,6 +1133,7 @@
                 dataType: 'json',
                 data: {
                     data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

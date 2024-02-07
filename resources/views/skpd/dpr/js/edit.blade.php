@@ -477,6 +477,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rekening: kd_rekening,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     cek_perjalanan_dinas = data.cek_perjalanan_dinas;
@@ -695,6 +696,7 @@
                     nilai: nilai,
                     sumber: sumber,
                     pembayaran: pembayaran,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -839,7 +841,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -870,6 +873,7 @@
                 data: {
                     jenis_belanja: jenis_belanja,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -899,6 +903,7 @@
                     jenis_belanja: document.getElementById('jenis_belanja').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -940,6 +945,7 @@
                     jenis_belanja: document.getElementById('jenis_belanja').value,
                     tgl_dpr: document.getElementById('tgl_dpr').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -994,6 +1000,7 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                     sumber: sumber,
                     kd_rek6: document.getElementById('kd_rekening').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1018,6 +1025,9 @@
                 url: "{{ route('dpr.status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_anggaran').val(data.nama);
                 }
@@ -1030,6 +1040,9 @@
                 url: "{{ route('penagihan.cek_status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_angkas').val(data.status);
                 }
@@ -1140,6 +1153,7 @@
                     kd_rek: kd_rek,
                     sumber: sumber,
                     id: id,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

@@ -115,12 +115,13 @@
                 data: {
                     no_bukti: no_bukti,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
                         alert('Proses Hapus Berhasil');
                         window.location.reload();
-                    }else if (data.message == '3') {
+                    } else if (data.message == '3') {
                         alert('Jurnal Koreksi sudah diLPJkan...!!!');
                     } else {
                         alert('Proses Hapus Gagal...!!!');

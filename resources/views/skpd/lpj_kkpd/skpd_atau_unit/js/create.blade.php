@@ -66,6 +66,7 @@
                 data: {
                     tgl_awal: tgl_awal,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -177,7 +178,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

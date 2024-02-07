@@ -24,6 +24,9 @@
                 url: "{{ route('skpd.input_rak.jenis_anggaran') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
                     $('#jenis_anggaran').append(
@@ -50,7 +53,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    jns_ang: jns_ang
+                    jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis_rak').empty();
@@ -67,26 +71,27 @@
 
 
 
-function cari_ttd_skpd(kd_skpd) {
-        $.ajax({
-            url: "{{ route('skpd.cetak_rak.ttdskpd') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                kd_skpd: kd_skpd
-            },
-            success: function(data) {
-                $('#ttd1').empty();
-                $('#ttd1').append(
-                    `<option value="" disabled selected>Pilih penandatangan</option>`);
-                $.each(data, function(index, data) {
+        function cari_ttd_skpd(kd_skpd) {
+            $.ajax({
+                url: "{{ route('skpd.cetak_rak.ttdskpd') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(data) {
+                    $('#ttd1').empty();
                     $('#ttd1').append(
-                        `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
-                    );
-                })
-            }
-        })
-    }
+                        `<option value="" disabled selected>Pilih penandatangan</option>`);
+                    $.each(data, function(index, data) {
+                        $('#ttd1').append(
+                            `<option value="${data.nip}" data-nama="${data.nama}">${data.nip} | ${data.nama}</option>`
+                        );
+                    })
+                }
+            })
+        }
 
         $('#ttd1').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');

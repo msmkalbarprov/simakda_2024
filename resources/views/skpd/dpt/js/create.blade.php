@@ -127,6 +127,9 @@
             url: "{{ route('dpt.no_urut') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#no_urut').val(data);
 
@@ -242,7 +245,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

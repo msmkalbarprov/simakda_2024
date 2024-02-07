@@ -66,6 +66,7 @@
                 data: {
                     tgl_awal: tgl_awal,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -98,6 +99,7 @@
                 data: {
                     tgl_awal: tgl_awal,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(data) {
@@ -139,7 +141,8 @@
                 dataType: 'json',
                 async: false,
                 data: {
-                    kd_skpd: document.getElementById('kd_skpd').value
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     status = response.status;
@@ -230,7 +233,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     // Show image container

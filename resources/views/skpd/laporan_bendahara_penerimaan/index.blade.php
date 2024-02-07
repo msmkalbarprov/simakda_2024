@@ -247,7 +247,7 @@
                 dropdownParent: $('#modal_register_kasda .modal-content'),
                 theme: 'bootstrap-5'
             });
-            
+
 
 
         });
@@ -360,7 +360,7 @@
         // BKU Penerimaan
         $('#bku_penerimaan').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            let role    = "{{ Auth::user()->role }}";
+            let role = "{{ Auth::user()->role }}";
             $('#modal_cetak').modal('show');
             $('#modal_cetak2').modal('hide');
             $('#modal_register_kasda').modal('hide');
@@ -388,7 +388,7 @@
         // BP BANK Penerimaan
         $('#bpbankpenerimaan').on('click', function() {
             let kd_skpd = "{{ $data_skpd->kd_skpd }}";
-            let role    = "{{ Auth::user()->role }}";
+            let role = "{{ Auth::user()->role }}";
             $('#modal_cetak').modal('show');
             $('#modal_cetak2').modal('hide');
             $('#modal_register_kasda').modal('hide');
@@ -439,6 +439,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                     jenis: jenis
                 },
                 success: function(data) {
@@ -461,6 +462,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                     jenis: jenis
                 },
                 success: function(data) {
@@ -497,7 +499,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#bendahara').empty();
@@ -518,7 +521,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#bendahara_2').empty();
@@ -539,7 +543,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pa_kpa').empty();
@@ -560,7 +565,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pa_kpa_2').empty();
@@ -581,7 +587,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#rekening3').empty();
@@ -765,7 +772,7 @@
 
 
                 window.open(url.toString(), "_blank");
-            }else if (jenis_cetak == 'BKU Penerimaan') {
+            } else if (jenis_cetak == 'BKU Penerimaan') {
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_bku_penerimaan') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("spasi", spasi);
@@ -787,7 +794,7 @@
 
                 window.open(url.toString(), "_blank");
 
-            }else if (jenis_cetak == 'BP Bank Penerimaan') {
+            } else if (jenis_cetak == 'BP Bank Penerimaan') {
                 let url = new URL("{{ route('skpd.laporan_bendahara_penerimaan.cetak_bpbank_penerimaan') }}");
                 let searchParams = url.searchParams;
                 searchParams.append("spasi", spasi);

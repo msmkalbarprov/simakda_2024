@@ -50,6 +50,9 @@
             url: "{{ route('lpj.skpd_tanpa_unit.total_spd') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#jumlah_spd').val(new Intl.NumberFormat('id-ID', {
                     minimumFractionDigits: 2
@@ -140,7 +143,8 @@
                 dataType: 'json',
                 async: false,
                 data: {
-                    kd_skpd: document.getElementById('kd_skpd').value
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     // if (response.status != 1 || response.status != '1') {
@@ -220,7 +224,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -263,6 +268,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                     no_lpj_unit: detail_lpj.length == 0 ? '0' : detail_lpj
                 },
                 success: function(data) {

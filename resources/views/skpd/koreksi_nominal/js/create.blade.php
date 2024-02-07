@@ -302,7 +302,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sumber_dana: sumber
+                    sumber_dana: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_sumber_awal').val(data.nm_sumber_dana1);
@@ -731,7 +732,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -756,6 +758,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     beban: document.getElementById('beban').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_sp2d_awal').empty();
@@ -781,6 +784,7 @@
                     no_bukti: document.getElementById('no_bukti').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan_koreksi').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let rekening_awal = data.rekening_awal;
@@ -818,6 +822,7 @@
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan_koreksi').value,
                     no_sp2d: document.getElementById('no_sp2d_koreksi').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let sumber_awal = data.sumber_awal;
@@ -859,6 +864,7 @@
                     tgl_voucher: tgl_koreksi,
                     beban: beban,
                     status_angkas: status_angkas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -888,6 +894,7 @@
                     no_sp2d: no_sp2d,
                     tgl_voucher: tgl_koreksi,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -925,6 +932,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_skpd: kd_skpd,
                     kd_rekening: kd_rekening,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
@@ -956,6 +964,7 @@
                     kd_rekening: document.getElementById('kd_rekening_koreksi').value,
                     no_sp2d: document.getElementById('no_sp2d_koreksi').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#realisasi_sumber').val(new Intl.NumberFormat('id-ID', {
@@ -981,6 +990,9 @@
                 url: "{{ route('skpd.transaksi_cms.status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_anggaran').val(data.nama);
                 }
@@ -993,6 +1005,9 @@
                 url: "{{ route('penagihan.cek_status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_angkas').val(data.status);
                 }

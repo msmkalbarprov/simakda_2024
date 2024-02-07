@@ -19,6 +19,7 @@
             dataType: 'json',
             data: {
                 kd_skpd: document.getElementById('kd_skpd').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#jenis').empty();
@@ -50,6 +51,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: this.value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis').empty();
@@ -154,7 +156,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

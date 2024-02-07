@@ -1034,6 +1034,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                     jenis: jenis
                 },
                 success: function(data) {
@@ -1056,6 +1057,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                     jenis: jenis
                 },
                 success: function(data) {
@@ -1113,7 +1115,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#bendahara').empty();
@@ -1134,7 +1137,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd2
+                    kd_skpd: kd_skpd2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#bendahara2').empty();
@@ -1155,7 +1159,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pa_kpa').empty();
@@ -1176,7 +1181,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd2
+                    kd_skpd: kd_skpd2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pa_kpa2').empty();
@@ -1199,7 +1205,8 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd2,
-                    jns_anggaran: jns_anggaran2
+                    jns_anggaran: jns_anggaran2,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#subkegiatan').empty();
@@ -1223,7 +1230,8 @@
                 data: {
                     kd_skpd: kd_skpd2,
                     jns_anggaran: jns_anggaran2,
-                    subkegiatan: subkegiatan
+                    subkegiatan: subkegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#akunbelanja').empty();
@@ -1246,6 +1254,7 @@
                 dataType: 'json',
                 data: {
                     pajak1: pajak1,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pajak2').empty();
@@ -1265,6 +1274,9 @@
                     url: "{{ route('cetak_bppajak.cari_pasal') }}",
                     type: "POST",
                     dataType: 'json',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    },
                     success: function(data) {
                         $('#pajak3').empty();
                         $('#pajak3').append(`<option value="0">Silahkan Pilih</option>`);

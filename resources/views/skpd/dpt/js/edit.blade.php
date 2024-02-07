@@ -213,7 +213,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
