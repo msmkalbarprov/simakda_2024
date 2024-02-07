@@ -471,7 +471,8 @@
                                     </tr>
                                     <tr>
                                         <td colspan="3" style="text-align: right"><b>TOTAL POTONGAN</b></td>
-                                        <td style="text-align: right"><b>{{ rupiah($jumlah_pot2 + $jumlah_pot1) }}</b></td>
+                                        <td style="text-align: right"><b>{{ rupiah($jumlah_pot2 + $jumlah_pot1) }}</b>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -536,6 +537,7 @@
                     dataType: 'json',
                     data: {
                         no_sp2d: no_sp2d,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         if (response.message == '1') {
@@ -583,6 +585,7 @@
                     dataType: 'json',
                     data: {
                         no_sp2d: no_sp2d,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         if (response.message == '1') {

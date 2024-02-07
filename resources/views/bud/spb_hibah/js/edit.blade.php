@@ -57,7 +57,8 @@
             type: "POST",
             dataType: 'json',
             data: {
-                kd_skpd: kd_skpd
+                kd_skpd: kd_skpd,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#kd_sub_kegiatan').empty();
@@ -86,7 +87,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -233,7 +235,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $('#simpan').prop('disabled', true);
@@ -283,7 +286,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_sp2h: detail_spb.length == 0 ? '0' : detail_spb
+                    no_sp2h: detail_spb.length == 0 ? '0' : detail_spb,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_sp2h').empty();

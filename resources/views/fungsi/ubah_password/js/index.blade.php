@@ -12,10 +12,10 @@
         });
 
         $('#simpan').on('click', function() {
-            let id          = document.getElementById('id').value;
-            let username    = document.getElementById('username').value;
-            let password    = document.getElementById('password').value;
-            let password2   = document.getElementById('password2').value;
+            let id = document.getElementById('id').value;
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            let password2 = document.getElementById('password2').value;
 
             let data = {
                 id,
@@ -30,7 +30,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -41,7 +42,7 @@
                         alert('Password tidak sama!');
                         $('#simpan').prop('disabled', false);
                         return;
-                    }else {
+                    } else {
                         alert('Password Gagal Diubah!');
                         $('#simpan').prop('disabled', false);
                         return;

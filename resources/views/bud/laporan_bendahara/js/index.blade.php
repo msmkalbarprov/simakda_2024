@@ -926,7 +926,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#rekening_buku_besar_kasda').empty();
@@ -1964,7 +1965,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#bendahara').empty();
@@ -1986,7 +1988,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pa_kpa').empty();
@@ -2911,14 +2914,123 @@
         });
 
         $('.format_bpk').on('click', function() {
+            let keseluruhan = document.getElementById('pilihan_keseluruhan_register_sp2d')
+                .checked;
+            let skpd = document.getElementById('pilihan_skpd_register_sp2d').checked;
+
+            let keseluruhan1 = document.getElementById('pilihan_keseluruhan_register_sp2d1')
+                .checked;
+            let bulan = document.getElementById('pilihan_bulan_register_sp2d')
+                .checked;
+            let periode = document.getElementById('pilihan_periode_register_sp2d')
+                .checked;
+
+            if (keseluruhan == false) {
+                if (skpd == false) {
+                    alert('Silahkan Pilih Keseluruhan atau SKPD!');
+                    return;
+                }
+            }
+
+            if (keseluruhan) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (keseluruhan1 == false) {
+                    if (bulan == false) {
+                        if (periode == false) {
+                            alert('Silahkan Pilih Keseluruhan, Bulan atau Periode!');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            let kd_skpd = document.getElementById('kd_skpd_register_sp2d').value;
+            let bulan1 = document.getElementById('bulan_register_sp2d').value;
+            let periode1 = document.getElementById('periode1_register_sp2d').value;
+            let periode2 = document.getElementById('periode2_register_sp2d').value;
             let ttd = document.getElementById('ttd_register_sp2d').value;
+            let anggaran = document.getElementById('anggaran_register_sp2d').value;
+            let urutan = document.getElementById('urutan_register_sp2d').value;
+            let status = document.getElementById('status_register_sp2d').value;
+            let kasda = document.getElementById('kasda_register_sp2d').checked;
+            let dengan = document.getElementById('dengan_register_sp2d').checked;
+            let tanpa = document.getElementById('tanpa_register_sp2d').checked;
+            let dengan_skpkd = document.getElementById('dengan_skpkd_register_sp2d').checked;
+            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
             let jenis_print = $(this).data("jenis");
 
             let margin_kiri = document.getElementById('margin_kiri').value;
             let margin_kanan = document.getElementById('margin_kanan').value;
             let margin_atas = document.getElementById('margin_atas').value;
             let margin_bawah = document.getElementById('margin_bawah').value;
-            let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
+
+            if (keseluruhan || skpd) {
+                if (bulan) {
+                    if (!bulan1) {
+                        alert('Silahkan Pilih Bulan!');
+                        return;
+                    }
+                }
+            }
+
+            if (keseluruhan || skpd) {
+                if (periode) {
+                    if (!periode1 || !periode2) {
+                        alert('Silahkan Pilih Periode!');
+                        return;
+                    }
+                }
+            }
+
+            if (skpd) {
+                if (!kd_skpd) {
+                    alert('Silahkan Pilih SKPD!');
+                    return;
+                }
+            }
+
+            let pilihan = '';
+            if (keseluruhan) {
+                if (keseluruhan1) {
+                    pilihan = '11';
+                }
+                if (bulan) {
+                    pilihan = '12';
+                }
+                if (periode) {
+                    pilihan = '13';
+                }
+            }
+            if (skpd) {
+                if (keseluruhan1) {
+                    pilihan = '21';
+                }
+                if (bulan) {
+                    pilihan = '22';
+                }
+                if (periode) {
+                    pilihan = '23';
+                }
+            }
+
+            // let ttd = document.getElementById('ttd_register_sp2d').value;
+            // let jenis_print = $(this).data("jenis");
+
+            // let margin_kiri = document.getElementById('margin_kiri').value;
+            // let margin_kanan = document.getElementById('margin_kanan').value;
+            // let margin_atas = document.getElementById('margin_atas').value;
+            // let margin_bawah = document.getElementById('margin_bawah').value;
+            // let tglcetak = document.getElementById('tglcetak_register_sp2d').value;
 
             if (!ttd) {
                 alert('Silahkan Pilih Penandatangan!');
@@ -2939,6 +3051,11 @@
             searchParams.append("margin_bawah", margin_bawah);
             searchParams.append("jenis_print", jenis_print);
             searchParams.append("tglcetak", tglcetak);
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("kd_skpd", kd_skpd);
+            searchParams.append("bulan", bulan1);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
             window.open(url.toString(), "_blank");
         });
 

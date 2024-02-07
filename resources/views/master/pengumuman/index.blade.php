@@ -41,7 +41,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -92,15 +92,15 @@
                     {
                         data: 'file',
                         name: 'file',
-                    },{
+                    }, {
                         data: 'aktif',
                         className: "text-center",
-                        render: function (data, type) {
+                        render: function(data, type) {
                             if (type === 'display') {
                                 let link = '<i class="fa fa-times text-danger"></i>';
                                 if (data === '1') {
                                     link = '<i class="fa fa-check text-success"></i>';
-                                }else{
+                                } else {
                                     link = '<i class="fa fa-times text-danger"></i>';
                                 }
 
@@ -109,15 +109,15 @@
 
                             return data;
                         },
-                    },{
+                    }, {
                         data: 'status',
                         className: "text-center",
-                        render: function (data, type) {
+                        render: function(data, type) {
                             if (type === 'display') {
                                 let link = '<i class="fa fa-times text-danger"></i>';
                                 if (data === '1') {
                                     link = '<i class="fa fa-check text-success"></i>';
-                                }else{
+                                } else {
                                     link = '<i class="fa fa-times text-danger"></i>';
                                 }
 
@@ -137,8 +137,9 @@
             });
         });
 
-        function deleteData(no_pengumuman,dokumen) {
-            let tanya = confirm('Apakah anda yakin untuk menghapus data dengan id : ' + no_pengumuman+' dan dokumen: '+dokumen );
+        function deleteData(no_pengumuman, dokumen) {
+            let tanya = confirm('Apakah anda yakin untuk menghapus data dengan id : ' + no_pengumuman + ' dan dokumen: ' +
+                dokumen);
             if (tanya == true) {
                 $.ajax({
                     url: "{{ route('pengumuman.hapus') }}",
@@ -146,7 +147,8 @@
                     dataType: 'json',
                     data: {
                         id: no_pengumuman,
-                        file:dokumen
+                        file: dokumen,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

@@ -7,13 +7,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{'Tambah KKPD'}}</h4>
+                        <h4 class="mb-0">{{ 'Tambah KKPD' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{'KKPD'}}</a></li>
-                                <li class="breadcrumb-item active">{{'Tambah'}}</li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{ 'KKPD' }}</a></li>
+                                <li class="breadcrumb-item active">{{ 'Tambah' }}</li>
                             </ol>
                         </div>
 
@@ -39,14 +39,14 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <!-- NIP -->
                         <div class="mb-3 row">
                             <label for="no_kkpd" class="col-md-2 col-form-label">Nomor KKPD</label>
                             <div class="col-md-10">
                                 <input type="text" placeholder="Isi nomor kkpd"
-                                    class="form-control @error('no_kkpd') is-invalid @enderror"
-                                    value="{{ old('no_kkpd') }}" id="no_kkpd" name="no_kkpd">
+                                    class="form-control @error('no_kkpd') is-invalid @enderror" value="{{ old('no_kkpd') }}"
+                                    id="no_kkpd" name="no_kkpd">
                                 @error('no_kkpd')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -57,14 +57,14 @@
                             <label for="nm_kkpd" class="col-md-2 col-form-label">Nama Pemilik</label>
                             <div class="col-md-10">
                                 <input type="text" placeholder="Isi nama pemilik KKPD"
-                                    class="form-control @error('nm_kkpd') is-invalid @enderror"
-                                    value="{{ old('nm_kkpd') }}" id="nm_kkpd" name="nm_kkpd">
+                                    class="form-control @error('nm_kkpd') is-invalid @enderror" value="{{ old('nm_kkpd') }}"
+                                    id="nm_kkpd" name="nm_kkpd">
                                 @error('nm_kkpd')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <!-- SIMPAN -->
                         <div style="float: right;">
                             <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
@@ -82,34 +82,35 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5'
             });
-            
+
             $('#kd_skpd').select2({
                 theme: 'bootstrap-5'
             });
             $('#kode').select2({
                 theme: 'bootstrap-5'
             });
-        
-        
-            
+
+
+
 
         });
     </script>
     <script>
-        
-
         $(document).ready(function() {
-            
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-           
+
             $.ajax({
                 url: "{{ route('kkpd.skpd') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#kd_skpd').empty();
                     $('#kd_skpd').append(
@@ -121,7 +122,7 @@
                     })
                 }
             })
-        
+
         });
     </script>
 @endsection

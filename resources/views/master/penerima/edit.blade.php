@@ -392,7 +392,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    bic: bic
+                    bic: bic,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -418,7 +419,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    kd_map: kode_akun
+                    kd_map: kode_akun,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: "json",
                 success: function(data) {
@@ -448,7 +450,8 @@
                     type: "POST",
                     dataType: 'json',
                     data: {
-                        bic: bic
+                        bic: bic,
+                        "_token": "{{ csrf_token() }}",
                     },
                     dataType: "json",
                     success: function(data) {
@@ -475,7 +478,8 @@
                     type: "POST",
                     dataType: 'json',
                     data: {
-                        kd_map: kd_map
+                        kd_map: kd_map,
+                        "_token": "{{ csrf_token() }}",
                     },
                     dataType: "json",
                     success: function(data) {
@@ -606,6 +610,7 @@
                             kode_bank: kode_bank,
                             no_rek: no_rek,
                             nm_rek: nm_rek,
+                            "_token": "{{ csrf_token() }}",
                         },
                         dataType: "json",
                         success: function(data) {
@@ -687,6 +692,7 @@
                                 npwp: npwp,
                                 kode_akun: kode_akun,
                                 kode_setor: kode_setor,
+                                "_token": "{{ csrf_token() }}",
                             },
                             dataType: "json",
                             success: function(data) {

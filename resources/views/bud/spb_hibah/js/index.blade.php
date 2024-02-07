@@ -123,6 +123,7 @@
                 data: {
                     no_spb: no_spb,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

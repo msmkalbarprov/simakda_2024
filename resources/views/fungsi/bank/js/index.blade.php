@@ -92,6 +92,7 @@
                 data: {
                     kode: kode,
                     bic: bic,
+                    "_token": "{{ csrf_token() }}",
                     nama: nama
                 },
                 beforeSend: function() {
@@ -124,6 +125,9 @@
                 url: "{{ route('bank.nomor') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
                 },

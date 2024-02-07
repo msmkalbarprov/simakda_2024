@@ -141,7 +141,8 @@
                 data: {
                     kd_skpd: kd_skpd,
                     jenis: jenis,
-                    kunci: nilai
+                    kunci: nilai,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == 1) {
@@ -177,6 +178,7 @@
                     kd_skpd: kd_skpd,
                     kunci: kunci,
                     jenis: jenis,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == 1) {

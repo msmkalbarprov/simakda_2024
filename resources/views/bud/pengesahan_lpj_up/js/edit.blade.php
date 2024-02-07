@@ -85,7 +85,8 @@
                 data: {
                     no_lpj: no_lpj,
                     kd_skpd: kd_skpd,
-                    kkpd: "{{ $kkpd }}"
+                    kkpd: "{{ $kkpd }}",
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -112,7 +113,8 @@
                 data: {
                     no_lpj: no_lpj,
                     kd_skpd: kd_skpd,
-                    kkpd: "{{ $kkpd }}"
+                    kkpd: "{{ $kkpd }}",
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

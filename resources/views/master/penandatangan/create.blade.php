@@ -7,13 +7,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">{{'Tambah Penandatangan'}}</h4>
+                        <h4 class="mb-0">{{ 'Tambah Penandatangan' }}</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{'Penandatangan'}}</a></li>
-                                <li class="breadcrumb-item active">{{'Tambah Penandatangan'}}</li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">{{ 'Penandatangan' }}</a></li>
+                                <li class="breadcrumb-item active">{{ 'Tambah Penandatangan' }}</li>
                             </ol>
                         </div>
 
@@ -39,14 +39,14 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <!-- NIP -->
                         <div class="mb-3 row">
                             <label for="nip" class="col-md-2 col-form-label">NIP</label>
                             <div class="col-md-10">
                                 <input type="text" placeholder="Isi NIP Penandatangan"
-                                    class="form-control @error('nip') is-invalid @enderror"
-                                    value="{{ old('nip') }}" id="nip" name="nip">
+                                    class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip') }}"
+                                    id="nip" name="nip">
                                 @error('nip')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -57,8 +57,8 @@
                             <label for="nama" class="col-md-2 col-form-label">Nama Lengkap</label>
                             <div class="col-md-10">
                                 <input type="text" placeholder="Isi nama Penandatangan"
-                                    class="form-control @error('nama') is-invalid @enderror"
-                                    value="{{ old('nama') }}" id="nama" name="nama">
+                                    class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama') }}"
+                                    id="nama" name="nama">
                                 @error('nama')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -69,8 +69,8 @@
                             <label for="jabatan" class="col-md-2 col-form-label">Jabatan</label>
                             <div class="col-md-10">
                                 <input type="text" placeholder="Isi jabatan Penandatangan"
-                                    class="form-control @error('jabatan') is-invalid @enderror"
-                                    value="{{ old('jabatan') }}" id="jabatan" name="jabatan">
+                                    class="form-control @error('jabatan') is-invalid @enderror" value="{{ old('jabatan') }}"
+                                    id="jabatan" name="jabatan">
                                 @error('jabatan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -78,9 +78,11 @@
                         </div>
                         <!-- pangkat -->
                         <div class="mb-3 row">
-                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat <small>Tanpa Golongan</small></label>
+                            <label for="pangkat" class="col-md-2 col-form-label">Pangkat <small>Tanpa
+                                    Golongan</small></label>
                             <div class="col-md-10">
-                                <input type="text" placeholder="Isi pangkat Penandatangan tanpa golongan (Pembina Tingkat I)"
+                                <input type="text"
+                                    placeholder="Isi pangkat Penandatangan tanpa golongan (Pembina Tingkat I)"
                                     class="form-control @error('pangkat') is-invalid @enderror"
                                     value="{{ old('pangkat') }}" id="pangkat" name="pangkat">
                                 @error('pangkat')
@@ -110,8 +112,8 @@
                                 </select>
                             </div>
                         </div>
-                        
-                        
+
+
                         <!-- SIMPAN -->
                         <div style="float: right;">
                             <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
@@ -129,34 +131,35 @@
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5'
             });
-            
+
             $('#kd_skpd').select2({
                 theme: 'bootstrap-5'
             });
             $('#kode').select2({
                 theme: 'bootstrap-5'
             });
-        
-        
-            
+
+
+
 
         });
     </script>
     <script>
-        
-
         $(document).ready(function() {
-            
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-           
+
             $.ajax({
                 url: "{{ route('tandatangan.skpd') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#kd_skpd').empty();
                     $('#kd_skpd').append(
@@ -168,7 +171,7 @@
                     })
                 }
             })
-        
+
         });
     </script>
 @endsection

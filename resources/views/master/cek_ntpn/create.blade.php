@@ -168,6 +168,7 @@
                     dataType: 'json',
                     data: {
                         bic: bic,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#cabang').empty();
@@ -194,7 +195,8 @@
                     url: "{{ route('penerima.kodeSetor') }}",
                     dataType: 'json',
                     data: {
-                        kd_map: kd_map
+                        kd_map: kd_map,
+                        "_token": "{{ csrf_token() }}",
                     },
                     dataType: "json",
                     success: function(data) {
@@ -324,6 +326,7 @@
                             kode_bank: kode_bank,
                             no_rek: no_rek,
                             nm_rek: nm_rek,
+                            "_token": "{{ csrf_token() }}",
                         },
                         success: function(data) {
                             let data1 = $.parseJSON(data);
@@ -380,6 +383,7 @@
                         dataType: 'json',
                         data: {
                             id_billing: id_billing,
+                            "_token": "{{ csrf_token() }}",
                         },
                         dataType: "json",
                         beforeSend: function() {

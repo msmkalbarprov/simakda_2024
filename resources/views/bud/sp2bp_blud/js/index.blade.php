@@ -121,6 +121,7 @@
                     no_sp2bp: no_sp2bp,
                     no_sp3b: no_sp3b,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

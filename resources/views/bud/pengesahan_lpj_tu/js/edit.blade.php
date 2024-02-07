@@ -83,7 +83,8 @@
                 dataType: 'json',
                 data: {
                     no_lpj: no_lpj,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -108,7 +109,8 @@
                 dataType: 'json',
                 data: {
                     no_lpj: no_lpj,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

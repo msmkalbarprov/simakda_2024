@@ -34,6 +34,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
@@ -60,6 +61,7 @@
                 data: {
                     kd_skpd: kd_skpd,
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -132,6 +134,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kode_rekening: kode_rekening,
                     jenis: jenis,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == 1) {

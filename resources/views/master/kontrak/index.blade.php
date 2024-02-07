@@ -137,6 +137,7 @@
                     dataType: 'json',
                     data: {
                         no_kontrak: no_kontrak,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

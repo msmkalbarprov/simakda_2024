@@ -22,6 +22,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: this.value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_sp2d').empty();
@@ -46,7 +47,8 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: this.value,
-                    kd_skpd:document.getElementById('kd_skpd').value,
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis').empty();
@@ -72,7 +74,7 @@
             let kd_skpd = document.getElementById('kd_skpd').value;
             let nm_skpd = document.getElementById('nm_skpd').value;
             let no_sp2d = document.getElementById('no_sp2d').value;
-            let jenis   = document.getElementById('jenis').value;
+            let jenis = document.getElementById('jenis').value;
             let nama_jenis = document.getElementById('nama_jenis').value;
             let tahun_anggaran = document.getElementById('tahun_anggaran').value;
             let keterangan = document.getElementById('keterangan').value;
@@ -136,7 +138,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

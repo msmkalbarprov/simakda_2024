@@ -148,6 +148,7 @@
                             rekening_koran_up: rekening_koran_up,
                             keputusan_gubernur_up: keputusan_gubernur_up,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -217,6 +218,7 @@
                             sptb_gu: sptb_gu,
                             sse_gu: sse_gu,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -297,6 +299,7 @@
                             bukti_setor_tu: bukti_setor_tu,
                             dokumen_lain_tu: dokumen_lain_tu,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -403,6 +406,7 @@
                             sk_mutasi_gaji: sk_mutasi_gaji,
                             skpp_gaji: skpp_gaji,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -509,6 +513,7 @@
                             kepgub_btt_ketiga: kepgub_btt_ketiga,
                             syarat_lain_ketiga: syarat_lain_ketiga,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -706,6 +711,7 @@
                             fakta_barjas5: fakta_barjas5,
                             syarat_barjas5: syarat_barjas5,
                             status_verifikasi: status_verifikasi,
+                            "_token": "{{ csrf_token() }}",
                         },
                         beforeSend: function() {
                             $("#overlay").fadeIn(100);
@@ -756,6 +762,7 @@
             data: {
                 no_spm: no_spm,
                 kd_skpd: kd_skpd,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 response = data;

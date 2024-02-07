@@ -94,7 +94,8 @@
                     url: "{{ route('pengesahan_lpj_upgu.kegiatan') }}",
                     dataType: 'json',
                     data: {
-                        no_lpj: document.getElementById('no_lpj').value
+                        no_lpj: document.getElementById('no_lpj').value,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         $('#kd_sub_kegiatan').empty();
@@ -163,6 +164,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (tgl_kas < data) {
@@ -177,6 +179,7 @@
                                 no_kas: no_kas,
                                 no_sts: no_sts,
                                 kd_skpd: kd_skpd,
+                                "_token": "{{ csrf_token() }}",
                             },
                             success: function(data) {
                                 if (data.message == '1') {

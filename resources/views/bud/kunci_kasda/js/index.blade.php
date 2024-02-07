@@ -83,6 +83,7 @@
                     pilihan: pilihan,
                     kd_skpd: kd_skpd,
                     tgl_akhir: tgl_akhir,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

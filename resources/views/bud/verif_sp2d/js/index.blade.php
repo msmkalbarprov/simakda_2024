@@ -6,7 +6,7 @@
             }
         });
 
-var table= $('#sp2dverif').DataTable({
+        var table = $('#sp2dverif').DataTable({
             responsive: true,
             ordering: false,
             serverSide: true,
@@ -16,12 +16,11 @@ var table= $('#sp2dverif').DataTable({
                 "url": "{{ route('verif_sp2d.load_data') }}",
                 "type": "POST"
             },
-            columns: [
-                {
+            columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     className: "text-center"
-                }, 
+                },
                 {
                     data: 'nomor',
                     name: 'nomor',
@@ -53,8 +52,8 @@ var table= $('#sp2dverif').DataTable({
                 },
             ],
         });
-        
-        
+
+
         $('#bverif').on('click', function() {
             table.ajax.url("{{ route('verif_sp2d.load_data') }}");
             table.ajax.reload();
@@ -67,10 +66,10 @@ var table= $('#sp2dverif').DataTable({
             table.ajax.url("{{ route('verif_sp2d.load_data_salur') }}");
             table.ajax.reload();
         });
-        
-        
 
-        
+
+
+
     });
 
 
@@ -92,7 +91,8 @@ var table= $('#sp2dverif').DataTable({
                 type: "DELETE",
                 dataType: 'json',
                 data: {
-                    no_spp: no_spp
+                    no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

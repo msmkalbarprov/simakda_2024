@@ -45,7 +45,7 @@
                     name: 'keterangan',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data.keterangan.substr(0, 10) + '.....'+'<br>'+data.no_sp2d;
+                        return data.keterangan.substr(0, 10) + '.....' + '<br>' + data.no_sp2d;
                     }
                 },
                 {
@@ -78,6 +78,7 @@
                 dataType: 'json',
                 data: {
                     no: no,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

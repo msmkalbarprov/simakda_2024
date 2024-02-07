@@ -11,7 +11,7 @@
             theme: 'bootstrap-5'
         });
 
-   
+
         $('#kd_skpd').on('select2:select', function() {
             let nama = $(this).find(':selected').data('nama');
             $('#nm_skpd').val(nama);
@@ -19,16 +19,16 @@
 
 
         $('#simpan').on('click', function() {
-            let no_kas          = document.getElementById('no_kas').value;
-            let tgl_kas         = document.getElementById('tgl_kas').value;
-            let kd_skpd         = document.getElementById('kd_skpd').value;
-            let nm_skpd         = document.getElementById('nm_skpd').value;
-            let jenis           = document.getElementById('jenis').value;
-            let tahun_anggaran  = document.getElementById('tahun_anggaran').value;
-            let keterangan      = document.getElementById('keterangan').value;
-            let nilai           = angka(document.getElementById('nilai').value);
-            let tahun_input     = tgl_kas.substr(0, 4);
-            
+            let no_kas = document.getElementById('no_kas').value;
+            let tgl_kas = document.getElementById('tgl_kas').value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            let nm_skpd = document.getElementById('nm_skpd').value;
+            let jenis = document.getElementById('jenis').value;
+            let tahun_anggaran = document.getElementById('tahun_anggaran').value;
+            let keterangan = document.getElementById('keterangan').value;
+            let nilai = angka(document.getElementById('nilai').value);
+            let tahun_input = tgl_kas.substr(0, 4);
+
             if (!tgl_kas) {
                 alert('Tanggal Tidak Boleh Kosong');
                 return;
@@ -75,7 +75,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

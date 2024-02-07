@@ -91,6 +91,7 @@
                 dataType: 'json',
                 data: {
                     no_spp: no_spp,
+                    "_token": "{{ csrf_token() }}",
                     kd_skpd: kd_skpd
                 },
                 success: function(response) {
@@ -130,6 +131,7 @@
                     kd_skpd: kd_skpd,
                     keterangan: keterangan,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

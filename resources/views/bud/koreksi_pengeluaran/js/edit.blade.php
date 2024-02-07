@@ -11,16 +11,17 @@
             theme: 'bootstrap-5'
         });
 
-        let jenis_sementara     = document.getElementById('jenis_sementara').value;
-        let no_sp2d_sementara   = document.getElementById('no_sp2d_sementara').value;
-        
-        
+        let jenis_sementara = document.getElementById('jenis_sementara').value;
+        let no_sp2d_sementara = document.getElementById('no_sp2d_sementara').value;
+
+
         $.ajax({
             url: "{{ route('koreksi_pengeluaran.nosp2d') }}",
             type: "POST",
             dataType: 'json',
             data: {
                 kd_skpd: document.getElementById('kd_skpd').value,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#no_sp2d').empty();
@@ -47,6 +48,7 @@
             data: {
                 kd_skpd: document.getElementById('kd_skpd').value,
                 no_sp2d: no_sp2d_sementara,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#jenis').empty();
@@ -77,6 +79,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: this.value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_sp2d').empty();
@@ -101,7 +104,8 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: this.value,
-                    kd_skpd:document.getElementById('kd_skpd').value,
+                    kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#jenis').empty();
@@ -150,7 +154,7 @@
                 }
             }
 
-           
+
 
             if (!tgl_kas) {
                 alert('Tanggal Tidak Boleh Kosong');
@@ -201,7 +205,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
