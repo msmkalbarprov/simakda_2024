@@ -38,7 +38,7 @@
                         return new Intl.NumberFormat('id-ID', {
                             minimumFractionDigits: 2
                         }).format(data.total)
-                        
+
                     }
                 },
                 {
@@ -79,6 +79,7 @@
                 data: {
                     no_kas: no_kas,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

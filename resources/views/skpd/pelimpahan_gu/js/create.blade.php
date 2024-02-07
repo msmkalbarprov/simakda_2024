@@ -27,6 +27,7 @@
                 dataType: 'json',
                 data: {
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_lpj').empty();
@@ -163,7 +164,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

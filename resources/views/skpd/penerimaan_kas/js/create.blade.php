@@ -119,6 +119,7 @@
                 data: {
                     kd_skpd: kd_skpd,
                     tgl_kas: tgl_kas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_bukti').empty();
@@ -150,6 +151,7 @@
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_sub_kegiatan').val(data);
@@ -243,7 +245,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

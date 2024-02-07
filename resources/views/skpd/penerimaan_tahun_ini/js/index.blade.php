@@ -149,7 +149,8 @@
                                 no_terima: no_terima,
                                 no_tetap: no_tetap,
                                 kd_skpd: kd_skpd,
-                                jenis: '1'
+                                jenis: '1',
+                                "_token": "{{ csrf_token() }}",
                             },
                             beforeSend: function() {
                                 $("#overlay").fadeIn(100);
@@ -175,7 +176,8 @@
                                 no_terima: no_terima,
                                 no_tetap: no_tetap,
                                 kd_skpd: kd_skpd,
-                                jenis: '2'
+                                jenis: '2',
+                                "_token": "{{ csrf_token() }}",
                             },
                             beforeSend: function() {
                                 $("#overlay").fadeIn(100);

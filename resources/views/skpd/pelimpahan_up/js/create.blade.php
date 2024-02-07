@@ -132,7 +132,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                     // data: encrypt(data)
                 },
                 success: function(response) {

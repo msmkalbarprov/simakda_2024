@@ -162,6 +162,7 @@
                     beban: beban,
                     total_potongan: total_potongan,
                     tgl_sp2d: tgl_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -192,6 +193,7 @@
                     no_sp2d: no_sp2d,
                     beban: beban,
                     jenis: jenis,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

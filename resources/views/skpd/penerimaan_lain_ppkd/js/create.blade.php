@@ -82,7 +82,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -124,6 +125,9 @@
             url: "{{ route('penerimaan_ppkd.urut') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#no_kas').val(data.nomor);
             }

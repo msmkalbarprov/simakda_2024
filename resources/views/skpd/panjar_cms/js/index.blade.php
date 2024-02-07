@@ -1,43 +1,43 @@
-    <script>
-         $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $('#panjar').DataTable({
-                responsive: true,
-                ordering: false,
-                serverSide: true,
-                processing: true,
-                lengthMenu: [8, 20, 50, 100],
-                ajax: {
-                    "url": "{{ route('panjar_cms.load_data') }}",
-                    "type": "POST",
-                },
-                createdRow: function(row, data, index) {
+<script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $('#panjar').DataTable({
+            responsive: true,
+            ordering: false,
+            serverSide: true,
+            processing: true,
+            lengthMenu: [8, 20, 50, 100],
+            ajax: {
+                "url": "{{ route('panjar_cms.load_data') }}",
+                "type": "POST",
+            },
+            createdRow: function(row, data, index) {
                 if (data.status_upload == "1" && data.status_validasi == "1") {
                     $(row).css("background-color", "#98FB98");
                 } else if (data.status_upload == "1") {
                     $(row).css("background-color", "#B0E0E6");
                 }
             },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    }, {
-                        data: 'no_panjar',
-                        name: 'no_panjar'
-                    },
-                    {
-                        data: 'tgl_panjar',
-                        name: 'tgl_panjar'
-                    },
-                    {
-                        data: 'kd_skpd',
-                        name: 'kd_skpd'
-                    },
-                    {
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                }, {
+                    data: 'no_panjar',
+                    name: 'no_panjar'
+                },
+                {
+                    data: 'tgl_panjar',
+                    name: 'tgl_panjar'
+                },
+                {
+                    data: 'kd_skpd',
+                    name: 'kd_skpd'
+                },
+                {
                     data: null,
                     name: 'nilai',
                     className: 'text-right',
@@ -46,17 +46,17 @@
                             minimumFractionDigits: 2
                         }).format(data.nilai)
                     }
-                    },
-                    {
-                        data: 'aksi',
-                        name: 'aksi',
-                        width: '200px',
-                        className: 'text-center'
-                    },
-                ],
-            });
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    width: '200px',
+                    className: 'text-center'
+                },
+            ],
+        });
 
-            $('#cetak_panjar').on('click', function() {
+        $('#cetak_panjar').on('click', function() {
             let tgl_voucher = document.getElementById('tgl_voucher').value;
             if (!tgl_voucher) {
                 alert('Tanggal tidak boleh kosong!');
@@ -67,9 +67,9 @@
             searchParams.append("tgl_voucher", tgl_voucher);
             window.open(url.toString(), "_blank");
         });
-        });
+    });
 
-        function deleteData(no_panjar, kd_skpd) {
+    function deleteData(no_panjar, kd_skpd) {
         let tanya = confirm('Apakah anda yakin untuk menghapus data dengan Nomor Kas : ' + no_panjar);
         if (tanya == true) {
             $.ajax({
@@ -79,6 +79,7 @@
                 data: {
                     no_panjar: no_panjar,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {
@@ -93,4 +94,4 @@
             return false;
         }
     }
-    </script>
+</script>

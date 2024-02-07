@@ -79,6 +79,7 @@
                 data: {
                     no_terima: no_terima,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
