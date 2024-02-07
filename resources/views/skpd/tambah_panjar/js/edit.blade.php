@@ -33,6 +33,7 @@
             dataType: 'json',
             data: {
                 no_panjar: no_panjar_lalu,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#kd_sub_kegiatan').empty();
@@ -157,7 +158,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {

@@ -100,7 +100,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_voucher: no_voucher
+                    no_voucher: no_voucher,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

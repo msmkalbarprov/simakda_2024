@@ -194,6 +194,7 @@
                 dataType: 'json',
                 data: {
                     no_panjar: no_panjar,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -225,6 +226,7 @@
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -260,6 +262,7 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                     beban: document.getElementById('beban').value,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -338,6 +341,7 @@
                     beban: document.getElementById('beban').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -422,6 +426,7 @@
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -463,6 +468,7 @@
                     kd_rek6: document.getElementById('kode_rekening').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -611,7 +617,8 @@
                     kdrek: kode_rekening,
                     nilai_tagih: nilai,
                     sumber: sumber,
-                    no_sp2d: no_sp2d
+                    no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -769,7 +776,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -818,6 +826,7 @@
                 data: {
                     no_panjar: no_panjar,
                     no_panjar_lalu: no_panjar_lalu,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -856,7 +865,8 @@
                 url: "{{ route('skpd.transaksi_cms.sisa_bank') }}",
                 type: "POST",
                 data: {
-                    beban: beban
+                    beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: 'json',
                 beforeSend: function() {
@@ -1026,6 +1036,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rek: kd_rek6,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

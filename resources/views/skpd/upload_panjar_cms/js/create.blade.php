@@ -180,6 +180,7 @@
                     data: {
                         total_transaksi: total_transaksi,
                         rincian_data: rincian_data,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {
@@ -219,7 +220,8 @@
             type: "POST",
             dataType: 'json',
             data: {
-                no_kas: detail_rincian.length == 0 ? '0' : detail_rincian
+                no_kas: detail_rincian.length == 0 ? '0' : detail_rincian,
+                "_token": "{{ csrf_token() }}",
             },
             success: function(data) {
                 $('#data_transaksi').empty();

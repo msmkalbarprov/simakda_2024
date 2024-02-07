@@ -434,7 +434,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sumber_dana: sumber
+                    sumber_dana: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_sumber').val(data.nm_sumber_dana1);
@@ -668,6 +669,7 @@
                     nilai_tagih: nilai,
                     sumber: sumber,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1032,7 +1034,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1105,6 +1108,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     beban: document.getElementById('beban').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1136,6 +1140,7 @@
                     beban: document.getElementById('beban').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1179,6 +1184,7 @@
                     beban: document.getElementById('beban').value,
                     tgl_voucher: document.getElementById('tgl_voucher').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1311,7 +1317,8 @@
                 type: "POST",
                 data: {
                     beban: document.getElementById('beban').value,
-                    no_sp2d: no_sp2d
+                    no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 dataType: 'json',
                 success: function(data) {
@@ -1333,7 +1340,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_sp2d: no_sp2d
+                    no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
@@ -1368,6 +1376,7 @@
                     tgl_voucher: tgl_voucher,
                     beban: beban,
                     status_angkas: status_angkas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -1397,6 +1406,7 @@
                     no_sp2d: no_sp2d,
                     tgl_voucher: tgl_voucher,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -1427,6 +1437,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_skpd: kd_skpd,
                     kd_rekening: kd_rekening,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
@@ -1451,6 +1462,7 @@
                     kd_rekening: document.getElementById('kd_rekening').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1477,6 +1489,9 @@
                 url: "{{ route('skpd.transaksi_cms.status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_anggaran').val(data.nama);
                 }
@@ -1489,6 +1504,9 @@
                 url: "{{ route('penagihan.cek_status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_angkas').val(data.status);
                 }
@@ -1617,6 +1635,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rek: kd_rek,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

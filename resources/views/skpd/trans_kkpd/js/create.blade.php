@@ -415,7 +415,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -454,7 +455,8 @@
                     // no_dpt: document.getElementById('no_dpt').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
-                    id: detail_rincian.length == 0 ? '0' : detail_rincian
+                    id: detail_rincian.length == 0 ? '0' : detail_rincian,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#pilih_rincian_dpt').empty();

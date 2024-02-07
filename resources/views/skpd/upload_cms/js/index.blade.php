@@ -575,6 +575,7 @@
                     no_upload: no_upload,
                     kd_skpd: kd_skpd,
                     no_voucher: no_voucher,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

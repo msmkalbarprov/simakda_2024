@@ -267,6 +267,7 @@
                     kd_skpd: kd_skpd,
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#no_sp2d').empty();
@@ -301,6 +302,7 @@
                 dataType: 'json',
                 data: {
                     no_sp2d: document.getElementById('no_sp2d').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#sisa_bank').val(new Intl.NumberFormat('id-ID', {
@@ -325,6 +327,7 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                     beban: document.getElementById('beban').value,
                     no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -406,6 +409,7 @@
                     beban: document.getElementById('beban').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -441,6 +445,7 @@
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
                     kd_rek6: kd_rek6,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#sumber').empty();
@@ -476,6 +481,7 @@
                     kd_rek6: document.getElementById('kode_rekening').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#lalu_sumber').val(new Intl.NumberFormat('id-ID', {
@@ -933,7 +939,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     if (response.message == '1') {
@@ -983,6 +990,7 @@
                 data: {
                     no_panjar: no_panjar,
                     no_panjar_lalu: no_panjar_lalu,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#panjar_awal').val(data.load_detail.no_panjar);
@@ -1018,6 +1026,7 @@
                 data: {
                     kd_skpd: document.getElementById('kd_skpd').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();

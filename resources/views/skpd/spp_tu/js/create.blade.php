@@ -96,6 +96,7 @@
                 dataType: 'json',
                 data: {
                     no_spd: no_spd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -135,6 +136,7 @@
                 dataType: 'json',
                 data: {
                     kd_sub_kegiatan: kd_sub_kegiatan,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -179,6 +181,7 @@
                     beban: document.getElementById('beban').value,
                     status_angkas: document.getElementById('status_angkas').value,
                     no_spd: document.getElementById('no_spd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -304,6 +307,7 @@
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_rek6: document.getElementById('kode_rekening').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -474,6 +478,7 @@
                     kdrek: kode_rekening,
                     nilai_tagih: nilai,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -664,7 +669,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -711,6 +717,9 @@
                 url: "{{ route('spp_gu.nomor') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     let no_spp = data.nilai + "/SPP/" + "TU" + "/" + kd_skpd + "/" +
                         tahun_anggaran;
@@ -822,6 +831,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_rek: kd_rek6,
                     sumber: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);

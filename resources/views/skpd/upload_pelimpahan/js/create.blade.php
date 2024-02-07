@@ -152,6 +152,7 @@
                     data: {
                         total_pelimpahan: total_pelimpahan,
                         rincian_data: rincian_data,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(data) {
                         if (data.message == '1') {

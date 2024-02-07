@@ -82,7 +82,8 @@
                 data: {
                     no_dpt: no_dpt,
                     no_dpr: no_dpr,
-                    kd_skpd: kd_skpd
+                    kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '1') {

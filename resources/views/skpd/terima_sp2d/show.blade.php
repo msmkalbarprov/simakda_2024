@@ -456,6 +456,7 @@
                         no_sp2d: no_sp2d,
                         nocek: nocek,
                         kd_skpd: kd_skpd,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         if (response.message == '1') {
@@ -492,6 +493,7 @@
                         no_sp2d: no_sp2d,
                         nocek: nocek,
                         kd_skpd: kd_skpd,
+                        "_token": "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         if (response.message == '1') {

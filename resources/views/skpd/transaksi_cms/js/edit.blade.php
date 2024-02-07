@@ -13,6 +13,9 @@
             url: "{{ route('skpd.transaksi_cms.skpd') }}",
             type: "POST",
             dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
             success: function(data) {
                 $('#kd_skpd').val(data.kd_skpd);
                 $('#nm_skpd').val(data.nm_skpd);
@@ -439,7 +442,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sumber_dana: sumber
+                    sumber_dana: sumber,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#nm_sumber').val(data.nm_sumber_dana1);
@@ -961,7 +965,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_bukti: no_bukti
+                    no_bukti: no_bukti,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data == '1' && no_bukti != no_voucher) {
@@ -981,7 +986,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -1000,7 +1006,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: response
+                    data: response,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     if (data.message == '0') {
@@ -1030,6 +1037,7 @@
                 data: {
                     beban: beban,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1060,6 +1068,7 @@
                     beban: document.getElementById('beban').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
                     no_bukti: document.getElementById('no_bukti').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1091,6 +1100,7 @@
                     beban: document.getElementById('beban').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     kd_skpd: document.getElementById('kd_skpd').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1134,6 +1144,7 @@
                     beban: document.getElementById('beban').value,
                     tgl_voucher: document.getElementById('tgl_voucher').value,
                     status_angkas: document.getElementById('status_angkas').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1218,6 +1229,9 @@
                 url: "{{ route('skpd.transaksi_cms.sisa_bank') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
                     let persen_kkpd = document.getElementById('persen_kkpd').value;
@@ -1259,7 +1273,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    no_sp2d: no_sp2d
+                    no_sp2d: no_sp2d,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     let nilai = parseFloat(data) || 0;
@@ -1287,6 +1302,7 @@
                     kd_rekening: document.getElementById('kd_rekening').value,
                     no_sp2d: document.getElementById('no_sp2d').value,
                     beban: document.getElementById('beban').value,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -1311,6 +1327,9 @@
                 url: "{{ route('skpd.transaksi_cms.status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_anggaran').val(data.nama);
                 }
@@ -1323,6 +1342,9 @@
                 url: "{{ route('penagihan.cek_status_ang') }}",
                 type: "POST",
                 dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
                 success: function(data) {
                     $('#status_angkas').val(data.status);
                 }
@@ -1348,6 +1370,7 @@
                     tgl_voucher: tgl_voucher,
                     beban: beban,
                     status_angkas: status_angkas,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -1377,6 +1400,7 @@
                     no_sp2d: no_sp2d,
                     tgl_voucher: tgl_voucher,
                     beban: beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#realisasi_angkas').val(new Intl.NumberFormat('id-ID', {
@@ -1407,6 +1431,7 @@
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     kd_skpd: kd_skpd,
                     kd_rekening: kd_rekening,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {

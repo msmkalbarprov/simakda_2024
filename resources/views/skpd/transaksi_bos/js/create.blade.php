@@ -119,6 +119,7 @@
                 dataType: 'json',
                 data: {
                     tanggal: tanggal,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#status_anggaran').val(data.status_ang.nama);
@@ -161,6 +162,7 @@
                     kd_skpd: kd_skpd,
                     kd_sub_kegiatan: kd_sub_kegiatan,
                     jenis_beban: jenis_beban,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kode_rekening').empty();
@@ -231,6 +233,7 @@
                     jenis_beban: jenis_beban,
                     rekening: rekening,
                     jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
@@ -266,6 +269,7 @@
                     jenis_beban: jenis_beban,
                     rekening: rekening,
                     jns_ang: jns_ang,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#sumber').empty();
@@ -549,7 +553,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    data: data
+                    data: data,
+                    "_token": "{{ csrf_token() }}",
                 },
                 beforeSend: function() {
                     $("#overlay").fadeIn(100);
@@ -604,6 +609,7 @@
                     jenis_beban: jenis_beban,
                     jns_ang: jns_ang,
                     kd_skpd: kd_skpd,
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
                     $('#kd_sub_kegiatan').empty();
