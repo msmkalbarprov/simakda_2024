@@ -42,38 +42,7 @@
                         Verifikasi Kelengkapan Dokumen Penerbitan SP2D-TU
                     @elseif ($beban == '4')
                         Verifikasi Kelengkapan Dokumen Penerbitan SP2D-LS <br>
-                        @if ($jenis == '1')
-                            (Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji)
-                        @elseif ($jenis == '3')
-                            (Untuk Tambahan Penghasilan)
-                        @elseif ($jenis == '5')
-                            (Untuk Honorarium Tenaga Kontrak)
-                        @elseif ($jenis == '6')
-                            (Untuk Pengadaan Barang dan Jasa/Konstruksi/Konsultansi)
-                        @elseif ($jenis == '7')
-                            (Untuk Pengadaan Konsumsi)
-                        @elseif ($jenis == '8')
-                            (Untuk Sewa Rumah Jabatan/Gedung untuk Kantor/G
-                            Pertemuan/Tempat
-                            Pertemuan/Tempat Penginapan/Kendaraan)</h3>
-                        @elseif ($jenis == '9')
-                            (Untuk Pengadaan Sertifikat Tanah)
-                        @elseif ($jenis == '10')
-                            (Untuk Pengadaan Tanah)
-                        @elseif ($jenis == '11')
-                            (Untuk Hibah Barang dan Jasa pada Pihak Ketiga)
-                        @elseif ($jenis == '12')
-                            (Untuk LS Bantuan Sosial pada Pihak Ketiga)
-                        @elseif ($jenis == '13')
-                            (Untuk Hibah Uang Pada Pihak Ketiga)
-                        @elseif ($jenis == '14')
-                            (Untuk Bantuan Keuangan Pada Kabupaten/Kota)
-                        @elseif ($jenis == '15')
-                            (Untuk Bagi Hasil Pajak dan Bukan Pajak)
-                        @elseif ($jenis == '16')
-                            (Untuk Hibah Konstruksi Pada Pihak Ketiga)
-                        @else
-                        @endif
+                        (Untuk Gaji Induk, Gaji Terusan, Kekurangan Gaji, Gaji Berkali, Gaji Susulan)
                     @elseif ($beban == '5')
                         Verifikasi Kelengkapan Dokumen Penerbitan SP2D-LS <br>
                         @if ($jenis == '1')
@@ -177,15 +146,51 @@
             <tr>
                 <td colspan="3">A. PENERIMAAN
                     @if (in_array($beban, ['1']))
-                        SPM
+                        SPM-UP
                     @elseif ($beban == '2')
-                        SPM
+                        SPM-GU
                     @elseif ($beban == '3')
                         SPM-TU
                     @elseif ($beban == '4')
                         SPM-LS Gaji dan Tunjangan
                     @elseif ($beban == '5')
-                        SPM-LS
+                        SPM-LS @if ($jenis == '1')
+                            Gaji Induk, Gaji Terusan, Kekurangan Gaji
+                        @elseif ($jenis == '3')
+                            Tambahan Penghasilan
+                        @elseif ($jenis == '4')
+                            Honorarium PNS
+                        @elseif ($jenis == '5')
+                            Honorarium Tenaga Kontrak
+                        @elseif ($jenis == '6')
+                            Pengadaan Barang dan Jasa/Konstruksi/Konsultansi
+                        @elseif ($jenis == '7')
+                            Pengadaan Konsumsi
+                        @elseif ($jenis == '8')
+                            Sewa Rumah Jabatan/Gedung untuk Kantor/
+                            Pertemuan/Tempat
+                            Pertemuan/Tempat Penginapan/Kendaraan)</h3>
+                        @elseif ($jenis == '9')
+                            Pengadaan Sertifikat Tanah
+                        @elseif ($jenis == '10')
+                            Pengadaan Tanah
+                        @elseif ($jenis == '11')
+                            Hibah Barang dan Jasa pada Pihak Ketiga
+                        @elseif ($jenis == '12')
+                            LS Bantuan Sosial pada Pihak Ketiga
+                        @elseif ($jenis == '13')
+                            Hibah Uang Pada Pihak Ketiga
+                        @elseif ($jenis == '14')
+                            Bantuan Keuangan Pada Kabupaten/Kota
+                        @elseif ($jenis == '15')
+                            Bagi Hasil Pajak dan Bukan Pajak
+                        @elseif ($jenis == '16')
+                            Hibah Konstruksi Pada Pihak Ketiga
+                        @elseif ($jenis == '98')
+                            Pengadaan Barang dan Jasa/Konstruksi/Konsultansi
+                        @elseif ($jenis == '99')
+                            Pengeluaran Pembiayaan
+                        @endif
                     @elseif ($beban == '6')
                         @if ($jenis == '1')
                             SPM-LS Gaji Induk, Gaji Terusan, Kekurangan Gaji
@@ -230,7 +235,7 @@
             <tr>
                 <td class="a1" style="width: 40%">1. Nomor dan Tanggal
                     @if (in_array($beban, ['1']))
-                        SPM
+                        SPM-UP
                     @elseif ($beban == '2')
                         SPM-GU
                     @elseif ($beban == '3')
@@ -245,7 +250,7 @@
             <tr>
                 <td class="a1" style="width: 40%">2. Tanggal Terima
                     @if (in_array($beban, ['1']))
-                        SPM
+                        SPM-UP
                     @elseif ($beban == '2')
                         SPM-GU
                     @elseif ($beban == '3')
@@ -390,7 +395,7 @@
                 <td>........................................................................</td>
             </tr>
             <tr>
-                <td style="padding-left: 24px">Keterangan</td>
+                <td style="padding-left: 24px;padding-bottom:20px">Keterangan</td>
                 <td>:</td>
                 <td>........................................................................</td>
             </tr>

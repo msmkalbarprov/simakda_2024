@@ -62,7 +62,8 @@
         <td style="border: 1px solid black;width:10%"></td>
     </tr>
     <tr>
-        <td class="a1">c. Surat Pernyataan Verifikasi PPK SKPD dan lembar <i>checklist</i> kelengkapan dokumen</td>
+        <td class="a1">c. Surat Pernyataan Verifikasi PPK SKPD/Unit SKPD dan lembar <i>checklist</i> kelengkapan
+            dokumen</td>
         <td style="border: 1px solid black;width:10%"></td>
         <td style="border: 1px solid black;width:10%"></td>
     </tr>
@@ -145,6 +146,322 @@
         <tr>
             <td class="a1">l. Dokumen lain yang diperlukan
             </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '10')
+        <tr>
+            <td class="a1">a. SPM-LS Pengadaan Tanah</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD dan lembar <i>checklist</i> kelengkapan dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Kuintansi asli bermaterai (ditandatangani oleh pemilik tanah, mengetahui PPTK, setuju
+                bayar oleh PA/KPA dan lunas bayar oleh bendahara pengeluaran/bendahara pengeluaran pembantu)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. <i>e</i>-Billing PPn Final atas pelepasan hak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Fotocopy rekening bank atas nama pemilik tanah</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Syarat-syarat lainnya sesuai ketentuan peraturan perundang-undangan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '3')
+        <tr>
+            <td class="a1">a. SPM-LS TPP</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD dan lembar <i>checklist</i> kelengkapan dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Rekap Daftar Pengajuan TPP ditandatangani oleh Pengguna Anggaran dan Bendahara
+                Pengeluaran</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. <i>e</i>-Billing Pajak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Iuran BPJS Kesehatan (4%) dan Iuran Wajib Pegawai (1%)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Dokumen lain yang diperlukan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '4')
+        <tr>
+            <td class="a1">a. SPM-LS Honorarium CPNS/ASN</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD/Unit SKPD dan lembar <i>checklist</i>
+                kelengkapan
+                dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Rekap Daftar Honorarium yang sudah ditandatangani oleh PA/KPA dan
+                Bendahara
+                Pengeluaran/Bendahara Pengeluaran Pembantu</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. <i>e</i>-Billing Pajak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Dokumen lain yang diperlukan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '5')
+        <tr>
+            <td class="a1">a. SPM-LS Honorarium Non ASN</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD/Unit SKPD dan lembar <i>checklist</i>
+                kelengkapan
+                dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Rekap Daftar Honorarium yang sudah ditandatangani oleh PA/KPA dan
+                Bendahara
+                Pengeluaran/Bendahara Pengeluaran Pembantu</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. <i>e</i>-Billing Pajak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Iuran BPJS Kesehatan PPNPN (4%) dan Iuran PPNPN (1%)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Iuran BPJS Ketenagakerjaan (JKK-JKM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">h. Dokumen lain yang diperlukan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '12' || $jenis_kelengkapan == '13')
+        <tr>
+            <td class="a1">a. SPM-LS Hibah/Bantuan Sosial</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD/Unit SKPD dan lembar <i>checklist</i>
+                kelengkapan
+                dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Kwitansi Asli bermaterai</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. Keputusan Gubernur tentang Hibah/Bantuan Sosial</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. NPHD</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Foto Copy Rekening Bank</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">h. Dokumen lain yang diperlukan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '6')
+        <tr>
+            <td class="a1">a. SPM-LS Barang dan Jasa</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD/Unit SKPD dan lembar <i>checklist</i>
+                kelengkapan
+                dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Ringkasan Kontrak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. Referensi/Fotocopy Rekening Bank</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Foto Copy NPWP</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Jaminan Uang Muka</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">h. Jaminan Pemeliharaan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">i. Berita Acara Pembayaran</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">j. Faktur Pajak</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">k. <i>e</i>-Billing (PPn dan PPh)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">l. Dokumen lain yang diperlukan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+    @elseif ($jenis_kelengkapan == '14')
+        <tr>
+            <td class="a1">a. SPM-LS Bantuan Keuangan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">b. Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">c. Surat Pernyataan Verifikassi PPK SKPD dan lembar <i>checklist</i>
+                kelengkapan
+                dokumen
+            </td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">d. Nomor Rekening Kas Umum Daerah Pemerintah Kabupaten/Kota</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">e. Surat Permohonan Bupati/Walikota</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">f. Surat Keterangan Hasil Verifikasi Administrasi Kelengkapan Persyaratan Permohonan
+                Pencairan Bantuan Keuangan</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">g. Surat Pernyataan Tanggung Jawab Mutlak dari Pemerintah Kabupaten/Kota</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">h. Daftar SPK/SP/NPHD</td>
+            <td style="border: 1px solid black;width:10%"></td>
+            <td style="border: 1px solid black;width:10%"></td>
+        </tr>
+        <tr>
+            <td class="a1">i. Dokumen lain yang diperlukan</td>
             <td style="border: 1px solid black;width:10%"></td>
             <td style="border: 1px solid black;width:10%"></td>
         </tr>
