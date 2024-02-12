@@ -188,10 +188,14 @@
                 alert('Total Rincian tidak boleh kosong!Silahkan refresh!');
                 return;
             }
-            if (!jenis_kelengkapan) {
+
+            let beban_kelengkapan = ['4', '5', '6'];
+
+            if (!jenis_kelengkapan && beban_kelengkapan.includes(beban)) {
                 alert("Jenis Kelengkapan Tidak Boleh Kosong");
                 return;
             }
+
             $('#simpan_spm').prop('disabled', true);
             $.ajax({
                 url: "{{ route('spm.simpan_spm') }}",
