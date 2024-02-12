@@ -208,12 +208,16 @@ class PenetapanController extends Controller
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $data = DB::table('tr_tetap as a')
-            ->leftJoin('tr_terima as b', function ($join) {
-                $join->on('a.no_tetap', '=', 'b.no_tetap');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.*, (SELECT b.nm_rek6 FROM ms_rek6 b WHERE a.kd_rek6=b.kd_rek6) as nm_rek6, b.sumber")
+            // ->leftJoin('tr_terima as b', function ($join) {
+            //     $join->on('a.no_tetap', '=', 'b.no_tetap');
+            //     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            // })
+            // ->selectRaw("a.*, (SELECT b.nm_rek6 FROM ms_rek6 b WHERE a.kd_rek6=b.kd_rek6) as nm_rek6, b.sumber")
+            ->selectRaw("a.*")
             ->where(['a.kd_skpd' => $kd_skpd])
+            ->where(function ($query) {
+                $query->where('a.no_tetap', '!=', '');
+            })
             ->orderBy('tgl_tetap')
             ->orderBy('no_tetap')
             ->get();
