@@ -26,7 +26,7 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 // return redirect(RouteServiceProvider::HOME);
                 Cookie::queue(Cookie::forget('simakda_2023_session'));
-                Cookie::queue(Cookie::forget('laravel_session'));
+                // Cookie::queue(Cookie::forget('laravel_session'));
                 return redirect()->route('home');
             }
         }
