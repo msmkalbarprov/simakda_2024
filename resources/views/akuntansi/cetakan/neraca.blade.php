@@ -40,13 +40,16 @@
             <tr>
                 <td align="center"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></td>                         
             </tr>
-            @if($kd_skpd=='')
+            @if($skpdunit =="keseluruhan")
 
+            @elseif($skpdunit=="skpd")
+                <TR>
+                    <td align="center"><strong>{{nama_org($kd_skpd)}}</strong></td>
+                </TR>
             @else
-
-            <TR>
-                <td align="center"><strong>{{nama_skpd($kd_skpd)}}</strong></td>
-            </TR>
+                <TR>
+                    <td align="center"><strong>{{nama_skpd($kd_skpd)}}</strong></td>
+                </TR>
             @endif
             <TR>
                 <td align="center"><strong>NERACA</strong></td>
@@ -117,6 +120,17 @@
                 $kode_14=trim($res->kode_14);
                 $kode_15=trim($res->kode_15);
                 $kecuali=trim($res->kecuali);
+                $c_kurangi=$res->c_kurangi;
+                $c_tambah=$res->c_tambah;
+                if($c_kurangi=="" || $c_kurangi=="xxx"){
+                    $c_kurangi="debet-debet";
+                }
+                $kurangi_1=trim($res->kurangi_1);
+                
+                if($c_tambah=="" || $c_tambah=="xxx"){
+                    $c_tambah="debet-debet";
+                }
+                $tambah_1=trim($res->tambah_1);
 
                 $nilainya = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
                                     and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
@@ -128,6 +142,12 @@
                                         kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
                                         kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
                                         kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");
+                $kurangi = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses");
+                $tambah = DB::select("SELECT isnull(SUM($c_tambah),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and
+                                        (kd_rek6 like '$tambah_1%' ) $skpd_clauses");
         @endphp
 
             @foreach($nilainya as $row)
@@ -136,19 +156,30 @@
                     $kredit=$row->kredit;
                 @endphp
             @endforeach
+            @foreach($kurangi as $rer)
+                @php
+                    $kurangi=$rer->realisasi;
+                @endphp
+            @endforeach
+            @foreach($tambah as $rir)
+                @php
+                    $tambah=$rir->realisasi;
+                @endphp
+            @endforeach
 
             @php
                     if ($debet=='') $debet=0;
                     if ($kredit=='') $kredit=0;
 
                     if ($normal==1){
-                        $nl=$debet-$kredit;
+                        $nl_1=($debet-$kredit);
                     }else{
-                        $nl=$kredit-$debet;             
+                        $nl_1=($kredit-$debet);             
                     }
-                    if ($nl=='') $nl=0;
-
-                    $eka=$nl+$ekuitas;
+                    if ($nl_1=='') $nl_1=0;
+                    $nl = ($nl_1-$kurangi);
+                    $eka=$ekuitas-$nl+$tambah;
+                    $ju_eku= $ekuitas+$kurangi+$tambah;
             
 
             $nilainya_lalu = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
@@ -160,7 +191,15 @@
                                         kd_rek6 like '$kode_9%' or kd_rek6 like '$kode_10%' or 
                                         kd_rek6 like '$kode_11%' or kd_rek6 like '$kode_12%' or 
                                         kd_rek6 like '$kode_13%' or kd_rek6 like '$kode_14%' or 
-                                        kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");        
+                                        kd_rek6 like '$kode_15%') and kd_rek6 not in ('$kecuali') $skpd_clauses");     
+
+            $kurangi_lalu = DB::select("SELECT isnull(SUM($c_kurangi),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang1 and
+                                        (kd_rek6 like '$kurangi_1%' ) $skpd_clauses"); 
+
+            $tambah_lalu = DB::select("SELECT isnull(SUM($c_tambah),0) AS realisasi from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
+                                    and b.kd_unit=a.kd_skpd where year(tgl_voucher)<=$thn_ang1 and
+                                        (kd_rek6 like '$tambah_1%' ) $skpd_clauses");        
             @endphp                
             @foreach($nilainya_lalu as $rew)
                 @php
@@ -168,19 +207,30 @@
                     $kredit_lalu=$rew->kredit;
                 @endphp
             @endforeach        
-
+            @foreach($kurangi_lalu as $riw)
+                @php
+                    $kurangi_lalu=$riw->realisasi;
+                @endphp
+            @endforeach    
+            @foreach($tambah_lalu as $raw)
+                @php
+                    $tambah_lalu=$raw->realisasi;
+                @endphp
+            @endforeach
             @php
-                    if ($debet_lalu=='') $debet_lalu=0;
-                    if ($kredit_lalu=='') $kredit_lalu=0;
+                if ($debet_lalu=='') $debet_lalu=0;
+                if ($kredit_lalu=='') $kredit_lalu=0;
 
-                    if ($normal==1){
-                        $nl_lalu=$debet_lalu-$kredit_lalu;
-                    }else{
-                        $nl_lalu=$kredit_lalu-$debet_lalu;             
-                    }
-                    if ($nl_lalu=='') $nl_lalu=0;
+                if ($normal==1){
+                    $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
+                }else{
+                    $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
+                }
+                if ($nl_lalu=='') $nl_lalu=0;
 
-                    $eka_lalu=$nl_lalu+$ekuitas_lalu;
+                $eka_lalu=$ekuitas_lalu-$nl_lalu+$tambah_lalu;
+                $jeku_lalu = $ekuitas_lalu-$nl_lalu;
+                $ju_eku_lalu= $ekuitas_lalu+$kurangi_lalu+$tambah_lalu;
 
                 if ($nl < 0){
                     $a="("; $nl=$nl*-1; $b=")";
@@ -194,9 +244,9 @@
                 }
 
                 if ($ekuitas < 0){
-                    $e="("; $ekuitas=$ekuitas*-1; $f=")";
+                    $e="("; $ekuitass=$ekuitas*-1; $f=")";
                 }else {
-                    $e=""; $f="";
+                    $e=""; $ekuitass=$ekuitas; $f="";
                 }
                 if ($ekuitas_lalu < 0){
                     $g="(";  
@@ -217,6 +267,16 @@
                 }else {
                     $k=""; $l="";
                 }
+                if ($ekuitas_tanpa_rkppkd < 0){
+                    $m="("; $ekuitas_tanpa_rkppkd=$ekuitas_tanpa_rkppkd*-1; $n=")";
+                }else {
+                    $m=""; $n="";
+                }
+                if ($jeku_lalu < 0){
+                    $o="("; $jeku_lalu=$jeku_lalu*-1; $p=")";
+                }else {
+                    $o=""; $p="";
+                }
 
                 $no=$no+1;
             @endphp
@@ -227,15 +287,25 @@
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$e}}{{rupiah($ekuitas)}}{{$f}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$g}}{{rupiah($ekuitas_laluu)}}{{$h}}</td>
+                    @if($skpdunit=="keseluruhan")
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$o}}{{rupiah($jeku_lalu)}}{{$p}}</td>
+                    @else
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku)}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku_lalu)}}</td>
+                    @endif
                 </tr>
                 @elseif($seq==430)
                 <tr>
                     <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
-                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
+                    <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>{{$uraian}}</td>                    
+                    @if($skpdunit=="keseluruhan")
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
+                    @else
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku)}}</td>
+                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku_lalu)}}</td>
+                    @endif
                 </tr>
                 @else
                 <tr>

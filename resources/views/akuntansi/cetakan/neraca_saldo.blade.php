@@ -90,6 +90,16 @@
                         
                     </td>
                 </tr>
+            @elseif($skpdunit== "skpd")
+                <tr>
+                    <td colspan="5" align="justify" style="font-size:12px">
+                    <br>
+                    SKPD : {{$skpd}} - {{nama_org($skpd)}}
+                    <br>
+                    <br>
+                        
+                    </td>
+                </tr>
             @else
                 <tr>
                     <td colspan="5" align="justify" style="font-size:12px">
@@ -112,6 +122,8 @@
                 <td colspan="2" bgcolor="#CCCCCC" width="40%" align="center"><b>Jumlah</b></td>
                 <td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>Saldo Akhir</b></td>
                 @if($skpdunit=="keseluruhan" && $cetak==1)
+                <td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>Rincian</b></td>
+                @elseif($skpdunit=="skpd" && $cetak==1)
                 <td rowspan="2" bgcolor="#CCCCCC" width="20%" align="center"><b>Rincian</b></td>
                 @else
                 @endif
@@ -159,6 +171,7 @@
                 $kredit     =$res->kredit;
                 $saldoawal  =$res->SaldoAwal;
                 $saldoakhir =$res->saldoakhir;
+                
 
                 if ($saldoawal <0) {
                 $min1='(';
@@ -198,6 +211,9 @@
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right">{{$min3}}{{$saldoakhirres}}{{$min4}}</td>
                 @if($skpdunit=="keseluruhan" && $cetak==1)
                 <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right"><button type="button" href="javascript:void(0);" onclick="rinci('{{$kd_rek}}','{{$dcetak}}','{{$dcetak2}}', '{{$bulan_asli}}','{{$periodebulan}}')">Rinci</button>
+                </td>
+                @elseif($skpdunit=="skpd" && $cetak==1)
+                <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="20%"align="right"><button type="button" href="javascript:void(0);" onclick="rinci_skpd('{{$skpd}}','{{$kd_rek}}','{{$dcetak}}','{{$dcetak2}}', '{{$bulan_asli}}','{{$periodebulan}}')">Rinci</button>
                 </td>
                 @else
                 @endif
@@ -261,5 +277,17 @@
         searchParams.append("periodebulan", periodebulan);
         window.open(url.toString(), "_blank");
     }
+    function rinci_skpd(kd_skpd,kd_rek,dcetak,dcetak2,bulan_asli,periodebulan) {
+        let url             = new URL("{{ route('laporan_akuntansi.cns_rinci') }}");
+        let searchParams    = url.searchParams;
+        searchParams.append("kd_skpd", kd_skpd);
+        searchParams.append("kd_rek", kd_rek);
+        searchParams.append("dcetak", dcetak);
+        searchParams.append("dcetak2", dcetak2);
+        searchParams.append("bulan", bulan_asli);
+        searchParams.append("periodebulan", periodebulan);
+        window.open(url.toString(), "_blank");
+    }
+
 
 </script>

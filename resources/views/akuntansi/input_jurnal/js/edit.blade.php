@@ -196,6 +196,11 @@
                 if (lain_lain == '4' || lain_lain == '5') {
                     $('#pilihan_mutasi').show();
                 }
+            } else if (jenis_jurnal == '4') {
+                $('#pilihan_umum').hide();
+                $('#pilihan_lain').hide();
+                $('#pilihan_hibah').hide();
+                $('#pilihan_mutasi').hide();
             }
         });
 
@@ -519,6 +524,8 @@
 
             if (jenis_jurnal == '3') {
                 cj_d = lain_lain;
+            }else if(jenis_jurnal == '4'){
+                cj_d = "76";
             } else {
                 cj_d = umum;
             }

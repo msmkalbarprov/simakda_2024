@@ -141,11 +141,11 @@
                        $kualitas_lalu = $row->kualitas_lalu;
                        if($kualitas=='Lancar'){
                             $taksiran="0,5%";
-                            $persenan = 0.005;
+                            $persenan = 0.0005;
                         }
                        elseif($kualitas=='Kurang Lancar'){
                             $taksiran="10%";
-                            $persenan = 0.1;}
+                            $persenan = 0.01;}
                        elseif($kualitas=='Diragukan'){
                                $taksiran="50%";
                                $persenan = 0.5;}
@@ -159,23 +159,28 @@
                        
 
                        if ($skpd=="1.02.0.00.0.00.02.0000" && $lntahunang<>2022) {
-                                $koreksi=$koreksi;
-                                $penyi_piu=$akhir*$persenan;
+                            $koreksi=$koreksi;
+                            $penyi_piu=$akhir*$persenan;
+                            if($kode=='110616010001' && $tahun==2022){
+                                $piu_lalu=$piu_lalu*0.1;
+                            }else{
                                 $piu_lalu=$piu_lalu-$koreksi;
+                            }
                        }else if ($skpd=="1.02.0.00.0.00.02.0000" && $lntahunang==2022) {
-                                $koreksi=$koreksi;
-                                $penyi_piu=$akhir*$persenan;
-                                if ($kode=='110616010001' && $tahun<=2020 && $bln<12 ) {
-                                    if($kode=='110616010001' && $tahun==2020 && $no_lamp=='4432-1020201'){
-                                            $piu_lalu=$piu_lalu+($piu_lalu*0.1);
-                                    }else{
-
-                                        $piu_lalu=$piu_lalu*2;
-                                    }
+                            $koreksi=$koreksi;
+                            $penyi_piu=$akhir*$persenan;
+                            if ($kode=='110616010001' && $tahun<=2020 && $bln<12 ) {
+                                if($kode=='110616010001' && $tahun==2020 && $no_lamp=='4432-1020201'){
+                                        $piu_lalu=$piu_lalu+($piu_lalu*0.1);
                                 }else{
-                                    $piu_lalu=$piu_lalu;
+
+                                    $piu_lalu=$piu_lalu*2;
                                 }
+                            }else{
+                                $piu_lalu=$piu_lalu;
+                            }
                         } 
+
                        $nilai_piu = $audited-$penyi_piu;
                        $sal_sebelum = $row->sal_akhir;
                        // $lo=$penyi_piu-$piu_tahun_lalu;

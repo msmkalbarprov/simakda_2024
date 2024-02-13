@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    Input Jurnal Umum
+                    Input Kapitalisasi
                 </div>
                 <div class="card-body">
                     @csrf
@@ -2059,6 +2059,10 @@
         } 
     }
 
+    function numfot(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
     function load_tot_rinci(kd_sub_kegiatan,kd_rek6){
         $.ajax({
             url: "{{ route('input_kapitalisasi.tot_rinci.load') }}",
@@ -2119,7 +2123,8 @@
         }
         var hrg_satuan=angka(harga_satuan);
         saldo_awal=jum*hrg_satuan;
-        $("#harga_awal").val(new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(saldo_awal))      
+        saldo_awall=numfot(saldo_awal.toFixed(2))
+        $("#harga_awal").val(saldo_awall)      
     }
 
     function simpan_tr(){

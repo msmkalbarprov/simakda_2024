@@ -312,7 +312,7 @@
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>
                         <td align="left"><strong>&nbsp;</strong></td>
-                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$c}}{{rupiah($selisihh_tahun)}}{{$d}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
+                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($selisihh_tahun)}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
                     </tr>
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>                         
@@ -479,7 +479,7 @@
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>
                         <td align="left"><strong>&nbsp;</strong></td>
-                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$c}}{{rupiah($selisihh_tahun)}}{{$d}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
+                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($selisihh_tahun)}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
                     </tr>
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>                         
@@ -647,7 +647,7 @@
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>
                         <td align="left"><strong>&nbsp;</strong></td>
-                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$c}}{{rupiah($selisihh_tahun)}}{{$d}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
+                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($selisihh_tahun)}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
                     </tr>
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>                         
@@ -815,7 +815,7 @@
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>
                         <td align="left"><strong>&nbsp;</strong></td>
-                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$c}}{{rupiah($selisihh_tahun)}}{{$d}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
+                        <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran {{$thn_ang}} memiliki anggaran belanja sebesar Rp. {{rupiah($anggaran)}} dan realisasi belanja sebesar Rp. {{rupiah($realisasi)}} Apabila dibandingkan dengan realisasi belanja Tahun Anggaran {{$thn_ang_1}} yang tercatat sebesar Rp.{{rupiah($realisasi_lalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($selisihh_tahun)}} Rincian {{$nm_rek}} Tahun Anggaran {{$thn_ang}} sebagai berikut:</td>                         
                     </tr>
                     <tr>
                         <td align="left"><strong>&nbsp;</strong></td>                         

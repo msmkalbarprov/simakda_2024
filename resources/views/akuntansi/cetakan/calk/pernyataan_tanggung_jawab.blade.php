@@ -44,7 +44,7 @@
     <TABLE style="border-collapse:collapse;{{$spasi}}" width="100%" border="0" cellspacing="0" cellpadding="1" align=center> 
         <TR>
             <TD align="justify">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Laporan Keuangan {{$nm_skpd}} Provinsi Kalimantan Barat yang terdiri dari: (a) Laporan Realisasi Anggaran, (b) Laporan Operasional, (c) Neraca, (d) Laporan Perubahan Ekuitas, dan (e) Catatan atas Laporan Keuangan Tahun Anggaran '.$thn_ang.' sebagaimana terlampir adalah merupakan tanggung jawab kami.<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Laporan Keuangan {{$nm_skpd}} Provinsi Kalimantan Barat yang terdiri dari: (a) Laporan Realisasi Anggaran, (b) Laporan Operasional, (c) Neraca, (d) Laporan Perubahan Ekuitas, dan (e) Catatan atas Laporan Keuangan Tahun Anggaran {{$thn_ang}} sebagaimana terlampir adalah merupakan tanggung jawab kami.<br><br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Laporan Keuangan tersebut telah disusun berdasarkan sistem pengendalian intern yang memadai, dan isinya telah menyajikan informasi pelaksanaan anggaran dan posisi keuangan dan Catatan atas Laporan Keuangan secara layak sesuai dengan Standar Akuntansi Pemerintahan.
             </TD>
         </TR>

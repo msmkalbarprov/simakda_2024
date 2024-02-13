@@ -46,7 +46,7 @@
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;border-right-style:hidden;">Nomor Lamp.</td>
                         <td style="border-bottom:hidden;border-spacing: 3px;padding:3px 3px 3px 3px;" > 
                             <input class="form-control" id="nomor" name="nomor" required readonly
-                                style="width: 200px;" >&nbsp;&nbsp;&nbsp; 
+                                style="width: 400px;" >&nbsp;&nbsp;&nbsp; 
                         </td>
                     </tr> 
 

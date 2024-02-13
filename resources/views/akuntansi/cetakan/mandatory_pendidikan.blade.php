@@ -198,7 +198,7 @@ realisasi",
                             @php
                                 $nilair = DB::select(
                                     "SELECT concat(kd_sub_kegiatan,' - ',(select nm_sub_kegiatan from ms_sub_kegiatan where a.kd_sub_kegiatan=kd_sub_kegiatan))uraian, isnull(sum(anggaran),0)anggaran, isnull(sum(realisasi),0)realisasi from(
-                                select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai) anggaran,0 realisasi from trdrka where jns_ang=? and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
+                                select kd_skpd,kd_sub_kegiatan,kd_rek6,sum(nilai) anggaran,0 realisasi from trdrka where jns_ang='?' and kd_skpd in($kd_skpd) and kd_rek6 in (select kd_rek6 from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_rek6) and kd_sub_kegiatan in (select kd_sub_kegiatan from map_pend_mandatory where kd_skpd in($kd_skpd) group by kd_sub_kegiatan)
                                 group by kd_skpd,kd_sub_kegiatan,kd_rek6
                                 union all
                                 select kd_skpd,kd_sub_kegiatan,kd_rek6,0 anggaran,sum(debet-kredit) realisasi from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd

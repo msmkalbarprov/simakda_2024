@@ -40,13 +40,16 @@
             <tr>
                 <td align="center"><strong>PEMERINTAH PROVINSI KALIMANTAN BARAT</strong></td>                         
             </tr>
-            @if($kd_skpd=='')
+            @if($skpdunit =="keseluruhan")
 
+            @elseif($skpdunit=="skpd")
+                <TR>
+                    <td align="center"><strong>{{nama_org($kd_skpd)}}</strong></td>
+                </TR>
             @else
-
-            <TR>
-                <td align="center"><strong>{{nama_skpd($kd_skpd)}}</strong></td>
-            </TR>
+                <TR>
+                    <td align="center"><strong>{{nama_skpd($kd_skpd)}}</strong></td>
+                </TR>
             @endif
             <TR>
                 <td align="center"><strong>NERACA</strong></td>
@@ -178,6 +181,7 @@
                     if ($nl_1=='') $nl_1=0;
                     $nl = ($nl_1-$kurangi);
                     $eka=$ekuitas-$nl+$tambah;
+                    $ju_eku= $ekuitas+$kurangi+$tambah;
             
 
             $nilainya_lalu = DB::select("SELECT SUM(b.debet) AS debet,SUM(b.kredit) AS kredit from trhju a inner join trdju b on a.no_voucher=b.no_voucher 
@@ -217,18 +221,19 @@
                 @endphp
             @endforeach
             @php
-                    if ($debet_lalu=='') $debet_lalu=0;
-                    if ($kredit_lalu=='') $kredit_lalu=0;
+                if ($debet_lalu=='') $debet_lalu=0;
+                if ($kredit_lalu=='') $kredit_lalu=0;
 
-                    if ($normal==1){
-                        $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
-                    }else{
-                        $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
-                    }
-                    if ($nl_lalu=='') $nl_lalu=0;
+                if ($normal==1){
+                    $nl_lalu=$debet_lalu-$kredit_lalu-$kurangi_lalu;
+                }else{
+                    $nl_lalu=$kredit_lalu-$debet_lalu-$kurangi_lalu;             
+                }
+                if ($nl_lalu=='') $nl_lalu=0;
 
-                    $eka_lalu=$ekuitas_lalu-$nl_lalu+$tambah_lalu;
-                    $jeku_lalu = $ekuitas_lalu-$nl_lalu;
+                $eka_lalu=$ekuitas_lalu-$nl_lalu+$tambah_lalu;
+                $jeku_lalu = $ekuitas_lalu-$nl_lalu;
+                $ju_eku_lalu= $ekuitas_lalu+$kurangi_lalu+$tambah_lalu;
 
                 if ($nl < 0){
                     $a="("; $nl=$nl*-1; $b=")";
@@ -307,8 +312,13 @@
                     <tr>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$uraian}}</td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
+                        @if($skpdunit=="keseluruhan")
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$a}}{{rupiah($nl)}}{{$b}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$c}}{{rupiah($nl_lalu)}}{{$d}}</td>
+                        @else
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($kurangi)}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($kurangi_lalu)}}</td>
+                        @endif
                     </tr>
                 @else
                     <tr>
@@ -337,15 +347,25 @@
                     <tr>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$o}}{{rupiah($jeku_lalu)}}{{$p}}</td>
+                        @if($skpdunit=="keseluruhan")
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$o}}{{rupiah($jeku_lalu)}}{{$p}}</td>
+                        @else
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku)}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku_lalu)}}</td>
+                        @endif
                     </tr>
                 @elseif($seq==1605)
                     <tr>
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=10% align=center>{{$no}}</td>                                     
                         <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=60%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$uraian}}</b></td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
-                        <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
+                        @if($skpdunit=="keseluruhan")
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$i}}{{rupiah($eka)}}{{$j}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{$k}}{{rupiah($eka_lalu)}}{{$l}}</td>
+                        @else
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku)}}</td>
+                            <td style=vertical-align:top;border-top: solid 1px black;border-bottom: none; width=20% align=right>{{rupiah($ju_eku_lalu)}}</td>
+                        @endif
                     </tr>
                 @else
                     <tr>

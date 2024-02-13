@@ -146,7 +146,7 @@ class LaporanAkuntansiController extends Controller
     public function cariSkpd2(Request $request)
     {
         $type       = Auth::user()->is_admin;
-        // $jenis      = $request->jenis;
+        $jenis      = $request->jenis;
         $jenis_skpd = substr(Auth::user()->kd_skpd, 18, 4);
         if ($jenis_skpd == '0000') {
             $jenis  = 'skpd';
@@ -155,9 +155,11 @@ class LaporanAkuntansiController extends Controller
         }
         $kd_skpd    = Auth::user()->kd_skpd;
         $kd_org     = substr($kd_skpd, 0, 17);
+        // dd($jenis);
         if ($type == '1') {
             if ($jenis == 'skpd') {
                 $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_org')->get();
+                // $data   = DB::table('ms_organisasi')->select(DB::raw("kd_org AS kd_skpd"), DB::raw("nm_org AS nm_skpd"))->orderBy('kd_org')->get();
             } else {
                 $data   = DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd')->orderBy('kd_skpd')->get();
             }
@@ -165,6 +167,7 @@ class LaporanAkuntansiController extends Controller
             if ($jenis == 'skpd') {
                 // select kd_org AS kd_skpd, nm_org AS nm_skpd from [ms_skpd] where LEFT(kd_org) = 5.02.0.00.0.00.01)
                 $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select(DB::raw("kd_skpd AS kd_skpd"), DB::raw("nm_skpd AS nm_skpd"))->get();
+                // $data   = DB::table('ms_skpd')->where(DB::raw("LEFT(kd_skpd,17)"), '=', $kd_org)->select(DB::raw("kd_skpd AS kd_skpd"), DB::raw("nm_skpd AS nm_skpd"))->get();
             } else {
                 $data   = DB::table('ms_skpd')->where(DB::raw("kd_skpd"), '=', $kd_skpd)->select('kd_skpd', 'nm_skpd')->get();
             }
@@ -868,7 +871,7 @@ class LaporanAkuntansiController extends Controller
         $thn_ang = tahun_anggaran();
         $thn_ang1 = $thn_ang - 1;
         $thn_ang2 = $thn_ang1 - 1;
-        $kd_skpd        = $request->kd_skpd_ns;
+        $kd_skpd1        = $request->kd_skpd_ns;
         $bulan_asli = $bulan;
         // $kd_skpd        = Auth::user()->kd_skpd;
         if ($periodebulan == "periode") {
@@ -893,13 +896,17 @@ class LaporanAkuntansiController extends Controller
             $periode = "left(CONVERT(char(15),tgl_voucher, 112),6)<='$thn_ang$bulan' and year (tgl_voucher)not in('$thn_ang1','$thn_ang2') and";
             $periode1 = "year (tgl_voucher)<='$thn_ang1' and ";
         }
-        // dd(strlen($bulan));
+        // dd($skpdunit);
 
         if ($skpdunit == "keseluruhan") {
             $kd_skpd        = Auth::user()->kd_skpd;
             $skpd_clause = "";
-        } else {
-            $kd_skpd        = $request->kd_skpd_ns;
+        } elseif($skpdunit == "skpd") {
+            $kd_skpd        = substr($kd_skpd1,0,17);
+            $skpd_clause = "and left(kd_skpd,17)='$kd_skpd'";
+        }else{
+
+            $kd_skpd        = $kd_skpd1;
             $skpd_clause = "and left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
 
@@ -962,7 +969,7 @@ class LaporanAkuntansiController extends Controller
             'thn_ang'   => $thn_ang,
             'thn_ang1'  => $thn_ang1,
             'thn_ang2'  => $thn_ang2,
-            'skpd'      => $skpd,
+            'skpd'      => $kd_skpd,
             'skpdunit'   => $skpdunit,
             'periodebulan'   => $periodebulan,
             'rek1'      => $rek1,
@@ -999,15 +1006,22 @@ class LaporanAkuntansiController extends Controller
     {
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', -1);
+        $kd_skpd        = $request->kd_skpd;
         $kd_rek        = $request->kd_rek;
         $periodebulan  = $request->periodebulan;
         $tgl1  = $request->dcetak;
         $tgl2  = $request->dcetak2;
         $bulan  = $request->bulan;
-
+        // dd($kd_skpd);
         $thn_ang = tahun_anggaran();
         $thn_ang1 = $thn_ang - 1;
         $thn_ang2 = $thn_ang1 - 1;
+
+        if ($kd_skpd=="") {
+            $skpd_clause="";
+        }else{
+            $skpd_clause="where left(kd_skpd,17)='$kd_skpd'";
+        }
 
         if ($periodebulan == "periode") {
             $periode = "(tgl_voucher between '$tgl1' and '$tgl2') and ";
@@ -1058,6 +1072,7 @@ class LaporanAkuntansiController extends Controller
                                 )a
                                 group by kd_skpd,nm_skpd,kd_rek
                             )x
+                            $skpd_clause
                             group by kd_skpd,nm_skpd,kd_rek,SaldoAwal,debet, kredit
                             order by kd_skpd,nm_skpd,kd_rek");
 
@@ -1924,10 +1939,10 @@ class LaporanAkuntansiController extends Controller
             //     from trhkasin_blud a inner join trdkasin_blud b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
             //     where a.kd_skpd='$kd_skpd' )x"))->first();
             $sqlbludin = collect(DB::select("SELECT * from (
-                 SELECT SUM(CASE WHEN tgl_kas<='$periode2' THEN b.nilai ELSE 0 END) as nilai_bludin
+                 SELECT isnull(SUM(CASE WHEN tgl_kas<='$periode2' THEN b.nilai ELSE 0 END),0) as nilai_bludin
                  from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
                 where a.kd_skpd= '$kd_skpd' and left(b.kd_rek6,1)='5' and b.sumber='BLUD' )x"))->first();
-            $bludin = is_null($sqlbludin->nilai_bludin) ? 'null' : $sqlbludin->nilai_bludin;
+            $bludin = $sqlbludin->nilai_bludin;
 
             $sqlbludout = collect(DB::select("SELECT isnull(blud_sd_bln_ini,0) as nilai_bludout from (
                         SELECT SUM(CASE WHEN tgl_bukti<='$periode2' THEN a.nilai ELSE 0 END) as blud_sd_bln_ini
@@ -1971,8 +1986,8 @@ class LaporanAkuntansiController extends Controller
                   --lebih setor
                   SELECT 6 nomor, '0' jns, 'Lebih Setor' uraian, 0 nilai
                   UNION ALL
-                  SELECT 7 nomor, '0' jns, 'Penerimaan' uraian, SUM (nilai) nilai FROM (
-                       SELECT $terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin+$bludin as nilai
+                  SELECT 7 nomor, '0' jns, 'Penerimaan' uraian,  ($terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin+$bludin) nilai FROM (
+                       SELECT ($terima_ppn+$terima_pph21+$terima_pph22+$terima_pph23+$terima_iwp+$terima_taperum+$terima_pph4+$terima_bpjs+$terima_denda+$terima_lain+$totaldropin+$totalpanjarin+$bosin+$bludin) as nilai
                     ) a
 
                 UNION ALL
@@ -2654,7 +2669,11 @@ class LaporanAkuntansiController extends Controller
                         FROM trhkasin_pkd a inner join trdkasin_pkd b on a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts
                         WHERE b.kd_skpd='$kd_skpd' AND b.kd_rek6 IN ($rek_denda_terlambat) AND a.tgl_sts <= '$periode2'
                         AND a.jns_trans='3') z"))->first();
-            $setor_denda_terlambat  = $sql_setor_denda_terlambat->nilai;
+            if($kd_skpd == "5.02.0.00.0.00.02.0000"){
+                $setor_denda_terlambat  = $sql_setor_denda_terlambat->nilai;
+            }else{
+                $setor_denda_terlambat = 0;
+            }
 
             $sql_setor_pengembalian = collect(DB::select("SELECT SUM(nilai) nilai FROM (
                         SELECT ISNULL(SUM(b.rupiah), 0) AS nilai
@@ -3515,54 +3534,99 @@ class LaporanAkuntansiController extends Controller
         if ($skpdunit == "keseluruhan") {
             $skpd        = "Auth::user()->kd_skpd";
             $skpd_clause = "";
+            $skpd_clauses= "";
         } else {
             $skpd        = $request->kd_skpd;
             $skpd_clause = "and left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clauses= "where left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
         }
 
         // dd($kd_skpd);
 
-        // $query = DB::select("SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
-        //         from(select kd_rek6, nm_rek6, map_lo,
-        //         (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        //             where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra ,
-        //         (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        //             where $periode kd_rek6=z.map_lo $skpd_clause )lo
-        //         from ms_rek6 z
-        //         where left(kd_rek6,1)='5')a
-        //         join ms_rek6 b on a.map_lo=b.kd_rek6
-        //         where lra <> 0 or lo <> 0
-        //         group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6
-        //         order by a.kd_rek6,a.map_lo");
-        $query = DB::select("SELECT kd_rek6,nm_rek6,sum(lra)lra,kd_lo,nm_lo,sum(lo)lo
-        from(select left(kd_rek6,6)kd_rek6,(select nm_rek4 from ms_rek4 where left(a.kd_rek6,6)=kd_rek4)nm_rek6,sum(lra)lra,
-        left(kd_lo,6)kd_lo, (select nm_rek4 from ms_rek4 where left(a.kd_lo,6)=kd_rek4)nm_lo,sum(lo)lo
-        from(SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
-        from(select kd_rek6, nm_rek6, map_lo,
-        (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra ,
-        (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        where $periode kd_rek6=z.map_lo $skpd_clause )lo
-        from ms_rek6 z
-        where left(kd_rek6,1)='5')a
-        join ms_rek6 b on a.map_lo=b.kd_rek6
-        where lra <> 0 or lo <> 0
-        group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6 )a
-        group by left(kd_rek6,6),left(kd_lo,6)
-        union all
-        SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
-        from(select kd_rek6, nm_rek6, map_lo,
-        (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        where $periode  kd_rek6=z.kd_rek6 $skpd_clause )lra ,
-        (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
-        where $periode  kd_rek6=z.map_lo $skpd_clause )lo
-        from ms_rek6 z
-        where left(kd_rek6,1)='5')a
-        join ms_rek6 b on a.map_lo=b.kd_rek6
-        where lra <> 0 or lo <> 0
-        group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6)a
-        group by kd_rek6,nm_rek6,kd_lo,nm_lo
-        order by kd_rek6,nm_rek6,kd_lo,nm_lo");
+        $query = DB::select("SELECT kd_rek6, (case when len(kd_rek6)=4 then (select nm_rek3 from ms_rek3 where a.kd_rek6=kd_rek3)
+                                      when len(kd_rek6)=6 then (select nm_rek4 from ms_rek4 where a.kd_rek6=kd_rek4)
+                                      else (select nm_rek6 from ms_rek6 where a.kd_rek6=kd_rek6) end)nm_rek6, sum(lra)lra, 
+                kd_lo,sum(lo)lo
+                from(
+                    select kd_skpd,left(a.kd_rek6,4)kd_rek6,sum(debet-kredit) lra,left(c.map_lo,4) kd_lo, 0 lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.kd_rek6
+                    where $periode left(a.kd_rek6,1)='5'
+                    group by kd_skpd,left(a.kd_rek6,4),left(map_lo,4)
+                    union all
+                    select kd_skpd,left(c.kd_rek6,4)kd_rek6,0 lra,left(a.kd_rek6,4) kd_lo, sum(debet-kredit)  lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.map_lo
+                    where $periode  left(c.kd_rek6,1)='5'
+                    group by kd_skpd,left(c.kd_rek6,4),left(a.kd_rek6,4)
+                    union all
+
+                    select kd_skpd,left(a.kd_rek6,6)kd_rek6,sum(debet-kredit) lra,left(c.map_lo,6) kd_lo, 0 lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.kd_rek6
+                    where $periode  left(a.kd_rek6,1)='5'
+                    group by kd_skpd,left(a.kd_rek6,6),left(map_lo,6)
+                    union all
+                    select kd_skpd,left(c.kd_rek6,6)kd_rek6,0 lra,left(a.kd_rek6,6) kd_lo, sum(debet-kredit)  lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.map_lo
+                    where $periode  left(c.kd_rek6,1)='5'
+                    group by kd_skpd,left(c.kd_rek6,6),left(a.kd_rek6,6)
+                    union all
+
+                    select kd_skpd,a.kd_rek6,sum(debet-kredit) lra,c.map_lo kd_lo, 0 lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.kd_rek6
+                    where $periode  left(a.kd_rek6,1)='5'
+                    group by kd_skpd,a.kd_rek6,map_lo
+                    union all
+                    select kd_skpd,c.kd_rek6,0 lra,a.kd_rek6 kd_lo, sum(debet-kredit)  lo
+                    from trdju_pkd a inner join trhju_pkd b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd inner join ms_rek6 c on a.kd_rek6=c.map_lo
+                    where $periode  left(c.kd_rek6,1)='5'
+                    group by kd_skpd,c.kd_rek6,a.kd_rek6
+                )a
+                $skpd_clauses
+                group by kd_rek6,kd_lo
+                order by kd_rek6,kd_lo");
+        // $query = DB::select("SELECT kd_rek6,nm_rek6,sum(lra)lra,kd_lo,nm_lo,sum(lo)lo
+        // from(select left(kd_rek6,4)kd_rek6,(select nm_rek3 from ms_rek3 where left(a.kd_rek6,4)=kd_rek3)nm_rek6,sum(lra)lra,
+        // left(kd_lo,4)kd_lo, (select nm_rek3 from ms_rek3 where left(a.kd_lo,4)=kd_rek3)nm_lo,sum(lo)lo
+        // from(SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
+        // from(select kd_rek6, nm_rek6, map_lo,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra ,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode kd_rek6=z.map_lo $skpd_clause )lo
+        // from ms_rek6 z
+        // where left(kd_rek6,1)='5')a
+        // join ms_rek6 b on a.map_lo=b.kd_rek6
+        // where lra <> 0 or lo <> 0
+        // group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6 )a
+        // group by left(kd_rek6,4),left(kd_lo,4)
+        // union all
+        // select left(kd_rek6,6)kd_rek6,(select nm_rek4 from ms_rek4 where left(a.kd_rek6,6)=kd_rek4)nm_rek6,sum(lra)lra,
+        // left(kd_lo,6)kd_lo, (select nm_rek4 from ms_rek4 where left(a.kd_lo,6)=kd_rek4)nm_lo,sum(lo)lo
+        // from(SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
+        // from(select kd_rek6, nm_rek6, map_lo,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode kd_rek6=z.kd_rek6 $skpd_clause )lra ,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode kd_rek6=z.map_lo $skpd_clause )lo
+        // from ms_rek6 z
+        // where left(kd_rek6,1)='5')a
+        // join ms_rek6 b on a.map_lo=b.kd_rek6
+        // where lra <> 0 or lo <> 0
+        // group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6 )a
+        // group by left(kd_rek6,6),left(kd_lo,6)
+        // union all
+        // SELECT a.kd_rek6,a.nm_rek6,sum(lra)lra,a.map_lo kd_lo,b.nm_rek6 nm_lo,sum(lo)lo
+        // from(select kd_rek6, nm_rek6, map_lo,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode  kd_rek6=z.kd_rek6 $skpd_clause )lra ,
+        // (select isnull(sum(isnull((debet),0)-isnull((kredit),0)),0)lra from trhju_pkd a inner join trdju_pkd b on a.no_voucher=b.no_voucher and b.kd_unit=a.kd_skpd
+        // where $periode  kd_rek6=z.map_lo $skpd_clause )lo
+        // from ms_rek6 z
+        // where left(kd_rek6,1)='5')a
+        // join ms_rek6 b on a.map_lo=b.kd_rek6
+        // where lra <> 0 or lo <> 0
+        // group by a.kd_rek6,a.nm_rek6,a.map_lo,b.nm_rek6)a
+        // group by kd_rek6,nm_rek6,kd_lo,nm_lo
+        // order by kd_rek6,nm_rek6,kd_lo,nm_lo");
 
 
         $sc = collect(DB::select("SELECT tgl_rka,provinsi,kab_kota,daerah,thn_ang FROM sclient"))->first();

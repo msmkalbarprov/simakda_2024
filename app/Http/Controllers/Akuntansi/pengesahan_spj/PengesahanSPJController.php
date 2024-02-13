@@ -72,7 +72,7 @@ class PengesahanSPJController extends Controller
         $bulan   = $request->bulan;
         // dd($id);
         $data = DB::table('trhspj_terima_ppkd as a')
-            ->selectRaw("a.*,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
+            ->selectRaw("kd_skpd,bulan,tgl_terima,spj,bku,koran,sts,REPLACE(convert(varchar(max),ket),'\n',' ')ket,cek,username,tgl_update,real_terima,real_setor,sisa,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
             ->where(['bulan' => $bulan])
             ->whereRaw("kd_skpd IN (SELECT kd_skpd FROM user_akt WHERE user_id='$id')")
             ->orderBy('kd_skpd')
@@ -90,7 +90,7 @@ class PengesahanSPJController extends Controller
         $bulan   = $request->bulan;
         // dd($id);
         $data = DB::table('trhspj_ppkd as a')
-            ->selectRaw("a.*,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
+            ->selectRaw("kd_skpd,bulan,real_up,real_gj,real_brg,tgl_terima,spj,bku,koran,pajak,sts,REPLACE(convert(varchar(max),ket),'\n',' ')ket,cek,username,tgl_update,(SELECT nm_skpd from ms_skpd where kd_skpd=a.kd_skpd)nm_skpd")
             ->where(['bulan' => $bulan])
             ->whereRaw("kd_skpd IN (SELECT kd_skpd FROM user_akt WHERE user_id='$id')")
             ->orderBy('kd_skpd')

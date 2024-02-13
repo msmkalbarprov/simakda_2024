@@ -255,9 +255,12 @@
         let kd_skpd = document.getElementById('kd_skpd').value;
         let kd_rek = document.getElementById('kd_rek').value;
         let nm_rek = document.getElementById('nm_rek').value;
-        let ket1 = document.getElementById('ket1').value;
-        let ket2 = document.getElementById('ket2').value;
-
+        var ket1_pend = document.getElementById('ket1').value; 
+        var ket1_pend = ket1_pend.replace("'", "`"); 
+        var ket1      = '<p>' + ket1_pend.replace(/\n/g, "</p><p>") + '</p>';
+        var ket2_pend = document.getElementById('ket2').value; 
+        var ket2_pend = ket2_pend.replace("'", "`"); 
+        var ket2      = '<p>' + ket2_pend.replace(/\n/g, "</p><p>") + '</p>';
         $(document).ready(function(){
             $.ajax({
                 type: "POST",
