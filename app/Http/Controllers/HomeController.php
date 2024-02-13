@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
@@ -16,6 +17,10 @@ class HomeController extends Controller
 
     public function index()
     {
+        Cookie::queue(Cookie::forget('simakda_2023_session'));
+        Cookie::queue(Cookie::forget('laravel_session'));
+        Cookie::queue(Cookie::forget('home_base_session'));
+
         $kd_skpd = Auth::user()->kd_skpd;
         // dd(status_anggaran_dashboard());
         // if (status_anggaran_dashboard() == 0) {
