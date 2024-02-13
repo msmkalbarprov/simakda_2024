@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
@@ -32,6 +33,8 @@ class LoginController extends Controller
 
     public function index()
     {
+        Cookie::queue(Cookie::forget('simakda_2023_session'));
+        Cookie::queue(Cookie::forget('laravel_session'));
         $data = [
             'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first()
         ];
@@ -41,6 +44,9 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
+        Cookie::queue(Cookie::forget('simakda_2023_session'));
+        Cookie::queue(Cookie::forget('laravel_session'));
+
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
