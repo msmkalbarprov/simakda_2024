@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Cookie;
 
 class Authenticate extends Middleware
 {
@@ -14,6 +15,9 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        Cookie::queue(Cookie::forget('simakda_2023_session'));
+        Cookie::queue(Cookie::forget('laravel_session'));
+
         if (!$request->expectsJson()) {
             return route('login');
         }
