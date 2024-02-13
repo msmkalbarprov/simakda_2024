@@ -372,7 +372,8 @@
                 if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
                     return '3';
                 }
-                if (data.kd_sub_kegiatan == kd_sub_kegiatan && data.kd_rek6 == kode_rekening) {
+                if (data.kd_sub_kegiatan == kd_sub_kegiatan && data.kd_rek6 == kode_rekening &&
+                    data.sumber == sumber) {
                     return '4';
                 }
             });
