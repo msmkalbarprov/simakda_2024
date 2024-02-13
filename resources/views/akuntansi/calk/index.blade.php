@@ -266,7 +266,7 @@
                 if (lampiran == 1 || lampiran == 2 || lampiran == 3 ) {
                     url             = new URL("{{ route('calk.cetakan') }}");
                 }else if(lampiran == 4){
-                    url             = new URL("{{ route('calk.cetakan5') }}");
+                    url             = new URL("{{ route('calk.cetakan4') }}");
                 }else if(lampiran == 5){
                     url             = new URL("{{ route('calk.cetakan5') }}");
                 }else if(lampiran == 6){
@@ -285,6 +285,24 @@
                     url             = new URL("{{ route('calk.cetakan12') }}");
                 }else if(lampiran == 13){
                     url             = new URL("{{ route('calk.cetakan13') }}");
+                }else if(lampiran == 14){
+                    url             = new URL("{{ route('calk.cetakan14') }}");
+                }else if(lampiran == 15){
+                    url             = new URL("{{ route('calk.cetakan15') }}");
+                }else if(lampiran == 16){
+                    url             = new URL("{{ route('calk.cetakan16') }}");
+                }else if(lampiran == 17){
+                    url             = new URL("{{ route('calk.cetakan17') }}");
+                }else if(lampiran == 18){
+                    url             = new URL("{{ route('calk.cetakan18') }}");
+                }else if(lampiran == 19){
+                    url             = new URL("{{ route('calk.cetakan19') }}");
+                }else if(lampiran == 20){
+                    url             = new URL("{{ route('calk.cetakan20') }}");
+                }else if(lampiran == 21){
+                    url             = new URL("{{ route('calk.cetakan21') }}");
+                }else if(lampiran == 22){
+                    url             = new URL("{{ route('calk.cetakan22') }}");
                 }else{
                     alert('Cetakan Tidak Tersedia');
                     return;

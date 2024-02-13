@@ -2450,7 +2450,7 @@ class cetaklampneracaController extends Controller
                         tambah, tahun_n, koreksi, keterangan, umur_t, isnull(umur_b,1) umur_b, 
                         case 
                         when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 0 and 1 then 0.005
-                       when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 2 then 0.1
+                       when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 1 and 3 then 0.1
                         when (left(kode1,4)in('1106' )) and umur_t=0 and isnull(umur_b,1) between 3 and 12 then 0.5
                        when (left(kode1,4)in('1106' )) and umur_t=1 and isnull(umur_b,1)>=12 then 1
                         when (left(kode1,4)in('1103' )) and umur_t=1 and isnull(umur_b,1)=0 then 0.005
@@ -2703,8 +2703,8 @@ class cetaklampneracaController extends Controller
                         when (left(kode1,4)in('1103','1106' )) and umur_t=0 and isnull(umur_b,1)>=1 then 0.005
                         when (left(kode1,4)in('1103','1106' )) and umur_t=1 and isnull(umur_b,1)>=1 then 0.1
                         when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 0.1
-                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 0.5
-                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 0.5
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 0.1
+                        when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 0.1
                         when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 0.5
                         when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 0.5
                         when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)>=1 then 0.5
@@ -2712,7 +2712,7 @@ class cetaklampneracaController extends Controller
                         when (left(kode1,4)in('1103','1106' )) and umur_t=5 and isnull(umur_b,1)>=1 then 1
                         when (left(kode1,4)in('1103','1106' )) and umur_t>=6 then 1
                         when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)<=1 then 0.005
-                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 0.01
+                        when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>1 and isnull(umur_b,1)<=3 then 0.1
                         when (left(kode1,4)in('1104')) and umur_t<1 and isnull(umur_b,1)>3 and isnull(umur_b,1)<=12 then 0.5
                         when (left(kode1,4)in('1104')) and umur_t>=1 then 1
                         when left(kode1,6)='110613' then ''
@@ -2741,9 +2741,9 @@ class cetaklampneracaController extends Controller
                         when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)=0 then 
                         cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
                         when (left(kode1,4)in('1103','1106' )) and umur_t=2 and isnull(umur_b,1)>=1 then 
-                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
                         when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)=0 then 
-                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
+                        cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.1 as decimal(20,2))
                         when (left(kode1,4)in('1103','1106' )) and umur_t=3 and isnull(umur_b,1)>=1 then 
                         cast((sal_awal-kurang+tambah+tahun_n+koreksi) * 0.5 as decimal(20,2))
                         when (left(kode1,4)in('1103','1106' )) and umur_t=4 and isnull(umur_b,1)=0 then 

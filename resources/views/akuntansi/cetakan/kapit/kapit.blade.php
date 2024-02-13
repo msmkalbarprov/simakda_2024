@@ -397,9 +397,9 @@
         @endphp
         <TR>
             @if($cetakan==2)
-            <TD width="90" colspan="5" align="center" >TOTAL</TD>
+            <TD width="90" colspan="5" align="center" >TOTAL REALISASI</TD>
             @else
-            <TD width="90" colspan="4" align="center" >TOTAL</TD>
+            <TD width="90" colspan="4" align="center" >TOTAL REALISASI</TD>
             @endif
             <TD width="150" bgcolor="{{$color_ang_peg}}" align="right" >{{rupiah($total_ang_peg)}}</TD>
             <TD width="150" bgcolor="{{$color_real_peg}}" align="right" >{{rupiah($total_real_peg)}}</TD>
@@ -491,9 +491,9 @@
         @endphp
         <TR>
             @if($cetakan==2)
-            <TD width="90" colspan="5" align="center" >TOTAL REALISASI</TD>
+            <TD width="90" colspan="5" align="center" >TOTAL RINCIAN</TD>
             @else
-            <TD width="90" colspan="4" align="center" >TOTAL REALISASI</TD>
+            <TD width="90" colspan="4" align="center" >TOTAL RINCIAN</TD>
             @endif
             <TD width="150" bgcolor="{{$color_realang_peg}}" align="right" >{{rupiah($total_realang_peg)}}</TD>
             <TD width="150" bgcolor="{{$color_realreal_peg}}" align="right" >{{rupiah($total_realreal_peg)}}</TD>

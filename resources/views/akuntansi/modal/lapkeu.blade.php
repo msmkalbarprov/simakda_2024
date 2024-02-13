@@ -52,11 +52,6 @@
                     <div class="col-md-6">
                         <label for="kd_skpd" class="form-label">Pilih</label><br>
                         <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihanperiode" id="pilihan0"
-                                value="tahun">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
-                        <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihanperiode" id="pilihan1"
                                 value="periode">
                             <label class="form-check-label" for="pilihan">Periode</label>
@@ -120,7 +115,7 @@
                         <select class="form-control select2 @error('pa_kpa_lra') is-invalid @enderror"
                             style=" width: 100%;" id="pa_kpa_lra" name="pa_kpa_lra">
                             <option value="" disabled selected>Silahkan Pilihh</option>
-                            <option value="-">SUTARMIDJI</option>
+                            <option value="-">HARISSON</option>
                         </select>
                         @error('pa_kpa_lra')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -564,11 +559,6 @@
                     <div class="col-md-6">
                         <label for="kd_skpd_semester" class="form-label">Pilih</label><br>
                         <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihanperiode_semester" id="pilihan0_semester"
-                                value="tahun">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
-                        <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihanperiode_semester" id="pilihan1_semester"
                                 value="periode">
                             <label class="form-check-label" for="pilihan">Periode</label>
@@ -647,7 +637,7 @@
                         <select class="form-control select_semester @error('pa_kpa') is-invalid @enderror"
                             style=" width: 100%;" id="pa_kpa" name="pa_kpa">
                             <option value="" disabled selected>Silahkan Pilihh</option>
-                            <option value="-">SUTARMIDJI</option>
+                            <option value="-">HARISSON</option>
                         </select>
                         @error('pa_kpa')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -730,11 +720,6 @@
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="kd_skpd_semesterrinci" class="form-label">Pilih</label><br>
-                        <div class=" form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pilihanperiode_semesterrinci" id="pilihan0_semesterrinci"
-                                value="tahun">
-                            <label class="form-check-label" for="pilihan">Keseluruhan</label>
-                        </div>
                         <div class=" form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pilihanperiode_semesterrinci" id="pilihan1_semesterrinci"
                                 value="periode">
@@ -826,7 +811,7 @@
                         <select class="form-control select_semesterrinci @error('pa_kpa_rinci') is-invalid @enderror"
                             style=" width: 100%;" id="pa_kpa_rinci" name="pa_kpa_rinci">
                             <option value="" disabled selected>Silahkan Pilihh</option>
-                            <option value="-">SUTARMIDJI</option>
+                            <option value="-">HARISSON</option>
                         </select>
                         @error('pa_kpa_rinci')
                             <div class="invalid-feedback">{{ $message }}</div>

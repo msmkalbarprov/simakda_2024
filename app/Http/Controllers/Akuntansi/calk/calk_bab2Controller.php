@@ -103,8 +103,8 @@ class calk_bab2Controller extends Controller
         $jenis          = $request->jenis;
         $skpdunit       = $request->skpdunit;
         $cetak          = $request->cetak;
-        $tanggal = "29 Desember 2023";
-        $tempat_tanggal = "Pontianak, 29 Desember 2023";
+        $tanggal = "31 Desember 2023";
+        $tempat_tanggal = "Pontianak, 31 Desember 2023";
         $bulan          = 12;
         $thn_ang        = tahun_anggaran();
         $thn_ang_1        = $thn_ang-1;
@@ -263,7 +263,7 @@ class calk_bab2Controller extends Controller
                         group by a.kd_skpd,a.kd_sub_kegiatan
                     ) as keg left join calk_babII e on keg.kode=e.kd_program and keg.kd_skpd=e.kd_skpd  
                 where angg_ubah>0  
-            )as gabung order by nomor,kode, kode2");
+            )as gabung order by kode, kode2,nomor");
         
         
         $data = [
@@ -346,17 +346,17 @@ class calk_bab2Controller extends Controller
         $kd_sub_kegiatan    = $request->kd_sub_kegiatan;
         $hambatan           = $request->hambatan;
         
-        $hasil=collect(DB::select("SELECT  count(*) as jumlah FROM $tabel where kd_program='$kd_sub_kegiatan'"))->first();
+        $hasil=collect(DB::select("SELECT  count(*) as jumlah FROM $tabel where kd_program='$kd_sub_kegiatan' and kd_skpd='$kd_skpd'"))->first();
 
         $jumlah=$hasil->jumlah; 
         
         if($jumlah>0){
-            $asg     = DB::update("UPDATE $tabel SET hambatan='$hambatan' where kd_program='$kd_sub_kegiatan'");
+            $asg     = DB::update("UPDATE $tabel SET hambatan='$hambatan' where kd_program='$kd_sub_kegiatan'and kd_skpd='$kd_skpd'");
         } else{
             $asg = DB::insert("INSERT into $tabel (kd_skpd,kd_program,hambatan) values ('$kd_skpd','$kd_sub_kegiatan', '$hambatan')");
         }
         
-        if ( $asg > 0 ){
+        if ( $asg  ){
            echo '1';
         } else {
            echo '0';

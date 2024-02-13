@@ -30,18 +30,26 @@ class LapkeuController extends Controller
         $skpdunit    = $request->skpdunit;
         $kd_skpd        = $request->kd_skpd;
 
-            if ($skpdunit=="unit") {
-                $kd_skpd=$kd_skpd;
-            }else if ($skpdunit=="skpd") {
-                $kd_skpd=substr($kd_skpd,0,17);
+        if ($skpdunit == "keseluruhan") {
+            $kd_skpd        = "";
+            $skpd_clause = "";
+            $skpd_clauses = "";
+            $skpd_clause_prog = "";
+            $skpd_clause_ang = "";
+        } else {
+            if ($skpdunit == "unit") {
+                $kd_skpd = $kd_skpd;
+            } else if ($skpdunit == "skpd") {
+                $kd_skpd = substr($kd_skpd, 0, 17);
             }
-            $skpd_clause = "AND left(a.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause = "AND left(b.kd_skpd,len('$kd_skpd'))='$kd_skpd'";
             $skpd_clause_ang = "AND left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
-            $skpd_clauses= "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
-            $skpd_clause_prog= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+            $skpd_clauses = "WHERE left(kd_skpd,len('$kd_skpd'))='$kd_skpd'";
+            $skpd_clause_prog = "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' and ";
+        }
 
         // dd(substr($tanggal2,5,2));
-        // dd($kd_skpd);
+        // dd($jns_ang);
         if ($periodebulan=='periode') {
             $bulan=substr($tanggal2,6,1);
         }else{
@@ -80,7 +88,9 @@ class LapkeuController extends Controller
         if ($periodebulan=="periode") {
             $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
         }else if($periodebulan=="bulan"){
-            $sus=collect(DB::select("SELECT 
+            $sus=collect(DB::select("SELECT *,case when ang_surplus<>0 then nil_surplus/ang_surplus*100 else 0 end persen,nil_surplus-ang_surplus selisih
+                from
+                (SELECT 
                     SUM(CASE WHEN kd_rek='4' THEN (nil_ang) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (nil_ang) ELSE 0 END) as ang_surplus,
                     SUM(CASE WHEN kd_rek='4' THEN (kredit-debet) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet-kredit) ELSE 0 END) as nil_surplus,
                     SUM(CASE WHEN kd_rek='4' THEN (kredit_awal-debet_awal) ELSE 0 END) - SUM(CASE WHEN kd_rek='5' THEN (debet_awal-kredit_awal) ELSE 0 END) as nil_surplus_awal
@@ -88,12 +98,12 @@ class LapkeuController extends Controller
                     (SELECT LEFT(kd_rek6,1) as kd_rek, SUM(nilai) as nil_ang, SUM(kredit) as kredit,SUM(debet) as debet
                         ,SUM(kredit_awal) as kredit_awal,SUM(debet_awal) as debet_awal 
                          FROM data_jurnal_n_sal_awal($bulan,'$jns_ang',$tahun_anggaran) WHERE LEFT(kd_rek6,1) IN ('4','5') $skpd_clause_ang
-                    GROUP BY LEFT(kd_rek6,1)) a"))->first();
+                    GROUP BY LEFT(kd_rek6,1)) a)a"))->first();
         }
         // dd($periodebulan);
         
 
-        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', $kd_skpd)->first();
+        $daerah = DB::table('sclient')->select('daerah')->where('kd_skpd', '5.02.0.00.0.00.02.0000')->first();
             // dd($sus);
 
             $data = [
@@ -949,7 +959,7 @@ class LapkeuController extends Controller
             $judul = "SEMESTER PERTAMA";
         }else if ($bulan=="9"){
             $judul = "TRIWULAN III";
-        }else if ($bulan=="2"){
+        }else if ($bulan=="12"){
             $judul = "SEMESTER KEDUA";
         }else{
             $judul = "bulan tidak diketahui";
@@ -983,7 +993,7 @@ class LapkeuController extends Controller
                 $sus = collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet(?,?,?) $skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
             }
         }
-        $rincian = DB::select("SELECT * from map_lra_semester");
+        $rincian = DB::select("SELECT * from map_lra_semester order by seq");
             
 
 
@@ -1107,7 +1117,7 @@ class LapkeuController extends Controller
         }else if ($bulan=="9"){
             $judul = "TRIWULAN III";
             $bulan2 = 12 - $bulan;
-        }else if ($bulan=="2"){
+        }else if ($bulan=="12"){
             $judul = "SEMESTER KEDUA";
             $bulan2 = 12 - $bulan;
         }else{
@@ -1138,8 +1148,8 @@ class LapkeuController extends Controller
                                                     WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet) - SUM(kredit)
                                                     ELSE 0
                                                 END AS realisasi
-                                                FROM trhju_pkd a
-                                                JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                FROM trhju a
+                                                JOIN trdju b ON a.no_voucher = b.no_voucher
                                                             AND a.kd_skpd = b.kd_unit
                                                 WHERE b.kd_rek1_cmp IN ('4', '5', '6')
                                                 $skpd_clause AND (tgl_voucher between ? and ? ) and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
@@ -1181,11 +1191,11 @@ class LapkeuController extends Controller
                                                     WHEN LEFT(b.kd_rek6, 2) = '62' THEN SUM(debet-kredit)
                                                     ELSE 0
                                                 END AS realisasi
-                                                FROM trhju_pkd a
-                                                JOIN trdju_pkd b ON a.no_voucher = b.no_voucher
+                                                FROM trhju a
+                                                JOIN trdju b ON a.no_voucher = b.no_voucher
                                                             AND a.kd_skpd = b.kd_unit
-                                                WHERE b.kd_rek1_cmp IN ('4', '5', '6')
-                                                $skpd_clause  AND MONTH(tgl_voucher) $operator ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
+                                                WHERE left(kd_rek6,1) IN ('4', '5', '6')
+                                                $skpd_clause  AND YEAR(tgl_voucher)=$tahun_anggaran AND MONTH(tgl_voucher) $operator ? and  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
                                                 GROUP BY a.tgl_voucher,b.no_voucher,b.kd_unit,b.kd_sub_kegiatan,b.kd_rek6)a
                                             ) ,0)realisasi
 
@@ -1287,7 +1297,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2,  $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     # code...
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
@@ -1339,21 +1349,9 @@ class LapkeuController extends Controller
                                                 group by a.kd_skpd, c.kd_rek6 
                                                 UNION ALL
                                                 -- PENDAPATAN
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0) realisasi
-                                                FROM trhkasin_pkd a INNER JOIN trdkasin_pkd b
-                                                ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=? AND  LEFT(b.kd_rek6, 1) = '4' $skpd_clause
-                                                AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by a.jns_trans
-                                                UNION ALL
-
-                                                SELECT isnull(SUM(case when jns_trans in ('3') then b.rupiah*-1 else b.rupiah end),0)realisasi
-                                                FROM trhkasin_ppkd a INNER JOIN trdkasin_ppkd b
-                                                ON RTRIM(a.no_sts)=RTRIM(b.no_sts) and a.kd_skpd=b.kd_skpd
-                                                WHERE month(a.tgl_sts) $operator ? and year(a.tgl_sts)=?  and b.kd_rek6='410411010001' and b.kd_skpd='5.02.0.00.0.00.02.0000'
-                                                $skpd_clause
-                                                AND  LEFT(b.kd_rek6, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek
-                                                group by a.jns_trans
+                                                SELECT sum(sd_bulan_ini)realisasi_spj 
+                                                    FROM penerimaan_kasda_new($bulan,'$jns_ang') 
+                                                    WHERE   len(kd_rek)<=12 and left(kd_rek,6)!='410416' and kd_skpd!='' and kd_rek!=''AND  LEFT(kd_rek, LEN(map_lra_2023.kd_rek)) = map_lra_2023.kd_rek $skpd_clause_ang
                                                 UNION ALL
 
                                                 SELECT isnull(SUM(case when jns_trans in ('4') then b.rupiah else b.rupiah end),0)realisasi FROM trhkasin_blud a INNER JOIN trdkasin_blud b
@@ -1366,8 +1364,8 @@ class LapkeuController extends Controller
                                                             FROM map_lra_2023
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)$skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                                                            ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $jns_rincian]);
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj(?,?,?)$skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 3) { // SP2D LUNAS
                 if ($periodebulan == 'periode') {
@@ -1430,7 +1428,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     # code...
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
@@ -1555,7 +1553,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     # code...
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
@@ -1616,7 +1614,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $bulan, $bulan, $bulan, $bulan, $bulan, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 1) { // SP2D terbit
                 if ($periodebulan == 'periode') {
@@ -1689,7 +1687,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj_tgl(?,?,?)", [$tanggal1, $tanggal2, $jns_ang]))->first();
                 } else {
                     # code...
                     $rincian = DB::select("SELECT map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align,
@@ -1749,7 +1747,7 @@ class LapkeuController extends Controller
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
                                                             ORDER BY id,group_id, nama", [$jns_ang, $bulan, $bulan, $bulan, $bulan, $bulan, $jns_rincian]);
-                    $sus = collect(DB::select("SELECT * FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
+                    $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj(?,?,?)", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             }
 

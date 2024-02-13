@@ -118,7 +118,7 @@
         </TR>
         <TR>
             <TD align="left" width="5%">&nbsp;</TD>
-            <TD align="justify">Nilai Kewajiban sebesar Rp. {{rupiah($kewajiban->nilai)}} dan Nilai Ekuitas sebesar Rp. {{rupiah($ekuitas_rkppkd->nilai)}}, sehingga jumlah kewajiban dan ekuitas adalah sebesar Rp. {{$eku_tang->nilai}}</TD>
+            <TD align="justify">Nilai Kewajiban sebesar Rp. {{rupiah($kewajiban->nilai)}} dan Nilai Ekuitas sebesar Rp. {{rupiah($ekuitas_rkppkd->nilai)}}, sehingga jumlah kewajiban dan ekuitas adalah sebesar Rp. {{rupiah($kewajiban->nilai+$ekuitas_rkppkd->nilai)}}</TD>
         </TR>
         <TR>
             <TD align="left" width="5%"><b>&nbsp;</TD>

@@ -173,7 +173,6 @@
                 $kd_rek6 = $res->kd_rek6;
                 $nm_rek6 = $res->nm_rek6;
                 $kd_lo = $res->kd_lo;
-                $nm_lo = $res->nm_lo;
                 $lra = $res->lra;
                 $lo = $res->lo;
                 $selisih = $lra - $lo;
@@ -210,7 +209,7 @@
 
                 $leng = strlen($kd_rek6);
             @endphp
-            @if ($leng == 6)
+            @if ($leng == 4)
                 <tr>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
                         align="center"><b>{{ $kd_rek6 }}</b></td>
@@ -224,7 +223,7 @@
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
                         align="center"><b>{{ $kd_lo }}</b></td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">
-                        <b>{{ $nm_lo }}</b>
+                        <b>{{ nama_rek3($kd_lo) }}</b>
                     </td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"
                         width="20%"align="right">
@@ -240,6 +239,31 @@
                     $tlo = $tlo + $lo;
 
                 @endphp
+            @elseif ($leng == 6)
+                <tr>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
+                        align="center"><b>{{ $kd_rek6 }}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">
+                        <b>{{ $nm_rek6 }}</b>
+                    </td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"
+                        width="15%"align="right">
+                        <b>{{ $alra }}{{ rupiah($lrares) }}{{ $blra }}</b>
+                    </td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
+                        align="center"><b>{{ $kd_lo }}</b></td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">
+                        <b>{{ nama_rek4($kd_lo)}}</b>
+                    </td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"
+                        width="20%"align="right">
+                        <b>{{ $alo }}{{ rupiah($lores) }}{{ $blo }}</b>
+                    </td>
+                    <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"
+                        width="20%"align="right">
+                        <b>{{ $as }}{{ rupiah($selisihres) }}{{ $bs }}</b>
+                    </td>
+                </tr>
             @else
                 <tr>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
@@ -251,7 +275,7 @@
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="15%"
                         align="center">{{ $kd_lo }}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;" width="60%">
-                        {{ $nm_lo }}</td>
+                        {{ nama_rekening(substr($kd_lo,0,12)) }}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"
                         width="20%"align="right">{{ $alo }}{{ rupiah($lores) }}{{ $blo }}</td>
                     <td style="vertical-align:top;border-top: solid 1px black;border-bottom: none;"

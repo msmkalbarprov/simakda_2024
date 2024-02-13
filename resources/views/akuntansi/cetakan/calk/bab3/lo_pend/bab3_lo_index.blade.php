@@ -64,7 +64,7 @@
             <td style="border-top:solid;" align="center" width="16%"><strong>Realisasi-LO {{$thn_ang_1}}</strong></td>
             <td style="border-top:solid;" align="center" width="15%"><strong>Kenaikan / (Penurunan)</strong></td>                            
             <td style="border-top:solid;border-bottom:solid;" align="center" width="8%" rowspan="2"><strong>%</strong></td>
-            <td style="border-top:solid;" align="center" width="15%"><strong>Realisasi-LRA {{$thn_ang_1}}</strong></td>
+            <td style="border-top:solid;" align="center" width="15%"><strong>Realisasi-LRA {{$thn_ang}}</strong></td>
         </tr>
         <tr>
             <td align="center" style="border-bottom:solid;"><strong>(Rp)</strong></td>
@@ -84,7 +84,6 @@
         </tr>
         @foreach($kode_7 as $row)
             @php
-                $kd_skpd        = $row->kd_skpd;
                 $kd_rek         = $row->kd_rek;
                 $nm_rek         = $row->nm_rek;
                 $realisasi      = $row->realisasi;
@@ -142,7 +141,6 @@
         <!-- 71 -->
         @foreach($kode_71 as $rew)
             @php
-                $kd_skpd        = $rew->kd_skpd;
                 $kd_rek         = $rew->kd_rek;
                 $nm_rek         = $rew->nm_rek;
                 $realisasi      = $rew->realisasi;
@@ -199,7 +197,6 @@
         <!-- 71 detail -->
         @foreach($kode_71 as $riw)
             @php
-                $kd_skpd        = $riw->kd_skpd;
                 $kd_rek         = $riw->kd_rek;
                 $nm_rek         = $riw->nm_rek;
                 $realisasi      = $riw->realisasi;
@@ -220,7 +217,7 @@
                 if($realisasi != $real_lra){
                     $selisih = "perbedaan";
                 }else{
-                    $selisih = "persamaan";
+                    $selisih = "perbedaan";
                 }
 
                 if($kenaikan<0){
@@ -269,14 +266,15 @@
                 <tr>
                     <td align="left"><strong>&nbsp;</strong></td>
                     <td align="left"><strong>&nbsp;</strong></td>
-                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($kenaikann)}}{{$b}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($banding)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
+                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($kenaikann)}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($bandingg)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
                 </tr>
                 @php
                     $kode_det = DB::select("SELECT no,c_kode,kode,nm_rek ,thn,kecuali
                                                 from ket_lo_calk 
                                                 where left(kd_rek,4)='$kd_rek'
                                                 order by kd_rek");
-                    $total = 0;
+                    $total_71 = 0;
+                    $no_k="a";
                 @endphp
 
                 @foreach($kode_det as $ruw)
@@ -293,6 +291,7 @@
                         if($kecuali==""){
                             $kecuali="xxx";
                         }
+                        $no_kk=$no_k++;
                         
                         $leng_kode = strlen($kode);
                         $leng_kecuali = strlen($kecuali);
@@ -302,30 +301,55 @@
                             LEFT(kd_rek6,$leng_kecuali)!='$kecuali'  AND YEAR(tgl_voucher)$thn and $skpd_clause
                             group by kd_skpd
                             union all 
-                            select '$kd_skpd' as kd_skpd, 0 nilai)a"))->first();
+                            select  kd_skpd, 0 nilai from ms_skpd where $skpd_clause)a"))->first();
                         $realisasi_det = $nilainya->nilai; 
                         $awal_kode = substr($kode,0,1); 
                         $awal_rek = substr($kode,0,4);
-                        if($awal_kode!=4 && $awal_rek==$kd_rek ){
-                            $total=$total+$realisasi;
-                        }
+                        $total_71 = $total_71+$realisasi_det;
+                        
                     @endphp
                     
                     <tr>
                         <td align="left">&nbsp;</td>
-                        <td align="left">&nbsp;</td>                         
-                        <td align="left">{{$no}} {{$nm_kode}}</td>
+                        <td align="right" valign="top">{{$no}}</td>                         
+                        <td align="left">{{$nm_kode}}</td>
                         <td align="right">{{rupiah($realisasi_det)}}</td>
                         <td align="right">&nbsp;</td>
                         <td align="right">&nbsp;</td>
                         <td align="center">&nbsp;</td>
                     </tr>
                 @endforeach
+                @php
+                    $nilai_koreksi_71 = collect(DB::select("SELECT isnull(sum(nilai),0)nilai
+                                from nilai_pend_lo_calk
+                                where $skpd_clause and kd_rek='$kd_rek'"))->first();
+                    $koreksi_71 = $nilai_koreksi_71->nilai;
+                        
+                @endphp
                 <tr>
                     <td align="left">&nbsp;</td>
-                    <td align="left">&nbsp;</td>                         
-                    <td align="left">- {{$nm_rek}} 2023</td>
-                    <td align="right">{{rupiah($total+$real_lra)}}</td>
+                    <td align="right" valign="top">{{$no_kk}}. </td>                         
+                    <td align="left">Koreksi {{$nm_rek}}</td>
+                    <td align="right">{{rupiah($koreksi_71)}}</td>
+                    <td align="right">&nbsp;</td>
+                    <td align="right">&nbsp;</td>
+                    <td align="center">&nbsp;</td>
+                </tr>
+                @if($jenis==1)
+                    <tr>
+                         <td align="left"><strong>&nbsp;</strong></td>
+                         <td align="left"><strong>&nbsp;</strong></td>
+                         <td align="justify" colspan="7">
+                            <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd_edit}}','{{$jns_ang}}','{{$bulan}}','{{$kd_rek}}')">Edit Koreksi {{$nm_rek}}</button>
+                        </td>                         
+                    </tr>
+                @else
+                @endif
+                <tr>
+                    <td align="left">&nbsp;</td>
+                    <td align="right" valign="top">-</td>                         
+                    <td align="left">{{$nm_rek}} 2023</td>
+                    <td align="right">{{rupiah($total_71+$koreksi_71)}}</td>
                     <td align="right">&nbsp;</td>
                     <td align="right">&nbsp;</td>
                     <td align="center">&nbsp;</td>
@@ -346,7 +370,6 @@
         <!-- 72 -->
         @foreach($kode_72 as $ihiy)
             @php
-                $kd_skpd        = $ihiy->kd_skpd;
                 $kd_rek         = $ihiy->kd_rek;
                 $nm_rek         = $ihiy->nm_rek;
                 $realisasi      = $ihiy->realisasi;
@@ -403,7 +426,6 @@
         <!-- 72 detail -->
         @foreach($kode_72 as $uhuy)
             @php
-                $kd_skpd        = $uhuy->kd_skpd;
                 $kd_rek         = $uhuy->kd_rek;
                 $nm_rek         = $uhuy->nm_rek;
                 $realisasi      = $uhuy->realisasi;
@@ -424,7 +446,7 @@
                 if($realisasi != $real_lra){
                     $selisih = "perbedaan";
                 }else{
-                    $selisih = "persamaan";
+                    $selisih = "perbedaan";
                 }
 
                 if($kenaikan<0){
@@ -473,7 +495,7 @@
                 <tr>
                     <td align="left"><strong>&nbsp;</strong></td>
                     <td align="left"><strong>&nbsp;</strong></td>
-                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($kenaikann)}}{{$b}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($banding)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
+                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($kenaikann)}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($bandingg)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
                 </tr>
                 @php
                     $kode_det72 = DB::select("SELECT no,c_kode,kode,nm_rek ,thn,kecuali
@@ -506,7 +528,7 @@
                             LEFT(kd_rek6,$leng_kecuali)!='$kecuali'  AND YEAR(tgl_voucher)$thn and $skpd_clause
                             group by kd_skpd
                             union all 
-                            select '$kd_skpd' as kd_skpd, 0 nilai)a"))->first();
+                            select  kd_skpd, 0 nilai from ms_skpd where $skpd_clause)a"))->first();
                         $realisasi_det = $nilainya->nilai; 
                         $awal_kode = substr($kode,0,1); 
                         $awal_rek = substr($kode,0,4);
@@ -517,8 +539,8 @@
                     
                     <tr>
                         <td align="left">&nbsp;</td>
-                        <td align="left">&nbsp;</td>                         
-                        <td align="left">{{$no}} {{$nm_kode}}</td>
+                        <td align="right" valign="top">{{$no}}</td>                         
+                        <td align="left">{{$nm_kode}}</td>
                         <td align="right">{{rupiah($realisasi_det)}}</td>
                         <td align="right">&nbsp;</td>
                         <td align="right">&nbsp;</td>
@@ -527,8 +549,8 @@
                 @endforeach
                 <tr>
                     <td align="left">&nbsp;</td>
-                    <td align="left">&nbsp;</td>                         
-                    <td align="left">- {{$nm_rek}} 2023</td>
+                    <td align="right" valign="top">-</td>                         
+                    <td align="left">{{$nm_rek}} 2023</td>
                     <td align="right">{{rupiah($total+$real_lra)}}</td>
                     <td align="right">&nbsp;</td>
                     <td align="right">&nbsp;</td>
@@ -550,7 +572,6 @@
         <!-- 73 -->
         @foreach($kode_73 as $iri)
             @php
-                $kd_skpd        = $iri->kd_skpd;
                 $kd_rek         = $iri->kd_rek;
                 $nm_rek         = $iri->nm_rek;
                 $realisasi      = $iri->realisasi;
@@ -607,7 +628,6 @@
         <!-- 73 detail -->
         @foreach($kode_73 as $uru)
             @php
-                $kd_skpd        = $uru->kd_skpd;
                 $kd_rek         = $uru->kd_rek;
                 $nm_rek         = $uru->nm_rek;
                 $realisasi      = $uru->realisasi;
@@ -628,7 +648,7 @@
                 if($realisasi != $real_lra){
                     $selisih = "perbedaan";
                 }else{
-                    $selisih = "persamaan";
+                    $selisih = "perbedaan";
                 }
 
                 if($kenaikan<0){
@@ -677,7 +697,7 @@
                 <tr>
                     <td align="left"><strong>&nbsp;</strong></td>
                     <td align="left"><strong>&nbsp;</strong></td>
-                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($kenaikann)}}{{$b}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($banding)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
+                    <td align="justify" colspan="7">{{$nm_rek}} pada {{$nm_skpd}} Provinsi Kalimantan Barat Tahun Anggaran {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi {{$nm_rek}} Tahun Anggaran {{$thn_ang_1}} sebesar Rp. {{rupiah($real_tlalu)}} terjadi {{$naik_turun}} sebesar Rp. {{rupiah($kenaikann)}} atau {{rupiah($persen)}}%. Jika {{$nm_rek}} pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dibandingkan dengan realisasi {{$nm_rek}} - LRA sebesar Rp. {{rupiah($real_lra)}} {{$selisih}} sebesar Rp. {{$c}}{{rupiah($bandingg)}}{{$d}}, dapat dijelaskan sebagai berikut :</td>                         
                 </tr>
                 @php
                     $kode_det73 = DB::select("SELECT no,c_kode,kode,nm_rek ,thn,kecuali
@@ -710,7 +730,7 @@
                             LEFT(kd_rek6,$leng_kecuali)!='$kecuali'  AND YEAR(tgl_voucher)$thn and $skpd_clause
                             group by kd_skpd
                             union all 
-                            select '$kd_skpd' as kd_skpd, 0 nilai)a"))->first();
+                            select  kd_skpd, 0 nilai from ms_skpd where $skpd_clause)a"))->first();
                         $realisasi_det = $nilainya->nilai; 
                         $awal_kode = substr($kode,0,1); 
                         $awal_rek = substr($kode,0,4);
@@ -721,8 +741,8 @@
                     
                     <tr>
                         <td align="left">&nbsp;</td>
-                        <td align="left">&nbsp;</td>                         
-                        <td align="left">{{$no}} {{$nm_kode}}</td>
+                        <td align="right" valign="top">{{$no}}</td>                         
+                        <td align="left">{{$nm_kode}}</td>
                         <td align="right">{{rupiah($realisasi_det)}}</td>
                         <td align="right">&nbsp;</td>
                         <td align="right">&nbsp;</td>
@@ -731,8 +751,8 @@
                 @endforeach
                 <tr>
                     <td align="left">&nbsp;</td>
-                    <td align="left">&nbsp;</td>                         
-                    <td align="left">- {{$nm_rek}} 2023</td>
+                    <td align="right" valign="top">-</td>                         
+                    <td align="left">{{$nm_rek}} 2023</td>
                     <td align="right">{{rupiah($total+$real_lra)}}</td>
                     <td align="right">&nbsp;</td>
                     <td align="right">&nbsp;</td>
@@ -759,7 +779,7 @@
 </html>
 <script type="text/javascript">
     function edit(kd_skpd,jns_ang,bulan,kd_rek) {
-        let url             = new URL("{{ route('calk.calkbab3_lra_pend') }}");
+        let url             = new URL("{{ route('calk.calkbab3_lo_pend') }}");
         let searchParams    = url.searchParams;
         searchParams.append("kd_skpd", kd_skpd);
         searchParams.append("jns_ang", jns_ang);

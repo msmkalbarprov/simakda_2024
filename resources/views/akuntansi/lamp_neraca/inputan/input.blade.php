@@ -2692,7 +2692,13 @@
     }
     $('#rek5').on('select2:select', function() {
         let rek5 = this.value;
+        let rek35 = rek5.substr(0,4)
         cari_rek6(rek5);
+        if(rek5=="21050201"){
+            tampil_rek3("1101");
+        }else{
+            tampil_rek3(rek35)
+        }
     });
     function cari_rek6(rek5,kd_rek6) {
         // let kd_skpd = "{{ $data_skpd->kd_skpd }}";
@@ -3217,7 +3223,7 @@
         var perbulan = real_janji/jbulan; 
 
         var blno = 13-nawal;
-
+        // alert(jbulan);
         // var dblna = perbulan*(13-bln_awal); ganti jika yg bawah salah
         var dblna = perbulan*(13-nawal);
 
@@ -3244,7 +3250,8 @@
 
         kurangi= numfot(nilai.toFixed(2));
         tahun_ni = numfot(dana.toFixed(2));
-        sal_awali = numfot(sal_awal.toFixed(2));
+        // salim = sal_awal.toFixed(2);
+        sal_awali = numfot(sal_awal);
 
         $("#kurang").val(kurangi);
         $("#tahun_n").val(tahun_ni);

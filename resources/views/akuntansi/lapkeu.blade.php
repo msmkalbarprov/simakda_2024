@@ -45,6 +45,21 @@
                 </div>
             </div>
         </div>
+    @elseif(Auth::user()->role == '1032')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lra">
+                    <div class="card-body">
+                        {{ 'Laporan LRA' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     @else
         <div class="row">
             <div class="col-md-6">

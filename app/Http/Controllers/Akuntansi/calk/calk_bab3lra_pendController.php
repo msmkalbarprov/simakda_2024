@@ -52,8 +52,8 @@ class calk_bab3lra_pendController extends Controller
         $jenis          = $request->jenis;
         $skpdunit       = $request->skpdunit;
         $cetak          = $request->cetak;
-        $tanggal = "29 Desember 2023";
-        $tempat_tanggal = "Pontianak, 29 Desember 2023";
+        $tanggal = "31 Desember 2023";
+        $tempat_tanggal = "Pontianak, 31 Desember 2023";
         $bulan          = 12;
         $thn_ang        = tahun_anggaran();
         $thn_ang_1        = $thn_ang-1;
@@ -116,8 +116,8 @@ class calk_bab3lra_pendController extends Controller
                         where left(a.kd_rek6,1)='4' and $unit_clause_a and YEAR(b.tgl_voucher)='$thn_ang_1'
                         group by b.kd_skpd, LEFT(a.kd_rek6,2)
                         ) x");
-            }else{
-                $sql = DB::select("SELECT *, case when anggaran<>0 then realisasi/anggaran else 0 end persen  , realisasi-anggaran selisih, b.ket1, b.ket2
+        }else{
+                $sql = DB::select("SELECT *, case when anggaran<>0 then realisasi/anggaran*100 else 0 end persen  , realisasi-anggaran selisih, b.ket1, b.ket2,(realisasi_lalu-realisasi) selisih_lalu
                         from(select a.kd_skpd,a.kd_rek,
                             case when len(kd_rek)=1 then (select nm_rek1 from ms_rek1 where kd_rek=kd_rek1)
                                  when len(kd_rek)=2 then (select nm_rek2 from ms_rek2 where kd_rek=kd_rek2)
@@ -125,15 +125,19 @@ class calk_bab3lra_pendController extends Controller
                                  when len(kd_rek)=6 then (select nm_rek4 from ms_rek4 where kd_rek=kd_rek4) end nm_rek,
                             isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
                             from(select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
-                                from(select kd_skpd,left(kd_rek6,1)kd_rek, sum(nilai) anggaran, 0 realisasi 
-                                     from trdrka 
-                                     where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
-                                     group by kd_skpd,left(kd_rek6,1)
-                                     union all
-                                     select b.kd_skpd, left(kd_rek6,1)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
-                                     from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                                     where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
-                                     group by kd_skpd,left(kd_rek6,1)
+                                from(select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                                    from (
+                                        select kd_skpd,left(kd_rek6,1)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                        from trdrka 
+                                        where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
+                                        group by kd_skpd,left(kd_rek6,1)
+                                         union all
+                                         select b.kd_skpd, left(kd_rek6,1)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                         from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                         where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                         group by kd_skpd,left(kd_rek6,1)
+                                        )a
+                                        group by kd_skpd,kd_rek
                                     )a
                                     LEFT JOIN
                                     (select b.kd_skpd, LEFT(a.kd_rek6,1) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
@@ -144,15 +148,19 @@ class calk_bab3lra_pendController extends Controller
                                 group by a.kd_skpd,a.kd_rek
                                 union all
                                 select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
-                                from(select kd_skpd,left(kd_rek6,2)kd_rek, sum(nilai) anggaran, 0 realisasi 
-                                     from trdrka 
-                                     where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
-                                     group by kd_skpd,left(kd_rek6,2)
-                                     union all
-                                     select b.kd_skpd, left(kd_rek6,2)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
-                                     from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                                     where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
-                                     group by kd_skpd,left(kd_rek6,2)
+                                from(select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                                    from (
+                                        select kd_skpd,left(kd_rek6,2)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                         from trdrka 
+                                         where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
+                                         group by kd_skpd,left(kd_rek6,2)
+                                         union all
+                                         select b.kd_skpd, left(kd_rek6,2)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                         from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                         where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                         group by kd_skpd,left(kd_rek6,2)
+                                        )a
+                                        group by kd_skpd,kd_rek
                                     )a
                                     LEFT JOIN
                                     (select b.kd_skpd, LEFT(a.kd_rek6,2) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
@@ -163,15 +171,19 @@ class calk_bab3lra_pendController extends Controller
                                 group by a.kd_skpd,a.kd_rek
                                 union all
                                 select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
-                                from(select kd_skpd,left(kd_rek6,4)kd_rek, sum(nilai) anggaran, 0 realisasi 
-                                     from trdrka 
-                                     where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
-                                     group by kd_skpd,left(kd_rek6,4)
-                                     union all
-                                     select b.kd_skpd, left(kd_rek6,4)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
-                                     from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                                     where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
-                                     group by kd_skpd,left(kd_rek6,4)
+                                from(select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                                    from (
+                                        select kd_skpd,left(kd_rek6,4)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                         from trdrka 
+                                         where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
+                                         group by kd_skpd,left(kd_rek6,4)
+                                         union all
+                                         select b.kd_skpd, left(kd_rek6,4)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                         from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                         where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                         group by kd_skpd,left(kd_rek6,4)
+                                        )a
+                                        group by kd_skpd,kd_rek
                                     )a
                                     LEFT JOIN
                                     (select b.kd_skpd, LEFT(a.kd_rek6,4) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
@@ -182,15 +194,19 @@ class calk_bab3lra_pendController extends Controller
                                 group by a.kd_skpd,a.kd_rek
                                 union all
                                 select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
-                                from(select kd_skpd,left(kd_rek6,6)kd_rek, sum(nilai) anggaran, 0 realisasi 
-                                     from trdrka 
-                                     where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
-                                     group by kd_skpd,left(kd_rek6,6)
-                                     union all
-                                     select b.kd_skpd, left(kd_rek6,6)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
-                                     from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
-                                     where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
-                                     group by kd_skpd,left(kd_rek6,6)
+                                from(select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                                    from (
+                                        select kd_skpd,left(kd_rek6,6)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                         from trdrka 
+                                         where jns_ang='$jns_ang' and left(kd_rek6,1)='4'
+                                         group by kd_skpd,left(kd_rek6,6)
+                                         union all
+                                         select b.kd_skpd, left(kd_rek6,6)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                         from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                         where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                         group by kd_skpd,left(kd_rek6,6)
+                                        )a
+                                        group by kd_skpd,kd_rek
                                     )a
                                     LEFT JOIN
                                     (select b.kd_skpd, LEFT(a.kd_rek6,6) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
@@ -204,8 +220,155 @@ class calk_bab3lra_pendController extends Controller
                         group by a.kd_skpd,a.kd_rek
                         )a LEFT JOIN (select * from lamp_calk_bab3_lra_pend where $skpd_clause) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek4 
                         order by a.kd_skpd,a.kd_rek");
-            }
-
+        }
+        $sql_skpd = DB::select("SELECT *, case when anggaran<>0 then realisasi/anggaran*100 else 0 end persen  , realisasi-anggaran selisih,(realisasi_lalu-realisasi) selisih_lalu
+            from
+            (
+                select kd_rek,
+                        case when len(kd_rek)=1 then (select nm_rek1 from ms_rek1 where kd_rek=kd_rek1)
+                             when len(kd_rek)=2 then (select nm_rek2 from ms_rek2 where kd_rek=kd_rek2)
+                             when len(kd_rek)=4 then (select nm_rek3 from ms_rek3 where kd_rek=kd_rek3)
+                             when len(kd_rek)=6 then (select nm_rek4 from ms_rek4 where kd_rek=kd_rek4) end nm_rek,
+                        a.kd_skpd,sum(anggaran)anggaran,sum(realisasi)realisasi,sum(realisasi_lalu)realisasi_lalu,b.ket1, b.ket2
+                from
+                (
+                    select kd_rek,'' kd_skpd,sum(anggaran)anggaran,sum(realisasi)realisasi,sum(realisasi_lalu)realisasi_lalu
+                    from
+                    (
+                        select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
+                        from
+                        (
+                            select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                            from 
+                            (
+                                select kd_skpd,left(kd_rek6,1)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                from trdrka 
+                                where jns_ang='u2' and left(kd_rek6,1)='4'
+                                group by kd_skpd,left(kd_rek6,1)
+                                union all
+                                select b.kd_skpd, left(kd_rek6,1)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                group by kd_skpd,left(kd_rek6,1)
+                            )a
+                            group by kd_skpd,kd_rek
+                        )a
+                        LEFT JOIN
+                        (
+                            select b.kd_skpd, LEFT(a.kd_rek6,1) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
+                            from simakda_2022.dbo.trdju_calk a inner join simakda_2022.dbo.trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where left(a.kd_rek6,1)='4'  and YEAR(b.tgl_voucher)='$thn_ang_1'
+                            group by b.kd_skpd, LEFT(a.kd_rek6,1)
+                        ) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek
+                        group by a.kd_skpd,a.kd_rek
+                    )a
+                    where $skpd_clause
+                    group by kd_rek
+                    union all
+                    select kd_rek,'' kd_skpd,sum(anggaran)anggaran,sum(realisasi)realisasi,sum(realisasi_lalu)realisasi_lalu
+                    from
+                    (
+                        select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
+                        from
+                        (
+                            select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                            from 
+                            (
+                                select kd_skpd,left(kd_rek6,2)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                from trdrka 
+                                where jns_ang='u2' and left(kd_rek6,1)='4'
+                                group by kd_skpd,left(kd_rek6,2)
+                                union all
+                                select b.kd_skpd, left(kd_rek6,2)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                group by kd_skpd,left(kd_rek6,2)
+                            )a
+                            group by kd_skpd,kd_rek
+                        )a
+                        LEFT JOIN
+                        (
+                            select b.kd_skpd, LEFT(a.kd_rek6,2) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
+                            from simakda_2022.dbo.trdju_calk a inner join simakda_2022.dbo.trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where left(a.kd_rek6,1)='4'  and YEAR(b.tgl_voucher)='$thn_ang_1'
+                            group by b.kd_skpd, LEFT(a.kd_rek6,2)
+                        ) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek
+                        group by a.kd_skpd,a.kd_rek
+                    )a
+                    where $skpd_clause
+                    group by kd_rek
+                    union all
+                    select kd_rek,'' kd_skpd,sum(anggaran)anggaran,sum(realisasi)realisasi,sum(realisasi_lalu)realisasi_lalu
+                    from
+                    (
+                        select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
+                        from
+                        (
+                            select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                            from 
+                            (
+                                select kd_skpd,left(kd_rek6,4)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                from trdrka 
+                                where jns_ang='u2' and left(kd_rek6,1)='4'
+                                group by kd_skpd,left(kd_rek6,4)
+                                union all
+                                select b.kd_skpd, left(kd_rek6,4)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                group by kd_skpd,left(kd_rek6,4)
+                            )a
+                            group by kd_skpd,kd_rek
+                        )a
+                        LEFT JOIN
+                        (
+                            select b.kd_skpd, LEFT(a.kd_rek6,4) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
+                            from simakda_2022.dbo.trdju_calk a inner join simakda_2022.dbo.trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where left(a.kd_rek6,1)='4'  and YEAR(b.tgl_voucher)='$thn_ang_1'
+                            group by b.kd_skpd, LEFT(a.kd_rek6,4)
+                        ) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek
+                        group by a.kd_skpd,a.kd_rek
+                    )a
+                    where $skpd_clause
+                    group by kd_rek
+                    union all
+                    select kd_rek, kd_skpd,sum(anggaran)anggaran,sum(realisasi)realisasi,sum(realisasi_lalu)realisasi_lalu
+                    from
+                    (
+                        select a.kd_skpd,a.kd_rek, isnull(sum(anggaran),0) anggaran, isnull(sum(realisasi),0)realisasi,isnull(sum(realisasi_lalu),0)realisasi_lalu
+                        from
+                        (
+                            select kd_skpd,kd_rek,sum(anggaran)anggaran,sum(realisasi)realisasi
+                            from 
+                            (
+                                select kd_skpd,left(kd_rek6,6)kd_rek, sum(nilai) anggaran, 0 realisasi 
+                                from trdrka 
+                                where jns_ang='u2' and left(kd_rek6,1)='4'
+                                group by kd_skpd,left(kd_rek6,6)
+                                union all
+                                select b.kd_skpd, left(kd_rek6,6)kd_rek,0 anggaran, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi 
+                                from $trdju a inner join $trhju b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                                where left(a.kd_rek6,1)='4' and YEAR(b.tgl_voucher)='$thn_ang' 
+                                group by kd_skpd,left(kd_rek6,6)
+                            )a
+                            group by kd_skpd,kd_rek
+                        )a
+                        LEFT JOIN
+                        (
+                            select b.kd_skpd, LEFT(a.kd_rek6,6) kd_rek, sum(isnull(a.kredit,0)-isnull(a.debet,0)) as realisasi_lalu 
+                            from simakda_2022.dbo.trdju_calk a inner join simakda_2022.dbo.trhju_calk b on a.no_voucher=b.no_voucher and a.kd_unit=b.kd_skpd 
+                            where left(a.kd_rek6,1)='4'  and YEAR(b.tgl_voucher)='$thn_ang_1'
+                            group by b.kd_skpd, LEFT(a.kd_rek6,6)
+                        ) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek
+                        group by a.kd_skpd,a.kd_rek
+                    )a
+                    where $skpd_clause
+                    group by kd_rek,kd_skpd
+                )a
+                LEFT JOIN 
+                (select * from lamp_calk_bab3_lra_pend where $skpd_clause) b on a.kd_skpd=b.kd_skpd and a.kd_rek=b.kd_rek4 
+                group by kd_rek,a.kd_skpd,b.ket1, b.ket2
+            )a
+            order by kd_rek,a.kd_skpd");
 
         
         
@@ -225,6 +388,7 @@ class calk_bab3lra_pendController extends Controller
         'peraturan'     => $peraturan,
         'permendagri'   => $permendagri,
         'sql'        => $sql,
+        'sql_skpd'        => $sql_skpd,
         'cetak'         => $cetak,
         'spasi'         => $spasi,
         'jns_ang'         => $jns_ang,
@@ -232,8 +396,12 @@ class calk_bab3lra_pendController extends Controller
         'thn_ang'       => $thn_ang ,
         'thn_ang_1'       => $thn_ang_1  
         ];
-    
-        $view =  view('akuntansi.cetakan.calk.bab3.lra_pend.bab3_lra_index')->with($data);
+        
+        if ($skpdunit=="skpd") {
+            $view =  view('akuntansi.cetakan.calk.bab3.lra_pend.bab3_lra_skpd_index')->with($data);
+        }else{
+            $view =  view('akuntansi.cetakan.calk.bab3.lra_pend.bab3_lra_index')->with($data);
+        }
         
         
         
@@ -260,7 +428,7 @@ class calk_bab3lra_pendController extends Controller
         $skpd_clause= "left(kd_skpd,len('$kd_skpd'))='$kd_skpd' ";
         $sql_ang = collect(DB::select("SELECT top 1 jns_ang as anggaran,(select nama from tb_status_anggaran where a.jns_ang=kode)nama from trhrka a where $skpd_clause and status=1 order by tgl_dpa DESC"))->first();
         $jns_ang = $sql_ang->anggaran;
-        $data = DB::select("SELECT a.kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd)nm_skpd,a.kd_rek, a.nm_rek, b.ket1, b.ket2 
+        $data = DB::select("SELECT a.kd_skpd,(select nm_skpd from ms_skpd where a.kd_skpd=kd_skpd)nm_skpd,a.kd_rek, a.nm_rek, REPLACE(convert(varchar(max),b.ket1),'\n',' ')ket1, REPLACE(convert(varchar(max),b.ket2),'\n',' ')ket2 
                 FROM (Select kd_skpd, left(kd_ang,6) kd_ang, left(kd_rek6,6) kd_rek,(select nm_rek4 from ms_rek4 where kd_rek4=left(kd_ang,6)) nm_rek
                       FROM (select a.kd_skpd, a.kd_rek6 kd_ang, a.kd_rek6 from
                             (select kd_skpd, kd_rek6 from trdrka where left(kd_rek6,1)=4 and jns_ang='$jns_ang'
@@ -298,7 +466,7 @@ class calk_bab3lra_pendController extends Controller
         $jumlah=$hasil->jumlah; 
         
         if($jumlah>0){
-            $asg     = DB::update("UPDATE $tabel SET ket1='$ket1', ket2='$ket2' where kd_rek4='$kd_rek'");
+            $asg     = DB::update("UPDATE $tabel SET ket1='$ket1', ket2='$ket2' where kd_rek4='$kd_rek' and kd_skpd='$kd_skpd'");
         } else{
             $asg = DB::insert("INSERT into $tabel (kd_skpd,kd_rek4,nm_rek4,ket1,kd_ang,ket2,jenis) values ('$kd_skpd','$kd_rek', '$nm_rek','$ket1', '$kd_rek','$ket2', '')");
         }

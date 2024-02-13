@@ -64,6 +64,7 @@
                                 </option>
                                 <option value="1" {{ $jurnal->reev == 1 ? 'selected' : '' }}>Revaluasi</option>
                                 <option value="3" {{ $jurnal->reev == 3 ? 'selected' : '' }}>Lain - Lain</option>
+                                <option value="4" {{ $jurnal->reev == 4 ? 'selected' : '' }}>Jasa Giro (UYHD)</option>
                                 </option>
                             </select>
                         </div>
@@ -152,6 +153,8 @@
                                 <option value="31" {{ $jurnal->tgl_real == 31 ? 'selected' : '' }}>Pelimpahan Keluar
                                 </option>
                                 <option value="32" {{ $jurnal->tgl_real == 32 ? 'selected' : '' }}>Penghapusan Utang
+                                </option>
+                                <option value="33" {{ $jurnal->tgl_real == 33 ? 'selected' : '' }}>Koreksi Aset Tak Berwujud
                                 </option>
                             </select>
                         </div>

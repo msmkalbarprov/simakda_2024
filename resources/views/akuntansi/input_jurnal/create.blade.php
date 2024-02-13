@@ -62,6 +62,7 @@
                                 <option value="2">Koreksi Persediaan</option>
                                 <option value="1">Revaluasi</option>
                                 <option value="3">Lain - Lain</option>
+                                <option value="4">Jasa Giro (UYHD)</option>
                                 </option>
                             </select>
                         </div>
@@ -118,6 +119,7 @@
                                 <option value="28">Koreksi Aset Lain Lain</option>
                                 <option value="30">Pelimpahan Masuk</option>
                                 <option value="31">Pelimpahan Keluar</option>
+                                <option value="33">Koreksi Aset Tak Berwujud</option>
                                 <!-- <option value="32">Penghapusan Utang</option> -->
                             </select>
                         </div>

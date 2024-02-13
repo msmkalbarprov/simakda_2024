@@ -156,7 +156,7 @@
                 group by kd_skpd,kd_rek6
                 union all
                 select kd_skpd,kd_rek6, 0 anggaran, sum(debet) debet, sum(kredit) kredit
-                from trdju_pkd a inner join trhju_pkd b on a.kd_unit=b.kd_skpd and a.no_voucher=b.no_voucher
+                from trdju_calk a inner join trhju_calk b on a.kd_unit=b.kd_skpd and a.no_voucher=b.no_voucher
                 where left(kd_rek6,1)in ('4','5','6') and MONTH(tgl_voucher)<=12 and YEAR(tgl_voucher)=2023
                 group by kd_skpd,kd_rek6)a
                 group by kd_skpd,kd_rek6
@@ -175,11 +175,11 @@
                 from( 
                 select kd_skpd,kd_rek6,sum(nilai) anggaran, 0 debet, 0 kredit 
                 from trdrka 
-                where left(kd_rek6,1)in ('4','5','6') and jns_ang='u1'
+                where left(kd_rek6,1)in ('4','5','6') and jns_ang='$jns_ang'
                 group by kd_skpd,kd_rek6
                 union all
                 select kd_skpd,kd_rek6, 0 anggaran, sum(debet) debet, sum(kredit) kredit
-                from trdju_pkd a inner join trhju_pkd b on a.kd_unit=b.kd_skpd and a.no_voucher=b.no_voucher
+                from trdju_calk a inner join trhju_calk b on a.kd_unit=b.kd_skpd and a.no_voucher=b.no_voucher
                 where left(kd_rek6,1)in ('4','5','6') and MONTH(tgl_voucher)<=12 and YEAR(tgl_voucher)=$thn_ang
                 group by kd_skpd,kd_rek6)a
                 group by kd_skpd,kd_rek6

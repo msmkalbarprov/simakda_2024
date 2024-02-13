@@ -845,7 +845,7 @@
                     <td align="left" style="font-size:12px">{{$kode}}</td> 
                     <td align="left" style="font-size:12px">{{$nama}}</td> 
                     <td align="center" style="font-size:12px">{{$tahun}}</td>
-                    <td align="center" style="font-size:12px">{{$lokasi}}</td> 
+                    <td align="center" style="font-size:12px">{{$lokasi}}</td>  
                     <td align="center" style="font-size:12px">{{$sal_awal}}</td> 
                     <td align="center" style="font-size:12px">{{$kurang}}</td> 
                     <td align="center" style="font-size:12px">{{$tambah}}</td> 
@@ -894,8 +894,6 @@
                 $min001=""; $koreksi; $min002="";
             }            
         
-            $koreksi==0 ? $koreksi = '' : $koreksi=rupiah($koreksi);
-            $audited==0 ? $audited = '' : $audited=rupiah($audited);
                        
             if ($koreksi < 0){
                 $min001="("; $koreksi=$koreksi*-1; $min002=")";
@@ -908,7 +906,7 @@
         @endphp
         @if($cetakan=="1")
                 <tr>
-                    <td colspan="2 "align="left" style="font-size:12px">TOTAL {{$nama}}</td> 
+                    <td colspan="2" align="left" style="font-size:12px">TOTAL {{$nama}}</td> 
                     <td align="center" style="font-size:12px"></td> 
                     <td align="center" style="font-size:12px"></td> 
                     <td align="center" style="font-size:12px">{{$sal_awal}}</td> 
@@ -1916,7 +1914,7 @@
                                <td align="center" style="font-size:12px">{{$tambah}}</td> 
                                <td align="center" style="font-size:12px">{{$tahun_n}}</td> 
                                <td align="center" style="font-size:12px">{{$akhir}}</td>
-                               <td align="center" style="font-size:12px">{{$min001}}$koreksi$min002</td>
+                               <td align="center" style="font-size:12px">{{$min001}}{{$koreksi}}{{$min002}}</td>
                                <td align="center" style="font-size:12px">{{$audited}}</td>
                                <td align="center" style="font-size:12px">{{$keterangan}}</td> 
                             </tr>
@@ -1932,7 +1930,7 @@
                                <td align="center" style="font-size:12px">{{$tambah}}</td> 
                                <td align="center" style="font-size:12px">{{$tahun_n}}</td> 
                                <td align="center" style="font-size:12px">{{$akhir}}</td>
-                               <td align="center" style="font-size:12px">{{$min001}}$koreksi$min002</td>
+                               <td align="center" style="font-size:12px">{{$min001}}{{$koreksi}}{{$min002}}</td>
                                <td align="center" style="font-size:12px">{{$audited}}</td>
                                <td align="center" style="font-size:12px">{{$keterangan}}</td> 
                             </tr>
@@ -2327,6 +2325,13 @@
                        $audited = $akhir+$koreksi;
                        $no_lamp = $row->no_lamp;
 
+                       $kd_rek4 = substr($kode,0,6);
+
+                       if($kd_rek4=="210502"){
+
+                           $tgl_awal    = "";
+                           $tgl_akhir   = "";
+                       }
                        
                        if($tgl_awal==''){
                        $tgl_awal='';

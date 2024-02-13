@@ -99,6 +99,16 @@
                     $selisihh = $selisih;
                     $b = "";
                 }
+                if($selisih<0){
+                    $naik_turun = "tidak mencapai target";
+                    
+                }else if($selisih==0){
+                    $naik_turun = "mencapai target";
+                    
+                }else{
+                    $naik_turun = "melebihi target";
+                    
+                } 
                 $leng = strlen($kd_rek);
             @endphp
             @if($leng==1)
@@ -125,7 +135,7 @@
                 <tr>
                     <td align="left"><strong>&nbsp;</strong></td>
                     <td align="left"><strong>&nbsp;</strong></td>
-                    <td align="justify" colspan="7">{{$nm_rek}} - LRA pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}}  sampai dengan  {{$tanggal}} memiliki Target sebesar Rp. {{rupiah($anggaran)}} dan realisasi sebesar Rp. {{rupiah($realisasi)}} maka $naik_turun sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}} atau {{rupiah($persen)}}<strong>&nbsp;%</strong>.</td>                         
+                    <td align="justify" colspan="7">{{$nm_rek}} - LRA pada {{$nm_skpd}} Tahun Anggaran  {{$thn_ang}}  sampai dengan  {{$tanggal}} memiliki Target sebesar Rp. {{rupiah($anggaran)}} dan realisasi sebesar Rp. {{rupiah($realisasi)}} maka {{$naik_turun}} sebesar Rp. {{rupiah($selisihh)}} atau {{rupiah($persen)}}<strong>&nbsp;%</strong>.</td>                         
                 </tr>
                 <tr>
                     <td align="left"><strong>&nbsp;</strong></td>                         
@@ -231,6 +241,17 @@
                 $persen         = $riw->persen;
                 $ket1         = $riw->ket1;
                 $ket2         = $riw->ket2;
+                $selisih_lalu = $riw->selisih_lalu;
+                if($selisih_lalu<0){
+                    $asl = "(";
+                    $selisih_laluh = $selisih_lalu*-1;
+                    $bsl = ")";
+                }else{
+
+                    $asl = "";
+                    $selisih_laluh = $selisih_lalu;
+                    $bsl = "";
+                }
                 if($selisih<0){
                     $a = "(";
                     $selisihh = $selisih*-1;
@@ -241,6 +262,9 @@
                     $selisihh = $selisih;
                     $b = "";
                 }
+
+                
+
 
                 if($selisih<0){
                     $naik_turun = "tidak mencapai target";
@@ -307,7 +331,6 @@
                              <td align="left"><strong>&nbsp;</strong></td>
                              <td align="justify" colspan="7">
                                 <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd_edit}}','{{$jns_ang}}','{{$bulan}}','{{$kd_rek}}')">Edit {{dotrek($kd_rek)}}</button>
-                                <button type="button" value="Refresh" onClick="window.location.reload()">Reload {{dotrek($kd_rek)}}</button>
                             </td>                         
                         </tr>
                     @else
@@ -336,15 +359,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{rupiah($selisihh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @endif  
                     </tr>
                     
@@ -361,15 +384,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{rupiah($selisih_laluh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @endif            
                     </tr>
                     <tr>
@@ -467,6 +490,17 @@
                 $persen         = $ruw->persen;
                 $ket1         = $ruw->ket1;
                 $ket2         = $ruw->ket2;
+                $selisih_lalu = $ruw->selisih_lalu;
+                if($selisih_lalu<0){
+                    $asl = "(";
+                    $selisih_laluh = $selisih_lalu*-1;
+                    $bsl = ")";
+                }else{
+
+                    $asl = "";
+                    $selisih_laluh = $selisih_lalu;
+                    $bsl = "";
+                }
                 if($selisih<0){
                     $a = "(";
                     $selisihh = $selisih*-1;
@@ -543,7 +577,6 @@
                              <td align="left"><strong>&nbsp;</strong></td>
                              <td align="justify" colspan="7">
                                 <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd_edit}}','{{$jns_ang}}','{{$bulan}}','{{$kd_rek}}')">Edit {{dotrek($kd_rek)}}</button>
-                                <button type="button" value="Refresh" onClick="window.location.reload()">Reload {{dotrek($kd_rek)}}</button>
                             </td>                         
                         </tr>
                     @else
@@ -572,15 +605,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{rupiah($selisihh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @endif  
                     </tr>
                     
@@ -597,15 +630,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{rupiah($selisih_laluh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @endif            
                     </tr>
                     <tr>
@@ -703,6 +736,17 @@
                 $persen         = $uhuy->persen;
                 $ket1         = $uhuy->ket1;
                 $ket2         = $uhuy->ket2;
+                $selisih_lalu = $uhuy->selisih_lalu;
+                if($selisih_lalu<0){
+                    $asl = "(";
+                    $selisih_laluh = $selisih_lalu*-1;
+                    $bsl = ")";
+                }else{
+
+                    $asl = "";
+                    $selisih_laluh = $selisih_lalu;
+                    $bsl = "";
+                }
                 if($selisih<0){
                     $a = "(";
                     $selisihh = $selisih*-1;
@@ -779,7 +823,6 @@
                              <td align="left"><strong>&nbsp;</strong></td>
                              <td align="justify" colspan="7">
                                 <button type="button" href="javascript:void(0);" onclick="edit('{{$kd_skpd_edit}}','{{$jns_ang}}','{{$bulan}}','{{$kd_rek}}')">Edit {{dotrek($kd_rek)}}</button>
-                                <button type="button" value="Refresh" onClick="window.location.reload()">Reload {{dotrek($kd_rek)}}</button>
                             </td>                         
                         </tr>
                     @else
@@ -808,15 +851,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Target {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($anggaran)}} terealisasi sebesar Rp. {{rupiah($realisasi)}} atau {{rupiah($persen)}} maka {{$naik_turun}} sebesar Rp. {{rupiah($selisihh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit2}}{{$ket2}}</td>
+                            <td align="justify" colspan="7">{{$edit2}}{!! $ket2 !!}</td>
                         @endif  
                     </tr>
                     
@@ -833,15 +876,15 @@
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
-                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{$a}}{{rupiah($selisihh)}}{{$b}}</td>                         
+                         <td align="justify" colspan="7">Realisasi {{$nm_rek}} pada tahun {{$thn_ang}} sebesar Rp. {{rupiah($realisasi)}} dan realisasi tahun {{$thn_ang_1}} sebesar Rp. {{rupiah($realisasi_lalu)}} terjadi  {{$naik_turun_banding}} sebesar Rp. {{rupiah($selisih_laluh)}}</td>                         
                     </tr>
                     <tr>
                          <td align="left"><strong>&nbsp;</strong></td>
                          <td align="left"><strong>&nbsp;</strong></td>
                         @if($jenis==1)
-                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" bgcolor="yellow" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @else
-                            <td align="justify" colspan="7">{{$edit}}{{$ket1}}</td>
+                            <td align="justify" colspan="7">{{$edit}}{!! $ket1 !!}</td>
                         @endif            
                     </tr>
                     <tr>
