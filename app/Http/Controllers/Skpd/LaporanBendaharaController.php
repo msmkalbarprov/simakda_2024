@@ -500,7 +500,7 @@ class LaporanBendaharaController extends Controller
         ISNULL(SUM(setor_lalu),0) as setor_lalu, ISNULL(SUM(setor_ini),0) as setor_ini, ISNULL(SUM(setor),0) as setor,
         ISNULL(SUM(terima)-SUM(setor),0) as sisa
         FROM
-        (SELECT RTRIM(map_pot) as kd_rek6, nm_rek6 nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210106010001','210105020001 ','210105010001 ','210105030001','210109010001'))a
+        (SELECT RTRIM(kd_rek6) as kd_rek6, nm_rek6 nm_rek6 FROM ms_pot WHERE kd_rek6 IN ('210106010001','210105020001 ','210105010001 ','210105030001','210109010001'))a
         LEFT JOIN
         (SELECT b.kd_rek6, b.nm_rek6,a.kd_skpd,
         SUM(CASE WHEN MONTH(tgl_bukti)<? THEN b.nilai ELSE 0 END) AS terima_lalu,
