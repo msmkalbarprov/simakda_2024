@@ -164,26 +164,51 @@ class LPJController extends Controller
         //                     where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1') )as f
         //             )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
 
-        $data = collect(DB::select("SELECT spd,keluar1 = keluar-terima,keluarspp  from(
-                        select sum(spd) as spd,sum(terima) as terima,sum(keluar) as keluar,sum(keluarspp) as keluarspp from(SELECT 'SPD' as ket,isnull(sum(nilai),0) as spd,0 as terima,0 as keluar,0 as keluarspp from trhspd d join trdspd e on d.no_spd=e.no_spd
-                            where d.kd_skpd=? and d.status='1' and d.jns_beban=?
-                            UNION ALL
-                            SELECT 'SPP' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-                            where LEFT(kd_rek6,1)=? and b.jns_spp in ('3','4','5','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1')
-                            union all
-                            select 'Trans UP/GU' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-                            where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and a.no_bukti<>?
-                            union all
-                            select 'Trans UP/GU CMS' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout_cmsbank a join trhtransout_cmsbank b on a.no_voucher=b.no_voucher
-                            and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1'
-                            union all
-                            select 'Panjar' as ket,0 as spd,0 as terima,ISNULL(sum(nilai),0) as keluar,0 as keluarspp from tr_panjar where jns='1' and left(kd_skpd,17)=left(?,17) and no_kas<>?
-                            union all
-                            select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>?
-                            union all
-                            select 'SPP' as ket,0 as spd,0 as terima,0 as keluar,isnull(sum(a.nilai),0) [keluarspp] from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
-                            where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1'))as f
-                    )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
+        if ($kd_skpd == '1.02.0.00.0.00.01.0005') {
+            $data = collect(DB::select("SELECT spd,keluar1 = keluar-terima,keluarspp  from(
+                select sum(spd) as spd,sum(terima) as terima,sum(keluar) as keluar,sum(keluarspp) as keluarspp from(SELECT 'SPD' as ket,isnull(sum(nilai),0) as spd,0 as terima,0 as keluar,0 as keluarspp from trhspd d join trdspd e on d.no_spd=e.no_spd
+                    where e.kd_unit=? and d.status='1' and d.jns_beban=?
+                    UNION ALL
+                    SELECT 'SPP' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                    where LEFT(kd_rek6,1)=? and b.jns_spp in ('3','4','5','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1')
+                    union all
+                    select 'Trans UP/GU' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                    where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and a.no_bukti<>?
+                    union all
+                    select 'Trans UP/GU CMS' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout_cmsbank a join trhtransout_cmsbank b on a.no_voucher=b.no_voucher
+                    and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1'
+                    union all
+                    select 'Panjar' as ket,0 as spd,0 as terima,ISNULL(sum(nilai),0) as keluar,0 as keluarspp from tr_panjar where jns='1' and left(kd_skpd,17)=left(?,17) and no_kas<>?
+                    union all
+                    select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>?
+                    union all
+                    select 'SPP' as ket,0 as spd,0 as terima,0 as keluar,isnull(sum(a.nilai),0) [keluarspp] from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                    where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1'))as f
+            )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
+        } else {
+            $data = collect(DB::select("SELECT spd,keluar1 = keluar-terima,keluarspp  from(
+                select sum(spd) as spd,sum(terima) as terima,sum(keluar) as keluar,sum(keluarspp) as keluarspp from(SELECT 'SPD' as ket,isnull(sum(nilai),0) as spd,0 as terima,0 as keluar,0 as keluarspp from trhspd d join trdspd e on d.no_spd=e.no_spd
+                    where d.kd_skpd=? and d.status='1' and d.jns_beban=?
+                    UNION ALL
+                    SELECT 'SPP' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                    where LEFT(kd_rek6,1)=? and b.jns_spp in ('3','4','5','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1')
+                    union all
+                    select 'Trans UP/GU' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+                    where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and a.no_bukti<>?
+                    union all
+                    select 'Trans UP/GU CMS' as ket,0 as spd,0 as terima,isnull(sum(a.nilai),0) [keluar],0 as keluarspp from trdtransout_cmsbank a join trhtransout_cmsbank b on a.no_voucher=b.no_voucher
+                    and a.kd_skpd=b.kd_skpd where LEFT(kd_rek6,1)=? and b.jns_spp in ('1','2') and left(a.kd_skpd,17)=left(?,17) and status_validasi<>'1'
+                    union all
+                    select 'Panjar' as ket,0 as spd,0 as terima,ISNULL(sum(nilai),0) as keluar,0 as keluarspp from tr_panjar where jns='1' and left(kd_skpd,17)=left(?,17) and no_kas<>?
+                    union all
+                    select 'T/P Panjar' as ket,0 as spd,ISNULL(sum(nilai),0) as terima,0 as keluar,0 as keluarspp from tr_jpanjar where left(kd_skpd,17)=left(?,17) and no_kas<>?
+                    union all
+                    select 'SPP' as ket,0 as spd,0 as terima,0 as keluar,isnull(sum(a.nilai),0) [keluarspp] from trdspp a join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd
+                    where b.jns_spp in ('1','2','3','6') and left(a.kd_skpd,17)=left(?,17) and b.no_spp<>? and (sp2d_batal is null or sp2d_batal <>'1'))as f
+            )as g", [$kd_skpd, $jns, $jns, $kd_skpd, $nospp, $jns, $kd_skpd, $no_bukti, $jns, $kd_skpd, $kd_skpd, $no_bukti, $kd_skpd, $no_bukti, $kd_skpd, $nospp]))->first();
+        }
+
+
 
         return response()->json($data);
     }
