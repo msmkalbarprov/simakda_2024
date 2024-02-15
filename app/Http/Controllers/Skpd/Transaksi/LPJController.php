@@ -61,11 +61,15 @@ class LPJController extends Controller
 
         $total_skpd = total_skpd();
 
-        if ($total_skpd > 1) {
-            // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
-            return redirect()->route('lpj.skpd_tanpa_unit.index')
-                ->with(['message', 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+        if ($kd_skpd == '1.02.0.00.0.00.01.0005') {
+        } else {
+            if ($total_skpd > 1) {
+                // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+                return redirect()->route('lpj.skpd_tanpa_unit.index')
+                    ->with(['message', 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
+            }
         }
+
 
         if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
             $nilai_up = DB::table('ms_up')
