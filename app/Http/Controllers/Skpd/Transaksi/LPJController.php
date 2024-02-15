@@ -837,7 +837,7 @@ class LPJController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'nilai_up' => DB::table('ms_up')
-                ->selectRaw("SUM(nilai_up) as nilai")
+                ->selectRaw("SUM(tunai) as nilai")
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
