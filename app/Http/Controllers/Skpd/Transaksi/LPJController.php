@@ -61,7 +61,7 @@ class LPJController extends Controller
 
         $total_skpd = total_skpd();
 
-        if ($total_skpd > 1 || $kd_skpd != '1.02.0.00.0.00.01.0005') {
+        if ($total_skpd > 1) {
             // return redirect()->back()->with(['message' => 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
             return redirect()->route('lpj.skpd_tanpa_unit.index')
                 ->with(['message', 'Menu Hanya Untuk SKPD tanpa Unit!', 'alert' => 'alert-danger']);
