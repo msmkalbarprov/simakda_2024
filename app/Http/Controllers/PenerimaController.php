@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PenerimaRequest;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -65,67 +66,139 @@ class PenerimaController extends Controller
         return view('master.penerima.create')->with($data);
     }
 
-    public function store(PenerimaRequest $request)
+    // public function store(PenerimaRequest $request)
+    // {
+    //     // $input = array_map('htmlentities', $request->validated());
+    //     $input = $request->validated();
+    //     // $input = $request->all();
+
+
+    //     if ($input['jenis'] == '4') {
+    //         $cek = DB::table('ms_rekening_bank_online')
+    //             ->where([
+    //                 'rekening' => $input['no_rekening_validasi'],
+    //                 'kd_skpd' => Auth::user()->kd_skpd,
+    //                 'nmrekan' => $input['rekanan']
+    //             ])
+    //             ->count();
+
+    //         if ($cek > 0) {
+    //             // return redirect()->back()->withInput()
+    //             //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+    //             return redirect()->route('penerima.create')
+    //                 ->withInput()
+    //                 ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+    //         }
+    //     } else {
+    //         $cek = DB::table('ms_rekening_bank_online')
+    //             ->where([
+    //                 'rekening' => $input['no_rekening_validasi'],
+    //                 'kd_skpd' => Auth::user()->kd_skpd
+    //             ])
+    //             ->count();
+
+    //         if ($cek > 0) {
+    //             // return redirect()->back()->withInput()
+    //             //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+    //             return redirect()->route('penerima.create')
+    //                 ->withInput()
+    //                 ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+    //         }
+    //     }
+
+    //     DB::table('ms_rekening_bank_online')->insert([
+    //         'kd_bank' => $input['bank'],
+    //         'rekening' => $input['no_rekening_validasi'],
+    //         'nm_rekening' => $input['nm_rekening_validasi'],
+    //         'bank' => $input['cabang'],
+    //         'nm_bank' => $input['nama_cabang'],
+    //         'kd_skpd' => Auth::user()->kd_skpd,
+    //         'jenis' => $input['jenis'],
+    //         'npwp' => isset($input['npwp_validasi']) ? $input['npwp_validasi'] : '',
+    //         'nm_wp' => isset($input['nm_npwp_validasi']) ? $input['nm_npwp_validasi'] : '',
+    //         'kd_map' => isset($input['kode_akun']) ? $input['kode_akun'] : '',
+    //         'kd_setor' => isset($input['kode_setor']) ? $input['kode_setor'] : '',
+    //         'keterangan' => $input['keterangan'],
+    //         'bic' => $input['bic'],
+    //         'nmrekan' => $input['rekanan'],
+    //         'pimpinan' => $input['pimpinan'],
+    //         'alamat' => $input['alamat'],
+    //         'keperluan' => $input['keperluan'],
+    //     ]);
+
+    //     return redirect()->route('penerima.index');
+    // }
+
+    public function store(Request $request)
     {
         // $input = array_map('htmlentities', $request->validated());
-        $input = $request->validated();
+        // $input = $request->validated();
         // $input = $request->all();
+        $data = $request->data;
 
-
-        if ($input['jenis'] == '4') {
+        if ($data['jenis'] == '4') {
             $cek = DB::table('ms_rekening_bank_online')
                 ->where([
-                    'rekening' => $input['no_rekening_validasi'],
+                    'rekening' => $data['no_rekening_validasi'],
                     'kd_skpd' => Auth::user()->kd_skpd,
-                    'nmrekan' => $input['rekanan']
+                    'nmrekan' => $data['rekanan']
                 ])
                 ->count();
 
             if ($cek > 0) {
-                // return redirect()->back()->withInput()
-                //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
-                return redirect()->route('penerima.create')
-                    ->withInput()
-                    ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                return response()->json([
+                    'message' => '2'
+                ]);
             }
         } else {
             $cek = DB::table('ms_rekening_bank_online')
                 ->where([
-                    'rekening' => $input['no_rekening_validasi'],
+                    'rekening' => $data['no_rekening_validasi'],
                     'kd_skpd' => Auth::user()->kd_skpd
                 ])
                 ->count();
 
             if ($cek > 0) {
-                // return redirect()->back()->withInput()
-                //     ->with(['message' => 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
-                return redirect()->route('penerima.create')
-                    ->withInput()
-                    ->with(['message', 'Rekening Telah Ada di SKPD', 'alert' => 'alert-danger']);
+                return response()->json([
+                    'message' => '3'
+                ]);
             }
         }
 
-        DB::table('ms_rekening_bank_online')->insert([
-            'kd_bank' => $input['bank'],
-            'rekening' => $input['no_rekening_validasi'],
-            'nm_rekening' => $input['nm_rekening_validasi'],
-            'bank' => $input['cabang'],
-            'nm_bank' => $input['nama_cabang'],
-            'kd_skpd' => Auth::user()->kd_skpd,
-            'jenis' => $input['jenis'],
-            'npwp' => isset($input['npwp_validasi']) ? $input['npwp_validasi'] : '',
-            'nm_wp' => isset($input['nm_npwp_validasi']) ? $input['nm_npwp_validasi'] : '',
-            'kd_map' => isset($input['kode_akun']) ? $input['kode_akun'] : '',
-            'kd_setor' => isset($input['kode_setor']) ? $input['kode_setor'] : '',
-            'keterangan' => $input['keterangan'],
-            'bic' => $input['bic'],
-            'nmrekan' => $input['rekanan'],
-            'pimpinan' => $input['pimpinan'],
-            'alamat' => $input['alamat'],
-            'keperluan' => $input['keperluan'],
-        ]);
 
-        return redirect()->route('penerima.index');
+        DB::beginTransaction();
+        try {
+            DB::table('ms_rekening_bank_online')
+                ->insert([
+                    'kd_bank' => $data['bank'],
+                    'rekening' => $data['no_rekening_validasi'],
+                    'nm_rekening' => $data['nm_rekening_validasi'],
+                    'bank' => $data['cabang'],
+                    'nm_bank' => $data['nama_cabang'],
+                    'kd_skpd' => Auth::user()->kd_skpd,
+                    'jenis' => $data['jenis'],
+                    'npwp' => isset($data['npwp_validasi']) ? $data['npwp_validasi'] : '',
+                    'nm_wp' => isset($data['nm_npwp_validasi']) ? $data['nm_npwp_validasi'] : '',
+                    'kd_map' => isset($data['kode_akun']) ? $data['kode_akun'] : '',
+                    'kd_setor' => isset($data['kode_setor']) ? $data['kode_setor'] : '',
+                    'keterangan' => $data['keterangan'],
+                    'bic' => $data['bic'],
+                    'nmrekan' => $data['rekanan'],
+                    'pimpinan' => $data['pimpinan'],
+                    'alamat' => $data['alamat'],
+                    'keperluan' => $data['keperluan'],
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => '1'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => '0'
+            ]);
+        }
     }
 
     public function showPenerima($rekening, $kd_skpd)

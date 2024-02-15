@@ -10,202 +10,200 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('penerima.store') }}" method="post">
-                        @csrf
-                        <!-- Bank -->
-                        <div class="mb-3 row">
-                            <label for="bank" class="col-md-2 col-form-label">Bank</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('bank') is-invalid @enderror"
-                                    style=" width: 100%;" id="bank" name="bank" data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Bank">
-                                        <option value="" disabled selected>Silahkan Pilih Bank</option>
-                                        @foreach ($daftar_bank as $bank)
-                                            <option value="{{ $bank->kd_bank }}" data-bic="{{ $bank->bic }}"
-                                                data-nama="{{ $bank->nama_bank }}" data-digit="{{ $bank->digit }}"
-                                                {{ old('bank') == $bank->kd_bank ? 'selected' : '' }}>{{ $bank->kd_bank }}
-                                                |
-                                                {{ $bank->nama_bank }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                                @error('bank')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <input class="form-control @error('nama_bank') is-invalid @enderror" type="text"
-                                    id="nama_bank" name="nama_bank" value="{{ old('nama_bank') }}" readonly>
-                                @error('nama_bank')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    {{-- <form action="{{ route('penerima.store') }}" method="post"> --}}
+                    @csrf
+                    <!-- Bank -->
+                    <div class="mb-3 row">
+                        <label for="bank" class="col-md-2 col-form-label">Bank</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('bank') is-invalid @enderror"
+                                style=" width: 100%;" id="bank" name="bank" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Bank">
+                                    <option value="" disabled selected>Silahkan Pilih Bank</option>
+                                    @foreach ($daftar_bank as $bank)
+                                        <option value="{{ $bank->kd_bank }}" data-bic="{{ $bank->bic }}"
+                                            data-nama="{{ $bank->nama_bank }}" data-digit="{{ $bank->digit }}"
+                                            {{ old('bank') == $bank->kd_bank ? 'selected' : '' }}>{{ $bank->kd_bank }}
+                                            |
+                                            {{ $bank->nama_bank }}</option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            @error('bank')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- BIC -->
-                        <div class="mb-3 row">
-                            <label for="bic" class="col-md-2 col-form-label">BIC</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('bic') is-invalid @enderror" type="text" id="bic"
-                                    name="bic" readonly value="{{ old('bic') }}">
-                                @error('bic')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <div class="col-md-6">
+                            <input class="form-control @error('nama_bank') is-invalid @enderror" type="text"
+                                id="nama_bank" name="nama_bank" value="{{ old('nama_bank') }}" readonly>
+                            @error('nama_bank')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Cabang Pusat -->
-                        <div class="mb-3 row">
-                            <label for="cabang" class="col-md-2 col-form-label">Cabang Pusat</label>
-                            <div class="col-md-4">
-                                <select class="form-control select2-multiple @error('cabang') is-invalid @enderror"
-                                    style="width: 100%;" id="cabang" name="cabang" data-placeholder="Silahkan Pilih">
-                                </select>
-                                @error('cabang')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <input class="form-control @error('nama_cabang') is-invalid @enderror" type="text"
-                                    id="nama_cabang" name="nama_cabang" readonly value="{{ old('nama_cabang') }}">
-                                @error('nama_cabang')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- BIC -->
+                    <div class="mb-3 row">
+                        <label for="bic" class="col-md-2 col-form-label">BIC</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('bic') is-invalid @enderror" type="text" id="bic"
+                                name="bic" readonly value="{{ old('bic') }}">
+                            @error('bic')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Jenis Rekening -->
-                        <div class="mb-3 row">
-                            <label for="jenis" class="col-md-2 col-form-label">Jenis Rekening</label>
-                            <div class="col-md-10">
-                                <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
-                                    style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Jenis Rekening">
-                                        <option value="" disabled selected>Silahkan Pilih Jenis Rekening</option>
-                                        <option value="1" {{ old('jenis') == '1' ? 'selected' : '' }}>Rekening Pegawai
-                                        </option>
-                                        <option value="2" {{ old('jenis') == '2' ? 'selected' : '' }}>Rekening Rekenan
-                                            Pihak Ketiga</option>
-                                        <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Rekening
-                                            Penampung Pajak</option>
-                                        <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Virtual Account
-                                        </option>
-                                    </optgroup>
-                                </select>
-                                @error('jenis')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Cabang Pusat -->
+                    <div class="mb-3 row">
+                        <label for="cabang" class="col-md-2 col-form-label">Cabang Pusat</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2-multiple @error('cabang') is-invalid @enderror"
+                                style="width: 100%;" id="cabang" name="cabang" data-placeholder="Silahkan Pilih">
+                            </select>
+                            @error('cabang')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- KEPERLUAN -->
-                        <div class="mb-3 row">
-                            <label for="keperluan" class="col-md-2 col-form-label">Keperluan</label>
-                            <div class="col-md-10">
-                                <select class="form-control select2-multiple @error('keperluan') is-invalid @enderror"
-                                    style="width: 100%;" id="keperluan" name="keperluan" data-placeholder="Silahkan Pilih">
+                        <div class="col-md-6">
+                            <input class="form-control @error('nama_cabang') is-invalid @enderror" type="text"
+                                id="nama_cabang" name="nama_cabang" readonly value="{{ old('nama_cabang') }}">
+                            @error('nama_cabang')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <!-- Jenis Rekening -->
+                    <div class="mb-3 row">
+                        <label for="jenis" class="col-md-2 col-form-label">Jenis Rekening</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
+                                style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Jenis Rekening">
                                     <option value="" disabled selected>Silahkan Pilih Jenis Rekening</option>
-                                    <option value="1" {{ old('keperluan') == '1' ? 'selected' : '' }}>Transfer
-                                        (Transaksi CMS, Transaksi Pemindahbukuan, Transaksi Tunai)
+                                    <option value="1" {{ old('jenis') == '1' ? 'selected' : '' }}>Rekening Pegawai
                                     </option>
-                                    <option value="2" {{ old('keperluan') == '2' ? 'selected' : '' }}>Pengajuan
-                                        Penagihan SPP SPM</option>
-                                </select>
-                                @error('keperluan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                    <option value="2" {{ old('jenis') == '2' ? 'selected' : '' }}>Rekening Rekenan
+                                        Pihak Ketiga</option>
+                                    <option value="3" {{ old('jenis') == '3' ? 'selected' : '' }}>Rekening
+                                        Penampung Pajak</option>
+                                    <option value="4" {{ old('jenis') == '4' ? 'selected' : '' }}>Virtual Account
+                                    </option>
+                                </optgroup>
+                            </select>
+                            @error('jenis')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- No Rekening Bank -->
-                        <div class="mb-3 row">
-                            <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>
-                            <div class="col-md-10">
-                                <input class="form-control" type="text" placeholder="Silahkan isi dengan nomor rekening"
-                                    id="rekening" value="{{ old('rekening') }}" name="rekening">
-                            </div>
+                    </div>
+                    <!-- KEPERLUAN -->
+                    <div class="mb-3 row">
+                        <label for="keperluan" class="col-md-2 col-form-label">Keperluan</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple @error('keperluan') is-invalid @enderror"
+                                style="width: 100%;" id="keperluan" name="keperluan" data-placeholder="Silahkan Pilih">
+                                <option value="" disabled selected>Silahkan Pilih Jenis Rekening</option>
+                                <option value="1" {{ old('keperluan') == '1' ? 'selected' : '' }}>Transfer
+                                    (Transaksi CMS, Transaksi Pemindahbukuan, Transaksi Tunai)
+                                </option>
+                                <option value="2" {{ old('keperluan') == '2' ? 'selected' : '' }}>Pengajuan
+                                    Penagihan SPP SPM</option>
+                            </select>
+                            @error('keperluan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Nama Pemilik -->
-                        <div class="mb-3 row">
-                            <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik</label>
-                            <div class="col-md-10">
-                                <input class="form-control" type="text"
-                                    placeholder="Silahkan isi dengan nama penerima" id="nm_rekening" name="nm_rekening"
-                                    value="{{ old('nm_rekening') }}">
-                            </div>
+                    </div>
+                    <!-- No Rekening Bank -->
+                    <div class="mb-3 row">
+                        <label for="rekening" class="col-md-2 col-form-label">No Rekening Bank</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" placeholder="Silahkan isi dengan nomor rekening"
+                                id="rekening" value="{{ old('rekening') }}" name="rekening">
                         </div>
-                        <!-- Cek Rekening -->
-                        <div class="mb-3 row">
-                            <label for="cek_rekening" class="col-md-2 col-form-label"></label>
-                            <div class="col-md-10">
-                                <button type="button" id="cek_rekening" class="btn btn-primary btn-sm">Cek
-                                    Rekening</button>
-                            </div>
+                    </div>
+                    <!-- Nama Pemilik -->
+                    <div class="mb-3 row">
+                        <label for="nm_rekening" class="col-md-2 col-form-label">Nama Pemilik</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" placeholder="Silahkan isi dengan nama penerima"
+                                id="nm_rekening" name="nm_rekening" value="{{ old('nm_rekening') }}">
                         </div>
-                        <!-- Kode Akun -->
-                        <div class="mb-3 row">
-                            <label for="kode_akun" class="col-md-2 col-form-label">Kode Akun</label>
-                            <div class="col-md-10">
-                                <select class="form-control select2-multiple @error('kode_akun') is-invalid @enderror"
-                                    style="width: 100%;" id="kode_akun" name="kode_akun"
-                                    data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Kode Akun">
-                                        <option value="" disabled selected>Silahkan Pilih Kode Akun</option>
-                                        @foreach ($daftar_kode_akun as $kode_akun)
-                                            <option value="{{ $kode_akun->kd_map }}"
-                                                {{ old('kode_akun') == $kode_akun->kd_map ? 'selected' : '' }}>
-                                                {{ $kode_akun->nm_map }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                                @error('kode_akun')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Cek Rekening -->
+                    <div class="mb-3 row">
+                        <label for="cek_rekening" class="col-md-2 col-form-label"></label>
+                        <div class="col-md-10">
+                            <button type="button" id="cek_rekening" class="btn btn-primary btn-sm">Cek
+                                Rekening</button>
                         </div>
-                        <!-- Kode Setor -->
-                        <div class="mb-3 row">
-                            <label for="kode_setor" class="col-md-2 col-form-label">Kode Setor</label>
-                            <div class="col-md-10">
-                                <select class="form-control select2-multiple @error('kode_setor') is-invalid @enderror"
-                                    style="width: 100%;" id="kode_setor" name="kode_setor"
-                                    data-placeholder="Silahkan Pilih">
-                                    <optgroup label="Daftar Kode Setor">
-                                        <option value="" disabled selected>Silahkan Pilih Kode Setor</option>
-                                    </optgroup>
-                                </select>
-                                @error('kode_setor')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Kode Akun -->
+                    <div class="mb-3 row">
+                        <label for="kode_akun" class="col-md-2 col-form-label">Kode Akun</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple @error('kode_akun') is-invalid @enderror"
+                                style="width: 100%;" id="kode_akun" name="kode_akun" data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Kode Akun">
+                                    <option value="" disabled selected>Silahkan Pilih Kode Akun</option>
+                                    @foreach ($daftar_kode_akun as $kode_akun)
+                                        <option value="{{ $kode_akun->kd_map }}"
+                                            {{ old('kode_akun') == $kode_akun->kd_map ? 'selected' : '' }}>
+                                            {{ $kode_akun->nm_map }}</option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            @error('kode_akun')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- NPWP -->
-                        <div class="mb-3 row">
-                            <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
-                            <div class="col-md-10">
-                                <input class="form-control" type="text" placeholder="Silahkan isi dengan npwp"
-                                    id="npwp" name="npwp" value="{{ old('npwp') }}" maxlength="16">
-                            </div>
+                    </div>
+                    <!-- Kode Setor -->
+                    <div class="mb-3 row">
+                        <label for="kode_setor" class="col-md-2 col-form-label">Kode Setor</label>
+                        <div class="col-md-10">
+                            <select class="form-control select2-multiple @error('kode_setor') is-invalid @enderror"
+                                style="width: 100%;" id="kode_setor" name="kode_setor"
+                                data-placeholder="Silahkan Pilih">
+                                <optgroup label="Daftar Kode Setor">
+                                    <option value="" disabled selected>Silahkan Pilih Kode Setor</option>
+                                </optgroup>
+                            </select>
+                            @error('kode_setor')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Cek NPWP -->
-                        <div class="mb-3 row">
-                            <label for="cek_npwp" class="col-md-2 col-form-label"></label>
-                            <div class="col-md-10">
-                                <button type="button" id="cek_npwp" class="btn btn-primary btn-sm">Cek NPWP</button>
-                            </div>
+                    </div>
+                    <!-- NPWP -->
+                    <div class="mb-3 row">
+                        <label for="npwp" class="col-md-2 col-form-label">NPWP</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" placeholder="Silahkan isi dengan npwp"
+                                id="npwp" name="npwp" value="{{ old('npwp') }}" maxlength="16">
                         </div>
-                        <!-- Keterangan Tambahan -->
-                        <div class="mb-3 row">
-                            <label for="keterangan" class="col-md-2 col-form-label">Keterangan Tambahan</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('keterangan') is-invalid @enderror"
-                                    value="{{ old('keterangan') }}" type="text"
-                                    placeholder="Silahkan isi dengan nama penerima" id="keterangan" name="keterangan">
-                                @error('keterangan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Cek NPWP -->
+                    <div class="mb-3 row">
+                        <label for="cek_npwp" class="col-md-2 col-form-label"></label>
+                        <div class="col-md-10">
+                            <button type="button" id="cek_npwp" class="btn btn-primary btn-sm">Cek NPWP</button>
                         </div>
-                        {{-- Rekanan --}}
-                        <div class="mb-3 row">
-                            <label for="rekanan" class="col-md-2 col-form-label">Rekanan/Penerima</label>
-                            <div class="col-md-10">
-                                {{-- <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
+                    </div>
+                    <!-- Keterangan Tambahan -->
+                    <div class="mb-3 row">
+                        <label for="keterangan" class="col-md-2 col-form-label">Keterangan Tambahan</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('keterangan') is-invalid @enderror"
+                                value="{{ old('keterangan') }}" type="text"
+                                placeholder="Silahkan isi dengan nama penerima" id="keterangan" name="keterangan">
+                            @error('keterangan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- Rekanan --}}
+                    <div class="mb-3 row">
+                        <label for="rekanan" class="col-md-2 col-form-label">Rekanan/Penerima</label>
+                        <div class="col-md-10">
+                            {{-- <select class="form-control select2-multiple" style="width: 100%;" id="rekanan"
                                     name="rekanan" data-placeholder="Silahkan Pilih">
                                     <option value="" disabled selected>Silahkan Pilih Rekanan</option>
                                     @foreach ($daftar_rekanan as $rekanan)
@@ -215,84 +213,84 @@
                                             {{ $rekanan->nmrekan }}</option>
                                     @endforeach
                                 </select> --}}
-                                <input type="text" class="form-control" id="rekanan" name="rekanan">
-                            </div>
+                            <input type="text" class="form-control" id="rekanan" name="rekanan">
                         </div>
-                        {{-- pimpinan --}}
-                        <div class="mb-3 row">
-                            <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="pimpinan" name="pimpinan">
-                            </div>
+                    </div>
+                    {{-- pimpinan --}}
+                    <div class="mb-3 row">
+                        <label for="pimpinan" class="col-md-2 col-form-label">Pimpinan</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="pimpinan" name="pimpinan">
                         </div>
-                        {{-- alamat --}}
-                        <div class="mb-3 row">
-                            <label for="alamat" class="col-md-2 col-form-label">Alamat</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="alamat" name="alamat">
-                            </div>
+                    </div>
+                    {{-- alamat --}}
+                    <div class="mb-3 row">
+                        <label for="alamat" class="col-md-2 col-form-label">Alamat</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="alamat" name="alamat">
                         </div>
-                        <!-- Hasil Validasi Bank -->
-                        <div class="mb-3 row">
-                            <label for="hasil_validasi" class="col-md-12 col-form-label"
-                                style="text-align: center;">Hasil Validasi Bank</label>
-                            <div class="col-md-10">
-                            </div>
+                    </div>
+                    <!-- Hasil Validasi Bank -->
+                    <div class="mb-3 row">
+                        <label for="hasil_validasi" class="col-md-12 col-form-label" style="text-align: center;">Hasil
+                            Validasi Bank</label>
+                        <div class="col-md-10">
                         </div>
-                        <!-- No Rekening Bank -->
-                        <div class="mb-3 row">
-                            <label for="no_rekening_validasi" class="col-md-2 col-form-label">No Rekening Bank</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('no_rekening_validasi') is-invalid @enderror" readonly
-                                    type="text" value="{{ old('no_rekening_validasi') }}" id="no_rekening_validasi"
-                                    name="no_rekening_validasi">
-                                @error('no_rekening_validasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- No Rekening Bank -->
+                    <div class="mb-3 row">
+                        <label for="no_rekening_validasi" class="col-md-2 col-form-label">No Rekening Bank</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('no_rekening_validasi') is-invalid @enderror" readonly
+                                type="text" value="{{ old('no_rekening_validasi') }}" id="no_rekening_validasi"
+                                name="no_rekening_validasi">
+                            @error('no_rekening_validasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- Nama Pemilik -->
-                        <div class="mb-3 row">
-                            <label for="nm_rekening_validasi" class="col-md-2 col-form-label">Nama
-                                Pemilik</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('nm_rekening_validasi') is-invalid @enderror" readonly
-                                    type="text" value="{{ old('nm_rekening_validasi') }}" id="nm_rekening_validasi"
-                                    name="nm_rekening_validasi">
-                                @error('nm_rekening_validasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- Nama Pemilik -->
+                    <div class="mb-3 row">
+                        <label for="nm_rekening_validasi" class="col-md-2 col-form-label">Nama
+                            Pemilik</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('nm_rekening_validasi') is-invalid @enderror" readonly
+                                type="text" value="{{ old('nm_rekening_validasi') }}" id="nm_rekening_validasi"
+                                name="nm_rekening_validasi">
+                            @error('nm_rekening_validasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- NPWP -->
-                        <div class="mb-3 row">
-                            <label for="npwp_validasi" class="col-md-2 col-form-label">NPWP</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('npwp_validasi') is-invalid @enderror" type="text"
-                                    readonly value="{{ old('npwp_validasi') }}" id="npwp_validasi" name="npwp_validasi">
-                                @error('npwp_validasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- NPWP -->
+                    <div class="mb-3 row">
+                        <label for="npwp_validasi" class="col-md-2 col-form-label">NPWP</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('npwp_validasi') is-invalid @enderror" type="text"
+                                readonly value="{{ old('npwp_validasi') }}" id="npwp_validasi" name="npwp_validasi">
+                            @error('npwp_validasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- NM WP -->
-                        <div class="mb-3 row">
-                            <label for="nm_npwp_validasi" class="col-md-2 col-form-label">Nama WP</label>
-                            <div class="col-md-10">
-                                <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror" readonly
-                                    type="text" value="{{ old('nm_npwp_validasi') }}" id="nm_npwp_validasi"
-                                    name="nm_npwp_validasi">
-                                @error('nm_npwp_validasi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    </div>
+                    <!-- NM WP -->
+                    <div class="mb-3 row">
+                        <label for="nm_npwp_validasi" class="col-md-2 col-form-label">Nama WP</label>
+                        <div class="col-md-10">
+                            <input class="form-control @error('nm_npwp_validasi') is-invalid @enderror" readonly
+                                type="text" value="{{ old('nm_npwp_validasi') }}" id="nm_npwp_validasi"
+                                name="nm_npwp_validasi">
+                            @error('nm_npwp_validasi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <!-- SIMPAN -->
-                        <div style="float: right;">
-                            <button type="submit" id="save" class="btn btn-primary btn-md">Simpan</button>
-                            <a href="{{ route('penerima.index') }}" class="btn btn-warning btn-md">Kembali</a>
-                        </div>
-                    </form>
+                    </div>
+                    <!-- SIMPAN -->
+                    <div style="float: right;">
+                        <button id="save" class="btn btn-primary btn-md">Simpan</button>
+                        <a href="{{ route('penerima.index') }}" class="btn btn-warning btn-md">Kembali</a>
+                    </div>
+                    {{-- </form> --}}
                 </div>
             </div>
         </div> <!-- end col -->
@@ -686,6 +684,147 @@
                         })
                     }
                 }
+            });
+
+            $('#save').on("click", function() {
+                let bank = document.getElementById('bank').value;
+                let nama_bank = document.getElementById('nama_bank').value;
+                let bic = document.getElementById('bic').value;
+                let cabang = document.getElementById('cabang').value;
+                let nama_cabang = document.getElementById('nama_cabang').value;
+                let jenis = document.getElementById('jenis').value;
+                let kode_akun = document.getElementById('kode_akun').value;
+                let kode_setor = document.getElementById('kode_setor').value;
+                let keterangan = document.getElementById('keterangan').value;
+                let no_rekening_validasi = document.getElementById('no_rekening_validasi').value;
+                let nm_rekening_validasi = document.getElementById('nm_rekening_validasi').value;
+                let npwp_validasi = document.getElementById('npwp_validasi').value;
+                let nm_npwp_validasi = document.getElementById('nm_npwp_validasi').value;
+                let rekanan = document.getElementById('rekanan').value;
+                let pimpinan = document.getElementById('pimpinan').value;
+                let alamat = document.getElementById('alamat').value;
+                let keperluan = document.getElementById('keperluan').value;
+
+                if (!bank || !nama_bank) {
+                    alert('Bank harus dipilih!');
+                    return
+                }
+
+                if (!bic) {
+                    alert('BIC harus dipilih!');
+                    return
+                }
+
+                if (!cabang || !nama_cabang) {
+                    alert('Cabang harus dipilih!');
+                    return
+                }
+
+                if (!jenis) {
+                    alert('Jenis harus dipilih!');
+                    return;
+                }
+
+                if (!kode_akun) {
+                    alert('Kode Akun harus dipilih!');
+                    return;
+                }
+
+                if (!kode_setor) {
+                    alert('Kode Setor harus dipilih!');
+                    return;
+                }
+
+                if (!keterangan) {
+                    alert('Keterangan harus dipilih!');
+                    return;
+                }
+
+                if (!no_rekening_validasi) {
+                    alert('No Rekening validasi harus ada!');
+                    return;
+                }
+
+                if (isNaN(no_rekening_validasi)) {
+                    alert('No Rekening validasi harus angka!');
+                    return;
+                }
+
+                if (!nm_rekening_validasi) {
+                    alert('Nama Rekening validasi harus ada!');
+                    return;
+                }
+
+                if (!keperluan) {
+                    alert('Keperluan harus dipilih!');
+                    return
+                }
+
+
+                if (keperluan != '1') {
+                    if (!npwp_validasi) {
+                        alert('NPWP Validasi wajib diisi!');
+                        return
+                    }
+
+                    if (!nm_npwp_validasi) {
+                        alert('Nama NPWP Validasi wajib diisi!');
+                        return
+                    }
+                }
+
+                let data = {
+                    bank,
+                    nama_bank,
+                    bic,
+                    cabang,
+                    nama_cabang,
+                    jenis,
+                    keterangan,
+                    kode_akun,
+                    kode_setor,
+                    no_rekening_validasi,
+                    nm_rekening_validasi,
+                    npwp_validasi,
+                    nm_npwp_validasi,
+                    rekanan,
+                    pimpinan,
+                    alamat,
+                    keperluan,
+                };
+
+                $('#save').prop('disabled', true);
+                $.ajax({
+                    url: "{{ route('penerima.store') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        data: data,
+                        "_token": "{{ csrf_token() }}",
+                    },
+                    beforeSend: function() {
+                        $("#overlay").fadeIn(100);
+                    },
+                    success: function(response) {
+                        if (response.message == '1') {
+                            alert('Data berhasil ditambahkan!');
+                            window.location.href =
+                                "{{ route('penerima.index') }}";
+                        } else if (response.message == '2' || response.message == '3') {
+                            alert('Rekening Telah Ada di SKPD!');
+                            $('#save').prop('disabled', false);
+                            return;
+                        } else {
+                            alert('Data tidak berhasil ditambahkan!');
+                            $('#save').prop('disabled', false);
+                            return;
+                        }
+                    },
+                    complete: function(data) {
+                        $("#overlay").fadeOut(100);
+                    }
+                })
+
             });
         });
     </script>
