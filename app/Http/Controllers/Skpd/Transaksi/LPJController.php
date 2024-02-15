@@ -71,17 +71,23 @@ class LPJController extends Controller
         }
 
 
-        if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
-            $nilai_up = DB::table('ms_up')
-                ->selectRaw("SUM(tunai) as nilai")
-                ->where(['kd_skpd' => $kd_skpd])
-                ->first();
-        } else {
-            $nilai_up = DB::table('ms_up')
-                ->selectRaw("SUM(nilai_up) as nilai")
-                ->where(['kd_skpd' => $kd_skpd])
-                ->first();
-        }
+        // if ($kd_skpd == '5.02.0.00.0.00.02.0000') {
+        //     $nilai_up = DB::table('ms_up')
+        //         ->selectRaw("SUM(tunai) as nilai")
+        //         ->where(['kd_skpd' => $kd_skpd])
+        //         ->first();
+        // } else {
+        //     $nilai_up = DB::table('ms_up')
+        //         ->selectRaw("SUM(nilai_up) as nilai")
+        //         ->where(['kd_skpd' => $kd_skpd])
+        //         ->first();
+        // }
+
+        $nilai_up = DB::table('ms_up')
+            ->selectRaw("SUM(tunai) as nilai")
+            ->where(['kd_skpd' => $kd_skpd])
+            ->first();
+
         $data = [
             'skpd' => DB::table('ms_skpd')
                 ->select('kd_skpd', 'nm_skpd')
