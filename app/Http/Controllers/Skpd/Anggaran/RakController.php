@@ -42,7 +42,16 @@ class RakController extends Controller
 
     public function jenisAnggaran(Request $request)
     {
-        $data = DB::table('tb_status_anggaran')->where(['status_aktif' => '1'])->get();
+        $kd_skpd = $request->kd_skpd;
+
+        $data = DB::table('tb_status_anggaran as a')
+            ->select('a.kode', 'a.nama')
+            ->join('trhrka as b', function ($join) {
+                $join->on('a.kode', '=', 'b.jns_ang');
+            })
+            ->where(['a.status_aktif' => '1', 'b.kd_skpd' => $kd_skpd, 'b.status' => '1'])
+            ->get();
+
         return response()->json($data);
     }
 
