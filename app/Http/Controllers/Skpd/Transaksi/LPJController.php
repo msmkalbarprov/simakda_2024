@@ -334,7 +334,7 @@ class LPJController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'nilai_up' => DB::table('ms_up')
-                ->selectRaw("SUM(nilai_up) as nilai")
+                ->selectRaw("SUM(tunai) as nilai")
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
@@ -733,7 +733,7 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
             'pilihan' => $pilihan,
             'data_lpj' => $data_lpj,
-            'persediaan' => DB::table('ms_up')->selectRaw("SUM(nilai_up) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
+            'persediaan' => DB::table('ms_up')->selectRaw("SUM(tunai) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
             'kegiatan' => $kd_sub_kegiatan
         ];
 
@@ -990,7 +990,7 @@ class LPJController extends Controller
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'nilai_up' => DB::table('ms_up')
-                ->selectRaw("SUM(nilai_up) as nilai")
+                ->selectRaw("SUM(tunai) as nilai")
                 ->where(['kd_skpd' => $kd_skpd])
                 ->first(),
             'spd_global' => collect(DB::select("SELECT ISNULL(nilai_spd,0) spd, ISNULL(transaksi,0) transaksi, isnull(nilai_spd,0)-isnull(transaksi,0) sisa_spd FROM(
@@ -1304,7 +1304,7 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
             'pilihan' => $pilihan,
             'data_lpj' => $data_lpj,
-            'persediaan' => DB::table('ms_up')->selectRaw("SUM(nilai_up) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
+            'persediaan' => DB::table('ms_up')->selectRaw("SUM(tunai) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
             'kegiatan' => $kd_sub_kegiatan
         ];
 
@@ -1935,7 +1935,7 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj_unit')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
             'pilihan' => $pilihan,
             'data_lpj' => $data_lpj,
-            'persediaan' => DB::table('ms_up')->selectRaw("SUM(nilai_up_unit) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
+            'persediaan' => DB::table('ms_up')->selectRaw("SUM(tunai) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
             'kegiatan' => $kd_sub_kegiatan
         ];
 
