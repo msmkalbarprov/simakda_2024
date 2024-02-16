@@ -22,6 +22,7 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
+                    kd_skpd: kd_skpd,
                     "_token": "{{ csrf_token() }}",
                 },
                 success: function(data) {
