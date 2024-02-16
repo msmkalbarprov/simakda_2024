@@ -46,7 +46,7 @@
 
             // Cari Jenis RAK
             $.ajax({
-                url: "{{ route('skpd.input_rak.jenis_cek_rak') }}",
+                url: "{{ route('skpd.input_rak.jenis_rak') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
