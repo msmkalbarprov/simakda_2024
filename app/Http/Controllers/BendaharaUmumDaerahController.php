@@ -6766,7 +6766,7 @@ class BendaharaUmumDaerahController extends Controller
         $view = view('bud.laporan_bendahara.cetak.realisasi_skpd_sp2d')->with($data);
         if ($req['jenis_print'] == 'pdf') {
             $pdf = PDF::loadHtml($view)
-                ->setPaper('legal')
+                ->setPaper('A4')
                 ->setOption('margin-left', $req['margin_kiri'])
                 ->setOption('margin-right', $req['margin_kanan'])
                 ->setOption('margin-top', $req['margin_atas'])
