@@ -1376,7 +1376,7 @@ class LapkeuController extends Controller
                                                             FROM map_lra_2023
                                                             where group_id <= ?
                                                             GROUP BY map_lra_2023.id,group_id, kd_rek, nama, padding, is_bold, is_show_kd_rek, is_right_align
-                                                            ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran,$bulan, $tahun_anggaran,  $jns_rincian]);
+                                                            ORDER BY id,group_id, nama", [$jns_ang, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran, $bulan, $tahun_anggaran,$bulan, $tahun_anggaran,$bulan, $tahun_anggaran,  $jns_rincian]);
                     $sus = collect(DB::select("SELECT sum(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto  FROM data_jurnal_n_sal_awal_spj(?,?,?)$skpd_clauses", [$bulan, $jns_ang, $tahun_anggaran]))->first();
                 }
             } else if ($jenis_data == 3) { // SP2D LUNAS
