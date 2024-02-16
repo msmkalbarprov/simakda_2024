@@ -1001,6 +1001,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('load_data', [RakController::class, 'loadData'])->name('skpd.input_rak.load_data');
                 Route::post('jenis_anggaran', [RakController::class, 'jenisAnggaran'])->name('skpd.input_rak.jenis_anggaran');
                 Route::post('jenis_rak', [RakController::class, 'jenisRak'])->name('skpd.input_rak.jenis_rak');
+                Route::post('jenis_cek_rak', [RakController::class, 'jenisCekRak'])->name('skpd.input_rak.jenis_cek_rak');
                 Route::post('sub_kegiatan', [RakController::class, 'subKegiatan'])->name('skpd.input_rak.sub_kegiatan');
                 Route::post('rekening_rak', [RakController::class, 'rekeningRak'])->name('skpd.input_rak.rekening_rak');
                 Route::post('nilai_triwulan', [RakController::class, 'nilaiTriwulan'])->name('skpd.input_rak.nilai_triwulan');

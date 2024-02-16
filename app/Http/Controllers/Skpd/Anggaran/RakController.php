@@ -59,6 +59,19 @@ class RakController extends Controller
         return response()->json($data);
     }
 
+    public function jenisCekRak(Request $request)
+    {
+        $jns_ang = $request->jns_ang;
+        if (strlen($jns_ang) == '1') {
+            $len = '1';
+        } else {
+            $len = '2';
+        }
+
+        $data = DB::table('tb_status_angkas')->whereRaw("jns_angkas=?", [$jns_ang])->get();
+        return response()->json($data);
+    }
+
     public function subKegiatan(Request $request)
     {
         $kd_skpd = $request->kd_skpd;
