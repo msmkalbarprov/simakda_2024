@@ -25,6 +25,7 @@
                 dataType: 'json',
                 data: {
                     "_token": "{{ csrf_token() }}",
+                    kd_skpd: kd_skpd
                 },
                 success: function(data) {
                     $('#jenis_anggaran').empty();
