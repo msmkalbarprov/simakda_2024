@@ -1304,7 +1304,7 @@ class LPJController extends Controller
             'lpj' => DB::table('trhlpj')->where(['no_lpj' => $no_lpj, 'kd_skpd' => $kd_skpd])->first(),
             'pilihan' => $pilihan,
             'data_lpj' => $data_lpj,
-            'persediaan' => DB::table('ms_up')->selectRaw("SUM(tunai) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
+            'persediaan' => DB::table('ms_up')->selectRaw("SUM(tunai_org) as nilai")->where(['kd_skpd' => $kd_skpd])->first(),
             'kegiatan' => $kd_sub_kegiatan
         ];
 
