@@ -155,6 +155,7 @@
                 return;
             }
 
+
             let no_lpj = document.getElementById('no_lpj').value;
             if (no_lpj < 0) {
                 alert("No LPJ harus diisi dengan benar!");
@@ -213,6 +214,11 @@
 
             if (sisa_spd < total) {
                 alert('Sisa SPD Tidak cukup untuk Pengajuan GU');
+                return;
+            }
+
+            if (nilai_up < total) {
+                alert('Total LPJ melebihi Nilai Uang Persediaan!');
                 return;
             }
 
