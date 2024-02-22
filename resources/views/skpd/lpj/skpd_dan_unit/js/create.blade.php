@@ -210,6 +210,11 @@
                 return;
             }
 
+            if (nilai_up < total) {
+                alert('Total LPJ melebihi nilai UP');
+                return
+            }
+
             let data = {
                 no_lpj,
                 tgl_lpj,
