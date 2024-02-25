@@ -365,6 +365,10 @@ class PenagihanController extends Controller
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
 
+        // NILAI KUNCI ANGGARAN
+        $nilai_kunci = nilai_kunci($kode, $giat, $rek);
+
+
         return response()->json([
             'sumber' => $data,
             'angkas' => $angkas->nilai,
@@ -372,7 +376,8 @@ class PenagihanController extends Controller
             'spd' => $spd->total_spd,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
             'nama_anggaran_selanjutnya' => isset($nama_anggaran_selanjutnya) ? $nama_anggaran_selanjutnya->nama : '',
-            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 
@@ -558,6 +563,9 @@ class PenagihanController extends Controller
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
 
+        // NILAI KUNCI ANGGARAN
+        $nilai_kunci = nilai_kunci($kode, $giat, $rek);
+
         return response()->json([
             'sumber' => $data,
             'angkas' => $angkas->nilai,
@@ -565,7 +573,8 @@ class PenagihanController extends Controller
             'spd' => $spd->total,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
             'nama_anggaran_selanjutnya' => isset($nama_anggaran_selanjutnya) ? $nama_anggaran_selanjutnya->nama : '',
-            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 
@@ -818,7 +827,7 @@ class PenagihanController extends Controller
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
 
-
+        $nilai_kunci = nilai_kunci($kode, $giat, $rek);
 
         return response()->json([
             'sumber' => $data,
@@ -829,7 +838,8 @@ class PenagihanController extends Controller
             'realisasi' => $realisasi->total,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
             'nama_anggaran_selanjutnya' => isset($nama_anggaran_selanjutnya) ? $nama_anggaran_selanjutnya->nama : '',
-            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 

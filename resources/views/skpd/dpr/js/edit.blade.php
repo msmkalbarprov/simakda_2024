@@ -6,6 +6,8 @@
             }
         });
 
+        let nilai_kunci = 0;
+
         $('#jenis_belanja').prop('disabled', true);
 
         let tabel_rekening = $('#input_rekening').DataTable({
@@ -685,6 +687,14 @@
                 return;
             }
 
+            if (nilai + nilai_kunci > sisa_anggaran) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
+                return;
+            }
+
             $.ajax({
                 url: "{{ route('dpr.simpan_detail') }}",
                 type: "POST",
@@ -989,6 +999,8 @@
                     $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.angkas - data.angkas_lalu));
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);

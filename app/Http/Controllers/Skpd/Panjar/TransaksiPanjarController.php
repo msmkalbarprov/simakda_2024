@@ -675,6 +675,8 @@ class TransaksiPanjarController extends Controller
             ->where(['kode' => $status_anggaran_selanjutnya])
             ->first();
 
+        $nilai_kunci = nilai_kunci($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
+
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $nilai_spd->total_spd,
@@ -682,7 +684,8 @@ class TransaksiPanjarController extends Controller
             'sisa_bank' => $sisa_bank->terima - $sisa_bank->keluar,
             'status_ang_selanjutnya' => $status_anggaran_selanjutnya,
             'nama_anggaran_selanjutnya' => isset($nama_anggaran_selanjutnya) ? $nama_anggaran_selanjutnya->nama : '',
-            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai
+            'anggaran_selanjutnya' => empty($anggaran_selanjutnya) ? 0 : $anggaran_selanjutnya->nilai,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 

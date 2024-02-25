@@ -8,6 +8,7 @@
         $('#card_penagihan').hide();
 
         let status_anggaran_selanjutnya = '';
+        let nilai_kunci = 0;
 
         let tabel = $('#rincian_sppls').DataTable({
             responsive: true,
@@ -543,6 +544,8 @@
                             minimumFractionDigits: 2
                         }).format(data.anggaran_selanjutnya - realisasi_spd));
                     }
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -1072,6 +1075,14 @@
 
             if (status_anggaran_selanjutnya != '' && nilai_rincian > sisa_rpa) {
                 alert('Nilai Melebihi Sisa Rencana Pergeseran Anggaran...!!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (nilai_rincian + nilai_kunci > sisa_penyusunan) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
                 return;
             }
 

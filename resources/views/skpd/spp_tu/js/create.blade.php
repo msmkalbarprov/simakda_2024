@@ -20,6 +20,7 @@
         cari_nomor();
 
         let status_anggaran_selanjutnya = '';
+        let nilai_kunci = 0;
 
         let detail = $('#rincian_spp').DataTable({
             responsive: true,
@@ -242,6 +243,8 @@
                             minimumFractionDigits: 2
                         }).format(data.anggaran_selanjutnya - data.transaksi));
                     }
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -465,6 +468,14 @@
             }
             if (kondisi.includes("3")) {
                 alert('Tidak boleh memilih kegiatan berbeda dalam 1 SPP!');
+                return;
+            }
+
+            if (nilai + nilai_kunci > sisa_anggaran) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
                 return;
             }
 

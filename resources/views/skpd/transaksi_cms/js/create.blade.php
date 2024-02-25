@@ -12,6 +12,7 @@
         rekening_tujuan();
 
         let status_anggaran_selanjutnya = '';
+        let nilai_kunci = 0
 
         // no bukti cms
         $.ajax({
@@ -712,6 +713,14 @@
                 return;
             }
 
+            if (nilai + nilai_kunci > sisa_anggaran) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
+                return;
+            }
+
             $.ajax({
                 url: "{{ route('penagihan.simpan_tampungan') }}",
                 type: "POST",
@@ -1345,6 +1354,8 @@
                             minimumFractionDigits: 2
                         }).format(sisa));
                     }
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);

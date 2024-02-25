@@ -16,6 +16,7 @@
         $('#satuan').prop('disabled', true);
 
         let status_anggaran_selanjutnya = '';
+        let nilai_kunci = 0;
 
         let rekening_belanja = $('#rekening_belanja').DataTable({
             responsive: true,
@@ -655,6 +656,14 @@
 
             if (beban == '1' && (akumulasi > sisa_spd)) {
                 alert('Total Transaksi melebihi Sisa SPD');
+                return;
+            }
+
+            if (nilai + nilai_kunci > sisa_anggaran) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
                 return;
             }
 
@@ -1304,6 +1313,8 @@
                             minimumFractionDigits: 2
                         }).format(sisa));
                     }
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);

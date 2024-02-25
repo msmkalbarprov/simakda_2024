@@ -6,6 +6,8 @@
             }
         });
 
+        let nilai_kunci = 0;
+
         $('.select2-multiple').select2({
             placeholder: "Silahkan Pilih",
             theme: 'bootstrap-5'
@@ -409,6 +411,8 @@
                             minimumFractionDigits: 2
                         }).format(sisa));
                     }
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 },
                 complete: function(data) {
                     $("#overlay").fadeOut(100);
@@ -604,6 +608,14 @@
 
             if (nilai > sisa_bank) {
                 alert('Nilai melebihi Sisa Kas Bank!!, Cek Lagi...!!!');
+                return;
+            }
+
+            if (nilai + nilai_kunci > sisa_sp2d) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
                 return;
             }
 

@@ -240,11 +240,14 @@ class DaftarPengeluaranRillController extends Controller
 
         $spd = load_spd($kd_sub_kegiatan, $kd_skpd, $kd_rek6);
 
+        $nilai_kunci = nilai_kunci($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
+
         return response()->json([
             'sumber' => $sumber,
             'angkas' => $angkas->nilai,
             'angkas_lalu' => $angkas_lalu->total,
             'spd' => $spd->total,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 
@@ -704,7 +707,7 @@ class DaftarPengeluaranRillController extends Controller
         $view = view('skpd.dpr.cetak')->with($data);
         if ($request->jenis_print == 'pdf') {
             $pdf = PDF::loadHtml($view)
-                ->setPaper('legal')                
+                ->setPaper('legal')
                 ->setOrientation('landscape')
                 ->setOption('page-width', 215)
                 ->setOption('page-width', 330)
