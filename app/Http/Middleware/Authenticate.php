@@ -18,6 +18,7 @@ class Authenticate extends Middleware
         Cookie::queue(Cookie::forget('simakda_2023_session'));
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
+        Cookie::queue(Cookie::forget('api_2024_session'));
 
         if (!$request->expectsJson()) {
             return route('login');
