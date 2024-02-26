@@ -558,10 +558,13 @@ class TransaksiLaluController extends Controller
                                     )r", [$kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $kd_sub_kegiatan, $kd_skpd, $kd_rek6, $no_spp, $kd_sub_kegiatan, $kd_rek6, $kd_skpd, $kd_skpd]))->first();
         }
 
+        $nilai_kunci = nilai_kunci($kd_skpd, $kd_sub_kegiatan, $kd_rek6);
+
         return response()->json([
             'angkas' => $nilai_angkas->nilai,
             'spd' => $nilai_spd->total_spd,
             'transaksi' => $total_trans->total,
+            'nilai_kunci' => $nilai_kunci
         ]);
     }
 

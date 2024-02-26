@@ -22,6 +22,8 @@
             theme: 'bootstrap-5'
         });
 
+        let nilai_kunci = 0;
+
         $("#satuan").prop('disabled', true);
         $("#volume").prop('disabled', true);
 
@@ -431,6 +433,8 @@
                     $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
                     }).format(data.spd - data.transaksi));
+
+                    nilai_kunci = parseFloat(data.nilai_kunci)
                 }
             });
 
@@ -643,6 +647,14 @@
             }
             if (kondisi.includes("4")) {
                 alert('Tidak boleh memilih rekening yang sama dalam 1 Transaksi!');
+                return;
+            }
+
+            if (nilai + nilai_kunci > sisa_anggaran) {
+                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                    .NumberFormat('id-ID', {
+                        minimumFractionDigits: 2
+                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
                 return;
             }
 
