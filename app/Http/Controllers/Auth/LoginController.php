@@ -36,6 +36,9 @@ class LoginController extends Controller
         Cookie::queue(Cookie::forget('simakda_2023_session'));
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
+        Cookie::queue(Cookie::forget('api_2024_session'));
+
+        // return 'lol';
         $data = [
             'daerah'            => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first()
         ];
@@ -48,6 +51,7 @@ class LoginController extends Controller
         Cookie::queue(Cookie::forget('simakda_2023_session'));
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
+        Cookie::queue(Cookie::forget('api_2024_session'));
 
         $credentials = $request->validate([
             'username' => ['required'],
