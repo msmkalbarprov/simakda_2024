@@ -181,7 +181,7 @@
             @endforeach --}}
             @foreach ($datalamp as $item)
                 @php
-                    if (strlen($item->no_urut) == 44) {
+                    if (strlen($item->no_urut) == 46) {
                         $total_anggaran += $item->anggaran;
                         $total_spd_lalu += $item->spd_lalu;
                         $total_spd += $item->nilai;
