@@ -113,7 +113,7 @@
     <div style="padding-top:20px">
         <table class="table" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif;" class="rincian">
             <tr>
-                <td style="margin: 2px 0px;text-align: center;padding-left:500px">
+                <td style="margin: 2px 0px;text-align: center;width:50%">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
                         ______________{{ $tahun_anggaran }}
@@ -123,12 +123,12 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center;padding-left:500px">
+                <td style="padding-bottom: 50px;text-align: center;width:50%">
                     {{ $pa_kpa->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:500px">
+                <td style="text-align: center;width:50%">
                     <strong><u>{{ $pa_kpa->nama }}</u></strong> <br>
                     {{ $pa_kpa->pangkat }} <br>
                     NIP. {{ $pa_kpa->nip }}

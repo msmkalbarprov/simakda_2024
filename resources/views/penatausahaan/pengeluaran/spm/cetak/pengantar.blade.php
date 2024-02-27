@@ -208,7 +208,7 @@
         class="rincian1">
         @if (in_array($beban, ['1', '2', '3', '4', '5', '6']))
             <tr>
-                <td style="margin: 2px 0px;text-align: center;padding-left:600px">
+                <td style="margin: 2px 0px;text-align: center;width:50%">
                     {{ $daerah->daerah }},
                     @if ($tanpa == 1)
                         ______________{{ $tahun_anggaran }}
@@ -218,12 +218,12 @@
                 </td>
             </tr>
             <tr>
-                <td style="padding-bottom: 50px;text-align: center;padding-left:600px">
+                <td style="padding-bottom: 50px;text-align: center;width:50%">
                     {{ $pptk->jabatan }}
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;padding-left:600px">
+                <td style="text-align: center;width:50%">
                     <strong><u>{{ $pptk->nama }}</u></strong> <br>
                     {{ $pptk->pangkat }} <br>
                     NIP. {{ $pptk->nip }}
