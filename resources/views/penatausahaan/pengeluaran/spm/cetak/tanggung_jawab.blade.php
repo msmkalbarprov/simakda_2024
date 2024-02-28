@@ -135,12 +135,14 @@
     <table class="table rincian" style="width: 100%;font-family:'Open Sans', Helvetica,Arial,sans-serif"
         class="rincian">
         <tr>
-            <td style="padding-bottom: 50px;text-align: center;padding-left:500px">
+            <td style="width: 50%"></td>
+            <td style="padding-bottom: 50px;text-align: center;">
                 {{ $pa_kpa->jabatan }}
             </td>
         </tr>
         <tr>
-            <td style="text-align: center;padding-left:500px">
+            <td style="width: 50%"></td>
+            <td style="text-align: center;">
                 <strong><u>{{ $pa_kpa->nama }}</u></strong> <br>
                 {{ $pa_kpa->pangkat }} <br>
                 NIP. {{ $pa_kpa->nip }}
