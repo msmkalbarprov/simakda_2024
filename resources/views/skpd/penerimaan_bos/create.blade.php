@@ -27,8 +27,8 @@
                     <div class="mb-3 row">
                         <label for="no_terima" class="col-md-2 col-form-label">No. Terima</label>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" id="no_terima" name="no_terima"
-                                placeholder="Isi Nomor Tanpa Spasi" required>
+                            <input class="form-control" type="text" id="no_terima" name="no_terima" required readonly
+                                value="{{ $no_urut }}">
                         </div>
                         <label for="tgl_terima" class="col-md-2 col-form-label">Tanggal</label>
                         <div class="col-md-4">

@@ -45,7 +45,8 @@ class PenerimaanBosController extends Controller
                 UNION
                 SELECT '4.01.0.00.0.00.01.0003','4.01.00.0.00.04','PENDAPATAN'
                 )z where kd_skpd=?", [$kd_skpd]),
-            'daftar_rekening' => DB::select("SELECT kd_rek6,nm_rek6 from ms_rek6 where kd_rek6 in ('430301010001','420101040001','420101040002','420101040003')")
+            'daftar_rekening' => DB::select("SELECT kd_rek6,nm_rek6 from ms_rek6 where kd_rek6 in ('430301010001','420101040001','420101040002','420101040003')"),
+            'no_urut' => no_urut($kd_skpd)
         ];
 
         return view('skpd.penerimaan_bos.create')->with($data);
