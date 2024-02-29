@@ -37,6 +37,7 @@ class LoginController extends Controller
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
         Cookie::queue(Cookie::forget('api_2024_session'));
+        Cookie::queue(Cookie::forget('simakda_2024_dev_session'));
 
         // return 'lol';
         $data = [
@@ -52,6 +53,7 @@ class LoginController extends Controller
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
         Cookie::queue(Cookie::forget('api_2024_session'));
+        Cookie::queue(Cookie::forget('simakda_2024_dev_session'));
 
         $credentials = $request->validate([
             'username' => ['required'],
