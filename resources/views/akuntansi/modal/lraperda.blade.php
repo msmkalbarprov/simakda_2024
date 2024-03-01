@@ -57,6 +57,7 @@
                             <option value="4">RINCI 2</option>
                             <option value="5">SKPD ORGANISASI (KONSOL)</option>
                             <option value="6">GLOBAL SPJ</option>
+                            <option value="7">RINCI 2 SPJ</option>
                         </select>
                     </div>
                     <div class="col-md-6">
