@@ -33,261 +33,261 @@ class LaporanPenutupanKasBulananController extends Controller
             ->first();
         $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
-        $saldobank  = DB::select("SELECT sum(terima) as terima , sum(keluar) as keluar from (
-                        -- SP2 Terima
-                        SELECT SUM(b.nilai) as terima,0 as keluar  FROM trhsp2d a INNER JOIN trdspp b ON a.no_spp = b.no_spp INNER JOIN trhspp c ON a.no_spp = c.no_spp WHERE a.kd_skpd = '$kd_skpd'
-                        AND  MONTH(a.tgl_kas)< ? and a.status='1'
-                        -- PAJAK dan Potongan TERIMA
-                        UNION ALL
-                        SELECT SUM(b.nilai), 0 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd =  ?
-                        AND b.kd_rek6 in ('210106010001','210105010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001')
-                        AND MONTH(a.tgl_bukti)< ?
+        // $saldobank  = DB::select("SELECT sum(terima) as terima , sum(keluar) as keluar from (
+        //                 -- SP2 Terima
+        //                 SELECT SUM(b.nilai) as terima,0 as keluar  FROM trhsp2d a INNER JOIN trdspp b ON a.no_spp = b.no_spp INNER JOIN trhspp c ON a.no_spp = c.no_spp WHERE a.kd_skpd = '$kd_skpd'
+        //                 AND  MONTH(a.tgl_kas)< ? and a.status='1'
+        //                 -- PAJAK dan Potongan TERIMA
+        //                 UNION ALL
+        //                 SELECT SUM(b.nilai), 0 FROM trhtrmpot a INNER JOIN trdtrmpot b ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd WHERE a.kd_skpd =  ?
+        //                 AND b.kd_rek6 in ('210106010001','210105010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001')
+        //                 AND MONTH(a.tgl_bukti)< ?
 
-                        -- Lain-Lain terima
-                        UNION ALL
+        //                 -- Lain-Lain terima
+        //                 UNION ALL
 
-                        SELECT
-                        SUM(ISNULL(lainlain,0)) as terima, 0 as keluar
-                        FROM(
-                            SELECT
-                            SUM(ISNULL(a.nilai,0)) AS lainlain
-                            FROM trdtrmpot a INNER JOIN trhtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                            WHERE a.kd_skpd= ? and left(a.kd_rek6,6)<>'210601' AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001')
-                            and b.jns_spp IN ('1','2','3','4','5','6') AND MONTH(b.tgl_bukti)< ?
-                            UNION ALL
-                            SELECT
-                            SUM(a.nilai) AS lainlain
-                            FROM TRHINLAIN a WHERE pengurang_belanja !='1'  and a.jns_beban in ('1','4','5','6')
-                            and MONTH(a.tgl_bukti)< ?
-                            AND a.kd_skpd= ?
-                        ) a
+        //                 SELECT
+        //                 SUM(ISNULL(lainlain,0)) as terima, 0 as keluar
+        //                 FROM(
+        //                     SELECT
+        //                     SUM(ISNULL(a.nilai,0)) AS lainlain
+        //                     FROM trdtrmpot a INNER JOIN trhtrmpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+        //                     WHERE a.kd_skpd= ? and left(a.kd_rek6,6)<>'210601' AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001')
+        //                     and b.jns_spp IN ('1','2','3','4','5','6') AND MONTH(b.tgl_bukti)< ?
+        //                     UNION ALL
+        //                     SELECT
+        //                     SUM(a.nilai) AS lainlain
+        //                     FROM TRHINLAIN a WHERE pengurang_belanja !='1'  and a.jns_beban in ('1','4','5','6')
+        //                     and MONTH(a.tgl_bukti)< ?
+        //                     AND a.kd_skpd= ?
+        //                 ) a
 
-                        -- PAJAK TUNAI TERIMA
-                        UNION ALL
-                        SELECT SUM(z.nilai_pot) as terima, 0 keluar
-                        from (
-                        select a.kd_skpd,c.tgl_bukti as tgl,b.kd_rek6 as rek,b.nilai as nilai_pot,b.no_sp2d from trdtransout a
-                        LEFT JOIN trhtransout c on c.kd_skpd=a.kd_skpd and a.no_bukti=c.no_bukti
-                        LEFT JOIN (
-                        select b.tgl_bukti,a.kd_rek6,a.nilai,b.no_sp2d from trdstrpot a left join trhstrpot b on b.kd_skpd=a.kd_skpd and b.no_bukti=a.no_bukti
-                        )b on b.no_sp2d=a.no_sp2d
-                        where right(a.kd_skpd,2)!='00' and c.jns_spp in ('4','5','6') and c.pay='TUNAI'
-                        )z
-                        where z.no_sp2d <> '' and kd_skpd= ? and MONTH(z.tgl)< ?
+        //                 -- PAJAK TUNAI TERIMA
+        //                 UNION ALL
+        //                 SELECT SUM(z.nilai_pot) as terima, 0 keluar
+        //                 from (
+        //                 select a.kd_skpd,c.tgl_bukti as tgl,b.kd_rek6 as rek,b.nilai as nilai_pot,b.no_sp2d from trdtransout a
+        //                 LEFT JOIN trhtransout c on c.kd_skpd=a.kd_skpd and a.no_bukti=c.no_bukti
+        //                 LEFT JOIN (
+        //                 select b.tgl_bukti,a.kd_rek6,a.nilai,b.no_sp2d from trdstrpot a left join trhstrpot b on b.kd_skpd=a.kd_skpd and b.no_bukti=a.no_bukti
+        //                 )b on b.no_sp2d=a.no_sp2d
+        //                 where right(a.kd_skpd,2)!='00' and c.jns_spp in ('4','5','6') and c.pay='TUNAI'
+        //                 )z
+        //                 where z.no_sp2d <> '' and kd_skpd= ? and MONTH(z.tgl)< ?
 
-                        --DROPPING TERIMA
-                        UNION ALL
-                        SELECT sum(x.sd_bln_ini) terima, 0 keluar from(
-                        select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                        from tr_setorpelimpahan WHERE kd_skpd= ?
-                        UNION ALL
-                        select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                        from tr_setorpelimpahan_bank WHERE kd_skpd= ?
-                        UNION ALL
-                        select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                        from tr_setorpelimpahan_tunai WHERE kd_skpd= ?
-                        UNION ALL
-                        SELECT SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as jar_sd_bln_ini
-                        from tr_setorsimpanan WHERE kd_skpd= ? and jenis='3'
-                        )x
+        //                 --DROPPING TERIMA
+        //                 UNION ALL
+        //                 SELECT sum(x.sd_bln_ini) terima, 0 keluar from(
+        //                 select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                 from tr_setorpelimpahan WHERE kd_skpd= ?
+        //                 UNION ALL
+        //                 select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                 from tr_setorpelimpahan_bank WHERE kd_skpd= ?
+        //                 UNION ALL
+        //                 select SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                 from tr_setorpelimpahan_tunai WHERE kd_skpd= ?
+        //                 UNION ALL
+        //                 SELECT SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as jar_sd_bln_ini
+        //                 from tr_setorsimpanan WHERE kd_skpd= ? and jenis='3'
+        //                 )x
 
-                        -- PANJAR TERIMA
-                        UNION ALL
-                        SELECT SUM(x.jar_sd_bln_ini) terima, 0 as keluar FROM(
-                                    SELECT SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as jar_sd_bln_ini
-                                    from  tr_jpanjar where jns=1 and kd_skpd= ?
-                                    )x
-                        -- BLUD
-                        UNION ALL
-                        SELECT
-                            SUM(CASE WHEN MONTH(tgl_kas)< ? THEN b.nilai ELSE 0 END) as terima, 0 as keluar
-                            from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
-                            where a.kd_skpd= ? and left(b.kd_rek6,1)='5' and b.sumber='BLUD'
+        //                 -- PANJAR TERIMA
+        //                 UNION ALL
+        //                 SELECT SUM(x.jar_sd_bln_ini) terima, 0 as keluar FROM(
+        //                             SELECT SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as jar_sd_bln_ini
+        //                             from  tr_jpanjar where jns=1 and kd_skpd= ?
+        //                             )x
+        //                 -- BLUD
+        //                 UNION ALL
+        //                 SELECT
+        //                     SUM(CASE WHEN MONTH(tgl_kas)< ? THEN b.nilai ELSE 0 END) as terima, 0 as keluar
+        //                     from trhtransout_blud a inner join trdtransout_blud b on a.kd_skpd=b.kd_skpd and a.no_bukti=b.no_bukti
+        //                     where a.kd_skpd= ? and left(b.kd_rek6,1)='5' and b.sumber='BLUD'
 
-                        -- Denda keterlambatan
-                        UNION ALL
-                        SELECT SUM(b.nilai) as terima, 0 as keluar FROM trhtrmpot a INNER JOIN trdtrmpot b
-                            ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd
-                            WHERE a.kd_skpd =  ? AND
-                            b.kd_rek6 in ('410411010001') AND MONTH(a.tgl_bukti)< ? AND a.jns_spp IN('1','2','3','4','5','6')
-
-
-
-                        UNION ALL
+        //                 -- Denda keterlambatan
+        //                 UNION ALL
+        //                 SELECT SUM(b.nilai) as terima, 0 as keluar FROM trhtrmpot a INNER JOIN trdtrmpot b
+        //                     ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd
+        //                     WHERE a.kd_skpd =  ? AND
+        //                     b.kd_rek6 in ('410411010001') AND MONTH(a.tgl_bukti)< ? AND a.jns_spp IN('1','2','3','4','5','6')
 
 
 
-                        SELECT 0 as terima , sum(gaji_ini)+ sum(brg_ini)+sum(up_ini)as keluar from
-
-                        (
-                            select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ?
-                            and jns_spp in (1,2,3) and pay not in ('PANJAR')
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and left(kd_rek6,1)='5'
-                            and jns_spp in (1,2,3)
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai*-1,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdinlain a join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.TGL_BUKTI)< ? and b.pengurang_belanja=1
-                        union all
-
-                        select a.kd_skpd, isnull(a.nilai,0) as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (4)
-                        union all
-
-                        select a.kd_skpd, isnull(a.rupiah*-1,0) as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (1) and b.pot_khusus=1
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, isnull(a.nilai,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in ('5','6')
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah*-1,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=0
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah*-1,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2 and kd_rek6='410411010001'
-                        union all
-
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, isnull(a.nilai,0) as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (1,2,3) and pay not in ('PANJAR')
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, isnull(a.nilai*-1,0) as up_lalu from trdinlain a join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.TGL_BUKTI)< ? and b.pengurang_belanja=1
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, isnull(a.nilai,0) as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (4)
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, isnull(a.rupiah*-1,0) as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (1) and b.pot_khusus=1
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.nilai,0) as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in ('5','6')
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah*-1,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2
-
-                        union all
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2 and kd_rek6='410411010001'
-
-                        union all
-
-                        select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah*-1,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=0
-
-                        ) a
-                        WHERE a.kd_skpd= ?
-
-                        UNION ALL
-
-                        --  PAJAK KELUAR
-                        SELECT 0 as masuk, SUM(b.nilai)as keluar FROM trhstrpot a INNER JOIN trdstrpot b
-                        ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd
-                        WHERE a.kd_skpd =  ? AND
-                        b.kd_rek6 in ('210106010001','210105010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','') AND MONTH(a.tgl_bukti)< ? AND
-                        a.jns_spp IN('1','2','3','4','5','6')
-
-                        -- denda keterlambatan
-                        UNION ALL
-                        SELECT 0 as masuk, SUM(isnull((case when MONTH(tgl_bukti)< ? then b.nilai else 0 end),0)) AS keluar
-                                    FROM trhstrpot a
-                                    INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                                    WHERE a.kd_skpd = ? AND b.kd_rek6='410411010001'
-
-                        -- pot penghasilan lainnya
-                        UNION ALL
-                                SELECT 0 as masuk,
-                            SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) +
-                            SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) +
-                            SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) AS keluar
-                            FROM trdkasin_pkd a
-                            INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-                            WHERE a.kd_skpd = ? AND jns_trans='5'
-
-                        --  HKPG
-                        UNION ALL
-                        SELECT
-                            0 as masuk,
-                            SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) +
-                            SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) +
-                            SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) AS keluar
-                            FROM trdkasin_pkd a
-                            INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
-                            WHERE a.kd_skpd =  ? AND jns_trans='5' AND LEFT(kd_rek6,1)<>4
-
-                        -- CP
-                        UNION ALL
-                        SELECT  0 as masuk,
-                                SUM(isnull((case when rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) +
-                                SUM(isnull((case when rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) +
-                                SUM(isnull((case when rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) AS keluar
-                                from (select rupiah as nilai,jns_trans,pot_khusus,jns_cp,d.tgl_sts ,d.kd_skpd from
-                                trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd where d.kd_skpd = ? AND
-                                ((jns_trans='5' AND pot_khusus='0') OR jns_trans='1')) z
-
-                        -- lain2 setoran
-                        UNION ALL
-                        SELECT
-                                0 as masuk,
-                                SUM(ISNULL(jlain_up_ini,0))+
-                                SUM(ISNULL(jlain_gaji_ini,0)) +
-                                SUM(ISNULL(jlain_brjs_ini,0)) as keluar
-                                    FROM(
-                                SELECT
-                                SUM(CASE WHEN b.jns_spp IN ('1','2','3') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_up_ini,
-                                SUM(CASE WHEN b.jns_spp IN ('4') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_gaji_ini,
-                                SUM(CASE WHEN b.jns_spp IN ('5','6') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_brjs_ini
-                                FROM trdstrpot a INNER JOIN trhstrpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
-                                WHERE a.kd_skpd= ? and left(a.kd_rek6,6)<>'210601'
-
-                                UNION ALL
-                                SELECT
-                                SUM(CASE WHEN a.jns_beban='1' AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_up_ini,
-                                SUM(CASE WHEN a.jns_beban='4' AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_gaji_ini,
-                                SUM(CASE WHEN a.jns_beban in ('5','6') AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_brjs_ini
-                                FROM TRHOUTLAIN a
-                                WHERE a.kd_skpd= ? and thnlalu=0
-                                ) a
-
-                        -- DROPPING KELUAR
-                        UNION ALL
-                        SELECT 0 as masuk, SUM(z.sd_bln_ini) as keluar from(
-                                select
-                                SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                                from tr_setorpelimpahan_bank
-                                WHERE kd_skpd_sumber= ?
-                                UNION ALL
-                                select
-                                SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                                from tr_setorpelimpahan_tunai
-                                WHERE kd_skpd_sumber= ?
-                                UNION ALL
-                                select
-                                SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
-                                from tr_setorpelimpahan
-                                WHERE kd_skpd_sumber= ?
-                                )z
-                        -- PANJAR KELUAR
-                        UNION ALL
-                        SELECT
-                                0 as masuk,
-                                SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as keluar
-                                from tr_panjar
-                                WHERE kd_skpd= ? and jns='1'
-
-                        -- BLUD
-                        UNION ALL
-                        SELECT
-                                0 as masuk,
-                                SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN a.nilai ELSE 0 END) as keluar
-                                from trdtransout_blud a inner join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
-                                WHERE a.kd_skpd= ? and right(kd_rek6,6)='999999'
+        //                 UNION ALL
 
 
 
-                        )zzz", [$bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd]);
-        foreach ($saldobank as $sawalbank) {
-            $saldoawalbank   = $sawalbank->terima - $sawalbank->keluar;
-        }
+        //                 SELECT 0 as terima , sum(gaji_ini)+ sum(brg_ini)+sum(up_ini)as keluar from
+
+        //                 (
+        //                     select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ?
+        //                     and jns_spp in (1,2,3) and pay not in ('PANJAR')
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout_blud a join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and left(kd_rek6,1)='5'
+        //                     and jns_spp in (1,2,3)
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, isnull(a.nilai*-1,0) as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdinlain a join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.TGL_BUKTI)< ? and b.pengurang_belanja=1
+        //                 union all
+
+        //                 select a.kd_skpd, isnull(a.nilai,0) as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (4)
+        //                 union all
+
+        //                 select a.kd_skpd, isnull(a.rupiah*-1,0) as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (1) and b.pot_khusus=1
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, isnull(a.nilai,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in ('5','6')
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah*-1,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=0
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah*-1,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, isnull(a.rupiah,0) as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2 and kd_rek6='410411010001'
+        //                 union all
+
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, isnull(a.nilai,0) as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (1,2,3) and pay not in ('PANJAR')
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, 0 as brg_lalu, isnull(a.nilai*-1,0) as up_lalu from trdinlain a join TRHINLAIN b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.TGL_BUKTI)< ? and b.pengurang_belanja=1
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, isnull(a.nilai,0) as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in (4)
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, isnull(a.rupiah*-1,0) as gaji_lalu, 0 as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (1) and b.pot_khusus=1
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.nilai,0) as brg_lalu, 0 as up_lalu from trdtransout a join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_bukti)< ? and jns_spp in ('5','6')
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah*-1,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2
+
+        //                 union all
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=2 and kd_rek6='410411010001'
+
+        //                 union all
+
+        //                 select a.kd_skpd, 0 as gaji_ini, 0 as brg_ini, 0 as up_ini, 0 as gaji_lalu, isnull(a.rupiah*-1,0) as brg_lalu, 0 as up_lalu from trdkasin_pkd a join trhkasin_pkd b on a.no_sts=b.no_sts and a.kd_skpd=b.kd_skpd where MONTH(b.tgl_sts)< ? and b.jns_cp in (2) and b.pot_khusus=0
+
+        //                 ) a
+        //                 WHERE a.kd_skpd= ?
+
+        //                 UNION ALL
+
+        //                 --  PAJAK KELUAR
+        //                 SELECT 0 as masuk, SUM(b.nilai)as keluar FROM trhstrpot a INNER JOIN trdstrpot b
+        //                 ON a.no_bukti = b.no_bukti AND a.kd_skpd=b.kd_skpd
+        //                 WHERE a.kd_skpd =  ? AND
+        //                 b.kd_rek6 in ('210106010001','210105010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','') AND MONTH(a.tgl_bukti)< ? AND
+        //                 a.jns_spp IN('1','2','3','4','5','6')
+
+        //                 -- denda keterlambatan
+        //                 UNION ALL
+        //                 SELECT 0 as masuk, SUM(isnull((case when MONTH(tgl_bukti)< ? then b.nilai else 0 end),0)) AS keluar
+        //                             FROM trhstrpot a
+        //                             INNER JOIN trdstrpot b on a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+        //                             WHERE a.kd_skpd = ? AND b.kd_rek6='410411010001'
+
+        //                 -- pot penghasilan lainnya
+        //                 UNION ALL
+        //                         SELECT 0 as masuk,
+        //                     SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) +
+        //                     SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) +
+        //                     SUM(isnull((case when pot_khusus='2' AND rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ?  then a.rupiah else 0 end),0)) AS keluar
+        //                     FROM trdkasin_pkd a
+        //                     INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+        //                     WHERE a.kd_skpd = ? AND jns_trans='5'
+
+        //                 --  HKPG
+        //                 UNION ALL
+        //                 SELECT
+        //                     0 as masuk,
+        //                     SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) +
+        //                     SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) +
+        //                     SUM(isnull((case when pot_khusus='1' AND rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ? then a.rupiah else 0 end),0)) AS keluar
+        //                     FROM trdkasin_pkd a
+        //                     INNER JOIN trhkasin_pkd b on a.no_sts=b.no_sts AND a.kd_skpd=b.kd_skpd
+        //                     WHERE a.kd_skpd =  ? AND jns_trans='5' AND LEFT(kd_rek6,1)<>4
+
+        //                 -- CP
+        //                 UNION ALL
+        //                 SELECT  0 as masuk,
+        //                         SUM(isnull((case when rtrim(jns_cp)= '3' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) +
+        //                         SUM(isnull((case when rtrim(jns_cp)= '1' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) +
+        //                         SUM(isnull((case when rtrim(jns_cp)= '2' and MONTH(tgl_sts)< ? then z.nilai else 0 end),0)) AS keluar
+        //                         from (select rupiah as nilai,jns_trans,pot_khusus,jns_cp,d.tgl_sts ,d.kd_skpd from
+        //                         trdkasin_pkd c INNER JOIN trhkasin_pkd d ON c.no_sts = d.no_sts AND c.kd_skpd = d.kd_skpd where d.kd_skpd = ? AND
+        //                         ((jns_trans='5' AND pot_khusus='0') OR jns_trans='1')) z
+
+        //                 -- lain2 setoran
+        //                 UNION ALL
+        //                 SELECT
+        //                         0 as masuk,
+        //                         SUM(ISNULL(jlain_up_ini,0))+
+        //                         SUM(ISNULL(jlain_gaji_ini,0)) +
+        //                         SUM(ISNULL(jlain_brjs_ini,0)) as keluar
+        //                             FROM(
+        //                         SELECT
+        //                         SUM(CASE WHEN b.jns_spp IN ('1','2','3') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_up_ini,
+        //                         SUM(CASE WHEN b.jns_spp IN ('4') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_gaji_ini,
+        //                         SUM(CASE WHEN b.jns_spp IN ('5','6') AND MONTH(b.tgl_bukti)< ? AND a.kd_rek6 NOT IN ('210105010001','210106010001','210105020001','210105030001','210108010001','210107010001','210109010001','210102010001','410411010001') THEN  ISNULL(a.nilai,0) ELSE 0 END) AS jlain_brjs_ini
+        //                         FROM trdstrpot a INNER JOIN trhstrpot b ON a.no_bukti=b.no_bukti AND a.kd_skpd=b.kd_skpd
+        //                         WHERE a.kd_skpd= ? and left(a.kd_rek6,6)<>'210601'
+
+        //                         UNION ALL
+        //                         SELECT
+        //                         SUM(CASE WHEN a.jns_beban='1' AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_up_ini,
+        //                         SUM(CASE WHEN a.jns_beban='4' AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_gaji_ini,
+        //                         SUM(CASE WHEN a.jns_beban in ('5','6') AND MONTH(a.tgl_bukti)< ? THEN  a.nilai ELSE 0 END) AS jlain_brjs_ini
+        //                         FROM TRHOUTLAIN a
+        //                         WHERE a.kd_skpd= ? and thnlalu=0
+        //                         ) a
+
+        //                 -- DROPPING KELUAR
+        //                 UNION ALL
+        //                 SELECT 0 as masuk, SUM(z.sd_bln_ini) as keluar from(
+        //                         select
+        //                         SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                         from tr_setorpelimpahan_bank
+        //                         WHERE kd_skpd_sumber= ?
+        //                         UNION ALL
+        //                         select
+        //                         SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                         from tr_setorpelimpahan_tunai
+        //                         WHERE kd_skpd_sumber= ?
+        //                         UNION ALL
+        //                         select
+        //                         SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as sd_bln_ini
+        //                         from tr_setorpelimpahan
+        //                         WHERE kd_skpd_sumber= ?
+        //                         )z
+        //                 -- PANJAR KELUAR
+        //                 UNION ALL
+        //                 SELECT
+        //                         0 as masuk,
+        //                         SUM(CASE WHEN MONTH(tgl_kas)< ? THEN nilai ELSE 0 END) as keluar
+        //                         from tr_panjar
+        //                         WHERE kd_skpd= ? and jns='1'
+
+        //                 -- BLUD
+        //                 UNION ALL
+        //                 SELECT
+        //                         0 as masuk,
+        //                         SUM(CASE WHEN MONTH(tgl_bukti)< ? THEN a.nilai ELSE 0 END) as keluar
+        //                         from trdtransout_blud a inner join trhtransout_blud b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
+        //                         WHERE a.kd_skpd= ? and right(kd_rek6,6)='999999'
+
+
+
+        //                 )zzz", [$bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $bulan, $kd_skpd, $kd_skpd, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $bulan, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd, $bulan, $kd_skpd]);
+        // foreach ($saldobank as $sawalbank) {
+        //     $saldoawalbank   = $sawalbank->terima - $sawalbank->keluar;
+        // }
 
         // YANG LAMA
         // $terimakeluarbank = DB::select("SELECT sum(terima) as terima , sum(keluar) as keluar from (
@@ -597,6 +597,52 @@ class LaporanPenutupanKasBulananController extends Controller
             $terimabank     = $kas_bulanan->terima;
             $keluarbank     = $kas_bulanan->keluar;
         }
+
+        $data_sawal1 = DB::table('trhrekal as a')
+            ->select(
+                'kd_skpd',
+                'tgl_kas',
+                'tgl_kas AS tanggal',
+                'no_kas',
+                DB::raw("'' AS kegiatan"),
+                DB::raw("'' AS rekening"),
+                'uraian',
+                DB::raw("'0' AS terima"),
+                DB::raw("'0' AS keluar"),
+                DB::raw("'' AS st"),
+                'jns_trans'
+            )
+            ->where(DB::raw("month(tgl_kas)"), '<', $bulan)
+            ->where(DB::raw("YEAR(tgl_kas)"), $tahun_anggaran)
+            ->where('kd_skpd', $kd_skpd);
+
+        $data_sawal2 = DB::table('trdrekal as a')
+            ->leftjoin('trhrekal as b', function ($join) {
+                $join->on('a.no_kas', '=', 'b.no_kas');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->where(DB::raw("month(b.tgl_kas)"), '<', $bulan)->where(DB::raw("YEAR(b.tgl_kas)"), $tahun_anggaran)
+            ->where('b.kd_skpd', $kd_skpd)->select(
+                'b.kd_skpd',
+                'b.tgl_kas',
+                DB::raw(" '' AS tanggal"),
+                'a.no_kas',
+                'a.kd_sub_kegiatan as kegiatan',
+                'a.kd_rek6 AS rekening',
+                'a.nm_rek6 AS uraian',
+                DB::raw("CASE WHEN a.keluar + a.terima <0 THEN (a.keluar*-1) ELSE a.terima END as terima"),
+                DB::raw("CASE WHEN a.keluar+a.terima<0 THEN (a.terima*-1) ELSE a.keluar END as keluar"),
+                DB::raw("case when a.terima<>0 then '1' else '2' end AS st"),
+                'b.jns_trans'
+            )
+            ->unionAll($data_sawal1)
+            ->distinct();
+
+        $saldoawalbank = DB::table(DB::raw("({$data_sawal2->toSql()}) AS sub"))
+            ->select(DB::raw('SUM(terima) AS terima'), DB::raw('SUM(keluar) AS keluar'), DB::raw('SUM(terima) - SUM(keluar) AS sel'))
+            ->mergeBindings($data_sawal2)
+            ->first()
+            ->sel;
 
 
         // saldo tunai lalu
