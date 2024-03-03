@@ -217,7 +217,7 @@
                                             class="btn btn-success w-sm waves-effect waves-light  -,k">
                                             {{ __('Login') }}
                                         </button>
-                                        <a href="https://simakda.kalbarprov.go.id/sp2d"
+                                        <a href="https://track.simakda.co.id/"
                                             class="btn btn-dark w-sm waves-effect waves-light  -,k" target="_blank">CEK
                                             SP2D</a>
 
