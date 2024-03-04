@@ -661,10 +661,10 @@ class PenerimaanController extends Controller
                 $join->on('a.no_sts', '=', 'b.no_sts');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
             })
-            ->leftJoin('ms_rek6 as c', function ($join) {
-                $join->on('b.kd_rek6', '=', 'c.kd_rek6');
-            })
-            ->selectRaw("a.*, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+            // ->leftJoin('ms_rek6 as c', function ($join) {
+            //     $join->on('b.kd_rek6', '=', 'c.kd_rek6');
+            // })
+            ->selectRaw("a.*, b.kd_sub_kegiatan, b.kd_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
             ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
             ->orderByRaw("CAST(REPLACE(a.no_sts,'/BP','') as int)")
             ->get();
