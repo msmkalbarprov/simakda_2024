@@ -164,12 +164,12 @@
                     <td>{{ (($detail->jenis_belanja == 1 ? 'Perjalanan Dinas' : $detail->jenis_belanja == 2) ? 'Belanja Modal' : $detail->jenis_belanja == 3) ? 'Belanja Barang/Jasa' : '' }}
                     </td>
                     <td>{{ $detail->kd_sub_kegiatan }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 0, 1) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 1, 1) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 2, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 4, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 6, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 8, 4) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 0, 1) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 1, 1) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 2, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 4, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 6, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 8, 4) }}</td>
                     <td style="text-align: center">{!! $detail->bukti == '1' ? '&#10004' : '' !!}</td>
                     <td style="text-align: center">{!! $detail->bukti == '2' ? '&#10004' : '' !!}</td>
                     <td style="text-align: right">{{ rupiah($detail->nilai) }}</td>

@@ -106,12 +106,12 @@
                     </td>
                     <td>{{ $detail->uraian }}</td>
                     <td>{{ $detail->kd_sub_kegiatan }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 0, 1) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 1, 1) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 2, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 4, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 6, 2) }}</td>
-                    <td>{{ Str::substr($detail->kd_rek6, 8, 4) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 0, 1) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 1, 1) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 2, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 4, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 6, 2) }}</td>
+                    <td style="text-align: center">{{ Str::substr($detail->kd_rek6, 8, 4) }}</td>
                     <td style="text-align: right">{{ rupiah($detail->nilai) }}</td>
                 </tr>
             @endforeach
