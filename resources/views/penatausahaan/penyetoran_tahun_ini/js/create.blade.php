@@ -294,6 +294,9 @@
                 "_token": "{{ csrf_token() }}",
                 no_sts: detail_terima.length == 0 ? '0' : detail_terima
             },
+            beforeSend: function() {
+                $("#overlay").fadeIn(100);
+            },
             success: function(data) {
                 $('#no_terima').empty();
                 $('#no_terima').append(
@@ -305,6 +308,9 @@
                         }).format(data.nilai)} | ${data.nm_pengirim} | ${data.nama}</option>`
                     );
                 })
+            },
+            complete: function(data) {
+                $("#overlay").fadeOut(100);
             }
         })
     }
