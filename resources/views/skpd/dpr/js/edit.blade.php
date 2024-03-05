@@ -884,6 +884,7 @@
         });
 
         function cari_kegiatan(jenis_belanja, kd_skpd) {
+            let kartu_kkpd = "{{ $dpr->no_kkpd }}";
             $.ajax({
                 url: "{{ route('dpr.kegiatan') }}",
                 type: "POST",
@@ -897,12 +898,28 @@
                     $("#overlay").fadeIn(100);
                 },
                 success: function(data) {
+                    $('#no_kkpd').empty();
+                    $('#no_kkpd').append(
+                        `<option value="" disabled selected>Silahkan Pilih</option>`);
+                    $.each(data.kartu, function(index, kartu) {
+                        if (kartu.no_kkpd == kartu_kkpd) {
+                            $('#no_kkpd').append(
+                                `<option value="${kartu.no_kkpd}" data-nama="${kartu.nm_kkpd}" selected>${kartu.no_kkpd} | ${kartu.nm_kkpd}</option>`
+                            );
+                        } else {
+                            $('#no_kkpd').append(
+                                `<option value="${kartu.no_kkpd}" data-nama="${kartu.nm_kkpd}">${kartu.no_kkpd} | ${kartu.nm_kkpd}</option>`
+                            );
+                        }
+
+                    })
+
                     $('#kd_sub_kegiatan').empty();
                     $('#kd_sub_kegiatan').append(
                         `<option value="" disabled selected>Pilih Sub Kegiatan</option>`);
-                    $.each(data, function(index, data) {
+                    $.each(data.kegiatan, function(index, kegiatan) {
                         $('#kd_sub_kegiatan').append(
-                            `<option value="${data.kd_sub_kegiatan}" data-nama="${data.nm_sub_kegiatan}" data-kdprogram="${data.kd_program}" data-nmprogram="${data.nm_program}">${data.kd_sub_kegiatan} | ${data.nm_sub_kegiatan}</option>`
+                            `<option value="${kegiatan.kd_sub_kegiatan}" data-nama="${kegiatan.nm_sub_kegiatan}" data-kdprogram="${kegiatan.kd_program}" data-nmprogram="${kegiatan.nm_program}">${kegiatan.kd_sub_kegiatan} | ${kegiatan.nm_sub_kegiatan}</option>`
                         );
                     })
                 },

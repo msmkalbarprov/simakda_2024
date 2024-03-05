@@ -68,12 +68,12 @@
                         <div class="col-md-10">
                             <select name="no_kkpd" id="no_kkpd" class="form-control select2-multiple">
                                 <option value="" selected disabled>Silahkan Pilih</option>
-                                @foreach ($rek_kkpd as $kkpd)
+                                {{-- @foreach ($rek_kkpd as $kkpd)
                                     <option value="{{ $kkpd->no_kkpd }}" data-nama="{{ $kkpd->nm_kkpd }}"
                                         {{ $kkpd->no_kkpd == $dpr->no_kkpd ? 'selected' : '' }}>
                                         {{ $kkpd->no_kkpd }} | {{ $kkpd->nm_kkpd }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>

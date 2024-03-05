@@ -133,7 +133,21 @@ class DaftarPengeluaranRillController extends Controller
             ->groupBy('b.kd_sub_kegiatan', 'b.nm_sub_kegiatan', 'b.kd_program', 'b.total')
             ->get();
 
-        return response()->json($data);
+        $kartu = DB::table('ms_kkpd')
+            ->where(['kd_skpd' => Auth::user()->kd_skpd])
+            ->where(function ($query) use ($jenis_belanja) {
+                if ($jenis_belanja == '1') {
+                    $query->where('jenis', 'PERJADIN');
+                } else if ($jenis_belanja == '3') {
+                    $query->where('jenis', 'BARJAS');
+                }
+            })
+            ->get();
+
+        return response()->json([
+            'kegiatan' => $data,
+            'kartu' => $kartu
+        ]);
     }
 
     public function cariRekening(Request $request)
