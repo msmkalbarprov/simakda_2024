@@ -713,13 +713,17 @@
                 return;
             }
 
-            if (nilai + nilai_kunci > sisa_anggaran) {
-                alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
-                    .NumberFormat('id-ID', {
-                        minimumFractionDigits: 2
-                    }).format(nilai_kunci) + ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
-                return;
+            if (beban == '1') {
+                if (nilai + nilai_kunci > sisa_anggaran) {
+                    alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
+                        .NumberFormat('id-ID', {
+                            minimumFractionDigits: 2
+                        }).format(nilai_kunci) +
+                        ' , Silahkan hubungi bidang anggaran/perbendaharaan!');
+                    return;
+                }
             }
+
 
             $.ajax({
                 url: "{{ route('penagihan.simpan_tampungan') }}",
