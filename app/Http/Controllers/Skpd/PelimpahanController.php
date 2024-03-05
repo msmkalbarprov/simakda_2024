@@ -854,7 +854,7 @@ class PelimpahanController extends Controller
             INNER JOIN (select a.no_bukti,a.kd_skpd,a.kd_bp,a.tgl_validasi,a.status_validasi from trvalidasi_cmsbank_bidang a
             where a.kd_bp=? and no_validasi=?) AS Table_B ON tr_setorpelimpahan_bank_cms.no_bukti = Table_B.no_bukti AND tr_setorpelimpahan_bank_cms.kd_skpd = Table_B.kd_skpd where left(tr_setorpelimpahan_bank_cms.kd_skpd,17)=left(?,17)", [$kd_skpd, $no_validasi, $kd_skpd]);
 
-            DB::insert("INSERT INTO tr_setorpelimpahan_bank (no_kas, tgl_kas, no_bukti, tgl_bukti, kd_skpd, nilai, jenis_spp, keterangan, kd_skpd_sumber) SELECT rtrim(a.no_kas), a.tgl_kas, a.no_bukti, a.tgl_bukti, a.kd_skpd, a.nilai, a.jenis_spp, a.keterangan, a.kd_skpd_sumber FROM tr_setorpelimpahan_bank_cms a left join trvalidasi_cmsbank_bidang b on b.no_bukti=a.no_bukti and a.kd_skpd_sumber=b.kd_bp WHERE b.no_validasi=? and b.kd_bp=?", [$no_validasi, $kd_skpd]);
+            DB::insert("INSERT INTO tr_setorpelimpahan_bank (no_kas, tgl_kas, no_bukti, tgl_bukti, kd_skpd, nilai, jenis_spp, keterangan, kd_skpd_sumber,kkpd) SELECT rtrim(a.no_kas), a.tgl_kas, a.no_bukti, a.tgl_bukti, a.kd_skpd, a.nilai, a.jenis_spp, a.keterangan, a.kd_skpd_sumber,a.kkpd FROM tr_setorpelimpahan_bank_cms a left join trvalidasi_cmsbank_bidang b on b.no_bukti=a.no_bukti and a.kd_skpd_sumber=b.kd_bp WHERE b.no_validasi=? and b.kd_bp=?", [$no_validasi, $kd_skpd]);
 
 
             DB::commit();

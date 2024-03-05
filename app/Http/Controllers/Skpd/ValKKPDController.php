@@ -145,12 +145,12 @@ class ValKKPDController extends Controller
                         where left(trhtransout_kkpd.kd_skpd,17)=left(?,17)", [$kd_skpd, $no_validasi, $kd_skpd]);
 
             DB::insert("INSERT INTO trhtransout (no_kas, tgl_kas, no_bukti, tgl_bukti, no_sp2d, ket, username, tgl_update, kd_skpd, nm_skpd, total, no_tagih, sts_tagih, tgl_tagih, jns_spp, pay, no_kas_pot, panjar, no_panjar, kkpd,trx_mbiz,invoice)
-                                    SELECT b.no_bukti as no_kas, b.tgl_validasi as tgl_kas, a.no_bukti, a.tgl_bukti, a.no_sp2d, a.ket, b.kd_skpd as username, a.tgl_update, b.kd_skpd, a.nm_skpd, a.total, a.no_tagih, a.sts_tagih, a.tgl_tagih, a.jns_spp, a.pay, a.no_kas_pot, a.panjar, a.no_panjar,'1' kkpd,a.trx_mbiz,a.invoice
+                                    SELECT b.no_bukti as no_kas, b.tgl_validasi as tgl_kas, a.no_bukti, a.tgl_bukti, a.no_dpt, a.ket, b.kd_skpd as username, a.tgl_update, b.kd_skpd, a.nm_skpd, a.total, a.no_tagih, a.sts_tagih, a.tgl_tagih, a.jns_spp, a.pay, a.no_kas_pot, a.panjar, a.no_panjar,'1' kkpd,a.trx_mbiz,a.invoice
                                     FROM trhtransout_kkpd a left join trvalidasi_kkpd b on b.no_voucher=a.no_voucher and a.kd_skpd=b.kd_skpd
                                     WHERE b.no_validasi=? and b.kd_skpd=?", [$no_validasi, $kd_skpd]);
 
             DB::insert("INSERT INTO trdtransout (no_bukti, no_sp2d, kd_sub_kegiatan, nm_sub_kegiatan, kd_rek6, nm_rek6, nilai, kd_skpd,kunci, sumber,volume,satuan)
-                                            (SELECT c.no_bukti, a.no_sp2d, b.kd_sub_kegiatan, b.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6, b.nilai, b.kd_skpd,''kunci
+                                            (SELECT c.no_bukti, a.no_dpt, b.kd_sub_kegiatan, b.nm_sub_kegiatan, b.kd_rek6, b.nm_rek6, b.nilai, b.kd_skpd,''kunci
                                             ,
 											b.sumber,b.volume,b.satuan
                                             FROM trhtransout_kkpd a INNER JOIN trdtransout_kkpd b on b.no_voucher=a.no_voucher and a.kd_skpd=b.kd_skpd
