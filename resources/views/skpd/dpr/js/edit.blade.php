@@ -732,6 +732,8 @@
                         tabel_rekening.ajax.reload();
                         tabel_rekening1.ajax.reload();
 
+                        $('#kd_sub_kegiatan').val(null).change();
+                        $('#nm_sub_kegiatan').val(null);
                         $('#tgl_transaksi').val(null);
                         $('#kd_rekening').val(null).change();
                         $('#nm_rekening').val(null);

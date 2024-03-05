@@ -33,6 +33,7 @@
                                         <th>No.</th>
                                         <th>Nomor KKPD</th>
                                         <th>Nama Pemilik KKPD</th>
+                                        <th>Jenis Kartu</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -82,6 +83,10 @@
                     {
                         data: 'nm_kkpd',
                         name: 'nm_kkpd',
+                    },
+                    {
+                        data: 'jenis',
+                        name: 'jenis',
                     },
                     {
                         data: 'aksi',

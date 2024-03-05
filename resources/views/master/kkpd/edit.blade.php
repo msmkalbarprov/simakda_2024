@@ -73,6 +73,25 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="mb-3 row">
+                            <label for="nm_kkpd" class="col-md-2 col-form-label">Nama Pemilik KKPD</label>
+                            <div class="col-md-10">
+                                    <select class="form-control select2-multiple @error('jenis') is-invalid @enderror"
+                                    style="width: 100%;" id="jenis" name="jenis" data-placeholder="Silahkan Pilih">
+                                        <option value="" disabled selected>Silahkan Pilih Jenis Kartu</option>
+                                        <option value="BARJAS" {{ $data_kkpd->jenis == 'BARJAS' ? 'selected' : '' }}>Barang & Jasa
+                                        </option>
+                                        <option value="PERJADIN" {{ $data_kkpd->jenis == 'PERJADIN' ? 'selected' : '' }}>Perjalanan Dinas</option>
+
+                                </select>
+
+
+                                @error('nm_kkpd')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                        
                         <!-- SIMPAN -->
                         <div style="float: right;">

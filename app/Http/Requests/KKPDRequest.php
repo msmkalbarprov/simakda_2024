@@ -27,6 +27,7 @@ class KKPDRequest extends FormRequest
             'no_kkpd'       => 'required',
             'nm_kkpd'       => 'required',
             'kd_skpd'       => 'required',
+            'jenis'         => 'required',
         ];
         if (request()->isMethod('post')) {
             $rule = $rules;
@@ -41,7 +42,8 @@ class KKPDRequest extends FormRequest
         return [
             'kd_skpd.required'          => 'Kode SKPD harus diisi!',
             'no_kkpd.required'          => 'Nomor KKPD harus diisi!',
-            'nm_kkpd.required'          => 'Nama Pemilik KKPD harus diisi!'
+            'nm_kkpd.required'          => 'Nama Pemilik KKPD harus diisi!',
+            'jenis.required'            => 'Jenis Kartu harus diisi!'
         ];
     }
 }

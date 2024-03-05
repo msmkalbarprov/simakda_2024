@@ -583,7 +583,7 @@
                 return;
             }
 
-            if (akumulasi > sisa_spd) {
+            if (nilai > sisa_spd) {
                 alert('Total Transaksi melebihi Sisa SPD');
                 return;
             }

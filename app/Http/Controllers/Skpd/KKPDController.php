@@ -25,10 +25,12 @@ class KKPDController extends Controller
         if(Auth::user()->is_admin==2){
             $kd_skpd = Auth::user()->kd_skpd;
             $data = DB::table('ms_kkpd AS a')
+                    ->selectRaw("id,left(no_kkpd,5)+'XXXXXXXXXX'+right(no_kkpd,1)as no_kkpd,nm_kkpd,kd_skpd,jenis")
                     ->where('a.kd_skpd', $kd_skpd)
                     ->get();
         }else{
             $data = DB::table('ms_kkpd AS a')
+                    ->selectRaw("id,left(no_kkpd,5)+'XXXXXXXXXX'+right(no_kkpd,1)as no_kkpd,nm_kkpd,kd_skpd,jenis")
                     ->get();
         }
         
@@ -84,12 +86,14 @@ class KKPDController extends Controller
     }
 
     public function store(KKPDRequest $request)
-    {
+    {   
+        
         $input = array_map('htmlentities', $request->validated());
         DB::table('ms_kkpd')->insert([
             'no_kkpd'       => $input['no_kkpd'],
             'nm_kkpd'       => $input['nm_kkpd'],
-            'kd_skpd'       => $input['kd_skpd']
+            'kd_skpd'       => $input['kd_skpd'],
+            'jenis'         => $input['jenis']
         ]);
 
         return redirect()->route('kkpd.index');
@@ -116,13 +120,14 @@ class KKPDController extends Controller
     }
 
     public function update(KKPDRequest $request, $id)
-    {
+    {   
         $id = Crypt::decryptString($id);
         $input = array_map('htmlentities', $request->validated());
         DB::table('ms_kkpd')->where('id', $id)->update([
             'no_kkpd'           => $input['no_kkpd'],
             'nm_kkpd'           => $input['nm_kkpd'],
-            'kd_skpd'           => $input['kd_skpd']
+            'kd_skpd'           => $input['kd_skpd'],
+            'jenis'             => $input['jenis']
         ]);
 
         return redirect()->route('kkpd.index');

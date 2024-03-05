@@ -264,13 +264,15 @@
             });
 
             let kondisi = tampungan.map(function(data) {
-                if (data.kd_rek6 != kd_rek6 && data.kd_sub_kegiatan ==
-                    kd_sub_kegiatan) {
+                if (data.kd_rek6 == kd_rek6 && data.sumber == sumber) {
                     return '2';
                 } else if (data.id == id) {
                     return '3';
                 } else if (data.kd_sub_kegiatan != kd_sub_kegiatan) {
                     return '4';
+                } else if (data.kd_rek6 == kd_rek6 && data.kd_sub_kegiatan ==
+                    kd_sub_kegiatan && data.sumber == sumber) {
+                    return '5';
                 } else {
                     return '1';
                 }
@@ -288,6 +290,11 @@
 
             if (kondisi.includes("3")) {
                 alert('Rincian telah ada di bawah!');
+                return;
+            }
+
+            if (kondisi.includes("5")) {
+                alert('Tidak boleh memilih kegiatan,rekening dan sumber yang sama!');
                 return;
             }
 
