@@ -578,7 +578,11 @@ class TransaksiPanjarController extends Controller
             SUM(case when jns=1 then jumlah else 0 end) AS terima,
             SUM(case when jns=2 then jumlah else 0 end) AS keluar
             from (
-            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM tr_setorsimpanan where no_sp2d not in (select no_sp2d from  trhsp2d a
+                                    INNER JOIN trdspp c on a.no_spp=c.no_spp and a.kd_skpd=c.kd_skpd
+                                    where a.jns_spp='2' and a.kd_skpd= tr_setorsimpanan.kd_skpd
+                                    and c.kkpd=1 and a.status=1
+                                    ) and (kkpd is null or kkpd<>'1')
             union all
             SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'1' AS jns,kd_skpd AS kode FROM trhINlain WHERE pay='BANK'
             union all
@@ -607,7 +611,7 @@ class TransaksiPanjarController extends Controller
             union all
             SELECT tgl_bukti AS tgl,no_bukti AS bku,ket as ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM trhoutlain WHERE pay='BANK'
             union all
-            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'2' AS jns,kd_skpd_sumber AS kode FROM tr_setorpelimpahan_bank
+            SELECT tgl_kas AS tgl,no_kas AS bku,keterangan as ket,nilai AS jumlah,'2' AS jns,kd_skpd_sumber AS kode FROM tr_setorpelimpahan_bank where (kkpd is null or kkpd <>'1')
             union all
             SELECT tgl_kas AS tgl,no_kas AS bku,keterangan AS ket,nilai AS jumlah,'2' AS jns,kd_skpd AS kode FROM tr_ambilsimpanan WHERE status_drop!='1'
             union all
