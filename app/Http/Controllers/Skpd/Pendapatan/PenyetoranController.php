@@ -665,12 +665,26 @@ class PenyetoranController extends Controller
             $no_sts[] = '';
         }
 
+        // $data = DB::table('tr_terima as a')
+        //     ->leftJoin('ms_pengirim as b', function ($join) {
+        //         $join->on('a.sumber', '=', 'b.kd_pengirim');
+        //         $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+        //     })
+        //     ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,b.nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
+        //     ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=? and a.jns_pembayaran=?", [$kd_skpd, $kd_skpd, $tgl_terima, $jenis_pembayaran])
+        //     ->where(function ($query) use ($gerai) {
+        //         if ($gerai != 'all') {
+        //             $query->where('a.sumber', $gerai);
+        //         }
+        //     })
+        //     ->whereNotIn('a.no_terima', $no_sts)
+        //     ->orderBy('b.nm_pengirim')
+        //     ->orderBy('a.tgl_terima')
+        //     ->orderBy('a.kd_rek6')
+        //     ->get();
+
         $data = DB::table('tr_terima as a')
-            ->leftJoin('ms_pengirim as b', function ($join) {
-                $join->on('a.sumber', '=', 'b.kd_pengirim');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })
-            ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,b.nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
+            ->selectRaw("a.*,(SELECT nama from ms_kanal where kode=a.kanal) as nama,(select nm_pengirim from ms_pengirim where a.sumber=kd_pengirim and a.kd_skpd=kd_skpd) as nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
             ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=? and a.jns_pembayaran=?", [$kd_skpd, $kd_skpd, $tgl_terima, $jenis_pembayaran])
             ->where(function ($query) use ($gerai) {
                 if ($gerai != 'all') {
@@ -678,10 +692,11 @@ class PenyetoranController extends Controller
                 }
             })
             ->whereNotIn('a.no_terima', $no_sts)
-            ->orderBy('b.nm_pengirim')
+            // ->orderBy('b.nm_pengirim')
             ->orderBy('a.tgl_terima')
             ->orderBy('a.kd_rek6')
             ->get();
+
 
         return response()->json($data);
     }
