@@ -33,6 +33,12 @@ class TransaksiPemindahbukuanController extends Controller
                 ->with('message', 'Jenis Anggaran tidak sama dengan Jenis Anggaran Kas!');
         }
 
+        if ($data['cek']['selisih_angkas'] > 0) {
+            return view('skpd.transaksi_pemindahbukuan.index')
+                ->with($data)
+                ->with('message', 'Ada ' . $data['cek']['selisih_angkas'] . ' selisih antara Angkas dan Anggaran!');
+        }
+
         return view('skpd.transaksi_pemindahbukuan.index')->with($data);
     }
 
