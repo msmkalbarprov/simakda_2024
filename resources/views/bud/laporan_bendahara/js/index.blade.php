@@ -126,6 +126,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-buku_kasda').select2({
+            dropdownParent: $('#modal_buku_kasda .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // CETAKAN REALISASI PENDAPATAN
         $('#pilih_skpd_realisasi_pendapatan').hide();
         $('#pilih_unit_realisasi_pendapatan').hide();
@@ -3188,5 +3193,32 @@
             window.open(url.toString(), "_blank");
         });
         // CETAKAN REGISTER SP2D
+
+        $('#buku_kasda').on('click', function() {
+            $('#modal_buku_kasda').modal('show');
+        });
+
+        $('.cetak_buku_kasda').on('click', function() {
+            let bulan = document.getElementById('bulan_kasda').value;
+            let jenis = document.getElementById('jenis_kasda').value;
+            let jenis_print = $(this).data("jenis");
+
+            if (!bulan) {
+                alert('Pilih bulan!')
+                return
+            }
+
+            if (!jenis) {
+                alert('Pilih jenis!')
+                return
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.bku_kasda') }}");
+            let searchParams = url.searchParams;
+            searchParams.append("bulan", bulan);
+            searchParams.append("jenis", jenis);
+            searchParams.append("jenis_print", jenis_print);
+            window.open(url.toString(), "_blank");
+        });
     });
 </script>

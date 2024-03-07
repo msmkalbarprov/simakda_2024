@@ -1791,6 +1791,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('format_bpk', [BendaharaUmumDaerahController::class, 'formatBpk'])->name('laporan_bendahara_umum.format_bpk');
         // REGISTER SP2D BATAL
         Route::get('register_sp2d_batal', [BendaharaUmumDaerahController::class, 'sp2dBatal'])->name('laporan_bendahara_umum.register_sp2d_batal');
+        // BKU KHUSUS KASDA (PERMINTAAN BANG ASRIL)
+        Route::get('bku_kasda', [BendaharaUmumDaerahController::class, 'bkuKasda'])->name('laporan_bendahara_umum.bku_kasda');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {

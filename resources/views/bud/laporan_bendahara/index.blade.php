@@ -343,6 +343,36 @@
         </div>
     </div>
 
+    @if (Auth::user()->role == '1010' || Auth::user()->role == '1006')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="buku_kasda">
+                    <div class="card-body">
+                        {{ 'BKU' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="register_sp2d">
+                <div class="card-body">
+                    {{ 'Register SP2D' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div> --}}
+        </div>
+    @endif
+
+
     {{-- modal cetak realisasi pendapatan --}}
     @include('bud.laporan_bendahara.modal.realisasi_pendapatan')
     {{-- modal cetak realisasi pendapatan  --}}
@@ -438,6 +468,10 @@
     {{-- modal cetak register_sp2d --}}
     @include('bud.laporan_bendahara.modal.register_sp2d')
     {{-- modal cetak register_sp2d  --}}
+
+    {{-- modal buku kasda --}}
+    @include('bud.laporan_bendahara.modal.buku_kasda')
+    {{-- modal buku kasda  --}}
 @endsection
 @section('js')
     @include('bud.laporan_bendahara.js.index')
