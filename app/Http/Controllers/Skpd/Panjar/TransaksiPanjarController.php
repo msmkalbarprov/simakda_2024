@@ -122,7 +122,7 @@ class TransaksiPanjarController extends Controller
                 INNER JOIN trhspp b ON a.no_spp = b.no_spp AND a.kd_skpd = b.kd_skpd
                 INNER JOIN trdspp c ON c.no_spp = b.no_spp AND c.kd_skpd = b.kd_skpd
                 WHERE
-                    left(a.kd_skpd,17) = left(?,17) AND a.jns_spp IN ('1', '2')
+                    left(a.kd_skpd,17) = left(?,17) AND a.jns_spp IN ('1', '2') and (b.kkpd is null or b.kkpd<>'1')
                 GROUP BY
                 a.no_sp2d,
                 a.tgl_sp2d", [$kd_skpd]);

@@ -82,10 +82,28 @@ class TransaksiTunaiController extends Controller
             $where = "a.jns_spp=? AND b.kd_sub_kegiatan =?";
         }
 
-        $data = DB::table('trhsp2d as a')->join('trdspp as b', function ($join) {
-            $join->on('a.no_spp', '=', 'b.no_spp');
-            $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-        })->select('a.no_sp2d', 'a.tgl_sp2d', DB::raw("SUM(a.nilai) as nilai"))->whereRaw("LEFT(a.kd_skpd,17)=LEFT(?,17)", [$kd_skpd])->where(['a.status' => '1'])->whereRaw($where, [$beban, $kd_sub_kegiatan])->groupBy('a.no_sp2d', 'a.tgl_sp2d')->orderByDesc('a.tgl_sp2d')->orderBy('a.no_sp2d')->distinct()->get();
+        $data = DB::table('trhsp2d as a')
+            ->join('trdspp as b', function ($join) {
+                $join->on('a.no_spp', '=', 'b.no_spp');
+                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+            })
+            ->join('trhspp as c', function ($join) {
+                $join->on('a.no_spp', '=', 'c.no_spp');
+                $join->on('a.kd_skpd', '=', 'c.kd_skpd');
+            })
+            ->select('a.no_sp2d', 'a.tgl_sp2d', DB::raw("SUM(a.nilai) as nilai"))
+            ->whereRaw("LEFT(a.kd_skpd,17)=LEFT(?,17)", [$kd_skpd])
+            ->where(['a.status' => '1'])
+            ->whereRaw($where, [$beban, $kd_sub_kegiatan])
+            ->where(function ($query) {
+                $query->where('c.kkpd', '!=', '1')->orWhereNull('c.kkpd');
+            })
+            ->groupBy('a.no_sp2d', 'a.tgl_sp2d')
+            ->orderByDesc('a.tgl_sp2d')
+            ->orderBy('a.no_sp2d')
+            ->distinct()
+            ->get();
+
         return response()->json($data);
     }
 

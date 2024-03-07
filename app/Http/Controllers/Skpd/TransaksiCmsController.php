@@ -144,39 +144,75 @@ class TransaksiCmsController extends Controller
         if (isset($kd_sub_kegiatan) && $beban != '1') {
             $where = 'a.jns_spp=? AND d.kd_sub_kegiatan =?';
         }
+
         if ($beban == '3') {
-            $data = DB::table('trhspp as a')->join('trhspm as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->join('trhsp2d as c', function ($join) {
-                $join->on('b.no_spm', '=', 'c.no_spm');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })->join('trdspp as d', function ($join) {
-                $join->on('a.no_spp', '=', 'd.no_spp');
-                $join->on('a.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_skpd' => $kd_skpd, 'c.status' => '1'])->whereRaw($where, [$beban, $kd_sub_kegiatan])->whereRaw('c.no_sp2d NOT IN (SELECT no_sp2d FROM trhlpj WHERE kd_skpd=?)', [$kd_skpd])->orderByDesc('c.tgl_sp2d')->orderBy('c.no_sp2d')->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))->distinct()->get();
+            $data = DB::table('trhspp as a')
+                ->join('trhspm as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('trhsp2d as c', function ($join) {
+                    $join->on('b.no_spm', '=', 'c.no_spm');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->join('trdspp as d', function ($join) {
+                    $join->on('a.no_spp', '=', 'd.no_spp');
+                    $join->on('a.kd_skpd', '=', 'd.kd_skpd');
+                })
+                ->where(['c.kd_skpd' => $kd_skpd, 'c.status' => '1'])
+                ->whereRaw($where, [$beban, $kd_sub_kegiatan])
+                ->whereRaw('c.no_sp2d NOT IN (SELECT no_sp2d FROM trhlpj WHERE kd_skpd=?)', [$kd_skpd])
+                ->orderByDesc('c.tgl_sp2d')
+                ->orderBy('c.no_sp2d')
+                ->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))
+                ->distinct()
+                ->get();
         } else if ($beban == '6') {
-            $data = DB::table('trhspp as a')->join('trhspm as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->join('trhsp2d as c', function ($join) {
-                $join->on('b.no_spm', '=', 'c.no_spm');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })->join('trdspp as d', function ($join) {
-                $join->on('a.no_spp', '=', 'd.no_spp');
-                $join->on('a.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.kd_skpd' => $kd_skpd, 'c.status' => '1'])->whereRaw($where, [$beban, $kd_sub_kegiatan])->orderByDesc('c.tgl_sp2d')->orderBy('c.no_sp2d')->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))->distinct()->get();
+            $data = DB::table('trhspp as a')
+                ->join('trhspm as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('trhsp2d as c', function ($join) {
+                    $join->on('b.no_spm', '=', 'c.no_spm');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->join('trdspp as d', function ($join) {
+                    $join->on('a.no_spp', '=', 'd.no_spp');
+                    $join->on('a.kd_skpd', '=', 'd.kd_skpd');
+                })
+                ->where(['c.kd_skpd' => $kd_skpd, 'c.status' => '1'])
+                ->whereRaw($where, [$beban, $kd_sub_kegiatan])
+                ->orderByDesc('c.tgl_sp2d')
+                ->orderBy('c.no_sp2d')
+                ->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))
+                ->distinct()
+                ->get();
         } else {
-            $data = DB::table('trhspp as a')->join('trhspm as b', function ($join) {
-                $join->on('a.no_spp', '=', 'b.no_spp');
-                $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-            })->join('trhsp2d as c', function ($join) {
-                $join->on('b.no_spm', '=', 'c.no_spm');
-                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-            })->join('trdspp as d', function ($join) {
-                $join->on('a.no_spp', '=', 'd.no_spp');
-                $join->on('a.kd_skpd', '=', 'd.kd_skpd');
-            })->where(['c.status' => '1'])->where(DB::raw("LEFT(c.kd_skpd,17)"), $kode)->whereRaw($where, [$beban, $kd_sub_kegiatan])->orderByDesc('c.tgl_sp2d')->orderBy('c.no_sp2d')->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))->distinct()->get();
+            $data = DB::table('trhspp as a')
+                ->join('trhspm as b', function ($join) {
+                    $join->on('a.no_spp', '=', 'b.no_spp');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->join('trhsp2d as c', function ($join) {
+                    $join->on('b.no_spm', '=', 'c.no_spm');
+                    $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+                })
+                ->join('trdspp as d', function ($join) {
+                    $join->on('a.no_spp', '=', 'd.no_spp');
+                    $join->on('a.kd_skpd', '=', 'd.kd_skpd');
+                })
+                ->where(['c.status' => '1'])
+                ->where(function ($query) {
+                    $query->where('a.kkpd', '!=', '1')->orWhereNull('a.kkpd');
+                })
+                ->where(DB::raw("LEFT(c.kd_skpd,17)"), $kode)
+                ->whereRaw($where, [$beban, $kd_sub_kegiatan])
+                ->orderByDesc('c.tgl_sp2d')
+                ->orderBy('c.no_sp2d')
+                ->select('c.no_sp2d', 'c.tgl_sp2d', 'c.nilai', DB::raw("'0' as sisa"))
+                ->distinct()
+                ->get();
         }
         return response()->json($data);
     }
@@ -200,6 +236,7 @@ class TransaksiCmsController extends Controller
         $kd_rek6 = $request->kd_rek6;
         $kd_skpd = $request->kd_skpd;
         $kd_sub_kegiatan = $request->kd_sub_kegiatan;
+        $no_bukti = $request->no_bukti;
         $no_sp2d = $request->no_sp2d;
         $beban = $request->beban;
         $tgl_voucher = $request->tgl_voucher;
