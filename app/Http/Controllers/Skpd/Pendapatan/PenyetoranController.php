@@ -603,13 +603,38 @@ class PenyetoranController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $spjbulan = cek_status_spj_pend($kd_skpd);
 
-        $data = DB::table('trhkasin_pkd as a')
-            ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd,(CASE WHEN month(a.tgl_sts)<=? THEN 1 ELSE 0 END) ketspj,a.user_name", [$spjbulan])
-            ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
-            ->whereRaw("not exists (select * from trdkasin_pkd b where left(kd_rek6,12) =? and a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts) AND keterangan not like '%keterlambatan%'", ['410411010001'])
-            ->orderBy('a.tgl_sts')
-            ->orderBy('a.no_sts')
-            ->get();
+        // $data = DB::table('trhkasin_pkd as a')
+        //     ->selectRaw("a.*,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) as nm_skpd,(CASE WHEN month(a.tgl_sts)<=? THEN 1 ELSE 0 END) ketspj,a.user_name", [$spjbulan])
+        //     ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
+        //     ->whereRaw("not exists (select * from trdkasin_pkd b where left(kd_rek6,12) =? and a.kd_skpd=b.kd_skpd and a.no_sts=b.no_sts) AND keterangan not like '%keterlambatan%'", ['410411010001'])
+        //     ->orderBy('a.tgl_sts')
+        //     ->orderBy('a.no_sts')
+        //     ->get();
+
+        $data = DB::select("SELECT
+                a.*,
+                ( SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd ) AS nm_skpd,
+                ( CASE WHEN MONTH ( a.tgl_sts ) <= ? THEN 1 ELSE 0 END ) ketspj,
+                a.user_name
+                FROM trhkasin_pkd a
+            WHERE
+                a.kd_skpd= ?
+                AND a.jns_trans= '4'
+                AND a.keterangan NOT LIKE '%keterlambatan%'
+                AND NOT EXISTS (
+                SELECT
+                    *
+                FROM
+                    trdkasin_pkd b
+                WHERE
+                    LEFT ( kd_rek6, 12 ) = '410411010001'
+                    AND a.kd_skpd= b.kd_skpd
+                    AND a.no_sts= b.no_sts
+                )
+
+            ORDER BY
+                a.tgl_sts,
+                a.no_sts", [$spjbulan, $kd_skpd]);
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
 
