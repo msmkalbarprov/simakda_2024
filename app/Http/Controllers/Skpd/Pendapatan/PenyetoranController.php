@@ -709,7 +709,7 @@ class PenyetoranController extends Controller
         //     ->get();
         // DB::enableQueryLog();
         $data = DB::table('tr_terima as a')
-            ->selectRaw("a.no_terima,a.tgl_terima,a.kd_rek6,a.nilai,(SELECT nama from ms_kanal where kode=a.kanal) as nama,(select nm_pengirim from ms_pengirim where a.sumber=kd_pengirim and a.kd_skpd=kd_skpd) as nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
+            ->selectRaw("a.no_terima,a.tgl_terima,a.kd_rek6,a.nilai,a.kanal,a.sumber,(SELECT nama from ms_kanal where kode=a.kanal) as nama,(select nm_pengirim from ms_pengirim where a.sumber=kd_pengirim and a.kd_skpd=kd_skpd) as nm_pengirim,(SELECT nm_rek6 from ms_rek6 where kd_rek6=a.kd_rek6) as nm_rek6")
             ->whereRaw("a.kd_skpd=? AND a.no_terima + '.' + kanal NOT IN(select ISNULL(no_terima,'') + '.' + ISNULL(kanal,'') no_terima from trdkasin_pkd where kd_skpd=?) AND  a.tgl_terima=? and a.jns_pembayaran=?", [$kd_skpd, $kd_skpd, $tgl_terima, $jenis_pembayaran])
             ->where(function ($query) use ($gerai) {
                 if ($gerai != 'all') {
