@@ -740,7 +740,7 @@ class PenerimaanController extends Controller
                 'kd_skpd' => $kd_skpd,
                 'keterangan' => $data['keterangan'],
                 'total' => $data['nilai'],
-                'kd_sub_kegiatan' => '5.02.00.0.00.04',
+                'kd_sub_kegiatan' => '5.02.00.0.00.0004',
                 'jns_trans' => '4',
                 'no_kas' => $no_kas,
                 'tgl_kas' => $data['tgl_kas'],
@@ -755,7 +755,7 @@ class PenerimaanController extends Controller
                 'kd_skpd' => $kd_skpd,
                 'kd_rek6' => $data['jenis'],
                 'rupiah' => $data['nilai'],
-                'kd_sub_kegiatan' => '5.02.00.0.00.04',
+                'kd_sub_kegiatan' => '5.02.00.0.00.0004',
                 'sumber' => $data['pengirim'],
             ]);
 
@@ -768,7 +768,7 @@ class PenerimaanController extends Controller
                 'keterangan' => $data['keterangan'],
                 'total' => $data['nilai'],
                 'kd_bank' => '1',
-                'kd_sub_kegiatan' => '5.02.00.0.00.04',
+                'kd_sub_kegiatan' => '5.02.00.0.00.0004',
                 'jns_trans' => '4',
                 'rek_bank' => $data['rkud'],
                 'sumber' => $data['pengirim'],
@@ -783,7 +783,7 @@ class PenerimaanController extends Controller
                 'no_sts' => $data['no_kas'] . '/BP',
                 'kd_rek6' => $data['jenis'],
                 'rupiah' => $data['nilai'],
-                'kd_sub_kegiatan' => '5.02.00.0.00.04',
+                'kd_sub_kegiatan' => '5.02.00.0.00.0004',
                 'sumber' => $data['pengirim'],
             ]);
 
@@ -1153,7 +1153,7 @@ class PenerimaanController extends Controller
 
             if ($data['jenis'] == 4 && $data['jns_cp'] == 2) {
                 $skpd = '5.02.0.00.0.00.02.0000';
-                $giat = '5.02.00.0.00.04';
+                $giat = '5.02.00.0.00.0004';
             } else {
                 $skpd = $data['kd_skpd'];
                 $giat = $data['kd_sub_kegiatan'];
