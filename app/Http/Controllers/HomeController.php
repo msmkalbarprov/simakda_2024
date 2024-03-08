@@ -244,7 +244,6 @@ class HomeController extends Controller
                 'message' => '4'
             ]);
         }
-        dd($data);
 
         $password_lama = DB::table('pengguna')
             ->where(['id' => $data['id']])
