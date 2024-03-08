@@ -108,13 +108,13 @@
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @elseif ($data->urut == '5')
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 23) }}.{{ dotrek(STR::substr($data->kode, 24, 7)) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @else
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 24) }}{{ dotrek(STR::substr($data->kode, 24, 7)) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
@@ -146,13 +146,13 @@
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @elseif ($data->urut == '5')
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 21) }}.{{ dotrek(STR::substr($data->kode, 22, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 23) }}.{{ dotrek(STR::substr($data->kode, 24, 7)) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @else
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 22) }}{{ dotrek(STR::substr($data->kode, 22, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 24) }}{{ dotrek(STR::substr($data->kode, 24, 7)) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>

@@ -98,14 +98,14 @@
                     @endphp
                     <tr>
                         <td style="text-align:center"></td>
-                        <td>{{ left($data->kode, 15) }}.{{ dotrek(substr($data->kode, 16, 13)) }}</td>
+                        <td>{{ left($data->kode, 17) }}.{{ dotrek(substr($data->kode, 18, 13)) }}</td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     </tr>
                 @else
                     <tr>
                         <td style="text-align:center"></td>
-                        <td>{{ left($data->kode, 16) }}{{ dotrek(substr($data->kode, 16, 12)) }}</td>
+                        <td>{{ left($data->kode, 18) }}{{ dotrek(substr($data->kode, 18, 12)) }}</td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     </tr>
