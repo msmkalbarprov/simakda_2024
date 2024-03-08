@@ -32,16 +32,26 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="password" class="col-md-2 col-form-label">Password</label>
-                        <div class="col-md-4">
-                            <input class="form-control" type="password" id="password" name="password" required >
+                        <label for="password" class="col-md-2 col-form-label">Password Lama</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="password" id="password_lama" name="password_lama" required>
                         </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="password" class="col-md-2 col-form-label">Password Baru</label>
+                        <div class="col-md-10">
+                            <input class="form-control" type="password" id="password" name="password" required
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label for="password2" class="col-md-2 col-form-label">Ulangi Password</label>
-                        <div class="col-md-4">
+                        <div class="col-md-10">
                             <input class="form-control" type="password" id="password2" name="password2" required>
                         </div>
                     </div>
-                    
+
                     <!-- SIMPAN -->
                     <div class="mb-3 row" style="float: right;">
                         <div class="col-md-12" style="text-align: center">

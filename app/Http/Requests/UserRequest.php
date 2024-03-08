@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest
 {
@@ -16,17 +17,25 @@ class UserRequest extends FormRequest
     {
         if (request()->isMethod('post')) {
             $passwordRule = 'required';
-            $confirmationPasswordRule = 'required';
         } elseif (request()->isMethod('put')) {
             $passwordRule = 'sometimes';
-            $confirmationPasswordRule = 'sometimes';
+            if (request()->password_lama == '') {
+                $cek = '';
+            } else {
+                $cek = Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised();
+            }
         }
         return [
             'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
             'nama' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
-            'password' => [$passwordRule],
-            // 'password2' => [$passwordRule],
-            'confirmation_password' => [$confirmationPasswordRule, 'same:password'],
+            'password' => [$passwordRule, $cek],
+            'password_lama' => [$passwordRule],
+            'confirmation_password' => [$passwordRule, 'same:password'],
             'kd_skpd' => ['required'],
             'tipe' => ['required'],
             'status' => ['required'],
@@ -49,6 +58,8 @@ class UserRequest extends FormRequest
             'status.required'    => 'Status harus dipilih!',
             'peran.required'    => 'Peran harus dipilih!',
             'jabatan.required'    => 'Jabatan harus diisi!',
+            'password_lama.required' => 'Password lama harus diisi!',
+            'password.sometimes' => 'Password harus diisi, ketika password lama diisi!'
         ];
     }
 }

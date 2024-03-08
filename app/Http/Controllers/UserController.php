@@ -55,6 +55,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $input = array_map('htmlentities', $request->validated());
+
         DB::beginTransaction();
         try {
             $id = DB::table('pengguna')->insertGetId([
@@ -116,11 +117,21 @@ class UserController extends Controller
     public function update(UserRequest $request, $id)
     {
         $input = array_map('htmlentities', $request->validated());
+        // dd($input);
+        $password_lama = DB::table('pengguna')
+            ->where(['id' => $id])
+            ->first()
+            ->password;
 
 
-        if ($input['password'] != $input['confirmation_password']) {
-            return redirect()->back()->withInput();
+        if (!Hash::check($input['password_lama'], $password_lama) && $input['password_lama'] != '') {
+            return back()->with("error", "Password lama tidak sesuai");
         }
+
+        // if ($input['password'] != $input['confirmation_password']) {
+        //     return redirect()->back()->withInput();
+        // }
+
         DB::beginTransaction();
         try {
             if ($input['password'] == '') {

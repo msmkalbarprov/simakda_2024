@@ -21,6 +21,8 @@ class HomeController extends Controller
         Cookie::queue(Cookie::forget('laravel_session'));
         Cookie::queue(Cookie::forget('home_base_session'));
 
+        // return Hash::make('kalbarprov');
+
         $kd_skpd = Auth::user()->kd_skpd;
         // dd(status_anggaran_dashboard());
         // if (status_anggaran_dashboard() == 0) {
@@ -236,6 +238,24 @@ class HomeController extends Controller
     public function simpanUbahPassword(Request $request)
     {
         $data = $request->data;
+
+        if ($data['id'] != Auth::user()->id) {
+            return response()->json([
+                'message' => '4'
+            ]);
+        }
+        dd($data);
+
+        $password_lama = DB::table('pengguna')
+            ->where(['id' => $data['id']])
+            ->first()
+            ->password;
+
+        if (!Hash::check($data['password_lama'], $password_lama) && $data['password_lama'] != '') {
+            return response()->json([
+                'message' => '3'
+            ]);
+        }
 
         if ($data['password'] != $data['password2']) {
             return response()->json([
