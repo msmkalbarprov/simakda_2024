@@ -124,7 +124,7 @@
                         <td align='right'><b>{{ $sisa1 }}</b></td>
                         <td align='right'><b>{{ $persen1 }}</b></td>
                     </tr>
-                @elseif (strlen($urut) == 12 || strlen($urut) == 15)
+                @elseif (strlen($urut) == 12 || strlen($urut) == 17)
                     <tr>
                         <td align='left'><b>{{ $urut }}</b></td>
                         <td align='left'><b>{{ $uraian }}</b></td>
