@@ -117,7 +117,7 @@ class PotonganPenerimaanController extends Controller
                 'keterangan' => $data['keterangan'],
                 'total' => $data['nilai'],
                 'kd_bank' => '1',
-                'kd_sub_kegiatan' => '5.02.00.0.00.04',
+                'kd_sub_kegiatan' => '5.02.00.0.00.0004',
                 'jns_trans' => '4',
                 'rek_bank' => $data['rkud'],
                 'sumber' => $data['pengirim'],
