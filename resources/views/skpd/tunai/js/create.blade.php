@@ -65,6 +65,11 @@
                 return;
             }
 
+            if (nilai > 500000) {
+                alert('Ambil Simpanan Tunai tidak boleh melebihi dari 500.000');
+                return;
+            }
+
             let data = {
                 no_kas,
                 tgl_kas,
