@@ -88,8 +88,8 @@
                             <div class="col-md-10">
                                 <select class="form-control select2-multiple @error('status') is-invalid @enderror"
                                     name="status" required>
-                                    <optgroup label="Daftar Kode SKPD">
-                                        <option value="" selected disabled>Silahkan Pilih Kode SKPD</option>
+                                    <optgroup label="Daftar Status">
+                                        <option value="" selected disabled>Silahkan Pilih Status</option>
                                         <option value="1" {{ $user->status == '1' ? 'selected' : '' }}>Aktif</option>
                                         <option value="2" {{ $user->status == '2' ? 'selected' : '' }}>Tidak Aktif
                                         </option>
