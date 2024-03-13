@@ -17,8 +17,16 @@ class UserRequest extends FormRequest
     {
         if (request()->isMethod('post')) {
             $passwordRule = 'required';
+            $passwordLamaRule = 'sometimes';
+            $cek = Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised();
         } elseif (request()->isMethod('put')) {
             $passwordRule = 'sometimes';
+            $passwordLamaRule = 'sometimes';
             if (request()->password_lama == '') {
                 $cek = '';
             } else {
@@ -34,7 +42,7 @@ class UserRequest extends FormRequest
             'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
             'nama' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
             'password' => [$passwordRule, $cek],
-            'password_lama' => [$passwordRule],
+            'password_lama' => [$passwordLamaRule],
             'confirmation_password' => [$passwordRule, 'same:password'],
             'kd_skpd' => ['required'],
             'tipe' => ['required'],
