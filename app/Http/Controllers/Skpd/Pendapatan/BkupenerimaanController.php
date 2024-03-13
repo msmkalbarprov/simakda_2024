@@ -15,6 +15,8 @@ class BkupenerimaanController extends Controller
 {
     public function cetakBKUPenerimaan(Request $request)
     {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
         $role           = Auth::user()->role;
         $tanggal_ttd    = $request->tgl_ttd;
         $pa_kpa         = $request->pa_kpa;
@@ -44,7 +46,7 @@ class BkupenerimaanController extends Controller
         $cari_bendahara = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $bendahara, 'kode' => 'BP', 'kd_skpd' => $kd_skpd])->first();
         $cari_pakpa = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first();
 
-        
+
         // rincian
         if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000') {    //ada kondisi BLUD
             $rincian = DB::select("SELECT a.tgl_terima tgl, a.no_terima no,
@@ -81,19 +83,19 @@ class BkupenerimaanController extends Controller
                 order by tgl, no", [$tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org, $tanggal1, $tanggal2, $kd_org, $kd_org]);
         } else {
             $saldolalu  = collect(DB::select("SELECT sum(terima)-sum(keluar) as lalu FROM(
-                SELECT 
+                SELECT
                     a.nilai as terima,
                     0 as keluar
                     FROM tr_terima a INNER JOIN ms_rek6 b
-                    ON a.kd_rek6=b.kd_rek6 
-                    where a.tgl_terima < ? 
+                    ON a.kd_rek6=b.kd_rek6
+                    where a.tgl_terima < ?
                     and left(a.kd_skpd,len(?)) = ?
 
                     UNION ALL
-                    SELECT 
+                    SELECT
                     0 as terima,
                     sum(y.rupiah) as keluar
-                    FROM trhkasin_pkd x 
+                    FROM trhkasin_pkd x
                     INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
                     INNER JOIN ms_rek6 z ON y.kd_rek6=z.kd_rek6
                     where x.tgl_sts < ?
@@ -102,9 +104,9 @@ class BkupenerimaanController extends Controller
                     GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.kd_rek6,z.nm_rek6,y.no_terima
             )zz", [$tanggal1, $kd_org, $kd_org, $tanggal1, $kd_org, $kd_org]))->first();
 
-            $rincian = DB::select("SELECT 
+            $rincian = DB::select("SELECT
                                     cast(a.tgl_terima as VARCHAR)+'-1-'+a.no_terima as urut,
-                                    a.tgl_terima as tglbukti, 
+                                    a.tgl_terima as tglbukti,
                                     a.no_terima as nobukti,
                                     a.kd_rek6,
                                     b.nm_rek6,
@@ -113,12 +115,12 @@ class BkupenerimaanController extends Controller
                                     0 as keluar,
                                     '1' as kode
                                     FROM tr_terima a INNER JOIN ms_rek6 b
-                                    ON a.kd_rek6=b.kd_rek6 
-                                    where (a.tgl_terima BETWEEN ? and ? ) 
+                                    ON a.kd_rek6=b.kd_rek6
+                                    where (a.tgl_terima BETWEEN ? and ? )
                                     and left(a.kd_skpd,len(?)) = ?
 
                                     UNION ALL
-                                    SELECT 
+                                    SELECT
                                     CAST(x.tgl_sts as varchar)+'-2-'+y.no_terima as urut,
                                     x.tgl_sts,
                                     x.no_sts,
@@ -128,10 +130,10 @@ class BkupenerimaanController extends Controller
                                     0 as terima,
                                     sum(y.rupiah) as keluar,
                                     '2' as kode
-                                    FROM trhkasin_pkd x 
+                                    FROM trhkasin_pkd x
                                     INNER JOIN trdkasin_pkd y ON x.no_sts=y.no_sts AND x.kd_skpd=y.kd_skpd AND x.kd_sub_kegiatan=y.kd_sub_kegiatan
                                     INNER JOIN ms_rek6 z ON y.kd_rek6=z.kd_rek6
-                                    where (x.tgl_sts BETWEEN ? and ?) 
+                                    where (x.tgl_sts BETWEEN ? and ?)
                                     and left(x.kd_skpd,len(?)) = ?
                                     and (jns_cp ='' OR jns_cp is null) and jns_trans in ('4','2','3')
                                     GROUP BY x.tgl_sts,x.no_sts,x.keterangan,y.kd_rek6,z.nm_rek6,y.no_terima
@@ -161,7 +163,7 @@ class BkupenerimaanController extends Controller
         // if ($format == '13') {
         //     $view = view('skpd.laporan_bendahara_penerimaan.cetak.buku_penerimaan_penyetoran')->with($data);
         // } else {
-            $view = view('skpd.laporan_bendahara_penerimaan.cetak.bku_penerimaan_77')->with($data);
+        $view = view('skpd.laporan_bendahara_penerimaan.cetak.bku_penerimaan_77')->with($data);
         // }
 
 

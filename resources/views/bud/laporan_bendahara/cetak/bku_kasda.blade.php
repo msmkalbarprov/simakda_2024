@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BKU KASDA</title>
+    <title>BKU KASDA @if ($jenis == '1')
+            PENGELUARAN
+        @else
+            PENERIMAAN
+        @endif
+    </title>
     <style>
         table {
             border-collapse: collapse
@@ -49,14 +54,20 @@
         <tr>
             <td style="text-align: center">
                 <b>PEMERINTAH
-                    {{ strtoupper($header->nm_pemda) }}
+                    {{ Str::upper($header->nm_pemda) }}
                 </b>
             </td>
         </tr>
         <tr>
             <td style="text-align: center;font-family:'Open Sans', Helvetica,Arial,sans-serif">
                 <b>
-                    BKU KASDA
+                    BKU KASDA @if ($jenis == '1')
+                        PENGELUARAN
+                    @else
+                        PENERIMAAN
+                    @endif
+                    <br>
+                    BULAN {{ Str::upper(bulan($bulan)) }}
                 </b>
             </td>
         </tr>
@@ -73,13 +84,23 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $total = 0;
+            @endphp
             @foreach ($data as $item)
+                @php
+                    $total += $item->sisa;
+                @endphp
                 <tr>
                     <td style="text-align: center">{{ $loop->iteration }}</td>
                     <td>{{ $item->nm_skpd }}</td>
                     <td style="text-align: right">{{ rupiah($item->sisa) }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="2" style="text-align: center"><b>TOTAL</b></td>
+                <td style="text-align: right"><b>{{ rupiah($total) }}</b></td>
+            </tr>
         </tbody>
     </table>
 
