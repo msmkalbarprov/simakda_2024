@@ -147,9 +147,9 @@
                         <div class="mb-3 row">
                             <label for="peran" class="col-md-2 col-form-label">Konfirmasi Password</label>
                             <div class="col-md-10">
-                                <input type="password"
-                                    name="confirmation_password @error('confirmation_password') is-invalid @enderror"
-                                    class="form-control" placeholder="Konfirmasi password baru">
+                                <input type="password" name="confirmation_password"
+                                    class="form-control @error('confirmation_password') is-invalid @enderror"
+                                    placeholder="Konfirmasi password baru">
                                 @error('confirmation_password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
