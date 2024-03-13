@@ -66,12 +66,12 @@
         <tr>
             <td>Melalui KPPN sejumlah Rp.</td>
             <td>:</td>
-            <td colspan="3">Rp{{ rupiah($total_kppn - $total_pot_kppn) }}</td>
+            <td colspan="3">Rp{{ rupiah($total_kppn) }}</td>
         </tr>
         <tr>
             <td>Terbilang</td>
             <td>:</td>
-            <td colspan="3">{{ terbilang($total_kppn - $total_pot_kppn) }}</td>
+            <td colspan="3">{{ terbilang($total_kppn) }}</td>
         </tr>
         <tr>
             <td>Untuk Keperluan</td>
@@ -166,12 +166,16 @@
                                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                             })
                             ->selectRaw('sum(rupiah) as nilai')
-                            ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
+                            ->whereRaw(
+                                "left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')",
+                            )
                             ->first();
 
                         $potongan = DB::table('trhkasin_ppkd_pot')
                             ->selectRaw('sum(total) as nilai')
-                            ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
+                            ->whereRaw(
+                                "left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')",
+                            )
                             ->first();
                     @endphp
                     <tr>
@@ -189,8 +193,12 @@
                                 $join->on('a.no_kas', '=', 'b.no_kas');
                                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
                             })
-                            ->selectRaw('a.no_kas,a.no_sts,a.kd_skpd,tgl_kas,keterangan,rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot')
-                            ->whereRaw("left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')")
+                            ->selectRaw(
+                                'a.no_kas,a.no_sts,a.kd_skpd,tgl_kas,keterangan,rupiah,(select sum(total) from trhkasin_ppkd_pot c where c.no_sts=a.no_sts and c.kd_skpd=a.kd_skpd)as pot',
+                            )
+                            ->whereRaw(
+                                "left(kd_rek6,$panjang) in ($kd_rek) and left(kd_rek6,$panjang_notin) not in ($kd_rek_notin) and (tgl_kas BETWEEN '$tgl1' and '$tgl2')",
+                            )
                             ->orderBy('tgl_kas')
                             ->get();
                     @endphp
