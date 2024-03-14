@@ -140,7 +140,7 @@
             @endphp
 
 
-            @if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000')
+            @if ($kd_skpd == '1.02.0.00.0.00.01.0005' || $kd_skpd == '1.02.0.00.0.00.03.0000')
                 @switch($leng)
                     @case(12)
                         <tr>
@@ -232,7 +232,7 @@
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
                                 {{ rupiah($row->terima_ini) }}</td>
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
-                                {{ rupiah($row->keluar_ini * -1) }}</td>
+                                {{ rupiah($row->keluar_ini*-1) }}</td>
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
                                 {{ rupiah($row->keluar_ini * -1 - $row->terima_ini) }}</td>
                             <td valign='top' align='right' style='font-size:12px;border-top:none'>
