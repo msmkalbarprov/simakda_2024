@@ -471,7 +471,7 @@
                 @endswitch
             @endif
         @endforeach
-        @if ($kd_skpd == '1.02.0.00.0.00.02.0000' || $kd_skpd == '1.02.0.00.0.00.03.0000')
+        @if ($kd_skpd == '1.02.0.00.0.00.01.0005' || $kd_skpd == '1.02.0.00.0.00.03.0000')
             @php
                 $ln_jlh7 = $ln_jlh6 - $ln_jlh5;
                 $ln_jlh9 = $ln_jlh6 * -1 + $ln_jlh3;
