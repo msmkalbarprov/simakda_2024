@@ -3,11 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest
 {
+    protected $redirect;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,6 +26,7 @@ class UserRequest extends FormRequest
                 ->numbers()
                 ->symbols()
                 ->uncompromised();
+            $this->redirect = 'kelola-akses/user/create';
         } elseif (request()->isMethod('put')) {
             $passwordRule = 'sometimes';
             $passwordLamaRule = 'sometimes';
@@ -37,6 +40,7 @@ class UserRequest extends FormRequest
                     ->symbols()
                     ->uncompromised();
             }
+            $this->redirect = 'kelola-akses/user/' . Crypt::encryptString(request()->segment(3)) . '/edit';
         }
         return [
             'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
