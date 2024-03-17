@@ -22,6 +22,6 @@ jobs:
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
           # token: ${{ secrets.WORKFLOW_TOKEN }}
-          with:
+        #  with:
           #source: "."
-          target: "/var/app7/simakda_2024"
+         # target: "/var/app7/simakda_2024"
