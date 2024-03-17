@@ -1,4 +1,4 @@
-name: Deploy backend on push branch main
+name: 🚀 Deploy backend on push branch main
 
 on:
   push:
@@ -12,8 +12,8 @@ jobs:
       - name: 🚚 Get latest code on branch main
         uses: actions/checkout@v1
 
-      # - name: Copy repository contents via scp
-       # uses: appleboy/scp-action@v0.1.4
+      - name: Copy repository contents via scp
+        uses: appleboy/scp-action@v0.1.4
 
         env:
           HOST: ${{ secrets.HOSTNAME }}
@@ -21,7 +21,6 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
-          # token: ${{ secrets.WORKFLOW_TOKEN }}
-         with:
+        with:
           source: "."
           target: "/var/app7/simakda_2024"
