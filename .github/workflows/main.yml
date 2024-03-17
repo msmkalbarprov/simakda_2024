@@ -24,3 +24,13 @@ jobs:
         with:
           source: "."
           target: "/var/app7/simakda_2024"
+
+        env:
+          HOST: ${{ secrets.HOSTNAME_W }}
+          USERNAME: ${{ secrets.USERNAME_W }}
+          PORT: ${{ secrets.PORT_W }}
+          KEY: ${{ secrets.SSHKEY_W }}
+          PASSPHRASE: ${{ secrets.PASSPHRASE_W }}
+        with:
+          source: "."
+          target: "D:/aplikasi/2024/simakda_2024"
