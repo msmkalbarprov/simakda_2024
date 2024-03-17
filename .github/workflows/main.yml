@@ -23,5 +23,5 @@ jobs:
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
           # token: ${{ secrets.WORKFLOW_TOKEN }}
          with:
-         source: "."
+          source: "."
           target: "/var/app7/simakda_2024"
