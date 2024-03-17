@@ -21,11 +21,6 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
-        with:
-          source: "."
-          target: "/var/app7/simakda_2024"
-
-        
           HOST: ${{ secrets.HOSTNAME_W }}
           USERNAME: ${{ secrets.USERNAME_W }}
           PORT: ${{ secrets.PORT_W }}
@@ -33,4 +28,5 @@ jobs:
           PASSPHRASE: ${{ secrets.PASSPHRASE_W }}
         with:
           source: "."
-          target: "D:/aplikasi/2024/simakda_2024"
+          target: "/var/app7/simakda_2024"
+          target: "/D/aplikasi/2024/simakda_2024"
