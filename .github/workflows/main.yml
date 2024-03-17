@@ -25,7 +25,7 @@ jobs:
           source: "."
           target: "/var/app7/simakda_2024"
 
-        env:
+        
           HOST: ${{ secrets.HOSTNAME_W }}
           USERNAME: ${{ secrets.USERNAME_W }}
           PORT: ${{ secrets.PORT_W }}
