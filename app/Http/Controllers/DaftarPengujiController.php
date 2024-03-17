@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
-
+// test auto deploy controller
 class DaftarPengujiController extends Controller
 {
     public function jenis(Request $request)
