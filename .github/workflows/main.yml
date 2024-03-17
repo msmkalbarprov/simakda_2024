@@ -16,16 +16,12 @@ jobs:
         uses: appleboy/scp-action@v0.1.4
 
         env:
-          HOST: ${{ secrets.HOSTNAME }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PORT: ${{ secrets.PORT }}
-          KEY: ${{ secrets.SSHKEY }}
+          HOST: ${{ secrets.HOSTNAME , secrets.HOSTNAME_W }}
+          USERNAME: ${{ secrets.USERNAME , secrets.USERNAME_W }}
+          PORT: ${{ secrets.PORT , secrets.PORT_W }}
+          KEY: ${{ secrets.SSHKEY , secrets.SSHKEY_W }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
-          HOST: ${{ secrets.HOSTNAME_W }}
-          USERNAME: ${{ secrets.USERNAME_W }}
-          PORT: ${{ secrets.PORT_W }}
-          KEY: ${{ secrets.SSHKEY_W }}
-          PASSPHRASE: ${{ secrets.PASSPHRASE_W }}
+          
         with:
           source: "."
           target: "/var/app7/simakda_2024"
