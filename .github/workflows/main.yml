@@ -12,8 +12,8 @@ jobs:
       - name: 🚚 Get latest code on branch main
         uses: actions/checkout@v1
 
-      - name: Copy repository contents via scp
-        uses: appleboy/scp-action@v0.1.4
+      # - name: Copy repository contents via scp
+       # uses: appleboy/scp-action@v0.1.4
 
         env:
           HOST: ${{ secrets.HOSTNAME }}
