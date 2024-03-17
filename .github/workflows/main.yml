@@ -24,4 +24,4 @@ jobs:
           # token: ${{ secrets.WORKFLOW_TOKEN }}
           with:
           source: "."
-          target: "/var/www/app7/simakda_2024"
+          target: "/var/app7/simakda_2024"
