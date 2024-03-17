@@ -21,7 +21,7 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          # token: ${{ secrets.WORKFLOW_TOKEN }}
           with:
           source: "."
           target: "/var/www/app7/simakda_2024"
