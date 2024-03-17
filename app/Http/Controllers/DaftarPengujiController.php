@@ -20,7 +20,6 @@ class DaftarPengujiController extends Controller
         $data = jenis_rekening($no_rek, $kd_skpd);
 
         return response()->json($data);
-        //TEST1
     }
 
     public function index()
