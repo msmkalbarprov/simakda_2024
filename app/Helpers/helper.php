@@ -5143,16 +5143,20 @@ function nilai_kunci($kd_skpd, $kd_sub_kegiatan, $kd_rek6)
 {
     $jns_ang = status_anggaran();
 
-    $data = DB::table('automatic_adjustment')
-        ->selectRaw("ISNULL(SUM(nilai),0) as nilai")
-        ->where([
-            // 'jns_ang' => $jns_ang,
-            'kd_skpd' => $kd_skpd,
-            'kd_sub_kegiatan' => $kd_sub_kegiatan,
-            'kd_rek6' => $kd_rek6
-        ])
-        ->groupBy('kd_skpd', 'kd_sub_kegiatan', 'kd_rek6')
-        ->first();
+    if (substr($jns_ang, 0, 1) == 'U') {
+        return 0;
+    } else {
+        $data = DB::table('automatic_adjustment')
+            ->selectRaw("ISNULL(SUM(nilai),0) as nilai")
+            ->where([
+                // 'jns_ang' => $jns_ang,
+                'kd_skpd' => $kd_skpd,
+                'kd_sub_kegiatan' => $kd_sub_kegiatan,
+                'kd_rek6' => $kd_rek6
+            ])
+            ->groupBy('kd_skpd', 'kd_sub_kegiatan', 'kd_rek6')
+            ->first();
 
-    return ($data) ? $data->nilai : 0;
+        return ($data) ? $data->nilai : 0;
+    }
 }
