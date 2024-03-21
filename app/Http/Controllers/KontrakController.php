@@ -57,7 +57,8 @@ class KontrakController extends Controller
 
     public function store(KontrakRequest $request)
     {
-        $input = array_map('htmlentities', $request->validated());
+        // $input = array_map('htmlentities', $request->validated());
+        $input = $request->validated();
 
         $cek = DB::table('ms_kontrak')
             ->where(['no_kontrak' => $input['no_kontrak'], 'kd_skpd' => $input['kd_skpd']])
@@ -128,7 +129,9 @@ class KontrakController extends Controller
     public function update(KontrakRequest $request, $id)
     {
         $id = Crypt::decryptString($id);
-        $input = array_map('htmlentities', $request->validated());
+        // $input = array_map('htmlentities', $request->validated());
+        $input = $request->validated();
+
         DB::table('ms_kontrak')->where('no_kontrak', $id)
             ->update([
                 'no_kontrak' => str_replace(' ', '', trim($input['no_kontrak'])),
