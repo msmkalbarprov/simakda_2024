@@ -334,6 +334,22 @@ class UplKKPDController extends Controller
                 $join->on('f.kd_skpd', '=', 'e.kd_skpd');
                 $join->on('f.no_voucher', '=', 'e.no_voucher');
             })
+            ->join('trhsp2d as i', function ($join) {
+                $join->on('i.kd_skpd', '=', 'f.kd_skpd');
+                $join->on('i.no_sp2d', '=', 'f.no_dpt');
+            })
+            ->join('trhspp as j', function ($join) {
+                $join->on('j.kd_skpd', '=', 'i.kd_skpd');
+                $join->on('j.no_spp', '=', 'i.no_spp');
+            })
+            ->join('trhdpt as g', function ($join) {
+                $join->on('g.kd_skpd', '=', 'j.kd_skpd');
+                $join->on('g.no_dpt', '=', 'j.no_lpj');
+            })
+            ->join('trhdpr as h', function ($join) {
+                $join->on('h.kd_skpd', '=', 'g.kd_skpd');
+                $join->on('h.no_dpr', '=', 'g.no_dpr');
+            })
             ->where(['a.kd_skpd' => $kd_skpd, 'a.no_upload' => $no_upload])
             ->selectRaw(
                 "a.no_upload,
@@ -345,18 +361,19 @@ class UplKKPDController extends Controller
                 '' as rekening_tujuan,
                 ISNULL(SUM(e.nilai),0) as nilai,
                 ISNULL(SUM(f.potongan),0) as potongan,
-                a.no_upload+'/' + (select CAST(DATEPART(MONTH, CAST(a.tgl_upload AS DATETIME)) AS VARCHAR(4))) + '/$tahun/KKPD' as ket_tujuan,
-                b.no_upload_tgl"
+                a.no_upload+'/' + (select CAST(DATEPART(MONTH, CAST(a.tgl_upload AS DATETIME)) AS VARCHAR(4))) + '/$tahun/' + h.no_kkpd as ket_tujuan,
+                b.no_upload_tgl,
+                h.no_kkpd"
             )
-            ->groupBy('a.no_upload', 'a.tgl_upload', 'a.kd_skpd', 'b.kd_skpd', 'b.rekening_awal', 'b.ket_tujuan', 'e.kd_sub_kegiatan', 'b.no_upload_tgl');
+            ->groupBy('a.no_upload', 'a.tgl_upload', 'a.kd_skpd', 'b.kd_skpd', 'b.rekening_awal', 'b.ket_tujuan', 'e.kd_sub_kegiatan', 'b.no_upload_tgl', 'h.no_kkpd');
 
 
         // (REPLACE(b.ket_tujuan, '2023.', RIGHT(e.kd_sub_kegiatan,5)+ '/')) as ket_tujuan,
 
         $query = DB::table(DB::raw("({$query1->toSql()}) AS sub"))
-            ->selectRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,SUM(nilai-potongan) as nilai,ket_tujuan,no_upload_tgl")
+            ->selectRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,SUM(nilai-potongan) as nilai,ket_tujuan,no_upload_tgl,no_kkpd")
             ->mergeBindings($query1)
-            ->groupByRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,ket_tujuan,no_upload_tgl")
+            ->groupByRaw("no_upload,tgl_upload,kd_skpd,nm_skpd,rekening_awal,nm_rekening_tujuan,rekening_tujuan,ket_tujuan,no_upload_tgl,no_kkpd")
             ->get();
 
         $rekening_tujuan = "0109990000";
