@@ -40,11 +40,11 @@ class UserRequest extends FormRequest
                     ->symbols()
                     ->uncompromised();
             }
-            $this->redirect = 'kelola-akses/user/' . Crypt::encryptString(request()->segment(3)) . '/edit';
+            $this->redirect = 'kelola-akses/user/' . Crypt::encryptString(request()->route('user')) . '/edit';
         }
         return [
-            'username' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
-            'nama' => ['required', Rule::unique('pengguna')->ignore(request()->segment(3))],
+            'username' => ['required', Rule::unique('pengguna')->ignore(request()->route('user'))],
+            'nama' => ['required', Rule::unique('pengguna')->ignore(request()->route('user'))],
             'password' => [$passwordRule, $cek],
             'password_lama' => [$passwordLamaRule],
             'confirmation_password' => [$passwordRule, 'same:password'],
