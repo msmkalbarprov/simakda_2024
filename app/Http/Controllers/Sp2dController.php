@@ -567,6 +567,12 @@ class Sp2dController extends Controller
 
         DB::beginTransaction();
         try {
+            DB::table('trspmpot')
+                ->where(['no_spm' => $no_spm])
+                ->update([
+                    'idBilling' => '-'
+                ]);
+
             DB::table('trhspp')->where(['no_spp' => $no_spp])->update([
                 'sp2d_batal' => '1',
                 'ket_batal' => $keterangan,
