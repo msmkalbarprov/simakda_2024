@@ -125,7 +125,7 @@ class UserController extends Controller
 
 
         if (!Hash::check($input['password_lama'], $password_lama) && $input['password_lama'] != '') {
-            return back()->with("error", "Password lama tidak sesuai");
+            return redirect()->route('user.edit', [Crypt::encryptString($id)])->with('error', 'Password lama tidak sesuai');
         }
 
         // if ($input['password'] != $input['confirmation_password']) {
