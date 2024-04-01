@@ -1672,6 +1672,10 @@
                 searchParams.append("cetak", jns_cetak);
                 searchParams.append("jenis_sp2d", jenis_sp2d);
                 searchParams.append("pil_akumulasi", pil_akumulasi);
+                searchParams.append("margin_atas", margin_atas);
+                searchParams.append("margin_bawah", margin_bawah);
+                searchParams.append("margin_kiri", margin_kiri);
+                searchParams.append("margin_kanan", margin_kanan);
                 window.open(url.toString(), "_blank");
             } else if (jenis_cetak == 'Cetak BKU Permendagri 13') {
 
