@@ -35,7 +35,7 @@
 
 {{-- <body onload="window.print()"> --}}
     <body>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td rowspan="5" align="left" width="7%">
             <img src="{{asset('template/assets/images/'.$header->logo_pemda_hp) }}"  width="75" height="100" />
@@ -51,7 +51,7 @@
             <td align="left" style="font-size:14px" ><strong>&nbsp;</strong></td></tr>
             </table>
     <hr>
-    <table style="border-collapse:collapse;font-family: Open Sans; font-size:12px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+    <table style="border-collapse:collapse;font-family: Open Sans; font-size:14px" width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
         <td style="text-align: center"><b>REGISTER {{$jenis_reg}}</b></td>
         </tr>
@@ -61,14 +61,14 @@
     </table>
     <TABLE style="border-collapse:collapse;font-size:10px" border="1" cellspacing="2" cellpadding="2" width="100%" >
         <thead>
-        
+
             <tr>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='3%' rowspan='3'><b>No.<br>Urut</b></td>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='6%' rowspan='3'><b>Tanggal</b></td>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='36%' colspan='6'><b>Nomor</b></td>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='19%' rowspan='3'><b>Uraian</b></td>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='36%' colspan='6'><b>Jumlah<br>(Rp)</b></td>
-            </tr>  
+            </tr>
             <tr>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='6%' rowspan='2'><b>UP</b></td>
                 <td style='font-size:10px' bgcolor='#CCCCCC' align='center' width='6%' rowspan='2'><b>GU</b></td>
@@ -95,7 +95,7 @@
                 <td style='font-size:10px' align='center' width='36%' colspan='6'><b>5</b></td>
               </tr>
               </thead>
-              
+
             @php
                 $no                 =0;
                 $jumlahup           = 0;
@@ -242,12 +242,12 @@
                                 <td align='right'  style='font-size:10px'></td>
                             </tr>
                          @break
-                         
+
                  @endswitch
-                   
-                       
+
+
             @endforeach
-                   
+
                 tr>
                     <td colspan='9' align='center' width='3%' style='font-size:10px'>J U M L A H</td>
                     <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahup)}}</td>
@@ -256,9 +256,9 @@
                     <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahgj)}}</td>
                     <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahbj)}}</td>
                     <td align='right' width='6%' style='font-size:10px'>{{rupiah($jumlahpk)}}</td>
-                </tr> 
-               
-          
+                </tr>
+
+
     </table>
     @php
         for ($i = 0; $i <= $enter; $i++) {
@@ -267,7 +267,7 @@
     @endphp
     {{-- tanda tangan --}}
     <div style="padding-top:20px">
-        <table class="table" style="width: 100%;font-size:12px;font-family:Open Sans">
+        <table class="table" style="width: 100%;font-size:14px;font-family:Open Sans">
             <tr>
                 <td style="margin: 2px 0px;text-align: center;">
                     Disetujui oleh

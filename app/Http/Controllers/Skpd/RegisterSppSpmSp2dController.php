@@ -133,7 +133,13 @@ class RegisterSppSpmSp2dController extends Controller
             if ($cetak == '1') {
                 return $view2;
             } else if ($cetak == '2') {
-                $pdf = PDF::loadHtml($view2)->setOrientation('landscape')->setPaper('a4');
+                $pdf = PDF::loadHtml($view2)
+                    ->setOrientation('landscape')
+                    ->setPaper('a4')
+                    ->setOption('margin-top', $request->margin_atas)
+                    ->setOption('margin-bottom', $request->margin_bawah)
+                    ->setOption('margin-right', $request->margin_kanan)
+                    ->setOption('margin-left', $request->margin_kiri);
                 return $pdf->stream('REGISTER ' . $jenis_reg . '.pdf');
             } else {
 
