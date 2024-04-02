@@ -3421,7 +3421,7 @@ function sisa_bank_by_bulan($kd_skpd, $bulan)
                 where e.kd_skpd=? and d.no_kas<>'' and d.pay='BANK' group by d.no_kas,d.kd_skpd
                     ) f on f.no_kas=a.no_bukti and f.kd_skpd=a.kd_skpd
                 WHERE pay='BANK' and
-                (panjar not in ('1') or panjar is null)
+                (panjar not in ('1') or panjar is null) AND (kkpd <>'1' or kkpd is null)
                 union
                 select a.tgl_bukti [tgl],a.no_bukti [bku],a.ket [ket],sum(b.nilai) [jumlah],'2' [jns],a.kd_skpd [kode] from trhstrpot a
                 join trdstrpot b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
