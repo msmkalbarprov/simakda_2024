@@ -6563,9 +6563,13 @@ class BendaharaUmumDaerahController extends Controller
                         AND
                         kd_rek6 != (
                                 CASE WHEN kd_skpd=? THEN ('540101010001')
-                                    ELSE ('')
-                        END
-                        )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
+                                    ELSE ('') END
+                        )
+                        AND
+                        kd_rek6 != (
+                                CASE WHEN kd_skpd=? THEN ('540203020001')
+                                    ELSE ('') END
+                        ) ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
                 }
             })
 
@@ -6630,9 +6634,13 @@ class BendaharaUmumDaerahController extends Controller
                         AND
                         b.kd_rek6 != (
                                 CASE WHEN c.kd_skpd=? THEN ('540101010001')
-                                    ELSE ('')
-                        END
-                        )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
+                                    ELSE ('') END
+                        )
+                        AND
+                        b.kd_rek6 != (
+                                CASE WHEN c.kd_skpd=? THEN ('540203020001')
+                                    ELSE ('') END
+                        )  ", ['5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000', '5.02.0.00.0.00.02.0000']);
                 }
             })
 
@@ -6694,7 +6702,7 @@ class BendaharaUmumDaerahController extends Controller
         $bantuan_keuangan = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("jns_ang=? and kd_skpd=? and kd_rek6 IN (?)", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '540203010001']])
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_rek6 IN (?,?)", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '540203010001', '540203020001']])
             ->groupBy('kd_skpd', 'nm_skpd')
             ->first();
 
