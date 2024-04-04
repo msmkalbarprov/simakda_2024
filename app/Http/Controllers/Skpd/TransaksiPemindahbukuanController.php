@@ -51,6 +51,7 @@ class TransaksiPemindahbukuanController extends Controller
             ->selectRaw("(SELECT rekening FROM ms_skpd WHERE kd_skpd=?) as rekening_awal", [$kd_skpd])
             ->selectRaw("(SELECT DISTINCT CASE WHEN MONTH(z.tgl_bukti)<=(SELECT TOP 1 CAST(bulan as int) as bulan from trhspj_ppkd where kd_skpd=? and cek='1' order by CAST(bulan as int) desc)  THEN 1 ELSE 0 END FROM trhtransout z WHERE  z.panjar = '0' AND z.kd_skpd=? AND a.no_bukti=z.no_bukti) as ketspj", [$kd_skpd, $kd_skpd])
             ->where(['a.panjar' => '0', 'a.kd_skpd' => $kd_skpd, 'a.pay' => 'BANK'])
+            ->whereRaw("a.no_kas not in (select no_bukti from trvalidasi_cmsbank where kd_skpd=?)", [$kd_skpd])
             ->orderBy(DB::raw("CAST(a.no_bukti as numeric)"))
             ->orderBy('a.kd_skpd')
             ->get();
