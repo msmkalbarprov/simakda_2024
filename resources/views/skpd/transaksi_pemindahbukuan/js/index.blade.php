@@ -24,6 +24,8 @@
                     $(row).css("background-color", "#B0E0E6");
                 } else if (data.ketlpj == "1") {
                     $(row).css("background-color", "#98FB98");
+                } else if (data.ketspj == "1") {
+                    $(row).css("background-color", "#98FB98");
                 }
             },
             columns: [{
