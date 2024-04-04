@@ -2958,7 +2958,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1
+							tanggal = ? AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1 and [no] not in ('15796')
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -2976,7 +2976,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal = ?
-							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1
+							AND LEFT(kd_rek,4) IN ('4102','4103','4104','4201','4202') AND LEFT(kd_rek,5) NOT IN ('41407') AND kd_rek NOT IN ('420101040001','420101040002','420101040003') $and1 and [no] not in ('15796')
 					) a
 
 					order by cast(no_kas as int),urut", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]);
@@ -3077,7 +3077,7 @@ class BendaharaUmumDaerahController extends Controller
 						FROM
 							trkasout_ppkd
 						WHERE
-							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102') $and1
+							tanggal <= ? AND LEFT(kd_rek,4) IN ('4102') $and1 and [no] not in ('15796')
 						UNION ALL
 						SELECT
 								2 AS urut,
@@ -3095,7 +3095,7 @@ class BendaharaUmumDaerahController extends Controller
 							trkasout_ppkd
 							WHERE
 							tanggal <= ?
-							AND LEFT(kd_rek,4) IN ('4102') $and1
+							AND LEFT(kd_rek,4) IN ('4102') $and1 and [no] not in ('15796')
 					) a", [$tgl, $tgl, $tgl, $tgl, $tgl, $tgl]))->first();
 
         $data = [
