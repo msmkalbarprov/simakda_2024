@@ -713,7 +713,7 @@ class SppGuController extends Controller
             'tanggal' => DB::table('trhspp')->select('tgl_spp')->where(['no_spp' => $no_spp, 'kd_skpd' => $kd_skpd])->first()->tgl_spp,
             'pptk' => DB::table('ms_ttd')->where(['kode' => 'PPTK', 'nip' => $pptk, 'kd_skpd' => $kd_skpd])->first(),
             'ppkd' => DB::table('ms_ttd')->where(['kode' => 'BUD', 'nip' => $ppkd])->first(),
-            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa])->whereIn('kode', ['PA', 'KPA'])->first(),
+            'pa_kpa' => DB::table('ms_ttd')->where(['nip' => $pa_kpa, 'kd_skpd' => $kd_skpd])->whereIn('kode', ['PA', 'KPA'])->first(),
             'data' => $data
         ];
 
