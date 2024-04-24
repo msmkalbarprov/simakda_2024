@@ -52,11 +52,11 @@ class TransaksiPanjarController extends Controller
             ->get();
 
         return DataTables::of($data)->addIndexColumn()->addColumn('aksi', function ($row) {
-            // $btn = '<a href="' . route("transaksipanjar.edit", ['no_bukti' => Crypt::encrypt($row->no_bukti), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+            $btn = '<a href="' . route("transaksipanjar.edit", ['no_bukti' => Crypt::encrypt($row->no_bukti), 'kd_skpd' => Crypt::encrypt($row->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
             if ($row->ketlpj == 1 || $row->ketspj == 1 || $row->ketlpj == 2) {
-                $btn = "";
+                $btn .= "";
             } else {
-                $btn = '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_bukti . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+                $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $row->no_bukti . '\',\'' . $row->no_kas . '\',\'' . $row->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
             }
             return $btn;
         })->rawColumns(['aksi'])->make(true);
@@ -983,21 +983,23 @@ class TransaksiPanjarController extends Controller
         }
     }
 
-    public function edit($no_panjar, $kd_skpd)
+    public function edit($no_bukti, $kd_skpd)
     {
-        $no_panjar = Crypt::decrypt($no_panjar);
+        $no_bukti = Crypt::decrypt($no_bukti);
         $kd_skpd = Crypt::decrypt($kd_skpd);
 
-        $panjar = DB::table('tr_jpanjar')
-            ->where(['no_kas' => $no_panjar, 'kd_skpd' => $kd_skpd])
-            ->first();
-
         $data = [
-            'panjar' => $panjar,
-            'load_detail' => collect(DB::select("SELECT no_panjar, nilai,(SELECT no_panjar from tr_panjar where jns = '2' AND no_panjar_lalu = ? AND kd_skpd=?) as no_panjar2,
-					(SELECT nilai from tr_panjar where jns = '2' AND no_panjar_lalu = ? AND kd_skpd=? ) as nilai2
-					FROM tr_panjar WHERE no_panjar_lalu = ? AND jns = '1' AND kd_skpd=?", [$panjar->no_panjar, $kd_skpd, $panjar->no_panjar, $kd_skpd, $panjar->no_panjar, $kd_skpd]))->first(),
-            'load_total' => collect(DB::select("SELECT SUM(a.nilai) as panjar, (SELECT SUM(c.nilai) FROM trdtransout c join trhtransout b on c.no_bukti = b.no_bukti AND c.kd_skpd=b.kd_skpd WHERE b.no_panjar = ? and b.panjar = '1' AND b.kd_skpd=?) as trans FROM tr_panjar a WHERE a.no_panjar_lalu = ? AND a.kd_skpd=? GROUP BY kd_skpd", [$panjar->no_panjar, $kd_skpd, $panjar->no_panjar, $kd_skpd]))->first()
+            'panjar' => DB::table('trhtransout')
+                ->where(['no_kas' => $no_bukti, 'kd_skpd' => $kd_skpd])
+                ->first(),
+            'detail_panjar' => DB::table('trdtransout as a')
+                ->join('trhtransout as b', function ($join) {
+                    $join->on('a.no_bukti', '=', 'b.no_bukti');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->select('a.*')
+                ->where(['b.no_kas' => $no_bukti, 'b.kd_skpd' => $kd_skpd])
+                ->get()
         ];
 
         return view('skpd.transaksi_panjar.edit')->with($data);
