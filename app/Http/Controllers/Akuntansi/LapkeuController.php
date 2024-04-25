@@ -86,7 +86,7 @@ class LapkeuController extends Controller
         $map_lra = DB::select("SELECT a.seq,a.cetak,a.bold,a.parent,a.nor,a.uraian,isnull(a.kode_1,'-') as kode_1,isnull(a.kode_2,'-') as kode_2,isnull(a.kode_3,'-') as kode_3,thn_m1 AS lalu FROM map_lra_skpd a 
                           ORDER BY a.seq");
         if ($periodebulan=="periode") {
-            $sus=collect(DB::select("SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses",[$tanggal1,$tanggal2,$jns_ang]))->first();
+            $sus=collect(DB::select("SELECT *,case when ang_surplus<>0 then nil_surplus/ang_surplus*100 else 0 end persen,nil_surplus-ang_surplus selisih From(SELECT SUM(ang_surplus)ang_surplus,sum(nil_surplus)nil_surplus,sum(ang_neto)ang_neto,sum(nil_neto)nil_neto FROM data_jurnal_n_surnet_tgl(?,?,?) $skpd_clauses)a",[$tanggal1,$tanggal2,$jns_ang]))->first();
         }else if($periodebulan=="bulan"){
             $sus=collect(DB::select("SELECT *,case when ang_surplus<>0 then nil_surplus/ang_surplus*100 else 0 end persen,nil_surplus-ang_surplus selisih
                 from
