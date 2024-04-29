@@ -697,34 +697,48 @@
                             dataType: "json",
                             success: function(data) {
                                 let data1 = $.parseJSON(data);
-                                if (data1.data[0].response_code == 00) {
-                                    Swal.fire({
-                                        title: 'SUKSES!',
-                                        text: 'NPWP ' + data1.data[0].data
-                                            .nomorPokokWajibPajak + '-' + data1.data[0]
-                                            .data.namaWajibPajak + ' tersedia',
-                                        icon: 'success',
-                                        confirmButtonColor: '#5b73e8',
-                                    })
+                                if (data1.status) {
+                                    if (data1.data[0].response_code == 00) {
+                                        Swal.fire({
+                                            title: 'SUKSES!',
+                                            text: 'NPWP ' + data1.data[0].data
+                                                .nomorPokokWajibPajak + '-' + data1
+                                                .data[0]
+                                                .data.namaWajibPajak + ' tersedia',
+                                            icon: 'success',
+                                            confirmButtonColor: '#5b73e8',
+                                        })
 
-                                    $("#npwp_validasi").val(data1.data[0].data
-                                        .nomorPokokWajibPajak);
-                                    $("#nm_npwp_validasi").val(data1.data[0].data
-                                        .namaWajibPajak);
-                                    document.getElementById("save").disabled = false;
-                                    // $("#loading").hide();
+                                        $("#npwp_validasi").val(data1.data[0].data
+                                            .nomorPokokWajibPajak);
+                                        $("#nm_npwp_validasi").val(data1.data[0].data
+                                            .namaWajibPajak);
+                                        document.getElementById("save").disabled = false;
+                                        // $("#loading").hide();
+                                    } else {
+                                        Swal.fire({
+                                            type: "error",
+                                            icon: "error",
+                                            title: "Oops...",
+                                            text: data1.data[0].message,
+                                            confirmButtonClass: "btn btn-confirm mt-2",
+                                        })
+                                        document.getElementById("save").disabled = true;
+                                        $("#npwp_validasi").attr("value", '');
+                                        $("#nm_npwp_validasi").attr("value", '');
+                                        // $("#loading").hide();
+                                    }
                                 } else {
                                     Swal.fire({
                                         type: "error",
                                         icon: "error",
                                         title: "Oops...",
-                                        text: data1.data[0].message,
+                                        text: data1.message,
                                         confirmButtonClass: "btn btn-confirm mt-2",
                                     })
                                     document.getElementById("save").disabled = true;
                                     $("#npwp_validasi").attr("value", '');
                                     $("#nm_npwp_validasi").attr("value", '');
-                                    // $("#loading").hide();
                                 }
                             }
                         })
