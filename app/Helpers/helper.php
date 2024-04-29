@@ -2579,6 +2579,24 @@ function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti
 						v.kd_sub_kegiatan = a.kd_sub_kegiatan
 						AND v.kd_skpd = a.kd_skpd
 						AND v.kd_rek6 = a.kd_rek6
+                        UNION ALL
+                        SELECT ISNULL(SUM(nilai),0) as nilai FROM trddpr t
+						INNER JOIN trhdpr u
+						ON t.no_dpr=u.no_dpr AND t.kd_skpd=u.kd_skpd
+						WHERE
+						t.kd_sub_kegiatan = a.kd_sub_kegiatan
+						AND u.kd_skpd = a.kd_skpd
+						AND t.kd_rek6 = a.kd_rek6
+                        and (u.status !='1' or u.status is null) and (t.status ='0' or t.status ='1')
+                        UNION ALL
+                        SELECT ISNULL(SUM(nilai),0) as nilai FROM trddpt t
+						INNER JOIN trhdpt u
+						ON t.no_dpt=u.no_dpt AND t.kd_skpd=u.kd_skpd
+						WHERE
+						t.kd_sub_kegiatan = a.kd_sub_kegiatan
+						AND u.kd_skpd = a.kd_skpd
+						AND t.kd_rek6 = a.kd_rek6
+                        and (t.status !='1' or t.status is null)
 						)r) r) AS lalu,
 						0 AS sp2d,nilai AS anggaran
 						FROM trdrka a WHERE a.kd_sub_kegiatan= ?
