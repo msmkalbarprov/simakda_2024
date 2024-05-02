@@ -5,7 +5,7 @@
 <script src="{{ asset('template/assets/libs/node-waves/waves.min.js') }}"></script>
 <script src="{{ asset('template/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
 <script src="{{ asset('template/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> --}}
 <!-- apexcharts -->
 {{-- <script src="{{ asset('template/assets/js/pages/dashboard.init.js') }}"></script> --}}
 <!-- App js -->
@@ -40,8 +40,10 @@
 <script src="{{ asset('template/assets/js/pages/form-editor.init.js') }}"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+{{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.full.min.js"
+    integrity="sha512-PZUUFofP00wI366Au6XSNyN4Zg8M8Kma4JKIG7ywt8FEY1+Ur0H+FAlH6o0fKoCrdmM4+ZzMyW30msp8Z2zDaA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript"
     src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
 
