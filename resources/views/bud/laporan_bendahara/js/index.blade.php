@@ -131,6 +131,124 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-realisasi_pendapatan_baru').select2({
+            dropdownParent: $('#modal_realisasi_pendapatan_baru .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        // CETAKAN REALISASI PENDAPATAN BARU
+            $('#pilih_skpd_realisasi_pendapatan_baru').hide();
+            $('#pilih_unit_realisasi_pendapatan_baru').hide();
+
+            $('#pilihan_keseluruhan_realisasi_pendapatan_baru').on('click', function() {
+                $('#kd_skpd_realisasi_pendapatan_baru').val(null).change();
+                $('#nm_skpd_realisasi_pendapatan_baru').val(null);
+                $('#kd_unit_realisasi_pendapatan_baru').val(null).change();
+                $('#nm_unit_realisasi_pendapatan_baru').val(null);
+                $('#pilih_unit_realisasi_pendapatan_baru').hide();
+                $('#pilih_skpd_realisasi_pendapatan_baru').hide();
+            });
+
+            $('#pilihan_skpd_realisasi_pendapatan_baru').on('click', function() {
+                $('#kd_skpd_realisasi_pendapatan_baru').val(null).change();
+                $('#nm_skpd_realisasi_pendapatan_baru').val(null);
+                $('#pilih_unit_realisasi_pendapatan_baru').hide();
+                $('#pilih_skpd_realisasi_pendapatan_baru').show();
+            });
+
+            $('#pilihan_unit_realisasi_pendapatan_baru').on('click', function() {
+                $('#kd_unit_realisasi_pendapatan_baru').val(null).change();
+                $('#nm_unit_realisasi_pendapatan_baru').val(null);
+                $('#pilih_skpd_realisasi_pendapatan_baru').hide();
+                $('#pilih_unit_realisasi_pendapatan_baru').show();
+            });
+
+            $('#kd_skpd_realisasi_pendapatan_baru').on('select2:select', function() {
+                let nama = $(this).find(':selected').data('nama');
+                $('#nm_skpd_realisasi_pendapatan_baru').val(nama);
+            });
+
+            $('#kd_unit_realisasi_pendapatan_baru').on('select2:select', function() {
+                let nama = $(this).find(':selected').data('nama');
+                $('#nm_unit_realisasi_pendapatan_baru').val(nama);
+            });
+
+            $('#realisasi_pendapatan_baru').on('click', function() {
+                $('#modal_realisasi_pendapatan_baru').modal('show');
+            });
+
+            $('.cetak_realisasi_pendapatan_baru').on('click', function() {
+                let keseluruhan = document.getElementById('pilihan_keseluruhan_realisasi_pendapatan_baru')
+                    .checked;
+                let skpd = document.getElementById('pilihan_skpd_realisasi_pendapatan_baru').checked;
+                let unit = document.getElementById('pilihan_unit_realisasi_pendapatan_baru').checked;
+
+                if (keseluruhan == false) {
+                    if (skpd == false) {
+                        if (unit == false) {
+                            alert('Silahkan Pilih Keseluruhan, SKPD atau Unit!');
+                            return;
+                        }
+                    }
+                }
+
+                let kd_skpd = document.getElementById('kd_skpd_realisasi_pendapatan_baru').value;
+                let kd_unit = document.getElementById('kd_unit_realisasi_pendapatan_baru').value;
+                let periode = document.getElementById('periode_realisasi_pendapatan_baru').value;
+                let anggaran = document.getElementById('anggaran_realisasi_pendapatan_baru').value;
+                let jenis = document.getElementById('jenis_realisasi_pendapatan_baru').value;
+                let ttd = document.getElementById('ttd_realisasi_pendapatan_baru').value;
+                let tgl_ttd = document.getElementById('tgl_ttd_realisasi_pendapatan_baru').value;
+                let jenis_print = $(this).data("jenis");
+
+                if (skpd) {
+                    if (!kd_skpd) {
+                        alert('Silahkan Pilih SKPD!');
+                        return;
+                    }
+                }
+                if (unit) {
+                    if (!kd_unit) {
+                        alert('Silahkan Pilih Unit!');
+                        return;
+                    }
+                }
+                let pilihan = '';
+                if (keseluruhan) {
+                    pilihan = '1';
+                } else if (skpd) {
+                    pilihan = '2';
+                } else if (unit) {
+                    pilihan = '3';
+                }
+
+                if (!periode) {
+                    alert('Periode tidak boleh kosong!');
+                    return;
+                }
+                if (!anggaran) {
+                    alert("Anggaran tidak boleh kosong!");
+                    return;
+                }
+                if (!jenis) {
+                    alert("Jenis tidak boleh kosong!");
+                    return;
+                }
+                let url = new URL("{{ route('laporan_bendahara_umum.realisasi_pendapatan_baru') }}");
+                let searchParams = url.searchParams;
+                searchParams.append("pilihan", pilihan);
+                searchParams.append("periode", periode);
+                searchParams.append("anggaran", anggaran);
+                searchParams.append("jenis", jenis);
+                searchParams.append("ttd", ttd);
+                searchParams.append("tgl_ttd", tgl_ttd);
+                searchParams.append("kd_skpd", kd_skpd);
+                searchParams.append("kd_unit", kd_unit);
+                searchParams.append("jenis_print", jenis_print);
+                window.open(url.toString(), "_blank");
+            });
+        // CETAKAN REALISASI PENDAPATAN
+
         // CETAKAN REALISASI PENDAPATAN
         $('#pilih_skpd_realisasi_pendapatan').hide();
         $('#pilih_unit_realisasi_pendapatan').hide();

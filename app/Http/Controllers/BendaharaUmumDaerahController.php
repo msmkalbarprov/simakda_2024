@@ -107,6 +107,69 @@ class BendaharaUmumDaerahController extends Controller
             header("Content-Disposition: attachment; filename= $judul.xls");
             echo $view;
         }
+    }public function realisasiPendapatan_baru(Request $request)
+    {
+        $skpd_global = Auth::user()->kd_skpd;
+        $pilihan = $request->pilihan;
+        $periode = $request->periode;
+        $anggaran = $request->anggaran;
+        $jenis = $request->jenis;
+        $ttd = $request->ttd;
+        $tgl_ttd = $request->tgl_ttd;
+        $kd_skpd = $request->kd_skpd;
+        $kd_unit = $request->kd_unit;
+        $jenis_print = $request->jenis_print;
+
+        if ($ttd) {
+            $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
+        } else {
+            $tanda_tangan = null;
+        }
+
+        if ($pilihan == '1') {
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_blud(?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=?  ORDER BY urut1,urut2", [$periode, $anggaran, $jenis]);
+        } else if ($pilihan == '2') {
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_blud_skpd(?,?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=?  ORDER BY urut1,urut2", [$periode, $anggaran, $kd_skpd, $jenis]);
+        } else if ($pilihan == '3') {
+            $daftar_realisasi  = DB::select("SELECT * FROM penerimaan_kasda_new_blud_unit(?,?,?) WHERE LEFT(kd_rek,1)='4' AND len(kd_rek)<=?  ORDER BY urut1,urut2", [$periode, $anggaran, $kd_unit, $jenis]);
+        }
+
+        if ($pilihan == '1') {
+            $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $skpd_global])->first();
+        } elseif ($pilihan == '2') {
+            $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_skpd])->first();
+        } elseif ($pilihan == '3') {
+            $skpd = DB::table('ms_skpd')->select('nm_skpd')->where(['kd_skpd' => $kd_unit])->first();
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanda_tangan' => $tanda_tangan,
+            'daftar_realisasi' => $daftar_realisasi,
+            'skpd' => $skpd,
+            'tanggal' => $tgl_ttd,
+            'periode' => $periode
+        ];
+
+        $judul = 'REALISASI_PENDPATAN';
+
+        $view = view('bud.laporan_bendahara.cetak.realisasi_pendapatan')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOrientation('landscape')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename= $judul.xls");
+            echo $view;
+        }
     }
 
     public function pembantuPenerimaan(Request $request)
