@@ -1726,6 +1726,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('laporan_bendahara_umum', [BendaharaUmumDaerahController::class, 'index'])->name('laporan_bendahara_umum.index');
         // CETAK REALISASI PENDAPATAN
         Route::get('realisasi_pendapatan', [BendaharaUmumDaerahController::class, 'realisasiPendapatan'])->name('laporan_bendahara_umum.realisasi_pendapatan');
+        // CETAK REALISASI PENDAPATAN_baru
+        Route::get('realisasi_pendapatan_baru', [BendaharaUmumDaerahController::class, 'realisasiPendapatan_baru'])->name('laporan_bendahara_umum.realisasi_pendapatan_baru');
         // CETAK BUKU KAS PEMBANTU PENERIMAAN
         Route::get('buku_kas_pembantu_penerimaan', [BendaharaUmumDaerahController::class, 'pembantuPenerimaan'])->name('laporan_bendahara_umum.buku_kas_pembantu_penerimaan');
         // BKU (B IX)
