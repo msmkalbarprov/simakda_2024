@@ -187,7 +187,9 @@ class HomeController extends Controller
 
     public function coba()
     {
-        return view('coba');
+        $data = DB::table('pengguna')->get();
+
+        return response()->json($data);
     }
 
     // Ubah SKPD
