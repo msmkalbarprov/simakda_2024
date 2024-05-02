@@ -2286,7 +2286,8 @@ Route::get('dashboard', [HomeController::class, 'index'])->name('home')->middlew
 
 // Route::get('setting', [SettingController::class, 'index'])->name('setting');
 
-Route::post('coba', [HomeController::class, 'coba'])->name('coba');
+Route::get('coba', [HomeController::class, 'coba'])->name('coba');
+Route::post('coba_post', [HomeController::class, 'coba_post'])->name('coba_post');
 
 Route::post('login', [LoginController::class, 'authenticate'])->name('login.index')->middleware(['throttle:3,1', 'guest']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

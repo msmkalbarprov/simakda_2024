@@ -192,6 +192,13 @@ class HomeController extends Controller
         return response()->json($data);
     }
 
+    public function coba_post()
+    {
+        $data = DB::table('pengguna')->get();
+
+        return response()->json($data);
+    }
+
     // Ubah SKPD
     public function ubahSkpd($id)
     {
