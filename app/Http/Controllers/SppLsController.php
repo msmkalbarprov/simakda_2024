@@ -373,7 +373,7 @@ class SppLsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $spd = $request->spd;
         $skpd = substr($kd_skpd, 18, 4);
-
+        $anggaran = status_anggaran();
         $kd_bpp = Auth::user()->kd_bpp;
         $id_user = Auth::user()->id;
         $bpp = substr($kd_bpp, 23, 1);
@@ -383,7 +383,7 @@ class SppLsController extends Controller
                 $data = DB::table('trdspd as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', 'c.status_keg', DB::raw("(SELECT distinct trskpd.kd_skpd from trskpd where trskpd.kd_sub_kegiatan=a.kd_sub_kegiatan and trskpd.kd_skpd=b.kd_skpd) as bidang"))->distinct()->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trskpd as c', function ($join) {
                     $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
                     $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where(function ($query) {
+                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.jns_ang', $anggaran)->where(function ($query) {
                     $query->where('c.status_keg', '<>', '0')
                         ->orWhereNull('c.status_keg');
                 })->whereRaw("a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM pelimpahan_kegiatan WHERE kd_bpp=? AND kd_skpd=? AND id_user=?)", [$kd_bpp, $kd_skpd, $id_user])->orderBy('a.kd_sub_kegiatan')->get();
@@ -391,7 +391,7 @@ class SppLsController extends Controller
                 $data = DB::table('trdspd as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', 'c.status_keg', DB::raw("(SELECT distinct trskpd.kd_skpd from trskpd where trskpd.kd_sub_kegiatan=a.kd_sub_kegiatan and trskpd.kd_skpd=b.kd_skpd) as bidang"))->distinct()->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trskpd as c', function ($join) {
                     $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
                     $join->on('b.kd_skpd', '=', 'c.kd_skpd');
-                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where(function ($query) {
+                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.jns_ang', $anggaran)->where(function ($query) {
                     $query->where('c.status_keg', '<>', '0')
                         ->orWhereNull('c.status_keg');
                 })->orderBy('a.kd_sub_kegiatan')->get();
@@ -401,12 +401,12 @@ class SppLsController extends Controller
                 $data = DB::table('trdspd as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', 'c.status_keg', 'c.kd_skpd as bidang')->distinct()->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trskpd as c', function ($join) {
                     $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
                     $join->on(DB::raw("LEFT(b.kd_skpd, 17)"), '=', DB::raw("LEFT(c.kd_skpd, 17)"));
-                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.kd_skpd', $kd_skpd)->whereRaw("a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM pelimpahan_kegiatan WHERE kd_bpp=? AND kd_skpd=? AND id_user=?)", [$kd_bpp, $kd_skpd, $id_user])->orderBy('a.kd_sub_kegiatan')->get();
+                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.jns_ang', $anggaran)->where('c.kd_skpd', $kd_skpd)->whereRaw("a.kd_sub_kegiatan IN (SELECT kd_sub_kegiatan FROM pelimpahan_kegiatan WHERE kd_bpp=? AND kd_skpd=? AND id_user=?)", [$kd_bpp, $kd_skpd, $id_user])->orderBy('a.kd_sub_kegiatan')->get();
             } else {
                 $data = DB::table('trdspd as a')->select('a.kd_sub_kegiatan', 'a.nm_sub_kegiatan', 'a.kd_program', 'a.nm_program', 'c.status_keg', 'c.kd_skpd as bidang')->distinct()->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->join('trskpd as c', function ($join) {
                     $join->on('a.kd_sub_kegiatan', '=', 'c.kd_sub_kegiatan');
                     $join->on(DB::raw("LEFT(b.kd_skpd, 17)"), '=', DB::raw("LEFT(c.kd_skpd, 17)"));
-                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.kd_skpd', $kd_skpd)->orderBy('a.kd_sub_kegiatan')->get();
+                })->where('a.no_spd', $spd)->where('c.status_sub_kegiatan', '1')->where('c.jns_ang', $anggaran)->where('c.kd_skpd', $kd_skpd)->orderBy('a.kd_sub_kegiatan')->get();
             }
         }
         return response()->json($data);
