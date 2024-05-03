@@ -89,7 +89,8 @@ class PenetapanController extends Controller
                     'nilai' => $data['nilai'],
                     'keterangan' => $data['keterangan'],
                     'kanal' => '',
-                    'jns_pembayaran' => $data['jenis_pembayaran']
+                    'jns_pembayaran' => $data['jenis_pembayaran'],
+                    'user_name' => Auth::user()->nama
                 ]);
 
             DB::commit();
@@ -162,7 +163,8 @@ class PenetapanController extends Controller
                     'nilai' => $data['nilai'],
                     'keterangan' => $data['keterangan'],
                     'jns_pembayaran' => $data['jenis_pembayaran'],
-                    'kanal' => ''
+                    'kanal' => '',
+                    'user_name' => Auth::user()->nama
                 ]);
 
             DB::commit();
@@ -438,7 +440,8 @@ class PenetapanController extends Controller
                         'nilai' => $data['nilai'],
                         'keterangan' => $data['keterangan'],
                         'jns_pembayaran' => $data['jenis_pembayaran'],
-                        'kanal' => ''
+                        'kanal' => '',
+                        'user_name' => Auth::user()->nama
                     ]);
 
                 DB::table('trhkasin_pkd')
