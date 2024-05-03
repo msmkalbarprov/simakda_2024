@@ -70,10 +70,11 @@
                 return;
             }
 
-            if (nilai > total) {
-                alert('Nilai potongan tidak boleh lebih besar dari nilai penerimaan!');
-                return;
-            }
+            // kk eni tgl 3 mei 2024
+            // if (nilai > total) {
+            //     alert('Nilai potongan tidak boleh lebih besar dari nilai penerimaan!');
+            //     return;
+            // }
 
             if (nilai == '0') {
                 alert('Nilai 0!Cek Lagi!!!');
