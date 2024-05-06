@@ -471,6 +471,7 @@
                     tgl_spp: tgl_spp,
                     status_angkas: status_angkas,
                     beban: beban,
+                    jenis: $('#jenis').val(),
                     nomor_spd: nomor_spd,
                     "_token": "{{ csrf_token() }}",
                 },

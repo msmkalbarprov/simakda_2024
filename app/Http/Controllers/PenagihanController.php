@@ -588,6 +588,7 @@ class PenagihanController extends Controller
         $nomor_spd          = $request->nomor_spd;
         $status_angkas      = $request->status_angkas;
         $beban              = $request->beban;
+        $jenis              = $request->jenis;
         $bulan              = date('m', strtotime($tgl_spp));
         $id_skrg            = '';
 
@@ -615,21 +616,22 @@ class PenagihanController extends Controller
             ->first();
 
         // TOTAL SPD
-        $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='3' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+        if ($beban == '5' && $jenis == '8') {
+            $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='3' and tgl_spd<=? and jns_beban=?", [$kode, $tgl_spp, '6']))->first()->revisi;
 
-        $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+            $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=? and jns_beban=?", [$kode, $tgl_spp, '6']))->first()->revisi;
 
-        $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='9' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+            $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='9' and tgl_spd<=? and jns_beban=?", [$kode, $tgl_spp, '6']))->first()->revisi;
 
-        $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+            $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=? and jns_beban=?", [$kode, $tgl_spp, '6']))->first()->revisi;
 
-        $tgl_spd = DB::table('trhspd')
-            ->where(['no_spd' => $nomor_spd])
-            ->first()
-            ->tgl_spd;
+            $tgl_spd = DB::table('trhspd')
+                ->where(['no_spd' => $nomor_spd])
+                ->first()
+                ->tgl_spd;
 
-        $total_spd =
-            collect(DB::select("SELECT sum(nilai)as total_spd from (
+            $total_spd =
+                collect(DB::select("SELECT sum(nilai)as total_spd from (
                     SELECT
                     'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
                     FROM
@@ -694,6 +696,87 @@ class PenagihanController extends Controller
                     and bulan_awal <= month(?)
                     and tgl_spd<=?
                     )spd", [$kode, $giat, $rek, $revisi1, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi2, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi3, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi4, $tgl_spp, $tgl_spp, $tgl_spd]))->first();
+        } else {
+            $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='3' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+
+            $revisi2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='6' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+
+            $revisi3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='9' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+
+            $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir='12' and tgl_spd<=?", [$kode, $tgl_spp]))->first()->revisi;
+
+            $tgl_spd = DB::table('trhspd')
+                ->where(['no_spd' => $nomor_spd])
+                ->first()
+                ->tgl_spd;
+
+            $total_spd =
+                collect(DB::select("SELECT sum(nilai)as total_spd from (
+                    SELECT
+                    'TW1' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    a.kd_unit = ?
+                    AND a.kd_sub_kegiatan = ?
+                    AND a.kd_rek6 = ?
+                    AND b.status = '1'
+                    and bulan_akhir='3'
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and bulan_awal <= month(?)
+                    and tgl_spd<=?
+                    UNION ALL
+                    SELECT
+                    'TW2' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    a.kd_unit = ?
+                    AND a.kd_sub_kegiatan = ?
+                    AND a.kd_rek6 = ?
+                    AND b.status = '1'
+                    and bulan_akhir='6'
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and bulan_awal <= month(?)
+                    and tgl_spd<=?
+                    UNION ALL
+                    SELECT
+                    'TW3' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    a.kd_unit = ?
+                    AND a.kd_sub_kegiatan = ?
+                    AND a.kd_rek6 = ?
+                    AND b.status = '1'
+                    and bulan_akhir='9'
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and bulan_awal <= month(?)
+                    and tgl_spd<=?
+                    UNION ALL
+                    SELECT
+                    'TW4' ket,isnull(SUM(a.nilai),0) AS nilai
+                    FROM
+                    trdspd a
+                    JOIN trhspd b ON a.no_spd = b.no_spd
+                    WHERE
+                    a.kd_unit = ?
+                    AND a.kd_sub_kegiatan = ?
+                    AND a.kd_rek6 = ?
+                    AND b.status = '1'
+                    and bulan_akhir='12'
+                    and revisi_ke=?
+                    and tgl_spd<=?
+                    and bulan_awal <= month(?)
+                    and tgl_spd<=?
+                    )spd", [$kode, $giat, $rek, $revisi1, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi2, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi3, $tgl_spp, $tgl_spp, $tgl_spd, $kode, $giat, $rek, $revisi4, $tgl_spp, $tgl_spp, $tgl_spd]))->first();
+        }
 
         // ANGKAS
         if ($status_angkas == 'murni') {
