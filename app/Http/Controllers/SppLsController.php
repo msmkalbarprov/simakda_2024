@@ -301,13 +301,14 @@ class SppLsController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
         $skpd = substr($kd_skpd, 0, 17);
         $bulan = date('m', strtotime($tgl_spp));
-        if ($beban == '4') {
-            $beban = ['5'];
-        } elseif ($beban == '5') {
-            $beban = ['5', '6'];
-        } elseif ($beban == '6') {
-            $beban = ['5'];
-        }
+
+        // if ($beban == '4') {
+        //     $beban = ['5'];
+        // } elseif ($beban == '5') {
+        //     $beban = ['5', '6'];
+        // } elseif ($beban == '6') {
+        //     $beban = ['5'];
+        // }
 
 
         $revisi1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '3', $tgl_spp, '1']))
@@ -322,22 +323,54 @@ class SppLsController extends Controller
         $revisi4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=?", [$skpd, '12', $tgl_spp, '1']))
             ->first()->revisi;
 
+
+        // revisi pembiayaan
+        $revisi_pembiayaan1 = collect(DB::select("SELECT max(revisi_ke) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=? and jns_beban=?", [$skpd, '3', $tgl_spp, '1', '6']))
+            ->first()->revisi;
+
+        $revisi_pembiayaan2 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=? and jns_beban=?", [$skpd, '6', $tgl_spp, '1', '6']))
+            ->first()->revisi;
+
+        $revisi_pembiayaan3 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=? and jns_beban=?", [$skpd, '9', $tgl_spp, '1', '6']))
+            ->first()->revisi;
+
+        $revisi_pembiayaan4 = collect(DB::select("SELECT isnull(max(revisi_ke),0) as revisi from trhspd where left(kd_skpd,17)=left(?,17) and bulan_akhir=? and tgl_spd<=? and [status]=? and jns_beban=?", [$skpd, '12', $tgl_spp, '1', '6']))
+            ->first()->revisi;
+
         if ($beban == '5') {
-            $data = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
-                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
-                    GROUP BY b.no_spd, b.tgl_spd
-                    UNION ALL
-                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
-                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
-                    GROUP BY b.no_spd, b.tgl_spd
-                    UNION ALL
-                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
-                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
-                    GROUP BY b.no_spd, b.tgl_spd
-                    UNION ALL
-                    SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban IN (?,?) and left(b.kd_skpd,17)=left(?,17)
-                    and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
-                    GROUP BY b.no_spd, b.tgl_spd", ['5', '6', $kd_skpd, '3', $revisi1, '1', $tgl_spp, '5', '6', $kd_skpd, '6', $revisi2, '1', $tgl_spp, '5', '6', $kd_skpd, '9', $revisi3, '1', $tgl_spp, '5', '6', $kd_skpd, '12', $revisi4, '1', $tgl_spp]);
+            $data = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            -- SPD PEMBIAYAAN
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            UNION ALL
+            SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
+            and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
+            GROUP BY b.no_spd, b.tgl_spd
+            ", ['5', $kd_skpd, '3', $revisi1, '1', $tgl_spp, '5', $kd_skpd, '6', $revisi2, '1', $tgl_spp, '5', $kd_skpd, '9', $revisi3, '1', $tgl_spp, '5', $kd_skpd, '12', $revisi4, '1', $tgl_spp, '6', $kd_skpd, '3', $revisi_pembiayaan1, '1', $tgl_spp, '6', $kd_skpd, '6', $revisi_pembiayaan2, '1', $tgl_spp, '6', $kd_skpd, '9', $revisi_pembiayaan3, '1', $tgl_spp, '6', $kd_skpd, '12', $revisi_pembiayaan4, '1', $tgl_spp]);
         } else {
             $data = DB::select("SELECT b.no_spd, b.tgl_spd, SUM(a.nilai) as total FROM trdspd a INNER JOIN trhspd b ON a.no_spd = b.no_spd WHERE b.jns_beban = ? and left(b.kd_skpd,17)=left(?,17)
                     and bulan_akhir=? and revisi_ke=? and [status]=? and b.tgl_spd<=?
