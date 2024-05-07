@@ -2439,10 +2439,50 @@ class SppLsController extends Controller
             $daerah = DB::table('sclient')->select('daerah')->where(['kd_skpd' => $kd_skpd])->first();
             $tglspd = $cari_spp->tgl_spp;
 
-            $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])->where('tgl_spd', '<=', $tglspd)->first();
-            $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])->where('tgl_spd', '<=', $tglspd)->first();
-            $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])->where('tgl_spd', '<=', $tglspd)->first();
-            $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])->where('tgl_spd', '<=', $tglspd)->first();
+            if ($beban == '5' && $jenis == '8') {
+                $revisi1 = DB::table('trhspd')
+                    ->select(DB::raw("MAX(revisi_ke) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3', 'jns_beban' => '6'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi2 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6', 'jns_beban' => '6'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi3 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9', 'jns_beban' => '6'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi4 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12', 'jns_beban' => '6'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+            } else {
+                $revisi1 = DB::table('trhspd')
+                    ->select(DB::raw("MAX(revisi_ke) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi2 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '6'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi3 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '9'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+                $revisi4 = DB::table('trhspd')
+                    ->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi"))
+                    ->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '12'])
+                    ->where('tgl_spd', '<=', $tglspd)
+                    ->first();
+            }
+
 
             $data_spp1 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '3' AND revisi_ke = '$revisi1->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd');
             $data_spp2 = DB::table('trdspd as a')->join('trhspd as b', 'a.no_spd', '=', 'b.no_spd')->whereRaw("LEFT(a.kd_unit,17)=LEFT('$kd_skpd',17) AND b.tgl_spd <= '$tglspd' AND a.kd_sub_kegiatan= '$sub_kegiatan' AND bulan_akhir = '6' AND revisi_ke = '$revisi2->revisi' ")->select('a.no_spd', 'b.tgl_spd', DB::raw("SUM(a.nilai) as nilai"))->groupBy('a.no_spd', 'b.tgl_spd')->unionAll($data_spp1);

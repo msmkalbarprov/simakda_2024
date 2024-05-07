@@ -1434,7 +1434,7 @@ function nama_beban2($beban, $jenis)
     return $nama;
 }
 
-function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan)
+function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan, $jenis)
 {
     if ($beban == '2') {
         $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['kd_skpd' => $kd_skpd, 'bulan_akhir' => '3', 'status' => '1'])->first();
@@ -1629,10 +1629,17 @@ function ringkasan_gu($kd_skpd, $beban, $tgl_spd, $kd_sub_kegiatan)
             ->orderBy('nilai')
             ->get();
     } elseif ($beban == '5') {
-        $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['bulan_akhir' => '3', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['bulan_akhir' => '6', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi3"))->where(['bulan_akhir' => '9', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
-        $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi4"))->where(['bulan_akhir' => '12', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+        if ($beban == '5' && $jenis == '8') {
+            $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['bulan_akhir' => '3', 'status' => '1', 'jns_beban' => '6'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['bulan_akhir' => '6', 'status' => '1', 'jns_beban' => '6'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi3"))->where(['bulan_akhir' => '9', 'status' => '1', 'jns_beban' => '6'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi4"))->where(['bulan_akhir' => '12', 'status' => '1', 'jns_beban' => '6'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+        } else {
+            $revisi1 = DB::table('trhspd')->select(DB::raw("MAX(revisi_ke) as revisi1"))->where(['bulan_akhir' => '3', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi2 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi2"))->where(['bulan_akhir' => '6', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi3 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi3"))->where(['bulan_akhir' => '9', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+            $revisi4 = DB::table('trhspd')->select(DB::raw("ISNULL(MAX(revisi_ke),0) as revisi4"))->where(['bulan_akhir' => '12', 'status' => '1'])->where(DB::raw("LEFT(kd_skpd,17)"), DB::raw("LEFT('$kd_skpd',17)"))->where('tgl_spd', '<=', $tgl_spd)->first();
+        }
 
         $jns_sub_kegiatan = DB::table('ms_sub_kegiatan')->select('jns_sub_kegiatan')->where(['kd_sub_kegiatan' => $kd_sub_kegiatan])->first();
 
