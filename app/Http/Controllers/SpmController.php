@@ -1026,7 +1026,8 @@ class SpmController extends Controller
         $kd_sub_kegiatan = $sub_giat->kd_sub_kegiatan;
         $no_spd = DB::table('trhspp')->select('no_spd')->where(['no_spp' => $no_spp->no_spp])->first();
         $tgl_spd = DB::table('trhspd')->select('tgl_spd')->where(['no_spd' => $no_spd->no_spd])->first();
-        $data_beban = ringkasan_gu($kd_skpd, $beban, $tgl_spd->tgl_spd, $kd_sub_kegiatan);
+        $no_spp = DB::table('trhspm')->select('no_spp', 'jenis_beban')->where(['no_spm' => $no_spm])->first();
+        $data_beban = ringkasan_gu($kd_skpd, $beban, $tgl_spd->tgl_spd, $kd_sub_kegiatan, $no_spp->jenis_beban);
         $total_spd = 0;
         foreach ($data_beban as $beban1) {
             $total_spd += $beban1->nilai;
