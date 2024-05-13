@@ -51,7 +51,7 @@
                         <label for="no_panjar" class="col-md-2 col-form-label">No. Panjar</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="no_panjar" name="no_panjar" required readonly
-                                value="{{ $panjar->no_bukti }}">
+                                value="{{ $panjar->no_panjar }}">
                         </div>
                     </div>
                     {{-- Kode dan Nama SKPD --}}
