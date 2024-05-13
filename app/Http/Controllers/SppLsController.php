@@ -29,7 +29,6 @@ class SppLsController extends Controller
         $cek = DB::table('tb_status_angkas')
             ->whereRaw("left(jns_angkas,2)=? and status_kunci=? and status=?", [$status_ang, $status_angkas, '1'])
             ->count();
-
         $data = [
             'cek' => selisih_angkas(),
             'cek1' => $cek,
@@ -260,10 +259,10 @@ class SppLsController extends Controller
             }
         } elseif ($beban == '6') {
             $data = [
-                [
-                    "id"   => 1,
-                    "text" => " Tambahan Penghasilan"
-                ],
+                // [
+                //     "id"   => 1,
+                //     "text" => " Tambahan Penghasilan"
+                // ],
                 [
                     "id"   => 2,
                     "text" => " Operasional KDH/WKDH"
