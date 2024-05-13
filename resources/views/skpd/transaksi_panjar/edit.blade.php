@@ -72,7 +72,7 @@
                         <label for="no_panjar" class="col-md-2 col-form-label">No. Panjar</label>
                         <div class="col-md-10">
                             <input class="form-control" type="text" id="no_panjar" name="no_panjar" required readonly
-                                value="{{ $panjar->no_bukti }}">
+                                value="{{ $panjar->no_panjar }}">
                         </div>
                     </div>
                     {{-- Pembayaran dan Jenis Beban --}}
