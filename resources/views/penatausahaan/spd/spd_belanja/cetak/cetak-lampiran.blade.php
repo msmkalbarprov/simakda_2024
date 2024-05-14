@@ -187,7 +187,7 @@
                         $total_spd += $item->nilai;
                     }
 
-                    if (strlen($item->no_urut) <= 32) {
+                    if (strlen($item->no_urut) <= 34) {
                         $bold = 'bold';
                         $fontr = '16';
                     } else {
