@@ -259,10 +259,10 @@ class SppLsController extends Controller
             }
         } elseif ($beban == '6') {
             $data = [
-                // [
-                //     "id"   => 1,
-                //     "text" => " Tambahan Penghasilan"
-                // ],
+                [
+                    "id"   => 1,
+                    "text" => " Tambahan Penghasilan"
+                ],
                 [
                     "id"   => 2,
                     "text" => " Operasional KDH/WKDH"
