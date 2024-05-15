@@ -56,6 +56,8 @@ class BendaharaUmumDaerahController extends Controller
         $kd_skpd = $request->kd_skpd;
         $kd_unit = $request->kd_unit;
         $jenis_print = $request->jenis_print;
+        $pilihan_tanggal = $request->pilihan_tanggal;
+        $tanggal = $request->tanggal;
 
         if ($ttd) {
             $tanda_tangan = DB::table('ms_ttd')->select('nama', 'nip', 'jabatan', 'pangkat')->where(['nip' => $ttd])->whereIn('kode', ['BUD', 'PA'])->first();
@@ -63,12 +65,18 @@ class BendaharaUmumDaerahController extends Controller
             $tanda_tangan = null;
         }
 
-        if ($pilihan == '1') {
+        if ($pilihan == '1' && $pilihan_tanggal == 'bulan') {
             $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new(?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $jenis]);
-        } else if ($pilihan == '2') {
+        } else if ($pilihan == '2' && $pilihan_tanggal == 'bulan') {
             $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_skpd(?,?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_skpd, $jenis]);
-        } else if ($pilihan == '3') {
+        } else if ($pilihan == '3' && $pilihan_tanggal == 'bulan') {
             $daftar_realisasi  = DB::select("SELECT * FROM penerimaan_kasda_new_unit(?,?,?) WHERE LEFT(kd_rek,1)='4' AND len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$periode, $anggaran, $kd_unit, $jenis]);
+        } else if ($pilihan == '1' && $pilihan_tanggal == 'tanggal') {
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_tanggal(?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$tanggal, $anggaran, $jenis]);
+        } else if ($pilihan == '2' && $pilihan_tanggal == 'tanggal') {
+            $daftar_realisasi = DB::select("SELECT * FROM penerimaan_kasda_new_skpd_tanggal(?,?,?) WHERE LEFT(kd_rek,1)='4' AND  len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$tanggal, $anggaran, $kd_skpd, $jenis]);
+        } else if ($pilihan == '3' && $pilihan_tanggal == 'tanggal') {
+            $daftar_realisasi  = DB::select("SELECT * FROM penerimaan_kasda_new_unit_tanggal(?,?,?) WHERE LEFT(kd_rek,1)='4' AND len(kd_rek)<=? and left(kd_rek,6)!='410416' ORDER BY urut1,urut2", [$tanggal, $anggaran, $kd_unit, $jenis]);
         }
 
         if ($pilihan == '1') {

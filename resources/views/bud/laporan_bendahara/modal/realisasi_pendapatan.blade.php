@@ -65,26 +65,41 @@
                             id="nm_unit_realisasi_pendapatan">
                     </div>
                 </div>
+                {{-- Pilihan --}}
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label class="form-label">Pilihan</label>
+                        <select class="form-control select2-realisasi_pendapatan" style=" width: 100%;"
+                            id="pilihan_realisasi_pendapatan">
+                            <option value="" disabled selected>Silahkan Pilih</option>
+                            <option value="bulan">Bulan</option>
+                            <option value="tanggal">Tanggal</option>
+                        </select>
+                    </div>
+                </div>
                 {{-- Periode dan Jenis --}}
                 <div class="mb-3 row">
                     <div class="col-md-6">
                         <label for="periode" class="form-label">Periode</label>
-                        <select class="form-control select2-realisasi_pendapatan" style=" width: 100%;"
-                            id="periode_realisasi_pendapatan">
-                            <option value="" disabled selected>Silahkan Pilih</option>
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
+                        <div class="periode_realisasi_pendapatan">
+                            <select class="form-control select2-realisasi_pendapatan" style=" width: 100%;"
+                                id="periode_realisasi_pendapatan">
+                                <option value="" disabled selected>Silahkan Pilih</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <input type="date" class="form-control" id="tanggal_realisasi_pendapatan">
                     </div>
                     <div class="col-md-6">
                         <label for="jenis" class="form-label">Jenis</label>
@@ -195,8 +210,8 @@
                     </div>
                     <div class="col-md-6">
                         <label for="nm_skpd" class="form-label"></label>
-                        <input type="text" style="border:none;background-color:white" class="form-control" readonly
-                            id="nm_skpd_realisasi_pendapatan_baru">
+                        <input type="text" style="border:none;background-color:white" class="form-control"
+                            readonly id="nm_skpd_realisasi_pendapatan_baru">
                     </div>
                 </div>
                 {{-- Unit --}}
@@ -214,8 +229,8 @@
                     </div>
                     <div class="col-md-6">
                         <label for="nm_unit" class="form-label"></label>
-                        <input type="text" style="border:none;background-color:white" class="form-control" readonly
-                            id="nm_unit_realisasi_pendapatan_baru">
+                        <input type="text" style="border:none;background-color:white" class="form-control"
+                            readonly id="nm_unit_realisasi_pendapatan_baru">
                     </div>
                 </div>
                 {{-- Periode dan Jenis --}}
@@ -241,7 +256,8 @@
                     </div>
                     <div class="col-md-6">
                         <label for="jenis" class="form-label">Jenis</label>
-                        <select class="form-control select2-realisasi_pendapatan_baru" id="jenis_realisasi_pendapatan_baru">
+                        <select class="form-control select2-realisasi_pendapatan_baru"
+                            id="jenis_realisasi_pendapatan_baru">
                             <option value="" disabled selected>Silahkan Pilih</option>
                             <option value="4">Jenis</option>
                             <option value="8">Objek</option>
