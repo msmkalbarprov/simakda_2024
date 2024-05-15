@@ -12,6 +12,17 @@
                     <input type="hidden" name="tipe" id="tipe">
                 </div>
                 <div class="card-body">
+                    <div class="mb-3 row">
+                        <div class="col-md-10">
+                            <input type="text" placeholder="Silahkan isi nomor SP2D" id="no_sp2d" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-md btn-info" id="cari">
+                                Cari
+                            </button>
+                        </div>
+                    </div>
+                    <br>
                     <div class="table-rep-plugin">
                         <div class="table-responsive mb-0" data-pattern="priority-columns">
                             <table id="cair_sp2d" class="table" style="width: 100%">

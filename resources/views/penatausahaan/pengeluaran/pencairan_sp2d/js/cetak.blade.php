@@ -20,6 +20,7 @@
                 },
                 "data": function(d) {
                     d.tipe = document.getElementById('tipe').value;
+                    d.no_sp2d = document.getElementById('no_sp2d').value;
                 },
             },
             createdRow: function(row, data, index) {
@@ -141,6 +142,17 @@
         $('#jenis').select2({
             dropdownParent: $('#modal_cetak'),
             theme: 'bootstrap-5'
+        });
+
+        $('#cari').on('click', function() {
+            let no_sp2d = document.getElementById('no_sp2d').value;
+
+            if (!no_sp2d) {
+                alert('Silahkan isi nomor SP2D terlebih dahulu!');
+                return;
+            }
+
+            cair_sp2d.ajax.reload();
         });
 
         // cetak sp2d

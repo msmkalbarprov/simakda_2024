@@ -19,6 +19,7 @@ class PencairanSp2dController extends Controller
     public function loadData(Request $request)
     {
         $tipe = $request->tipe;
+        $no_sp2d = $request->no_sp2d;
 
         $data = DB::table('trhsp2d as a')
             ->join('trduji as b', 'a.no_sp2d', '=', 'b.no_sp2d')
@@ -33,6 +34,11 @@ class PencairanSp2dController extends Controller
                     $query->whereRaw("c.sp2d_online=? and a.status_bud=?", ['0', '1']);
                 } else if ($tipe == 'offline_blmcair') {
                     $query->whereRaw("c.sp2d_online=? and (a.status_bud<>? or a.status_bud is null)", ['0', '1']);
+                }
+            })
+            ->where(function ($query) use ($no_sp2d) {
+                if ($no_sp2d) {
+                    $query->whereRaw("a.no_sp2d LIKE '%$no_sp2d%'");
                 }
             })
             ->orderBy('a.no_sp2d')
