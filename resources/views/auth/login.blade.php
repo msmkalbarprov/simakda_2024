@@ -172,7 +172,7 @@
                                 </div>
                             @endif
                             <div class="p-2 mt-4">
-                                <form method="POST" action="{{ route('login.index') }}">
+                                <form method="POST" id="login-form" action="{{ route('login.index') }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label" for="username">Username</label>
@@ -188,29 +188,32 @@
                                             value="{{ Auth::check() ? auth()->user->id : '' }}">
                                     </div>
                                     <div class="mb-3">
-                                        <div class="float-end">
-                                            {{-- <a href="auth-recoverpw.html" class="text-muted">Forgot password?</a> --}}
-                                        </div>
                                         <label class="form-label" for="userpassword">Password</label>
-                                        <input id="password" type="password"
-                                            class="form-control @error('password') is-invalid @enderror" name="password"
-                                            required autocomplete="current-password">
+                                        <div class="input-group">
+                                            <input id="password" type="password"
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                name="password" required autocomplete="current-password">
 
-                                        @error('password')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <i class="uil-eye" style="cursor: pointer"></i>
+                                                <i class="uil-eye-slash d-none" style="cursor: pointer"></i>
                                             </span>
-                                        @enderror
+                                        </div>
                                     </div>
 
-                                    <div class="form-check">
+                                    {{-- <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                             {{ old('remember') ? 'checked' : '' }}>
 
                                         <label class="form-check-label" for="remember">
                                             {{ __('Remember Me') }}
                                         </label>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="mt-3 text-end">
                                         <button type="submit"
@@ -287,6 +290,24 @@
     <!-- App js -->
     <script src="{{ asset('template/assets/js/app.js') }}"></script>
 
+    <script>
+        const password = document.getElementById('password')
+        const toggles = document.querySelectorAll('#login-form i')
+
+        const togglePassword = (index) => {
+            const type = password.getAttribute('type')
+            password.setAttribute('type', type === 'text' ? 'password' : 'text')
+            toggles.forEach((toggle, idx) => {
+                if (index !== idx) {
+                    toggle.classList.remove('d-none')
+                } else {
+                    toggle.classList.add('d-none')
+                }
+            })
+        }
+
+        toggles.forEach((toggle, index) => toggle.addEventListener('click', () => togglePassword(index)));
+    </script>
 </body>
 
 <!-- Mirrored from themesbrand.com/minible/layouts/auth-login.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 10 Aug 2022 03:52:06 GMT -->
