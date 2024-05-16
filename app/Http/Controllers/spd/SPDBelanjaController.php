@@ -654,7 +654,9 @@ class SPDBelanjaController extends Controller
             $nomorspd = DB::table('trhspd')->whereRaw("substring(no_spd, 12, 6) = '$nospd'")->count();
 
             $nomor_spd = $data['nomor'];
-            $field_angkas = status_angkas1($data['skpd']);
+            // $field_angkas = status_angkas1($data['skpd']);
+            $field_angkas = statusAngkasSpd($data['skpd'], $data['jenis_anggaran'])->id;
+
             $status = DB::table('trhrka')
                 ->select('jns_ang')
                 ->where(['kd_skpd' => $data['skpd'], 'status' => '1'])
