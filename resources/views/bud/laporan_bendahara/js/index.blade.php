@@ -350,10 +350,10 @@
                 pilihan = '3';
             }
 
-            if (!periode) {
-                alert('Periode tidak boleh kosong!');
-                return;
-            }
+            // if (!periode) {
+            //     alert('Periode tidak boleh kosong!');
+            //     return;
+            // }
             if (!anggaran) {
                 alert("Anggaran tidak boleh kosong!");
                 return;
