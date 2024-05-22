@@ -6795,7 +6795,7 @@ class BendaharaUmumDaerahController extends Controller
         $pembiayaan = DB::table('trdrka')
             ->selectRaw("kd_skpd,nm_skpd,sum(nilai)
                     as anggaran,0 as realisasi ")
-            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan=?", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '5.02.00.0.06.62']])
+            ->whereRaw("jns_ang=? and kd_skpd=? and kd_sub_kegiatan=?", [$req['anggaran'], ['5.02.0.00.0.00.02.0000', '5.02.00.0.00.0062']])
             ->groupBy('kd_skpd', 'nm_skpd')
             ->first();
 
