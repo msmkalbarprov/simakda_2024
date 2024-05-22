@@ -117,6 +117,16 @@ class TransaksiPemindahbukuanController extends Controller
         try {
             // $no_urut = no_urut($kd_skpd);
             $no_urut = $data['no_bukti'];
+            // Permintaan kak devi tanggal 22 MEI 2024
+            $cek = DB::table('trhtransout')
+                ->where(['no_bukti' => $no_urut, 'kd_skpd' => $kd_skpd])
+                ->count();
+
+            if ($cek > 0) {
+                return response()->json([
+                    'message' => '5'
+                ]);
+            }
 
             // TRHTRANSOUT
             DB::table('trhtransout')

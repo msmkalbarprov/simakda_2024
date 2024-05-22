@@ -1069,6 +1069,10 @@
                             window.location.href =
                                 "{{ route('skpd.transaksi_pemindahbukuan.index') }}";
                         }
+                    } else if (data.message == '5') {
+                        alert('Nomor telah digunakan!');
+                        $('#simpan_transaksi').prop('disabled', false);
+                        return;
                     } else {
                         alert('Data tidak berhasil ditambahkan!');
                         $('#simpan_transaksi').prop('disabled', false);
