@@ -94,7 +94,7 @@
                         <label for="nm_sub_kegiatan" class="col-md-2 col-form-label">Nama Kegiatan</label>
                         <div class="col-md-4">
                             <input class="form-control" type="text" id="nm_sub_kegiatan" name="nm_sub_kegiatan"
-                                required readonly>
+                                required readonly value="{{ nama_sub_kegiatan($setor->kd_sub_kegiatan) }}">
                         </div>
                     </div>
                     <br>
@@ -151,7 +151,7 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $list->kd_rek6 }}</td>
-                                    <td></td>
+                                    <td>{{ nama_rekening($list->kd_rek6) }}</td>
                                     <td>{{ rupiah($list->rupiah) }}</td>
                                     <td>
                                         <a href="javascript:void(0);"
