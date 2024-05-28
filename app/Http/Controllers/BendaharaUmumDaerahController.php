@@ -6172,15 +6172,32 @@ class BendaharaUmumDaerahController extends Controller
                         $query->whereRaw("( tgl_sp2d between ? and ?)", [$req['periode1'], $req['periode2']]);
                     }
                 }
-            })
-            ->where(function ($query) use ($req) {
-                if ($req['urutan'] == '1') {
-                    $query->orderBy('tgl_sp2d')->orderBy('no_sp2d');
-                } else if ($req['urutan'] == '2') {
-                    $query->orderByRaw("CAST(no_kas_bud as int)");
-                }
-            })
-            ->get();
+            });
+        // // ->where(function ($query) use ($req) {
+        // //     if ($req['urutan'] == '1') {
+        // //         $query->orderBy('tgl_sp2d')->orderBy('no_sp2d');
+        // //     } else if ($req['urutan'] == '2') {
+        // //         $query->orderByRaw("CAST(no_kas_bud as int)");
+        // //     }
+        // // })
+        // ->get();
+
+        if ($req['urutan'] == '1') {
+            $register_sp2d = DB::table(DB::raw("({$register_sp2d->toSql()}) AS sub"))
+                ->mergeBindings($register_sp2d)
+                ->orderBy('no_sp2d')
+                ->get();
+        } else if ($req['urutan'] == '2') {
+            $register_sp2d = DB::table(DB::raw("({$register_sp2d->toSql()}) AS sub"))
+                ->mergeBindings($register_sp2d)
+                ->orderByRaw("CAST(no_kas_bud) as int")
+                ->get();
+        } else if ($req['urutan'] == '3') {
+            $register_sp2d = DB::table(DB::raw("({$register_sp2d->toSql()}) AS sub"))
+                ->mergeBindings($register_sp2d)
+                ->orderByRaw("CAST(tgl_sp2d as date) asc")
+                ->get();
+        }
 
         $data = [
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
@@ -6663,6 +6680,8 @@ class BendaharaUmumDaerahController extends Controller
                 if ($req['dengan'] == 'true') {
                     $query->whereRaw("LEFT(b.kd_rek6,1) in (?,?) and right(b.kd_rek6,7) not in (?,?)", ['5', '1', '9999999', '8888888']);
                 } elseif ($req['tanpa'] == 'true') {
+                    $query->whereRaw("LEFT(b.kd_rek6,1) in (?) and right(b.kd_rek6,7) not in (?,?)", ['5', '9999999', '8888888']);
+                } elseif ($req['dengan_skpkd'] == 'true') {
                     $query->whereRaw("LEFT(b.kd_rek6,1) in (?) and right(b.kd_rek6,7) not in (?,?)", ['5', '9999999', '8888888']);
                 }
             })

@@ -159,6 +159,7 @@
                             id="urutan_register_sp2d">
                             <option value="1">NO SP2D</option>
                             <option value="2">NO KAS</option>
+                            <option value="3">TGL SP2D</option>
                         </select>
                     </div>
                 </div>
