@@ -442,7 +442,7 @@
                     <td>Pengguna Anggaran/Kuasa Pengguna Anggaran</td>
                     <td></td>
                     <td style="text-align: center" class="kanan">
-                        <b>{{ $ttd1->jabatan1 }}</b>
+                        <b>{{ $ttd1->jabatan }}</b>
                     </td>
                 </tr>
                 <tr>
