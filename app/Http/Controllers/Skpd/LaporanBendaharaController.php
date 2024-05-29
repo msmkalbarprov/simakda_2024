@@ -377,6 +377,10 @@ class LaporanBendaharaController extends Controller
                 ->setOption('margin-left', $request->margin_kiri);
             return $pdf->stream('laporan BKU.pdf');
         } else {
+            $nm_skpd = DB::table('ms_skpd')
+                ->where('kd_skpd', $kd_skpd)
+                ->first()
+                ->nm_skpd;
 
             header("Cache-Control: no-cache, no-store, must_revalidate");
             header('Content-Type: application/vnd.ms-excel');
