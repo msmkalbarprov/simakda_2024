@@ -86,7 +86,7 @@ class SppLsController extends Controller
         $data2 = json_decode(json_encode($data1), true);
         $datapenagihan = DB::select(
             "SELECT a.kd_skpd, a.no_bukti, tgl_bukti, a.ket, a.kontrak, kd_sub_kegiatan, sum(b.nilai) as total
-                                    from trhtagih as a  INNER JOIN trdtagih as b ON  a.no_bukti=b.no_bukti
+                                    from trhtagih as a  INNER JOIN trdtagih as b ON  a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd
                                     where a.kd_skpd = ? and a.jns_trs = ? and a.no_bukti not in
                                     (SELECT isnull(no_tagih,'') no_tagih from trhspp where kd_skpd= ? and
                                     (sp2d_batal is null OR sp2d_batal<>'1') GROUP BY no_tagih)
@@ -94,6 +94,7 @@ class SppLsController extends Controller
                                     order By a.no_bukti",
             [$skpd, 1, $skpd]
         );
+
         $data = [
             'data_skpd' => DB::table('ms_skpd')->select('kd_skpd', 'nm_skpd', 'bank', 'rekening', 'npwp')->where('kd_skpd', $skpd)->first(),
             'daftar_rekanan' => $result,
