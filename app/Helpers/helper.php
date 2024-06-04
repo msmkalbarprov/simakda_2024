@@ -2963,9 +2963,26 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rekening, 'sumber' => $sumber])
             ->unionAll($data8);
 
-        $data = DB::table(DB::raw("({$data9->toSql()}) AS sub"))
+        $data10 = DB::table('trddpr as c')->join('trhdpr as d', function ($join) {
+            $join->on('c.no_dpr', '=', 'd.no_dpr');
+            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
+            $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+        })->where(function ($query) {
+            $query->where('c.status', '0')->orWhere('c.status', '1');
+        })->select(DB::raw("'dpr' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data9);
+
+        $data11 = DB::table('trddpt as c')->join('trhdpt as d', function ($join) {
+            $join->on('c.no_dpt', '=', 'd.no_dpt');
+            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
+            $query->where('c.status', '!=', '1')->orWhereNull('c.status');
+        })
+            ->select(DB::raw("'dpt' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data10);
+
+        $data = DB::table(DB::raw("({$data11->toSql()}) AS sub"))
             ->select(DB::raw("SUM(nilai) as total"))
-            ->mergeBindings($data9)
+            ->mergeBindings($data11)
             ->first();
     } else {
         $data1 = DB::table('trhtagih as a')->join('trdtagih as b', function ($join) {
@@ -3043,9 +3060,26 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             ->where(['kd_sub_kegiatan' => $kd_sub_kegiatan, 'kd_skpd' => $kd_skpd, 'kd_rek6' => $kd_rekening, 'sumber' => $sumber])
             ->unionAll($data8);
 
-        $data = DB::table(DB::raw("({$data9->toSql()}) AS sub"))
+        $data10 = DB::table('trddpr as c')->join('trhdpr as d', function ($join) {
+            $join->on('c.no_dpr', '=', 'd.no_dpr');
+            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
+            $query->where('d.status', '!=', '1')->orWhereNull('d.status');
+        })->where(function ($query) {
+            $query->where('c.status', '0')->orWhere('c.status', '1');
+        })->select(DB::raw("'dpr' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data9);
+
+        $data11 = DB::table('trddpt as c')->join('trhdpt as d', function ($join) {
+            $join->on('c.no_dpt', '=', 'd.no_dpt');
+            $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+        })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
+            $query->where('c.status', '!=', '1')->orWhereNull('c.status');
+        })
+            ->select(DB::raw("'dpt' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data10);
+
+        $data = DB::table(DB::raw("({$data11->toSql()}) AS sub"))
             ->select(DB::raw("SUM(nilai) as total"))
-            ->mergeBindings($data9)
+            ->mergeBindings($data11)
             ->first();
     }
 
