@@ -2708,7 +2708,7 @@ function cari_rekening($kd_sub_kegiatan, $kd_skpd, $jenis_ang, $beban, $no_bukti
 						t.kd_sub_kegiatan = a.kd_sub_kegiatan
 						AND u.kd_skpd = a.kd_skpd
 						AND t.kd_rek6 = a.kd_rek6
-                        and (t.status !='1' or t.status is null)
+                        and (u.status !='1' or u.status is null)
 						)r) r) AS lalu,
 						0 AS sp2d,nilai AS anggaran
 						FROM trdrka a WHERE a.kd_sub_kegiatan= ?
@@ -2976,7 +2976,7 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             $join->on('c.no_dpt', '=', 'd.no_dpt');
             $join->on('c.kd_skpd', '=', 'd.kd_skpd');
         })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
-            $query->where('c.status', '!=', '1')->orWhereNull('c.status');
+            $query->where('d.status', '!=', '1')->orWhereNull('d.status');
         })
             ->select(DB::raw("'dpt' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data10);
 
@@ -3073,7 +3073,7 @@ function cari_dana($sumber, $kd_sub_kegiatan, $kd_rekening, $kd_skpd, $no_sp2d, 
             $join->on('c.no_dpt', '=', 'd.no_dpt');
             $join->on('c.kd_skpd', '=', 'd.kd_skpd');
         })->where(['c.kd_sub_kegiatan' => $kd_sub_kegiatan, 'd.kd_skpd' => $kd_skpd, 'c.kd_rek6' => $kd_rekening, 'c.sumber' => $sumber])->where(function ($query) {
-            $query->where('c.status', '!=', '1')->orWhereNull('c.status');
+            $query->where('d.status', '!=', '1')->orWhereNull('d.status');
         })
             ->select(DB::raw("'dpt' as jdl"), DB::raw("SUM(ISNULL(c.nilai,0)) as nilai"))->unionAll($data10);
 
