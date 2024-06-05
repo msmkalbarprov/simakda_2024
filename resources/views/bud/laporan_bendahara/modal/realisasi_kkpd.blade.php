@@ -97,6 +97,10 @@
                             <option value="SPJ">SPJ</option>
                         </select>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tanggal TTD</label>
+                        <input type="date" id="tgl_realisasi_kkpd" class="form-control">
+                    </div>
                 </div>
                 {{-- Pilihan Cetak --}}
                 <div class="mb-3 row">

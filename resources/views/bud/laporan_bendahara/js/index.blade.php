@@ -3416,6 +3416,7 @@
             let bulan = document.getElementById('bulan_realisasi_kkpd').value;
             let anggaran = document.getElementById('anggaran_realisasi_kkpd').value;
             let tipe = document.getElementById('tipe_realisasi_kkpd').value;
+            let tgl = document.getElementById('tgl_realisasi_kkpd').value;
 
             if (pilih_bulan) {
                 if (!bulan) {
@@ -3440,6 +3441,11 @@
                 return;
             }
 
+            if (!tgl) {
+                alert('Silahkan Pilih Tanggal TTD!');
+                return;
+            }
+
             let pilihan = '';
             if (pilih_bulan) {
                 pilihan = '1';
@@ -3457,6 +3463,7 @@
             searchParams.append("bulan", bulan);
             searchParams.append("anggaran", anggaran);
             searchParams.append("tipe", tipe);
+            searchParams.append("tgl", tgl);
             window.open(url.toString(), "_blank");
         });
         //CETAKAN REALISASI KKPD

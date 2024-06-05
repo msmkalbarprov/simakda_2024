@@ -7183,7 +7183,8 @@ class BendaharaUmumDaerahController extends Controller
             'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
             'tanggal' => $tgl,
             'tanda_tangan' => DB::table('ms_ttd')
-                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->where(['nip' => $ttd])
+                ->whereIn('kode', ['PA', 'BUD'])
                 ->first(),
             'pilihan' => $pilihan,
             'periode1' => $periode1,
