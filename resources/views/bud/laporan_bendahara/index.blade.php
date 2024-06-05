@@ -343,6 +343,33 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="realisasi_pendapatan_baru">
+                <div class="card-body">
+                    {{ 'Realisasi Pendapatan blud' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="realisasi_kkpd">
+                <div class="card-body">
+                    {{ 'Realisasi KKPD' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if (Auth::user()->role == '1010' || Auth::user()->role == '1006')
         <div class="row">
             <div class="col-md-6">
@@ -371,33 +398,6 @@
         </div> --}}
         </div>
     @endif
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="realisasi_pendapatan_baru">
-                <div class="card-body">
-                    {{ 'Realisasi Pendapatan blud' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="realisasi_kkpd">
-                <div class="card-body">
-                    {{ 'Realisasi KKPD' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     {{-- modal cetak realisasi pendapatan --}}
