@@ -46,7 +46,7 @@
                 <th rowspan="2">SKPD</th>
                 <th colspan="3">Belanja Barang dan Jasa</th>
                 <th colspan="3">Belanja Modal</th>
-                <th rowspan="2">KETERANGAN</th>
+                <th rowspan="2" style="width: 30%">KETERANGAN</th>
             </tr>
             <tr>
                 <th>Anggaran <br> (Rp)</th>
