@@ -371,12 +371,24 @@
         </div> --}}
         </div>
     @endif
-    
+
     <div class="row">
         <div class="col-md-6">
             <div class="card card-info collapsed-card card-outline" id="realisasi_pendapatan_baru">
                 <div class="card-body">
                     {{ 'Realisasi Pendapatan blud' }}
+                    <a class="card-block stretched-link" href="#">
+
+                    </a>
+                    <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-info collapsed-card card-outline" id="realisasi_kkpd">
+                <div class="card-body">
+                    {{ 'Realisasi KKPD' }}
                     <a class="card-block stretched-link" href="#">
 
                     </a>
@@ -487,6 +499,10 @@
     {{-- modal buku kasda --}}
     @include('bud.laporan_bendahara.modal.buku_kasda')
     {{-- modal buku kasda  --}}
+
+    {{-- modal cetak realisasi kkpd --}}
+    @include('bud.laporan_bendahara.modal.realisasi_kkpd')
+    {{-- modal cetak realisasi kkpd --}}
 @endsection
 @section('js')
     @include('bud.laporan_bendahara.js.index')

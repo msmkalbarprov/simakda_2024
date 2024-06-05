@@ -136,6 +136,11 @@
             theme: 'bootstrap-5'
         });
 
+        $('.select2-realisasi_kkpd').select2({
+            dropdownParent: $('#modal_realisasi_kkpd .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
         // CETAKAN REALISASI PENDAPATAN BARU
         $('#pilih_skpd_realisasi_pendapatan_baru').hide();
         $('#pilih_unit_realisasi_pendapatan_baru').hide();
@@ -3371,5 +3376,89 @@
             searchParams.append("jenis_print", jenis_print);
             window.open(url.toString(), "_blank");
         });
+
+        // CETAKAN REALISASI KKPD
+
+        $('#pilih_periode_realisasi_kkpd').hide();
+        $('#pilih_bulan_realisasi_kkpd').hide();
+
+        $('#realisasi_kkpd').on('click', function() {
+            $('#modal_realisasi_kkpd').modal('show');
+        });
+
+        $('#pilihan_periode_realisasi_kkpd').on('click', function() {
+            $('#bulan_realisasi_kkpd').val(null).change();
+            $('#pilih_bulan_realisasi_kkpd').hide();
+            $('#pilih_periode_realisasi_kkpd').show();
+        });
+
+        $('#pilihan_bulan_realisasi_kkpd').on('click', function() {
+            $('#periode1_realisasi_kkpd').val(null);
+            $('#periode2_realisasi_kkpd').val(null);
+            $('#pilih_periode_realisasi_kkpd').hide();
+            $('#pilih_bulan_realisasi_kkpd').show();
+        });
+
+        $('.cetak_realisasi_kkpd').on('click', function() {
+            let ttd = document.getElementById('ttd_realisasi_kkpd').value;
+            let jenis_print = $(this).data("jenis");
+
+            let pilih_bulan = document.getElementById('pilihan_bulan_realisasi_kkpd').checked;
+            let pilih_periode = document.getElementById('pilihan_periode_realisasi_kkpd').checked;
+
+            if (pilih_bulan == false && pilih_periode == false) {
+                alert('Silahkan Pilih Bulan atau Periode!');
+                return;
+            }
+
+            let periode1 = document.getElementById('periode1_realisasi_kkpd').value;
+            let periode2 = document.getElementById('periode2_realisasi_kkpd').value;
+            let bulan = document.getElementById('bulan_realisasi_kkpd').value;
+            let anggaran = document.getElementById('anggaran_realisasi_kkpd').value;
+            let tipe = document.getElementById('tipe_realisasi_kkpd').value;
+
+            if (pilih_bulan) {
+                if (!bulan) {
+                    alert('Silahkan Pilih Bulan!');
+                    return;
+                }
+            }
+            if (pilih_periode) {
+                if (!periode1 || !periode2) {
+                    alert('Silahkan Pilih Periode!');
+                    return;
+                }
+            }
+
+            if (!anggaran) {
+                alert('Silahkan Pilih Jenis Anggaran!');
+                return;
+            }
+
+            if (!tipe) {
+                alert('Silahkan Pilih Jenis Tipe!');
+                return;
+            }
+
+            let pilihan = '';
+            if (pilih_bulan) {
+                pilihan = '1';
+            } else if (pilih_periode) {
+                pilihan = '2';
+            }
+
+            let url = new URL("{{ route('laporan_bendahara_umum.realisasi_kkpd') }}");
+            let searchParams = url.searchParams
+            searchParams.append("ttd", ttd);
+            searchParams.append("jenis_print", jenis_print);
+            searchParams.append("pilihan", pilihan);
+            searchParams.append("periode1", periode1);
+            searchParams.append("periode2", periode2);
+            searchParams.append("bulan", bulan);
+            searchParams.append("anggaran", anggaran);
+            searchParams.append("tipe", tipe);
+            window.open(url.toString(), "_blank");
+        });
+        //CETAKAN REALISASI KKPD
     });
 </script>

@@ -124,6 +124,7 @@ use App\Http\Controllers\BUD\CekSpmController;
 use App\Http\Controllers\KoreksiDataController;
 use App\Http\Controllers\ListRestitusiController;
 use App\Http\Controllers\Master\RekeningP90Controller;
+use App\Http\Controllers\PenagihanBaruController;
 use App\Http\Controllers\PotonganPenerimaanController;
 use App\Http\Controllers\ProteksiSppController;
 use App\Http\Controllers\Skpd\Pendapatan\BpBankPenerimaanController;
@@ -285,6 +286,17 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('update_penagihan', [PenagihanController::class, 'updatePenagihan'])->name('penagihan.update_penagihan');
             Route::post('update_detail_penagihan', [PenagihanController::class, 'updateDetailPenagihan'])->name('penagihan.update_detail_penagihan');
             Route::post('simpan_edit_tampungan', [PenagihanController::class, 'simpanEditTampungan'])->name('penagihan.simpan_edit_tampungan');
+        });
+        // PENAGIHAN BARU SESUAI DATA KONTRAK
+        Route::group(['prefix' => 'penagihan_baru', 'as' => 'penagihan_baru.'], function () {
+            Route::get('', [PenagihanBaruController::class, 'index'])->name('index');
+            Route::post('load_data', [PenagihanBaruController::class, 'loadData'])->name('load_data');
+            Route::get('create', [PenagihanBaruController::class, 'create'])->name('create');
+            Route::post('rincian_bast', [PenagihanBaruController::class, 'rincianBapBast'])->name('rincian_bast');
+            Route::post('detail_bast', [PenagihanBaruController::class, 'detailBapBast'])->name('detail_bast');
+            Route::post('simpan', [PenagihanBaruController::class, 'simpan'])->name('simpan');
+            Route::get('edit/{no_bukti}', [PenagihanBaruController::class, 'edit'])->name('edit');
+            Route::post('hapus', [PenagihanBaruController::class, 'hapus'])->name('hapus');
         });
         // SPP LS
         Route::group(['prefix' => 'spp_ls'], function () {
@@ -1795,6 +1807,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('register_sp2d_batal', [BendaharaUmumDaerahController::class, 'sp2dBatal'])->name('laporan_bendahara_umum.register_sp2d_batal');
         // BKU KHUSUS KASDA (PERMINTAAN BANG ASRIL)
         Route::get('bku_kasda', [BendaharaUmumDaerahController::class, 'bkuKasda'])->name('laporan_bendahara_umum.bku_kasda');
+        // Realisasi KKPD
+        Route::get('realisasi_kkpd', [BendaharaUmumDaerahController::class, 'realisasiKkpd'])->name('laporan_bendahara_umum.realisasi_kkpd');
     });
 
     Route::group(['prefix' => 'bendahara_umum_daerah'], function () {

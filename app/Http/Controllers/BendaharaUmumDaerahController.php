@@ -7144,6 +7144,74 @@ class BendaharaUmumDaerahController extends Controller
         }
     }
 
+    public function realisasiKkpd(Request $request)
+    {
+        ini_set('max_execution_time', -1);
+        $tgl = $request->tgl;
+        $ttd = $request->ttd;
+        $jenis_print = $request->jenis_print;
+        $pilihan = $request->pilihan;
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $bulan = $request->bulan;
+        $anggaran = $request->anggaran;
+        $tipe = $request->tipe;
+        // dd($tipe);
+        // SP2D
+
+        if ($tipe == 'SP2D') {
+            $where = $pilihan == '1' ? "and month(c.tgl_sp2d)='$bulan'" : "and c.tgl_sp2d between '$periode1' and '$periode2'";
+
+            $realisasiKkpd = DB::select("SELECT kd_skpd,nm_skpd,
+            (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,2)=?) as anggaran_barjas,
+            (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,4)=?) as anggaran_modal,
+            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,2)=? and a.kkpd=? $where) as realisasi_barjas,
+            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,4)=? and a.kkpd=? $where) as realisasi_modal
+            from ms_skpd z", [$anggaran, '52', $anggaran, '5102', '1', '52', '1', '1', '5102', '1']);
+        } elseif ($tipe == 'SPJ') {
+            $where = $pilihan == '1' ? "and month(b.tgl_bukti)='$bulan'" : "and b.tgl_bukti between '$periode1' and '$periode2'";
+
+            $realisasiKkpd = DB::select("SELECT kd_skpd,nm_skpd,
+            (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,2)=?) as anggaran_barjas,
+            (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,4)=?) as anggaran_modal,
+            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,2)=? and b.kkpd=? $where) as realisasi_barjas,
+            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,4)=? and b.kkpd=? $where) as realisasi_modal
+            from ms_skpd z", [$anggaran, '52', $anggaran, '5102', '52', '1', '5102', '1']);
+        }
+
+        $data = [
+            'header' => DB::table('config_app')->select('nm_pemda', 'nm_badan', 'logo_pemda_hp')->first(),
+            'tanggal' => $tgl,
+            'tanda_tangan' => DB::table('ms_ttd')
+                ->where(['kode' => 'BUD', 'nip' => $ttd])
+                ->first(),
+            'pilihan' => $pilihan,
+            'periode1' => $periode1,
+            'periode2' => $periode2,
+            'bulan' => $bulan,
+            'realisasiKkpd' => $realisasiKkpd
+        ];
+
+        $judul = 'REALISASI KKPD';
+
+        $view = view('bud.laporan_bendahara.cetak.realisasi_kkpd')->with($data);
+
+        if ($jenis_print == 'pdf') {
+            $pdf = PDF::loadHtml($view)
+                ->setPaper('legal')
+                ->setOption('margin-left', 15)
+                ->setOption('margin-right', 15);
+            return $pdf->stream('laporan.pdf');
+        } elseif ($jenis_print == 'layar') {
+            return $view;
+        } else {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename= $judul.xls");
+            echo $view;
+        }
+    }
+
     // Koreksi Penerimaan Kas
     public function indexKoreksiKas()
     {
