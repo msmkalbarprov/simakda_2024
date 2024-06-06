@@ -7165,8 +7165,8 @@ class BendaharaUmumDaerahController extends Controller
             $realisasiKkpd = DB::select("SELECT kd_skpd,nm_skpd,
             (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,2)=?) as anggaran_barjas,
             (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,4)=?) as anggaran_modal,
-            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,2)=? and a.kkpd=? $where) as realisasi_barjas,
-            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,4)=? and a.kkpd=? $where) as realisasi_modal
+            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,2)=? and a.kkpd=? $where) as realisasi_modal,
+            (select SUM(a.nilai) from trdspp a inner join trhspp b on a.no_spp=b.no_spp and a.kd_skpd=b.kd_skpd inner join trhsp2d c on b.no_spp=c.no_spp and b.kd_skpd=c.kd_skpd where z.kd_skpd=a.kd_skpd and c.status_bud=? and left(a.kd_rek6,4)=? and a.kkpd=? $where) as realisasi_barjas
             from ms_skpd z", [$anggaran, '52', $anggaran, '5102', '1', '52', '1', '1', '5102', '1']);
         } elseif ($tipe == 'SPJ') {
             $where = $pilihan == '1' ? "and month(b.tgl_bukti)='$bulan'" : "and b.tgl_bukti between '$periode1' and '$periode2'";
@@ -7174,8 +7174,8 @@ class BendaharaUmumDaerahController extends Controller
             $realisasiKkpd = DB::select("SELECT kd_skpd,nm_skpd,
             (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,2)=?) as anggaran_barjas,
             (select SUM(nilai) from trdrka where z.kd_skpd=kd_skpd and jns_ang=? and left(kd_rek6,4)=?) as anggaran_modal,
-            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,2)=? and b.kkpd=? $where) as realisasi_barjas,
-            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,4)=? and b.kkpd=? $where) as realisasi_modal
+            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,2)=? and b.kkpd=? $where) as realisasi_modal,
+            (select SUM(a.nilai) from trdtransout a inner join trhtransout b on a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where z.kd_skpd=a.kd_skpd and left(a.kd_rek6,4)=? and b.kkpd=? $where) as realisasi_barjas
             from ms_skpd z", [$anggaran, '52', $anggaran, '5102', '52', '1', '5102', '1']);
         }
 
