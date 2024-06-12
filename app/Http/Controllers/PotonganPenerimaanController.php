@@ -55,11 +55,38 @@ class PotonganPenerimaanController extends Controller
         return view('skpd.potongan_ppkd.create')->with($data);
     }
 
+    // public function noBukti(Request $request)
+    // {
+    //     $kd_skpd = Auth::user()->kd_skpd;
+
+    //     $data = DB::table('trhkasin_pkd as a')
+    //         ->join('trdkasin_pkd as b', function ($join) {
+    //             $join->on('a.no_sts', '=', 'b.no_sts');
+    //             $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+    //         })
+    //         ->leftJoin('ms_rek6 as c', function ($join) {
+    //             $join->on('b.kd_rek6', '=', 'c.kd_rek6');
+    //         })
+    //         ->selectRaw("a.*, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+    //         ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
+    //         ->whereRaw("a.no_sts NOT IN (SELECT no_sts FROM trhkasin_ppkd_pot WHERE kd_skpd=?)", [$kd_skpd])
+    //         ->orderByRaw("CAST(REPLACE(a.no_sts,'/BP','') as int)")
+    //         ->take(10)
+    //         ->get();
+
+    //     return response()->json([
+    //         'data_sts' => $data,
+    //         'no_urut' => nomor_urut_ppkd()
+    //     ]);
+    // }
+
     public function noBukti(Request $request)
     {
-        $kd_skpd = Auth::user()->kd_skpd;
-
-        $data = DB::table('trhkasin_pkd as a')
+        $kd_skpd    = Auth::user()->kd_skpd;
+        $term       = $request->term;
+        $no_urut    = nomor_urut_ppkd();
+        if (isset($term)) {
+            $data = DB::table('trhkasin_pkd as a')
             ->join('trdkasin_pkd as b', function ($join) {
                 $join->on('a.no_sts', '=', 'b.no_sts');
                 $join->on('a.kd_skpd', '=', 'b.kd_skpd');
@@ -67,15 +94,37 @@ class PotonganPenerimaanController extends Controller
             ->leftJoin('ms_rek6 as c', function ($join) {
                 $join->on('b.kd_rek6', '=', 'c.kd_rek6');
             })
-            ->selectRaw("a.*, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+            ->selectRaw("$no_urut as no_urut,a.*,a.no_sts as id, CAST(a.tgl_sts as varchar)+' | '+cast(a.total as varchar) as text, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
             ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
             ->whereRaw("a.no_sts NOT IN (SELECT no_sts FROM trhkasin_ppkd_pot WHERE kd_skpd=?)", [$kd_skpd])
             ->orderByRaw("CAST(REPLACE(a.no_sts,'/BP','') as int)")
+            ->when($term, function ($query, $term) {
+                $query->where(function ($query) use ($term) {
+                    $query->orWhere('a.no_sts', 'like', '%' . $term . '%')
+                        ->orWhere('a.no_sts', 'like', '%' . $term . '%');
+                });
+            })
             ->get();
-
+        }else {
+            
+            $data = DB::table('trhkasin_pkd as a')
+                ->join('trdkasin_pkd as b', function ($join) {
+                    $join->on('a.no_sts', '=', 'b.no_sts');
+                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                })
+                ->leftJoin('ms_rek6 as c', function ($join) {
+                    $join->on('b.kd_rek6', '=', 'c.kd_rek6');
+                })
+                ->selectRaw("$no_urut as no_urut,a.*,a.no_sts as id,  CAST(a.tgl_sts as varchar)+' | '+cast(a.total as varchar) as text, b.kd_sub_kegiatan, b.kd_rek6, c.nm_rek6,(SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd) AS nm_skpd")
+                ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => '4'])
+                ->whereRaw("a.no_sts NOT IN (SELECT no_sts FROM trhkasin_ppkd_pot WHERE kd_skpd=?)", [$kd_skpd])
+                ->orderByRaw("CAST(REPLACE(a.no_sts,'/BP','') as int)")
+                ->take(10)
+                ->get();
+        }
+            
         return response()->json([
-            'data_sts' => $data,
-            'no_urut' => nomor_urut_ppkd()
+            'results' => $data
         ]);
     }
 

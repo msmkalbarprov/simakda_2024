@@ -11,15 +11,15 @@
         $('#rkud').prop('disabled', true);
 
         $('.select2-multiple').select2({
-            placeholder: "Silahkan Pilih",
+            placeholder: "Silahkan Pilihs",
             theme: 'bootstrap-5'
         });
 
         no_bukti();
 
         $('#no_sts').on('select2:select', function() {
-            let kd_rek6 = $(this).find(':selected').data('kd_rek6');
-            let sumber = $(this).find(':selected').data('sumber');
+            let kd_rek6 = $('#no_sts').select2('data')[0].kd_rek6.trim()
+            let sumber = $('#no_sts').select2('data')[0].sumber
             $('#jenis').val(kd_rek6).change();
             $('#pengirim').val(sumber).change();
         });
@@ -142,34 +142,66 @@
     });
 
     function no_bukti() {
-        $.ajax({
-            url: "{{ route('potongan_ppkd.no_bukti') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                "_token": "{{ csrf_token() }}",
+        $('#no_sts').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5',
+            ajax: {
+                delay: 1000,
+                url: "{{ route('potongan_ppkd.no_bukti') }}",
+                type: 'POST',
+                dataType: 'json',
+                data: function(params) {
+                    var query = {
+                        term: params.term,
+                        _token: "{{ csrf_token() }}",
+                    }
+                    return query
+                },
             },
-            beforeSend: function() {
-                $("#overlay").fadeIn(100);
+            dropdownAutoWidth: true,
+            templateResult: function(result) {
+               
+                if (!result.id) return 'Searching';
+                return `${result.id} | ${result.text} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(result.total)}`;
             },
-            success: function(data) {
-                let data_sts = data.data_sts;
-
-                $('#no_sts').empty();
-                $('#no_sts').append(
-                    `<option value="" disabled selected>Silahkan Pilih</option>`);
-                $.each(data_sts, function(index, data_sts) {
-                    $('#no_sts').append(
-                        `<option value="${data_sts.no_sts}" data-tgl="${data_sts.tgl_sts}" data-kd_rek6="${data_sts.kd_rek6.trim()}" data-sumber="${data_sts.sumber}" data-total="${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data_sts.total)}">${data_sts.no_sts} | ${data_sts.tgl_sts} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data_sts.total)}</option>`
-                    );
-                });
-                $('#no_kas').val(data.no_urut);
+            escapeMarkup: (m) => m,
+            templateSelection: function(result) {
+                $('#no_kas').val(result.no_urut);
+                return result.id || result.text;
             },
-            complete: function(data) {
-                $("#overlay").fadeOut(100);
-            }
-        })
+        });
     }
+    
+
+    // function no_bukti() {
+    //     $.ajax({
+    //         url: "{{ route('potongan_ppkd.no_bukti') }}",
+    //         type: "POST",
+    //         dataType: 'json',
+    //         data: {
+    //             "_token": "{{ csrf_token() }}",
+    //         },
+    //         beforeSend: function() {
+    //             $("#overlay").fadeIn(100);
+    //         },
+    //         success: function(data) {
+    //             let data_sts = data.data_sts;
+
+    //             $('#no_sts').empty();
+    //             $('#no_sts').append(
+    //                 `<option value="" disabled selected>Silahkan Pilih</option>`);
+    //             $.each(data_sts, function(index, data_sts) {
+    //                 $('#no_sts').append(
+    //                     `<option value="${data_sts.no_sts}" data-tgl="${data_sts.tgl_sts}" data-kd_rek6="${data_sts.kd_rek6.trim()}" data-sumber="${data_sts.sumber}" data-total="${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data_sts.total)}">${data_sts.no_sts} | ${data_sts.tgl_sts} | ${new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2}).format(data_sts.total)}</option>`
+    //                 );
+    //             });
+    //             $('#no_kas').val(data.no_urut);
+    //         },
+    //         complete: function(data) {
+    //             $("#overlay").fadeOut(100);
+    //         }
+    //     })
+    // }
 
     function formatNumber(n) {
         // format number 1000000 to 1,234,567

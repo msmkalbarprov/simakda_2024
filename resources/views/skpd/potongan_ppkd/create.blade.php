@@ -27,7 +27,7 @@
                     <div class="mb-3 row">
                         <label for="no_sts" class="col-md-2 col-form-label">No. STS</label>
                         <div class="col-md-10">
-                            <select class="form-control select2-multiple" style="width: 100%" id="no_sts" name="no_sts">
+                            <select class="form-control select2-multiple csts" style="width: 100%" id="no_sts" name="no_sts">
                                 <option value="" disabled selected>Silahkan Pilih</option>
                                 {{-- @foreach ($data_sts as $sts)
                                     <option value="{{ $sts->no_sts }}" data-tgl="{{ $sts->tgl_sts }}"
