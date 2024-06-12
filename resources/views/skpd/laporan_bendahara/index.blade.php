@@ -19,221 +19,238 @@
         </div>
     </div>
     <!-- end page title -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbku">
-                <div class="card-body">
-                    {{ 'BKU (Buku Kas Umum)' }}
-                    <a class="card-block stretched-link" href="#">
+    @if(Auth::user()->role == '1027')
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbpsrobjek">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Sub Rincian Objek' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapspj">
-                <div class="card-body">
-                    {{ 'SPJ Fungsional' }}
-                    <a class="card-block stretched-link" href="#">
+    @else
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbku">
+                    <div class="card-body">
+                        {{ 'BKU (Buku Kas Umum)' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapspj">
+                    <div class="card-body">
+                        {{ 'SPJ Fungsional' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbpbank">
-                <div class="card-body">
-                    {{ 'Buku Pembantu Kas Bank' }}
-                    <a class="card-block stretched-link" href="#">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbpbank">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Kas Bank' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapspja">
+                    <div class="card-body">
+                        {{ 'SPJ Administratif' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapspja">
-                <div class="card-body">
-                    {{ 'SPJ Administratif' }}
-                    <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbptunai">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Kas Tunai' }}
+                        <a class="card-block stretched-link" href="#">
 
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbppajak">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Pajak' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbptunai">
-                <div class="card-body">
-                    {{ 'Buku Pembantu Kas Tunai' }}
-                    <a class="card-block stretched-link" href="#">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbppanjar">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Panjar' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapbpsrobjek">
+                    <div class="card-body">
+                        {{ 'Buku Pembantu Sub Rincian Objek' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbppajak">
-                <div class="card-body">
-                    {{ 'Buku Pembantu Pajak' }}
-                    <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="laprealfisik">
+                    <div class="card-body">
+                        {{ 'Realisasi Fisik' }}
+                        <a class="card-block stretched-link" href="#">
 
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapkasab">
+                    <div class="card-body">
+                        {{ 'Laporan Penutupan Kas Bulanan' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbppanjar">
-                <div class="card-body">
-                    {{ 'Buku Pembantu Panjar' }}
-                    <a class="card-block stretched-link" href="#">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapdth">
+                    <div class="card-body">
+                        {{ 'DTH' }}
+                        <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapregpajak">
+                    <div class="card-body">
+                        {{ 'Register Pajak' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapbpsrobjek">
-                <div class="card-body">
-                    {{ 'Buku Pembantu Sub Rincian Objek' }}
-                    <a class="card-block stretched-link" href="#">
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapregcp">
+                    <div class="card-body">
+                        {{ 'Register CP' }}
+                        <a class="card-block stretched-link" href="#">
 
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapregsppspm">
+                    <div class="card-body">
+                        {{ 'Register SPP/SPM/SP2D' }}
+                        <a class="card-block stretched-link" href="#">
+
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="lapkartukendali">
+                    <div class="card-body">
+                        {{ 'Kartu Kendali' }}
+                        <a class="card-block stretched-link" href="#">
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="laprealfisik">
-                <div class="card-body">
-                    {{ 'Realisasi Fisik' }}
-                    <a class="card-block stretched-link" href="#">
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-info collapsed-card card-outline" id="bku13">
+                    <div class="card-body">
+                        {{ 'BKU Permendagri 13' }}
+                        <a class="card-block stretched-link" href="#">
 
+                        </a>
+                        <i class="fa fa-chevron-right float-end mt-2"></i>
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapkasab">
-                <div class="card-body">
-                    {{ 'Laporan Penutupan Kas Bulanan' }}
-                    <a class="card-block stretched-link" href="#">
+    @endif
 
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapdth">
-                <div class="card-body">
-                    {{ 'DTH' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapregpajak">
-                <div class="card-body">
-                    {{ 'Register Pajak' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapregcp">
-                <div class="card-body">
-                    {{ 'Register CP' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapregsppspm">
-                <div class="card-body">
-                    {{ 'Register SPP/SPM/SP2D' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="lapkartukendali">
-                <div class="card-body">
-                    {{ 'Kartu Kendali' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info collapsed-card card-outline" id="bku13">
-                <div class="card-body">
-                    {{ 'BKU Permendagri 13' }}
-                    <a class="card-block stretched-link" href="#">
-
-                    </a>
-                    <i class="fa fa-chevron-right float-end mt-2"></i>
-
-                </div>
-            </div>
-        </div>
-    </div>
 
     {{-- modal cetak SPJ --}}
     <div id="modal_cetak" class="modal" role="dialog" tabindex="-1" aria-hidden="true">
