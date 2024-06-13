@@ -36,9 +36,11 @@
             let nilai = angka(document.getElementById('nilai').value);
             let tahun_input = tgl_kas.substr(0, 4);
 
-            let sts = $('#no_sts').find('option:selected');
-            let total = rupiah(sts.data('total'));
-            let tgl_sts = sts.data('tgl');
+            let sts = $('#no_sts').select2('data')[0].total;
+
+            let total = rupiah(sts);
+
+            let tgl_sts = $('#no_sts').select2('data')[0].tgl_sts;
 
             if (!tgl_kas) {
                 alert('Tanggal Tidak Boleh Kosong');
