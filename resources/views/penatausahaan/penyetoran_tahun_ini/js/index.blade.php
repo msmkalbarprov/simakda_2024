@@ -5,7 +5,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        
         $('#penyetoran_ini').DataTable({
             responsive: true,
             ordering: false,

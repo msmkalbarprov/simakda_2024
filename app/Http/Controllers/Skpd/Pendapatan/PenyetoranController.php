@@ -598,7 +598,7 @@ class PenyetoranController extends Controller
         return view('penatausahaan.penyetoran_tahun_ini.index');
     }
 
-    public function loadDataPenyetoranIni()
+    public function loadDataPenyetoranIniLama()
     {
         $kd_skpd = Auth::user()->kd_skpd;
         $spjbulan = cek_status_spj_pend($kd_skpd);
@@ -647,6 +647,93 @@ class PenyetoranController extends Controller
 
             return $btn;
         })->rawColumns(['aksi'])->make(true);
+    }
+
+    public function loadDataPenyetoranIni(Request $request)
+    {   
+        $kd_skpd = Auth::user()->kd_skpd;
+        $spjbulan = cek_status_spj_pend($kd_skpd);
+        $query = DB::table('trhkasin_pkd as a')
+            ->selectRaw('a.*,
+                ( SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd ) AS nm_skpd,
+                ( CASE WHEN MONTH ( a.tgl_sts ) <= '.$spjbulan.' THEN 1 ELSE 0 END ) ketspj,
+                a.user_name')
+            ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => 4])
+            ->whereRaw("a.keterangan NOT LIKE '%keterlambatan%'")
+            ->whereNotExists(function($query) {
+                $query->from('trdkasin_pkd AS b')
+                    ->whereRaw("LEFT ( kd_rek6, 12 ) = '410411010001'")
+                      ->whereColumn('b.kd_skpd', 'a.kd_skpd')
+                      ->whereColumn('b.no_sts', 'a.no_sts');
+               });
+        // $query = DB::select("SELECT
+        //         a.*,
+        //         ( SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd ) AS nm_skpd,
+        //         ( CASE WHEN MONTH ( a.tgl_sts ) <= ? THEN 1 ELSE 0 END ) ketspj,
+        //         a.user_name
+        //         FROM trhkasin_pkd a
+        //     WHERE
+        //         a.kd_skpd= ?
+        //         AND a.jns_trans= '4'
+        //         AND a.keterangan NOT LIKE '%keterlambatan%'
+        //         AND NOT EXISTS (
+        //         SELECT
+        //             *
+        //         FROM
+        //             trdkasin_pkd b
+        //         WHERE
+        //             LEFT ( kd_rek6, 12 ) = '410411010001'
+        //             AND a.kd_skpd= b.kd_skpd
+        //             AND a.no_sts= b.no_sts
+        //         )
+
+        //     ORDER BY
+        //         a.tgl_sts,
+        //         a.no_sts", [$spjbulan, $kd_skpd]);
+
+        $column_seacrh = ['a.no_sts', 'a.keterangan', 'a.kd_skpd'];
+        $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
+            foreach ($column_seacrh as $eachElement) {
+                $query->orWhere($eachElement, 'LIKE', '%' . $request->search['value'] . '%');
+            }
+        });
+
+        if (!$request->search['value']) {
+            $record_total   = $query->get()->count();
+            $data = $query->skip($request->start)
+                ->take($request->length)
+                ->get();
+        } else {
+            $record_total   = $filtered->get()->count();
+            $data           = $filtered->get();
+        }
+        
+        return Datatables::of($data)
+            ->with([
+                "recordsTotal" => $record_total,
+                "recordsFiltered" => $record_total,
+            ])
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->setTransformer(function ($item) {
+                if ($item->no_cek != 1 || $item->no_cek == null || $item->no_cek == '' || $item->no_cek == 0) {
+                    $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($item->no_sts), 'kd_skpd' => Crypt::encrypt($item->kd_skpd)]) . '" class="btn btn-warning btn-sm"  style="margin-right:4px"><i class="uil-edit"></i></a>';
+                    $btn .= '<a href="javascript:void(0);" onclick="hapus(\'' . $item->no_sts . '\',\'' . $item->kd_skpd . '\');" class="btn btn-danger btn-sm" id="delete" style="margin-right:4px"><i class="uil-trash"></i></a>';
+                } else {
+                    $btn = '<a href="' . route("penyetoran_ini.edit", ['no_sts' => Crypt::encrypt($item->no_sts), 'kd_skpd' => Crypt::encrypt($item->kd_skpd)]) . '" class="btn btn-primary btn-sm"  style="margin-right:4px"><i class="uil-eye"></i></a>';
+                }
+                return [
+                    'no_sts'        => $item->no_sts,
+                    'tgl_sts'       => $item->tgl_sts,
+                    'kd_skpd'       => $item->kd_skpd,
+                    'keterangan'    => $item->keterangan,
+                    'ketspj'        => $item->ketspj,
+                    'aksi'          => $btn,
+                ];
+            })
+
+            ->skipPaging()
+            ->make(true);
     }
 
     public function tambahPenyetoranIni()
