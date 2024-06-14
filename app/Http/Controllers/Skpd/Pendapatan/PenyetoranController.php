@@ -650,12 +650,11 @@ class PenyetoranController extends Controller
     }
 
     public function loadDataPenyetoranIni(Request $request)
-    {   
+    {
         $kd_skpd = Auth::user()->kd_skpd;
         $spjbulan = cek_status_spj_pend($kd_skpd);
         $query = DB::table('trhkasin_pkd as a')
-            ->selectRaw('a.*,
-                ( SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd ) AS nm_skpd,
+            ->selectRaw('a.no_sts,a.keterangan,a.tgl_sts,a.kd_skpd,a.no_cek,
                 ( CASE WHEN MONTH ( a.tgl_sts ) <= '.$spjbulan.' THEN 1 ELSE 0 END ) ketspj,
                 a.user_name')
             ->where(['a.kd_skpd' => $kd_skpd, 'a.jns_trans' => 4])
@@ -666,32 +665,11 @@ class PenyetoranController extends Controller
                       ->whereColumn('b.kd_skpd', 'a.kd_skpd')
                       ->whereColumn('b.no_sts', 'a.no_sts');
                });
-        // $query = DB::select("SELECT
-        //         a.*,
-        //         ( SELECT nm_skpd FROM ms_skpd WHERE kd_skpd = a.kd_skpd ) AS nm_skpd,
-        //         ( CASE WHEN MONTH ( a.tgl_sts ) <= ? THEN 1 ELSE 0 END ) ketspj,
-        //         a.user_name
-        //         FROM trhkasin_pkd a
-        //     WHERE
-        //         a.kd_skpd= ?
-        //         AND a.jns_trans= '4'
-        //         AND a.keterangan NOT LIKE '%keterlambatan%'
-        //         AND NOT EXISTS (
-        //         SELECT
-        //             *
-        //         FROM
-        //             trdkasin_pkd b
-        //         WHERE
-        //             LEFT ( kd_rek6, 12 ) = '410411010001'
-        //             AND a.kd_skpd= b.kd_skpd
-        //             AND a.no_sts= b.no_sts
-        //         )
-
-        //     ORDER BY
-        //         a.tgl_sts,
-        //         a.no_sts", [$spjbulan, $kd_skpd]);
 
         $column_seacrh = ['a.no_sts', 'a.keterangan', 'a.kd_skpd'];
+        if (isset($request->search['value'])) {
+            #
+        }
         $filtered           =   $query->where(function ($query) use ($column_seacrh, $request) {
             foreach ($column_seacrh as $eachElement) {
                 $query->orWhere($eachElement, 'LIKE', '%' . $request->search['value'] . '%');
@@ -707,7 +685,7 @@ class PenyetoranController extends Controller
             $record_total   = $filtered->get()->count();
             $data           = $filtered->get();
         }
-        
+
         return Datatables::of($data)
             ->with([
                 "recordsTotal" => $record_total,
