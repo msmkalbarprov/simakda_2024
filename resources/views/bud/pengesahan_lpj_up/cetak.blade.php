@@ -256,7 +256,7 @@
     <div style="padding-top:20px">
         <table class="table" style="width: 100%;font-family:Open Sans;" class="rincian">
             <tr>
-                <td style="text-align: center"> <br>{{$ttd->jabatan}}</td>
+                <td style="text-align: center">Disetujui <br>{{$ttd->jabatan}}</td>
                 <td style="margin: 2px 0px;text-align: center">
                     {{ $daerah->daerah }},
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
