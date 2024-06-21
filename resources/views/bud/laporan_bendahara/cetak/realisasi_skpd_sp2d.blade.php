@@ -238,8 +238,8 @@
                 </tr>
                 <tr>
                     <td style="padding-bottom: 50px;text-align: center;font-size:16px">
-                        {{-- {{ $tanda_tangan->jabatan }} --}}
-                        Kepala Bidang Perbendaharaan <br> Badan Keuangan dan Aset Daerah <br> Provinsi Kalimantan Barat
+                        {{ $tanda_tangan->jabatan2 }}
+                         <br> Badan Keuangan dan Aset Daerah <br> Provinsi Kalimantan Barat
                     </td>
                 </tr>
                 <tr>

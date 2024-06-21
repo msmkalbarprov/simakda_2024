@@ -6839,7 +6839,7 @@ class BendaharaUmumDaerahController extends Controller
             'data_awal' => $req,
             'realisasi' => $realisasi,
             'tanda_tangan' => DB::table('ms_ttd')
-                ->select('nip', 'nama', 'jabatan', 'pangkat')
+                ->select('nip', 'nama', 'jabatan','jabatan2', 'pangkat')
                 ->where(['nip' => $req['ttd']])
                 ->whereIn('kode', ['BUD', 'PA'])
                 ->first(),
