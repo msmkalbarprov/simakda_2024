@@ -887,17 +887,26 @@ class PenyetoranController extends Controller
                     DB::table('trdkasin_pkd')->insert($data_input);
                 };
             }
+            DB::update("UPDATE a
+                        SET kunci = 1
+                        FROM tr_terima a
+                        JOIN trdkasin_pkd b
+                        on a.kd_skpd= b.kd_skpd
+                        and a.kd_sub_kegiatan = b.kd_sub_kegiatan
+                        and a.no_terima=b.no_terima
+                        where b.no_sts= ? and a.kd_skpd= ?
+                        ", [$data['no_sts'], $data['kd_skpd']]);
 
-            DB::table('tr_terima as a')
-                ->join('trdkasin_pkd as b', function ($join) {
-                    $join->on('a.kd_skpd', '=', 'b.kd_skpd');
-                    $join->on('a.no_terima', '=', 'b.no_terima');
-                    $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
-                })
-                ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
-                ->update([
-                    'a.kunci' => '1'
-                ]);
+                // DB::table('tr_terima as a')
+                //                 ->join('trdkasin_pkd as b', function ($join) {
+                //                     $join->on('a.kd_skpd', '=', 'b.kd_skpd');
+                //                     $join->on('a.no_terima', '=', 'b.no_terima');
+                //                     $join->on('a.kd_sub_kegiatan', '=', 'b.kd_sub_kegiatan');
+                //                 })
+                //                 ->where(['a.kd_skpd' => $data['kd_skpd'], 'b.no_sts' => $data['no_sts']])
+                //                 ->update([
+                //                     'a.kunci' => '1'
+                //                 ]);
 
             $jumlah = DB::table('ms_skpd')->where(['jns' => '2', 'kd_skpd' => $data['kd_skpd']])->count();
 
