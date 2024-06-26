@@ -14,8 +14,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 25px;text-align:center">No.</th>
-                                    <th style="text-align:center">Nomor SPM</th>
-                                    <th style="text-align:center">Nama SKPD</th>
+                                    <th style="text-align:center">Nomor SPD</th>
+                                    <th style="text-align:center">SKPD</th>
                                     <th style="width: 50px;text-align:center">Aksi</th>
                                 </tr>
                             </thead>
