@@ -22,7 +22,7 @@
             createdRow: function(row, data, index) {
                 if (data.ketlpj == "1" && data.ketspj == "1") {
                     $(row).css("background-color", "#B0E0E6");
-                } else if (data.ketlpj == "1") {
+                } else if (data.ketlpj == "1" || data.ketlpj_unit == "1") {
                     $(row).css("background-color", "#98FB98");
                 } else if (data.ketspj == "1") {
                     $(row).css("background-color", "#98FB98");
@@ -57,6 +57,11 @@
                 {
                     data: 'ketlpj',
                     name: 'ketlpj',
+                    className: "text-center",
+                },
+                {
+                    data: 'ketlpj_unit',
+                    name: 'ketlpj_unit',
                     className: "text-center",
                 },
                 {
