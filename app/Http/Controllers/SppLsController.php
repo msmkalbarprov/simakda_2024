@@ -1987,13 +1987,23 @@ class SppLsController extends Controller
                     break;
             }
 
+            $status_anggaran = status_anggaran();
+
             $spp1 = DB::table('trhspp as b')->join('trdspp as c', function ($join) {
                 $join->on('b.no_spp', '=', 'c.no_spp');
                 $join->on('b.kd_skpd', '=', 'c.kd_skpd');
             })->join('trskpd as d', function ($join) {
                 $join->on('c.kd_sub_kegiatan', '=', 'd.kd_sub_kegiatan');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->select('d.nm_program as nama', DB::raw("SUM(c.nilai) as nilai"), DB::raw("'1' as urut"), DB::raw("LEFT(c.kd_sub_kegiatan,18) as kode"))->where(['b.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd])->groupByRaw("LEFT(c.kd_sub_kegiatan, 18), d.nm_program");
+            })->select('d.nm_program as nama', DB::raw("SUM(c.nilai) as nilai"), DB::raw("'1' as urut"), DB::raw("LEFT(c.kd_sub_kegiatan,7) as kode"))->where(['b.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'd.jns_ang' => $status_anggaran])->groupByRaw("LEFT(c.kd_sub_kegiatan, 7), d.nm_program");
+
+            $spp11 = DB::table('trhspp as b')->join('trdspp as c', function ($join) {
+                $join->on('b.no_spp', '=', 'c.no_spp');
+                $join->on('b.kd_skpd', '=', 'c.kd_skpd');
+            })->join('trskpd as d', function ($join) {
+                $join->on('c.kd_sub_kegiatan', '=', 'd.kd_sub_kegiatan');
+                $join->on('c.kd_skpd', '=', 'd.kd_skpd');
+            })->select('d.nm_kegiatan as nama', DB::raw("SUM(c.nilai) as nilai"), DB::raw("'2' as urut"), DB::raw("LEFT(c.kd_sub_kegiatan,12) as kode"))->where(['b.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'd.jns_ang' => $status_anggaran])->groupByRaw("LEFT(c.kd_sub_kegiatan, 12), d.nm_kegiatan")->unionAll($spp1);
 
             $spp2 = DB::table('trhspp as b')->join('trdspp as c', function ($join) {
                 $join->on('b.no_spp', '=', 'c.no_spp');
@@ -2001,7 +2011,7 @@ class SppLsController extends Controller
             })->join('trskpd as d', function ($join) {
                 $join->on('c.kd_sub_kegiatan', '=', 'd.kd_sub_kegiatan');
                 $join->on('c.kd_skpd', '=', 'd.kd_skpd');
-            })->select('c.nm_sub_kegiatan as nama', DB::raw("SUM(c.nilai) as nilai"), DB::raw("'2' as urut"), 'c.kd_sub_kegiatan as kode')->where(['b.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd])->groupByRaw("c.kd_sub_kegiatan, c.nm_sub_kegiatan")->unionAll($spp1);
+            })->select('c.nm_sub_kegiatan as nama', DB::raw("SUM(c.nilai) as nilai"), DB::raw("'2' as urut"), 'c.kd_sub_kegiatan as kode')->where(['b.no_spp' => $no_spp, 'b.kd_skpd' => $kd_skpd, 'd.jns_ang' => $status_anggaran])->groupByRaw("c.kd_sub_kegiatan, c.nm_sub_kegiatan")->unionAll($spp11);
 
             $spp3 = DB::table('trhspp as b')->join('trdspp as c', function ($join) {
                 $join->on('b.no_spp', '=', 'c.no_spp');
@@ -2024,6 +2034,7 @@ class SppLsController extends Controller
                 ->orderBy('kode')
                 ->orderBy('urut')
                 ->get();
+
             $total = 0;
             foreach ($result as $data) {
                 if ($data->urut == '5')
@@ -2031,6 +2042,7 @@ class SppLsController extends Controller
             }
             $jumlah_spp = DB::table('trhspp')->whereRaw("keperluan like '%Tambahan Penghasilan Pegawai%'")->where('no_spp', $no_spp)->count();
         }
+
         $skpd = DB::table('ms_skpd')
             ->select('nm_skpd')
             ->where(['kd_skpd' => $kd_skpd])

@@ -146,13 +146,19 @@
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @elseif ($data->urut == '5')
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 23) }}.{{ dotrek(STR::substr($data->kode, 24, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 17) }}.{{ dotrek(STR::substr($data->kode, 18, 12)) }}
+                        </td>
+                        <td>{{ $data->nama }}</td>
+                        <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
+                    @elseif ($data->urut == '2')
+                        <td></td>
+                        <td>{{ Str::substr($data->kode, 0, 17) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
                     @else
                         <td></td>
-                        <td>{{ Str::substr($data->kode, 0, 24) }}{{ dotrek(STR::substr($data->kode, 24, 7)) }}
+                        <td>{{ Str::substr($data->kode, 0, 17) }}.{{ dotrek(STR::substr($data->kode, 18, 7)) }}
                         </td>
                         <td>{{ $data->nama }}</td>
                         <td style="text-align: right">{{ rupiah($data->nilai) }}</td>
