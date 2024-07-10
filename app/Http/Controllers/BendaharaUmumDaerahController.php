@@ -6839,7 +6839,7 @@ class BendaharaUmumDaerahController extends Controller
             'data_awal' => $req,
             'realisasi' => $realisasi,
             'tanda_tangan' => DB::table('ms_ttd')
-                ->select('nip', 'nama', 'jabatan','jabatan2', 'pangkat')
+                ->select('nip', 'nama', 'jabatan', 'jabatan2', 'pangkat')
                 ->where(['nip' => $req['ttd']])
                 ->whereIn('kode', ['BUD', 'PA'])
                 ->first(),
@@ -7156,7 +7156,11 @@ class BendaharaUmumDaerahController extends Controller
         $bulan = $request->bulan;
         $anggaran = $request->anggaran;
         $tipe = $request->tipe;
-        // dd($tipe);
+        $margin_atas = $request->margin_atas;
+        $margin_bawah = $request->margin_bawah;
+        $margin_kiri = $request->margin_kiri;
+        $margin_kanan = $request->margin_kanan;
+
         // SP2D
 
         if ($tipe == 'SP2D') {
@@ -7201,8 +7205,10 @@ class BendaharaUmumDaerahController extends Controller
             $pdf = PDF::loadHtml($view)
                 ->setPaper('legal')
                 ->setOrientation('landscape')
-                ->setOption('margin-left', 15)
-                ->setOption('margin-right', 15);
+                ->setOption('margin-left', $margin_kiri)
+                ->setOption('margin-right', $margin_kanan)
+                ->setOption('margin-top', $margin_atas)
+                ->setOption('margin-bottom', $margin_bawah);
             return $pdf->stream('laporan.pdf');
         } elseif ($jenis_print == 'layar') {
             return $view;

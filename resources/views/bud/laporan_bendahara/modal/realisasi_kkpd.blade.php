@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><label for="labelcetak" id="labelcetak">LAPORAN KAS HARIAN KASDA</label></h5>
+                <h5 class="modal-title"><label for="labelcetak" id="labelcetak">LAPORAN REALISASI KKPD</label></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -100,6 +100,32 @@
                     <div class="col-md-6">
                         <label class="form-label">Tanggal TTD</label>
                         <input type="date" id="tgl_realisasi_kkpd" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="sptb" class="col-md-12 col-form-label">
+                        Ukuran Margin Untuk Cetakan PDF (Milimeter)
+                    </label>
+                    <label for="sptb" class="col-md-2 col-form-label"></label>
+                    <label for="" class="col-md-1 col-form-label">Kiri</label>
+                    <div class="col-md-1">
+                        <input type="number" class="form-control" id="margin_kiri_kkpd" name="margin_kiri"
+                            value="15">
+                    </div>
+                    <label for="" class="col-md-1 col-form-label">Kanan</label>
+                    <div class="col-md-1">
+                        <input type="number" class="form-control" id="margin_kanan_kkpd" name="margin_kanan"
+                            value="15">
+                    </div>
+                    <label for="" class="col-md-1 col-form-label">Atas</label>
+                    <div class="col-md-1">
+                        <input type="number" class="form-control" id="margin_atas_kkpd" name="margin_atas"
+                            value="15">
+                    </div>
+                    <label for="" class="col-md-1 col-form-label">Bawah</label>
+                    <div class="col-md-1">
+                        <input type="number" class="form-control" id="margin_bawah_kkpd" name="margin_bawah"
+                            value="15">
                     </div>
                 </div>
                 {{-- Pilihan Cetak --}}

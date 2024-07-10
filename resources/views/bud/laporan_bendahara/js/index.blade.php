@@ -3418,6 +3418,11 @@
             let tipe = document.getElementById('tipe_realisasi_kkpd').value;
             let tgl = document.getElementById('tgl_realisasi_kkpd').value;
 
+            let margin_atas = document.getElementById('margin_atas_kkpd').value;
+            let margin_bawah = document.getElementById('margin_bawah_kkpd').value;
+            let margin_kiri = document.getElementById('margin_kiri_kkpd').value;
+            let margin_kanan = document.getElementById('margin_kanan_kkpd').value;
+
             if (pilih_bulan) {
                 if (!bulan) {
                     alert('Silahkan Pilih Bulan!');
@@ -3464,6 +3469,10 @@
             searchParams.append("anggaran", anggaran);
             searchParams.append("tipe", tipe);
             searchParams.append("tgl", tgl);
+            searchParams.append("margin_atas", margin_atas);
+            searchParams.append("margin_bawah", margin_bawah);
+            searchParams.append("margin_kiri", margin_kiri);
+            searchParams.append("margin_kanan", margin_kanan);
             window.open(url.toString(), "_blank");
         });
         //CETAKAN REALISASI KKPD

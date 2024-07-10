@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>REALISASI KKPD</title>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -60,7 +66,7 @@
         <tbody>
             @foreach ($realisasiKkpd as $item)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td style="text-align: center">{{ $loop->iteration }}</td>
                     <td>{{ $item->nm_skpd }}</td>
                     <td style="text-align: right">{{ rupiah($item->anggaran_barjas) }}</td>
                     <td style="text-align: right">{{ rupiah($item->realisasi_barjas) }}</td>
@@ -81,7 +87,7 @@
     </table>
 
     @if (isset($tanda_tangan))
-        <table class="table" style="width:100%;margin-top:50px">
+        <table class="table" style="width:100%;margin-top:50px;font-family: Open Sans;font-size:16px">
             <tr>
                 <td style="width: 50%"></td>
                 <td style="margin: 2px 0px;text-align: center;width:50%">
