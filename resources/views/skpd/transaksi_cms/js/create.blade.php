@@ -14,105 +14,6 @@
         let status_anggaran_selanjutnya = '';
         let nilai_kunci = 0
 
-        // no bukti cms
-        $.ajax({
-            url: "{{ route('skpd.transaksi_cms.no_urut') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                "_token": "{{ csrf_token() }}",
-            },
-            success: function(data) {
-                $('#no_bukti').val(data);
-            }
-        });
-
-        // kd skpd dan nm skpd
-        $.ajax({
-            url: "{{ route('skpd.transaksi_cms.skpd') }}",
-            type: "POST",
-            dataType: 'json',
-            data: {
-                "_token": "{{ csrf_token() }}",
-            },
-            success: function(data) {
-                $('#kd_skpd').val(data.kd_skpd);
-                $('#nm_skpd').val(data.nm_skpd);
-            }
-        });
-
-        $('#cari_rekening').on('click', function() {
-            rekening_tujuan();
-
-            $("#nm_rekening_tujuan").val(null);
-            $("#bank").val(null).trigger('change');
-        });
-
-        $("input[data-type='currency']").on({
-            keyup: function() {
-                formatCurrency($(this));
-            },
-            blur: function() {
-                formatCurrency($(this), "blur");
-            }
-        });
-
-        $('.select2-multiple').select2({
-            placeholder: "Silahkan Pilih",
-            theme: 'bootstrap-5'
-        });
-
-        $('.select2-modal').select2({
-            dropdownParent: $('#modal_kegiatan .modal-content'),
-            theme: 'bootstrap-5'
-        });
-
-        $('.select2-modal1').select2({
-            dropdownParent: $('#modal_rekening .modal-content'),
-            theme: 'bootstrap-5'
-        });
-
-        $('#beban').on('select2:select', function() {
-            let beban = this.value;
-            let kd_skpd = document.getElementById('kd_skpd').value;
-            if (!kd_skpd) {
-                alert('Isi terlebih dahulu Kode SKPD!');
-                $("#beban").val(null).change();
-                return;
-            }
-            $('#kd_sub_kegiatan').empty();
-            $('#no_sp2d').empty();
-            $('#kd_rekening').empty();
-            $('#sumber').empty();
-            $('#nm_sub_kegiatan').val(null);
-            $('#nm_rekening').val(null);
-            $('#nm_sumber').val(null);
-            $('#total_spd').val(null);
-            $('#realisasi_spd').val(null);
-            $('#sisa_spd').val(null);
-            $('#total_angkas').val(null);
-            $('#realisasi_angkas').val(null);
-            $('#sisa_angkas').val(null);
-            $('#total_anggaran').val(null);
-            $('#realisasi_anggaran').val(null);
-            $('#sisa_anggaran').val(null);
-            $('#total_sumber').val(null);
-            $('#realisasi_sumber').val(null);
-            $('#sisa_sumber').val(null);
-            $('#sisa_kas').val(null);
-            $('#potongan_ls').val(null);
-            $('#total_sisa').val(null);
-            cari_kegiatan(beban, kd_skpd);
-        });
-
-        $('#rek_tujuan').on('select2:select', function() {
-            let nama = $(this).find(':selected').data('nama');
-            let bank = $(this).find(':selected').data('bank');
-
-            $("#nm_rekening_tujuan").val(nama);
-            $("#bank").val(bank).trigger('change');
-        });
-
         let tabel_rekening = $('#input_rekening').DataTable({
             responsive: true,
             processing: true,
@@ -296,6 +197,111 @@
                 },
             ]
         })
+
+        // no bukti cms
+        $.ajax({
+            url: "{{ route('skpd.transaksi_cms.no_urut') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(data) {
+                $('#no_bukti').val(data);
+            }
+        });
+
+        // kd skpd dan nm skpd
+        $.ajax({
+            url: "{{ route('skpd.transaksi_cms.skpd') }}",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(data) {
+                $('#kd_skpd').val(data.kd_skpd);
+                $('#nm_skpd').val(data.nm_skpd);
+            }
+        });
+
+        $('#cari_rekening').on('click', function() {
+            rekening_tujuan();
+
+            $("#nm_rekening_tujuan").val(null);
+            $("#bank").val(null).trigger('change');
+        });
+
+        $("input[data-type='currency']").on({
+            keyup: function() {
+                formatCurrency($(this));
+            },
+            blur: function() {
+                formatCurrency($(this), "blur");
+            }
+        });
+
+        $('.select2-multiple').select2({
+            placeholder: "Silahkan Pilih",
+            theme: 'bootstrap-5'
+        });
+
+        $('.select2-modal').select2({
+            dropdownParent: $('#modal_kegiatan .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        $('.select2-modal1').select2({
+            dropdownParent: $('#modal_rekening .modal-content'),
+            theme: 'bootstrap-5'
+        });
+
+        $('#beban').on('select2:select', function() {
+            tabel_rekening.clear().draw();
+            tabel_rekening1.clear().draw();
+            tabel_tujuan.clear().draw();
+
+            alert('1')
+
+            let beban = this.value;
+            let kd_skpd = document.getElementById('kd_skpd').value;
+            if (!kd_skpd) {
+                alert('Isi terlebih dahulu Kode SKPD!');
+                $("#beban").val(null).change();
+                return;
+            }
+            $('#kd_sub_kegiatan').empty();
+            $('#no_sp2d').empty();
+            $('#kd_rekening').empty();
+            $('#sumber').empty();
+            $('#nm_sub_kegiatan').val(null);
+            $('#nm_rekening').val(null);
+            $('#nm_sumber').val(null);
+            $('#total_spd').val(null);
+            $('#realisasi_spd').val(null);
+            $('#sisa_spd').val(null);
+            $('#total_angkas').val(null);
+            $('#realisasi_angkas').val(null);
+            $('#sisa_angkas').val(null);
+            $('#total_anggaran').val(null);
+            $('#realisasi_anggaran').val(null);
+            $('#sisa_anggaran').val(null);
+            $('#total_sumber').val(null);
+            $('#realisasi_sumber').val(null);
+            $('#sisa_sumber').val(null);
+            $('#sisa_kas').val(null);
+            $('#potongan_ls').val(null);
+            $('#total_sisa').val(null);
+            cari_kegiatan(beban, kd_skpd);
+        });
+
+        $('#rek_tujuan').on('select2:select', function() {
+            let nama = $(this).find(':selected').data('nama');
+            let bank = $(this).find(':selected').data('bank');
+
+            $("#nm_rekening_tujuan").val(nama);
+            $("#bank").val(bank).trigger('change');
+        });
 
         $('#tambah_rek').on('click', function() {
             let no_bukti = document.getElementById('no_bukti').value;
