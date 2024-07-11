@@ -143,6 +143,11 @@
             $('#tgl_bukti').val(this.value);
         });
 
+        $('#beban').on('select2:select', function() {
+            tabel_rincian.clear().draw();
+            input_rincian.clear().draw();
+        });
+
         $('#tambah_rincian').on('click', function() {
             let beban = document.getElementById('beban').value;
             let no_kas = document.getElementById('no_kas').value;
