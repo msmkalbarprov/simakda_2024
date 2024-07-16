@@ -261,8 +261,6 @@
             tabel_rekening1.clear().draw();
             tabel_tujuan.clear().draw();
 
-            alert('1')
-
             let beban = this.value;
             let kd_skpd = document.getElementById('kd_skpd').value;
             if (!kd_skpd) {
