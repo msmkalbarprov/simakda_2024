@@ -6133,7 +6133,7 @@ class BendaharaUmumDaerahController extends Controller
             ->joinSub($join1, 'c', function ($join) {
                 $join->on('a.no_spp', '=', 'c.no_spp');
             })
-            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_spm,a.tgl_spm,b.tgl_sp2d,b.no_sp2d,b.keperluan,
+            ->selectRaw("a.kd_skpd,a.nm_skpd,a.no_spm,a.tgl_spm,b.tgl_sp2d,b.no_sp2d,b.keperluan,b.tgl_kas_bud,
 				(case when a.jns_spp=1 then c.nilai else 0  end)up,
 				(case when a.jns_spp=2 then c.nilai else 0  end)gu,
 				(case when a.jns_spp=3 then c.nilai else 0  end)tu,

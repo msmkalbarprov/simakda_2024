@@ -68,7 +68,7 @@
         <thead>
             <tr id="header3">
                 <th rowspan="3" style="width: 3%">No.<br>Urut</th>
-                <th colspan="10" style="width: 10%">SPM</th>
+                <th colspan="11" style="width: 10%">SPM</th>
                 <th colspan="8" style="width: 5%">SP2D</th>
             </tr>
             <tr id="header3">
@@ -82,6 +82,7 @@
                 <th style="width: 5%" colspan="3">LS</th>
                 <th style="width: 5%" rowspan="2">NO</th>
                 <th style="width: 5%" rowspan="2">TANGGAL</th>
+                <th style="width: 5%" rowspan="2">TANGGAL<br>CAIR</th>
                 <th style="width: 5%" rowspan="2">UP</th>
                 <th style="width: 5%" rowspan="2">GU</th>
                 <th style="width: 5%" rowspan="2">TU</th>
@@ -115,6 +116,7 @@
                 <th>17</th>
                 <th>18</th>
                 <th>19</th>
+                <th>20</th>
             </tr>
         </thead>
         <tbody>
@@ -149,6 +151,7 @@
                     <td class="angka">{{ rupiah($register->ph3) }}</td>
                     <td>{{ $register->no_sp2d }}</td>
                     <td>{{ tanggal_indonesia($register->tgl_sp2d) }}</td>
+                    <td>{{ tanggal_indonesia($register->tgl_kas_bud) }}</td>
                     <td class="angka">{{ rupiah($register->up) }}</td>
                     <td class="angka">{{ rupiah($register->gu) }}</td>
                     <td class="angka">{{ rupiah($register->tu) }}</td>
@@ -165,7 +168,7 @@
                 <td class="angka"><b>{{ rupiah($total_gaji) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_ls) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_ph3) }}</b></td>
-                <td colspan="2" style="text-align: center"><b>Jumlah</b></td>
+                <td colspan="3" style="text-align: center"><b>Jumlah</b></td>
                 <td class="angka"><b>{{ rupiah($total_up) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_gu) }}</b></td>
                 <td class="angka"><b>{{ rupiah($total_tu) }}</b></td>
@@ -178,7 +181,7 @@
                 <td colspan="6" class="angka">
                     <b>{{ rupiah($total_up + $total_gu + $total_tu + $total_gaji + $total_ls + $total_ph3) }}</b>
                 </td>
-                <td colspan="2" style="text-align: center"><b>Jumlah</b></td>
+                <td colspan="3" style="text-align: center"><b>Jumlah</b></td>
                 <td colspan="6" class="angka">
                     <b>{{ rupiah($total_up + $total_gu + $total_tu + $total_gaji + $total_ls + $total_ph3) }}</b>
                 </td>
