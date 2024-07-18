@@ -213,6 +213,16 @@ class DaftarPengeluaranRillController extends Controller
                         x.kd_sub_kegiatan = a.kd_sub_kegiatan
                         AND x.kd_skpd = a.kd_skpd
                         AND x.kd_rek6 = a.kd_rek6
+                        and (z.status<>'1' or z.status is null) and (x.status='0' or x.status='1')
+
+                        UNION ALL
+                        SELECT SUM(x.nilai) as nilai FROM trhdpt z
+                        INNER JOIN trddpt x ON z.no_dpt=x.no_dpt and z.kd_skpd=x.kd_skpd
+                        WHERE
+                        x.kd_sub_kegiatan = a.kd_sub_kegiatan
+                        AND x.kd_skpd = a.kd_skpd
+                        AND x.kd_rek6 = a.kd_rek6
+                        and (z.status<>'1' or z.status is null)
                         -- tambahan tampungan
                         )r) AS lalu,
                         0 AS sp2d,a.nilai AS anggaran

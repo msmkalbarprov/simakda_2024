@@ -4991,7 +4991,7 @@ function angkas_lalu_penagihan($kode, $giat, $rek)
                                     WHERE c.kd_sub_kegiatan =?
                                     AND d.kd_skpd = ?
                                     AND c.kd_rek6=?
-                                    and (c.status<>'1' or c.status is null)
+                                    and (d.status<>'1' or d.status is null)
                                     -- and d.no_dpt NOT IN (select no_dpt from trhtransout_kkpd where d.kd_skpd=kd_skpd)
                                     -- and d.tgl_voucher<=?
                                     )r", [$giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $kode, $rek, $giat, $rek, $kode, $kode, $giat, $kode, $rek, $giat, $kode, $rek]))->first();
