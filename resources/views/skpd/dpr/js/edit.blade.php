@@ -1014,10 +1014,10 @@
                     // LOAD SPD
                     $('#total_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(data.angkas));
+                    }).format(data.spd));
                     $('#sisa_spd').val(new Intl.NumberFormat('id-ID', {
                         minimumFractionDigits: 2
-                    }).format(data.angkas - data.angkas_lalu));
+                    }).format(data.spd - data.angkas_lalu));
 
                     nilai_kunci = parseFloat(data.nilai_kunci)
                 },
