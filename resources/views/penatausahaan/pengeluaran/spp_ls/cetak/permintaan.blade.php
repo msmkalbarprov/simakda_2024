@@ -327,7 +327,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: center">{{ $cari_pptk->nip }}</td>
+                        <td style="text-align: center">NIP. {{ $cari_pptk->nip }}</td>
                         <td style="text-align: center">NIP. {{ $cari_bendahara->nip }}</td>
                     </tr>
                 @endif
