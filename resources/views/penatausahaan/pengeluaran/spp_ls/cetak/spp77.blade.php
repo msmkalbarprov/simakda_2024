@@ -202,7 +202,7 @@
                 <td colspan="2" style="text-align: center">
                     <b><u>{{ $cari_pptk->nama }}</u></b> <br>
                     {{ $cari_pptk->pangkat }} <br>
-                    {{ $cari_pptk->nip }}
+                    NIP. {{ $cari_pptk->nip }}
                 </td>
                 <td colspan="2" style="text-align: center;border-right:1px solid black">
                     <b><u>{{ $cari_bendahara->nama }}</u></b> <br>
