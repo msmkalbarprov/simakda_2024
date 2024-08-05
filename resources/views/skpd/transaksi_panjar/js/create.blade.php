@@ -616,7 +616,8 @@
                 return;
             }
 
-            if (nilai + nilai_kunci > sisa_sp2d) {
+            // KHUSUS UP / GU, MAKA PERLU AUTOMATIC ADJUSTMENT
+            if ((nilai + nilai_kunci > sisa_sp2d) && beban == '1') {
                 alert('Nilai melebihi pagu terkait automatic adjustment sebesar ' + new Intl
                     .NumberFormat('id-ID', {
                         minimumFractionDigits: 2
