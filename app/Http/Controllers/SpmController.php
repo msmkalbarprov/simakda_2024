@@ -818,8 +818,12 @@ class SpmController extends Controller
         $skpd = Auth::user()->kd_skpd;
         $beban = $request->beban;
 
-        $data_spm = DB::table('trhspm')->select('nm_skpd', 'tgl_spm', 'bulan', 'no_spp')->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])->first();
-        $data_beban = lampiran_spm($beban, $no_spm, $kd_skpd);
+        $data_spm = DB::table('trhspm')
+            ->select('nm_skpd', 'tgl_spm', 'bulan', 'no_spp')
+            ->where(['no_spm' => $no_spm, 'kd_skpd' => $kd_skpd])
+            ->first();
+
+        $data_beban = lampiran_spm($beban, $no_spm, $kd_skpd, $data_spm);
 
         $total = 0;
         foreach ($data_beban as $nilai) {
