@@ -356,6 +356,14 @@
             let nm_sub_kegiatan = $(this).find(':selected').data('nama');
             let kd_sub_kegiatan = this.value;
 
+            let tgl_transaksi = document.getElementById('tgl_transaksi').value;
+
+            if (!tgl_transaksi) {
+                alert('Tanggal transaksi wajib dipilih!');
+                $('#kd_sub_kegiatan').val(null).change()
+                return;
+            }
+
             $("#nm_sub_kegiatan").val(nm_sub_kegiatan);
 
             $('#kd_rekening').empty();
@@ -382,6 +390,14 @@
             let nama = $(this).find(':selected').data('nama');
             let anggaran = $(this).find(':selected').data('anggaran');
             let lalu = $(this).find(':selected').data('lalu');
+
+            let tgl_transaksi = document.getElementById('tgl_transaksi').value;
+
+            if (!tgl_transaksi) {
+                alert('Tanggal transaksi wajib dipilih!');
+                $('#kd_rekening').val(null).change()
+                return;
+            }
 
             $('#nm_rekening').val(nama);
             let kd_rek6 = this.value;
@@ -978,7 +994,7 @@
                     kd_skpd: document.getElementById('kd_skpd').value,
                     kd_sub_kegiatan: document.getElementById('kd_sub_kegiatan').value,
                     jenis_belanja: document.getElementById('jenis_belanja').value,
-                    tgl_dpr: document.getElementById('tgl_dpr').value,
+                    tgl_dpr: document.getElementById('tgl_transaksi').value,
                     status_angkas: document.getElementById('status_angkas').value,
                     "_token": "{{ csrf_token() }}",
                 },

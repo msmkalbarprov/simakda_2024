@@ -25,7 +25,7 @@
                         <label for="tgl_dpr" class="col-md-2 col-form-label">Tanggal DPR</label>
                         <div class="col-md-4">
                             <input type="date" class="form-control" id="tgl_dpr" name="tgl_dpr"
-                                value="{{ $dpr->tgl_dpr }}">
+                                value="{{ $dpr->tgl_dpr }}" readonly>
                         </div>
                     </div>
                     {{-- NOMOR URUT DAN JENIS BELANJA --}}
