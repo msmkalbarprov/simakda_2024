@@ -110,7 +110,7 @@
 
         $('#simpan').on('click', function() {
             let total = rupiah(document.getElementById('total').value);
-            let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+            // let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
 
             let kd_skpd = document.getElementById('kd_skpd').value;
 
@@ -175,10 +175,10 @@
                 return;
             }
 
-            if (total > sisa_kas) {
-                alert('Total DPT melebihi Sisa Kas!');
-                return
-            }
+            // if (total > sisa_kas) {
+            //     alert('Total DPT melebihi Sisa Kas!');
+            //     return
+            // }
 
             if (detail_dpt.length == 0) {
                 alert('Rincian tidak boleh kosong!');

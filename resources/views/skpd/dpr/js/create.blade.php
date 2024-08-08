@@ -549,12 +549,12 @@
             }
 
             if (nilai > sisa_kas) {
-                alert('Total Transaksi melebihi Sisa Kas KKPD');
+                alert('Total Transaksi melebihi Limit KKPD');
                 return;
             }
 
             if (nilai > sisa_kas) {
-                alert('Total Transaksi melebihi Sisa Kas KKPD');
+                alert('Total Transaksi melebihi Limit KKPD');
                 return;
             }
 
@@ -766,7 +766,7 @@
             }
 
             if (total_belanja > sisa_kas) {
-                alert('Nilai Melebihi sisa Kas KKPD');
+                alert('Nilai Melebihi Limit KKPD');
                 return;
             }
 

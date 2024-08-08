@@ -304,7 +304,7 @@
                         <div class="col-md-2">
                             <input type="text" readonly class="form-control" name="status_angkas" id="status_angkas">
                         </div>
-                        <label for="sisa_kas" class="col-md-2 col-form-label">Sisa Kas KKPD</label>
+                        <label for="sisa_kas" class="col-md-2 col-form-label">Limit KKPD</label>
                         <div class="col-md-2">
                             <input type="text" readonly class="form-control" name="sisa_kas" id="sisa_kas"
                                 style="text-align: right">

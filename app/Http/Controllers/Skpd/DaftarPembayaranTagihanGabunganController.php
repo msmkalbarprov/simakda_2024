@@ -61,7 +61,7 @@ class DaftarPembayaranTagihanGabunganController extends Controller
 
         $data = [
             'kd_skpd' => $kd_skpd,
-            'sisa_kas' => sisa_bank_kkpd1(),
+            'sisa_kas' => limit_kkpd(),
             'kkpd_gabungan' => DB::table('ms_up')
                 ->selectRaw("ISNULL(kkpd_org,0) as nilai")
                 ->where(['kd_skpd' => $kd_skpd])
@@ -193,7 +193,7 @@ class DaftarPembayaranTagihanGabunganController extends Controller
 
         $data = [
             'kd_skpd' => $kd_skpd,
-            'sisa_kas' => sisa_bank_kkpd1(),
+            'sisa_kas' => limit_kkpd(),
             'dpt' => DB::table('trhdpt_gabungan')
                 ->where(['no_dpt' => $no_dpt, 'kd_skpd' => $kd_skpd])
                 ->first(),
@@ -274,7 +274,7 @@ class DaftarPembayaranTagihanGabunganController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'sisa_kas' => sisa_bank_kkpd1()
+            'sisa_kas' => limit_kkpd()
         ];
 
         return view('skpd.verifikasi_dpt.index')->with($data);

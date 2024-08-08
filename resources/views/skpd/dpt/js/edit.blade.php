@@ -141,7 +141,7 @@
             let tahun_anggaran = "{{ tahun_anggaran() }}";
 
             let total_belanja = rupiah(document.getElementById('total_belanja').value);
-            let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
+            // let sisa_kas = rupiah(document.getElementById('sisa_kas').value);
 
             let rincian_rekening1 = tabel_rekening.rows().data().toArray().map((value) => {
                 let data = {
@@ -172,10 +172,10 @@
                 return;
             }
 
-            if (total_belanja > sisa_kas) {
-                alert('Nilai Melebihi sisa Kas KKPD');
-                return;
-            }
+            // if (total_belanja > sisa_kas) {
+            //     alert('Nilai Melebihi sisa Kas KKPD');
+            //     return;
+            // }
 
             if (!no_dpt) {
                 alert('Nomor DPT Tidak Boleh Kosong');

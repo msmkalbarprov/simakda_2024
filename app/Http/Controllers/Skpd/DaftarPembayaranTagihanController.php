@@ -66,7 +66,7 @@ class DaftarPembayaranTagihanController extends Controller
                 ->selectRaw("(SELECT SUM(nilai) from trddpr a inner join trhdpr b on a.no_dpr=b.no_dpr and a.kd_skpd=b.kd_skpd where a.no_dpr=c.no_dpr and a.kd_skpd=c.kd_skpd and a.status='1') as nilai")
                 ->where(['kd_skpd' => Auth::user()->kd_skpd, 'status_verifikasi' => '1', 'status' => '0'])
                 ->get(),
-            'sisa_kas' => sisa_bank_kkpd1()
+            'sisa_kas' => limit_kkpd()
         ];
 
         return view('skpd.dpt.create')->with($data);
@@ -216,7 +216,7 @@ class DaftarPembayaranTagihanController extends Controller
                 ->selectRaw("(SELECT SUM(nilai) from trddpr a inner join trhdpr b on a.no_dpr=b.no_dpr and a.kd_skpd=b.kd_skpd where a.no_dpr=c.no_dpr and a.kd_skpd=c.kd_skpd and a.status='1') as nilai")
                 ->where(['kd_skpd' => Auth::user()->kd_skpd, 'status_verifikasi' => '1', 'status' => '0'])
                 ->get(),
-            'sisa_kas' => sisa_bank_kkpd1(),
+            'sisa_kas' => limit_kkpd(),
             'dpt' => DB::table('trhdpt')
                 ->where(['no_dpt' => $no_dpt, 'kd_skpd' => $kd_skpd])
                 ->first(),
@@ -347,7 +347,7 @@ class DaftarPembayaranTagihanController extends Controller
         $kd_skpd = Auth::user()->kd_skpd;
 
         $data = [
-            'sisa_kas' => sisa_bank_kkpd1()
+            'sisa_kas' => limit_kkpd()
         ];
 
         return view('skpd.verifikasi_dpt.index')->with($data);

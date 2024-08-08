@@ -231,7 +231,7 @@ class DaftarPengeluaranRillController extends Controller
                     --   $filter
                       ", [$kd_skpd, $kd_sub_kegiatan, $jenis_ang, $kd_skpd]);
 
-        $sisa_kkpd = sisa_bank_kkpd1();
+        $sisa_kkpd = limit_kkpd();
 
 
         return response()->json([

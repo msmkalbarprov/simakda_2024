@@ -5243,6 +5243,28 @@ function sisa_bank_kkpd1()
     return $data;
 }
 
+function limit_kkpd()
+{
+    $kd_skpd = Auth::user()->kd_skpd;
+
+    $data = collect(DB::select("SELECT
+        SUM(case when jns=1 then jumlah else 0 end) AS terima,
+        SUM(case when jns=2 then jumlah else 0 end) AS keluar
+        FROM (
+        -- UP KKPD
+        SELECT SUM(kkpd) as jumlah,'1' AS jns from ms_up WHERE status='1' and kd_skpd=?
+        UNION ALL
+        -- DPR BELUM DPT
+        SELECT SUM(a.nilai) as jumlah,'2' as jns FROM trddpr a INNER JOIN trhdpr b ON a.no_dpr=b.no_dpr AND a.kd_skpd=b.kd_skpd WHERE b.kd_skpd=? and a.status!='2'
+        UNION ALL
+        -- TRANSAKSI KKPD SUDAH VALIDASI
+        SELECT SUM(a.nilai) as jumlah,'1' jns FROM trdtransout a INNER JOIN trhtransout b ON a.no_bukti=b.no_bukti and a.kd_skpd=b.kd_skpd where b.kd_skpd=? and b.kkpd='1'
+        )z", [$kd_skpd, $kd_skpd, $kd_skpd]))
+        ->first();
+
+    return $data;
+}
+
 function cari_rekening_awal($kd_skpd)
 {
     $data = DB::table('ms_skpd')

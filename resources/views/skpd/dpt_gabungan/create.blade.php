@@ -83,12 +83,12 @@
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
                                 class="form-control" id="total" name="total">
                         </div>
-                        <label for="sisa_kas" class="col-md-8 col-form-label" style="text-align: right">Sisa Kas
+                        {{-- <label for="sisa_kas" class="col-md-8 col-form-label" style="text-align: right">Sisa Kas
                         </label>
                         <div class="col-md-4">
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
                                 class="form-control" id="sisa_kas" name="sisa_kas" value="{{ rupiah($kkpd_gabungan) }}">
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

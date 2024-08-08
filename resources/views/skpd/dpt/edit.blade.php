@@ -98,13 +98,13 @@
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
                                 class="form-control" id="total_belanja" name="total_belanja">
                         </div>
-                        <label for="sisa_kas" class="col-md-8 col-form-label" style="text-align: right">Sisa Kas
+                        {{-- <label for="sisa_kas" class="col-md-8 col-form-label" style="text-align: right">Sisa Kas
                             Bank</label>
                         <div class="col-md-4">
                             <input type="text" style="text-align: right;background-color:white;border:none;" readonly
                                 class="form-control" id="sisa_kas" name="sisa_kas"
                                 value="{{ rupiah($sisa_kas->terima - $sisa_kas->keluar) }}">
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
